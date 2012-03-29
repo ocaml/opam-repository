@@ -6,8 +6,7 @@ package "cudf" {
   urls = [ "http://www.ocamlpro.com/pub/cudf.tar.bz2" ]
   patches = [ "local://files/cudf.install"
             ; "local://files/cudf.ocp"
-            ; "local://files/ocp-build-init" ]
-  make = [ "./ocp-build-init cudf"
-         ; "ocp-build -init -scan" ]
+            ; "local://files/ocp-build" ]
+  make = [ "./ocp-build cudf" ]
   depends = "extlib"
 }

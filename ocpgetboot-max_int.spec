@@ -4,11 +4,10 @@ package "ocpgetboot" {
   version     = "max_int"
   description = "https://github.com/OCamlPro/ocp-get"
   urls = [ "git://https://github.com/OCamlPro/ocp-get.git" ]
-  patches = [ "install://ocpgetboot.install"
-            ; "ocp://ocpgetboot.ocp.boot" ]
+  patches = [ "local://files/ocpgetboot.install"
+            ; "local://files/ocpgetboot.ocp"
+            ; "local://files/ocp-build" ]
   make = [ "rm ocp-get.ocp"
-         ; "for i in extlib ocamlre ; do echo 'begin library \"'$i'\" dirname = \"'$(ocp-get --root /tmp/OPAM.TEST config -I $i | cut -d ' ' -f 2)'\" end' >> ocp-get.ocp ; done"
-         ; "cat ocpgetboot.ocp.boot >> ocp-get.ocp"
-         ; "ocp-build -init -scan" ]
+         ; "./ocp-build ocpgetboot" ]
   depends = "extlib, ocamlre"
 }
