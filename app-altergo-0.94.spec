@@ -1,13 +1,20 @@
 @1
 
 package "altergo" {
+
   version = "0.94"
+
   description = "http://alt-ergo.lri.fr"
+
   urls = [ "http://alt-ergo.lri.fr/http/alt-ergo-0.94.tar.gz" ]
-  patches = [ "local://files/altergo.install"
-            ; "local://files/altergo.ocp"
-            ; "local://files/ocp-build" ]
+
+  patches = [
+      "local://files/app-altergo.install";
+      "local://files/app-altergo.ocp"
+  ]
+
   make = [ "echo 'let version = \"\" let libdir = \"\"' > version.ml"
-         ; "./ocp-build altergo" ]
-  depends = "ocamlgraph"
+         ; "ocp-build altergo" ]
+
+  depends = "ocaml-graph"
 }
