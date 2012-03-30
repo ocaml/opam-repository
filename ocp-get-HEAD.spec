@@ -16,7 +16,7 @@ package "ocp-get" {
 
   make = [
       "ocp-get config -ocp -rstrict ocp-get > depends.ocp";
-      "ocp-build ocp-get"
+      "ocp-build ocp-get ocp-get-server"
   ]
 
   depends =
