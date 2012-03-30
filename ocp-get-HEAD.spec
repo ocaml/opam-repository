@@ -10,6 +10,10 @@ package "ocp-get" {
       "https://github.com/OCamlPro/ocp-get.git"
   ]
 
+  patches = [
+      "files://files/ocp-get.install"
+  ]
+
   make = [
       "ocp-get config -ocp -rstrict ocp-get > depends.ocp";
       "ocp-build ocp-get"
