@@ -9,6 +9,7 @@ package "mancoosi-cudf" {
 
   patches = [
       "local://files/mancoosi-cudf.install";
+      "local://files/mancoosi-cudf.config";
       "local://files/mancoosi-cudf.ocp";
   ]
 

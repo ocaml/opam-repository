@@ -9,6 +9,7 @@ package "mancoosi-dose" {
 
   patches = [
       "local://files/mancoosi-dose.install";
+      "local://files/mancoosi-dose.config";
       "local://files/mancoosi-dose.ocp";
   ]
 

@@ -11,6 +11,7 @@ package "ocaml-extlib" {
 
   patches = [
       "local://files/ocaml-extlib.install";
+      "local://files/ocaml-extlib.config";
       "local://files/ocaml-extlib.ocp"
   ]
 

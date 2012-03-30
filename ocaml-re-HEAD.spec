@@ -12,6 +12,7 @@ package "ocaml-re" {
 
   patches     = [
       "local://files/ocaml-re.install";
+      "local://files/ocaml-re.config";
       "local://files/ocaml-re.ocp"
   ]
 

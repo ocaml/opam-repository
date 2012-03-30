@@ -12,6 +12,7 @@ package "ocaml-graph" {
 
   patches = [
       "local://files/ocaml-graph.install";
+      "local://files/ocaml-graph.config";
       "local://files/ocaml-graph.ocp"
   ]
 
