@@ -10,7 +10,7 @@ package "coq" {
 
   patches = [ "local://files/coq.install" ]
 
-  make = [ "./configure -camlp5dir  -local -coqide no -with-doc no -debug"
+  make = [ "./configure -camlp5dir $(ocp-get config -I camlp5 | cut -d ' ' -f 2) -local -coqide no -with-doc no -debug"
          ; "make world" ]
 
   depends = "camlp5"

@@ -12,5 +12,6 @@ package "camlp5" {
 
   make = [ "./configure -bindir $(pwd)/_obuild/bin -libdir $(pwd)/_obuild -mandir $(pwd)/_obuild"
          ; "make world.opt"
-         ; "make install" ]
+         ; "make install"
+         ; "ln -s syntax-camlp5.install camlp5.install" ]
 }
