@@ -6,8 +6,6 @@ package "ocp-get.boot" {
 
   description = "Client for the OCaml PAckage Manager (OPAM)"
 
-  urls        = [ ]
-
   patches     = [
       "https://raw.github.com/OCamlPro/ocp-get/master/boot/ocp-build";
       "https://raw.github.com/OCamlPro/ocp-get/master/boot/ocp-build.boot";

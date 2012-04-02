@@ -5,9 +5,8 @@ package "mancoosi-cudf" {
 
   description = "CUDF library (part of the Mancoosi tools)"
 
-  urls = [ "http://www.ocamlpro.com/pub/cudf.tar.bz2" ]
-
   patches = [
+      "http://www.ocamlpro.com/pub/cudf.tar.bz2";
       "local://files/mancoosi-cudf.install";
       "local://files/mancoosi-cudf.config";
       "local://files/mancoosi-cudf.ocp";

@@ -6,11 +6,8 @@ package "ocaml-graph" {
 
   description = "A graph library for OCaml"
 
-  urls        = [
-      "http://ocamlgraph.lri.fr/download/ocamlgraph-1.8.1.tar.gz"
-  ]
-
   patches = [
+      "http://ocamlgraph.lri.fr/download/ocamlgraph-1.8.1.tar.gz";
       "local://files/ocaml-graph.install";
       "local://files/ocaml-graph.config";
       "local://files/ocaml-graph.ocp"
