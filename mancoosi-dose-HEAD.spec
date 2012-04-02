@@ -5,7 +5,7 @@ package "mancoosi-dose" {
 
   description = "Dose library (part of Mancoosi tools)"
 
-  urls = [ "git://scm.gforge.inria.fr/mancoosi-tools/dose.git" ]
+  sources = [ "git://scm.gforge.inria.fr/mancoosi-tools/dose.git" ]
 
   patches = [
       "local://files/mancoosi-dose.install";

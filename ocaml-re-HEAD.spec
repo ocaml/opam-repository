@@ -6,7 +6,7 @@ package "ocaml-re" {
   description =
       "Pure OCaml regular expressions, with Support for Perl and POSIX-style strings"
 
-  urls        = [
+  sources     = [
       "https://github.com/samoht/ocaml-re.git"
   ]
 

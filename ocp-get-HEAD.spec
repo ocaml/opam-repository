@@ -6,7 +6,7 @@ package "ocp-get" {
 
   description = "Client for the OCaml PAckage Manager (OPAM)"
 
-  urls        = [
+  sources     = [
       "https://github.com/OCamlPro/ocp-get.git"
   ]
 

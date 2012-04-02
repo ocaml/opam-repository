@@ -6,7 +6,7 @@ package "altergo" {
 
   description = "http://alt-ergo.lri.fr"
 
-  urls = [ "http://alt-ergo.lri.fr/http/alt-ergo-0.94.tar.gz" ]
+  sources = [ "http://alt-ergo.lri.fr/http/alt-ergo-0.94.tar.gz" ]
 
   patches = [
       "local://files/app-altergo.install";

@@ -6,7 +6,7 @@ package "coq" {
 
   description = "http://coq.inria.fr"
 
-  urls = [ "http://coq.inria.fr/distrib/V8.3pl4/files/coq-8.3pl4.tar.gz" ]
+  sources = [ "http://coq.inria.fr/distrib/V8.3pl4/files/coq-8.3pl4.tar.gz" ]
 
   patches = [ "local://files/coq.install" ]
 

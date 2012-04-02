@@ -5,7 +5,7 @@ package "ocaml-extlib" {
 
   description = "http://ocaml-extlib.googlecode.com/svn/doc/apiref/index.html"
 
-  urls = [
+  sources = [
       "http://ocaml-extlib.googlecode.com/files/extlib-1.5.2.tar.gz"
   ]
 

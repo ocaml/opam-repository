@@ -6,7 +6,7 @@ package "camlp5" {
 
   description = "http://pauillac.inria.fr/~ddr/camlp5"
 
-  urls = [ "http://pauillac.inria.fr/~ddr/camlp5/distrib/src/camlp5-6.05.tgz" ]
+  sources = [ "http://pauillac.inria.fr/~ddr/camlp5/distrib/src/camlp5-6.05.tgz" ]
 
   patches = [ "local://files/syntax-camlp5.install" ]
 

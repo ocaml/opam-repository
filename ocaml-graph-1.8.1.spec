@@ -6,7 +6,7 @@ package "ocaml-graph" {
 
   description = "A graph library for OCaml"
 
-  urls        = [
+  sources     = [
       "http://ocamlgraph.lri.fr/download/ocamlgraph-1.8.1.tar.gz"
   ]
 
