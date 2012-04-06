@@ -16,7 +16,7 @@ package "ocaml-graph" {
       "local://files/ocaml-graph.ocp"
   ]
 
-  make    = [ "ocp-build graph" ]
+  make    = [ [ "ocp-build" ; "graph" ] ]
 
   depends = "ocp-get.boot"
 }

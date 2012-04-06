@@ -13,8 +13,8 @@ package "altergo" {
       "local://files/app-altergo.ocp"
   ]
 
-  make = [ "echo 'let version = \"\" let libdir = \"\"' > version.ml"
-         ; "ocp-build altergo" ]
+  make = [ # let s_let = Printf.sprintf "let %s = \"\"" in let oc = open_out "version.ml" in let () = List.iter (fun s -> output_string oc (s_let s)) [ "version" ; "libdir" ] in close_out oc #
+         ; [ "ocp-build" ; "altergo" ] ]
 
   depends = "ocaml-graph"
 }

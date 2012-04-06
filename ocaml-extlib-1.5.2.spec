@@ -15,7 +15,7 @@ package "ocaml-extlib" {
       "local://files/ocaml-extlib.ocp"
   ]
 
-  make    = [ "ocp-build extlib" ]
+  make    = [ [ "ocp-build" ; "extlib" ] ]
 
   depends = "ocp-get.boot"
 }

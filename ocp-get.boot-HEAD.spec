@@ -17,7 +17,7 @@ package "ocp-get.boot" {
   ]
 
   make = [ 
-      "ocamlc -make-runtime -o unixrun unix.cma str.cma";
-      "chmod +x ocp-get ocp-build unixrun"
+      [ "ocamlc" ; "-make-runtime" ; "-o" ; "unixrun" ; "unix.cma" ; "str.cma" ];
+      [ "chmod" ; "+x" ; "ocp-get" ; "ocp-build" ; "unixrun" ]
   ];
 }

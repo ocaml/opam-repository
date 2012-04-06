@@ -14,8 +14,8 @@ package "mancoosi-dose" {
   ]
 
   make = [
-      "ocp-get config -ocp -rstrict mancoosi-dose > depends.ocp";
-      "ocp-build dose";
+      [ "ocp-get" ; "config" ; "-ocp" ; "-rstrict" ; "mancoosi-dose" ; ">" ; "depends.ocp" ];
+      [ "ocp-build" ; "dose" ];
   ]
 
   depends = "ocaml-re, ocaml-extlib, mancoosi-cudf, ocaml-graph, ocp-get.boot"
