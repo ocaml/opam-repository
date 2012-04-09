@@ -17,5 +17,5 @@ package "mancoosi-cudf" {
       [ "ocp-get" ; "config" ; "-ocp" ; "ocaml-extlib" ; ">" ; "depends.ocp" ];
       [ "ocp-build" ; "cudf" ] ]
 
-  depends = "ocaml-extlib, ocp-get.boot"
+  depends = [ [ ["ocaml-extlib"] ] ; [ ["ocp-get.boot"] ] ]
 }

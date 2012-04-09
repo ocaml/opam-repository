@@ -20,5 +20,5 @@ package "ocp-get" {
   ]
 
   depends =
-    "mancoosi-cudf, mancoosi-dose, ocaml-extlib, ocaml-arg, ocaml-graph"
+    [ [ ["mancoosi-cudf"] ] ; [ ["mancoosi-dose"] ] ; [ ["ocaml-extlib"] ] ; [ ["ocaml-arg"] ] ; [ ["ocaml-graph"] ] ]
 }

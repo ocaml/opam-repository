@@ -13,5 +13,5 @@ package "coq" {
   make = [ # Sys.command "./configure -camlp5dir $(ocp-get config -I camlp5 | cut -d ' ' -f 2) -local -coqide no -with-doc no -debug" #
          ; [ "make" ; "world" ] ]
 
-  depends = "camlp5"
+  depends = [ [ ["camlp5"] ] ]
 }

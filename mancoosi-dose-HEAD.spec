@@ -18,5 +18,5 @@ package "mancoosi-dose" {
       [ "ocp-build" ; "dose" ];
   ]
 
-  depends = "ocaml-re, ocaml-extlib, mancoosi-cudf, ocaml-graph, ocp-get.boot"
+  depends = [ [ ["ocaml-re"] ] ; [ ["ocaml-extlib"] ] ; [ ["mancoosi-cudf"] ] ; [ ["ocaml-graph"] ] ; [ ["ocp-get.boot"] ] ]
 }

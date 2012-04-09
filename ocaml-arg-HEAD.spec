@@ -10,5 +10,5 @@ package "ocaml-arg" {
       "local://files/ocaml-arg.ocp"
   ]
   make    = [ [ "ocp-build" ; "arg" ] ]
-  depends = "ocp-get.boot"
+  depends = [ [ ["ocp-get.boot"] ] ]
 }

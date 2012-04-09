@@ -18,5 +18,5 @@ package "ocaml-graph" {
 
   make    = [ [ "ocp-build" ; "graph" ] ]
 
-  depends = "ocp-get.boot"
+  depends = [ [ ["ocp-get.boot"] ] ]
 }

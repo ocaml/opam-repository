@@ -18,5 +18,5 @@ package "ocaml-re" {
 
   make    = [ [ "ocp-build" ; "re" ] ]
 
-  depends = "ocp-get.boot"
+  depends = [ [ ["ocp-get.boot"] ] ]
 }

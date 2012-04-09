@@ -16,5 +16,5 @@ package "altergo" {
   make = [ # let s_let = Printf.sprintf "let %s = \"\"" in let oc = open_out "version.ml" in let () = List.iter (fun s -> output_string oc (s_let s)) [ "version" ; "libdir" ] in close_out oc #
          ; [ "ocp-build" ; "altergo" ] ]
 
-  depends = "ocaml-graph"
+  depends = [ [ ["ocaml-graph"] ] ]
 }
