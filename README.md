@@ -13,7 +13,7 @@ In order to prepare the repository you will need:
   change `default` to be any name you want). If you host this
   repository on the internet, you can run:
 
-        `opam init default http://path/to/the/repository`
+        opam init default http://path/to/the/repository
 
 Now you can install the packages defined in there. For instance:
 
