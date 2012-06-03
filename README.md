@@ -32,3 +32,15 @@ Once the repository is ready and exported, you can use it as a standard opam rep
        opam install core
 
   Will install Jane Street `core` library.
+
+## Updating the repository
+
+For each package described by `opam/X.opam` and `descr/X`, `opam-mk-repo` will download the archive
+from the address described in `url/X` and add the files from `files/X` in it. If you want to modify
+some package files, you'll have to:
+
+* [server-side] delete `archives/X.tar.gz`
+* [server-side] run `make`
+* [client-side] run `opam update` to take the changes into account
+* [client-side] run `opam upgrade` if a package already installed have been modified; this will recompile
+  the package and all the packages depending on it.
