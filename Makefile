@@ -1,6 +1,6 @@
 .PHONY: all
 
-all: index
+all: index full
 	@
 
 index:
