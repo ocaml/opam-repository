@@ -1,3 +1,3 @@
-#!/bin/bash
+#!/bin/sh
 
 ocaml discover.ml
