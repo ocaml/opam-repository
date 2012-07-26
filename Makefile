@@ -1,19 +1,22 @@
 .PHONY: all
 
-all: full
+all: index index-archive full
 	@
 
-index-only:
-	opam-mk-repo -index
+index:
+	git ls-tree -r HEAD | awk '{print "0o"substr($$1,length($$1)-3,4) " " $$4}' > urls.txt
+
+index-archive:
+	tar cz compilers opam descr url > index.tar.gz
 
 full:
-	opam-mk-repo -all
+	opam-mk-repo
 
-PUBLISH_DIR=../opam.ocamlpro.com/
+PUBLISH_DIR=../mirage.github.com/opam/
 publish: index index-archive
 	mkdir -p $(PUBLISH_DIR)
 	rsync -avz --delete urls.txt index.tar.gz compilers archives descr opam url files $(PUBLISH_DIR)
 
 clean:
-	rm -rf archives
+	rm -rf archives tmp
 
