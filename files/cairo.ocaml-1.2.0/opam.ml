@@ -101,7 +101,7 @@ module Os_type_mv : COMMAND = struct
     | _ -> assert false
 end
 
-let ocaml s = [ "ocaml" ; "str.cma" (*; "unix.cma"*) ; s ]
+let ocaml s = [ "ocaml" ; "str.cma" ; "unix.cma" ; s ]
 let s_opam = "opam.ml"
 let s_main = "main"
 
