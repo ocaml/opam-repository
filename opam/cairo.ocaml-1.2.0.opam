@@ -3,9 +3,10 @@ package "cairo" {
   version: "ocaml-1.2.0"
   maintainer: "<none>"
   substs: []
-  build: [["aclocal" "-I" "support"] ["autoconf"] ["./configure" "--prefix" "%{prefix}%" "--sbindir=%{lib}%/cairo/sbin" "--libexecdir=%{lib}%/cairo/libexec" "--sysconfdir=%{lib}%/cairo/etc" "--sharedstatedir=%{lib}%/cairo/com" "--localstatedir=%{lib}%/cairo/var" "--libdir=%{lib}%/cairo/lib" "--includedir=%{lib}%/cairo/include" "--datarootdir=%{lib}%/cairo/share"] ["sed" "-i" "-e" "11s#INSTALLDIR = $(OCAMLLIB)/cairo#INSTALLDIR=%{lib}%/cairo#" "config.make"] ["sed" "-i" "-e" "s#$(DESTDIR)$(OCAMLLIB)/stublibs#%{prefix}%/lib/stublibs#" "src/Makefile"] ["make"] ["make" "install"]]
+  build-env: []
+  build: [["aclocal" "-I" "support"] ["autoconf"] ["./configure" "--prefix" "%{prefix}%" "--sbindir=%{lib}%/cairo/sbin" "--libexecdir=%{lib}%/cairo/libexec" "--sysconfdir=%{lib}%/cairo/etc" "--sharedstatedir=%{lib}%/cairo/com" "--localstatedir=%{lib}%/cairo/var" "--libdir=%{lib}%/cairo/lib" "--includedir=%{lib}%/cairo/include" "--datarootdir=%{lib}%/cairo/share"] ["ocaml" "str.cma" "unix.cma" "opam.ml" "sed" "_add_expr_" "11" "INSTALLDIR = $(OCAMLLIB)/cairo" "INSTALLDIR=%{lib}%/cairo" "config.make"] ["ocaml" "str.cma" "unix.cma" "opam.ml" "sed" "_add_expr_no_pos_" "$(DESTDIR)$(OCAMLLIB)/stublibs" "%{prefix}%/lib/stublibs" "src/Makefile"] ["make"] ["make" "install"]]
   remove: [["rm" "%{prefix}%/lib/stublibs/dllmlcairo_lablgtk.so" "%{prefix}%/lib/stublibs/dllmlcairo.so" "%{prefix}%/lib/stublibs/dllmlpangocairo.so"]]
-  depends: ["lablgtk"]
+  depends: ["lablgtk" {= "2.14.2"}]
   depopts: []
   conflicts: []
   libraries: []
