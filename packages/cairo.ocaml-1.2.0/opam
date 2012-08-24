@@ -1,0 +1,15 @@
+opam-version: "1"
+maintainer: "contact@ocamlpro.com"
+build: [
+  ["aclocal" "-I" "support"]
+  ["autoconf"]
+  ["./configure" "--prefix" "%{prefix}%" "--sbindir=%{lib}%/cairo/sbin" "--libexecdir=%{lib}%/cairo/libexec" "--sysconfdir=%{lib}%/cairo/etc" "--sharedstatedir=%{lib}%/cairo/com" "--localstatedir=%{lib}%/cairo/var" "--libdir=%{lib}%/cairo/lib" "--includedir=%{lib}%/cairo/include" "--datarootdir=%{lib}%/cairo/share"]
+  ["ocaml" "str.cma" "unix.cma" "opam.ml" "sed" "_add_expr_" "11" "INSTALLDIR = $(OCAMLLIB)/cairo" "INSTALLDIR=%{lib}%/cairo" "config.make"]
+  ["ocaml" "str.cma" "unix.cma" "opam.ml" "sed" "_add_expr_no_pos_" "$(DESTDIR)$(OCAMLLIB)/stublibs" "%{prefix}%/lib/stublibs" "src/Makefile"]
+  ["make"]
+  ["make" "install"]
+]
+remove: [
+  ["rm" "%{prefix}%/lib/stublibs/dllmlcairo_lablgtk.so" "%{prefix}%/lib/stublibs/dllmlcairo.so" "%{prefix}%/lib/stublibs/dllmlpangocairo.so"]
+]
+depends: ["lablgtk" {= "2.14.2"}]
