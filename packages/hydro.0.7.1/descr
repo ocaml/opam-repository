@@ -1,1 +1,40 @@
 An independent implementation of ICE, the object-oriented RPC protocol by ZeroC
+Hydro is an independent implementation of ICE, the object-oriented RPC
+protocol by ZeroC, for the O'Caml programming language. This is an
+early, not yet complete release, but the code is already stable and
+usable.
+
+Hydro (like ICE) allows you to bridge language barriers by letting
+components written in different programming languages communicate with
+each other. ZeroC's ICE product currently includes implementations for
+C++, Java, C#, Python, Ruby, VB, and PHP. Hydro adds support for
+O'Caml. The ICE protocol is rich enough to make the representation of
+the data to communicate easy and convenient to use, and adopts an
+object-oriented type system. ZeroC sees ICE as a superior successor to
+CORBA.
+
+Hydro includes a runtime, and a generator called hydrogen. The runtime
+is fully asynchronous, based on Ocamlnet's event queues. The generator
+is used to create a thin layer on top of the runtime that maps
+abstract Hydro types to specific O'Caml types. The Hydro engine
+therefore appears to the programmer as if it was typed using the input
+IDL file. Unlike the generators shipped by ZeroC, hydrogen does not
+create marshalling code -- we see this as the task of the runtime and
+not of the language mapping layer. Because of this design decision we
+have high confidence in the correctness of the generator.
+
+Although we want Hydro to be an implementation whose protocol is fully
+compatible with ICE and that can process all its IDL files, we take
+some freedom to deviate from what is described in ZeroC's "ICE
+manual". ICE was designed with mainstream object-oriented languages in
+mind, and therefore lacks many of the advanced constructs available in
+O'Caml (variants, for example). Conversely, ICE includes constructs
+such as hierarchical exceptions and downcasts which do not exist in
+O'Caml (and for good reason!). To deal with the "impedance mismatch,"
+we implemented emulations for these concepts. On the other hand,
+O'Caml offers advanced features which ought to be exploited by a good
+implementation. For example, in O'Caml, asynchronous networking code
+is quite natural, so we have chosen to make this the default style. So
+while Hydro is quite straightforward, the O'Caml programmer should not
+expect a design which is a perfect one-to-one translation of what
+ZeroC describes.
