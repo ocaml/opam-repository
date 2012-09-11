@@ -3,6 +3,11 @@ maintainer: "contact@ocamlpro.com"
 build: [
   ["make" ".depend"]
   ["make"]
+  ["ocamlopt" "-shared" "-linkall" "pgocaml.cmxa" "-o" "pgocaml.cmxs"]
+  ["ocaml" "str.cma" "unix.cma" "opam.ml" "sed" "_add_expr_" "169" "META" "META pgocaml.cmxs" "Makefile"]
   ["make" "findlib_install"]
 ]
-depends: ["ocamlfind" "pcre-ocaml" "extlib" "calendar" "csv"]
+remove: [
+  ["ocamlfind" "remove" "pgocaml"]
+]
+depends: ["ocamlfind" "extlib" {= "1.5.2"} "pcre-ocaml" "calendar" "csv"]
