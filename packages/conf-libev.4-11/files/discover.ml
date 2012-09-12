@@ -22,9 +22,25 @@
 
 (* Discover available features *)
 
-#load "str.cma"
-
 let cut_tail l = List.rev (List.tl (List.rev l))
+
+let string_split sep source =
+  let copy_part index offset =
+    let dst = String.create (offset - index) in
+    let () = String.blit source index dst 0 (offset - index) in
+    dst
+  in
+  let l = String.length source in
+  let rec loop prev current acc =
+    if current >= l then
+      List.rev acc
+    else
+      match (source.[current] = sep, current = prev, current = l - 1) with
+      | (true, true, _) -> loop (current + 1) (current + 1) acc
+      | (true, _, _) -> loop (current + 1) (current + 1) ((copy_part prev current)::acc)
+      | (false, _, true) -> loop (current + 1) (current + 1) ((copy_part prev (current + 1))::acc)
+      | _ -> loop prev (current + 1) acc
+  in loop 0 0 []
 
 let uniq lst =
   let unique_set = Hashtbl.create (List.length lst) in
@@ -34,9 +50,9 @@ let uniq lst =
 let get_paths env_name =
   try
     let paths = Sys.getenv env_name in
-    let dirs = Str.split (Str.regexp_string ":") paths in
+    let dirs = string_split ':' paths in
     List.map (fun dir ->
-      let components = Str.split (Str.regexp_string "/") dir in
+      let components = string_split '/' dir in
       "/" ^ (String.concat "/" (cut_tail components))
     ) dirs
   with Not_found -> []
