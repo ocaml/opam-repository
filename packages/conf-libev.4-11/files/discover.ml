@@ -22,15 +22,51 @@
 
 (* Discover available features *)
 
+let cut_tail l = List.rev (List.tl (List.rev l))
+
+let string_split sep source =
+  let copy_part index offset =
+    let dst = String.create (offset - index) in
+    let () = String.blit source index dst 0 (offset - index) in
+    dst
+  in
+  let l = String.length source in
+  let rec loop prev current acc =
+    if current >= l then
+      List.rev acc
+    else
+      match (source.[current] = sep, current = prev, current = l - 1) with
+      | (true, true, _) -> loop (current + 1) (current + 1) acc
+      | (true, _, _) -> loop (current + 1) (current + 1) ((copy_part prev current)::acc)
+      | (false, _, true) -> loop (current + 1) (current + 1) ((copy_part prev (current + 1))::acc)
+      | _ -> loop prev (current + 1) acc
+  in loop 0 0 []
+
+let uniq lst =
+  let unique_set = Hashtbl.create (List.length lst) in
+  List.iter (fun x -> Hashtbl.replace unique_set x ()) lst;
+  Hashtbl.fold (fun x () xs -> x :: xs) unique_set []
+
+let get_paths env_name =
+  try
+    let paths = Sys.getenv env_name in
+    let dirs = string_split ':' paths in
+    List.map (fun dir ->
+      let components = string_split '/' dir in
+      "/" ^ (String.concat "/" (cut_tail components))
+    ) dirs
+  with Not_found -> []
+
+let env_paths = List.append (get_paths "LIBRARY_PATH") (get_paths "C_INCLUDE_PATH")
+
 (* Keep that in sync with the list in myocamlbuild.ml *)
-let search_paths = [
+let search_paths = uniq (List.append [
   "/usr";
   "/usr/local";
   "/opt";
   "/opt/local";
   "/sw";
-  "/mingw";
-]
+  "/mingw";] env_paths)
 
 open Printf
 
@@ -43,18 +79,6 @@ external test : unit -> unit = \"lwt_test\"
 let () = test ()
 "
 
-(*
-let pthread_code = "
-#include <caml/mlvalues.h>
-#include <pthread.h>
-
-CAMLprim value lwt_test()
-{
-  pthread_create(0, 0, 0, 0);
-  return Val_unit;
-}
-"
-*)
 
 let libev_code = "
 #include <caml/mlvalues.h>
@@ -66,79 +90,6 @@ CAMLprim value lwt_test()
   return Val_unit;
 }
 "
-(*
-let fd_passing_code = "
-#include <caml/mlvalues.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-
-CAMLprim value lwt_test()
-{
-  struct msghdr msg;
-  msg.msg_controllen = 0;
-  msg.msg_control = 0;
-  return Val_unit;
-}
-"
-
-let getcpu_code = "
-#include <caml/mlvalues.h>
-#define _GNU_SOURCE
-#include <sched.h>
-
-CAMLprim value lwt_test()
-{
-  sched_getcpu();
-  return Val_unit;
-}
-"
-
-let affinity_code = "
-#include <caml/mlvalues.h>
-#define _GNU_SOURCE
-#include <sched.h>
-
-CAMLprim value lwt_test()
-{
-  sched_getaffinity(0, 0, 0);
-  return Val_unit;
-}
-"
-
-let eventfd_code = "
-#include <caml/mlvalues.h>
-#include <sys/eventfd.h>
-
-CAMLprim value lwt_test()
-{
-  eventfd(0, 0);
-  return Val_unit;
-}
-"
-
-let get_credentials_code = "
-#include <caml/mlvalues.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-
-CAMLprim value lwt_test()
-{
-    getsockopt(0, SOL_SOCKET, SO_PEERCRED, 0, 0);
-    return Val_unit;
-}
-"
-
-let fdatasync_code = "
-#include <caml/mlvalues.h>
-#include <sys/unistd.h>
-
-CAMLprim value lwt_test()
-{
-  fdatasync(0);
-  return Val_unit;
-}
-"
-*)
 (* +-----------------------------------------------------------------+
    | Compilation                                                     |
    +-----------------------------------------------------------------+ *)
@@ -146,10 +97,7 @@ CAMLprim value lwt_test()
 let ocamlc = ref "ocamlc"
 let ext_obj = ref ".o"
 let exec_name = ref "a.out"
-(*
-let use_libev = ref true
-let os_type = ref "Unix"
-*)
+
 let log_file = ref ""
 let caml_file = ref ""
 
@@ -167,24 +115,20 @@ let search_header header =
   loop search_paths
 
 let c_args =
-  let flags path = Printf.sprintf "-ccopt -I%s/include -cclib -L%s/lib" path path in
-  match search_header "ev.h", search_header "pthread.h" with
-    | None, None -> ""
-    | Some path, None | None, Some path -> flags path
-    | Some path1, Some path2 when path1 = path2 -> flags path1
-    | Some path1, Some path2 -> flags path1 ^ " " ^ flags path2
+  let flags path = Printf.sprintf "-ccopt -I%s/include -ccopt -L%s/lib" path path in
+  match search_header "ev.h" with
+    | None -> ""
+    | Some path -> flags path
 
 let compile args stub_file =
-  ksprintf
-    Sys.command
-    "%s -custom %s %s %s %s > %s 2>&1"
+  let cmd = sprintf "%s -custom %s %s %s %s > %s 2>&1"
     !ocamlc
     c_args
     (Filename.quote stub_file)
     args
     (Filename.quote !caml_file)
-    (Filename.quote !log_file)
-  = 0
+    (Filename.quote !log_file) in
+  Sys.command cmd = 0
 
 let safe_remove file_name =
   try
@@ -243,15 +187,6 @@ let () =
     "-ocamlc", Arg.Set_string ocamlc, "<path> ocamlc";
     "-ext-obj", Arg.Set_string ext_obj, "<ext> C object files extension";
     "-exec-name", Arg.Set_string exec_name, "<name> name of the executable produced by ocamlc";
-(*
-    "-use-libev", Arg.Symbol (["true"; "false"],
-                              function
-                                | "true" -> use_libev := true
-                                | "false" -> use_libev := false
-                                | _ -> assert false), " whether to check for libev";
-
-    "-os-type", Arg.Set_string os_type, "<name> type of the target os";
-*)
   ] in
   Arg.parse args ignore "check for external C libraries and available features\noptions are:";
 
@@ -274,8 +209,7 @@ let () =
              safe_remove (Filename.chop_extension !caml_file ^ ".cmo"));
 
   let missing = [] in
-  let missing = if test_feature (*~do_check:!use_libev*) "libev" "HAVE_LIBEV" ~args:"-cclib -lev" libev_code then missing else "libev" :: missing in
-(*  let missing = if test_feature ~do_check:(!os_type <> "Win32") "pthread" "HAVE_PTHREAD" ~args:"-cclib -lpthread" pthread_code then missing else "pthread" :: missing in *)
+  let missing = if test_feature "libev" "HAVE_LIBEV" ~args:"-cclib -lev" libev_code then missing else "libev" :: missing in
 
   if missing <> [] then begin
     printf "
