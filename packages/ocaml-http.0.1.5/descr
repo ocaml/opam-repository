@@ -1,0 +1,35 @@
+Library freely inspired from Perl's HTTP::Daemon module
+OCaml HTTP is an OCaml library freely inspired from Perl's
+HTTP::Daemon module that permits you to write simple HTTP daemons in
+OCaml.
+
+The main API let you define a HTTP daemon specification, which
+contains, among other parameters, a callback function that is invoked
+each time a request is received. The callback function will be invoked
+with an instance of an object representing the received HTTP request
+and an out_channel connected to the remote HTTP client socket.
+
+Then you can start your HTTP daemon invoking the main function passing
+your specification. Each time a client connect to the TCP port bound
+by your daemon, OCaml HTTP will parse the request and instantiate the
+request object. If all goes well your callback will be invoked,
+otherwise appropriate error messages will be sent back to the client
+without disturbing your callback.
+
+You can use a lot of facility functions in your callback that permits
+you to send easily headers, error responses, file, or abstract HTTP
+response objects. Otherwise you can also choose the 'hard way' and
+send data directly to the out_channel (expecially useful for sending
+data incrementally to the client). You can also mix the two
+approaches.
+
+Daemon specifications are used also to specify other parameters
+governing daemon behaviour like: TCP port and address to bind, way of
+handling incoming requests (handle all of them in a single process,
+fork a new process or spawn a new thread for each incoming request),
+timeout, authentication requirements (username and password for HTTP
+basic authentication).
+
+OCaml HTTP contains also a tiny implementation of a HTTP client which
+can be used to retrieve resources via GET HTTP method and to iter on
+them (useful for huge resources which can't be kept in memory).
