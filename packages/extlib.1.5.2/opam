@@ -1,9 +1,16 @@
 opam-version: "1"
 maintainer: "contact@ocamlpro.com"
-ocaml-version: [ < "4.00.0" ]
 substs: ["extlib.config"]
 build: [
-  ["ocaml" "install.ml" "-b" "-n" "-doc"]
+  ["%{make}%" "all"]
+  ["%{make}%" "opt"]
+  ["ocamlopt" "-shared" "-linkall" "extLib.cmxa" "-o" "extLib.cmxs"]
+  ["ocaml" "str.cma" "unix.cma" "opam.ml" "sed" "_add_expr_" "23" "META" "META extLib.cmxs" "Makefile"]
+  ["%{make}%" "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "extlib"]
 ]
 depends: ["ocamlfind"]
 libraries: ["extlib"]
+ocaml-version: [< "4.00.0"]
