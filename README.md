@@ -1,1 +1,1 @@
-[OPAM](http://github.com/opam) repository
+[OPAM](http://github.com/OCamlPro/opam) repository
