@@ -79,17 +79,6 @@ module Sed : SED = struct
     sed l fic
 end
 
-module Chdir : COMMAND = struct
-  let s_title = "chdir"
-  let main = function
-    | dir :: cmd :: [] ->
-        begin
-          Printf.kprintf Unix.chdir "%s" dir;
-          assert (0 = Sys.command cmd);
-        end
-    | _ -> assert false
-end
-
 module Os_type_mv : COMMAND = struct
   let s_title = "os_type_mv"
   let main = function
@@ -114,7 +103,6 @@ let main () =
              (List.map
                 (fun m -> let module M = (val m : COMMAND) in M.s_title, M.main)
                 [ (module Sed : COMMAND)
-                ; (module Chdir : COMMAND)
                 ; (module Os_type_mv : COMMAND) ]))
           l
     | _ -> assert false
