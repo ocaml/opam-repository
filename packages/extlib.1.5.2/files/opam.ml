@@ -79,17 +79,6 @@ module Sed : SED = struct
     sed l fic
 end
 
-module Os_type_mv : COMMAND = struct
-  let s_title = "os_type_mv"
-  let main = function
-    | fic_unix_1 :: fic_unix_2 :: fic_win32_1 :: fic_win32_2 :: [] ->
-        if Sys.os_type = "Unix" then
-          Unix.rename fic_unix_1 fic_unix_2
-        else
-          Unix.rename fic_win32_1 fic_win32_2
-    | _ -> assert false
-end
-
 let ocaml s = [ "ocaml" ; "str.cma" ; "unix.cma" ; s ]
 let s_opam = "opam.ml"
 let s_main = "main"
@@ -102,8 +91,7 @@ let main () =
              (function s_title, _ -> cmd_main = s_title)
              (List.map
                 (fun m -> let module M = (val m : COMMAND) in M.s_title, M.main)
-                [ (module Sed : COMMAND)
-                ; (module Os_type_mv : COMMAND) ]))
+                [ (module Sed : COMMAND) ]))
           l
     | _ -> assert false
 let _ = main ()
