@@ -1,0 +1,30 @@
+diff -ru /tmp/opam-25607-3915/coq.8.3pl2/configure /tmp/opam-25607-2391/coq.8.3pl2/configure
+--- /tmp/opam-25607-3915/coq.8.3pl2/configure	2011-04-19 09:19:00.000000000 +0200
++++ /tmp/opam-25607-2391/coq.8.3pl2/configure	2012-10-04 16:19:23.173551314 +0200
+@@ -627,7 +627,7 @@
+             no)  LABLGTKLIB=+lablgtk2                   # Pour le message
+                  LABLGTKINCLUDES="-I $LABLGTKLIB";;     # Pour le makefile
+             yes) LABLGTKLIB="$lablgtkdir"               # Pour le message
+-                 LABLGTKINCLUDES="-I \"$LABLGTKLIB\"";; # Pour le makefile
++                 LABLGTKINCLUDES="-I '$LABLGTKLIB'";; # Pour le makefile
+         esac;;
+     no) LABLGTKINCLUDES="";;
+ esac
+diff -ru /tmp/opam-25607-3915/coq.8.3pl2/Makefile.build /tmp/opam-25607-2391/coq.8.3pl2/Makefile.build
+--- /tmp/opam-25607-3915/coq.8.3pl2/Makefile.build	2010-09-30 18:50:00.000000000 +0200
++++ /tmp/opam-25607-2391/coq.8.3pl2/Makefile.build	2012-10-04 16:19:23.223550599 +0200
+@@ -288,12 +288,12 @@
+ 
+ $(COQIDEOPT): $(COQMKTOP) $(LINKCMX) $(LIBCOQRUN) ide/ide.cmxa
+ 	$(SHOW)'COQMKTOP -o $@'	
+-	$(HIDE)$(COQMKTOP) -boot -ide -opt $(OPTFLAGS) -o $@
++	$(HIDE)$(COQMKTOP) -boot -ide -opt $(OPTFLAGS) $(COQIDEINCLUDES) -o $@
+ 	$(STRIP) $@
+ 
+ $(COQIDEBYTE): $(COQMKTOP) $(LINKCMO) $(LIBCOQRUN) ide/ide.cma
+ 	$(SHOW)'COQMKTOP -o $@'	
+-	$(HIDE)$(COQMKTOP) -boot -g -ide -top $(BYTEFLAGS) -o $@
++	$(HIDE)$(COQMKTOP) -boot -g -ide -top $(BYTEFLAGS) $(COQIDEINCLUDES) -o $@
+ 
+ $(COQIDE):
+ 	cd bin; ln -sf coqide.$(HASCOQIDE)$(EXE) coqide$(EXE)

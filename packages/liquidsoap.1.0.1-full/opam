@@ -1,14 +1,20 @@
 opam-version: "1"
 maintainer: "contact@ocamlpro.com"
+substs: ["opam.patch"]
 build: [
   ["cp" "PACKAGES.default" "PACKAGES"]
   ["ocaml" "str.cma" "unix.cma" "opam.ml" "sed" "_add_expr_" "56" "ocaml-aacplus" "#ocaml-aacplus" "_add_expr_" "92" "ocaml-ladspa" "#ocaml-ladspa" "_add_expr_" "115" "ocaml-dssi" "#ocaml-dssi" "_add_expr_" "122" "ocaml-xmlplaylist" "#ocaml-xmlplaylist" "_add_expr_" "126" "ocaml-lastfm" "#ocaml-lastfm" "PACKAGES"]
   ["./bootstrap"]
-  ["ocaml" "str.cma" "unix.cma" "opam.ml" "sed" "_add_expr_" "35" "-cclib" "-I %{lib}%/camlidl -cclib" "liquidsoap-1.0.1/Makefile.defs.in"]
   ["./configure" "--prefix" "%{prefix}%" "--sbindir=%{lib}%/liquidsoap/sbin" "--libexecdir=%{lib}%/liquidsoap/libexec" "--sysconfdir=%{lib}%/liquidsoap/etc" "--sharedstatedir=%{lib}%/liquidsoap/com" "--localstatedir=%{lib}%/liquidsoap/var" "--libdir=%{lib}%/liquidsoap/lib" "--includedir=%{lib}%/liquidsoap/include" "--datarootdir=%{lib}%/liquidsoap/share" "--disable-graphics"]
   ["ocaml" "str.cma" "unix.cma" "opam.ml" "sed" "_add_expr_" "40" "INCDIRS = " "INCDIRS = %{lib}%/camlidl" "ocaml-gstreamer-0.1.0/src/Makefile"]
   ["%{make}%"]
   ["%{make}%" "install"]
 ]
-depends: ["ocamlfind" "camlidl" "pcre-ocaml" "camomile"]
+depends: [
+  "ocamlfind"
+  "camlidl"
+  "pcre-ocaml"
+  "camomile"
+]
+patches: ["opam.patch"]
 ocaml-version: [= "3.12.1"]

@@ -1,0 +1,62 @@
+diff -ru /tmp/opam-25607-3228/postgres.20040120/libpq_stub.c /tmp/opam-25607-2333/postgres.20040120/libpq_stub.c
+--- /tmp/opam-25607-3228/postgres.20040120/libpq_stub.c	2004-01-20 00:22:32.000000000 +0100
++++ /tmp/opam-25607-2333/postgres.20040120/libpq_stub.c	2012-10-04 16:19:22.234175331 +0200
+@@ -77,11 +77,11 @@
+      
+ #define connection(v) *((PGconn**) Data_custom_val(v))
+ #define conn_callback(v) ((np_callback*) Field(v,2))
+-
++#define conn_callback_(v) Field(v,2)
+ void free_conn(value vconn)
+ {
+   np_decr_refcount(conn_callback(vconn));
+-  conn_callback(vconn) = NULL;
++  conn_callback_(vconn) = (value) NULL;
+ 
+   if (connection(vconn)) 
+     PQfinish(connection(vconn)); 
+@@ -99,7 +99,7 @@
+   /* one may raise this 30 to 500 for instance,
+      if the program takes the responsability to close the connections */
+   connection(vconn) = conn;
+-  conn_callback(vconn) = NULL;
++  conn_callback_(vconn) = (value) NULL;
+   return vconn;
+ }
+ 
+@@ -153,7 +153,7 @@
+ 
+ #define result(v) *((PGresult**) Data_custom_val(v))
+ #define res_callback(v) ((np_callback*) Field(v,2))
+-
++#define res_callback_(v) Field(v,2)
+ #define res_info(fun,ret) \
+ value stub_##fun(value vres) { return ret ( fun( result (vres) ) ); }
+ 
+@@ -174,7 +174,7 @@
+ void free_result(value vres)
+ {
+   np_decr_refcount(res_callback(vres));
+-  res_callback(vres) = NULL;
++  res_callback_(vres) = (value) NULL;
+ 
+   if (result(vres)) 
+     PQclear(result(vres));
+@@ -190,7 +190,7 @@
+ {
+   value vres = alloc_final(3, free_result, 1, 500);
+   result(vres) = res;
+-  res_callback(vres) = c;
++  res_callback_(vres) = (value) c;
+   np_incr_refcount(c);
+   return vres;
+ }
+@@ -364,7 +364,7 @@
+ value stub_PQsetNoticeProcessor(value vconn, value callback)
+ {
+   np_decr_refcount(conn_callback(vconn));
+-  conn_callback(vconn) = np_new(callback);
++  conn_callback_(vconn) = (value) np_new(callback);
+ 
+   PQsetNoticeProcessor(connection(vconn),&notice_ml,
+ 		       conn_callback(vconn));
