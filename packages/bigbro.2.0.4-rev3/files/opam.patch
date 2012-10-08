@@ -1,0 +1,41 @@
+diff -ru /tmp/opam-12040-773/bigbro.2.0.4-rev3/Makefile /tmp/opam-12040-994/bigbro.2.0.4-rev3/Makefile
+--- /tmp/opam-12040-773/bigbro.2.0.4-rev3/Makefile	2006-02-13 22:36:08.000000000 +0100
++++ /tmp/opam-12040-994/bigbro.2.0.4-rev3/Makefile	2012-10-05 18:14:40.413300886 +0200
+@@ -28,10 +28,10 @@
+ CAMLC=ocamlfind ocamlc
+ CAMLDEP=ocamldep
+ CAMLMKTOP=ocamlfind ocamlmktop
+-CAMLP4=camlp4o
++CAMLP4=camlp5o
+ P4INCLUDE:=-I $(shell $(CAMLP4) -where)
+ INCLUDE=-package "unix threads pcre"
+-COMPFLAGS=-thread -g -pp $(CAMLP4) $(INCLUDE)
++COMPFLAGS=-thread -g -pp "$(CAMLP4) -loc _loc" $(INCLUDE)
+ 
+ # ---------------------------------------------------------------------------------------------------------------------
+ # The list of bytecode files to be linked.
+@@ -98,10 +98,10 @@
+ # The usual way to compile O'Caml programs.
+ 
+ .generated-dependencies: *.ml *.mli
+-	$(CAMLC) -pp $(CAMLP4) $(P4INCLUDE) -c $(GRAMMAR).ml
++	$(CAMLC) -pp "$(CAMLP4) -loc _loc" $(P4INCLUDE) -c $(GRAMMAR).ml
+ 	rm -rf .generated-dependencies
+ 	for i in *.mli *.ml ; do \
+-		$(CAMLP4) pr_depend.cmo $$i >> .generated-dependencies; \
++		$(CAMLP4) pr_depend.cmo -loc _loc $$i >> .generated-dependencies; \
+ 	done
+ 
+ ifneq ($(MAKECMDGOALS),clean)
+diff -ru /tmp/opam-12040-773/bigbro.2.0.4-rev3/pcreg.ml /tmp/opam-12040-994/bigbro.2.0.4-rev3/pcreg.ml
+--- /tmp/opam-12040-773/bigbro.2.0.4-rev3/pcreg.ml	2006-02-13 22:36:08.000000000 +0100
++++ /tmp/opam-12040-994/bigbro.2.0.4-rev3/pcreg.ml	2012-10-05 18:14:40.449301975 +0200
+@@ -21,7 +21,7 @@
+ (* This function allows registering a new global declaration. It can be called within a grammar rule. *)
+ 
+ let dummy_loc = 
+-  Lexing.dummy_pos, Lexing.dummy_pos
++  Ploc.dummy
+ 
+ let declare (item : MLast.str_item) =
+   globals := (item, dummy_loc) :: !globals
