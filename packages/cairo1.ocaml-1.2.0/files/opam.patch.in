@@ -1,0 +1,34 @@
+diff -ru /tmp/opam-9190-4092/cairo1.ocaml-1.2.0/config.make.in /tmp/opam-9190-1213/cairo1.ocaml-1.2.0/config.make.in
+--- /tmp/opam-9190-4092/cairo1.ocaml-1.2.0/config.make.in	2010-04-11 23:17:32.000000000 +0200
++++ /tmp/opam-9190-1213/cairo1.ocaml-1.2.0/config.make.in	2012-10-08 10:55:06.526575701 +0200
+@@ -8,7 +8,7 @@
+ OCAMLDOC   = @OCAMLDOC@
+ OCAMLDEP   = @OCAMLDEP@
+ 
+-INSTALLDIR = $(OCAMLLIB)/cairo
++INSTALLDIR=%{lib}%/cairo
+ 
+ LABLGTKDIR = @LABLGTKDIR@
+ C_LABLGTKDIR = $(subst +,$(OCAMLLIB)/,$(LABLGTKDIR))
+diff -ru /tmp/opam-9190-4092/cairo1.ocaml-1.2.0/src/Makefile /tmp/opam-9190-1213/cairo1.ocaml-1.2.0/src/Makefile
+--- /tmp/opam-9190-4092/cairo1.ocaml-1.2.0/src/Makefile	2010-04-11 23:17:32.000000000 +0200
++++ /tmp/opam-9190-1213/cairo1.ocaml-1.2.0/src/Makefile	2012-10-08 10:55:06.562576790 +0200
+@@ -87,15 +87,15 @@
+ $(call mloptobjs,$(pangocairo_SRC))  : INCFLAGS=-I $(LABLGTKDIR)
+ 
+ install: all
+-	mkdir -p $(DESTDIR)$(INSTALLDIR) $(DESTDIR)$(OCAMLLIB)/stublibs
++	mkdir -p $(DESTDIR)$(INSTALLDIR) %{prefix}%/lib/stublibs
+ 	install -m 644 *.mli *.cmi *.cma lib*.a $(DESTDIR)$(INSTALLDIR)
+ ifdef OCAMLOPT
+ 	install -m644 *.cmxa *.a *.cmx $(DESTDIR)$(INSTALLDIR)
+ endif
+ 	install -m 755 dll*.so $(DESTDIR)$(INSTALLDIR)
+-	if test -w $(DESTDIR)$(OCAMLLIB)/stublibs ; then \
++	if test -w %{prefix}%/lib/stublibs ; then \
+           for lib in dll*.so ; do \
+-            ln -s $(INSTALLDIR)/$$lib $(DESTDIR)$(OCAMLLIB)/stublibs ; done ; fi
++            ln -s $(INSTALLDIR)/$$lib %{prefix}%/lib/stublibs ; done ; fi
+ 
+ DOCFILES = cairo.mli cairo_bigarray.mli cairo_png.mli cairo_pdf.mli cairo_ps.mli cairo_ft.mli
+ ifdef LABLGTKDIR
