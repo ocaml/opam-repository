@@ -1,0 +1,57 @@
+diff -ru /tmp/opam-12040-3265/ocaml-markdown.0.1.0/_oasis /tmp/opam-12040-829/ocaml-markdown.0.1.0/_oasis
+--- /tmp/opam-12040-3265/ocaml-markdown.0.1.0/_oasis	2012-06-15 20:37:55.000000000 +0200
++++ /tmp/opam-12040-829/ocaml-markdown.0.1.0/_oasis	2012-10-05 18:14:56.449785619 +0200
+@@ -20,7 +20,7 @@
+   FindlibParent: markdown
+   Path:          src
+   Modules:       MarkdownHTML
+-  BuildDepends:  markdown, ocsigen.xhtml
++  BuildDepends:  markdown, tyxml
+   
+ Executable test
+   Path:         test
+diff -ru /tmp/opam-12040-3265/ocaml-markdown.0.1.0/setup.ml /tmp/opam-12040-829/ocaml-markdown.0.1.0/setup.ml
+--- /tmp/opam-12040-3265/ocaml-markdown.0.1.0/setup.ml	2012-06-15 20:37:55.000000000 +0200
++++ /tmp/opam-12040-829/ocaml-markdown.0.1.0/setup.ml	2012-10-05 18:14:56.501787191 +0200
+@@ -5695,7 +5695,7 @@
+                       bs_build_depends =
+                         [
+                            InternalLibrary "markdown";
+-                           FindlibPackage ("ocsigen.xhtml", None)
++                           FindlibPackage ("tyxml", None)
+                         ];
+                       bs_build_tools = [ExternalTool "ocamlbuild"];
+                       bs_c_sources = [];
+diff -ru /tmp/opam-12040-3265/ocaml-markdown.0.1.0/src/MarkdownHTML.ml /tmp/opam-12040-829/ocaml-markdown.0.1.0/src/MarkdownHTML.ml
+--- /tmp/opam-12040-3265/ocaml-markdown.0.1.0/src/MarkdownHTML.ml	2012-06-15 20:37:55.000000000 +0200
++++ /tmp/opam-12040-829/ocaml-markdown.0.1.0/src/MarkdownHTML.ml	2012-10-05 18:14:56.577789494 +0200
+@@ -1,7 +1,7 @@
+ (* Copyright (C) 2009 Mauricio Fernandez <mfp@acm.org> *)
+ 
+ open Markdown
+-open XHTML.M
++open Xhtml.M
+ 
+ let rec elm_to_html ~render_pre ~render_link ~render_img elm =
+   let self = elm_to_html ~render_pre ~render_link ~render_img in
+@@ -35,7 +35,7 @@
+   | Code s -> code [pcdata s]
+   | Anchor id ->
+       (*  would like to do
+-            a ~a:[XHTML.M_01_00.a_name_01_00 id] []
++            a ~a:[Xhtml.M_01_00.a_name_01_00 id] []
+           but that'd require switching to M_01_00 everywhere, so cheap hack *)
+       b ~a:[a_id id] []
+   | Link href -> begin match href.href_target with
+diff -ru /tmp/opam-12040-3265/ocaml-markdown.0.1.0/_tags /tmp/opam-12040-829/ocaml-markdown.0.1.0/_tags
+--- /tmp/opam-12040-3265/ocaml-markdown.0.1.0/_tags	2012-06-15 20:37:55.000000000 +0200
++++ /tmp/opam-12040-829/ocaml-markdown.0.1.0/_tags	2012-10-05 18:14:56.537788281 +0200
+@@ -18,7 +18,7 @@
+ # Library html
+ "src/html.cmxs": use_html
+ <src/*.ml{,i}>: use_markdown
+-<src/*.ml{,i}>: pkg_ocsigen.xhtml
++<src/*.ml{,i}>: pkg_tyxml
+ <src/*.ml{,i}>: pkg_extlib
+ <src/*.ml{,i}>: pkg_str
+ <src/*.ml{,i}>: pkg_sexplib
