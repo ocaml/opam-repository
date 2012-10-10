@@ -1,0 +1,48 @@
+diff -ru /tmp/opam-12040-158/ocamlviz.1.01/configure.in /tmp/opam-12040-1919/ocamlviz.1.01/configure.in
+--- /tmp/opam-12040-158/ocamlviz.1.01/configure.in	2009-08-20 15:31:02.000000000 +0200
++++ /tmp/opam-12040-1919/ocamlviz.1.01/configure.in	2012-10-05 18:15:14.102319199 +0200
+@@ -136,16 +136,16 @@
+ fi
+ 
+ # checking for lablgtk2
+-AC_CHECK_FILE($OCAMLLIB/lablgtk2/lablgtk.cma,LABLGTK2=yes,LABLGTK2=no)
++AC_CHECK_FILE(%{lib}%/lablgtk2/lablgtk.cma,LABLGTK2=yes,LABLGTK2=no)
+ # AC_CHECK_PROG(LABLGTK2,lablgtk2,yes,no) not always available (Win32)
+ if test "$LABLGTK2" = yes ; then
+-      INCLUDEGTK2="-I +lablgtk2"
++      INCLUDEGTK2="-I %{lib}%/lablgtk2"
+ fi
+ 
+ # checking for cairo
+-AC_CHECK_FILE($OCAMLLIB/cairo/cairo.cmxa,CAIRO=yes,CAIRO=no)
++AC_CHECK_FILE(%{lib}%/cairo2/cairo2.cmxa,CAIRO=yes,CAIRO=no)
+ if test "$CAIRO" = yes ; then
+-      INCLUDECAIRO="-I +cairo"
++      INCLUDECAIRO="-I %{lib}%/cairo2"
+ fi
+ 
+ if test "$LABLGTK2" = yes && test "$CAIRO" = yes ; then
+diff -ru /tmp/opam-12040-158/ocamlviz.1.01/Makefile.in /tmp/opam-12040-1919/ocamlviz.1.01/Makefile.in
+--- /tmp/opam-12040-158/ocamlviz.1.01/Makefile.in	2009-09-08 12:48:31.000000000 +0200
++++ /tmp/opam-12040-1919/ocamlviz.1.01/Makefile.in	2012-10-05 18:15:14.174321378 +0200
+@@ -108,7 +108,7 @@
+ 	$(OCAMLC) $(BFLAGS) -o $@ lablgtk.cma gtkInit.cma unix.cma $^
+ 
+ gui.opt: $(GUICMX) 
+-	$(OCAMLOPT) $(OFLAGS) -o $@ unix.cmxa threads.cmxa lablgtk.cmxa cairo.cmxa cairo_lablgtk.cmxa gtkThread.cmx $^
++	$(OCAMLOPT) $(OFLAGS) -o $@ unix.cmxa threads.cmxa lablgtk.cmxa bigarray.cmxa cairo2.cmxa cairo_gtk.cmxa gtkThread.cmx $^
+ 
+ 
+ camlp4/pa_ocamlviz.cmo: camlp4/pa_ocamlviz.ml 
+diff -ru /tmp/opam-12040-158/ocamlviz.1.01/src/graph.ml /tmp/opam-12040-1919/ocamlviz.1.01/src/graph.ml
+--- /tmp/opam-12040-158/ocamlviz.1.01/src/graph.ml	2009-09-08 10:19:19.000000000 +0200
++++ /tmp/opam-12040-1919/ocamlviz.1.01/src/graph.ml	2012-10-05 18:15:14.138320291 +0200
+@@ -194,7 +194,7 @@
+ 
+ (********** draws the 2 axis, the grid, the legends ************)
+ 
+-let draw_background cr t width height =
++module Cairo = struct   include Cairo  let rectangle ~x ~y ~width ~height = rectangle ~x ~y ~w:width ~h:height   let set_dash cr t ofs = set_dash cr t ~ofs end open Cairo module Cairo_lablgtk = Cairo_gtk let draw_background cr t width height =
+   Cairo.rectangle cr ~x:t.lborder ~y:t.vborder ~width:(float width -. t.lborder -. t.rborder) ~height:(float height -. 2.*.t.vborder);
+   Cairo.set_source_rgb cr 1.0 1.0 1.0;
+   Cairo.fill cr;
