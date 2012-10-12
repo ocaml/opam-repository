@@ -1,7 +1,17 @@
 --- Makefile.orig	2012-10-10 10:52:34.000000000 -0700
-+++ Makefile	2012-10-10 10:58:38.000000000 -0700
-@@ -55,18 +55,8 @@
- 	rm -f *.o *.a
++++ Makefile	2012-10-12 14:59:30.385470458 -0700
+@@ -35,6 +35,9 @@
+   $(OCAMLMKLIB) -o zip -oc camlzip $(OBJS:.cmo=.cmx) \
+             -L$(ZLIB_LIBDIR) $(ZLIB_LIB)
+ 
++zip.cmxs: zip.cmxa
++	   $(OCAMLOPT) -I . -shared -linkall -o zip.cmxs zip.cmxa
++
+ libcamlzip.a: $(C_OBJS)
+ 	       $(OCAMLMKLIB) -oc camlzip $(C_OBJS) \
+             -L$(ZLIB_LIBDIR) $(ZLIB_LIB)
+@@ -55,18 +58,8 @@
+   rm -f *.o *.a
  
  install:
 -	mkdir -p $(INSTALLDIR)
@@ -17,7 +27,7 @@
 -installopt:
 -	cp zip.cmxa zip.a zip.cmx gzip.cmx $(INSTALLDIR)
 +	ocamlfind install camlzip META zip.cma zip.cmi gzip.cmi zip.mli gzip.mli libcamlzip.a \
-+	  -optional dllcamlzip.so zip.cmxa zip.a zip.cmx gzip.cmx
++	  -optional dllcamlzip.so zip.cmxa zip.cmxs zip.a zip.cmx gzip.cmx
  
  depend:
- 	gcc -MM -I$(ZLIB_INCLUDE) *.c > .depend
+	gcc -MM -I$(ZLIB_INCLUDE) *.c > .depend
