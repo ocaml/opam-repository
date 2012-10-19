@@ -1,0 +1,42 @@
+--- Makefile.orig	2012-10-10 10:52:34.000000000 -0700
++++ Makefile		2012-10-12 16:10:07.957606060 -0700
+@@ -25,7 +25,7 @@
+ 
+ all: libcamlzip.a zip.cma
+ 
+-allopt: libcamlzip.a zip.cmxa
++allopt: libcamlzip.a zip.cmxa zip.cmxs
+ 
+ zip.cma: $(OBJS)
+ 	  $(OCAMLMKLIB) -o zip -oc camlzip $(OBJS) \
+@@ -35,6 +35,9 @@
+   $(OCAMLMKLIB) -o zip -oc camlzip $(OBJS:.cmo=.cmx) \
+             -L$(ZLIB_LIBDIR) $(ZLIB_LIB)
+ 
++zip.cmxs: zip.cmxa
++	   $(OCAMLOPT) -I . -shared -linkall -o zip.cmxs zip.cmxa
++
+ libcamlzip.a: $(C_OBJS)
+ 	       $(OCAMLMKLIB) -oc camlzip $(C_OBJS) \
+             -L$(ZLIB_LIBDIR) $(ZLIB_LIB)
+@@ -55,18 +58,8 @@
+   rm -f *.o *.a
+ 
+ install:
+-	mkdir -p $(INSTALLDIR)
+-	cp zip.cma zip.cmi gzip.cmi zip.mli gzip.mli libcamlzip.a $(INSTALLDIR)
+-	if test -f dllcamlzip.so; then \
+-	  cp dllcamlzip.so $(INSTALLDIR); \
+-          ldconf=`$(OCAMLC) -where`/ld.conf; \
+-          installdir=$(INSTALLDIR); \
+-          if test `grep -s -c $$installdir'$$' $$ldconf || :` = 0; \
+-          then echo $$installdir >> $$ldconf; fi \
+-        fi
+-
+-installopt:
+-	cp zip.cmxa zip.a zip.cmx gzip.cmx $(INSTALLDIR)
++	ocamlfind install camlzip META zip.cma zip.cmi gzip.cmi zip.mli gzip.mli libcamlzip.a \
++	  -optional dllcamlzip.so zip.cmxa zip.cmxs zip.a zip.cmx gzip.cmx
+ 
+ depend:
+	gcc -MM -I$(ZLIB_INCLUDE) *.c > .depend

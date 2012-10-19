@@ -1,11 +1,15 @@
 opam-version: "1"
 maintainer: "contact@ocamlpro.com"
 build: [
-  ["./configure" "--prefix=%{prefix}%" "--mandir=%{doc}%/cduce"]
-  ["%{make}%"]
+  ["./configure"
+      "--prefix=%{prefix}%"
+      "--mandir=%{doc}%/cduce"
+      "--mliface=%{lib}%/ocaml-src" {"%{ocaml-src:installed}%" & ("%{ocaml-version}%" = "3.12.1")} ]
+  ["%{make}%" "all"]
   ["%{make}%" "install"]
 ]
 remove: [
   ["ocamlfind" "remove" "cduce"]
 ]
+depopts: [ "ocaml-src" ]
 depends: ["ocamlfind" "pcre-ocaml" "ulex" "ocamlnet" "pxp"]
