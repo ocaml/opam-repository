@@ -1,0 +1,27 @@
+--- Makefile.orig	2012-10-12 16:53:00.101688369 -0700
++++ Makefile		2012-10-12 17:02:33.061706704 -0700
+@@ -6,10 +6,13 @@
+ all:
+	ocamlc -c easy_format.mli
+ 	ocamlc -c -dtypes easy_format.ml
++	ocamlmklib -o easy_format easy_format.cmo
+ 	touch bytecode
+ opt:
+	ocamlc -c easy_format.mli
+ 	ocamlopt -c -dtypes easy_format.ml
++	ocamlmklib -o easy_format easy_format.cmx
++	ocamlopt -I . -shared -linkall -o easy_format.cmxs easy_format.cmx
+ 	touch nativecode
+ test: all simple_example.out
+       ocamlc -o test_easy_format -dtypes easy_format.cmo test_easy_format.ml
+@@ -45,8 +48,8 @@
+ 
+ 
+ COMMON_INSTALL_FILES = META easy_format.cmi easy_format.mli
+-BC_INSTALL_FILES = easy_format.cmo 
+-NC_INSTALL_FILES = easy_format.cmx easy_format.o
++BC_INSTALL_FILES = easy_format.cmo easy_format.cma
++NC_INSTALL_FILES = easy_format.cmx easy_format.cmxa easy_format.cmxs easy_format.o easy_format.a
+ 
+ install:
+	echo "version = \"$(VERSION)\"" > META; cat META.tpl >> META
