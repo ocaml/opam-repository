@@ -1,0 +1,49 @@
+diff --git a/Makefile b/Makefile
+index b86448a..81e29a0 100644
+--- a/Makefile
++++ b/Makefile
+@@ -31,7 +31,7 @@ PATH_INSTALL=$(PATH_OCAML_PREFIX)/lib/ocaml/bisect
+ # DEFINITIONS
+ 
+ PROJECT_NAME=bisect
+-OCAMLBUILD=$(PATH_OCAML_PREFIX)/bin/ocamlbuild
++OCAMLBUILD=ocamlbuild
+ OCAMLBUILD_ENV=WARNINGS=$(WARNINGS) PATH_OCAML_PREFIX=$(PATH_OCAML_PREFIX)
+ OCAMLBUILD_FLAGS=-classic-display -no-links
+ MODULES_ODOCL=$(PROJECT_NAME).odocl
+@@ -84,7 +84,7 @@ install: FORCE
+ 	if [ "$(PPX)" = "TRUE" ]; then \
+ 	  cp $(PATH_BUILD)/src/syntax/bisect_ppx.byte $(PATH_OCAML_PREFIX)/bin; \
+ 	fi; \
+-	(test -x $(PATH_OCAML_PREFIX)/bin/ocamlopt && cp $(PATH_BUILD)/src/report/report.native $(PATH_OCAML_PREFIX)/bin/bisect-report.opt || true); \
++	(which ocamlopt && cp $(PATH_BUILD)/src/report/report.native $(PATH_OCAML_PREFIX)/bin/bisect-report.opt || true); \
+ 	if [ -x "$(PATH_OCAMLFIND)" ]; then \
+ 	  $(PATH_OCAMLFIND) query $(PROJECT_NAME) && $(PATH_OCAMLFIND) remove $(PROJECT_NAME) || true; \
+ 	  $(PATH_OCAMLFIND) install $(PROJECT_NAME) META -optional \
+@@ -115,7 +115,7 @@ install: FORCE
+ 
+ generate: FORCE
+ 	echo '$(PROJECT_NAME).cma' > $(PROJECT_NAME).itarget
+-	(test -x $(PATH_OCAML_PREFIX)/bin/ocamlopt && echo '$(PROJECT_NAME).cmxa' >> $(PROJECT_NAME).itarget) || true
+-	(test -x $(PATH_OCAML_PREFIX)/bin/ocamljava && echo '$(PROJECT_NAME).cmja' >> $(PROJECT_NAME).itarget) || true
++	(which ocamlopt && echo '$(PROJECT_NAME).cmxa' >> $(PROJECT_NAME).itarget) || true
++	(which ocamljava && echo '$(PROJECT_NAME).cmja' >> $(PROJECT_NAME).itarget) || true
+ 
+ FORCE:
+diff --git a/myocamlbuild.ml b/myocamlbuild.ml
+index 8aa25fd..2ef7428 100644
+--- a/myocamlbuild.ml
++++ b/myocamlbuild.ml
+@@ -68,11 +68,7 @@ let () =
+     cp src dst in
+   dispatch begin function
+     | After_rules ->
+-        let camlp4of =
+-          try
+-            let path_bin = Filename.concat (Sys.getenv "PATH_OCAML_PREFIX") "bin" in
+-            Filename.concat path_bin "camlp4of"
+-          with _ -> "camlp4of" in
++        let camlp4of = "camlp4of" in
+         flag ["ocaml"; "compile"; "pp_camlp4of"] (S[A"-pp"; A camlp4of]);
+         flag ["ocaml"; "pp:dep"; "pp_camlp4of"] (S[A camlp4of]);
+         flag ["ocaml"; "compile"; "use_compiler_libs"] (S[A"-I"; A"+compiler-libs"]);
