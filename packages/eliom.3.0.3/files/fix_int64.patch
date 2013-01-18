@@ -1,0 +1,123 @@
+diff -rN -u old-eliom.dev/src/client/eliom_client.ml new-eliom.dev/src/client/eliom_client.ml
+--- old-eliom.dev/src/client/eliom_client.ml	2013-01-03 03:15:07.065648747 +0100
++++ new-eliom.dev/src/client/eliom_client.ml	2013-01-03 03:15:07.201642149 +0100
+@@ -72,7 +72,7 @@
+ end
+ 
+ module Client_value : sig
+-  val find : closure_id:int64 -> instance_id:int -> _
++  val find : closure_id:int64 -> instance_id:int64 -> _
+   val initialize : client_value_datum -> unit
+ end = struct
+ 
+@@ -82,10 +82,10 @@
+     Js.string (Int64.to_string closure_id)
+ 
+   let instance_key instance_id =
+-    Js.string (string_of_int instance_id)
++    Js.string (Int64.to_string instance_id)
+ 
+   let find ~closure_id ~instance_id =
+-    trace "Get client value %Ld/%d" closure_id instance_id;
++    trace "Get client value %Ld/%Ld" closure_id instance_id;
+     let value =
+       let instances =
+         Js.Optdef.get
+@@ -105,7 +105,7 @@
+     from_poly value
+ 
+   let initialize {closure_id; instance_id; args} =
+-    trace "Initialize client value %Ld/%d" closure_id instance_id;
++    trace "Initialize client value %Ld/%Ld" closure_id instance_id;
+     let closure =
+       try
+         Client_closure.find ~closure_id
+@@ -202,7 +202,7 @@
+                "Code generating the following client values is not linked on the client: %s"
+                (String.concat ","
+                   (List.map
+-                     (fun d -> Printf.sprintf "%Ld/%d" d.closure_id d.instance_id)
++                     (fun d -> Printf.sprintf "%Ld/%Ld" d.closure_id d.instance_id)
+                      data)))
+          server_sections_data;
+        Queue.iter
+@@ -357,7 +357,7 @@
+     let handler = (Eliom_lib.from_poly value : #Dom_html.event Js.t -> unit) in
+     fun ev -> try handler ev; true with False -> false
+   with Not_found ->
+-    error "Client value %Ld/%d not found as event handler" closure_id instance_id
++    error "Client value %Ld/%Ld not found as event handler" closure_id instance_id
+ 
+ let reify_caml_event node ce : #Dom_html.event Js.t -> bool = match ce with
+   | Xml.CE_call_service None -> (fun _ -> true)
+diff -rN -u old-eliom.dev/src/common/eliom_lib_base.ml new-eliom.dev/src/common/eliom_lib_base.ml
+--- old-eliom.dev/src/common/eliom_lib_base.ml	2013-01-03 03:15:07.085647778 +0100
++++ new-eliom.dev/src/common/eliom_lib_base.ml	2013-01-03 03:15:07.209641761 +0100
+@@ -29,7 +29,7 @@
+ end
+ 
+ let fresh_ix () =
+-  Oo.id (object end)
++  Int64.of_int (Oo.id (object end))
+ 
+ let get_option = function
+   | Some x -> x
+@@ -50,7 +50,7 @@
+ 
+   type +'a t = {
+     closure_id: int64;
+-    instance_id: int;
++    instance_id: int64;
+   }
+ 
+   let create ~closure_id ~instance_id =
+@@ -220,7 +220,7 @@
+ 
+ type client_value_datum = {
+   closure_id : int64;
+-  instance_id : int;
++  instance_id : int64;
+   args : poly;
+ }
+ 
+@@ -247,7 +247,7 @@
+   List.rev !res
+ 
+ let client_value_datum_to_string cv =
+-  Printf.sprintf "%Ld/%d" cv.closure_id cv.instance_id
++  Printf.sprintf "%Ld/%Ld" cv.closure_id cv.instance_id
+ 
+ let list_to_string to_string li =
+   "["^String.concat " " (List.map to_string li)^"]"
+diff -rN -u old-eliom.dev/src/common/eliom_lib_base.mli new-eliom.dev/src/common/eliom_lib_base.mli
+--- old-eliom.dev/src/common/eliom_lib_base.mli	2013-01-03 03:15:07.085647778 +0100
++++ new-eliom.dev/src/common/eliom_lib_base.mli	2013-01-03 03:15:07.209641761 +0100
+@@ -50,16 +50,16 @@
+   *)
+ module Client_value_server_repr : sig
+   type +'a t
+-  val create: closure_id:int64 -> instance_id:int -> _ t
++  val create: closure_id:int64 -> instance_id:int64 -> _ t
+   val closure_id: _ t -> int64
+-  val instance_id: _ t -> int
++  val instance_id: _ t -> int64
+ end
+ 
+ (** The representation of escaped values (values injected into client
+     values) is opaque. *)
+ type escaped_value = poly
+ 
+-val fresh_ix : unit -> int
++val fresh_ix : unit -> int64
+ val get_option : 'a option -> 'a
+ 
+ module RawXML : sig
+@@ -148,7 +148,7 @@
+ (** Data for initializing one client value *)
+ type client_value_datum = {
+   closure_id : int64;
+-  instance_id : int;
++  instance_id : int64;
+   args : poly;
+ }
+ 
