@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -ex
+
+eval `opam config env`
+CAMLP4S="camlp4 camlp4boot camlp4o camlp4o.opt camlp4of camlp4of.opt camlp4oof camlp4oof.opt camlp4orf camlp4orf.opt camlp4prof camlp4r camlp4r.opt camlp4rf camlp4rf.opt"
+BINDIR="$(dirname $(which ocamlc))"
+
+cp log-camlp4 ${BINDIR}
+for i in ${CAMLP4S}; do
+  mv ${BINDIR}/${i} ${BINDIR}/${i}.orig
+  ln -nfs log-camlp4 ${BINDIR}/${i}
+done
