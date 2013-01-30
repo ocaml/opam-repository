@@ -1,7 +1,13 @@
 opam-version: "1"
 maintainer: "contact@ocamlpro.com"
 build: [
-  ["%{make}%" "clean"]
-  ["%{make}%"]
-  ["%{make}%" "install" "DESTDIR=%{lib}%/mlgmp"]
+  ["sh" "-c" "rm -f *.cmo *.cmi *.cma *.cmxa *.o *.a *.cmx *.cmxs" ]
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" "%{prefix}%" ]
+  ["mkdir" "-p" "_build"]
+  ["cp" "conversions.c" "_build/conversions.c"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-install"]
 ]
+depends: [ "oasis" "ocamlfind" ]
+remove: [ "ocamlfind" "remove" "gmp" ]
