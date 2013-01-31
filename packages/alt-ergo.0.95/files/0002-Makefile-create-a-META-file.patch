@@ -1,0 +1,82 @@
+From 7c5ec3fca56d31ec0886bfab4ff443edd21cdcfe Mon Sep 17 00:00:00 2001
+From: bobot <bobot@b8d9039a-ea7d-4afb-bb93-26d10a78e78a>
+Date: Thu, 31 Jan 2013 08:07:09 +0000
+Subject: [PATCH 2/3] [Makefile] create a META file
+
+git-svn-id: svn+ssh://scm.gforge.inria.fr/svn/alt-ergo/trunk@619 b8d9039a-ea7d-4afb-bb93-26d10a78e78a
+---
+ Makefile.in |   16 ++++++++++++----
+ revision.sh |    4 +---
+ 2 files changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/Makefile.in b/Makefile.in
+index 922015f..0d8b66b 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -74,7 +74,7 @@ LIBNAME = altErgo
+ BYTE=$(NAME).byte
+ OPT=$(NAME).opt
+ 
+-all: pack xpack $(OCAMLBEST) pack xpack gui
++all: pack xpack $(OCAMLBEST) pack xpack gui META
+ 
+ 
+ # bytecode and native-code compilation
+@@ -193,13 +193,20 @@ testoptsel:$(OPT)
+ 
+ VERSION=0.96
+ 
+-
+ version.ml: config.status
+ # set version (and possibly revision) value in version.ml
+-	$(shell ./revision.sh)
++	@REVISION=$(shell ./revision.sh)
++	@echo "let version = \""$(VERSION)$$REVISION"\"" > version.ml
+ 	@echo "let date = \""`date`"\"" >> version.ml
+ 	@echo "let libdir = \""$(LIBDIR)"\"" >> version.ml
+ 
++META: config.status
++	@REVISION=$(shell ./revision.sh)
++	@echo "description = \"API of Alt-Ergo: An automatic theorem prover dedicated to program verification\"" > META
++	@echo "version = \""$(VERSION)$$REVISION"\"" >> META
++	@echo "archive(byte) = \"altErgo.cmo\"" >> META
++	@echo "archive(native) = \"altErgo.cmx\"" >> META
++	@echo "requires = \"unix num ocamlgraph\"" >> META
+ 
+ 
+ # file headers
+@@ -236,12 +243,13 @@ ifeq ($(ENABLEGUI),yes)
+ 	cp -f util/gtk-lang/alt-ergo.lang $(DATADIR)/gtksourceview-2.0/language-specs/alt-ergo.lang
+ endif
+ 
+-install-pack: xpack pack
++install-pack: xpack pack META
+ 	mkdir -p $(LIBDIR)
+ 	cp -f $(LIBNAME).cmx $(LIBDIR)
+ 	cp -f $(LIBNAME).o $(LIBDIR)
+ 	cp -f $(LIBNAME).cmo $(LIBDIR)
+ 	cp -f $(LIBNAME).cmi $(LIBDIR)
++	cp -f META $(LIBDIR)
+ 
+ # documentation
+ ###############
+diff --git a/revision.sh b/revision.sh
+index 9377840..d71e3cf 100755
+--- a/revision.sh
++++ b/revision.sh
+@@ -1,5 +1,3 @@
+-VERSION=`grep "^VERSION=" Makefile | cut -d"=" -f2`
+-
+ revision=""
+ 
+ svn_info=`svn info --xml 2> /dev/null`
+@@ -17,5 +15,5 @@ then
+     done
+ fi
+ 
+-echo "let version = \""$VERSION$revision"\""  >> version.ml
++echo $revision
+ 
+-- 
+1.7.10.4
+
