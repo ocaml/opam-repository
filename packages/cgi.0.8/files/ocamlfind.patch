@@ -1,0 +1,47 @@
+diff -N -r -u cgi-0.8.orig/META cgi-0.8/META
+--- cgi-0.8.orig/META	1970-01-01 01:00:00.000000000 +0100
++++ cgi-0.8/META	2013-02-18 12:37:50.000000000 +0100
+@@ -0,0 +1,5 @@
++description = "Objective Caml library for writing CGIs"
++version = "0.8"
++requires = "str"
++archive(byte) = "cgi.cmo"
++archive(native) = "cgi.cmx"
+diff -N -r -u cgi-0.8.orig/Makefile.in cgi-0.8/Makefile.in
+--- cgi-0.8.orig/Makefile.in	2006-05-24 08:29:46.000000000 +0200
++++ cgi-0.8/Makefile.in	2013-02-18 12:41:36.000000000 +0100
+@@ -3,7 +3,7 @@
+ # Configuration part
+ ###################################################################
+ 
+-TARGETDIR = @OCAMLLIB@
++TARGETDIR = @OCAMLLIB@/site-lib/cgi
+ 
+ CAMLC   = @OCAMLC@ -g
+ CAMLOPT = @OCAMLOPT@
+@@ -28,20 +28,17 @@
+ # Installation and export
+ ###################################################################
+ 
+-COMMFILES = $(MLI) $(CMI)
++COMMFILES = META $(MLI) $(CMI)
+ BYTEFILES = cgi.cmo
+ OPTFILES  = cgi.cmx cgi.o
+ 
+ install: install-@OCAMLBEST@
+ 
+-install-common:
+-	cp $(COMMFILES) $(TARGETDIR)
++install-byte:
++	ocamlfind install cgi $(COMMFILES) $(BYTEFILES)
+ 
+-install-byte: install-common
+-	cp $(BYTEFILES) $(TARGETDIR)
+-
+-install-opt: install-common install-byte
+-	cp $(OPTFILES) $(TARGETDIR)
++install-opt:
++	ocamlfind install cgi $(COMMFILES) $(BYTEFILES) $(OPTFILES)
+ 
+ MAJORVN=0
+ MINORVN=8
