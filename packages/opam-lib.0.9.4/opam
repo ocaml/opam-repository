@@ -5,8 +5,8 @@ build: [
   ["./configure" "--prefix=%{prefix}%" "--mandir=%{prefix}%/man"]
   [make "META"]
   [make "src/core/opamGitVersion.ml"]
-  [make "LOCAL_OCPBUILD=ocp-build" "compile"]
-  [make "libinstall"]
+  [make "with-ocamlbuild"]
+  [make "libinstall-with-ocamlbuild"]
   ["rm" "opam.install"]
 ]
 depends: [
@@ -15,7 +15,12 @@ depends: [
   "dose" {= "3.1.2"}
   "cudf"
   "re" {>= "1.2.0"}
+  "ocamlfind"
 ]
 remove: [
   ["ocamlfind" "remove" "opam"]
+]
+patches: [
+  "fix-build.diff"
+  "ocamlbuild.diff"
 ]
