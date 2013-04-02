@@ -1,0 +1,39 @@
+opam-version: "1"
+maintainer: "why3-commits@lists.gforge.inria.fr"
+
+homepage: "http://why3.lri.fr/"
+doc: "http://why3.lri.fr/#documentation"
+
+authors: ["François Bobot"
+          "Jean-Christophe Filliâtre"
+          "Claude Marché"
+          "Guillaume Melquiond"
+          "Andrei Paskevich"]
+
+license: "GNU Lesser General Public License version 2.1"
+
+tags: ["deductive" "program verification" "specification" "automated theorem prover" "interactive theorem prover" "logical theory"]
+
+build: [
+  ["./configure" "--prefix" "%{prefix}%" "--sbindir=%{lib}%/why3/sbin" "--libexecdir=%{lib}%/why3/libexec" "--sysconfdir=%{lib}%/why3/etc" "--sharedstatedir=%{lib}%/why3/com" "--localstatedir=%{lib}%/why3/var" "--libdir=%{lib}%/why3/lib" "--includedir=%{lib}%/why3/include" "--datarootdir=%{lib}%/why3/share" "--disable-bench"]
+  ["%{make}%" "opt" "byte"]
+  ["%{make}%" "install" "install-lib"]
+]
+
+build-doc: [
+           ["make" "stdlibdoc" "apidoc"]
+           ["make" "DOCDIR=%{doc}%/why3" "install-doc"]
+]
+
+depends: [
+  "coq" {>= "8.3"}
+  "alt-ergo"
+  "lablgtk"
+]
+
+depopts: [
+  "ocamlgraph" {>= "1.8.2"}
+]
+
+patches: ["configure.patch"]
+
