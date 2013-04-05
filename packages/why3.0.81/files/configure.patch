@@ -1,63 +1,14 @@
-diff --git a/Makefile.in b/Makefile.in
-index 1f558fd..1db3805 100644
---- a/Makefile.in
-+++ b/Makefile.in
-@@ -43,6 +43,7 @@ OCAMLLEX  = @OCAMLLEX@
- OCAMLYACC = @OCAMLYACC@
- OCAMLDOC  = @OCAMLDOC@
- OCAMLLIB  = @OCAMLLIB@
-+OCAMLINSTALLLIB  = @OCAMLINSTALLLIB@
- OCAMLBEST = @OCAMLBEST@
- OCAMLVERSION = @OCAMLVERSION@
- COQC      = @COQC@
-@@ -207,8 +208,10 @@ clean::
- clean_old_install:
- 	rm -f $(BINDIR)/why3*
- 	rm -rf $(DATADIR)/why3
-+	rm -rf $(OCAMLINSTALLLIB)/why3
- 
--install_no_local::
-+
-+install_no_local:: clean_old_install
- 	mkdir -p $(BINDIR)
- 	mkdir -p $(DATADIR)/why3
- 	mkdir -p $(DATADIR)/why3/images
-@@ -234,10 +237,9 @@ install_no_local::
- #	if test -d /etc/bash_completion.d; then cp -f share/bash/why3 /etc/bash_completion.d; fi
- 
- install_no_local_lib::
--	rm -rf $(OCAMLLIB)/why3
--	mkdir -p $(OCAMLLIB)/why3
-+	mkdir -p $(OCAMLINSTALLLIB)/why3
- 	cp -f lib/why3/why3.cm* lib/why3/why3.[ao] \
--		lib/why3/META $(OCAMLLIB)/why3
-+		lib/why3/META $(OCAMLINSTALLLIB)/why3
- 
- ifeq (@enable_local@,yes)
- install install-lib:
-@@ -1366,6 +1368,17 @@ stdlibdoc: $(STDLIBFILES) $(STDMODFILES) bin/why3doc.@OCAMLBEST@
- clean::
- 	rm -f doc/stdlibdoc/*
- 
-+ifdef DOCDIR
-+install-doc:
-+	mkdir -p $(DOCDIR)
-+	cp -rf doc/manual.pdf doc/stdlibdoc doc/apidoc -t $(DOCDIR)
-+else
-+install-doc:
-+	@echo "You should set the variable DOCDIR to the destination directory"
-+	@exit 1
-+endif
-+
-+
- ################
- # generic rules
- ################
-diff --git a/configure.in b/configure.in
-index a81c91a..d12be48 100644
---- a/configure.in
-+++ b/configure.in
-@@ -285,6 +285,14 @@ if test "$USEOCAMLFIND" = yes; then
+--- /tmp/why3-0.81/configure	2013-03-27 07:08:28.000000000 +0100
++++ configure	2013-04-05 14:45:02.311937591 +0200
+@@ -611,6 +611,7 @@
+ enable_ide
+ enable_profiling
+ OCAMLGRAPHLIB
++OCAMLINSTALLLIB
+ OCAMLLIB
+ OCAMLVERSION
+ OCAMLBEST
+@@ -3392,6 +3393,14 @@
     fi
  fi
  
@@ -71,22 +22,20 @@ index a81c91a..d12be48 100644
 +
  # checking for rubber
  if test "$enable_doc" = yes ; then
-    AC_CHECK_PROG(RUBBER,rubber,rubber,no)
-@@ -607,6 +615,7 @@ AC_SUBST(OCAMLDOC)
- AC_SUBST(OCAMLBEST)
- AC_SUBST(OCAMLVERSION)
- AC_SUBST(OCAMLLIB)
-+AC_SUBST(OCAMLINSTALLLIB)
- dnl AC_SUBST(OCAMLV)
- dnl AC_SUBST(FORPACK)
- AC_SUBST(OCAMLGRAPHLIB)
-@@ -723,7 +732,11 @@ if test "$enable_local" = yes ; then
+    # Extract the first word of "rubber", so it can be a program name with args.
+@@ -4142,6 +4151,7 @@
+ 
+ 
+ 
++
+ # Finally create the Makefile from Makefile.in
+ ac_config_files="$ac_config_files Makefile src/config.sh doc/version.tex"
+ 
+@@ -5377,7 +5387,9 @@
     echo "Installable             : no"
  else
     echo "Installable             : yes"
-+   BINDIR=`eval echo $bindir`
     echo "    Binary path         : $bindir"
-+   DATAROOTDIR=`eval echo $datarootdir`
 +   echo "    Lib path            : $libdir/why3"
     echo "    Data path           : $datarootdir/why3"
 +   echo "    Ocaml Library       : $OCAMLINSTALLLIB/why3"
