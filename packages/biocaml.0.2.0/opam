@@ -3,19 +3,26 @@ maintainer: "seb@mondet.org"
 homepage: "http://biocaml.org"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" "%{prefix}%" "--%{flow:enable}%-app" ]
-  ["make" "all"]
-  ["make" "install"]
+  [make "all"]
+  [make "install"]
 ]
 remove: [
   ["ocamlfind" "remove" "biocaml"]
 ]
-depends: ["ocamlfind" "core" "sexplib" "camlzip" "xmlm" "pcre-ocaml"  ]
+depends: [
+  "ocamlfind"
+  "core" {<= "109.17.00"}
+  "sexplib"
+  "camlzip"
+  "xmlm"
+  "pcre-ocaml"
+]
 depopts: [ "flow" ]
 build-test: [
   ["ocaml" "setup.ml" "-configure" "--prefix" "%{prefix}%" "--%{flow:enable}%-app" "--enable-tests" ]
-  ["make" "test"]
+  [make "test"]
 ]
 build-doc: [
-  ["make" "doc"]
-  ["make" "install-doc" "DOCDIR=%{doc}%" ]
+  [make "doc"]
+  [make "install-doc" "DOCDIR=%{doc}%" ]
 ]

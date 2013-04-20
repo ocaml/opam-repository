@@ -1,0 +1,52 @@
+diff --git a/Makefile b/Makefile
+index dd6d95a..b96f091 100644
+--- a/Makefile
++++ b/Makefile
+@@ -41,25 +41,27 @@
+ #OCAMLINCLUDES=./ocaml-byterun-3.09
+ #OCAMLINCLUDES=./ocaml-byterun-3.10
+ OCAMLINCLUDES=./ocaml-byterun-3.11
+-# Directory of your OCAML executables...
+-#OCAMLBIN=../../bin
+-OCAMLBIN := $(shell dirname `which ocaml`)
+-OCAMLC=$(OCAMLBIN)/ocamlc
++
+ LIBDIR := $(shell ocamlc -where)
+ 
++# Richard Mortier <mort@cantab.net>, 2013-03-19
++#
++# simplify tool discovery
++
++OCAMLC=ocamlc
++
+ # The following Makefile.config will set ARCH, MODEL, SYSTEM
+ include $(LIBDIR)/Makefile.config
+ 
+-# CFLAGS=$(FLAGS) -O $(NATIVECCCOMPOPTS)
+-# DFLAGS=$(FLAGS) -g -DDEBUG $(NATIVECCCOMPOPTS)
++OCAMLOPT=ocamlopt
++OCAMLTOP=ocaml
++OCAMLMKLIB=ocamlmklib
++OCAMLMKTOP=ocamlmktop
++OCAMLFIND=ocamlfind
+ 
+-OCAMLOPT=$(OCAMLBIN)/ocamlopt
+-OCAMLTOP=$(OCAMLBIN)/ocaml
+-OCAMLMKLIB=$(OCAMLBIN)/ocamlmklib
+-OCAMLMKTOP=$(OCAMLBIN)/ocamlmktop
+-OCAMLFIND=$(OCAMLBIN)/ocamlfind
+ OCAMLFIND_INSTFLAGS=
+ DESTDIR=
++
+ STDINCLUDES=$(LIBDIR)/caml
+ STUBLIBDIR=$(LIBDIR)/stublibs
+ # CC=$(NATIVECC)
+@@ -101,7 +103,7 @@ install:
+ 	if test -f delimcc.cmxa; then cp delimcc.cmxa $(DESTDIR)$(LIBDIR); fi
+ 
+ findlib-install: META dlldelimcc.so libdelimcc.a delimcc.cma delimcc.cmi \
+-	dlldelimccopt.so libdelimccopt.a delimcc.cmxa
++	dlldelimccopt.so libdelimccopt.a delimcc.cmxa delimcc.a
+ 	$(OCAMLFIND) install $(OCAMLFIND_INSTFLAGS) delimcc $^
+ 
+ 
