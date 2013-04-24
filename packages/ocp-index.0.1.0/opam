@@ -4,13 +4,20 @@ build: [
   [ "ocp-build" "-init" ]
   [ "ocp-build" "ocp-index-lib" "ocp-index"
       "ocp-browser" {"%{curses:installed}%"} ]
-  [ "ocp-build" "install" "ocp-index-lib" "ocp-index"
-      "ocp-browser" {"%{curses:installed}%"} ]
+  [ "ocp-build" "install"
+      "-install-lib" "%{lib}%/ocp-index"
+      "-install-bin" "%{bin}%"
+      "-install-data" "%{prefix}%/share/typerex"
+      "ocp-index-lib" "ocp-index" "ocp-browser" {"%{curses:installed}%"} ]
+  [ "sh" "-c"
+      "./_obuild/ocp-index/ocp-index.asm --help=groff > %{man}%/man1/ocp-index.1" ]
 ]
 remove: [
   [ "ocp-build" "-init" ]
-  [ "ocp-build" "uninstall" "ocp-index-lib" "ocp-index"
-      "ocp-browser" {"%{curses:installed}%"} ]
+  [ "ocp-build" "uninstall"
+      "-install-lib" "%{lib}%/ocp-index"
+      "ocp-index-lib" "ocp-index" "ocp-browser" {"%{curses:installed}%"} ]
+  [ "rm" "%{man}%/man1/ocp-index.1" ]
 ]
 depends: [
   "ocp-build" {>= "1.99.4-beta"}
