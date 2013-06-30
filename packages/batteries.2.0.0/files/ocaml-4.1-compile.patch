@@ -1,0 +1,1819 @@
+diff --git a/.gitignore b/.gitignore
+index bd95da9..077101a 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -26,4 +26,6 @@ setup.data
+ setup.log
+ src/batUnix.mli
+ src/batPervasives.mli
+-src/batInnerPervasives.ml
+\ No newline at end of file
++src/batInnerPervasives.ml
++src/batHashtbl.ml
++src/batMarshal.mli
+\ No newline at end of file
+diff --git a/Makefile b/Makefile
+index af13897..7d0cd42 100644
+--- a/Makefile
++++ b/Makefile
+@@ -45,6 +45,7 @@ BENCH_TARGETS += benchsuite/deque.native
+ BENCH_TARGETS += benchsuite/lines_of.native
+ BENCH_TARGETS += benchsuite/bitset.native
+ BENCH_TARGETS += benchsuite/bench_map.native
++BENCH_TARGETS += benchsuite/bench_nreplace.native
+ TEST_TARGET = test-byte
+ 
+ ifeq ($(BATTERIES_NATIVE_SHLIB), yes)
+@@ -114,7 +115,8 @@ reinstall:
+ #	Pre-Processing of Source Code
+ ###############################################################################
+ 
+-prefilter: src/batUnix.mli src/batPervasives.mli src/batInnerPervasives.ml
++prefilter: src/batMarshal.mli src/batUnix.mli src/batPervasives.mli \
++	   src/batInnerPervasives.ml src/batHashtbl.ml
+ 
+ # Ocaml 4.00 can benefit strongly from some pre-processing to expose
+ # slightly different interfaces
+@@ -123,10 +125,10 @@ prefilter: src/batUnix.mli src/batPervasives.mli src/batInnerPervasives.ml
+ # Look for lines starting with ##Vx##, and delete just the tag or the
+ # whole line depending whether the x matches the ocaml major version
+ .mliv.mli:
+-	sed -e 's/^##V$(OCAML_MAJOR_VERSION)##//' -e '/^##V.##/d' $< > $@
++	ocaml str.cma build/prefilter.ml < $^ > $@
+ 
+ .mlv.ml:
+-	sed -e 's/^##V$(OCAML_MAJOR_VERSION)##//' -e '/^##V.##/d' $< > $@
++	ocaml str.cma build/prefilter.ml < $^ > $@
+ 
+ ###############################################################################
+ #	BUILDING AND RUNNING UNIT TESTS
+@@ -180,7 +182,7 @@ test-byte: prefilter _build/testsuite/main.byte _build/$(QTESTDIR)/all_tests.byt
+ 	@echo "" # newline after "OK"
+ 	@_build/$(QTESTDIR)/all_tests.byte
+ 
+-test-native: test-byte _build/testsuite/main.native _build/$(QTESTDIR)/all_tests.native
++test-native: prefilter _build/testsuite/main.native _build/$(QTESTDIR)/all_tests.native
+ 	@_build/testsuite/main.native
+ 	@echo "" # newline after "OK"
+ 	@_build/$(QTESTDIR)/all_tests.native
+diff --git a/build/prefilter.ml b/build/prefilter.ml
+new file mode 100644
+index 0000000..1688d1f
+--- /dev/null
++++ b/build/prefilter.ml
+@@ -0,0 +1,37 @@
++let (major, minor) =
++  Scanf.sscanf Sys.ocaml_version
++    "%d.%d." (fun j n -> (j, n))
++
++let filter_cookie_re =
++  Str.regexp "^##V\\([^#]+\\)##"
++let version_re =
++  Str.regexp "\\([0-9]+\\)\\(\\.\\([0-9]+\\)\\)?"
++
++let maybe f x = try Some (f x) with _ -> None
++
++let process_line line =
++  if Str.string_match filter_cookie_re line 0 then begin
++    let ver_string = Str.matched_group 1 line in
++    assert (Str.string_match version_re ver_string 0) ;
++    let ver_maj = int_of_string (Str.matched_group 1 ver_string) in
++    let pass = match maybe (Str.matched_group 3) ver_string with
++    | None -> ver_maj <= major
++    | Some ver_min ->
++      let ver_min = int_of_string ver_min in
++      ver_maj <= major && ver_min <= minor
++    in
++    if pass then Str.replace_first filter_cookie_re "" line
++    else ""
++  end else line
++
++let ( |> ) x f = f x
++
++let doit () =
++  try
++    while true do
++      input_line stdin |> process_line |> print_endline
++    done
++  with End_of_file -> ()
++
++let () =
++  if not !Sys.interactive then doit ()
+diff --git a/src/batHashtbl.mli b/src/batHashtbl.mli
+index 82bbf24..ef13823 100644
+--- a/src/batHashtbl.mli
++++ b/src/batHashtbl.mli
+@@ -43,41 +43,59 @@ type ('a, 'b) t = ('a, 'b) Hashtbl.t
+ 
+ val create : int -> ('a, 'b) t
+ (** [Hashtbl.create n] creates a new, empty hash table, with
+-   initial size [n].  For best results, [n] should be on the
+-   order of the expected number of elements that will be in
+-   the table.  The table grows as needed, so [n] is just an
+-   initial guess. *)
++    initial size [n].  For best results, [n] should be on the
++    order of the expected number of elements that will be in
++    the table.  The table grows as needed, so [n] is just an
++    initial guess. *)
+ 
+ val length : ('a, 'b) t -> int
+ (** [Hashtbl.length tbl] returns the number of bindings in [tbl].
+-   Multiple bindings are counted multiply, so [Hashtbl.length]
+-   gives the number of times [Hashtbl.iter] calls its first argument. *)
++    Multiple bindings are counted multiply, so [Hashtbl.length]
++    gives the number of times [Hashtbl.iter] calls its first argument. *)
+ 
+ val is_empty : ('a, 'b) t -> bool
+-  (** [Hashtbl.is_empty tbl] returns [true] if there are no bindings
+-      in [tbl], false otherwise.*)
++(** [Hashtbl.is_empty tbl] returns [true] if there are no bindings
++    in [tbl], false otherwise.*)
+ 
+ val add : ('a, 'b) t -> 'a -> 'b -> unit
+ (** [Hashtbl.add tbl x y] adds a binding of [x] to [y] in table [tbl].
+-   Previous bindings for [x] are not removed, but simply
+-   hidden. That is, after performing {!Hashtbl.remove}[ tbl x],
+-   the previous binding for [x], if any, is restored.
+-   (Same behavior as with association lists.) *)
++    Previous bindings for [x] are not removed, but simply
++    hidden. That is, after performing {!Hashtbl.remove}[ tbl x],
++    the previous binding for [x], if any, is restored.
++    (Same behavior as with association lists.) *)
+ 
+ val remove : ('a, 'b) t -> 'a -> unit
+ (** [Hashtbl.remove tbl x] removes the current binding of [x] in [tbl],
+-   restoring the previous binding if it exists.
+-   It does nothing if [x] is not bound in [tbl]. *)
++    restoring the previous binding if it exists.
++    It does nothing if [x] is not bound in [tbl]. *)
+ 
+ val remove_all : ('a,'b) t -> 'a -> unit
+-  (** Remove all bindings for the given key *)
++(** Remove all bindings for the given key *)
+ 
+ val replace : ('a, 'b) t -> 'a -> 'b -> unit
+ (** [Hashtbl.replace tbl x y] replaces the current binding of [x]
+-   in [tbl] by a binding of [x] to [y].  If [x] is unbound in [tbl],
+-   a binding of [x] to [y] is added to [tbl].
+-   This is functionally equivalent to {!Hashtbl.remove}[ tbl x]
+-   followed by {!Hashtbl.add}[ tbl x y]. *)
++    in [tbl] by a binding of [x] to [y].  If [x] is unbound in [tbl],
++    a binding of [x] to [y] is added to [tbl].
++    This is functionally equivalent to {!Hashtbl.remove}[ tbl x]
++    followed by {!Hashtbl.add}[ tbl x y]. *)
++
++val modify : 'a -> ('b -> 'b) -> ('a, 'b) t -> unit
++(** [Hashtbl.modify k f tbl] replaces the first binding for [k] in [tbl]
++    with [f] applied to that value.
++    @raise Not_found if [k] is unbound in [tbl].
++    @since NEXT_RELEASE *)
++
++val modify_def : 'b -> 'a -> ('b -> 'b) -> ('a, 'b) t -> unit
++(** [Hashtbl.modify_def v k f tbl] does the same as [Hashtbl.modify k f tbl]
++    but [f v] is inserted in [tbl] if [k] was unbound.
++    @since NEXT_RELEASE *)
++
++val modify_opt : 'a -> ('b option -> 'b option) -> ('a, 'b) t -> unit
++(** [Hashtbl.modify_opt k f tbl] allows to remove, modify or add a binding for
++    [k] in [tbl]. [f] will be called with [None] if [k] was unbound.
++    first previous binding of [k] in [tbl] will be deleted if [f] returns [None].
++    Otherwise, the previous binding is replaced by the value produced by [f].
++    @since NEXT_RELEASE *)
+ 
+ val copy : ('a, 'b) t -> ('a, 'b) t
+ (** Return a copy of the given hashtable. *)
+@@ -88,39 +106,39 @@ val clear : ('a, 'b) t -> unit
+ (**{6 Enumerations}*)
+ 
+ val keys : ('a,'b) t -> 'a BatEnum.t
+-  (** Return an enumeration of all the keys of a hashtable.
+-      If the key is in the Hashtable multiple times, all occurrences
+-      will be returned.  *)
++(** Return an enumeration of all the keys of a hashtable.
++    If the key is in the Hashtable multiple times, all occurrences
++    will be returned.  *)
+ 
+ val values : ('a,'b) t -> 'b BatEnum.t
+-  (** Return an enumeration of all the values of a hashtable. *)
++(** Return an enumeration of all the values of a hashtable. *)
+ 
+ val enum : ('a, 'b) t -> ('a * 'b) BatEnum.t
+-  (** Return an enumeration of (key,value) pairs of a hashtable. *)
++(** Return an enumeration of (key,value) pairs of a hashtable. *)
+ 
+ val of_enum : ('a * 'b) BatEnum.t -> ('a, 'b) t
+-  (** Create a hashtable from a (key,value) enumeration. *)
++(** Create a hashtable from a (key,value) enumeration. *)
+ 
+ 
+ (**{6 Searching}*)
+ 
+ val find : ('a, 'b) t -> 'a -> 'b
+ (** [Hashtbl.find tbl x] returns the current binding of [x] in [tbl],
+-   or raises [Not_found] if no such binding exists. *)
++    or raises [Not_found] if no such binding exists. *)
+ 
+ val find_all : ('a, 'b) t -> 'a -> 'b list
+ (** [Hashtbl.find_all tbl x] returns the list of all data
+-   associated with [x] in [tbl].
+-   The current binding is returned first, then the previous
+-   bindings, in reverse order of introduction in the table. *)
++    associated with [x] in [tbl].
++    The current binding is returned first, then the previous
++    bindings, in reverse order of introduction in the table. *)
+ 
+ val find_default : ('a,'b) t -> 'a -> 'b -> 'b
+-  (** Find a binding for the key, and return a default
+-      value if not found *)
++(** Find a binding for the key, and return a default
++    value if not found *)
+ 
+ val find_option : ('a,'b) Hashtbl.t -> 'a -> 'b option
+-  (** Find a binding for the key, or return [None] if no
+-      value is found *)
++(** Find a binding for the key, or return [None] if no
++    value is found *)
+ 
+ val mem : ('a, 'b) t -> 'a -> bool
+ (** [Hashtbl.mem tbl x] checks if [x] is bound in [tbl]. *)
+@@ -148,39 +166,55 @@ val mem : ('a, 'b) t -> 'a -> bool
+ *)
+ 
+ val iter : ('a -> 'b -> unit) -> ('a, 'b) t -> unit
+-  (** [Hashtbl.iter f tbl] applies [f] to all bindings in table [tbl].
+-      [f] receives the key as first argument, and the associated value
+-      as second argument. Each binding is presented exactly once to [f].
+-      The order in which the bindings are passed to [f] is unspecified.
+-      However, if the table contains several bindings for the same key,
+-      they are passed to [f] in reverse order of introduction, that is,
+-      the most recent binding is passed first. *)
++(** [Hashtbl.iter f tbl] applies [f] to all bindings in table [tbl].
++    [f] receives the key as first argument, and the associated value
++    as second argument. Each binding is presented exactly once to [f].
++    The order in which the bindings are passed to [f] is unspecified.
++    However, if the table contains several bindings for the same key,
++    they are passed to [f] in reverse order of introduction, that is,
++    the most recent binding is passed first. *)
+ 
+ val fold : ('a -> 'b -> 'c -> 'c) -> ('a, 'b) t -> 'c -> 'c
+ (** [Hashtbl.fold f tbl init] computes
+-   [(f kN dN ... (f k1 d1 (f k0 d0 init))...)],
+-   where [k0,k1..kN] are the keys of all bindings in [tbl],
+-   and [d0,d1..dN] are the associated values.
+-   Each binding is presented exactly once to [f].
+-   The order in which the bindings are passed to [f] is unspecified.
+-   However, if the table contains several bindings for the same key,
+-   they are passed to [f] in reverse order of introduction, that is,
+-   the most recent binding is passed first. *)
++    [(f kN dN ... (f k1 d1 (f k0 d0 init))...)],
++    where [k0,k1..kN] are the keys of all bindings in [tbl],
++    and [d0,d1..dN] are the associated values.
++    Each binding is presented exactly once to [f].
++    The order in which the bindings are passed to [f] is unspecified.
++    However, if the table contains several bindings for the same key,
++    they are passed to [f] in reverse order of introduction, that is,
++    the most recent binding is passed first. *)
+ 
+ val map : ('a -> 'b -> 'c) -> ('a,'b) t -> ('a,'c) t
+-  (** [map f x] creates a new hashtable with the same
+-      keys as [x], but with the function [f] applied to
+-      all the values *)
++(** [map f x] creates a new hashtable with the same
++    keys as [x], but with the function [f] applied to
++    all the values *)
++
++val map_inplace : ('a -> 'b -> 'b) -> ('a,'b) t -> unit
++(** [map_inplace f x] replace all values currently bound in [x]
++    by [f] applied to each value.
++
++    @since NEXT_RELEASE *)
+ 
+ val filter: ('a -> bool) -> ('key, 'a) t -> ('key, 'a) t
+-  (**[filter f m] returns a new hashtable where only the values [a] of [m]
+-     such that [f a = true] remain.*)
++(** [filter f m] returns a new hashtable where only the values [a] of [m]
++    such that [f a = true] remain.*)
++
++val filter_inplace : ('a -> bool) -> ('key,'a) t -> unit
++(** [filter_inplace f m] removes from [m] all bindings that does not
++    satisfy the predicate f.
++
++    @since NEXT_RELEASE *)
+ 
+ val filteri: ('key -> 'a -> bool) -> ('key, 'a) t -> ('key, 'a) t
+-  (**[filter f m] returns a hashtbl where only the key, values pairs
+-     [key], [a] of [m] such that [f key a = true] remain. The
+-     bindings are passed to [f] in increasing order with respect
+-     to the ordering over the type of the keys. *)
++(** [filter f m] returns a hashtbl where only the key, values pairs
++    [key], [a] of [m] such that [f key a = true] remain. *)
++
++val filteri_inplace : ('key -> 'a -> bool) -> ('key, 'a) t -> unit
++(** [filteri_inplace f m] performs as filter_inplace but [f]
++    receive the value in additiuon to the key.
++
++    @since NEXT_RELEASE *)
+ 
+ val filter_map: ('key -> 'a -> 'b option) -> ('key, 'a) t -> ('key, 'b) t
+ (** [filter_map f m] combines the features of [filteri] and [map].  It
+@@ -190,29 +224,32 @@ val filter_map: ('key -> 'a -> 'b option) -> ('key, 'a) t -> ('key, 'b) t
+     Some bi].  When [f] returns [None], the corresponding element of
+     [m] is discarded. *)
+ 
++val filter_map_inplace: ('key -> 'a -> 'a option) -> ('key, 'a) t -> unit
++(** [filter_map_inplace f m] performs like filter_map but modify [m]
++    inplace instead of creating a new Hashtbl. *)
+ 
+ (** {6 The polymorphic hash primitive}*)
+ 
+ val hash : 'a -> int
+ (** [Hashtbl.hash x] associates a positive integer to any value of
+-   any type. It is guaranteed that
+-   if [x = y] or [Pervasives.compare x y = 0], then [hash x = hash y].
+-   Moreover, [hash] always terminates, even on cyclic
+-   structures. *)
++    any type. It is guaranteed that
++    if [x = y] or [Pervasives.compare x y = 0], then [hash x = hash y].
++    Moreover, [hash] always terminates, even on cyclic
++    structures. *)
+ 
+ external hash_param : int -> int -> 'a -> int = "caml_hash_univ_param" "noalloc"
+ (** [Hashtbl.hash_param n m x] computes a hash value for [x], with the
+-   same properties as for [hash]. The two extra parameters [n] and
+-   [m] give more precise control over hashing. Hashing performs a
+-   depth-first, right-to-left traversal of the structure [x], stopping
+-   after [n] meaningful nodes were encountered, or [m] nodes,
+-   meaningful or not, were encountered. Meaningful nodes are: integers;
+-   floating-point numbers; strings; characters; booleans; and constant
+-   constructors. Larger values of [m] and [n] means that more
+-   nodes are taken into account to compute the final hash
+-   value, and therefore collisions are less likely to happen.
+-   However, hashing takes longer. The parameters [m] and [n]
+-   govern the tradeoff between accuracy and speed. *)
++    same properties as for [hash]. The two extra parameters [n] and
++    [m] give more precise control over hashing. Hashing performs a
++    depth-first, right-to-left traversal of the structure [x], stopping
++    after [n] meaningful nodes were encountered, or [m] nodes,
++    meaningful or not, were encountered. Meaningful nodes are: integers;
++    floating-point numbers; strings; characters; booleans; and constant
++    constructors. Larger values of [m] and [n] means that more
++    nodes are taken into account to compute the final hash
++    value, and therefore collisions are less likely to happen.
++    However, hashing takes longer. The parameters [m] and [n]
++    govern the tradeoff between accuracy and speed. *)
+ 
+ 
+ (** {6 Boilerplate code}*)
+@@ -220,25 +257,26 @@ external hash_param : int -> int -> 'a -> int = "caml_hash_univ_param" "noalloc"
+ (** {7 Printing}*)
+ 
+ val print :  ?first:string -> ?last:string -> ?sep:string -> ?kvsep:string ->
+-                              ('a BatInnerIO.output -> 'b -> unit) ->
+-                              ('a BatInnerIO.output -> 'c -> unit) ->
+-                              'a BatInnerIO.output -> ('b, 'c) t -> unit
++  ('a BatInnerIO.output -> 'b -> unit) ->
++  ('a BatInnerIO.output -> 'c -> unit) ->
++  'a BatInnerIO.output -> ('b, 'c) t -> unit
+ 
+-     (** {6 Override modules}*)
++(** {6 Override modules}*)
+ 
+-    (**
+-       The following modules replace functions defined in {!Hashtbl} with functions
+-       behaving slightly differently but having the same name. This is by design:
+-       the functions meant to override the corresponding functions of {!Hashtbl}.
+-    *)
++(**
++   The following modules replace functions defined in {!Hashtbl} with functions
++   behaving slightly differently but having the same name. This is by design:
++   the functions meant to override the corresponding functions of {!Hashtbl}.
++*)
+ 
+-    (** Operations on {!Hashtbl} without exceptions.
++(** Operations on {!Hashtbl} without exceptions.
+ 
+ 	@documents Hashtbl.Exceptionless
+-    *)
++*)
+ module Exceptionless :
+ sig
+   val find : ('a, 'b) t -> 'a -> 'b option
++  val modify : 'a -> ('b -> 'b) -> ('a, 'b) t -> (unit, exn) BatPervasives.result
+ end
+ 
+ (** Infix operators over a {!BatHashtbl} *)
+@@ -250,15 +288,15 @@ sig
+       Equivalent to [Hashtbl.find tbl x]*)
+ 
+   val (<--) : ('a, 'b) t -> 'a * 'b -> unit
+-  (** [tbl<--(x, y)] adds a binding of [x] to [y] in table [tbl].
+-      Previous bindings for [x] are not removed, but simply
+-      hidden. That is, after performing {!Hashtbl.remove}[ tbl x],
+-      the previous binding for [x], if any, is restored.
+-      (Same behavior as with association lists.)
+-      Equivalent to [Hashtbl.add tbl x y]*)
++    (** [tbl<--(x, y)] adds a binding of [x] to [y] in table [tbl].
++        Previous bindings for [x] are not removed, but simply
++        hidden. That is, after performing {!Hashtbl.remove}[ tbl x],
++        the previous binding for [x], if any, is restored.
++        (Same behavior as with association lists.)
++        Equivalent to [Hashtbl.add tbl x y]*)
+ end
+ 
+-   (** Operations on {!Hashtbl} with labels.
++(** Operations on {!Hashtbl} with labels.
+ 
+ 	This module overrides a number of functions of {!Hashtbl} by
+ 	functions in which some arguments require labels. These labels are
+@@ -266,113 +304,125 @@ end
+ 	order of arguments to functions. In every case, the behavior of the
+ 	function is identical to that of the corresponding function of {!Hashtbl}.
+ 
+-       @documents Hashtbl.Labels
+-    *)
++    @documents Hashtbl.Labels
++*)
+ module Labels :
+ sig
+   val add : ('a, 'b) t -> key:'a -> data:'b -> unit
+   val replace : ('a, 'b) t -> key:'a -> data:'b -> unit
+   val iter : f:(key:'a -> data:'b -> unit) -> ('a, 'b) t -> unit
+-  val map:   f:(key:'a -> data:'b -> 'c) -> ('a, 'b) t -> ('a, 'c) t
+-  val filter: f:('a -> bool) -> ('key, 'a) t -> ('key, 'a) t
+-  val filteri:f:(key:'key -> data:'a -> bool) -> ('key, 'a) t -> ('key, 'a) t
+-  val filter_map:f:(key:'key -> data:'a -> 'b option) -> ('key, 'a) t -> ('key, 'b) t
+-  val fold :
+-    f:(key:'a -> data:'b -> 'c -> 'c) ->
+-    ('a, 'b) t -> init:'c -> 'c
++  val map : f:(key:'a -> data:'b -> 'c) -> ('a, 'b) t -> ('a, 'c) t
++  val map_inplace : f:(key:'a -> data:'b -> 'b) -> ('a,'b) t -> unit
++  val filter : f:('a -> bool) -> ('key, 'a) t -> ('key, 'a) t
++  val filter_inplace : f:('a -> bool) -> ('key, 'a) t -> unit
++  val filteri : f:(key:'key -> data:'a -> bool) -> ('key, 'a) t -> ('key, 'a) t
++  val filteri_inplace : f:(key:'key -> data:'a -> bool) -> ('key, 'a) t -> unit
++  val filter_map : f:(key:'key -> data:'a -> 'b option) -> ('key, 'a) t -> ('key, 'b) t
++  val filter_map_inplace : f:(key:'key -> data:'a -> 'a option) -> ('key, 'a) t -> unit
++  val fold : f:(key:'a -> data:'b -> 'c -> 'c) -> ('a, 'b) t -> init:'c -> 'c
++  val modify : key:'a -> f:('b -> 'b) -> ('a, 'b) t -> unit
++  val modify_def : default:'b -> key:'a -> f:('b -> 'b) -> ('a, 'b) t -> unit
++  val modify_opt : key:'a -> f:('b option -> 'b option) -> ('a, 'b) t -> unit
+ end
+ 
+ (** {6 Functorial interface} *)
+ 
+ module type HashedType =
+-  sig
+-    type t
+-      (** The type of the hashtable keys. *)
+-    val equal : t -> t -> bool
+-      (** The equality predicate used to compare keys. *)
+-    val hash : t -> int
+-      (** A hashing function on keys. It must be such that if two keys are
+-          equal according to [equal], then they have identical hash values
+-          as computed by [hash].
+-          Examples: suitable ([equal], [hash]) pairs for arbitrary key
+-          types include
+-          ([(=)], {!Hashtbl.hash}) for comparing objects by structure,
+-          ([(fun x y -> compare x y = 0)], {!Hashtbl.hash})
+-          for comparing objects by structure and handling {!Pervasives.nan}
+-          correctly, and
+-          ([(==)], {!Hashtbl.hash}) for comparing objects by addresses
+-          (e.g. for cyclic keys). *)
+-  end
++sig
++  type t
++  (** The type of the hashtable keys. *)
++  val equal : t -> t -> bool
++  (** The equality predicate used to compare keys. *)
++  val hash : t -> int
++    (** A hashing function on keys. It must be such that if two keys are
++        equal according to [equal], then they have identical hash values
++        as computed by [hash].
++        Examples: suitable ([equal], [hash]) pairs for arbitrary key
++        types include
++        ([(=)], {!Hashtbl.hash}) for comparing objects by structure,
++        ([(fun x y -> compare x y = 0)], {!Hashtbl.hash})
++        for comparing objects by structure and handling {!Pervasives.nan}
++        correctly, and
++        ([(==)], {!Hashtbl.hash}) for comparing objects by addresses
++        (e.g. for cyclic keys). *)
++end
+ 
+ (** The output signature of the functor {!Hashtbl.Make}. *)
+ module type S =
+-  sig
+-    type key
+-    type 'a t
+-    val create : int -> 'a t
+-    val length : 'a t -> int
+-    val is_empty : 'a t -> bool
+-    val clear : 'a t -> unit
+-    val copy : 'a t -> 'a t
+-    val add : 'a t -> key -> 'a -> unit
+-    val remove : 'a t -> key -> unit
+-    val remove_all : 'a t -> key -> unit
+-    val find : 'a t -> key -> 'a
+-    val find_all : 'a t -> key -> 'a list
+-    val find_default : 'a t -> key ->  'a -> 'a
+-    val find_option : 'a t -> key -> 'a option
+-    val replace : 'a t -> key -> 'a -> unit
+-    val mem : 'a t -> key -> bool
+-    val iter : (key -> 'a -> unit) -> 'a t -> unit
+-    val fold : (key -> 'a -> 'b -> 'b) -> 'a t -> 'b -> 'b
+-    val map : (key -> 'b -> 'c) -> 'b t -> 'c t
+-    val filter: ('a -> bool) -> 'a t -> 'a t
+-    val filteri: (key -> 'a -> bool) -> 'a t -> 'a t
+-    val filter_map: (key -> 'a -> 'b option) -> 'a t -> 'b t
+-
+-    val keys : 'a t -> key BatEnum.t
+-    val values : 'a t -> 'a BatEnum.t
+-    val enum : 'a t -> (key * 'a) BatEnum.t
+-    val of_enum : (key * 'a) BatEnum.t -> 'a t
+-    val print :  ?first:string -> ?last:string -> ?sep:string ->
+-      ('a BatInnerIO.output -> key -> unit) ->
+-      ('a BatInnerIO.output -> 'b -> unit) ->
+-      'a BatInnerIO.output -> 'b t -> unit
+-
+-    (** {6 Override modules}*)
+-
+-    (**
+-       The following modules replace functions defined in {!Hashtbl} with functions
+-       behaving slightly differently but having the same name. This is by design:
+-       the functions meant to override the corresponding functions of {!Hashtbl}.
+-    *)
+-
+-    (** Operations on {!Hashtbl} without exceptions.
++sig
++  type key
++  type 'a t
++  val create : int -> 'a t
++  val length : 'a t -> int
++  val is_empty : 'a t -> bool
++  val clear : 'a t -> unit
++  val copy : 'a t -> 'a t
++  val add : 'a t -> key -> 'a -> unit
++  val remove : 'a t -> key -> unit
++  val remove_all : 'a t -> key -> unit
++  val find : 'a t -> key -> 'a
++  val find_all : 'a t -> key -> 'a list
++  val find_default : 'a t -> key ->  'a -> 'a
++  val find_option : 'a t -> key -> 'a option
++  val replace : 'a t -> key -> 'a -> unit
++  val mem : 'a t -> key -> bool
++  val iter : (key -> 'a -> unit) -> 'a t -> unit
++  val fold : (key -> 'a -> 'b -> 'b) -> 'a t -> 'b -> 'b
++  val map : (key -> 'b -> 'c) -> 'b t -> 'c t
++  val map_inplace : (key -> 'a -> 'a) -> 'a t -> unit
++  val filter : ('a -> bool) -> 'a t -> 'a t
++  val filter_inplace : ('a -> bool) -> 'a t -> unit
++  val filteri : (key -> 'a -> bool) -> 'a t -> 'a t
++  val filteri_inplace : (key -> 'a -> bool) -> 'a t -> unit
++  val filter_map : (key -> 'a -> 'b option) -> 'a t -> 'b t
++  val filter_map_inplace : (key -> 'a -> 'a option) -> 'a t -> unit
++  val modify : key -> ('a -> 'a) -> 'a t -> unit
++  val modify_def : 'a -> key -> ('a -> 'a) -> 'a t -> unit
++  val modify_opt : key -> ('a option -> 'a option) -> 'a t -> unit
++  val keys : 'a t -> key BatEnum.t
++  val values : 'a t -> 'a BatEnum.t
++  val enum : 'a t -> (key * 'a) BatEnum.t
++  val of_enum : (key * 'a) BatEnum.t -> 'a t
++  val print :  ?first:string -> ?last:string -> ?sep:string ->
++    ('a BatInnerIO.output -> key -> unit) ->
++    ('a BatInnerIO.output -> 'b -> unit) ->
++    'a BatInnerIO.output -> 'b t -> unit
++
++  (** {6 Override modules}*)
++
++  (**
++     The following modules replace functions defined in {!Hashtbl} with functions
++     behaving slightly differently but having the same name. This is by design:
++     the functions meant to override the corresponding functions of {!Hashtbl}.
++  *)
++
++  (** Operations on {!Hashtbl} without exceptions.
+ 
+ 	@documents Hashtbl.S.Exceptionless*)
+-    module Exceptionless :
+-    sig
+-      val find : 'a t -> key -> 'a option
+-    end
+-
+-    (** Infix operators over a {!BatHashtbl} *)
+-    module Infix :
+-    sig
+-      val (-->) : 'a t -> key -> 'a
+-      (** [tbl-->x] returns the current binding of [x] in [tbl],
+-          or raises [Not_found] if no such binding exists.
+-          Equivalent to [Hashtbl.find tbl x]*)
+-
+-      val (<--) : 'a t -> key * 'a -> unit
++  module Exceptionless :
++  sig
++    val find : 'a t -> key -> 'a option
++    val modify : key -> ('a -> 'a) -> 'a t -> (unit, exn) BatPervasives.result
++  end
++
++  (** Infix operators over a {!BatHashtbl} *)
++  module Infix :
++  sig
++    val (-->) : 'a t -> key -> 'a
++    (** [tbl-->x] returns the current binding of [x] in [tbl],
++        or raises [Not_found] if no such binding exists.
++        Equivalent to [Hashtbl.find tbl x]*)
++
++    val (<--) : 'a t -> key * 'a -> unit
+       (** [tbl<--(x, y)] adds a binding of [x] to [y] in table [tbl].
+           Previous bindings for [x] are not removed, but simply
+           hidden. That is, after performing {!Hashtbl.remove}[ tbl x],
+           the previous binding for [x], if any, is restored.
+           (Same behavior as with association lists.)
+           Equivalent to [Hashtbl.add tbl x y]*)
+-    end
++  end
+ 
+-    (** Operations on {!Hashtbl} with labels.
++  (** Operations on {!Hashtbl} with labels.
+ 
+ 	This module overrides a number of functions of {!Hashtbl} by
+ 	functions in which some arguments require labels. These labels are
+@@ -381,31 +431,38 @@ module type S =
+ 	function is identical to that of the corresponding function of {!Hashtbl}.
+ 
+ 	@documents Hashtbl.S.Labels
+-    *)
+-    module Labels :
+-    sig
+-      val add : 'a t -> key:key -> data:'a -> unit
+-      val replace : 'a t -> key:key -> data:'a -> unit
+-      val iter : f:(key:key -> data:'a -> unit) -> 'a t -> unit
+-      val map : f:(key:key -> data:'a -> 'b) -> 'a t -> 'b t
+-      val filter: f:('a -> bool) -> 'a t -> 'a t
+-      val filteri: f:(key:key -> data:'a -> bool) -> 'a t -> 'a t
+-      val filter_map: f:(key:key -> data:'a -> 'b option) -> 'a t -> 'b t
+-      val fold : f:(key:key -> data:'a -> 'b -> 'b) -> 'a t -> init:'b -> 'b
+-    end
+-
++  *)
++  module Labels :
++  sig
++    val add : 'a t -> key:key -> data:'a -> unit
++    val replace : 'a t -> key:key -> data:'a -> unit
++    val iter : f:(key:key -> data:'a -> unit) -> 'a t -> unit
++    val map : f:(key:key -> data:'a -> 'b) -> 'a t -> 'b t
++    val map_inplace : f:(key:key -> data:'a -> 'a) -> 'a t -> unit
++    val filter : f:('a -> bool) -> 'a t -> 'a t
++    val filter_inplace : f:('a -> bool) -> 'a t -> unit
++    val filteri : f:(key:key -> data:'a -> bool) -> 'a t -> 'a t
++    val filteri_inplace : f:(key:key -> data:'a -> bool) -> 'a t -> unit
++    val filter_map : f:(key:key -> data:'a -> 'b option) -> 'a t -> 'b t
++    val filter_map_inplace : f:(key:key -> data:'a -> 'a option) -> 'a t -> unit
++    val fold : f:(key:key -> data:'a -> 'b -> 'b) -> 'a t -> init:'b -> 'b
++    val modify : key:key -> f:('a -> 'a) -> 'a t -> unit
++    val modify_def : default:'a -> key:key -> f:('a -> 'a) -> 'a t -> unit
++    val modify_opt : key:key -> f:('a option -> 'a option) -> 'a t -> unit
+   end
++
++end
+ (** The output signature of the functor {!Hashtbl.Make}. *)
+ 
+ module Make (H : HashedType) : S with type key = H.t
+-  (** Functor building an implementation of the hashtable structure.
+-      The functor [Hashtbl.Make] returns a structure containing
+-      a type [key] of keys and a type ['a t] of hash tables
+-      associating data of type ['a] to keys of type [key].
+-      The operations perform similarly to those of the generic
+-      interface, but use the hashing and equality functions
+-      specified in the functor argument [H] instead of generic
+-      equality and hashing. *)
++(** Functor building an implementation of the hashtable structure.
++    The functor [Hashtbl.Make] returns a structure containing
++    a type [key] of keys and a type ['a t] of hash tables
++    associating data of type ['a] to keys of type [key].
++    The operations perform similarly to those of the generic
++    interface, but use the hashing and equality functions
++    specified in the functor argument [H] instead of generic
++    equality and hashing. *)
+ 
+ (** Capabilities for hashtables.
+ 
+@@ -419,9 +476,9 @@ sig
+ 
+   (**{6 Constructors}*)
+ 
+-val create : int -> ('a, 'b, _) t
++  val create : int -> ('a, 'b, _) t
+ 
+-external of_table  : ('a, 'b) Hashtbl.t -> ('a, 'b, _ ) t = "%identity"
++  external of_table  : ('a, 'b) Hashtbl.t -> ('a, 'b, _ ) t = "%identity"
+   (** Adopt a regular hashtable as a capability hashtble, allowing
+       to decrease capabilities if necessary.
+ 
+@@ -429,7 +486,7 @@ external of_table  : ('a, 'b) Hashtbl.t -> ('a, 'b, _ ) t = "%identity"
+       [let cap = of_table a in ...], any modification in [a]
+       will also have effect on [cap] and reciprocally.*)
+ 
+-external to_table  : ('a, 'b, [`Read | `Write]) t -> ('a, 'b) Hashtbl.t = "%identity"
++  external to_table  : ('a, 'b, [`Read | `Write]) t -> ('a, 'b) Hashtbl.t = "%identity"
+   (** Return a capability hashtable as a regular hashtable.
+ 
+       This operation requires both read and write permissions
+@@ -437,106 +494,92 @@ external to_table  : ('a, 'b, [`Read | `Write]) t -> ('a, 'b) Hashtbl.t = "%iden
+       words, in [let a = of_table cap in ...], any modification
+       in [a] will also have effect on [cap] and reciprocally.*)
+ 
+-external read_only :  ('a, 'b, [>`Read])  t -> ('a, 'b, [`Read])  t = "%identity"
++  external read_only :  ('a, 'b, [>`Read])  t -> ('a, 'b, [`Read])  t = "%identity"
+   (** Drop to read-only permissions.
+ 
+       This operation involves no copying.*)
+ 
+-external write_only : ('a, 'b, [>`Write]) t -> ('a, 'b, [`Write]) t = "%identity"
++  external write_only : ('a, 'b, [>`Write]) t -> ('a, 'b, [`Write]) t = "%identity"
+   (** Drop to write-only permissions.
+ 
+       This operation involves no copying.*)
+ 
+-(**{6 Base operations}*)
+-val length : ('a, 'b, _) t -> int
+-
+-val is_empty : ('a, 'b, _) t -> bool
+-
+-val add : ('a, 'b, [>`Write]) t -> 'a -> 'b -> unit
+-
+-val remove : ('a, 'b, [>`Write]) t -> 'a -> unit
+-
+-val remove_all : ('a,'b, [>`Write]) t -> 'a -> unit
+-
+-val replace : ('a, 'b, [>`Write]) t -> 'a -> 'b -> unit
+-
+-val copy : ('a, 'b, [>`Read]) t -> ('a, 'b, _) t
+-
+-val clear : ('a, 'b, [>`Write]) t -> unit
++  (**{6 Base operations}*)
+ 
++  val length : ('a, 'b, _) t -> int
++  val is_empty : ('a, 'b, _) t -> bool
++  val add : ('a, 'b, [>`Write]) t -> 'a -> 'b -> unit
++  val remove : ('a, 'b, [>`Write]) t -> 'a -> unit
++  val remove_all : ('a,'b, [>`Write]) t -> 'a -> unit
++  val replace : ('a, 'b, [>`Write]) t -> 'a -> 'b -> unit
++  val copy : ('a, 'b, [>`Read]) t -> ('a, 'b, _) t
++  val clear : ('a, 'b, [>`Write]) t -> unit
+ 
+-(**{6 Searching}*)
+-
+-val find : ('a, 'b, [>`Read]) t -> 'a -> 'b
+-
+-val find_all : ('a, 'b, [>`Read]) t -> 'a -> 'b list
+-
+-val find_default : ('a, 'b, [>`Read]) t -> 'a -> 'b -> 'b
+-
+-val find_option : ('a, 'b, [>`Read]) t -> 'a -> 'b option
+-
+-val mem : ('a, 'b, [>`Read]) t -> 'a -> bool
+-
+-(*val exists : ('a,'b) t -> 'a -> bool
+-  (** [exists h k] returns true is at least one item with key [k] is
+-      found in the hashtable. *)*)
+-
+-(**{6 Traversing}*)
+-val iter : ('a -> 'b -> unit) -> ('a, 'b, [>`Read]) t -> unit
+-
+-val fold : ('a -> 'b -> 'c -> 'c) -> ('a, 'b, [>`Read]) t -> 'c -> 'c
+-
+-val map : ('a -> 'b -> 'c) -> ('a, 'b, [>`Read]) t -> ('a, 'c, _) t
+-
+-val filter: ('a -> bool) -> ('key, 'a, [>`Read]) t -> ('key, 'a, _) t
+-
+-val filteri: ('key -> 'a -> bool) -> ('key, 'a, [>`Read]) t -> ('key, 'a, _) t
+-
+-val filter_map: ('key -> 'a -> 'b option) -> ('key, 'a, [>`Read]) t -> ('key, 'b, _) t
+-
+-(**{6 Conversions}*)
++  (**{6 Searching}*)
+ 
+-val keys : ('a,'b, [>`Read]) t -> 'a BatEnum.t
++  val find : ('a, 'b, [>`Read]) t -> 'a -> 'b
++  val find_all : ('a, 'b, [>`Read]) t -> 'a -> 'b list
++  val find_default : ('a, 'b, [>`Read]) t -> 'a -> 'b -> 'b
++  val find_option : ('a, 'b, [>`Read]) t -> 'a -> 'b option
++  val mem : ('a, 'b, [>`Read]) t -> 'a -> bool
+ 
+-val values : ('a, 'b, [>`Read]) t -> 'b BatEnum.t
++  (*val exists : ('a,'b) t -> 'a -> bool
++    (** [exists h k] returns true is at least one item with key [k] is
++        found in the hashtable. *)*)
+ 
+-val enum : ('a, 'b, [>`Read]) t -> ('a * 'b) BatEnum.t
++  (**{6 Traversing}*)
+ 
+-val of_enum : ('a * 'b) BatEnum.t -> ('a, 'b, _) t
++  val iter : ('a -> 'b -> unit) -> ('a, 'b, [>`Read]) t -> unit
++  val fold : ('a -> 'b -> 'c -> 'c) -> ('a, 'b, [>`Read]) t -> 'c -> 'c
++  val map : ('a -> 'b -> 'c) -> ('a, 'b, [>`Read]) t -> ('a, 'c, _) t
++  val map_inplace : ('a -> 'b -> 'b) -> ('a, 'b, [>`Write]) t -> unit
++  val filter : ('a -> bool) -> ('key, 'a, [>`Read]) t -> ('key, 'a, _) t
++  val filter_inplace : ('a -> bool) -> ('key, 'a, [>`Write]) t -> unit
++  val filteri : ('key -> 'a -> bool) -> ('key, 'a, [>`Read]) t -> ('key, 'a, _) t
++  val filteri_inplace : ('key -> 'a -> bool) -> ('key, 'a, [>`Write]) t -> unit
++  val filter_map : ('key -> 'a -> 'b option) -> ('key, 'a, [>`Read]) t -> ('key, 'b, _) t
++  val filter_map_inplace : ('key -> 'a -> 'a option) -> ('key, 'a, [>`Write]) t -> unit
+ 
+-(** {6 Boilerplate code}*)
++  (**{6 Conversions}*)
+ 
+-(** {7 Printing}*)
++  val keys : ('a,'b, [>`Read]) t -> 'a BatEnum.t
++  val values : ('a, 'b, [>`Read]) t -> 'b BatEnum.t
++  val enum : ('a, 'b, [>`Read]) t -> ('a * 'b) BatEnum.t
++  val of_enum : ('a * 'b) BatEnum.t -> ('a, 'b, _) t
+ 
+-val print :  ?first:string -> ?last:string -> ?sep:string -> ?kvsep:string ->
+-                              ('a BatInnerIO.output -> 'b -> unit) ->
+-                              ('a BatInnerIO.output -> 'c -> unit) ->
+-                              'a BatInnerIO.output -> ('b, 'c, [>`Read]) t -> unit
++  (** {6 Boilerplate code}*)
+ 
++  (** {7 Printing}*)
+ 
++  val print :  ?first:string -> ?last:string -> ?sep:string -> ?kvsep:string ->
++    ('a BatInnerIO.output -> 'b -> unit) ->
++    ('a BatInnerIO.output -> 'c -> unit) ->
++    'a BatInnerIO.output -> ('b, 'c, [>`Read]) t -> unit
+ 
+-(** {6 Override modules}*)
++  (** {6 Override modules}*)
+ 
+-(** Operations on {!BatHashtbl.Cap} without exceptions.*)
+-module Exceptionless :
+-sig
+-  val find : ('a, 'b, [>`Read]) t -> 'a -> 'b option
+-end
+-
+-(** Operations on {!BatHashtbl.Cap} with labels.*)
+-module Labels :
+-sig
+-  val add : ('a, 'b, [>`Write]) t -> key:'a -> data:'b -> unit
+-  val replace : ('a, 'b, [>`Write]) t -> key:'a -> data:'b -> unit
+-  val iter : f:(key:'a -> data:'b -> unit) -> ('a, 'b, [>`Read]) t -> unit
+-  val map : f:(key:'a -> data:'b -> 'c) -> ('a, 'b, [>`Read]) t -> ('a, 'c, _) t
+-  val filter: f:('a -> bool) -> ('key, 'a, [>`Read]) t -> ('key, 'a, _) t
+-  val filteri: f:(key:'key -> data:'a -> bool) -> ('key, 'a, [>`Read]) t -> ('key, 'a, _) t
+-  val filter_map: f:(key:'key -> data:'a -> 'b option) -> ('key, 'a, [>`Read]) t -> ('key, 'b, _) t
+-
+-  val fold : f:(key:'a -> data:'b -> 'c -> 'c) ->
+-	     ('a, 'b, [>`Read]) t -> init:'c -> 'c
++  (** Operations on {!BatHashtbl.Cap} without exceptions.*)
++  module Exceptionless :
++  sig
++    val find : ('a, 'b, [>`Read]) t -> 'a -> 'b option
++    val modify : 'a -> ('b -> 'b) -> ('a, 'b, [>`Read]) t -> (unit, exn) BatPervasives.result
++  end
+ 
+-end
++  (** Operations on {!BatHashtbl.Cap} with labels.*)
++  module Labels :
++  sig
++    val add : ('a, 'b, [>`Write]) t -> key:'a -> data:'b -> unit
++    val replace : ('a, 'b, [>`Write]) t -> key:'a -> data:'b -> unit
++    val iter : f:(key:'a -> data:'b -> unit) -> ('a, 'b, [>`Read]) t -> unit
++    val map : f:(key:'a -> data:'b -> 'c) -> ('a, 'b, [>`Read]) t -> ('a, 'c, _) t
++    val map_inplace : f:(key:'a -> data:'b -> 'b) -> ('a, 'b, [>`Write]) t -> unit
++    val filter : f:('a -> bool) -> ('key, 'a, [>`Read]) t -> ('key, 'a, _) t
++    val filter_inplace : f:('a -> bool) -> ('key, 'a, [>`Write]) t -> unit
++    val filteri : f:(key:'key -> data:'a -> bool) -> ('key, 'a, [>`Read]) t -> ('key, 'a, _) t
++    val filteri_inplace : f:(key:'key -> data:'a -> bool) -> ('key, 'a, [>`Write]) t -> unit
++    val filter_map : f:(key:'key -> data:'a -> 'b option) -> ('key, 'a, [>`Read]) t -> ('key, 'b, _) t
++    val filter_map_inplace : f:(key:'key -> data:'a -> 'a option) -> ('key, 'a, [>`Write]) t -> unit
++    val fold : f:(key:'a -> data:'b -> 'c -> 'c) -> ('a, 'b, [>`Read]) t -> init:'c -> 'c
++  end
+ 
+-end
++end (* Cap module *)
+diff --git a/src/batHashtbl.mlv b/src/batHashtbl.mlv
+new file mode 100644
+index 0000000..4d477e3
+--- /dev/null
++++ b/src/batHashtbl.mlv
+@@ -0,0 +1,762 @@
++(*
++ * BatHashtbl, extra functions over hashtables.
++ * Copyright (C) 1996 Xavier Leroy
++ *               2003 Nicolas Cannasse
++ *               2005 Damien Doligez
++ *               2009 David Rajchenbach-Teller, LIFO, Universite d'Orleans
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version,
++ * with the special exception on linking described in file LICENSE.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ *)
++
++
++(** {6 Import the contents of {!Hashtbl}}
++
++	Note: We can't directly [include Hashtbl] as this would cause a
++	collision on [Make]*)
++type ('a, 'b) t = ('a, 'b) Hashtbl.t
++let create s  = Hashtbl.create s
++let clear    = Hashtbl.clear
++let add      = Hashtbl.add
++let copy     = Hashtbl.copy
++let find     = Hashtbl.find
++let find_all = Hashtbl.find_all
++let mem      = Hashtbl.mem
++let remove   = Hashtbl.remove
++let replace  = Hashtbl.replace
++let iter     = Hashtbl.iter
++let fold     = Hashtbl.fold
++let hash     = Hashtbl.hash
++external hash_param : int -> int -> 'a -> int = "caml_hash_univ_param" "noalloc"
++
++type ('a, 'b) h_bucketlist =
++  | Empty
++  | Cons of 'a * 'b * ('a, 'b) h_bucketlist
++
++type ('a, 'b) h_t = {
++  mutable size: int;
++  mutable data: ('a, 'b) h_bucketlist array;
++##V4##  mutable seed: int;
++##V4##  initial_size: int;
++}
++
++external h_conv : ('a, 'b) t -> ('a, 'b) h_t = "%identity"
++external h_make : ('a, 'b) h_t -> ('a, 'b) t = "%identity"
++
++(* NOT EXPOSED
++   let resize hashfun tbl =
++   let odata = tbl.data in
++   let osize = Array.length odata in
++   let nsize = min (2 * osize + 1) Sys.max_array_length in
++   if nsize <> osize then (
++	let ndata = Array.create nsize Empty in
++	let rec insert_bucket = function
++	Empty -> ()
++	  | Cons(key, data, rest) ->
++		 insert_bucket rest; (* preserve original order of elements *)
++		 let nidx = (hashfun key) mod nsize in
++		 ndata.(nidx) <- Cons(key, data, ndata.(nidx)) in
++	for i = 0 to osize - 1 do
++	  insert_bucket odata.(i)
++	done;
++	tbl.data <- ndata;
++   )
++*)
++
++let enum h =
++  let rec make ipos ibuck idata icount =
++    let pos = ref ipos in
++    let buck = ref ibuck in
++    let hdata = ref idata in
++    let hcount = ref icount in
++    let force() =
++      (** this is a hack in order to keep an O(1) enum constructor **)
++      if !hcount = -1 then (
++        hcount := (h_conv h).size;
++        hdata := Array.copy (h_conv h).data;
++      );
++    in
++    let rec next() =
++      force();
++      match !buck with
++      | Empty ->
++        if !hcount = 0 then raise BatEnum.No_more_elements;
++        incr pos;
++        buck := Array.unsafe_get !hdata !pos;
++        next()
++      | Cons (k,i,next_buck) ->
++        buck := next_buck;
++        decr hcount;
++        (k,i)
++    in
++    let count() =
++      if !hcount = -1 then (h_conv h).size else !hcount
++    in
++    let clone() =
++      force();
++      make !pos !buck !hdata !hcount
++    in
++    BatEnum.make ~next ~count ~clone
++  in
++  make (-1) Empty (Obj.magic()) (-1)
++
++let keys h = BatEnum.map (fun (k,_) -> k) (enum h)
++let values h = BatEnum.map (fun (_,v) -> v) (enum h)
++
++let map f h =
++  let rec loop = function
++    | Empty -> Empty
++    | Cons (k,v,next) -> Cons (k,f k v,loop next)
++  in
++  let hc = h_conv h in
++  h_make { hc with data = Array.map loop hc.data; }
++
++(*$T map
++  (* non regression test for bug #354 *) \
++  let h = create 20 and k = (0,5) in add h k 3 ; \
++  let h2 = map (fun _ v -> v) h in mem h2 k
++*)
++
++let map_inplace f h =
++  let rec loop = function
++    | Empty -> Empty
++    | Cons (k, v, next) -> Cons (k, f k v, loop next)
++  in
++  BatArray.modify loop (h_conv h).data
++
++(*$= map_inplace & ~printer:(IO.to_string (List.print Int.print))
++  (let h = Enum.combine (1 -- 5, 1 -- 5) |> of_enum in \
++   map_inplace (fun _ x -> x+1) h ; \
++   values h |> List.of_enum |> List.sort Int.compare) [2;3;4;5;6]
++*)
++
++let remove_all h key =
++  let hc = h_conv h in
++  let rec loop = function
++    | Empty -> Empty
++    | Cons(k,v,next) ->
++      if k = key then (
++        hc.size <- pred hc.size;
++        loop next
++      ) else
++        Cons(k,v,loop next)
++  in
++  let pos = (hash key) mod (Array.length hc.data) in
++  Array.unsafe_set hc.data pos (loop (Array.unsafe_get hc.data pos))
++
++let find_default h key defval =
++  let rec loop = function
++    | Empty -> defval
++    | Cons (k,v,next) ->
++      if k = key then v else loop next
++  in
++  let pos = (hash key) mod (Array.length (h_conv h).data) in
++  loop (Array.unsafe_get (h_conv h).data pos)
++
++let find_option h key =
++  let rec loop = function
++    | Empty -> None
++    | Cons (k,v,next) ->
++      if k = key then Some v else loop next
++  in
++  let pos = (hash key) mod (Array.length (h_conv h).data) in
++  loop (Array.unsafe_get (h_conv h).data pos)
++
++let of_enum e =
++  let h = create (if BatEnum.fast_count e then BatEnum.count e else 0) in
++  BatEnum.iter (fun (k,v) -> add h k v) e;
++  h
++
++let length h = (h_conv h).size
++
++let is_empty h = length h = 0
++
++let modify_opt key f h =
++  let hc = h_conv h in
++  let rec loop = function
++    | Empty ->
++      (match f None with
++       | None    -> Empty
++       | Some v' -> hc.size <- succ hc.size;
++         Cons(key,v',Empty))
++    | Cons(k,v,next) ->
++      if k = key then (
++        match f (Some v) with
++        | Some v' -> Cons(k,v',next)
++        | None    -> hc.size <- pred hc.size;
++          next
++      ) else
++        Cons(k,v,loop next)
++  in
++  let pos = (hash key) mod (Array.length hc.data) in
++  Array.unsafe_set hc.data pos (loop (Array.unsafe_get hc.data pos))
++
++(*$T modify_opt
++  let h = create 3 in \
++  modify_opt "foo" (function None -> Some 0 | _ -> assert false) h; \
++  length h = 1 && find_option h "foo" = Some 0
++  let h = create 3 in \
++  add h "foo" 1; \
++  modify_opt "foo" (function Some 1 -> None | _ -> assert false) h; \
++  length h = 0 && find_option h "foo" = None
++*)
++
++let modify key f h =
++  let hc = h_conv h in
++  let rec loop = function
++    | Empty -> raise Not_found
++    | Cons(k,v,next) ->
++      if k = key then (
++        Cons(k,f v,next)
++      ) else
++        Cons(k,v,loop next)
++  in
++  let pos = (hash key) mod (Array.length hc.data) in
++  Array.unsafe_set hc.data pos (loop (Array.unsafe_get hc.data pos))
++
++(*$T modify
++  let h = create 3 in \
++  add h "foo" 1; add h "bar" 2; \
++  modify "foo" succ h; \
++  values h |> List.of_enum = [ 2; 2 ]
++  let h = create 3 in \
++  try modify "baz" succ h; false \
++  with Not_found -> true
++*)
++
++let modify_def v0 key f h =
++  let hc = h_conv h in
++  let rec loop = function
++    | Empty ->
++      hc.size <- succ hc.size;
++      Cons(key,f v0,Empty)
++    | Cons(k,v,next) ->
++      if k = key then (
++        Cons(k,f v,next)
++      ) else
++        Cons(k,v,loop next)
++  in
++  let pos = (hash key) mod (Array.length hc.data) in
++  Array.unsafe_set hc.data pos (loop (Array.unsafe_get hc.data pos))
++
++(*$T modify_def
++  let h = create 3 in \
++  modify_def 0 "foo" succ h; \
++  length h = 1 && find_option h "foo" = Some 1
++*)
++
++let print ?(first="{\n") ?(last="\n}") ?(sep=",\n") ?(kvsep=": ") print_k print_v out t =
++  BatEnum.print ~first ~last ~sep (fun out (k,v) -> BatPrintf.fprintf out "%a%s%a" print_k k kvsep print_v v) out (enum t)
++
++let filteri (f:'key -> 'a -> bool) (t:('key, 'a) t) =
++  let result = create 16 in
++  iter (fun k a -> if f k a then add result k a) t;
++  result
++
++let filteri_inplace f h =
++  let hc = h_conv h in
++  let rec loop = function
++    | Empty -> Empty
++    | Cons (k, v, next) ->
++      if f k v then Cons (k, v, loop next)
++      else (
++        hc.size <- pred hc.size ;
++        loop next
++      ) in
++  BatArray.modify loop hc.data
++
++(*$= filteri_inplace & ~printer:(IO.to_string (List.print Int.print))
++  (let h = Enum.combine (1 -- 5, 1 -- 5) |> of_enum in \
++   filteri_inplace (fun _ x -> x>3) h ; \
++   values h |> List.of_enum |> List.sort Int.compare) [4; 5]
++*)
++
++
++let filter f t = filteri (fun _k a -> f a) t
++
++let filter_inplace f h = filteri_inplace (fun _k a -> f a) h
++
++(*$= filter_inplace & ~printer:(IO.to_string (List.print Int.print))
++  (let h = Enum.combine (1 -- 5, 1 -- 5) |> of_enum in \
++   filter_inplace (fun x -> x>3) h ; \
++   values h |> List.of_enum |> List.sort Int.compare) [4; 5]
++*)
++
++
++let filter_map f t =
++  let result = create 16 in
++  iter (fun k a -> match f k a with
++    | None   -> ()
++    | Some v -> add result k v) t;
++  result
++
++let filter_map_inplace f h =
++  let hc = h_conv h in
++  let rec loop = function
++    | Empty -> Empty
++    | Cons (k, v, next) ->
++      (match f k v with
++       | None ->
++         hc.size <- pred hc.size ;
++         loop next
++       | Some v' -> Cons (k, v', loop next)) in
++  BatArray.modify loop hc.data
++
++(*$= filter_map_inplace & ~printer:(IO.to_string (List.print Int.print))
++  (let h = Enum.combine (1 -- 5, 1 -- 5) |> of_enum in \
++   filter_map_inplace (fun _ x -> if x>3 then Some (x+1) else None) h ; \
++   values h |> List.of_enum |> List.sort Int.compare) [5; 6]
++*)
++
++
++module Exceptionless =
++struct
++  let find = find_option
++  let modify k f = BatPervasives.wrap (modify k f)
++end
++
++module Infix =
++struct
++  let (-->) h k = find h k
++  let (<--) h (k,v) = add h k v
++end
++
++module Labels =
++struct
++  let label f = fun key data -> f ~key ~data
++  let add e ~key ~data = add e key data
++  let replace e ~key ~data = replace e key data
++  let iter ~f e = iter (label f) e
++  let map ~f e = map (label f) e
++  let map_inplace ~f e = map_inplace (label f) e
++  let filter ~f e = filter f e
++  let filter_inplace ~f e = filter_inplace f e
++  let filteri ~f e = filteri (label f) e
++  let filteri_inplace ~f e = filteri_inplace (label f) e
++  let filter_map ~f e = filter_map (label f) e
++  let filter_map_inplace ~f e = filter_map_inplace (label f) e
++  let fold ~f e ~init = fold (label f) e init
++  let modify ~key ~f = modify key f
++  let modify_def ~default ~key ~f = modify_def default key f
++  let modify_opt ~key ~f = modify_opt key f
++end
++
++module type HashedType = Hashtbl.HashedType
++
++module type S =
++sig
++  type key
++  type 'a t
++  val create : int -> 'a t
++  val length : 'a t -> int
++  val is_empty : 'a t -> bool
++  val clear : 'a t -> unit
++  val copy : 'a t -> 'a t
++  val add : 'a t -> key -> 'a -> unit
++  val remove : 'a t -> key -> unit
++  val remove_all : 'a t -> key -> unit
++  val find : 'a t -> key -> 'a
++  val find_all : 'a t -> key -> 'a list
++  val find_default : 'a t -> key ->  'a -> 'a
++  val find_option : 'a t -> key -> 'a option
++  val replace : 'a t -> key -> 'a -> unit
++  val mem : 'a t -> key -> bool
++  val iter : (key -> 'a -> unit) -> 'a t -> unit
++  val fold : (key -> 'a -> 'b -> 'b) -> 'a t -> 'b -> 'b
++  val map : (key -> 'b -> 'c) -> 'b t -> 'c t
++  val map_inplace : (key -> 'a -> 'a) -> 'a t -> unit
++  val filter : ('a -> bool) -> 'a t -> 'a t
++  val filter_inplace : ('a -> bool) -> 'a t -> unit
++  val filteri : (key -> 'a -> bool) -> 'a t -> 'a t
++  val filteri_inplace : (key -> 'a -> bool) -> 'a t -> unit
++  val filter_map : (key -> 'a -> 'b option) -> 'a t -> 'b t
++  val filter_map_inplace : (key -> 'a -> 'a option) -> 'a t -> unit
++  val modify : key -> ('a -> 'a) -> 'a t -> unit
++  val modify_def : 'a -> key -> ('a -> 'a) -> 'a t -> unit
++  val modify_opt : key -> ('a option -> 'a option) -> 'a t -> unit
++  val keys : 'a t -> key BatEnum.t
++  val values : 'a t -> 'a BatEnum.t
++  val enum : 'a t -> (key * 'a) BatEnum.t
++  val of_enum : (key * 'a) BatEnum.t -> 'a t
++  val print :  ?first:string -> ?last:string -> ?sep:string ->
++    ('a BatInnerIO.output -> key -> unit) ->
++    ('a BatInnerIO.output -> 'b -> unit) ->
++    'a BatInnerIO.output -> 'b t -> unit
++
++  (** Operations on {!Hashtbl} without exceptions.*)
++  module Exceptionless :
++  sig
++    val find : 'a t -> key -> 'a option
++    val modify : key -> ('a -> 'a) -> 'a t -> (unit, exn) BatPervasives.result
++  end
++
++  (** Infix operators over a {!BatHashtbl} *)
++  module Infix :
++  sig
++    val (-->) : 'a t -> key -> 'a
++    (** [tbl-->x] returns the current binding of [x] in [tbl],
++          or raises [Not_found] if no such binding exists.
++          Equivalent to [Hashtbl.find tbl x]*)
++
++    val (<--) : 'a t -> key * 'a -> unit
++      (** [tbl<--(x, y)] adds a binding of [x] to [y] in table [tbl].
++              Previous bindings for [x] are not removed, but simply
++              hidden. That is, after performing {!Hashtbl.remove}[ tbl x],
++              the previous binding for [x], if any, is restored.
++              (Same behavior as with association lists.)
++              Equivalent to [Hashtbl.add tbl x y]*)
++  end
++
++  (** Operations on {!Hashtbl} with labels.
++
++	  This module overrides a number of functions of {!Hashtbl} by
++	  functions in which some arguments require labels. These labels are
++	  there to improve readability and safety and to let you change the
++	  order of arguments to functions. In every case, the behavior of the
++	  function is identical to that of the corresponding function of {!Hashtbl}.
++  *)
++  module Labels :
++  sig
++    val add : 'a t -> key:key -> data:'a -> unit
++    val replace : 'a t -> key:key -> data:'a -> unit
++    val iter : f:(key:key -> data:'a -> unit) -> 'a t -> unit
++    val map : f:(key:key -> data:'a -> 'b) -> 'a t -> 'b t
++    val map_inplace : f:(key:key -> data:'a -> 'a) -> 'a t -> unit
++    val filter : f:('a -> bool) -> 'a t -> 'a t
++    val filter_inplace : f:('a -> bool) -> 'a t -> unit
++    val filteri : f:(key:key -> data:'a -> bool) -> 'a t -> 'a t
++    val filteri_inplace : f:(key:key -> data:'a -> bool) -> 'a t -> unit
++    val filter_map : f:(key:key -> data:'a -> 'b option) -> 'a t -> 'b t
++    val filter_map_inplace : f:(key:key -> data:'a -> 'a option) -> 'a t -> unit
++    val fold : f:(key:key -> data:'a -> 'b -> 'b) -> 'a t -> init:'b -> 'b
++    val modify : key:key -> f:('a -> 'a) -> 'a t -> unit
++    val modify_def : default:'a -> key:key -> f:('a -> 'a) -> 'a t -> unit
++    val modify_opt : key:key -> f:('a option -> 'a option) -> 'a t -> unit
++  end
++
++end
++
++
++module Make(H: HashedType): (S with type key = H.t) =
++struct
++  include Hashtbl.Make(H)
++  external to_hash : 'a t -> (key, 'a) Hashtbl.t = "%identity"
++  external of_hash : (key, 'a) Hashtbl.t -> 'a t = "%identity"
++
++  (*      type key = H.t
++          type 'a hashtbl = (key, 'a) t
++          type 'a t = 'a hashtbl
++          let create = create
++          let clear = clear
++          let copy = copy
++
++          let safehash key = (H.hash key) land max_int
++
++          let add h key info =
++		let h = h_conv h in
++		let i = (safehash key) mod (Array.length h.data) in
++		let bucket = Cons(key, info, h.data.(i)) in
++		  h.data.(i) <- bucket;
++		  h.size <- succ h.size;
++		  if h.size > Array.length h.data lsl 1 then resize safehash h
++
++          let remove h key =
++		let h = h_conv h in
++		let rec remove_bucket = function
++          Empty ->
++            Empty
++          | Cons(k, i, next) ->
++            if H.equal k key
++            then begin h.size <- pred h.size; next end
++            else Cons(k, i, remove_bucket next) in
++		let i = (safehash key) mod (Array.length h.data) in
++		  h.data.(i) <- remove_bucket h.data.(i)
++
++          let rec find_rec key = function
++          Empty ->
++          raise Not_found
++		| Cons(k, d, rest) ->
++          if H.equal key k then d else find_rec key rest
++
++          let find h key =
++		let h = h_conv h in
++		match h.data.((safehash key) mod (Array.length h.data)) with
++          Empty -> raise Not_found
++		  | Cons(k1, d1, rest1) ->
++            if H.equal key k1 then d1 else
++			match rest1 with
++			    Empty -> raise Not_found
++			  | Cons(k2, d2, rest2) ->
++			      if H.equal key k2 then d2 else
++				match rest2 with
++				    Empty -> raise Not_found
++				  | Cons(k3, d3, rest3) ->
++				      if H.equal key k3 then d3 else find_rec key rest3
++
++          let find_all h key =
++		let rec find_in_bucket = function
++          Empty ->
++            []
++		  | Cons(k, d, rest) ->
++            if H.equal k key
++            then d :: find_in_bucket rest
++            else find_in_bucket rest in
++		  find_in_bucket h.data.((safehash key) mod (Array.length h.data))
++
++          let replace h key info =
++		let rec replace_bucket = function
++          Empty ->
++            raise Not_found
++          | Cons(k, i, next) ->
++            if H.equal k key
++            then Cons(k, info, next)
++            else Cons(k, i, replace_bucket next) in
++		let i = (safehash key) mod (Array.length h.data) in
++		let l = h.data.(i) in
++		  try
++          h.data.(i) <- replace_bucket l
++		  with Not_found ->
++          h.data.(i) <- Cons(key, info, l);
++          h.size <- succ h.size;
++          if h.size > Array.length h.data lsl 1 then resize safehash h
++
++          let mem h key =
++		let rec mem_in_bucket = function
++		  | Empty ->
++            false
++		  | Cons(k, d, rest) ->
++            H.equal k key || mem_in_bucket rest in
++		  mem_in_bucket h.data.((safehash key) mod (Array.length h.data))*)
++
++  let iter = iter
++  let fold = fold
++  let length = length
++
++  let enum h = enum (to_hash h)
++  let of_enum e = of_hash (of_enum e)
++  let values  h = values (to_hash h)
++  let keys h = keys (to_hash h)
++  let map (f:key -> 'a -> 'b) h = of_hash (map f (to_hash h))
++
++  (* We can use polymorphic filteri since we do not use the key at all for inline ops *)
++  let map_inplace (f:key -> 'a -> 'b) h = map_inplace f (to_hash h)
++  let filteri_inplace f h = filteri_inplace f (to_hash h)
++  let filter_inplace f h = filter_inplace f (to_hash h)
++  let filter_map_inplace f h = filter_map_inplace f (to_hash h)
++
++  let find_option h key =
++    let hc = h_conv (to_hash h) in
++    let rec loop = function
++      | Empty -> None
++      | Cons (k,v,next) ->
++        if H.equal k key then Some v else loop next
++    in
++    let pos = (H.hash key) mod (Array.length hc.data) in
++    loop (Array.unsafe_get hc.data pos)
++
++  let find_default h key defval =
++    let hc = h_conv (to_hash h) in
++    let rec loop = function
++      | Empty -> defval
++      | Cons (k,v,next) ->
++        if H.equal k key then v else loop next
++    in
++    let pos = (H.hash key) mod (Array.length hc.data) in
++    loop (Array.unsafe_get hc.data pos)
++
++  let remove_all h key =
++    let hc = h_conv (to_hash h) in
++    let rec loop = function
++      | Empty -> Empty
++      | Cons(k,v,next) ->
++        if H.equal k key then begin
++          hc.size <- pred hc.size;
++          loop next
++        end else
++          Cons(k,v,loop next)
++    in
++    let pos = (H.hash key) mod (Array.length hc.data) in
++    Array.unsafe_set hc.data pos (loop (Array.unsafe_get hc.data pos))
++
++  let is_empty h = length h = 0
++
++  let print ?first ?last ?sep print_k print_v out t =
++    print ?first ?last ?sep print_k print_v out (to_hash t)
++
++  let filteri f t =
++    let result = create 16 in
++    iter (fun k a -> if f k a then add result k a) t;
++    result
++
++  let filter f t = filteri (fun _k a -> f a) t
++
++  let filter_map f t =
++    let result = create 16 in
++    iter (fun k a -> match f k a with
++      | None   -> ()
++      | Some v -> add result k v) t;
++    result
++
++  let modify_opt key f h =
++    let hc = h_conv (to_hash h) in
++    let rec loop = function
++      | Empty ->
++        (match f None with
++         | None    -> Empty
++         | Some v' -> hc.size <- succ hc.size;
++           Cons(key,v',Empty))
++      | Cons(k,v,next) ->
++        if H.equal k key then (
++          match f (Some v) with
++          | Some v' -> Cons(k,v',next)
++          | None    -> hc.size <- pred hc.size;
++            next
++        ) else
++          Cons(k,v,loop next)
++    in
++    let pos = (H.hash key) mod (Array.length hc.data) in
++    Array.unsafe_set hc.data pos (loop (Array.unsafe_get hc.data pos))
++
++  let modify key f h =
++    let hc = h_conv (to_hash h) in
++    let rec loop = function
++      | Empty -> raise Not_found
++      | Cons(k,v,next) ->
++        if H.equal k key then (
++          Cons(k,f v,next)
++        ) else
++          Cons(k,v,loop next)
++    in
++    let pos = (H.hash key) mod (Array.length hc.data) in
++    Array.unsafe_set hc.data pos (loop (Array.unsafe_get hc.data pos))
++
++  let modify_def v0 key f h =
++    let hc = h_conv (to_hash h) in
++    let rec loop = function
++      | Empty ->
++        hc.size <- succ hc.size;
++        Cons(key,f v0,Empty)
++      | Cons(k,v,next) ->
++        if H.equal k key then (
++          Cons(k,f v,next)
++        ) else
++          Cons(k,v,loop next)
++    in
++    let pos = (H.hash key) mod (Array.length hc.data) in
++    Array.unsafe_set hc.data pos (loop (Array.unsafe_get hc.data pos))
++
++  module Labels =
++  struct
++    let label f = fun key data -> f ~key ~data
++    let add e ~key ~data = add e key data
++    let replace e ~key ~data = replace e key data
++    let iter ~f e = iter (label f) e
++    let map ~f e = map (label f) e
++    let map_inplace ~f e = map_inplace (label f) e
++    let filter ~f e = filter f e
++    let filter_inplace ~f e = filter_inplace f e
++    let filteri ~f e = filteri (label f) e
++    let filteri_inplace ~f e = filteri_inplace (label f) e
++    let filter_map ~f e = filter_map (label f) e
++    let filter_map_inplace ~f e = filter_map_inplace (label f) e
++    let fold ~f e ~init = fold (label f) e init
++    let modify ~key ~f = modify key f
++    let modify_def ~default ~key ~f = modify_def default key f
++    let modify_opt ~key ~f = modify_opt key f
++  end
++
++  module Exceptionless =
++  struct
++    let find = find_option
++    let modify k f = BatPervasives.wrap (modify k f)
++  end
++
++  module Infix =
++  struct
++    let (-->) h k = find h k
++    let (<--) h (k,v) = add h k v
++  end
++end
++
++module Cap =
++struct
++  type ('a, 'b, 'c) t = ('a, 'b) Hashtbl.t constraint 'c = [< `Read | `Write ]
++
++  let create = create
++  external of_table  : ('a, 'b) Hashtbl.t -> ('a, 'b, _ ) t = "%identity"
++  external to_table  : ('a, 'b, [`Read | `Write]) t -> ('a, 'b) Hashtbl.t = "%identity"
++  external read_only :  ('a, 'b, [>`Read])  t -> ('a, 'b, [`Read])  t = "%identity"
++  external write_only : ('a, 'b, [>`Write]) t -> ('a, 'b, [`Write]) t = "%identity"
++
++  let length      = length
++  let is_empty    = is_empty
++  let add         = add
++  let remove      = remove
++  let remove_all  = remove_all
++  let replace     = replace
++  let copy        = copy
++  let clear       = clear
++  let find        = find
++  let find_all    = find_all
++  let find_default= find_default
++  let find_option = find_option
++  let mem         = mem
++  let iter        = iter
++  let fold        = fold
++  let map         = map
++  let map_inplace = map_inplace
++  let filter      = filter
++  let filter_inplace = filter_inplace
++  let filteri     = filteri
++  let filteri_inplace = filteri_inplace
++  let filter_map  = filter_map
++  let filter_map_inplace = filter_map_inplace
++  let modify      = modify
++  let modify_def  = modify_def
++  let modify_opt  = modify_opt
++  let keys        = keys
++  let values      = values
++  let enum        = enum
++  let of_enum     = of_enum
++  let print       = print
++  let filter      = filter
++  let filteri     = filteri
++  let filter_map  = filter_map
++  module Labels =
++  struct
++    let label f = fun key data -> f ~key ~data
++    let add e ~key ~data = add e key data
++    let replace e ~key ~data = replace e key data
++    let iter ~f e = iter (label f) e
++    let map ~f e = map (label f) e
++    let map_inplace ~f e = map_inplace (label f) e
++    let filter ~f e = filter f e
++    let filter_inplace ~f e = filter_inplace f e
++    let filteri ~f e = filteri (label f) e
++    let filteri_inplace ~f e = filteri_inplace (label f) e
++    let filter_map ~f e = filter_map (label f) e
++    let filter_map_inplace ~f e = filter_map_inplace (label f) e
++    let fold ~f e ~init = fold (label f) e init
++    let modify ~key ~f = modify key f
++    let modify_def ~default ~key ~f = modify_def default key f
++    let modify_opt ~key ~f = modify_opt key f
++  end
++
++  module Exceptionless =
++  struct
++    let find = find_option
++    let modify k f = BatPervasives.wrap (modify k f)
++  end
++end
+diff --git a/src/batMarshal.mliv b/src/batMarshal.mliv
+new file mode 100644
+index 0000000..60ea694
+--- /dev/null
++++ b/src/batMarshal.mliv
+@@ -0,0 +1,153 @@
++(*
++ * BatMarshal - Extended marshaling operations
++ * Copyright (C) 1997 Xavier Leroy
++ *               2008 David Teller
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version,
++ * with the special exception on linking described in file LICENSE.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ *)
++
++
++(** Marshaling of data structures.
++
++    This module provides functions to encode arbitrary data structures
++    as sequences of bytes, which can then be written on a file or
++    sent over a pipe or network connection.  The bytes can then
++    be read back later, possibly in another process, and decoded back
++    into a data structure. The format for the byte sequences
++    is compatible across all machines for a given version of OCaml.
++
++    Warning: marshaling is currently not type-safe. The type
++    of marshaled data is not transmitted along the value of the data,
++    making it impossible to check that the data read back possesses the
++    type expected by the context. In particular, the result type of
++    the [Marshal.from_*] functions is given as ['a], but this is
++    misleading: the returned OCaml value does not possess type ['a]
++    for all ['a]; it has one, unique type which cannot be determined
++    at compile-type.  The programmer should explicitly give the expected
++    type of the returned value, using the following syntax:
++    - [(Marshal.from_channel chan : type)].
++    Anything can happen at run-time if the object in the file does not
++    belong to the given type.
++
++    The representation of marshaled values is not human-readable, and
++    uses bytes that are not printable characters. Therefore, input and
++    output channels used in conjunction with {!Marshal.output} and
++    {!Marshal.input} must be opened in binary mode, using e.g.
++    {!BatPervasives.open_out_bin} or
++    {!BatPervasives.open_in_bin}; channels opened in text
++    mode will cause unmarshaling errors on platforms where text
++    channels behave differently than binary channels, e.g. Windows.
++
++    @author Xavier Leroy (base module)
++    @author David Teller
++*)
++
++
++type extern_flags = Marshal.extern_flags =
++    No_sharing                          (** Don't preserve sharing *)
++  | Closures                            (** Send function closures *)
++##V4.1##  | Compat_32                           (** Ensure 32-bit compatibility *)
++(** The flags to the [Marshal.to_*] functions below. *)
++
++
++val output: _ BatInnerIO.output -> ?sharing:bool -> ?closures:bool -> 'a -> unit
++(** [output out v] writes the representation of [v] on [chan].
++
++    @param sharing If [true] (default value), circularities
++    and sharing inside the value [v] are detected and preserved
++    in the sequence of bytes produced. In particular, this
++    guarantees that marshaling always terminates. Sharing
++    between values marshaled by successive calls to
++    [output] is not detected, though. If [false], sharing is ignored.
++    This results in faster marshaling if [v] contains no shared
++    substructures, but may cause slower marshaling and larger
++    byte representations if [v] actually contains sharing,
++    or even non-termination if [v] contains cycles.
++
++    @param closures If [false] (default value) marshaling fails when
++    it encounters a functional value inside [v]: only ``pure'' data
++    structures, containing neither functions nor objects, can safely
++    be transmitted between different programs. If [true], functional
++    values will be marshaled as a position in the code of the
++    program. In this case, the output of marshaling can only be read
++    back in processes that run exactly the same program, with
++    exactly the same compiled code. (This is checked at
++    un-marshaling time, using an MD5 digest of the code transmitted
++    along with the code position.) *)
++
++external to_string :
++  'a -> extern_flags list -> string = "caml_output_value_to_string"
++(** [Marshal.to_string v flags] returns a string containing
++    the representation of [v] as a sequence of bytes.
++    The [flags] argument has the same meaning as for
++    {!Marshal.to_channel}. *)
++
++val to_buffer : string -> int -> int -> 'a -> extern_flags list -> int
++(** [Marshal.to_buffer buff ofs len v flags] marshals the value [v],
++    storing its byte representation in the string [buff],
++    starting at character number [ofs], and writing at most
++    [len] characters.  It returns the number of characters
++    actually written to the string. If the byte representation
++    of [v] does not fit in [len] characters, the exception [Failure]
++    is raised. *)
++
++val input : BatInnerIO.input -> 'a
++(** [input inp] reads from [inp] the
++    byte representation of a structured value, as produced by
++    one of the [Marshal.to_*] functions, and reconstructs and
++    returns the corresponding value.*)
++
++val from_string : string -> int -> 'a
++(** [Marshal.from_string buff ofs] unmarshals a structured value
++    like {!Marshal.from_channel} does, except that the byte
++    representation is not read from a channel, but taken from
++    the string [buff], starting at position [ofs]. *)
++
++val header_size : int
++(** The bytes representing a marshaled value are composed of
++    a fixed-size header and a variable-sized data part,
++    whose size can be determined from the header.
++    {!Marshal.header_size} is the size, in characters, of the header.
++    {!Marshal.data_size}[ buff ofs] is the size, in characters,
++    of the data part, assuming a valid header is stored in
++    [buff] starting at position [ofs].
++    Finally, {!Marshal.total_size}[ buff ofs] is the total size,
++    in characters, of the marshaled value.
++    Both {!Marshal.data_size} and {!Marshal.total_size} raise [Failure]
++    if [buff], [ofs] does not contain a valid header.
++
++    To read the byte representation of a marshaled value into
++    a string buffer, the program needs to read first
++    {!Marshal.header_size} characters into the buffer,
++    then determine the length of the remainder of the
++    representation using {!Marshal.data_size},
++    make sure the buffer is large enough to hold the remaining
++    data, then read it, and finally call {!Marshal.from_string}
++    to unmarshal the value. *)
++
++val data_size : string -> int -> int
++(** See {!Marshal.header_size}.*)
++
++val total_size : string -> int -> int
++(** See {!Marshal.header_size}.*)
++
++(** {6 Deprecated} *)
++
++val to_channel : _ BatInnerIO.output -> 'a -> extern_flags list -> unit
++(** @deprecated Use {!output} instead *)
++
++val from_channel : BatInnerIO.input -> 'a
++  (** @deprecated Use {!input} instead *)
