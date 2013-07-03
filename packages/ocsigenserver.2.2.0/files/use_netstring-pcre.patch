@@ -1,0 +1,44 @@
+diff -ur ocsigenserver.2.2.0/Makefile.options ocsigenserver.2.2.0-patched/Makefile.options
+--- ocsigenserver.2.2.0/Makefile.options	2012-12-08 00:17:09.000000000 +0900
++++ ocsigenserver.2.2.0-patched/Makefile.options	2013-07-03 21:29:47.000000000 +0900
+@@ -34,6 +34,7 @@
+ SERVER_PACKAGE := lwt.ssl           \
+ 	          ${LWT_EXTRA_PACKAGE} \
+ 	          netstring         \
++	          netstring-pcre    \
+                   findlib           \
+ 	          cryptokit         \
+ 		  tyxml             \
+diff -ur ocsigenserver.2.2.0/src/baselib/Makefile ocsigenserver.2.2.0-patched/src/baselib/Makefile
+--- ocsigenserver.2.2.0/src/baselib/Makefile	2012-12-08 00:17:09.000000000 +0900
++++ ocsigenserver.2.2.0-patched/src/baselib/Makefile	2013-07-03 21:25:11.000000000 +0900
+@@ -1,6 +1,6 @@
+ include ../../Makefile.config
+ 
+-LIBS     := -package lwt.unix,netstring,cryptokit,findlib,tyxml,lwt.syntax,${LWT_EXTRA_PACKAGE}
++LIBS     := -package lwt.unix,netstring,netstring-pcre,cryptokit,findlib,tyxml,lwt.syntax,${LWT_EXTRA_PACKAGE}
+ OCAMLC   := $(OCAMLFIND) ocamlc${BYTEDBG} ${THREAD}
+ OCAMLOPT := $(OCAMLFIND) ocamlopt ${OPTDBG} ${THREAD}
+ OCAMLDOC := $(OCAMLFIND) ocamldoc
+diff -ur ocsigenserver.2.2.0/src/extensions/Makefile ocsigenserver.2.2.0-patched/src/extensions/Makefile
+--- ocsigenserver.2.2.0/src/extensions/Makefile	2012-12-08 00:17:09.000000000 +0900
++++ ocsigenserver.2.2.0-patched/src/extensions/Makefile	2013-07-03 21:32:06.000000000 +0900
+@@ -4,6 +4,7 @@
+ 	    lwt.ssl      \
+ 	    lwt.react    \
+             netstring    \
++            netstring-pcre \
+ 	    tyxml.parser \
+ 
+ LIBS     := -I ../baselib -I ../http -I ../server ${addprefix -package ,${PACKAGE}}
+diff -ur ocsigenserver.2.2.0/src/http/Makefile ocsigenserver.2.2.0-patched/src/http/Makefile
+--- ocsigenserver.2.2.0/src/http/Makefile	2012-12-08 00:17:09.000000000 +0900
++++ ocsigenserver.2.2.0-patched/src/http/Makefile	2013-07-03 21:25:19.000000000 +0900
+@@ -1,6 +1,6 @@
+ include ../../Makefile.config
+ 
+-LIBS     := -package netstring,lwt.ssl,tyxml -I ../baselib
++LIBS     := -package netstring,netstring-pcre,lwt.ssl,tyxml -I ../baselib
+ OCAMLC   := $(OCAMLFIND) ocamlc${BYTEDBG}
+ OCAMLOPT := $(OCAMLFIND) ocamlopt ${OPTDBG}
+ OCAMLDOC := $(OCAMLFIND) ocamldoc
