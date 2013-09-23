@@ -1,7 +1,7 @@
 echo pull req $TRAVIS_PULL_REQUEST
 
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  curl -OL https://github.com/$TRAVIS_REPO_SLUG/pull/$TRAVIS_PULL_REQUEST.diff -o pullreq.diff
+  curl https://github.com/$TRAVIS_REPO_SLUG/pull/$TRAVIS_PULL_REQUEST.diff -o pullreq.diff
   cat pullreq.diff
 fi
 
