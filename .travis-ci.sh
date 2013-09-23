@@ -23,4 +23,4 @@ export OPAMYES=1
 export OPAMVERBOSE=1
 
 cd $TRAVIS_BUILD_DIR
-git show
+git log HEAD~5..HEAD
