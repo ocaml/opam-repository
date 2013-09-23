@@ -9,6 +9,7 @@ fi
 case "$OCAML_VERSION" in
 4.00.1)
   echo "yes" | sudo add-apt-repository ppa:avsm/ppa
+  echo TODO need to add OPAM to this repository as there is no i386 at present
   ;;
 4.01.0)
   echo "yes" | sudo add-apt-repository ppa:avsm/ppa-testing
