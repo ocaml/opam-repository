@@ -20,7 +20,6 @@ esac
 sudo apt-get update -qq
 sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam
 export OPAMYES=1
-export OPAMVERBOSE=1
 
 cd $TRAVIS_BUILD_DIR
 
@@ -33,6 +32,8 @@ if [ -e pullreq.diff ]; then
     grep  '^--- a/packages' | \
     sed -E 's,--- a/packages/(.*)/opam,\1,' | \
     awk -F '.' '{print $1}' > tobuild.txt
-  cat tobuild.txt
-  opam install `cat tobuild.txt` 
+  pkgs=`cat tobuild.txt`
+  if [ "$pkgs" != "" ]; then
+    opam install `cat tobuild.txt`
+  fi
 fi
