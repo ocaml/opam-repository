@@ -2,6 +2,8 @@ echo pull req $TRAVIS_PULL_REQUEST
 
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   curl https://github.com/$TRAVIS_REPO_SLUG/pull/$TRAVIS_PULL_REQUEST.diff -o pullreq.diff
+else
+  git show > pullreq.diff
 fi
 
 # Install OCaml and OPAM PPAs
@@ -27,13 +29,10 @@ opam init .
 
 if [ -e pullreq.diff ]; then
   # CR: this will be replaced with the OCamlot analysis of affected packages
-  grep -- --- pullreq.diff | \
-    sort -u | \
-    grep  '^--- a/packages' | \
-    sed -E 's,--- a/packages/(.*)/opam,\1,' | \
-    awk -F '.' '{print $1}' > tobuild.txt
+  cat pullreq.diff | sort -u | grep '^... b/packages' | sed -E 's,\+\+\+ b/packages/(.*)/.*,\1,' | awk -F. '{print $1}'| sort -u > tobuild.txt
   pkgs=`cat tobuild.txt`
   if [ "$pkgs" != "" ]; then
     opam install `cat tobuild.txt`
   fi
+  cat pullreq.diff
 fi
