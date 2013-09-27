@@ -1,21 +1,29 @@
 opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+maintainer: "filliatr@lri.fr"
+
+authors: ["Romain Bardou"
+          "Francois Bobot"
+          "Jean-Christophe Filliâtre"
+          "Johannes Kanig"
+          "Stephane Lescuyer"]
+license: "GNU Library General Public License version 2.1"
+
 substs: ["opam.patch"]
 build: [
   ["./configure" "--prefix" "%{prefix}%" "--mandir" "%{man}%"]
-  ["%{make}%"]
-  ["%{make}%" "install"]
-  ["%{make}%" "contrib"]
-  ["%{make}%" "install-contrib"]
+  [make]
+  [make "install"]
+  [make "contrib"]
+  [make "install-contrib"]
 ]
 remove: [
   ["ocamlfind" "remove" "mlpost_dot"]
   ["ocamlfind" "remove" "mlpost"]
-  ["ocamlfind" "remove" "mlpost_lablgtk"] {"%{cairo1:installed}%"}
+  ["ocamlfind" "remove" "mlpost_lablgtk"] {"%{cairo:installed}%"}
 ]
 depends: [
   "ocamlfind"
   "bitstring"
 ]
-depopts: ["cairo1" {= "ocaml-1.2.0"}]
+depopts: ["cairo" {= "1.2.0"}]
 patches: ["opam.patch"]

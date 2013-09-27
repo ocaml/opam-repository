@@ -1,13 +1,24 @@
 opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+maintainer: "mfp@acm.org"
+authors: [ "Mauricio Fernandez <mfp@acm.org>" ]
+license: "LGPL-2.1 with OCaml linking exception"
+homepage: "http://github.com/mfp/ocaml-sqlexpr"
 build: [
   ["rm" "setup.ml"] {"%{ocaml-version}%" >= "4.00.0"}
   ["oasis" "setup"] {"%{ocaml-version}%" >= "4.00.0"}
-  ["ocaml" "setup.ml" "-configure" "--prefix" "%{prefix}%"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
   ["ocaml" "setup.ml" "-install"]
 ]
 remove: [
   ["ocamlfind" "remove" "sqlexpr"]
 ]
-depends: ["ocamlfind" "extlib" {= "1.5.3"} "csv" "batteries" "lwt" "sqlite3-ocaml" "oasis" {>= "0.3.0"} "estring"]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  ("batteries" {= "1.5.0"} | "batteries" {= "1.4.3"} | "estring")
+  "csv"
+  "extlib"
+  "lwt"
+  "ocamlfind"
+  ("sqlite3-ocaml" {>= "2.0.4"} | "sqlite3-ocaml" {= "2.0.3"})
+]

@@ -1,0 +1,30 @@
+opam-version: "1"
+maintainer: "contact@ocamlpro.com"
+build: [
+  [ "ocp-build" "-init" ]
+  [ "ocp-build" "ocp-index-lib" "ocp-index"
+      "ocp-browser" {"%{curses:installed}%"} ]
+  [ "ocp-build" "install"
+      "-install-lib" "%{lib}%/ocp-index"
+      "-install-bin" "%{bin}%"
+      "-install-data" "%{prefix}%/share/typerex"
+      "ocp-index-lib" "ocp-index" "ocp-browser" {"%{curses:installed}%"} ]
+  [ "sh" "-c"
+      "./_obuild/ocp-index/ocp-index.asm --help=groff > %{man}%/man1/ocp-index.1" ]
+]
+remove: [
+  [ "ocp-build" "-init" ]
+  [ "ocp-build" "uninstall"
+      "-install-lib" "%{lib}%/ocp-index"
+      "ocp-index-lib" "ocp-index" "ocp-browser" {"%{curses:installed}%"} ]
+  [ "rm" "%{man}%/man1/ocp-index.1" ]
+]
+depends: [
+  "ocp-build" {>= "1.99.4-beta"}
+  "cmdliner"
+]
+depopts: [
+  "curses"
+]
+ocaml-version: [ >= "4.00.0" ]
+homepage: "https://github.com/OCamlPro/ocp-index"

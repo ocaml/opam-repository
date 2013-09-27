@@ -1,0 +1,43 @@
+opam-version: "1"
+maintainer: "agarwal1975@gmail.com"
+homepage: "http://biocaml.org"
+authors: [
+  "Ashish Agarwal"
+  "Philippe Veber"
+  "Sebastien Mondet"
+  "Francois Berenger"
+  "Christophe Troestler"
+]
+
+build: [
+  ["omake" "configure" "PREFIX=%{prefix}%" "BUILD_TESTS=false" "BUILD_APP=%{flow:true}"]
+  ["omake"]
+  ["omake" "install"]
+]
+
+remove: [
+  ["ocamlfind" "remove" "biocaml"]
+]
+
+depends: [
+  "ocamlfind"
+  "core" {>= "109.27.00"}
+  "sexplib"
+  "camlzip"
+  "xmlm"
+  "pcre-ocaml"
+  "cfstream"
+  "omake"
+]
+
+depopts: [ "flow" ]
+
+build-test: [
+  ["omake" "configure" "PREFIX=%{prefix}%" "BUILD_TESTS=true" "BUILD_APP=false"]
+  ["omake" "test"]
+]
+
+build-doc: [
+  ["omake" "doc"]
+  ["omake" "install_doc" "INSTALL_DOCDIR=%{doc}%" ]
+]
