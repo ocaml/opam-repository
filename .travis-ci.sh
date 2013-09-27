@@ -3,7 +3,15 @@ echo pull req: $TRAVIS_PULL_REQUEST
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   curl https://github.com/$TRAVIS_REPO_SLUG/pull/$TRAVIS_PULL_REQUEST.diff -o pullreq.diff
 else
-  git show > pullreq.diff
+  git show > pullreq.diff.tmp
+  merge=`grep "^Merge: " pullreq.diff.tmp | awk -F: '{print $2}'`
+  if [ "$merge" = "" ]; then
+    echo Not a merge
+    mv pullreq.diff.tmp pullreq.diff
+  else
+    echo Merge detected, extracting $merge diff
+    git show $merge > pullreq.diff
+  fi
 fi
 
 function install_opam10_from_source {
@@ -23,7 +31,7 @@ function install_opam11_from_source {
   make
   sudo make install
 }
- 
+
 # Install OCaml and OPAM PPAs
 case "$OCAML_VERSION,$OPAM_VERSION" in
 3.12.1,1.0.0)
@@ -62,7 +70,11 @@ function build_one {
   echo build one: $pkg
   rm -rf ~/.opam
   opam init .
-  allpkgs=`opam list -s -a`
+  # list all packages changed from opam 1.0 to 1.1
+  case "$OPAM_VERSION" in
+  1.0.0) allpkgs=`opam list -s` ;;
+  *) allpkgs=`opam list -s -a` ;;
+  esac
   # test for installability
   if [ "`echo $allpkgs | grep $pkg`" = "" ]; then
     echo Skipping $pkg as not installable
@@ -70,9 +82,9 @@ function build_one {
     depext=`opam install $pkg -e ubuntu`
     echo Ubuntu depexts: $depext
     if [ "$depext" != "" ]; then 
-      sudo apt-get install $depext
+      sudo apt-get install -qq build-essential m4 $depext
     fi
-    opam install $pkgs
+    opam install $pkg
     if [ "$depext" != "" ]; then 
       sudo apt-get remove $depext
       sudo apt-get autoremove
