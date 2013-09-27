@@ -3,7 +3,15 @@ echo pull req: $TRAVIS_PULL_REQUEST
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   curl https://github.com/$TRAVIS_REPO_SLUG/pull/$TRAVIS_PULL_REQUEST.diff -o pullreq.diff
 else
-  git show > pullreq.diff
+  git show > pullreq.diff.tmp
+  merge=`grep "^Merge: " pullreq.diff.tmp | awk -F: '{print $2}'`
+  if [ "$merge" = "" ]; then
+    echo Not a merge
+    mv pullreq.diff.tmp pullreq.diff
+  else
+    echo Merge detected, extracting $merge diff
+    git show $merge > pullreq.diff
+  fi
 fi
 
 function install_opam10_from_source {
@@ -23,7 +31,7 @@ function install_opam11_from_source {
   make
   sudo make install
 }
- 
+
 # Install OCaml and OPAM PPAs
 case "$OCAML_VERSION,$OPAM_VERSION" in
 3.12.1,1.0.0)
