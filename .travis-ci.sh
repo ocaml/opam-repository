@@ -62,7 +62,11 @@ function build_one {
   echo build one: $pkg
   rm -rf ~/.opam
   opam init .
-  allpkgs=`opam list -s -a`
+  # list all packages changed from opam 1.0 to 1.1
+  case "$OPAM_VERSION" in
+  1.0.0) allpkgs=`opam list -s` ;;
+  *) allpkgs=`opam list -s -a` ;;
+  esac
   # test for installability
   if [ "`echo $allpkgs | grep $pkg`" = "" ]; then
     echo Skipping $pkg as not installable
