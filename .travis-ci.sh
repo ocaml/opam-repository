@@ -28,6 +28,13 @@ esac
 echo "yes" | sudo add-apt-repository ppa:$ppa
 sudo apt-get update -qq
 sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam
+
+echo OCaml version
+ocaml -version
+echo OPAM versions
+opam --version
+opam --git-version
+
 export OPAMYES=1
 
 cd $TRAVIS_BUILD_DIR
