@@ -59,27 +59,16 @@ function build_one {
   if [ "`echo $allpkgs | grep $pkg`" = "" ]; then
     echo Skipping $pkg as not installable
   else
-    # depexts dont really work in opam 1.0.0 so skip there
-    case "$OPAM_VERSION" in
-    1.0.0) echo Skipping depext ;;
-    *)
-      depext=`opam install $pkg -e ubuntu`
-      echo Ubuntu depexts: $depext
-      if [ "$depext" != "" ]; then 
-        sudo apt-get install -qq build-essential m4 $depext
-      fi
-      ;;
-    esac
+    depext=`opam install $pkg -e ubuntu`
+    echo Ubuntu depexts: $depext
+    if [ "$depext" != "" ]; then 
+      sudo apt-get install -qq build-essential m4 $depext
+    fi
     opam install $pkg
-    case "$OPAM_VERSION" in
-    1.0.0) echo Skipping depext removal ;;
-    *)
-      if [ "$depext" != "" ]; then 
-        sudo apt-get remove $depext
-        sudo apt-get autoremove
-      fi
-      ;;
-    esac
+    if [ "$depext" != "" ]; then 
+      sudo apt-get remove $depext
+      sudo apt-get autoremove
+    fi
   fi
 }
 
