@@ -14,50 +14,23 @@ else
   fi
 fi
 
-function install_opam10_from_source {
-  curl -OL http://www.ocamlpro.com/pub/opam-full-1.0.0.tar.gz
-  tar -zxvf opam-full-1.0.0.tar.gz
-  cd opam-full-1.0.0
-  ./configure
-  make
-  sudo make install
-}
-
-function install_opam11_from_source {
-  curl -OL https://github.com/ocamlpro/opam/archive/master.tar.gz
-  tar -zxvf opam-master.tar.gz
-  cd opam-master
-  ./configure
-  make
-  sudo make install
-}
-
 # Install OCaml and OPAM PPAs
 case "$OCAML_VERSION,$OPAM_VERSION" in
-3.12.1,1.0.0)
-  sudo apt-get install ocaml ocaml-native-compilers camlp4-extra
-  install_opam10_from_source
-  ;;
-4.01.0,1.0.0)
-  echo "yes" | sudo add-apt-repository ppa:avsm/ppa-testing
-  sudo apt-get update -qq
-  sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra
-  install_opam10_from_source
-  ;;
-4.01.0,1.1.0)
-  echo "yes" | sudo add-apt-repository ppa:avsm/ppa-testing
-  sudo apt-get update -qq
-  sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam
-  ;;
-*)
-  exit 1
-  ;;
+3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
+3.12.1,1.1.0) ppa=avsm/ocaml312+opam11 ;;
+4.00.1,1.0.0) ppa=avsm/ocaml40+opam10 ;;
+4.00.1,1.1.0) ppa=avsm/ocaml40+opam11 ;;
+4.01.0,1.0.0) ppa=avsm/ocaml41+opam10 ;;
+4.01.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
+*) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
 esac
 
+echo "yes" | sudo add-apt-repository ppa:$ppa
+sudo apt-get update -qq
+sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam
 export OPAMYES=1
 
 cd $TRAVIS_BUILD_DIR
-
 echo Pull request:
 cat pullreq.diff
 # CR: this will be replaced with the OCamlot analysis of affected packages
