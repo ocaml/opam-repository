@@ -1,0 +1,27 @@
+opam-version: "1"
+maintainer: "Christophe.Troestler@umons.ac.be"
+authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+           "Pierre Hauweele <pierre@hauweele.net>"
+           "Fabian Pijcke <fabian.pijcke@gmail.com>"
+           "Noémie Meunier <noemie_6462@hotmail.com>"
+           "Bertrand Desmons <bibi-6@hotmail.fr>"
+           "Xavier Deschuyteneer <xavier.deschuyteneer@gmail.com>" ]
+license: "LGPL-3.0 with OCaml linking exception"
+homepage: "http://forge.ocamlcore.org/projects/archimedes/"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+    --enable-cairo2 { %{cairo:version}% = "0.4.2" | %{cairo:version}% = "0.4.1" | %{cairo2:installed}% }]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-install"]
+]
+remove: [
+  ["ocamlfind" "remove" "archimedes"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "ocamlfind"
+]
+depopts: [
+  "cairo" {= "0.4.2"} "cairo" {= "0.4.1"}
+  "cairo2"
+]
