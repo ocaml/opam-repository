@@ -1,0 +1,21 @@
+--- bolt-1.4/Makefile	2012-10-26 21:19:41.000000000 +0200
++++ bolt-1.4.patched/Makefile	2013-09-27 15:36:15.556186869 +0200
+@@ -31,7 +31,7 @@
+ # DEFINITIONS
+ 
+ PROJECT_NAME=bolt
+-OCAMLBUILD=$(PATH_OCAML_PREFIX)/bin/ocamlbuild
++OCAMLBUILD=ocamlbuild
+ OCAMLBUILD_ENV=WARNINGS=$(WARNINGS) PATH_OCAML_PREFIX=$(PATH_OCAML_PREFIX)
+ OCAMLBUILD_FLAGS=-classic-display -no-links
+ MODULES_ODOCL=$(PROJECT_NAME).odocl
+@@ -101,7 +101,7 @@
+ 
+ generate: FORCE
+ 	echo '$(PROJECT_NAME).cma' > $(PROJECT_NAME).itarget
+-	(test -x $(PATH_OCAML_PREFIX)/bin/ocamlopt && echo '$(PROJECT_NAME).cmxa' >> $(PROJECT_NAME).itarget) || true
+-	(test -x $(PATH_OCAML_PREFIX)/bin/ocamljava && echo '$(PROJECT_NAME).cmjo' >> $(PROJECT_NAME).itarget) || true
++	(which ocamlopt && echo '$(PROJECT_NAME).cmxa' >> $(PROJECT_NAME).itarget) || true
++	(which ocamljava && echo '$(PROJECT_NAME).cmjo' >> $(PROJECT_NAME).itarget) || true
+ 
+ FORCE:
