@@ -65,6 +65,7 @@ function build_one {
       sudo apt-get install -qq build-essential m4 $depext
     fi
     opam install $pkg
+    opam remove $pkg
     if [ "$depext" != "" ]; then 
       sudo apt-get remove $depext
       sudo apt-get autoremove
