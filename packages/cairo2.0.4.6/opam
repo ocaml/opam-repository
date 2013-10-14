@@ -1,0 +1,32 @@
+opam-version: "1"
+maintainer: "Christophe.Troestler@umons.ac.be"
+authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+           "Pierre Hauweele <antegallya@gmail.com>" ]
+license: "LGPL-3.0 with OCaml linking exception"
+homepage: "http://forge.ocamlcore.org/projects/cairo/"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+    "--%{lablgtk:enable}%-lablgtk2"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-install"]
+]
+remove: [
+  ["ocamlfind" "remove" "cairo2"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "ocamlfind"
+]
+depopts: [
+  "lablgtk"
+]
+conflicts: [
+  "cairo" {= "0.4.1"}
+  "cairo" {= "0.4.2"}
+]
+depexts: [
+  [ ["mageia"] ["libcairo-devel"] ]
+  [ [ "debian"  ] [ "libcairo2-dev" "liblablgtk2-ocaml-dev" ] ]
+  [ [ "freebsd" ] [ "Graphics/cairo" ] ]
+  [ [ "openbsd" ] [ "Graphics/cairo" ] ]
+]
