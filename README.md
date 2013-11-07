@@ -1,5 +1,5 @@
 This repository contains OCaml package and compiler meta-data and are
-used by the default installations of [OPAM](http://opam.ocamlpro.com).
+used by the default installations of [OPAM](http://opam.ocaml.org).
 
 ## How to Contribute
 
