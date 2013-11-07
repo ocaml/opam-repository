@@ -5,7 +5,7 @@ used by the default installations of [OPAM](http://opam.ocaml.org).
 
 You are welcome to clone this repository and send us back pull
 requests. You can find more documentation and useful work-flows on
-http://opam.ocamlpro.com.
+http://opam.ocaml.org.
 
 ## License
 
