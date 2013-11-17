@@ -1,20 +1,13 @@
 opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+maintainer: ["contact@ocamlpro.com"]
+homepage: ["http://caml.inria.fr/pub/old_caml_site/camlidl/"]
+author: ["Xavier Leroy"]
+license: ["QPL-1.0 and LGPL-2 with exceptions"]
 build: [
-  ["mv" "config/Makefile.unix" "config/Makefile"] {
-    ("%{os}%" = "darwin") ||
-    (("%{os}%" = "linux") ||
-    (("%{os}%" = "bsd") ||
-    (("%{os}%" = "bsd") ||
-    (("%{os}%" = "unix") ||
-    ("%{os}%" = "cygwin")))))}
-  ["mv" "config/Makefile.win32" "config/Makefile"] {"%{os}%" = "win32"}
-  ["mkdir" "-p" "%{bin}%" "%{lib}%/camlidl" "%{lib}%/camlidl/caml"]
+  ["mv" "config/Makefile.unix" "config/Makefile"] {(os = "darwin") | ((os = "linux") | ((os = "bsd") | ((os = "bsd") | ((os = "unix") | (os = "cygwin")))))}
+  ["mv" "config/Makefile.win32" "config/Makefile"] {os = "win32"}
+  ["mkdir" "-p" bin "%{lib}%/camlidl" "%{lib}%/camlidl/caml"]
   [make "all"]
   [make "install" "BINDIR=%{bin}%" "OCAMLLIB=%{lib}%/camlidl"]
 ]
 patches: ["cpp-location.diff"]
-
-homepage: "http://caml.inria.fr/pub/old_caml_site/camlidl/"
-authors: ["Xavier Leroy"]
-license: "QPL-1.0 and LGPL-2 with exceptions"
