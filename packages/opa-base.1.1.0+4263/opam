@@ -1,15 +1,19 @@
 opam-version: "1"
-maintainer: "contact@ocamlpro.com"
-license: "AGPL"
-patches: [ "configure_notty.patch" "rm_deps.patch" "ocamlfind.patch" ]
+maintainer: ["contact@ocamlpro.com"]
+license: ["AGPL"]
+build: [
+  ["./configure" "-prefix" prefix]
+  [make "_build/myocamlbuild.exe"]
+  ["_build/myocamlbuild.exe" "ocamllib/libbase.cma" "ocamllib/libbase.cmxa"]
+]
 depends: [
   "ocamlfind"
   "ulex"
   "camlzip"
   "ocamlgraph"
 ]
-build: [
-  ["./configure" "-prefix" "%{prefix}%"]
-  [make "_build/myocamlbuild.exe"]
-  ["_build/myocamlbuild.exe" "ocamllib/libbase.cma" "ocamllib/libbase.cmxa"]
+patches: [
+  "configure_notty.patch"
+  "rm_deps.patch"
+  "ocamlfind.patch"
 ]

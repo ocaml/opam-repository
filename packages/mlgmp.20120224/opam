@@ -1,17 +1,19 @@
 opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+maintainer: ["contact@ocamlpro.com"]
 build: [
-  ["sh" "-c" "rm -f *.cmo *.cmi *.cma *.cmxa *.o *.a *.cmx *.cmxs" ]
+  ["sh" "-c" "rm -f *.cmo *.cmi *.cma *.cmxa *.o *.a *.cmx *.cmxs"]
   ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--prefix" "%{prefix}%" ]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["mkdir" "-p" "_build"]
   ["cp" "conversions.c" "_build/conversions.c"]
   ["ocaml" "setup.ml" "-build"]
   ["ocaml" "setup.ml" "-install"]
+]
+remove: [
+  ["ocamlfind" "remove" "gmp"]
 ]
 depends: [
   "conf-gmp"
   "oasis"
   "ocamlfind"
 ]
-remove: [ "ocamlfind" "remove" "gmp" ]
