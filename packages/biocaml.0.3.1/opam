@@ -1,6 +1,5 @@
 opam-version: "1"
 maintainer: "agarwal1975@gmail.com"
-homepage: "http://biocaml.org"
 authors: [
   "Ashish Agarwal"
   "Philippe Veber"
@@ -8,17 +7,21 @@ authors: [
   "Francois Berenger"
   "Christophe Troestler"
 ]
-
+homepage: "http://biocaml.org"
 build: [
   ["omake" "configure" "PREFIX=%{prefix}%" "BUILD_TESTS=false" "BUILD_APP=true"]
   ["omake" "-j2"]
   ["omake" "install"]
 ]
-
-remove: [
-  ["ocamlfind" "remove" "biocaml"]
+build-test: [
+  ["omake" "configure" "PREFIX=%{prefix}%" "BUILD_TESTS=true" "BUILD_APP=false"]
+  ["omake" "test"]
 ]
-
+build-doc: [
+  ["omake" "doc"]
+  ["omake" "install_doc" "INSTALL_DOCDIR=%{doc}%"]
+]
+remove: [["ocamlfind" "remove" "biocaml"]]
 depends: [
   "ocamlfind"
   "core" {>= "109.27.00"}
@@ -29,14 +32,4 @@ depends: [
   "cfstream"
   "omake"
   "flow"
-]
-
-build-test: [
-  ["omake" "configure" "PREFIX=%{prefix}%" "BUILD_TESTS=true" "BUILD_APP=false"]
-  ["omake" "test"]
-]
-
-build-doc: [
-  ["omake" "doc"]
-  ["omake" "install_doc" "INSTALL_DOCDIR=%{doc}%" ]
 ]

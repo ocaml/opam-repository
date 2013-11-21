@@ -1,6 +1,5 @@
 opam-version: "1"
 maintainer: "seb@mondet.org"
-homepage: "http://biocaml.org"
 authors: [
   "Ashish Agarwal"
   "Philippe Veber"
@@ -8,14 +7,21 @@ authors: [
   "Francois Berenger"
   "Christophe Troestler"
 ]
+homepage: "http://biocaml.org"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" "%{prefix}%" "--%{flow:enable}%-app" ]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{flow:enable}%-app"]
   [make "all"]
   [make "install"]
 ]
-remove: [
-  ["ocamlfind" "remove" "biocaml"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{flow:enable}%-app" "--enable-tests"]
+  [make "test"]
 ]
+build-doc: [
+  [make "doc"]
+  [make "install-doc" "DOCDIR=%{doc}%"]
+]
+remove: [["ocamlfind" "remove" "biocaml"]]
 depends: [
   "ocamlfind"
   "core" {<= "109.17.00"}
@@ -24,12 +30,4 @@ depends: [
   "xmlm"
   "pcre-ocaml"
 ]
-depopts: [ "flow" ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" "%{prefix}%" "--%{flow:enable}%-app" "--enable-tests" ]
-  [make "test"]
-]
-build-doc: [
-  [make "doc"]
-  [make "install-doc" "DOCDIR=%{doc}%" ]
-]
+depopts: ["flow"]
