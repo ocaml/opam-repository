@@ -41,7 +41,7 @@ cd $TRAVIS_BUILD_DIR
 echo Pull request:
 cat pullreq.diff
 # CR: this will be replaced with the OCamlot analysis of affected packages
-cat pullreq.diff | sort -u | grep '^... b/packages' | sed -E 's,\+\+\+ b/packages/(.*)/.*,\1,' | awk -F. '{print $1}'| sort -u > tobuild.txt
+cat pullreq.diff | sort -u | grep '^... b/packages' | sed -E 's,\+\+\+ b/packages/.*/(.*)/.*,\1,' | awk -F. '{print $1}'| sort -u > tobuild.txt
 echo To Build:
 cat tobuild.txt
 
@@ -61,12 +61,12 @@ function build_one {
   else
     depext=`opam install $pkg -e ubuntu`
     echo Ubuntu depexts: $depext
-    if [ "$depext" != "" ]; then 
+    if [ "$depext" != "" ]; then
       sudo apt-get install -qq build-essential m4 $depext
     fi
     opam install $pkg
     opam remove $pkg
-    if [ "$depext" != "" ]; then 
+    if [ "$depext" != "" ]; then
       sudo apt-get remove $depext
       sudo apt-get autoremove
     fi
