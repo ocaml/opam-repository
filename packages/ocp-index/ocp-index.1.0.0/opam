@@ -1,0 +1,36 @@
+opam-version: "1"
+maintainer: "contact@ocamlpro.com"
+homepage: "http://www.typerex.org/ocp-index.html"
+license: "LGPL"
+build: [
+  ["./configure" "--prefix" prefix]
+  [make]
+  [make "install"]
+  ["ocp-build" "install" "ocp-browser"
+      "-install-lib" lib
+      "-install-bin" bin] {curses:installed}
+]
+remove: [
+  ["./configure" "--prefix" prefix]
+  ["ocp-build" "uninstall" "ocp-browser"
+      "-install-lib" lib] {curses:installed}
+  [make "uninstall"]
+]
+depends: [
+  "ocp-build" {>= "1.99.4-beta"}
+  "ocp-indent" {>= "1.4.0"}
+  "cmdliner"
+]
+depopts: ["curses"]
+ocaml-version: [ >= "4.00.0" ]
+post-messages: [
+  "OCP-INDEX installed.
+
+To use it from emacs, add the following to your .emacs:
+  (add-to-list 'load-path (concat
+     (replace-regexp-in-string \"\\n$\" \"\"
+        (shell-command-to-string \"opam config var share\"))
+     \"/emacs/site-lisp\"))
+  (require 'ocp-index)"
+  {success}
+]
