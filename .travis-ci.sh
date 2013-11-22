@@ -61,12 +61,12 @@ function build_one {
   else
     depext=`opam install $pkg -e ubuntu`
     echo Ubuntu depexts: $depext
-    if [ "$depext" != "" ]; then 
+    if [ "$depext" != "" ]; then
       sudo apt-get install -qq build-essential m4 $depext
     fi
     opam install $pkg
     opam remove $pkg
-    if [ "$depext" != "" ]; then 
+    if [ "$depext" != "" ]; then
       sudo apt-get remove $depext
       sudo apt-get autoremove
     fi
