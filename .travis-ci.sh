@@ -39,7 +39,7 @@ export OPAMYES=1
 
 cd $TRAVIS_BUILD_DIR
 echo Pull request:
-cat pullreq.diff
+tail pullreq.diff
 # CR: this will be replaced with the OCamlot analysis of affected packages
 cat pullreq.diff | sort -u | grep '^... b/packages' | sed -E 's,\+\+\+ b/packages/.*/(.*)/.*,\1,' | awk -F. '{print $1}'| sort -u > tobuild.txt
 echo To Build:
