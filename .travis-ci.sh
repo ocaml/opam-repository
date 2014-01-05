@@ -56,7 +56,7 @@ function build_one {
   *) allpkgs=`opam list -s -a` ;;
   esac
   # test for installability
-  if [ "`echo $allpkgs | grep $pkg`" = "" ]; then
+  if [ "`echo $allpkgs | grep '^$pkg '`" = "" ]; then
     echo Skipping $pkg as not installable
   else
     depext=`opam install $pkg -e ubuntu`
