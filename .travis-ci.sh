@@ -58,7 +58,7 @@ function build_one {
   # test for installability
   ok=0
   for pkgi in $allpkgs; do if [ "$pkgi" = "$pkg" ]; then ok=1; fi; done
-  if [ -z $ok ]; then
+  if [ $ok = "0" ]; then
     echo Skipping $pkg as not installable
   else
     depext=`opam install $pkg -e ubuntu`
