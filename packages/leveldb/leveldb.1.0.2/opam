@@ -1,0 +1,24 @@
+opam-version: "1"
+maintainer: "mfp@acm.org"
+homepage: "https://github.com/mfp/ocaml-leveldb"
+license: "LGPL+static"
+doc: ["https://github.com/mfp/ocaml-leveldb/blob/master/README.md"]
+build: [
+  ["omake" "-j9"]
+  ["omake" "install" "prefix=%{prefix}%"]
+]
+build-test: [["omake" "test"] {"%{ounit:installed}"}]
+remove: [
+  ["ocamlfind" "remove" "leveldb"]
+]
+depends: [
+  "ocamlfind"
+  "omake"
+  "conf-leveldb"
+  "ounit"
+]
+depexts: [
+  [["debian"] ["libsnappy-dev"]]
+  [["ubuntu"] ["libsnappy-dev"]]
+]
+patches: [ "link_against_extra_libs.patch" ]
