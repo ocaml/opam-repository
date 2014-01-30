@@ -5,10 +5,14 @@ tags: [
   "org:xapi-project"
 ]
 build: [
+  ["./configure" "--prefix" "%{prefix}%"]
   [make]
-  [make "install" "BINDIR=%{bin}%"]
+  [make "install"]
 ]
-remove: [[make "uninstall" "BINDIR=%{bin}%"]]
+remove: [
+  ["ocamlfind" "remove" "nbd"]
+  ["rm" "%{prefix}%/bin/nbd-tool"]
+]
 depends: [
   "ocamlfind"
   "lwt" {>="2.4.3"}
