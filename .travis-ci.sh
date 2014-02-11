@@ -27,7 +27,7 @@ esac
 
 echo "yes" | sudo add-apt-repository ppa:$ppa
 sudo apt-get update -qq
-sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam
+sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam time
 
 echo OCaml version
 ocaml -version
@@ -41,7 +41,7 @@ cd $TRAVIS_BUILD_DIR
 echo Pull request:
 cat pullreq.diff
 # CR: this will be replaced with the OCamlot analysis of affected packages
-cat pullreq.diff | sort -u | grep '^... b/packages' | sed -E 's,\+\+\+ b/packages/(.*)/.*,\1,' | awk -F. '{print $1}'| sort -u > tobuild.txt
+cat pullreq.diff | sort -u | grep '^... b/packages' | sed -E 's,\+\+\+ b/packages/.*/(.*)/.*,\1,' | grep -v '^files' | awk -F. '{print $1}'| sort -u > tobuild.txt
 echo To Build:
 cat tobuild.txt
 
@@ -56,16 +56,19 @@ function build_one {
   *) allpkgs=`opam list -s -a` ;;
   esac
   # test for installability
-  if [ "`echo $allpkgs | grep $pkg`" = "" ]; then
+  ok=0
+  for pkgi in $allpkgs; do if [ "$pkgi" = "$pkg" ]; then ok=1; fi; done
+  if [ $ok = "0" ]; then
     echo Skipping $pkg as not installable
   else
     depext=`opam install $pkg -e ubuntu`
     echo Ubuntu depexts: $depext
-    if [ "$depext" != "" ]; then 
-      sudo apt-get install -qq build-essential m4 $depext
+    if [ "$depext" != "" ]; then
+      sudo apt-get install -qq pkg-config build-essential m4 $depext
     fi
     opam install $pkg
-    if [ "$depext" != "" ]; then 
+    opam remove $pkg
+    if [ "$depext" != "" ]; then
       sudo apt-get remove $depext
       sudo apt-get autoremove
     fi

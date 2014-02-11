@@ -1,0 +1,55 @@
+diff --git a/Makefile.in b/Makefile.in
+index 1f558fd..1db3805 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -43,6 +43,7 @@ OCAMLLEX  = @OCAMLLEX@
+ OCAMLYACC = @OCAMLYACC@
+ OCAMLDOC  = @OCAMLDOC@
+ OCAMLLIB  = @OCAMLLIB@
++OCAMLINSTALLLIB  = @OCAMLINSTALLLIB@
+ OCAMLBEST = @OCAMLBEST@
+ OCAMLVERSION = @OCAMLVERSION@
+ COQC      = @COQC@
+@@ -207,8 +208,10 @@ clean::
+ clean_old_install:
+ 	rm -f $(BINDIR)/why3*
+ 	rm -rf $(DATADIR)/why3
++	rm -rf $(OCAMLINSTALLLIB)/why3
+ 
+-install_no_local::
++
++install_no_local:: clean_old_install
+ 	mkdir -p $(BINDIR)
+ 	mkdir -p $(DATADIR)/why3
+ 	mkdir -p $(DATADIR)/why3/images
+@@ -234,10 +237,9 @@ install_no_local::
+ #	if test -d /etc/bash_completion.d; then cp -f share/bash/why3 /etc/bash_completion.d; fi
+ 
+ install_no_local_lib::
+-	rm -rf $(OCAMLLIB)/why3
+-	mkdir -p $(OCAMLLIB)/why3
++	mkdir -p $(OCAMLINSTALLLIB)/why3
+ 	cp -f lib/why3/why3.cm* lib/why3/why3.[ao] \
+-		lib/why3/META $(OCAMLLIB)/why3
++		lib/why3/META $(OCAMLINSTALLLIB)/why3
+ 
+ ifeq (@enable_local@,yes)
+ install install-lib:
+@@ -1366,6 +1368,17 @@ stdlibdoc: $(STDLIBFILES) $(STDMODFILES) bin/why3doc.@OCAMLBEST@
+ clean::
+ 	rm -f doc/stdlibdoc/*
+ 
++ifdef DOCDIR
++install-doc:
++	mkdir -p $(DOCDIR)
++	cp -rf doc/manual.pdf doc/stdlibdoc doc/apidoc $(DOCDIR)
++else
++install-doc:
++	@echo "You should set the variable DOCDIR to the destination directory"
++	@exit 1
++endif
++
++
+ ################
+ # generic rules
+ ################
