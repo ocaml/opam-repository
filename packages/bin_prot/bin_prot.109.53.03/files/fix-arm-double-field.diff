@@ -1,0 +1,29 @@
+diff --git a/lib/blit_stubs.c b/lib/blit_stubs.c
+index e67d9bc..389335d 100644
+--- a/lib/blit_stubs.c
++++ b/lib/blit_stubs.c
+@@ -72,7 +72,11 @@ CAMLprim value bin_prot_blit_buf_stub(
+ CAMLprim value bin_prot_blit_float_array_buf_stub(
+   value v_src_pos, value v_arr, value v_dst_pos, value v_buf, value v_len)
+ {
++#ifdef __arm__
++  char *arr = (char*)v_arr + Long_val(v_src_pos) * sizeof(double);
++#else
+   char *arr = (char*)&Double_field(v_arr, Long_val(v_src_pos));
++#endif
+   char *buf = get_buf(v_buf, v_dst_pos);
+   memcpy(buf, arr, (size_t) (Long_val(v_len) * sizeof(double)));
+   return Val_unit;
+@@ -82,7 +86,11 @@ CAMLprim value bin_prot_blit_buf_float_array_stub(
+   value v_src_pos, value v_buf, value v_dst_pos, value v_arr, value v_len)
+ {
+   char *buf = get_buf(v_buf, v_src_pos);
++#ifdef __arm__
++  char *arr = (char*)v_arr + Long_val(v_dst_pos) * sizeof(double);
++#else
+   char *arr = (char*)&Double_field(v_arr, Long_val(v_dst_pos));
++#endif
+   memcpy(arr, buf, (size_t) (Long_val(v_len) * sizeof(double)));
+   return Val_unit;
+ }
+

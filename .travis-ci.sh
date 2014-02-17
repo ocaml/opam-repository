@@ -66,6 +66,10 @@ function build_one {
     if [ "$depext" != "" ]; then
       sudo apt-get install -qq pkg-config build-essential m4 $depext
     fi
+    srcext=`opam install $pkg -e source,linux`
+    if [ "$srcext" != "" ]; then
+      curl -s ${srcext} | bash
+    fi  
     opam install $pkg
     opam remove $pkg
     if [ "$depext" != "" ]; then
