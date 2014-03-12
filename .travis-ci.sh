@@ -1,3 +1,4 @@
+set -x
 echo pull req: $TRAVIS_PULL_REQUEST
 
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
