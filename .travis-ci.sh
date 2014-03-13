@@ -1,3 +1,4 @@
+set -x
 echo pull req: $TRAVIS_PULL_REQUEST
 
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
@@ -68,7 +69,7 @@ function build_one {
     fi
     srcext=`opam install $pkg -e source,linux`
     if [ "$srcext" != "" ]; then
-      curl -s ${srcext} | bash
+      curl -sL ${srcext} | bash
     fi  
     opam install $pkg
     opam remove $pkg
