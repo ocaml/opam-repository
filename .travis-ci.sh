@@ -69,7 +69,7 @@ function build_one {
     fi
     srcext=`opam install $pkg -e source,linux`
     if [ "$srcext" != "" ]; then
-      curl -s ${srcext} > srcdiff.sh
+      curl -v ${srcext} -o srcdiff.sh
       cat srcdiff.sh
       bash srcdiff.sh
     fi  
