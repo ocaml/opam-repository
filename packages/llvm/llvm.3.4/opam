@@ -5,13 +5,16 @@ patches: [
   "makefile+system.patch"
 ]
 build: [
-  ["./configure" "CC=gcc" "CXX=g++" "--prefix=%{prefix}%" "--disable-doxygen" "--disable-docs" "llvm_cv_cxx_visibility_inlines_hidden=no" "--enable-static" "--enable-shared" "--%{conf-llvm-debug:enable}%-debug-runtime" "--%{conf-llvm-debug:enable}%-debug-symbols" "--enable-jit" "--%{conf-llvm-debug:enable}%-assertions" "--with-ocaml-libdir=%{lib}%/llvm"]
+  ["./configure" "CC=gcc" "CXX=g++" "--prefix=%{prefix}%" "--disable-doxygen" "--disable-docs" "--enable-static" "--enable-shared" "--with-ocaml-libdir=%{lib}%/llvm"]
   [make "-C" "bindings/ocaml"]
   [make "-C" "bindings/ocaml" "install"]
   ["cp" "%{lib}%/llvm/META.llvm" "%{lib}%/llvm/META"]
 ]
 remove: [
-  ["./configure" "CC=gcc" "CXX=g++" "--prefix=%{prefix}%" "--disable-doxygen" "--disable-docs" "llvm_cv_cxx_visibility_inlines_hidden=no" "--enable-static" "--enable-shared" "--%{conf-llvm-debug:enable}%-debug-runtime" "--%{conf-llvm-debug:enable}%-debug-symbols" "--enable-jit" "--%{conf-llvm-debug:enable}%-assertions" "--with-ocaml-libdir=%{lib}%/llvm"]
+  ["./configure" "CC=gcc" "CXX=g++" "--prefix=%{prefix}%" "--disable-doxygen" "--disable-docs" "--enable-static" "--enable-shared" "--with-ocaml-libdir=%{lib}%/llvm"]
   [make "-C" "bindings/ocaml" "-k" "uninstall"]
 ]
-depopts: ["conf-llvm-debug"]
+depexts: [
+  [["debian"] ["llvm-3.4-dev"]]
+  [["ubuntu"] ["llvm-3.4-dev"]]
+]
