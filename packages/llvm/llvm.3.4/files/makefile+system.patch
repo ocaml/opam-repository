@@ -1,0 +1,23 @@
+diff --git a/bindings/ocaml/Makefile.ocaml b/bindings/ocaml/Makefile.ocaml
+index 1b964ee..f896583 100644
+--- a/bindings/ocaml/Makefile.ocaml
++++ b/bindings/ocaml/Makefile.ocaml
+@@ -29,6 +29,9 @@ endif
+ 
+ include $(LEVEL)/Makefile.common
+ 
++LLVM_CONFIG = llvm-config-3.4
++LLVM_ROOT_DIR = $(shell llvm-config-3.4 --libdir)
++
+ # Intentionally ignore PROJ_prefix here. We want the ocaml stdlib. However, the
+ # user can override this with OCAML_LIBDIR or configure --with-ocaml-libdir=.
+ PROJ_libocamldir := $(DESTDIR)$(OCAML_LIBDIR)
+@@ -143,7 +146,7 @@ endif
+ #   The .cmo files are the only intermediates; all others are to be installed.
+ OutputsCMI := $(ObjectsCMI:$(ObjDir)/%.cmi=$(OcamlDir)/%.cmi)
+ OutputsCMX := $(ObjectsCMX:$(ObjDir)/%.cmx=$(OcamlDir)/%.cmx)
+-OutputLibs := $(UsedLibNames:%=$(OcamlDir)/%)
++OutputLibs := $(UsedLibNames:%=$(LLVM_ROOT_DIR)/%)
+ 
+ ifdef LIBRARYNAME
+ LibraryA   := $(OcamlDir)/lib$(LIBRARYNAME).a
