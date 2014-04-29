@@ -39,7 +39,7 @@ export OPAMYES=1
 
 cd $TRAVIS_BUILD_DIR
 echo Pull request:
-cat pullreq.diff
+# cat pullreq.diff
 # CR: this will be replaced with the OCamlot analysis of affected packages
 cat pullreq.diff | sort -u | grep '^... b/packages' | sed -E 's,\+\+\+ b/packages/.*/(.*)/.*,\1,' | grep -v '^files' | awk -F. '{print $1}'| sort -u > tobuild.txt
 echo To Build:
@@ -69,7 +69,7 @@ function build_one {
     srcext=`opam install $pkg -e source,linux`
     if [ "$srcext" != "" ]; then
       curl -sL ${srcext} | bash
-    fi  
+    fi
     opam install $pkg
     opam remove $pkg
     if [ "$depext" != "" ]; then
