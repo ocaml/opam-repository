@@ -53,7 +53,7 @@ function build_one {
   opam init .
   case $OCAML_VERSION in
   4.02.*)
-    opam switch 4.02.0dev+trunk
+    opam switch 4.02.0+trunk
     eval `opam config env`
     ;;
   esac
