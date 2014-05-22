@@ -1,5 +1,4 @@
 echo pull req: $TRAVIS_PULL_REQUEST
-
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   curl https://github.com/$TRAVIS_REPO_SLUG/pull/$TRAVIS_PULL_REQUEST.diff -o pullreq.diff
 else
@@ -14,21 +13,39 @@ else
   fi
 fi
 
-# Install OCaml and OPAM PPAs
-case "$OCAML_VERSION,$OPAM_VERSION" in
-3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
-3.12.1,1.1.0) ppa=avsm/ocaml312+opam11 ;;
-4.00.1,1.0.0) ppa=avsm/ocaml40+opam10 ;;
-4.00.1,1.1.0) ppa=avsm/ocaml40+opam11 ;;
-4.01.0,1.0.0) ppa=avsm/ocaml41+opam10 ;;
-4.01.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
-4.02.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
-*) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
-esac
+install_on_linux () {
+  # Install OCaml and OPAM PPAs
+  case "$OCAML_VERSION,$OPAM_VERSION" in
+  3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
+  3.12.1,1.1.0) ppa=avsm/ocaml312+opam11 ;;
+  4.00.1,1.0.0) ppa=avsm/ocaml40+opam10 ;;
+  4.00.1,1.1.0) ppa=avsm/ocaml40+opam11 ;;
+  4.01.0,1.0.0) ppa=avsm/ocaml41+opam10 ;;
+  4.01.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
+  4.02.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
+  *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
+  esac
 
-echo "yes" | sudo add-apt-repository ppa:$ppa
-sudo apt-get update -qq
-sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam time
+  echo "yes" | sudo add-apt-repository ppa:$ppa
+  sudo apt-get update -qq
+  sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam time
+}
+
+install_on_osx () {
+  curl -OL "http://xquartz.macosforge.org/downloads/SL/XQuartz-2.7.6.dmg"
+  sudo hdiutil attach XQuartz-2.7.6.dmg
+  sudo installer -verbose -pkg /Volumes/XQuartz-2.7.6/XQuartz.pkg -target /
+  case "$OCAML_VERSION,$OPAM_VERSION" in
+  4.01.0,1.1.*) brew install opam ;;
+  4.02.0,1.1.*) brew install opam ;;
+  *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
+  esac
+}
+
+case $TRAVIS_OS_NAME in
+osx) install_on_osx ;;
+linux) install_on_linux ;;
+esac
 
 echo OCaml version
 ocaml -version
@@ -68,20 +85,42 @@ function build_one {
   if [ $ok = "0" ]; then
     echo Skipping $pkg as not installable
   else
-    depext=`opam install $pkg -e ubuntu`
-    echo Ubuntu depexts: $depext
-    if [ "$depext" != "" ]; then
-      sudo apt-get install -qq pkg-config build-essential m4 $depext
-    fi
-    srcext=`opam install $pkg -e source,linux`
-    if [ "$srcext" != "" ]; then
-      curl -sL ${srcext} | bash
-    fi  
+    case $TRAVIS_OS_NAME in
+    linux)
+      depext=`opam install $pkg -e ubuntu`
+      echo Ubuntu depexts: $depext
+      if [ "$depext" != "" ]; then
+        sudo apt-get install -qq pkg-config build-essential m4 $depext
+      fi
+      srcext=`opam install $pkg -e source,linux`
+      if [ "$srcext" != "" ]; then
+        curl -sL ${srcext} | bash
+      fi  
+      ;;
+    osx)
+      depext=`opam install $pkg -e osx,homebrew`
+      echo Homebrew depexts: $depext
+      if [ "$depext" != "" ]; then
+        brew install $depext
+      fi
+      srcext=`opam install $pkg -e osx,source`
+      if [ "$srcext" != "" ]; then
+        curl -sL ${srcext} | bash
+      fi
+      ;;
+    esac
     opam install $pkg
     opam remove $pkg
     if [ "$depext" != "" ]; then
-      sudo apt-get remove $depext
-      sudo apt-get autoremove
+      case $TRAVIS_OS_NAME in
+      linux) 
+        sudo apt-get remove $depext
+        sudo apt-get autoremove
+        ;;
+      osx)
+        brew remove $depext
+        ;;
+      esac
     fi
   fi
 }
