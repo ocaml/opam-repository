@@ -34,7 +34,7 @@ install_on_linux () {
 install_on_osx () {
   curl -OL "http://xquartz.macosforge.org/downloads/SL/XQuartz-2.7.6.dmg"
   sudo hdiutil attach XQuartz-2.7.6.dmg
-  sudo installer -pkg /Volumes/XQuartz-2.7.6/XQuartz.pkg -target /
+  sudo installer -verbose -pkg /Volumes/XQuartz-2.7.6/XQuartz.pkg -target /
   case "$OCAML_VERSION,$OPAM_VERSION" in
   4.01.0,1.1.*) brew install opam ;;
   4.02.0,1.1.*) brew install opam ;;
