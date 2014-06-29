@@ -1,0 +1,33 @@
+diff -ru furypuyo_orig/common.ml furypuyo_patched/common.ml
+--- furypuyo_orig/common.ml	2010-01-25 18:13:44.000000000 +0100
++++ furypuyo_patched/common.ml	2013-08-15 18:28:05.038350670 +0200
+@@ -58,17 +58,7 @@
+   ignore (on_quit ());
+   IO.close ()
+ 
+-(* don't use Sys.executable_name because it won't work with symbolic links *)
+-let data_directory =
+-  let ed = Filename.dirname Sys.argv.(0) in
+-  let ed =
+-    if Filename.is_relative ed then
+-      Filename.concat (Sys.getcwd ()) ed
+-    else
+-      ed
+-  in
+-  let def = Filename.concat ed "data" in
+-  Config.string config "DATADIR" "Game data directory (sprites, ...)" def
++let data_directory = "%{share}%/fury-puyo/data/"
+ 
+ let player_name =
+   Config.string config "PLAYERNAME" "Player name"
+diff -ru furypuyo_orig/sprites.ml furypuyo_patched/sprites.ml
+--- furypuyo_orig/sprites.ml	2010-01-25 18:13:44.000000000 +0100
++++ furypuyo_patched/sprites.ml	2013-08-15 18:28:28.810526538 +0200
+@@ -46,7 +46,6 @@
+ let load_black = Sprite.load ~transparency: `BLACK
+ 
+ let file =
+-  let data_directory = Config.get data_directory in
+   fun s -> Filename.concat data_directory s
+ 
+ let sprite_puyo_red = load_alpha (file "red40.png")

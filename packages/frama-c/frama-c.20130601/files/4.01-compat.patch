@@ -1,0 +1,151 @@
+diff -ur frama-c.20130601/external/hptmap.ml ../frama-c.20130601/external/hptmap.ml
+--- frama-c.20130601/external/hptmap.ml	2013-06-11 16:15:19.000000000 +0200
++++ ../frama-c.20130601/external/hptmap.ml	2013-08-27 11:12:04.145187344 +0200
+@@ -357,6 +357,21 @@
+       find htr
+ 
+  
++    let find_key key htr =
++      let id = Key.id key in
++      let rec find htr =
++	match htr with
++	| Empty ->
++	    raise Not_found
++	| Leaf (key', _, _) ->
++	    if Key.equal key key' then
++	      key'
++	    else
++	      raise Not_found
++	| Branch (_, mask, tree0, tree1, _) ->
++	    find (if (id land mask) = 0 then tree0 else tree1)
++      in
++      find htr	
+ 		
+ 
+     let mem key htr =
+diff -ur frama-c.20130601/external/hptmap.mli ../frama-c.20130601/external/hptmap.mli
+--- frama-c.20130601/external/hptmap.mli	2013-06-11 16:15:19.000000000 +0200
++++ ../frama-c.20130601/external/hptmap.mli	2013-08-27 11:12:30.621238364 +0200
+@@ -84,6 +84,9 @@
+       for [k], it is overridden. *)
+ 
+   val find : key -> t -> V.t
++
++  val find_key: key -> t -> key
++
+   val remove : key -> t -> t
+   (** [remove k m] returns the map [m] deprived from any binding involving
+       [k]. *)
+
+--- frama-c.20130601/src/kernel/file.ml	2013-06-11 16:13:13.000000000 +0200
++++ ../frama-c.20130601/src/kernel/file.ml	2013-08-27 11:16:41.157719017 +0200
+@@ -322,6 +322,7 @@
+ 	Printer.pp_logic_var lv Printer.pp_varinfo v
+ 
+   method vlogic_info_decl li =
++    Logic_var.Hashtbl.add known_logic_info li.l_var_info li;
+     List.iter
+       (fun lv ->
+         if lv.lv_kind <> LVFormal then
+@@ -769,10 +770,6 @@
+         DoChildren
+     | _ -> DoChildren
+ 
+-  method vlogic_info_decl li =
+-    Logic_var.Hashtbl.add known_logic_info li.l_var_info li;
+-    DoChildren
+-
+   method vlogic_info_use li =
+     let unknown () =
+       check_abort "logic function %s has no information" li.l_var_info.lv_name
+diff -ur frama-c.20130601/src/lib/hptset.ml ../frama-c.20130601/src/lib/hptset.ml
+--- frama-c.20130601/src/lib/hptset.ml	2013-06-11 16:13:42.000000000 +0200
++++ ../frama-c.20130601/src/lib/hptset.ml	2013-08-27 11:07:26.680649886 +0200
+@@ -26,6 +26,7 @@
+   val empty: t
+   val is_empty: t -> bool
+   val mem: elt -> t -> bool
++  val find: elt -> t -> elt
+   val add: elt -> t -> t
+   val singleton: elt -> t
+   val remove: elt -> t -> t
+@@ -71,6 +72,7 @@
+   type elt = X.t
+ 
+   let add k = add k ()
++  let find = find_key
+   let iter f = iter (fun x () -> f x)
+   let fold f = fold (fun x () -> f x)
+ 
+diff -ur frama-c.20130601/src/lib/hptset.mli ../frama-c.20130601/src/lib/hptset.mli
+--- frama-c.20130601/src/lib/hptset.mli	2013-06-11 16:13:42.000000000 +0200
++++ ../frama-c.20130601/src/lib/hptset.mli	2013-08-27 11:05:03.992371348 +0200
+@@ -50,6 +50,8 @@
+     val mem: elt -> t -> bool
+     (** [mem x s] tests whether [x] belongs to the set [s]. *)
+ 
++    val find: elt -> t -> elt
++
+     val add: elt -> t -> t
+     (** [add x s] returns a set containing all elements of [s],
+        plus [x]. If [x] was already in [s], [s] is returned unchanged. *)
+Seulement dans frama-c.20130601/src/lib: hptset.mli.new
+Seulement dans frama-c.20130601/src/lib: hptset.ml.new
+Seulement dans frama-c.20130601/src/lib: hptset.ml.old
+diff -ur frama-c.20130601/src/lib/setWithNearest.ml ../frama-c.20130601/src/lib/setWithNearest.ml
+--- frama-c.20130601/src/lib/setWithNearest.ml	2013-06-11 16:13:42.000000000 +0200
++++ ../frama-c.20130601/src/lib/setWithNearest.ml	2013-08-27 11:10:45.753036025 +0200
+@@ -165,6 +165,14 @@
+ 	let c = Ord.compare x v in
+ 	c = 0 || mem x (if c < 0 then l else r)
+ 
++    let rec find x = function
++      | Empty -> raise Not_found
++      | Node(l, v, r, _) ->
++	match Ord.compare x v with
++          | c when c < 0 -> find x l
++          | 0 -> v
++          | _ -> find x r
++
+     let singleton x = Node(Empty, x, Empty, 1)
+ 
+     let rec remove x = function
+diff -ur frama-c.20130601/src/memory_state/cvalue.mli ../frama-c.20130601/src/memory_state/cvalue.mli
+--- frama-c.20130601/src/memory_state/cvalue.mli	2013-06-11 16:13:51.000000000 +0200
++++ ../frama-c.20130601/src/memory_state/cvalue.mli	2013-08-27 11:15:32.077586855 +0200
+@@ -35,8 +35,8 @@
+   include module type of Location_Bytes
+     (* Too many aliases, and OCaml module system is not able to keep track
+        of all of them. Use some shortcuts *)
+-    with type z = Location_Bytes.z
+-    and type M.t = Location_Bytes.M.t
++    with type M.t = Location_Bytes.M.t
++    and type z = Location_Bytes.z
+ 
+   include Lattice_With_Isotropy.S
+       with type t := t
+Seulement dans ../frama-c.20130601/src/wp/qed: bin
+Seulement dans ../frama-c.20130601/src/wp/qed/src: .depend
+diff -ur frama-c.20130601/src/wp/qed/src/idxset.ml ../frama-c.20130601/src/wp/qed/src/idxset.ml
+--- frama-c.20130601/src/wp/qed/src/idxset.ml	2013-06-11 16:13:23.000000000 +0200
++++ ../frama-c.20130601/src/wp/qed/src/idxset.ml	2013-08-27 11:22:06.194343180 +0200
+@@ -59,6 +59,8 @@
+ 
+   let mem e s = mem_k (E.id e) s
+ 
++  let find e s = if mem e s then e else raise Not_found
++
+   let lowest_bit x = x land (-x)
+     
+   let branching_bit p0 p1 = lowest_bit (p0 lxor p1)
+@@ -360,6 +362,8 @@
+ 
+   let mem e s = mem_k (index e) s
+ 
++  let find e s = if mem e s then e else raise Not_found
++
+   let mask k m  = (k lor (m-1)) land (lnot m)
+ 
+   (* we first write a naive implementation of [highest_bit] 
+Seulement dans ../frama-c.20130601/src/wp/qed/src: numbers.ml
+Seulement dans ../frama-c.20130601/src/wp/share: .depend

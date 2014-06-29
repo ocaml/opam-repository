@@ -1,0 +1,43 @@
+--- /tmp/why3-0.81/configure	2013-03-27 07:08:28.000000000 +0100
++++ configure	2013-04-05 14:45:02.311937591 +0200
+@@ -611,6 +611,7 @@
+ enable_ide
+ enable_profiling
+ OCAMLGRAPHLIB
++OCAMLINSTALLLIB
+ OCAMLLIB
+ OCAMLVERSION
+ OCAMLBEST
+@@ -3392,6 +3393,14 @@
+    fi
+ fi
+ 
++#if ocamlfind is used it gives the install path for ocaml library
++if test "$USEOCAMLFIND" = yes; then
++   OCAMLINSTALLLIB=$(ocamlfind printconf destdir)
++else
++   OCAMLINSTALLLIB=$OCAMLLIB
++fi
++
++
+ # checking for rubber
+ if test "$enable_doc" = yes ; then
+    # Extract the first word of "rubber", so it can be a program name with args.
+@@ -4142,6 +4151,7 @@
+ 
+ 
+ 
++
+ # Finally create the Makefile from Makefile.in
+ ac_config_files="$ac_config_files Makefile src/config.sh doc/version.tex"
+ 
+@@ -5377,7 +5387,9 @@
+    echo "Installable             : no"
+ else
+    echo "Installable             : yes"
+    echo "    Binary path         : $bindir"
++   echo "    Lib path            : $libdir/why3"
+    echo "    Data path           : $datarootdir/why3"
++   echo "    Ocaml Library       : $OCAMLINSTALLLIB/why3"
+    echo "    Relocatable         : $enable_relocation"
+ fi

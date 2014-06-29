@@ -1,0 +1,21 @@
+diff --git a/src/pop/netpop.ml b/src/pop/netpop.ml
+index e99b5eb..9207382 100644
+--- a/src/pop/netpop.ml
++++ b/src/pop/netpop.ml
+@@ -230,16 +230,4 @@ object (self)
+ 	  send_command oc (sprintf "UIDL %d" n);
+ 	  status_response ic parse_line (Hashtbl.create 1)
+     with _ -> raise Protocol_error
+-
+-  method stat () =
+-    self#check_state `Transaction;
+-    send_command oc "STAT";
+-    try 
+-      status_response ic (fun s p ->
+-	let count, p = int s p in
+-	let size, p  = int s p in
+-	let ext      = trim s p 1 in
+-	(count, size, ext)
+-      )
+-    with _ -> raise Protocol_error;
+ end

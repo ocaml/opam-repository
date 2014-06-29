@@ -1,0 +1,88 @@
+diff --git a/OMakefile b/OMakefile
+index b741412..a281ebc 100644
+--- a/OMakefile
++++ b/OMakefile
+@@ -1,7 +1,7 @@
+ 
+ include config.omake
+ 
+-OCAMLFLAGS += -dtypes
++OCAMLFLAGS = -dtypes -w +a-4-27-k
+ 
+ .SUBDIRS: src doc
+ 
+diff --git a/config.omake b/config.omake
+index 4417254..2bbf1c6 100644
+--- a/config.omake
++++ b/config.omake
+@@ -1,15 +1,11 @@
+ 
+ static. = 
++	NATIVE_ENABLED = true
+ 	BYTE_ENABLED = true
+-	USE_OCAMLFIND=true
++	USE_OCAMLFIND = true
+ 	if $(not $(OCAMLFIND_EXISTS))
+ 	  eprintln(ocaml-findlib is required to build this project)
+ 	  exit 1
+ 	OCAMLDEP_MODULES_ENABLED = $(OCAMLDEP_MODULES_AVAILABLE)
+-	OCAMLDEP=$(OCAMLDEP_MODULES)
+-	PREFIX=$(shell ocamlc -where)
+ 	VERSION=0.1a
+-	ConfMsgChecking(oUnit)
+-	OUNIT_DIR=$(shell ocamlfind query oUnit)
+-	ConfMsgResult($(OUNIT_DIR))
+ 	export
+diff --git a/src/META.in b/src/META.in
+index 6cbc725..ae33943 100644
+--- a/src/META.in
++++ b/src/META.in
+@@ -1,3 +1,4 @@
+-version="0.1"
++version="0.1a"
+ archive(byte)="reins.cma"
+-archive(native)="reins.cmxa"
+\ No newline at end of file
++archive(native)="reins.cmxa"
++requires = "num"
+diff --git a/src/OMakefile b/src/OMakefile
+index 983799d..8a4b991 100644
+--- a/src/OMakefile
++++ b/src/OMakefile
+@@ -51,6 +51,5 @@ doc: reins.mli
+ REINS_CMX=$(if $(NATIVE_ENABLED), reins.cmx)
+ 
+ install: META $(REINS_LIB)
+-	mkdir -p $(PREFIX)/reins
+-	ocamlfind install reins META $(REINS_LIB) $(REINS_CMX) \
++	ocamlfind install reins META $(REINS_LIB) reins.cmi $(REINS_CMX) \
+ 	  $(filter-exists $(addsuffix .mli, $(FILES)))
+diff --git a/test/unit/OMakefile b/test/unit/OMakefile
+index 565c83d..e040b4a 100644
+--- a/test/unit/OMakefile
++++ b/test/unit/OMakefile
+@@ -1,9 +1,8 @@
+ 
+ TESTDIRS = list heap set map
+ 
+-OCAMLINCLUDES += \
+-	$(shell $(OCAMLFIND) query oUnit) \
+-	$(ROOT)/src
++OCAMLPACKS [] = oUnit num
++OCAMLINCLUDES += $(ROOT)/src
+ 
+ FILES[] = 
+ 	test_helper
+@@ -17,10 +16,10 @@ FILES[] =
+ OCAMLINCLUDES += $(TESTDIRS)
+ 
+ OCAML_LIBS = $(ROOT)/src/reins 
+-OCAML_OTHER_LIBS += str nums unix oUnit
+ TEST_PROGRAM = $(OCamlProgram run_unit_tests, $(FILES))
+ 
+ unit_tests.results: $(TEST_PROGRAM)
+ 	./run_unit_tests |& tee $@
+ 
+-.DEFAULT: $(TEST_PROGRAM) unit_tests.results
++.PHONY: test
++test: unit_tests.results

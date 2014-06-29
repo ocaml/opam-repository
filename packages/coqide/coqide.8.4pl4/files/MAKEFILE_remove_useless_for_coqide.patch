@@ -1,0 +1,50 @@
+--- Makefile	2012-05-29 13:22:26.000000000 +0200
++++ Makefile	2013-04-12 19:02:49.019720957 +0200
+@@ -96,7 +96,7 @@
+  $(strip $(foreach f, $(1), $(if $(filter $(f),$(2)),,$f)))
+ endef
+ 
+-export MLEXTRAFILES := $(GENMLFILES) $(GENML4FILES) $(GENPLUGINSMOD)
++export MLEXTRAFILES := $(GENMLFILES)
+ export MLSTATICFILES := $(call diff, $(EXISTINGML), $(MLEXTRAFILES))
+ export MLIFILES := $(sort $(GENMLIFILES) $(EXISTINGMLI))
+ 
+--- Makefile.build	2012-10-29 15:46:37.000000000 +0100
++++ Makefile.build	2013-04-12 18:59:45.199717036 +0200
+@@ -39,7 +39,8 @@
+ MLFILES:=$(MLSTATICFILES) $(MLEXTRAFILES)
+ 
+ ALLDEPS:=$(addsuffix .d, \
+-  $(ML4FILES) $(MLFILES) $(MLIFILES) $(CFILES) $(MLLIBFILES) $(VFILES))
++  $(MLFILES) $(MLIFILES) $(CFILES) $(MLLIBFILES))
++
+ 
+ .SECONDARY: $(ALLDEPS) $(GENFILES) $(ML4FILES:.ml4=.ml)
+ 
+@@ -327,13 +328,13 @@
+ coqide-opt:  $(COQIDEBYTE) $(COQIDEOPT) $(COQIDE)
+ coqide-files: $(IDEFILES)
+ 
+-$(COQIDEOPT): $(LINKIDEOPT) | $(COQTOPOPT)
++$(COQIDEOPT): $(LINKIDEOPT) | $(LIBCOQRUN)
+ 	$(SHOW)'OCAMLOPT -o $@'
+ 	$(HIDE)$(OCAMLOPT) $(COQIDEFLAGS) $(OPTFLAGS) -o $@ unix.cmxa threads.cmxa \
+ 		lablgtk.cmxa $(IDEOPTFLAGS) gtkThread.cmx str.cmxa $(LINKIDEOPT)
+ 	$(STRIP) $@
+ 
+-$(COQIDEBYTE): $(LINKIDE) | $(COQTOPBYTE)
++$(COQIDEBYTE): $(LINKIDE) | $(LIBCOQRUN)
+ 	$(SHOW)'OCAMLC -o $@'
+ 	$(HIDE)$(OCAMLC) $(COQIDEFLAGS) $(BYTEFLAGS) -o $@ unix.cma threads.cma lablgtk.cma gtkThread.cmo\
+ 		str.cma $(COQRUNBYTEFLAGS) $(LINKIDE)
+--- Makefile.common	2012-10-29 15:46:40.000000000 +0100
++++ Makefile.common	2013-04-12 19:00:55.099718527 +0200
+@@ -269,7 +269,7 @@
+ 
+ ## we now retrieve the names of .vo file to compile in */vo.itarget files
+ 
+-cat_vo_itarget = $(addprefix $(1)/,$(shell cat $(1)/vo.itarget))
++cat_vo_itarget =
+ 
+ ## Theories
+ 

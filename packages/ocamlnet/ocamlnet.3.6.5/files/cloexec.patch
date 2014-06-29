@@ -1,0 +1,71 @@
+diff -ur ocamlnet-3.6.5/src/netsys/configure ocamlnet-3.6.5-patch/src/netsys/configure
+--- ocamlnet-3.6.5/src/netsys/configure	2013-06-06 01:05:30.000000000 +0200
++++ ocamlnet-3.6.5-patch/src/netsys/configure	2013-08-28 15:26:52.113026081 +0200
+@@ -361,6 +361,20 @@
+     echo "no"
+ fi
+ 
++printf "Checking for O_CLOEXEC... "
++mkdir -p tmp
++cat <<_EOF_ >tmp/t.ml
++let x = Unix.O_CLOEXEC;;
++_EOF_
++
++def_o_cloexec="-D NO_O_CLOEXEC"
++if ocaml unix.cma tmp/t.ml >/dev/null 2>/dev/null; then
++    echo "yes"
++    def_o_cloexec="-D HAVE_O_CLOEXEC"
++else
++    echo "no"
++fi
++
+ 
+ ######################################################################
+ 
+@@ -368,6 +382,7 @@
+ cat <<EOF >Makefile.conf
+ NETSYS_LINK_OPTIONS = $netsys_link_options
+ DEF_O_SHARE_DELETE = $def_o_share_delete
++DEF_O_CLOEXEC = $def_o_cloexec
+ EOF
+ 
+ cat <<EOF >>config.h
+Only in ocamlnet-3.6.5-patch/src/netsys: configure~
+diff -ur ocamlnet-3.6.5/src/netsys/Makefile ocamlnet-3.6.5-patch/src/netsys/Makefile
+--- ocamlnet-3.6.5/src/netsys/Makefile	2013-06-06 01:05:30.000000000 +0200
++++ ocamlnet-3.6.5-patch/src/netsys/Makefile	2013-08-28 15:36:59.127055524 +0200
+@@ -48,7 +48,8 @@
+ OCAMLC_OPTIONS_FOR_netsys_c_xdr.c = -ccopt -O
+ 
+ OCAMLC_OPTIONS_FOR_netsys_posix.ml = \
+-  -package "camlp4.macro" -syntax camlp4o -ppopt "$(DEF_O_SHARE_DELETE)"
++  -package "camlp4.macro" -syntax camlp4o -ppopt "$(DEF_O_SHARE_DELETE)" \
++  -ppopt "$(DEF_O_CLOEXEC)"
+ OCAMLOPT_OPTIONS_FOR_netsys_posix.ml = $(OCAMLC_OPTIONS_FOR_netsys_posix.ml)
+ 
+ OCAMLDEP_OPTIONS = -package "camlp4.macro" -syntax camlp4o
+Only in ocamlnet-3.6.5-patch/src/netsys: Makefile~
+diff -ur ocamlnet-3.6.5/src/netsys/netsys_posix.ml ocamlnet-3.6.5-patch/src/netsys/netsys_posix.ml
+--- ocamlnet-3.6.5/src/netsys/netsys_posix.ml	2013-06-06 01:05:30.000000000 +0200
++++ ocamlnet-3.6.5-patch/src/netsys/netsys_posix.ml	2013-08-28 15:37:13.842507865 +0200
+@@ -702,6 +702,11 @@
+ type at_flag = AT_EACCESS | AT_SYMLINK_NOFOLLOW | AT_REMOVEDIR
+ 
+ (* The stubs assume these type definitions: *)
++IFDEF HAVE_O_CLOEXEC THEN
++type open_flag1 = Unix.open_flag =
++    O_RDONLY | O_WRONLY | O_RDWR | O_NONBLOCK | O_APPEND | O_CREAT | O_TRUNC
++  | O_EXCL | O_NOCTTY | O_DSYNC | O_SYNC | O_RSYNC | O_SHARE_DELETE | O_CLOEXEC
++ELSE
+ IFDEF HAVE_O_SHARE_DELETE THEN
+ type open_flag1 = Unix.open_flag =
+     O_RDONLY | O_WRONLY | O_RDWR | O_NONBLOCK | O_APPEND | O_CREAT | O_TRUNC
+@@ -711,6 +716,7 @@
+     O_RDONLY | O_WRONLY | O_RDWR | O_NONBLOCK | O_APPEND | O_CREAT | O_TRUNC
+   | O_EXCL | O_NOCTTY | O_DSYNC | O_SYNC | O_RSYNC
+ ENDIF
++ENDIF
+ 
+ type access_permission1 = Unix.access_permission =
+     R_OK | W_OK | X_OK | F_OK
+Only in ocamlnet-3.6.5-patch/src/netsys: netsys_posix.ml~

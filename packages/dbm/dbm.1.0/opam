@@ -1,0 +1,22 @@
+opam-version: "1"
+maintainer: "contact@ocamlpro.com"
+authors: ["Francois Rouaix"]
+homepage: "https://forge.ocamlcore.org/projects/camldbm/"
+license: "LGPL-v2 with OCaml linking exception"
+build: [
+  ["mkdir" "-p" "%{lib}%/dbm"]
+  ["./configure"]
+  [make "all"]
+  [make "test"]
+  [make "install" "STUBLIBDIR=%{lib}%/stublibs" "LIBDIR=%{lib}%/dbm"]
+  ["cp" "META" "%{lib}%/dbm"]
+]
+depends: ["ocamlfind"]
+depexts: [
+  [["debian"] ["libgdbm-dev"]]
+  [["ubuntu"] ["libgdbm-dev"]]
+]
+patches: [
+  "hasgotfix.patch"
+  "include_fix.patch"
+]

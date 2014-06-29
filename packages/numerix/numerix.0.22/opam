@@ -1,0 +1,35 @@
+opam-version: "1"
+maintainer: "iksnalybok@gmail.com"
+authors: ["Michel Quercia"]
+homepage: "http://pauillac.inria.fr/~quercia/"
+license: "GNU Library General Public License version 2 with special exception (cf LICENCE file)"
+build: [
+  ["./configure" "--prefix=%{prefix}%" "--enable-sse2" "--disable-lang" "--enable-ocaml" "--enable-clong" "--enable-dlong" "--enable-slong" "--enable-gmp" "--enable-ocaml_bignum"]
+  [make "clean" "lib" "examples" "test"]
+  [make "install"]
+  ["mkdir" "-p" "%{prefix}%/doc/numerix/"]
+  ["cp" "doc/english/numerix.pdf" "%{prefix}%/doc/numerix/numerix-en.pdf"]
+  ["cp" "doc/francais/numerix.pdf" "%{prefix}%/doc/numerix/numerix-fr.pdf"]
+  ["echo" "*** Check that %{lib}% is in your LD_LIBRARY_PATH ***"]
+]
+remove: [
+  ["rm" "-f" "%{bin}%/ocamlnumx"]
+  ["rm" "-f" "%{prefix}%/include/numerix.h"]
+  ["rm" "-f" "%{prefix}%/include/numerix.mli"]
+  ["rm" "-f" "%{prefix}%/include/numerix.ml"]
+  ["rm" "-f" "%{lib}%/numerix.cmi"]
+  ["rm" "-f" "%{lib}%/numerix.cma"]
+  ["rm" "-f" "%{lib}%/numerix.cmxa"]
+  ["rm" "-f" "%{lib}%/numerix.a"]
+  ["rm" "-f" "%{lib}%/libnumerix-ocaml.a"]
+  ["rm" "-f" "%{lib}%/libnumerix-ocaml.so"]
+  ["rm" "-f" "%{lib}%/dllnumerix-ocaml.so"]
+  ["rm" "-f" "%{lib}%/libnumerix-c.so"]
+  ["rm" "-f" "%{lib}%/libnumerix-c.so.0"]
+  ["rm" "-f" "%{lib}%/libnumerix-c.so.0.22"]
+  ["rm" "-f" "%{lib}%/libnumerix-ocaml.so"]
+  ["rm" "-f" "%{lib}%/libnumerix-ocaml.so.0"]
+  ["rm" "-f" "%{lib}%/libnumerix-ocaml.so.0.22"]
+  ["rm" "-f" "-r" "%{doc}%/numerix/"]
+]
+depends: ["conf-gmp"]

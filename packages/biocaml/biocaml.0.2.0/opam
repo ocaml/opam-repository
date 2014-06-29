@@ -1,0 +1,33 @@
+opam-version: "1"
+maintainer: "seb@mondet.org"
+authors: [
+  "Ashish Agarwal"
+  "Philippe Veber"
+  "Sebastien Mondet"
+  "Francois Berenger"
+  "Christophe Troestler"
+]
+homepage: "http://biocaml.org"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{flow:enable}%-app"]
+  [make "all"]
+  [make "install"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{flow:enable}%-app" "--enable-tests"]
+  [make "test"]
+]
+build-doc: [
+  [make "doc"]
+  [make "install-doc" "DOCDIR=%{doc}%"]
+]
+remove: [["ocamlfind" "remove" "biocaml"]]
+depends: [
+  "ocamlfind"
+  "core" {<= "109.17.00"}
+  "sexplib"
+  "camlzip"
+  "xmlm"
+  "pcre-ocaml"
+]
+depopts: ["flow"]

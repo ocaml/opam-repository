@@ -1,0 +1,44 @@
+opam-version: "1"
+maintainer: "contact@ocamlpro.com"
+authors: [
+  "Roberto Di Cosmo"
+  "Ralf Treinen"
+  "Stefano Zacchiroli"
+  "Pietro Abate"
+  "Jaap Boender"
+  "Jakub Zwolakowski"
+  "Olivier Rosello"
+  "Johannes Schauer"
+]
+homepage: "http://www.mancoosi.org/software/"
+license: "LGPL-v3+ with OCaml linking exception"
+substs: ["dose.ocp"]
+build: [
+  ["ocp-build" "-scan" "-init" "dose" "-v" "0"]
+  ["mv" "META.dose3" "META"]
+  ["ocamlfind" "install" "dose3" "META"]
+  ["mv" "META.dose" "META"]
+]
+remove: [
+  ["ocamlfind" "remove" "dose"]
+  ["ocamlfind" "remove" "dose3"]
+]
+depends: [
+  "ocp-build" {>= "1.99.3-beta"}
+  "ocamlgraph"
+  "cudf" {= "0.6.3"}
+  ("extlib" | "extlib-compat")
+  "re" {>= "1.2.0"}
+]
+patches: [
+  "patches/0001-Added-portable-invocation-of-mktemp-for-Linux-and-BS.patch"
+  "patches/0002-Sanitize-the-string-containing-the-criteria-before-p.patch"
+  "patches/0003-Modified-pattern-interpolation-to-ensure-only-one-is.patch"
+  "patches/0004-All-errors-from-cudfsolver-are-now-exceptions-and-no.patch"
+  "patches/0005-Fix-upgrade-bug-in-the-check_request-function.patch"
+  "patches/0006-Fix-compilation-problems-with-ocaml-4.0.1.patch"
+  "patches/0007-Fixed-code-for-computing-upgrade-constraints-handle-.patch"
+  "patches/0008-Use-re.pcre-instead-of-pcre-ocaml.patch"
+  "patches/0009-Hardcode-__FILE__-macros.patch"
+  "patches/0010-Hardcode-IFDEF-macros-assuming-false.patch"
+]

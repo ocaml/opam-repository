@@ -1,0 +1,84 @@
+diff -u zarith-1.2.orig/Changes zarith-1.2/Changes
+--- zarith-1.2.orig/Changes	2013-05-19 10:19:10.000000000 +0200
++++ zarith-1.2/Changes	2013-05-21 13:34:31.000000000 +0200
+@@ -1,3 +1,5 @@
++- Install fixes
++
+ Release 1.2 (2013-05-19):
+ - Added fast asm path for ARMv7 processors.
+ - PR#1192: incorrect behavior of div_2exp
+diff -u zarith-1.2.orig/META zarith-1.2/META
+--- zarith-1.2.orig/META	2012-04-30 21:28:21.000000000 +0200
++++ zarith-1.2/META	2013-05-21 13:34:31.000000000 +0200
+@@ -1,5 +1,5 @@
+ description = "Arbitrary precision integers"
+ requires = ""
+-version = "1.1"
++version = "1.2"
+ archive(byte) = "zarith.cma"
+ archive(native) = "zarith.cmxa"
+diff -u zarith-1.2.orig/configure zarith-1.2/configure
+--- zarith-1.2.orig/configure	2013-04-24 13:54:49.000000000 +0200
++++ zarith-1.2/configure	2013-05-21 13:34:31.000000000 +0200
+@@ -88,10 +88,10 @@
+         -installdir|--installdir)
+             installdir="$2"
+             shift;;
+-        -ocamllibdir|---ocamllibdir)
++        -ocamllibdir|--ocamllibdir)
+             ocamllibdir="$2"
+             shift;;
+-        -no-ocamlfind)
++        -no-ocamlfind|--no-ocamlfind)
+             ocamlfind="no"
+             shift;;
+         -host|--host)
+@@ -263,7 +263,7 @@
+     searchbin install
+     if test $? -eq 1; then instmeth='install'
+     else echo "no installation method found"; exit 2; fi
+-    if test "$installdir" = "auto"; then installdir="$ocamllibdir/zarith"; fi
++    if test "$installdir" = "auto"; then installdir="$ocamllibdir"; fi
+ fi
+ 
+ 
+diff -u zarith-1.2.orig/project.mak zarith-1.2/project.mak
+--- zarith-1.2.orig/project.mak	2012-12-10 10:47:31.000000000 +0100
++++ zarith-1.2/project.mak	2013-05-21 13:34:31.000000000 +0200
+@@ -39,7 +39,7 @@
+ AUTOGEN = z.ml z.mli
+ 
+ CMIOBJ = $(MLISRC:%.mli=%.cmi)
+-TOINSTALL := zarith.cma libzarith.$(LIBSUFFIX) $(MLISRC) $(CMIOBJ)
++TOINSTALL := zarith.h zarith.cma libzarith.$(LIBSUFFIX) $(MLISRC) $(CMIOBJ)
+ TESTS := testb$(EXE)
+ 
+ ifeq ($(HASOCAMLOPT),yes)
+@@ -94,22 +94,22 @@
+ 
+ ifeq ($(INSTMETH),install)
+ install:
+-	install -d $(INSTALLDIR)
++	install -d $(INSTALLDIR) $(INSTALLDIR)/zarith $(INSTALLDIR)/stublibs
+ 	for i in $(TOINSTALL); do \
+-		if test -f $$i; then $(INSTALL) -m 0644 $$i $(INSTALLDIR); fi; \
++		if test -f $$i; then $(INSTALL) -m 0644 $$i $(INSTALLDIR)/zarith/$$i; fi; \
+ 	done
+-	if test -f dllzarith.$(DLLSUFFIX); then $(INSTALL) -m 0755 dllzarith.$(DLLSUFFIX) $(INSTALLDIR)/stublibs; fi
++	if test -f dllzarith.$(DLLSUFFIX); then $(INSTALL) -m 0755 dllzarith.$(DLLSUFFIX) $(INSTALLDIR)/stublibs/dllzarith.$(DLLSUFFIX); fi
+ 
+ uninstall:
+ 	for i in $(TOINSTALL); do \
+-		rm -f $(INSTALLDIR)/$$i; \
++		rm -f $(INSTALLDIR)/zarith/$$i; \
+ 	done
+ 	if test -f $(INSTALLDIR)/stublibs/dllzarith.$(DLLSUFFIX); then rm -f $(INSTALLDIR)/stublibs/dllzarith.$(DLLSUFFIX); fi
+ endif
+ 
+ ifeq ($(INSTMETH),findlib)
+ install:
+-	$(OCAMLFIND) install -destdir "$(INSTALLDIR)" zarith META $(TOINSTALL) dllzarith.dll
++	$(OCAMLFIND) install -destdir "$(INSTALLDIR)" zarith META $(TOINSTALL) dllzarith.$(DLLSUFFIX)
+ 
+ uninstall:
+ 	$(OCAMLFIND) remove -destdir "$(INSTALLDIR)" zarith

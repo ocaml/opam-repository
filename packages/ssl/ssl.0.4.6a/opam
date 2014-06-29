@@ -1,0 +1,15 @@
+opam-version: "1"
+maintainer: "contact@ocamlpro.com"
+patches: ["fix-accept.diff"]
+build: [
+  ["./pkgconfigure" "--prefix" prefix] {os = "openbsd"}
+  ["./configure" "--prefix" prefix] {os != "openbsd"}
+  [make]
+  [make "install"]
+]
+remove: [["ocamlfind" "remove" "ssl"]]
+depends: ["ocamlfind"]
+depexts: [
+  [["debian"] ["libssl-dev"]]
+  [["ubuntu"] ["libssl-dev"]]
+]

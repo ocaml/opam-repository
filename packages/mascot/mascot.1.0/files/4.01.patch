@@ -1,0 +1,31 @@
+commit 0b80748d63c012f79b1d210848ef069fa19e3e8f
+Author: Hugo Heuzard <hugo.heuzard@gmail.com>
+Date:   Sat May 10 11:19:09 2014 +0200
+
+    4.01
+
+diff --git a/src/checks/code_ignoreUnit.ml b/src/checks/code_ignoreUnit.ml
+index 0c89914..78de4a0 100644
+--- a/src/checks/code_ignoreUnit.ml
++++ b/src/checks/code_ignoreUnit.ml
+@@ -106,16 +106,16 @@ and process_expression error e =
+       List.iter (fun (_, e) -> process_expression error e) l
+   | Texp_tuple l ->
+       List.iter (process_expression error) l
+-  | Texp_construct (_, _, _, l, _) ->
++  | Texp_construct (_, _, l, _) ->
+       List.iter (process_expression error) l
+   | Texp_variant (_, eo) ->
+       (match eo with Some e -> process_expression error e | None -> ())
+   | Texp_record (l, eo) ->
+-      List.iter (fun (_, _, _, e) -> process_expression error e) l;
++      List.iter (fun (_, _, e) -> process_expression error e) l;
+       (match eo with Some e -> process_expression error e | None -> ())
+-  | Texp_field (e, _, _, _) ->
++  | Texp_field (e, _, _) ->
+       process_expression error e
+-  | Texp_setfield (e1, _, _, _, e2) ->
++  | Texp_setfield (e1, _, _, e2) ->
+       process_expression error e1;
+       process_expression error e2
+   | Texp_array l ->
