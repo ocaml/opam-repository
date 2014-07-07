@@ -1,0 +1,26 @@
+opam-version: "1"
+name: "tls"
+version: "0.1.0"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+    "--%{ounit:enable}%-tests"
+    "--%{lwt:enable}%-lwt"
+    "--%{mirage:enable}%-mirage" ]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-install"]
+]
+remove: [
+  ["ocamlfind" "remove" "tls"]
+]
+depends: [
+  "ocamlfind"
+  "cstruct" {>= "1.2.0"}
+  "sexplib"
+  "nocrypto"
+  "x509"
+]
+depopts: [
+  "lwt"
+  "mirage" {> 1.1.3}
+  "ounit"
+]
