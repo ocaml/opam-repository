@@ -1,0 +1,30 @@
+opam-version: "1"
+ocaml-version: [ >= "4.01.0" ]
+maintainer: "seliopou@gmail.com"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{async:enable}%-async" "--%{quickcheck:enable}%-quickcheck" ]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-install"]
+]
+remove: [
+  ["ocamlfind" "remove" "netkat"]
+]
+depends: [
+  "ocamlfind"
+  "core"
+  "fieldslib"
+  "ocamlgraph"  {>= "1.8.0"}
+  "openflow"    {>= "0.5.0"}
+  "ounit"
+  "sexplib"
+  "topology"    {>= "0.1.0"}
+]
+depopts: [
+  ( "async"
+  & "cmdliner"  {>= "0.9.5"}
+  & "cstruct"   {>= "1.0.1"}
+  & "packet"    {>= "0.2.1"}
+  & "topology"  {>= "0.1.0"}
+  )
+  "quickcheck"
+]
