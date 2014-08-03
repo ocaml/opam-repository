@@ -1,0 +1,23 @@
+opam-version: "1"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+    "--%{lwt:enable}%-lwt"
+    "--%{mirage:enable}%-mirage" ]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-install"]
+]
+remove: [
+  ["ocamlfind" "remove" "tls"]
+]
+depends: [
+  "ocamlfind"
+  "cstruct" {>= "1.2.0"}
+  "sexplib"
+  "nocrypto"
+  "x509"
+]
+depopts: [
+  "lwt"
+  "mirage"
+]
+conflicts: [ "mirage" {<"1.2.0"} ]

@@ -1,14 +1,11 @@
 opam-version: "1"
 maintainer: "jp.deplaix@gmail.com"
 patches: [
-  "makefile-doc.patch"
+  "makefile+build.patch"
   "makefile+system.patch"
 ]
 build: [
-  ["./configure" "CC=gcc" "CXX=g++" "--prefix=%{prefix}%" "--disable-doxygen" "--disable-docs" "--enable-static" "--enable-shared" "--with-ocaml-libdir=%{lib}%/llvm"]
-  [make "-C" "bindings/ocaml"]
-  [make "-C" "bindings/ocaml" "install"]
-  ["cp" "%{lib}%/llvm/META.llvm" "%{lib}%/llvm/META"]
+  ["./compile.sh" make prefix lib]
 ]
 remove: [
   ["./configure" "CC=gcc" "CXX=g++" "--prefix=%{prefix}%" "--disable-doxygen" "--disable-docs" "--enable-static" "--enable-shared" "--with-ocaml-libdir=%{lib}%/llvm"]
