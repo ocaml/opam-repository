@@ -12,19 +12,20 @@ authors: [
 ]
 homepage: "http://www.mancoosi.org/software/"
 license: "LGPL-v3+ with OCaml linking exception"
-substs: ["dose.ocp"]
 build: [
-  ["ocp-build" "-scan" "-init" "dose" "-v" "0"]
-  ["mv" "META.dose3" "META"]
-  ["ocamlfind" "install" "dose3" "META"]
-  ["mv" "META.dose" "META"]
+ ["./configure" "--with-ocamlgraph" "--bindir=%{bin}%"]
+ ["make"]
+ ["make" "install"]
 ]
 remove: [
-  ["ocamlfind" "remove" "dose"]
   ["ocamlfind" "remove" "dose3"]
+  ["rm" "-f"
+      "%{bin}%/distchek"
+      "%{bin}%/debchek"
+      "%{bin}%/rpmchek"
+      "%{bin}%/eclipsechek"]
 ]
 depends: [
-  "ocp-build" {>= "1.99.3-beta"}
   "ocamlgraph" {>= "1.8.5"}
   "cudf" {>= "0.7"}
   ("extlib" | "extlib-compat")
