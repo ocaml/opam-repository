@@ -18,11 +18,14 @@ install_on_linux () {
   case "$OCAML_VERSION,$OPAM_VERSION" in
   3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
   3.12.1,1.1.0) ppa=avsm/ocaml312+opam11 ;;
+  3.12.1,1.2.0) ppa=avsm/ocaml312+opam12 ;;
   4.00.1,1.0.0) ppa=avsm/ocaml40+opam10 ;;
   4.00.1,1.1.0) ppa=avsm/ocaml40+opam11 ;;
+  4.00.1,1.2.0) ppa=avsm/ocaml40+opam12 ;;
   4.01.0,1.0.0) ppa=avsm/ocaml41+opam10 ;;
   4.01.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
   4.02.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
+  4.02.0,1.2.0) ppa=avsm/ocaml41+opam12 ;;
   *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
 
@@ -37,7 +40,9 @@ install_on_osx () {
   sudo installer -verbose -pkg /Volumes/XQuartz-2.7.6/XQuartz.pkg -target /
   case "$OCAML_VERSION,$OPAM_VERSION" in
   4.01.0,1.1.*) brew install opam ;;
+  4.01.0,1.2.*) brew install opam --HEAD;;
   4.02.0,1.1.*) brew install opam ;;
+  4.02.0,1.2.*) brew install opam --HEAD ;;
   *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
 }
