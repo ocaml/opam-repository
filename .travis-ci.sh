@@ -24,6 +24,7 @@ install_on_linux () {
   4.00.1,1.2.0) ppa=avsm/ocaml40+opam12 ;;
   4.01.0,1.0.0) ppa=avsm/ocaml41+opam10 ;;
   4.01.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
+  4.01.0,1.2.0) ppa=avsm/ocaml41+opam12 ;;
   4.02.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
   4.02.0,1.2.0) ppa=avsm/ocaml41+opam12 ;;
   *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
