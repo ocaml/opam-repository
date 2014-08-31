@@ -81,6 +81,8 @@ function build_one {
     eval `opam config env`
     ;;
   esac
+  echo Current switch is:
+  opam switch
   # list all packages changed from opam 1.0 to 1.1
   case "$OPAM_VERSION" in
   1.0.0) allpkgs=`opam list -s` ;;
