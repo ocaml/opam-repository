@@ -76,7 +76,7 @@ function build_one {
   rm -rf ~/.opam
   opam init .
   case $OCAML_VERSION,$TRAVIS_OS_NAME in
-  4.02.*,osx)
+  4.02.0,osx)
     opam switch 4.02.0
     eval `opam config env`
     ;;
