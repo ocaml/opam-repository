@@ -41,9 +41,9 @@ install_on_osx () {
   sudo installer -verbose -pkg /Volumes/XQuartz-2.7.6/XQuartz.pkg -target /
   case "$OCAML_VERSION,$OPAM_VERSION" in
   4.01.0,1.1.*) brew install opam ;;
-  4.01.0,1.2.*) brew install opam --HEAD;;
+  4.01.0,1.2.*) brew update; brew install opam --HEAD ;;
   4.02.0,1.1.*) brew install opam ;;
-  4.02.0,1.2.*) brew install opam --HEAD ;;
+  4.02.0,1.2.*) brew update; brew install opam --HEAD ;;
   *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
 }
@@ -74,6 +74,12 @@ function build_one {
   echo build one: $pkg
   rm -rf ~/.opam
   opam init .
+  case $OCAML_VERSION,$TRAVIS_OS_NAME in
+  4.02.*,osx)
+    opam switch 4.02.0
+    eval `opam config env`
+    ;;
+  esac
   # list all packages changed from opam 1.0 to 1.1
   case "$OPAM_VERSION" in
   1.0.0) allpkgs=`opam list -s` ;;
