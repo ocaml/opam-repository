@@ -60,7 +60,6 @@ opam --version
 opam --git-version
 
 export OPAMYES=1
-export OPAMSTRICT=1
 
 cd $TRAVIS_BUILD_DIR
 echo Pull request:
