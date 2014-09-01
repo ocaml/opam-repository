@@ -1,0 +1,43 @@
+diff --git a/exec.ml b/exec.ml
+index c3958b6..b44e927 100644
+--- a/exec.ml
++++ b/exec.ml
+@@ -1,13 +1,22 @@
+ type ('a,'b) status = Ok of 'a | Error of 'b
+ 
+ let get_error_loc = function 
++#if ocaml_version > (4,0)
+     | Syntaxerr.Error(x) -> Some(Syntaxerr.location_of_error x)
+-    | Lexer.Error(_, loc) 
+-    | Typecore.Error(loc, _, _) 
++#endif
++    | Lexer.Error(_, loc)
++#if ocaml_version < (4,1)
++    | Typecore.Error(loc, _)
++    | Typetexp.Error(loc, _) 
++    | Typeclass.Error(loc, _) 
++    | Typemod.Error(loc, _) 
++#else
++    | Typecore.Error(loc, _, _)
+     | Typetexp.Error(loc, _, _) 
+-    | Typedecl.Error(loc, _) 
+     | Typeclass.Error(loc, _, _) 
+     | Typemod.Error(loc, _, _) 
++#endif
++    | Typedecl.Error(loc, _) 
+     | Translcore.Error(loc, _) 
+     | Translclass.Error(loc, _) 
+     | Translmod.Error(loc, _) -> Some(loc)
+diff --git a/iocaml_zmq.ml b/iocaml_zmq.ml
+index 1195bbe..639c30b 100644
+--- a/iocaml_zmq.ml
++++ b/iocaml_zmq.ml
+@@ -152,6 +152,8 @@ module ZMQ = struct
+ 
+   exception Zmq_exception of int * string * string
+ 
++  let (|>) a f = f a
++
+   let raise_if s x = 
+     if x == -1 then
+       let errno = Stubs.Utils.errno () in

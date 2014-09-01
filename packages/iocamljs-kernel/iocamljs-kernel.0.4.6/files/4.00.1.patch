@@ -1,0 +1,40 @@
+diff --git a/exec.ml b/exec.ml
+index e989440..b44e927 100644
+--- a/exec.ml
++++ b/exec.ml
+@@ -1,13 +1,22 @@
+ type ('a,'b) status = Ok of 'a | Error of 'b
+ 
+ let get_error_loc = function 
++#if ocaml_version > (4,0)
+     | Syntaxerr.Error(x) -> Some(Syntaxerr.location_of_error x)
+-    | Lexer.Error(_, loc) 
+-    | Typecore.Error(loc, _, _) 
++#endif
++    | Lexer.Error(_, loc)
++#if ocaml_version < (4,1)
++    | Typecore.Error(loc, _)
++    | Typetexp.Error(loc, _) 
++    | Typeclass.Error(loc, _) 
++    | Typemod.Error(loc, _) 
++#else
++    | Typecore.Error(loc, _, _)
+     | Typetexp.Error(loc, _, _) 
+-    | Typedecl.Error(loc, _) 
+     | Typeclass.Error(loc, _, _) 
+     | Typemod.Error(loc, _, _) 
++#endif
++    | Typedecl.Error(loc, _) 
+     | Translcore.Error(loc, _) 
+     | Translclass.Error(loc, _) 
+     | Translmod.Error(loc, _) -> Some(loc)
+@@ -60,8 +69,7 @@ let run_cell_lb execution_count lb =
+                 | Ok(false) -> Error(Buffer.contents buffer) :: out_messages
+                 | Error(Sys.Break) -> Error("Interrupted.") :: out_messages
+                 | Error(exn) -> 
+-                    Error(try get_error_info exn 
+-                          with _ -> ("IOcaml execution error: " ^ Printexc.to_string exn)) :: out_messages
++                    Error(try get_error_info exn with _ -> "Execution error.") :: out_messages
+             end
+         in
+         List.rev (run [] phrases)
