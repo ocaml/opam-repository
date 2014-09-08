@@ -69,6 +69,10 @@ cat pullreq.diff | sort -u | grep '^... b/packages' | sed -E 's,\+\+\+ b/package
 echo To Build:
 cat tobuild.txt
 
+echo Compilers to build:
+cat pullreq.diff | sort -u | grep '^... b/compilers' | sed -E 's,\+\+\+ b/compilers/.*/(.*)/.*,\1,' | grep 'comp$' | sort -u > compbuild.txt
+cat compbuild.txt
+
 function build_one {
   pkg=$1
   echo build one: $pkg
@@ -136,3 +140,8 @@ function build_one {
 for i in `cat tobuild.txt`; do
   build_one $i
 done
+
+for i in `cat compbuild.txt`; do
+  opam switch $i
+done
+
