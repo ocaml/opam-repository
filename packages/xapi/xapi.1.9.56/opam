@@ -1,11 +1,8 @@
 opam-version: "1"
 maintainer: "dave.scott@citrix.com"
 build: [
-  ["./configure" "--varpatchdir" "%{prefix}%/var/patch" "--optdir" "%{lib}%/xcp" "--plugindir" "%{lib}%/xcp/plugins" "--hooksdir" "%{prefix}%/etc/hook-scripts" "--xapiconf" "%{prefix}%/etc/xapi.conf" "--libexecdir" "%{lib}%/xcp/bin" "--scriptsdir" "%{lib}%/xcp/scripts" "--sharedir" "%{share}%/xcp" "--webdir" "%{share}%/xcp/web" "--xhadir" "%{bin}%/xha" "--bindir" "%{bin}%" "--sbindir" "%{bin}%" "--etcdir" "%{prefix}%/etc"]
-  [make "version"]
-  ["omake" "phase1"]
-  ["omake" "phase2"]
-  ["omake" "ocaml/xapi/xapi"]
+  ["./configure" "--disable-warn-error" "--varpatchdir" "%{prefix}%/var/patch" "--optdir" "%{lib}%/xcp" "--plugindir" "%{lib}%/xcp/plugins" "--hooksdir" "%{prefix}%/etc/hook-scripts" "--xapiconf" "%{prefix}%/etc/xapi.conf" "--libexecdir" "%{lib}%/xcp/bin" "--scriptsdir" "%{lib}%/xcp/scripts" "--sharedir" "%{share}%/xcp" "--webdir" "%{share}%/xcp/web" "--xhadir" "%{bin}%/xha" "--bindir" "%{bin}%" "--sbindir" "%{bin}%" "--etcdir" "%{prefix}%/etc"]
+  [make "DISABLE_TESTS=true"]
   ["install" "-m" "0755" "ocaml/xapi/xapi.opt" "%{bin}%/xapi"]
 ]
 remove: ["rm" "%{bin}%/xapi"]
@@ -14,14 +11,13 @@ depends: [
   "xapi-idl"
   "xapi-libs-transitional"
   "xen-api-client"
-  "omake"
   "xapi-netdev"
+  "omake"
   "cdrom"
   "fd-send-recv"
   "xapi-forkexecd"
   "libvhd"
   "nbd"
-  "xapi-netdev"
   "oclock"
   "ounit"
   "rpc"
