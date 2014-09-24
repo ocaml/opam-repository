@@ -13,6 +13,13 @@ else
   fi
 fi
 
+full_apt_version () {
+  package=$1
+  version=$2
+  echo -n "${package}="
+  apt-cache show $package | sed -n "s/^Version: \(${version}\)/\1/p" | head -1
+}
+
 install_on_linux () {
   # Install OCaml and OPAM PPAs
   case "$OCAML_VERSION,$OPAM_VERSION" in
@@ -31,9 +38,17 @@ install_on_linux () {
   esac
 
   sudo add-apt-repository "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe"
-  echo "yes" | sudo add-apt-repository ppa:$ppa
+  sudo add-apt-repository --yes ppa:$ppa
   sudo apt-get update -qq
-  sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam time
+  sudo apt-get install -y $(full_apt_version ocaml-compiler-libs $OCAML_VERSION) \
+                          $(full_apt_version ocaml-interp $OCAML_VERSION) \
+                          $(full_apt_version ocaml-base-nox $OCAML_VERSION) \
+                          $(full_apt_version ocaml-base $OCAML_VERSION) \
+                          $(full_apt_version ocaml $OCAML_VERSION) \
+                          $(full_apt_version ocaml-nox $OCAML_VERSION) \
+                          $(full_apt_version ocaml-native-compilers $OCAML_VERSION) \
+                          $(full_apt_version camlp4 $OCAML_VERSION) \
+                          opam time
 }
 
 install_on_osx () {
