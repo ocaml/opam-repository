@@ -48,6 +48,7 @@ install_on_linux () {
                           $(full_apt_version ocaml-nox $OCAML_VERSION) \
                           $(full_apt_version ocaml-native-compilers $OCAML_VERSION) \
                           $(full_apt_version camlp4 $OCAML_VERSION) \
+                          $(full_apt_version camlp4-extra $OCAML_VERSION) \
                           opam time
 }
 
