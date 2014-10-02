@@ -86,6 +86,22 @@ cat pullreq.diff | sed -E -n -e 's,\+\+\+ b/packages/[^/]*/([^/]*)/.*,\1,p' | so
 echo To Build:
 cat tobuild.txt
 
+function opam_version_compat {
+  local OPAM_MAJOR OPAM_MINOR ocamlv bytev
+  if [ -n "$opam_version_compat_done" ]; then return; fi
+  opam_version_compat_done=1
+  OPAM_MAJOR=${OPAM_VERSION%%.*}
+  OPAM_MINOR=${OPAM_VERSION#*.}
+  OPAM_MINOR=${OPAM_MINOR%%.*}
+  if [ $OPAM_MAJOR -eq 1 ] && [ $OPAM_MINOR -lt 2 ]; then
+      ocamlv=$(ocamlrun -vnum)
+      bytev=${ocamlv%.*}
+      curl -L https://opam.ocaml.org/repo_compat_1_1.byte$bytev -o compat.byte
+      ocamlrun compat.byte
+  fi
+}
+opam_version_compat
+
 function build_one {
   pkg=$1
   echo build one: $pkg
@@ -113,7 +129,7 @@ function build_one {
       srcext=`opam install $pkg -e source,linux`
       if [ "$srcext" != "" ]; then
         curl -sL ${srcext} | bash
-      fi  
+      fi
       ;;
     osx)
       depext=`opam install $pkg -e osx,homebrew`
