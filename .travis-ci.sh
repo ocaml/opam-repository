@@ -56,6 +56,8 @@ install_on_osx () {
   curl -OL "http://xquartz.macosforge.org/downloads/SL/XQuartz-2.7.6.dmg"
   sudo hdiutil attach XQuartz-2.7.6.dmg
   sudo installer -verbose -pkg /Volumes/XQuartz-2.7.6/XQuartz.pkg -target /
+  # workaround broken 'brew install opam --HEAD'
+  sudo mkdir -p /usr/local/Cellar/opam/HEAD/man
   case "$OCAML_VERSION,$OPAM_VERSION" in
   4.01.0,1.1.*) brew install opam ;;
   4.01.0,1.2.*) brew update; brew install opam --HEAD ;;
