@@ -32,8 +32,8 @@ install_on_linux () {
   4.01.0,1.0.0) ppa=avsm/ocaml41+opam10 ;;
   4.01.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
   4.01.0,1.2.0) ppa=avsm/ocaml41+opam12 ;;
-  4.02.0,1.1.0) ppa=avsm/ocaml42+opam11 ;;
-  4.02.0,1.2.0) ppa=avsm/ocaml42+opam12 ;;
+  4.02.1,1.1.0) ppa=avsm/ocaml42+opam11 ;;
+  4.02.1,1.2.0) ppa=avsm/ocaml42+opam12 ;;
   *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
 
@@ -59,8 +59,8 @@ install_on_osx () {
   case "$OCAML_VERSION,$OPAM_VERSION" in
   4.01.0,1.1.*) brew install opam ;;
   4.01.0,1.2.*) brew update; brew install opam --HEAD ;;
-  4.02.0,1.1.*) brew install opam ;;
-  4.02.0,1.2.*) brew update; brew install opam --HEAD ;;
+  4.02.1,1.1.*) brew install opam ;;
+  4.02.1,1.2.*) brew update; brew install opam --HEAD ;;
   *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
 }
@@ -92,8 +92,8 @@ function build_one {
   rm -rf ~/.opam
   opam init .
   case $OCAML_VERSION,$TRAVIS_OS_NAME in
-  4.02.0,osx)
-    opam switch 4.02.0
+  4.02.1,osx)
+    opam switch 4.02.1
     eval `opam config env`
     ;;
   esac
