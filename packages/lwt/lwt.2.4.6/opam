@@ -1,0 +1,35 @@
+opam-version: "1"
+maintainer: "jeremie@dimino.org"
+build: [
+  ["./configure"
+    "--prefix" prefix
+    "--%{conf-libev:enable}%-libev"
+    "--%{react:enable}%-react"
+    "--%{ssl:enable}%-ssl"
+    "--%{base-unix:enable}%-unix"
+    "--%{base-unix:enable}%-extra"
+    "--%{base-threads:enable}%-preemptive"
+    "--%{lablgtk:enable}%-glib"
+    "--%{ocaml-text:enable}%-text" {"%{react:installed}%"}
+    "--%{ppx_tools:enable}%-ppx"]
+  [make "build"]
+  [make "install"]
+]
+remove: [["ocamlfind" "remove" "lwt"]]
+depends: [
+  "ocamlfind" {>= "1.5.0"}
+  "camlp4"
+  ( "base-no-ppx" | "ppx_tools" )
+]
+depopts: [
+  "base-threads"
+  "base-unix"
+  "conf-libev"
+  "ssl"
+  "react"
+  "lablgtk"
+  "text"
+]
+conflicts: [
+ "react" {<"1.0.0"}
+]
