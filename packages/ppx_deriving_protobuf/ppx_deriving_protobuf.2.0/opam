@@ -1,0 +1,26 @@
+opam-version: "1.2"
+maintainer: "Peter Zotov <whitequark@whitequark.org>"
+authors: [ "Peter Zotov <whitequark@whitequark.org>" ]
+license: "MIT"
+homepage: "https://github.com/whitequark/ppx_deriving_protobuf"
+doc: "http://whitequark.github.io/ppx_deriving_protobuf"
+bug-reports: "https://github.com/whitequark/ppx_deriving_protobuf/issues"
+dev-repo: "git://github.com/whitequark/ppx_deriving_protobuf.git"
+tags: [ "syntax" ]
+subst: [ "pkg/META" ]
+build: [
+  "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
+                         "native-dynlink=%{ocaml-native-dynlink}%"
+]
+build-test: [
+  "ocamlbuild" "-classic-display" "-use-ocamlfind" "src_test/test_ppx_protobuf.byte" "--"
+]
+build-doc: [
+  make "doc"
+]
+depends: [
+  "ppx_deriving" {>= "1.0"}
+  "ocamlfind"    {build}
+  "ounit"        {test}
+  "uint"         {test}
+]
