@@ -82,9 +82,25 @@ cd $TRAVIS_BUILD_DIR
 echo Pull request:
 cat pullreq.diff
 # CR: this will be replaced with the OCamlot analysis of affected packages
-cat pullreq.diff | sort -u | grep '^... b/packages' | sed -E 's,\+\+\+ b/packages/.*/(.*)/.*,\1,' | grep -v '^files' | awk -F. '{print $1}'| sort -u > tobuild.txt
+cat pullreq.diff | sed -E -n -e 's,\+\+\+ b/packages/[^/]*/([^/]*)/.*,\1,p' | sort -u > tobuild.txt
 echo To Build:
 cat tobuild.txt
+
+function opam_version_compat {
+  local OPAM_MAJOR OPAM_MINOR ocamlv bytev
+  if [ -n "$opam_version_compat_done" ]; then return; fi
+  opam_version_compat_done=1
+  OPAM_MAJOR=${OPAM_VERSION%%.*}
+  OPAM_MINOR=${OPAM_VERSION#*.}
+  OPAM_MINOR=${OPAM_MINOR%%.*}
+  if [ $OPAM_MAJOR -eq 1 ] && [ $OPAM_MINOR -lt 2 ]; then
+      ocamlv=$(ocamlrun -vnum)
+      bytev=${ocamlv%.*}
+      curl -L https://opam.ocaml.org/repo_compat_1_1.byte$bytev -o compat.byte
+      ocamlrun compat.byte
+  fi
+}
+opam_version_compat
 
 function build_one {
   pkg=$1
@@ -99,15 +115,8 @@ function build_one {
   esac
   echo Current switch is:
   opam switch
-  # list all packages changed from opam 1.0 to 1.1
-  case "$OPAM_VERSION" in
-  1.0.0) allpkgs=`opam list -s` ;;
-  *) allpkgs=`opam list -s -a` ;;
-  esac
   # test for installability
-  ok=0
-  for pkgi in $allpkgs; do if [ "$pkgi" = "$pkg" ]; then ok=1; fi; done
-  if [ $ok = "0" ]; then
+  if ! opam list -s -a $pkg; then
     echo Skipping $pkg as not installable
   else
     case $TRAVIS_OS_NAME in
@@ -120,7 +129,7 @@ function build_one {
       srcext=`opam install $pkg -e source,linux`
       if [ "$srcext" != "" ]; then
         curl -sL ${srcext} | bash
-      fi  
+      fi
       ;;
     osx)
       depext=`opam install $pkg -e osx,homebrew`
@@ -135,10 +144,10 @@ function build_one {
       ;;
     esac
     opam install $pkg
-    opam remove $pkg
+    opam remove -a ${pkg%%.*}
     if [ "$depext" != "" ]; then
       case $TRAVIS_OS_NAME in
-      linux) 
+      linux)
         sudo apt-get remove $depext
         sudo apt-get autoremove
         ;;
