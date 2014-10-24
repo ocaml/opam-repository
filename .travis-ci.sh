@@ -116,7 +116,11 @@ function build_one {
   echo Current switch is:
   opam switch
   # test for installability
-  if ! opam list -s -a $pkg; then
+  case "$OPAM_VERSION" in
+      1.0.*|1.1.*) is_available=$(opam install $pkg --dry-run || true);;
+      *) is_available=$(opam list -s -a $pkg || true)
+  esac
+  if [ -z "$is_available" ] ; then
     echo Skipping $pkg as not installable
   else
     case $TRAVIS_OS_NAME in
