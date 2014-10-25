@@ -1,0 +1,62 @@
+opam-version: "1.2"
+maintainer: "drupyog@zoho.com"
+authors: ["Gabriel Radanne <drupyog@zoho.com>"]
+homepage: "https://github.com/Drup/LILiS"
+bug-reports: "https://github.com/Drup/LILiS/issues"
+dev-repo: "https://github.com/Drup/LILiS.git"
+doc: "https://drup.github.io/LILiS/0.2/"
+license: "MIT"
+tags: [ "lsystem" "grammar" "graphics" "logo" ]
+
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+	   "--enable-containers"
+	   "--%{batteries:enable}%-batteries"
+	   "--%{cfstream:enable}%-cfstream"
+	   "--%{core_kernel:enable}%-core-kernel"
+	   "--%{cairo2:enable}%-cairo" {"%{lablgtk:installed}%"}
+	   "--%{tyxml:enable}%-tyxml"
+	   "--%{js_of_ocaml:enable}%-js-of-ocaml"
+	   "--%{cmdliner:enable}%-executable"]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-doc: ["ocaml" "setup.ml" "-doc"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: [
+  ["ocamlfind" "remove" "calc"]
+  ["ocamlfind" "remove" "lilis"]
+  ["ocamlfind" "remove" "glilis"]
+]
+available: [ocaml-version >= "4.01.0"]
+depends: [
+  "ocamlfind" {build}
+  "cppo" {build & >= "0.9.4"}
+  "menhir"
+  "containers"
+]
+depopts: [
+  "batteries"
+  "cfstream"
+  "core_kernel"
+  "cairo2"
+  "lablgtk"
+  "tyxml"
+  "js_of_ocaml"
+  "cmdliner"
+]
+conflicts: [
+  "core_kernel" {< "111.13.00"}
+  "tyxml" {< "3.0.0"}
+  "js_of_ocaml" {< "2.1"}
+]
+
+messages: [
+  "To build and install the graphical front-end glilis, you should install cairo2 lablgtk and cmdliner"
+    {!cairo2:installed | !lablgtk:installed | !cmdliner:installed}
+  "To enable the svg output, you should install tyxml" {!tyxml:installed}
+]
