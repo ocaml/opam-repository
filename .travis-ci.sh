@@ -118,7 +118,7 @@ function build_one {
   # test for installability
   case "$OPAM_VERSION" in
       1.0.*|1.1.*) is_available=$(opam install $pkg --dry-run || true);;
-      *) is_available=$(opam list -s -a $pkg || true)
+      *) is_available=$(opam list -s -a $pkg | grep -v "No packages found.")
   esac
   if [ -z "$is_available" ] ; then
     echo Skipping $pkg as not installable
