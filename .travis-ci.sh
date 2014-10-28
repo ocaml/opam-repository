@@ -121,7 +121,8 @@ function build_one {
       *) is_available=$(opam list -s -a $pkg | grep -v "No packages found.")
   esac
   if [ -z "$is_available" ] ; then
-    echo Skipping $pkg as not installable
+      echo $is_available
+      echo Skipping $pkg as not installable
   else
     case $TRAVIS_OS_NAME in
     linux)
