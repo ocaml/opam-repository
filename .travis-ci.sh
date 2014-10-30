@@ -32,8 +32,8 @@ install_on_linux () {
   4.01.0,1.0.0) ppa=avsm/ocaml41+opam10 ;;
   4.01.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
   4.01.0,1.2.0) ppa=avsm/ocaml41+opam12 ;;
-  4.02.0,1.1.0) ppa=avsm/ocaml42+opam11 ;;
-  4.02.0,1.2.0) ppa=avsm/ocaml42+opam12 ;;
+  4.02.1,1.1.0) ppa=avsm/ocaml42+opam11 ;;
+  4.02.1,1.2.0) ppa=avsm/ocaml42+opam12 ;;
   *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
 
@@ -59,8 +59,8 @@ install_on_osx () {
   case "$OCAML_VERSION,$OPAM_VERSION" in
   4.01.0,1.1.*) brew install opam ;;
   4.01.0,1.2.*) brew update; brew install opam --HEAD ;;
-  4.02.0,1.1.*) brew install opam ;;
-  4.02.0,1.2.*) brew update; brew install opam --HEAD ;;
+  4.02.1,1.1.*) brew install opam ;;
+  4.02.1,1.2.*) brew update; brew install opam --HEAD ;;
   *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
 }
@@ -82,9 +82,25 @@ cd $TRAVIS_BUILD_DIR
 echo Pull request:
 cat pullreq.diff
 # CR: this will be replaced with the OCamlot analysis of affected packages
-cat pullreq.diff | sort -u | grep '^... b/packages' | sed -E 's,\+\+\+ b/packages/.*/(.*)/.*,\1,' | grep -v '^files' | awk -F. '{print $1}'| sort -u > tobuild.txt
+cat pullreq.diff | sed -E -n -e 's,\+\+\+ b/packages/[^/]*/([^/]*)/.*,\1,p' | sort -u > tobuild.txt
 echo To Build:
 cat tobuild.txt
+
+function opam_version_compat {
+  local OPAM_MAJOR OPAM_MINOR ocamlv bytev
+  if [ -n "$opam_version_compat_done" ]; then return; fi
+  opam_version_compat_done=1
+  OPAM_MAJOR=${OPAM_VERSION%%.*}
+  OPAM_MINOR=${OPAM_VERSION#*.}
+  OPAM_MINOR=${OPAM_MINOR%%.*}
+  if [ $OPAM_MAJOR -eq 1 ] && [ $OPAM_MINOR -lt 2 ]; then
+      ocamlv=$(ocamlrun -vnum)
+      bytev=${ocamlv%.*}
+      curl -L https://opam.ocaml.org/repo_compat_1_1.byte$bytev -o compat.byte
+      ocamlrun compat.byte
+  fi
+}
+opam_version_compat
 
 function build_one {
   pkg=$1
@@ -92,23 +108,21 @@ function build_one {
   rm -rf ~/.opam
   opam init .
   case $OCAML_VERSION,$TRAVIS_OS_NAME in
-  4.02.0,osx)
-    opam switch 4.02.0
+  4.02.1,osx)
+    opam switch 4.02.1
     eval `opam config env`
     ;;
   esac
   echo Current switch is:
   opam switch
-  # list all packages changed from opam 1.0 to 1.1
-  case "$OPAM_VERSION" in
-  1.0.0) allpkgs=`opam list -s` ;;
-  *) allpkgs=`opam list -s -a` ;;
-  esac
   # test for installability
-  ok=0
-  for pkgi in $allpkgs; do if [ "$pkgi" = "$pkg" ]; then ok=1; fi; done
-  if [ $ok = "0" ]; then
-    echo Skipping $pkg as not installable
+  case "$OPAM_VERSION" in
+      1.0.*|1.1.*) is_available=$(opam install $pkg --dry-run || true);;
+      *) is_available=$(opam list -s -a $pkg | grep -v "No packages found.")
+  esac
+  if [ -z "$is_available" ] ; then
+      echo $is_available
+      echo Skipping $pkg as not installable
   else
     case $TRAVIS_OS_NAME in
     linux)
@@ -120,7 +134,7 @@ function build_one {
       srcext=`opam install $pkg -e source,linux`
       if [ "$srcext" != "" ]; then
         curl -sL ${srcext} | bash
-      fi  
+      fi
       ;;
     osx)
       depext=`opam install $pkg -e osx,homebrew`
@@ -135,10 +149,10 @@ function build_one {
       ;;
     esac
     opam install $pkg
-    opam remove $pkg
+    opam remove -a ${pkg%%.*}
     if [ "$depext" != "" ]; then
       case $TRAVIS_OS_NAME in
-      linux) 
+      linux)
         sudo apt-get remove $depext
         sudo apt-get autoremove
         ;;
