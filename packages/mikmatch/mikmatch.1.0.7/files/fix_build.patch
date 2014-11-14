@@ -1,0 +1,17 @@
+--- pcre/Makefile.orig	2014-11-11 18:50:00.000000000 +0800
++++ pcre/Makefile	2014-11-11 18:54:45.385223413 +0800
+@@ -94,11 +94,9 @@
+ 	ocamlc -c mikmatch.mli
+ 	ocamlc -a -o run_mikmatch_pcre.cma -I $(PCRE_DIR) \
+ 		mikmatch.ml run_mikmatch_pcre.ml
+-	ocamlmktop -o mikmatch_pcre.top \
+-		-I +camlp4 -I $(PCRE_DIR) \
+-		dynlink.cma \
+-		camlp4o.cma \
+-		pa_mikmatch_pcre.cma pcre.cma unix.cma run_mikmatch_pcre.cma
++	ocamlfind ocamlmktop -o mikmatch_pcre.top \
++		-linkpkg -package camlp4.lib,pcre,unix \
++		pa_mikmatch_pcre.cma run_mikmatch_pcre.cma
+ 
+ misc-nc:
+ 	ocamlc -c mikmatch.mli
