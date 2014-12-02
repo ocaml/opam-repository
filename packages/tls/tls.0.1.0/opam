@@ -1,14 +1,20 @@
-opam-version: "1"
+opam-version: "1.2"
+tags: "org:mirage"
+dev-repo: "git://github.com/mirleft/ocaml-tls"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
     "--%{lwt:enable}%-lwt"
-    "--%{mirage:enable}%-mirage" ]
+    "--%{mirage:enable}%-mirage"
+  ]
   ["ocaml" "setup.ml" "-build"]
   ["ocaml" "setup.ml" "-install"]
 ]
-remove: [
-  ["ocamlfind" "remove" "tls"]
-]
+remove: ["ocamlfind" "remove" "tls"]
 depends: [
   "ocamlfind"
   "cstruct" {>= "1.2.0"}
@@ -16,10 +22,8 @@ depends: [
   "nocrypto" {= "0.1.0"}
   "x509" {= "0.1.0"}
 ]
-depopts: [
-  "lwt"
-  "mirage"
+depopts: ["lwt" "mirage"]
+conflicts: [
+  "mirage" {< "1.2.0"}
 ]
-conflicts: [ "mirage" {<"1.2.0"} ]
-tags: [ "org:mirage" ]
-ocaml-version: [>="4.01.0"]
+ocaml-version: [>= "4.01.0"]
