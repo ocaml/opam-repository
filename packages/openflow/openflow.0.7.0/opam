@@ -1,0 +1,24 @@
+opam-version: "1"
+ocaml-version: [ >= "4.01.0" ]
+version: "0.7.0"
+name: "openflow"
+maintainer: "Spiros Eliopoulos <seliopou@gmail.com>"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--%{async:enable}%-async" "--%{quickcheck:enable}%-quickcheck" ]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-install"]
+]
+remove: [
+  ["ocamlfind" "remove" "openflow"]
+]
+depends: [
+  "ocamlfind"
+  "core"
+  "cstruct" {>= "1.0.1"}
+  "packet"  {>= "0.3.0" }
+  "sexplib"
+]
+depopts: [ "async" "quickcheck" ]
+conflicts: [
+  "async_extra" { != "111.28.00" }
+]
