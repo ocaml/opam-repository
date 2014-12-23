@@ -1,0 +1,32 @@
+opam-version: "1.2"
+name:         "tls"
+version:      "0.3.0"
+homepage:     "https://github.com/mirleft/ocaml-tls"
+dev-repo:     "https://github.com/mirleft/ocaml-tls.git"
+bug-reports:  "https://github.com/mirleft/ocaml-tls/issues"
+author:       ["David Kaloper <david@numm.org>" "Hannes Mehnert <hannes@mehnert.org>"]
+maintainer:   ["Hannes Mehnert <hannes@mehnert.org>" "David Kaloper <david@numm.org>"]
+license:      "BSD2"
+
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+    "--%{lwt:enable}%-lwt"
+    "--%{mirage-types+io-page+ipaddr:enable}%-mirage" ]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocamlfind" "remove" "tls"]
+
+depends: [
+  "ocamlfind"
+  "cstruct" {>= "1.2.0"}
+  "type_conv"
+  "sexplib"
+  "nocrypto" {>= "0.3.0"}
+  "x509" {>= "0.2.1"}
+]
+depopts: [
+  "lwt"
+  "mirage-types-lwt"
+]
+conflicts: [ "mirage-types-lwt" {<"2.2.0"} ]
