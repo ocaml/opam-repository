@@ -1,0 +1,38 @@
+opam-version: "1"
+maintainer: "roberto@dicosmo.org"
+authors: [
+  "Roberto Di Cosmo"
+  "Ralf Treinen"
+  "Stefano Zacchiroli"
+  "Pietro Abate"
+  "Jaap Boender"
+  "Jakub Zwolakowski"
+  "Olivier Rosello"
+  "Johannes Schauer"
+]
+homepage: "http://www.mancoosi.org/software/"
+license: "LGPL-v3+ with OCaml linking exception"
+build: [
+ ["./configure" "--with-ocamlgraph" "--bindir=%{bin}%"]
+ [make "TARGETS="]
+ [make "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "dose3"]
+  ["rm" "-f"
+      "%{bin}%/distcheck"
+      "%{bin}%/debcheck"
+      "%{bin}%/rpmcheck"
+      "%{bin}%/eclipsecheck"]
+]
+depends: [
+  "ocamlgraph" {>= "1.8.5"}
+  "cudf" {>= "0.7"}
+  ("extlib" | "extlib-compat")
+  "re" {>= "1.2.0"}
+]
+patches: [
+  "0003-Removed-hard-failure-cases-in-favor-of-finer-diagnos.patch"
+  "0004-Remove-broken-assert.patch"
+  "0005-Add-a-check_request-function-allowing-more-control-o.patch"
+]

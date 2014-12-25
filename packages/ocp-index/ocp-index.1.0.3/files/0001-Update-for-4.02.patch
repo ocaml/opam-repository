@@ -1,0 +1,367 @@
+From f50b1a488e25ae3fb9125d2a739b614adfbad6a6 Mon Sep 17 00:00:00 2001
+From: Peter Zotov <whitequark@whitequark.org>
+Date: Mon, 12 May 2014 20:18:37 +0400
+Subject: [PATCH] Update for 4.02.
+
+---
+ src/browserMain.ml     |  2 +-
+ src/indexBuild.ml      | 79 +++++++++++++++++++++++++++++++-------------------
+ src/indexOptions.ml    |  2 +-
+ src/indexOut.ml        | 13 +++++----
+ src/indexPredefined.ml | 27 ++++++++++++-----
+ src/indexTypes.ml      |  2 +-
+ src/libIndex.mli       |  2 +-
+ 7 files changed, 79 insertions(+), 48 deletions(-)
+
+diff --git a/src/browserMain.ml b/src/browserMain.ml
+index f34f6d5..fa5c8d0 100644
+--- a/src/browserMain.ml
++++ b/src/browserMain.ml
+@@ -186,7 +186,7 @@ let interactive opts () =
+           LibIndex.Format.no_color
+         else
+           let attr = function
+-            | LibIndex.Type -> Curses.WA.color_pair 6
++            | LibIndex.Type | LibIndex.OpenType -> Curses.WA.color_pair 6
+             | LibIndex.Value -> Curses.WA.bold
+             | LibIndex.Exception -> Curses.WA.color_pair 3
+             | LibIndex.Field _ | LibIndex.Variant _ -> Curses.WA.color_pair 4
+diff --git a/src/indexBuild.ml b/src/indexBuild.ml
+index 3eddb5e..c25fdf2 100644
+--- a/src/indexBuild.ml
++++ b/src/indexBuild.ml
+@@ -123,8 +123,8 @@ let ty_of_sig_item =
+   function
+   | Types.Sig_value(id, decl) -> tree_of_value_description id decl
+   | Types.Sig_type(id, decl, rs) -> tree_of_type_declaration id decl rs
+-  | Types.Sig_exception(id, decl) -> tree_of_exception_declaration id decl
+-  | Types.Sig_module(id, mty, rs) -> tree_of_module id mty rs
++  | Types.Sig_typext(id, decl, es) -> tree_of_extension_constructor id decl es
++  | Types.Sig_module(id, { Types.md_type }, rs) -> tree_of_module id md_type rs
+   | Types.Sig_modtype(id, decl) -> tree_of_modtype_declaration id decl
+   | Types.Sig_class(id, decl, rs) -> tree_of_class_declaration id decl rs
+   | Types.Sig_class_type(id, decl, rs) -> tree_of_cltype_declaration id decl rs
+@@ -195,6 +195,7 @@ let qualify_ty (parents:parents) ty =
+     | Otyp_poly (str, ty) -> Otyp_poly (str, aux ty)
+     | Otyp_module (str, strl, tylist) ->
+         Otyp_module (str, strl, List.map aux tylist)
++    | Otyp_open -> Otyp_open
+   in
+   aux ty
+ 
+@@ -202,17 +203,21 @@ let qualify_ty_in_sig_item (parents:parents) =
+   let qual = qualify_ty parents in
+   let open Outcometree in
+   function
+-  | Osig_type ((str, list, ty, priv, tylist2), rc) ->
+-      Osig_type ((str, list, qual ty, priv,
+-        List.map (fun (ty1,ty2) -> qual ty1, qual ty2) tylist2), rc)
++  | Osig_type (out_type_decl, rc) ->
++      Osig_type ({ out_type_decl with
++        otype_type  = qual out_type_decl.otype_type;
++        otype_cstrs = List.map (fun (ty1,ty2) -> qual ty1, qual ty2)
++                          out_type_decl.otype_cstrs }, rc)
+   | Osig_value (str, ty, str2) -> Osig_value (str, qual ty, str2)
+-  | Osig_exception (str, tylist) -> Osig_exception (str, List.map qual tylist)
++  | Osig_typext (constr, es) ->
++      Osig_typext ({ constr with
++        oext_args = List.map qual constr.oext_args }, es)
+   | out_sig -> out_sig (* don't get down in modules, classes and their types *)
+ 
+ let loc_of_sig_item = function
+   | Types.Sig_value (_,descr) -> descr.Types.val_loc
+   | Types.Sig_type (_,descr,_) -> descr.Types.type_loc
+-  | Types.Sig_exception (_,descr) -> descr.Types.exn_loc
++  | Types.Sig_typext (_,descr,_) -> descr.Types.ext_loc
+   (* Sadly the Types tree doesn't contain locations for those. This means we
+      won't associate comments easily either (todo...) *)
+   | Types.Sig_module _
+@@ -224,7 +229,7 @@ let loc_of_sig_item = function
+ let id_of_sig_item = function
+   | Types.Sig_value (id,_)
+   | Types.Sig_type (id,_,_)
+-  | Types.Sig_exception (id,_)
++  | Types.Sig_typext (id,_,_)
+   | Types.Sig_module (id,_,_)
+   | Types.Sig_modtype (id,_)
+   | Types.Sig_class (id,_,_)
+@@ -234,7 +239,8 @@ let id_of_sig_item = function
+ let kind_of_sig_item = function
+   | Types.Sig_value _ -> Value
+   | Types.Sig_type _ -> Type
+-  | Types.Sig_exception _ -> Exception
++  | Types.Sig_typext (_, _, Types.Text_exception) -> Exception
++  | Types.Sig_typext _ -> OpenType
+   | Types.Sig_module _ -> Module
+   | Types.Sig_modtype _ -> ModuleType
+   | Types.Sig_class _ -> Class
+@@ -243,20 +249,25 @@ let kind_of_sig_item = function
+ let trie_of_type_decl ?comments info ty_decl =
+   match ty_decl.Types.type_kind with
+   | Types.Type_abstract -> [], comments
++  | Types.Type_open -> [], comments
+   | Types.Type_record (fields,_repr) ->
+       List.map
+-        (fun (id, _mutable, ty_expr) ->
+-          let ty = Printtyp.tree_of_typexp false ty_expr in
++        (fun { Types.ld_id; ld_type } ->
++          let ty = Printtyp.tree_of_typexp false ld_type in
+           let ty =
+-            Outcometree.Osig_type
+-              (("", [], ty, Asttypes.Public, []), Outcometree.Orec_not)
++            Outcometree.Osig_type (Outcometree.{
++                otype_name    = "";
++                otype_params  = [];
++                otype_type    = ty;
++                otype_private = Asttypes.Public;
++                otype_cstrs   = []; }, Outcometree.Orec_not)
+           in
+-          string_to_key id.Ident.name,
++          string_to_key ld_id.Ident.name,
+           Trie.create ~value:{
+             path = info.path;
+             orig_path = info.path;
+             kind = Field info;
+-            name = id.Ident.name;
++            name = ld_id.Ident.name;
+             ty = Some ty;
+             loc_sig = info.loc_sig;
+             loc_impl = info.loc_impl;
+@@ -267,25 +278,29 @@ let trie_of_type_decl ?comments info ty_decl =
+       comments
+   | Types.Type_variant variants ->
+       List.map
+-        (fun (id, ty_exprs, _constraints) ->
++        (fun { Types.cd_id; cd_args } ->
+           let ty =
+-            let params = match ty_exprs with
++            let params = match cd_args with
+               | [] -> Outcometree.Otyp_sum []
+               | param::_ ->
+                      Printtyp.tree_of_typexp false
+-                       { Types. desc = Types.Ttuple ty_exprs;
++                       { Types. desc = Types.Ttuple cd_args;
+                          level = param.Types.level;
+                          id = param.Types.id }
+             in
+-            Outcometree.Osig_type
+-              (("", [], params, Asttypes.Public, []), Outcometree.Orec_not)
++            Outcometree.Osig_type (Outcometree.{
++                otype_name    = "";
++                otype_params  = [];
++                otype_type    = params;
++                otype_private = Asttypes.Public;
++                otype_cstrs   = []; }, Outcometree.Orec_not)
+           in
+-          string_to_key id.Ident.name,
++          string_to_key cd_id.Ident.name,
+           Trie.create ~value:{
+             path = info.path;
+             orig_path = info.path;
+             kind = Variant info;
+-            name = id.Ident.name;
++            name = cd_id.Ident.name;
+             ty = Some ty;
+             loc_sig = info.loc_sig;
+             loc_impl = info.loc_impl;
+@@ -313,7 +328,7 @@ let locate_impl cmt path name kind =
+               sign
+           in
+           match modul with
+-          | Types.Sig_module (_,Types.Mty_signature sign,_) ->
++          | Types.Sig_module (_, {Types.md_type = Types.Mty_signature sign},_) ->
+               find_item path sign
+           | _ -> raise Not_found
+     in
+@@ -370,8 +385,8 @@ let rec trie_of_sig_item
+   (* read module / class contents *)
+   let children, comments =
+     match sig_item with
+-    | Types.Sig_module (id,Types.Mty_signature sign,_)
+-    | Types.Sig_modtype (id,Types.Modtype_manifest (Types.Mty_signature sign))
++    | Types.Sig_module (id,{ Types.md_type = Types.Mty_signature sign },_)
++    | Types.Sig_modtype (id,{ Types.mtd_type = Some (Types.Mty_signature sign) })
+       ->
+         let path = path @ [id.Ident.name] in
+         let rec children_comments = lazy (
+@@ -392,7 +407,7 @@ let rec trie_of_sig_item
+           | Some _, lazy (_, comments) -> comments
+         in
+         children, comments
+-    | Types.Sig_module (_,Types.Mty_ident sig_ident,_) ->
++    | Types.Sig_module (_,{ Types.md_type = Types.Mty_ident sig_ident },_) ->
+         let sig_path =
+           let rec get_path = function
+             | Path.Pident id -> [id.Ident.name]
+@@ -419,22 +434,26 @@ let rec trie_of_sig_item
+     | Types.Sig_class_type (id,{Types.clty_type=cty},_)
+       ->
+         let rec get_clsig = function
+-          | Types.Cty_constr (_,_,cty) | Types.Cty_fun (_,_,cty) ->
++          | Types.Cty_constr (_,_,cty) | Types.Cty_arrow (_,_,cty) ->
+               get_clsig cty
+           | Types.Cty_signature clsig -> clsig
+         in
+         let clsig = get_clsig cty in
+         let path = path@[id.Ident.name] in
+         let (fields, _) =
+-          Ctype.flatten_fields (Ctype.object_fields clsig.Types.cty_self)
++          Ctype.flatten_fields (Ctype.object_fields clsig.Types.csig_self)
+         in
+         lazy (List.fold_left (fun t (lbl,_,ty_expr) ->
+             if lbl = "*dummy method*" then t else
+               let _ = Printtyp.reset_and_mark_loops ty_expr in
+               let ty = Printtyp.tree_of_typexp false ty_expr in
+               let ty =
+-                Outcometree.Osig_type
+-                  (("", [], ty, Asttypes.Public, []), Outcometree.Orec_not)
++                Outcometree.Osig_type (Outcometree.{
++                    otype_name    = "";
++                    otype_params  = [];
++                    otype_type    = ty;
++                    otype_private = Asttypes.Public;
++                    otype_cstrs   = []; }, Outcometree.Orec_not)
+               in
+               Trie.add t (string_to_key lbl)
+                 { path = path;
+diff --git a/src/indexOptions.ml b/src/indexOptions.ml
+index a800e9f..808fe25 100644
+--- a/src/indexOptions.ml
++++ b/src/indexOptions.ml
+@@ -37,7 +37,7 @@ let filter opt info =
+   let open LibIndex in
+   let kinds = opt.filter in
+   match info.kind with
+-  | Type -> kinds.t
++  | Type | OpenType -> kinds.t
+   | Value | Method _ -> kinds.v
+   | Exception -> kinds.e
+   | Field _ | Variant _ -> kinds.c
+diff --git a/src/indexOut.ml b/src/indexOut.ml
+index d95ec8b..9ea17db 100644
+--- a/src/indexOut.ml
++++ b/src/indexOut.ml
+@@ -57,7 +57,7 @@ module IndexFormat = struct
+   let color =
+     let f kind fstr fmt =
+       let colorcode = match kind with
+-        | Type -> "\027[36m"
++        | Type | OpenType -> "\027[36m"
+         | Value -> "\027[1m"
+         | Exception -> "\027[33m"
+         | Field _ | Variant _ -> "\027[34m"
+@@ -88,6 +88,7 @@ module IndexFormat = struct
+     | Type -> Format.pp_print_string fmt "type"
+     | Value -> Format.pp_print_string fmt "val"
+     | Exception -> Format.pp_print_string fmt "exception"
++    | OpenType -> Format.pp_print_string fmt "opentype"
+     | Field parentty ->
+         Format.fprintf fmt "field(%a)"
+           (colorise.f parentty.kind "%s") parentty.name
+@@ -154,20 +155,20 @@ module IndexFormat = struct
+     | Osig_class (_,_,_,ctyp,_)
+     | Osig_class_type (_,_,_,ctyp,_) ->
+         !Oprint.out_class_type fmt ctyp
+-    | Osig_exception (_,[]) ->
++    | Osig_typext ({ oext_args = [] }, _) ->
+         Format.pp_print_char fmt '-'
+-    | Osig_exception (_,tylst) ->
++    | Osig_typext ({ oext_args }, _) ->
+         list ~paren:true
+           !Oprint.out_type
+           (fun fmt () ->
+             Format.pp_print_char fmt ','; Format.pp_print_space fmt ())
+           fmt
+-          tylst
++          oext_args
+     | Osig_modtype (_,mtyp)
+     | Osig_module (_,mtyp,_) ->
+         !Oprint.out_module_type fmt mtyp
+-    | Osig_type ((_,_,ty,_,_),_) ->
+-        Format.fprintf fmt "@[<hv 2>%a@]" tydecl ty
++    | Osig_type ({ otype_type },_) ->
++        Format.fprintf fmt "@[<hv 2>%a@]" tydecl otype_type
+     | Osig_value (_,ty,_) ->
+         !Oprint.out_type fmt ty
+ 
+diff --git a/src/indexPredefined.ml b/src/indexPredefined.ml
+index 5f493bf..0fe7729 100644
+--- a/src/indexPredefined.ml
++++ b/src/indexPredefined.ml
+@@ -24,8 +24,11 @@ let mktype name ?(params=[]) ?(def=Otyp_abstract) doc = {
+   kind = Type;
+   name = name;
+   ty = Some (Osig_type (
+-      (name,List.map (fun v -> v,(true,true)) params,def,Asttypes.Public,[]),
+-      Orec_not));
++      { otype_name    = name;
++        otype_params  = List.map (fun v -> v,(true,true)) params;
++        otype_type    = def;
++        otype_private = Asttypes.Public;
++        otype_cstrs   = [] }, Orec_not));
+   loc_sig = Location.none;
+   loc_impl = lazy Location.none;
+   doc = lazy (Some doc);
+@@ -37,11 +40,13 @@ let mkvariant name parent params = {
+   orig_path = [];
+   kind = Variant parent;
+   name = name;
+-  ty = Some (Osig_type (("", [],
+-                         (match params with [] -> Otyp_sum []
+-                                          | l -> Otyp_tuple l),
+-                         Asttypes.Public, []),
+-                        Outcometree.Orec_not));
++  ty = Some (Osig_type (
++      { otype_name    = "";
++        otype_params  = [];
++        otype_type    = (match params with [] -> Otyp_sum []
++                                         | l  -> Otyp_tuple l);
++        otype_private = Asttypes.Public;
++        otype_cstrs   = [] }, Orec_not));
+   loc_sig = Location.none;
+   loc_impl = lazy Location.none;
+   doc = lazy None;
+@@ -53,7 +58,13 @@ let mkexn name params doc = {
+   orig_path = [];
+   kind = Exception;
+   name = name;
+-  ty = Some (Osig_exception (name,params));
++  ty = Some (Osig_typext ({
++        oext_name        = name;
++        oext_type_name   = "exn";
++        oext_type_params = [];
++        oext_args        = params;
++        oext_ret_type    = None;
++        oext_private     = Asttypes.Public }, Oext_exception));
+   loc_sig = Location.none;
+   loc_impl = lazy Location.none;
+   doc = lazy (Some doc);
+diff --git a/src/indexTypes.ml b/src/indexTypes.ml
+index 252386b..e094317 100644
+--- a/src/indexTypes.ml
++++ b/src/indexTypes.ml
+@@ -35,7 +35,7 @@ type info = { path: string list;
+ 
+ (** The kind of elements that can be stored in the trie *)
+ and kind =
+-  | Type | Value | Exception
++  | Type | Value | Exception | OpenType
+   | Field of info | Variant of info
+   | Method of info
+   | Module | ModuleType
+diff --git a/src/libIndex.mli b/src/libIndex.mli
+index 9e7efa8..b826cf7 100644
+--- a/src/libIndex.mli
++++ b/src/libIndex.mli
+@@ -40,7 +40,7 @@ type info = IndexTypes.info = private {
+ 
+ (** The kind of elements that can be stored in the trie *)
+ and kind = IndexTypes.kind = private
+-  | Type | Value | Exception
++  | Type | Value | Exception | OpenType
+   | Field of info | Variant of info
+   | Method of info
+   | Module | ModuleType
+-- 
+2.0.1
+

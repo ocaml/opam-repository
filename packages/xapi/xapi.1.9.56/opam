@@ -1,0 +1,38 @@
+opam-version: "1"
+maintainer: "dave.scott@citrix.com"
+build: [
+  ["./configure" "--disable-warn-error" "--varpatchdir" "%{prefix}%/var/patch" "--optdir" "%{lib}%/xcp" "--plugindir" "%{lib}%/xcp/plugins" "--hooksdir" "%{prefix}%/etc/hook-scripts" "--xapiconf" "%{prefix}%/etc/xapi.conf" "--libexecdir" "%{lib}%/xcp/bin" "--scriptsdir" "%{lib}%/xcp/scripts" "--sharedir" "%{share}%/xcp" "--webdir" "%{share}%/xcp/web" "--xhadir" "%{bin}%/xha" "--bindir" "%{bin}%" "--sbindir" "%{bin}%" "--etcdir" "%{prefix}%/etc"]
+  [make "DISABLE_TESTS=true"]
+  ["install" "-m" "0755" "ocaml/xapi/xapi.opt" "%{bin}%/xapi"]
+]
+remove: ["rm" "%{bin}%/xapi"]
+depends: [
+  "ocamlfind"
+  "xapi-idl"
+  "xapi-libs-transitional"
+  "xen-api-client"
+  "xapi-netdev"
+  "omake"
+  "cdrom"
+  "fd-send-recv"
+  "xapi-forkexecd"
+  "libvhd"
+  "nbd"
+  "oclock"
+  "ounit"
+  "rpc"
+  "ssl"
+  "xapi-stdext"
+  "xapi-tapctl"
+  "xenctrl"
+  "xenstore"
+  "xapi-inventory"
+  "tar-format"
+  "opasswd" {>= "0.9.3"}
+  "xapi-rrdd-plugin"
+]
+depexts: [
+  [["centos"] ["pam-devel"]]
+  [["debian"] ["libpam-dev"]]
+  [["ubuntu"] ["libpam-dev"]]
+]

@@ -1,0 +1,18 @@
+opam-version: "1"
+maintainer: "contact@ocamlpro.com"
+build: [
+  ["cp" "Makefile.config.ex" "Makefile.config"]
+  ["cp" "Makefile.config.osx" "Makefile.config"] {os = "darwin"}
+  ["mkdir" "-p" bin]
+  [make "glut"]
+  [make "glutopt"]
+  [make "install" "-C" "src" "BINDIR=%{bin}%" "INSTALLDIR=%{lib}%/lablgl" "DLLDIR=%{lib}%/stublibs"]
+  [make "install" "-C" "LablGlut/src" "BINDIR=%{bin}%" "INSTALLDIR=%{lib}%/lablgl" "DLLDIR=%{lib}%/stublibs"]
+]
+depends: [
+  "camlp4"
+]
+depexts: [
+  [["debian"] ["freeglut3-dev" "libglu1-mesa-dev" "mesa-common-dev"]]
+  [["ubuntu"] ["freeglut3-dev" "libglu1-mesa-dev" "mesa-common-dev"]]
+]

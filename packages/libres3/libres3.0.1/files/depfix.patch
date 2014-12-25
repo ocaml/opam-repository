@@ -1,0 +1,22 @@
+diff --git a/detect.ml b/detect.ml
+index 18d99aa..0688b24 100755
+--- a/detect.ml
++++ b/detect.ml
+@@ -770,7 +770,7 @@ let pkg_ssl =
+ 
+ let pkg_ocamlnet =
+   ocaml_dependency "ocamlnet" ~findlibnames:[
+-    "netstring";"netstring-pcre";"netsys";"netcgi2";"netclient";"equeue.ssl"
++    "netstring";"netstring-pcre";"netsys";"netcgi2";"netclient";"equeue-ssl"
+   ] ~version:(fun ver -> ver >? "3.7.3") ~cmi:("netstring","netstring_str.cmi")
+   (Build (fun _ -> {
+     source = "3rdparty/libs/ocamlnet";
+@@ -856,7 +856,7 @@ let pkg_ocsigenserver = ocaml_dependency "ocsigenserver"
+     "--staticpagesdir";Filename.concat prefix_var "www/ocsigenserver";
+     "--datadir";Filename.concat prefix_var "lib/ocsigenserver"
+   ] ~findlibnames:["ocsigenserver"]
+-)) ~version:(fun _ -> false) (* always build *)
++)) ~version:(fun v -> v >=? "2.4.0") (* always build *)
+   ~deps:[
+   gnu_make_dep; camlp4_dep; pkg_findlib; pkg_pcre; pkg_ocamlnet; pkg_react; pkg_ssl; pkg_lwt; pkg_cryptokit; pkg_tyxml
+ ]

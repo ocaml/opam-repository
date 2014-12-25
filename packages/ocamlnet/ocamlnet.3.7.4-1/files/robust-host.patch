@@ -1,0 +1,155 @@
+diff --git a/src/equeue-ssl/https_client.ml b/src/equeue-ssl/https_client.ml
+index a1e7028..986cc2d 100644
+--- a/src/equeue-ssl/https_client.ml
++++ b/src/equeue-ssl/https_client.ml
+@@ -15,6 +15,7 @@ object
+                    string -> int -> Unixqueue.event_system ->
+                    exn option ->
+                    Uq_engines.multiplex_controller
++  method default_port : int option
+ end
+ 
+ 
+@@ -64,5 +65,7 @@ let https_transport_channel_type ?(verify = fun _ _ _ -> ())
+             ~ssl_socket
+ 	    fd ctx esys in
+ 	(mplex :> Uq_engines.multiplex_controller)
++
++      method default_port = Some 443
+     end
+   )
+diff --git a/src/equeue-ssl/https_client.mli b/src/equeue-ssl/https_client.mli
+index 446b031..cbbca97 100644
+--- a/src/equeue-ssl/https_client.mli
++++ b/src/equeue-ssl/https_client.mli
+@@ -16,6 +16,7 @@ object
+                    string -> int -> Unixqueue.event_system ->
+                    exn option ->
+                    Uq_engines.multiplex_controller
++  method default_port : int option
+ end
+ (** Same as {!Http_client.transport_channel_type} *)	  
+ 
+diff --git a/src/netclient/http_client.ml b/src/netclient/http_client.ml
+index 23b4051..e708254 100644
+--- a/src/netclient/http_client.ml
++++ b/src/netclient/http_client.ml
+@@ -2840,6 +2840,7 @@ let test_http_1_1 proto_str =
+ let transmitter
+   peer_is_proxy
+   proxy_auth_state
++  default_port
+   (m : http_call) 
+   (f_done : http_call -> unit)
+   options
+@@ -2943,8 +2944,12 @@ let transmitter
+ 	  let rh = msg # request_header `Effective in
+ 	  let host = msg # get_host() in
+ 	  let port = msg # get_port() in
+-	  let host_str = host ^ (if port = 80 then "" 
+-				 else ":" ^ string_of_int port) in
++          let include_port = match default_port with
++            | None -> true
++            | Some p -> p <> port in
++          let host_str =
++            host ^ (if include_port then ":" ^ string_of_int port
++                    else "") in
+ 	  rh # update_field "Host" host_str;
+ 	  
+ 	  if close_flag then
+@@ -3573,9 +3578,10 @@ object
+                    string -> int -> Unixqueue.event_system ->
+                    Http_client_conncache.private_data ->
+                      Uq_engines.multiplex_controller
++  method default_port : int option
+ end
+ 
+-let http_transport_channel_type : transport_channel_type =
++let simple_transport_channel_type default_port : transport_channel_type =
+   ( object(self)
+       method continue fd cb tmo tmo_x host port esys priv_data =
+         if priv_data <> None then raise Not_found;
+@@ -3587,9 +3593,16 @@ let http_transport_channel_type : transport_channel_type =
+       method setup_e fd cb tmo tmo_x host port esys =
+ 	let mplex = self # continue fd cb tmo tmo_x host port esys None in
+ 	eps_e (`Done(mplex,None)) esys
++      method default_port = default_port
+     end
+   )
+ 
++let http_transport_channel_type =
++  simple_transport_channel_type (Some 80)
++
++let proxy_transport_channel_type =
++  simple_transport_channel_type None
++
+ 
+ (**********************************************************************)
+ 
+@@ -3597,6 +3610,7 @@ let fragile_pipeline
+        esys  cb
+        cache_peer
+        proxy_auth_state proxy_auth_handler_opt
++       default_port
+        fd mplex priv_data connect_time no_pipelining conn_cache
+        auth_cache
+        counters options =
+@@ -3740,8 +3754,9 @@ let fragile_pipeline
+ 	 * queues:
+ 	 *)
+ 	let trans = 
+-	  transmitter peer_is_proxy proxy_auth_state m f_done options in
+-	
++          transmitter peer_is_proxy proxy_auth_state default_port
++                      m f_done options in
++
+ (* (* would not work, so leave disabled *)
+ 	if !proxy_auth_state = `None then (
+ 	  match proxy_auth_handler_opt with
+@@ -4525,6 +4540,7 @@ let robust_pipeline
+       esys tp cb
+       peer
+       proxy_auth_handler_opt
++      default_port
+       conn_cache conn_owner 
+       auth_cache
+       counters options =
+@@ -4670,6 +4686,7 @@ let robust_pipeline
+ 		      fragile_pipeline
+ 			esys cb cache_peer
+ 			proxy_auth_state proxy_auth_handler_opt
++                        default_port
+ 			fd mplex priv_data t no_pipelining conn_cache
+ 			auth_cache
+ 			counters options in
+@@ -4901,7 +4918,7 @@ class pipeline =
+ 
+     initializer (
+       Hashtbl.add transports http_cb_id http_transport_channel_type;
+-      Hashtbl.add transports proxy_only_cb_id http_transport_channel_type;
++      Hashtbl.add transports proxy_only_cb_id proxy_transport_channel_type;
+     )
+ 
+     method event_system = esys
+@@ -5134,6 +5151,7 @@ class pipeline =
+ 	                     esys tp cb
+ 	                     peer
+ 	                     proxy_auth_handler_opt
++                             tp#default_port
+ 			     conn_cache
+ 			     (self :> < >)
+ 			     auth_cache
+diff --git a/src/netclient/http_client.mli b/src/netclient/http_client.mli
+index 9934f5f..5231083 100644
+--- a/src/netclient/http_client.mli
++++ b/src/netclient/http_client.mli
+@@ -761,6 +761,9 @@ object
+ 
+       If it is not possible to continue, the method may raise [Not_found].
+    *)
++
++  method default_port : int option
++  (** If set, the [Host] header omits this port number *)
+ end
+ 
+ 
