@@ -6,7 +6,7 @@ bug-reports: "https://github.com/mirage/ocaml-git/issues"
 license: "ISC"
 dev-repo: "https://github.com/mirage/ocaml-git.git"
 build: [
-  ["./configure" "--prefix" prefix "--%{mirage-types-lwt:enable}%-mirage" "--%{mirage-fs-unix+alcotest:enable}%-tests" "--%{cmdliner+conduit+cohttp+base-unix:enable}%-unix"]
+  ["./configure" "--prefix" prefix "--%{mirage-types-lwt:enable}%-mirage" "--%{mirage-fs-unix+alcotest:enable}%-tests" "--%{conduit+cohttp+base-unix:enable}%-unix"]
   [make]
 ]
 install: [make "install"]
@@ -28,8 +28,13 @@ depends: [
   "mirage-types-lwt" {test}
   "cohttp" {test}
   "conduit" {test}
+  "cmdliner"
 ]
-depopts: "cmdliner"
+depopts: [
+  "mirage-types-lwt"
+  "cohttp"
+  "conduit"
+]
 conflicts: [
   "cohttp" {<= "0.15.0"}
   "conduit" {< "0.6.0"}
