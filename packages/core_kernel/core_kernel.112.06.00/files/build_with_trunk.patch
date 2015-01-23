@@ -1,0 +1,58 @@
+From 5fe3abec566770b4efcce86adb4cb338cd8fb774 Mon Sep 17 00:00:00 2001
+From: Pierre Chambart <pierre.chambart@ocamlpro.com>
+Date: Thu, 18 Dec 2014 18:58:11 +0100
+Subject: [PATCH] Build with trunk
+
+* uint32 is not defined anymore in OCaml headers. Replace it with uint32_t
+  that should be defined by any reasonnable compiler.
+* trunk forbid the redeclaration of exceptions. Remove the redeclaration
+  of Binary_packing.Pack_signed_32_argument_out_of_range that looks like
+  a typo.
+---
+ lib/binary_packing.ml | 1 -
+ lib/hash_stubs.c      | 5 +++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/lib/binary_packing.ml b/lib/binary_packing.ml
+index b61ba03..e0bc311 100644
+--- a/lib/binary_packing.ml
++++ b/lib/binary_packing.ml
+@@ -324,7 +324,6 @@ let check_signed_32_in_range n =
+       raise (Pack_signed_32_argument_out_of_range n)
+   ENDIF
+ 
+-exception Pack_signed_32_argument_out_of_range of int with sexp
+ let pack_signed_32_int ~byte_order ~buf ~pos n =
+   assert (Sys.word_size = 64);
+   check_signed_32_in_range n;
+diff --git a/lib/hash_stubs.c b/lib/hash_stubs.c
+index 2a48588..938b34d 100644
+--- a/lib/hash_stubs.c
++++ b/lib/hash_stubs.c
+@@ -1,5 +1,6 @@
+ #include <caml/mlvalues.h>
+ #include <caml/hash.h>
++#include <stdint.h>
+ 
+ /* Final mix and return from the hash.c implementation from INRIA */
+ #define FINAL_MIX_AND_RETURN(h) \
+@@ -12,14 +13,14 @@
+ 
+ CAMLprim value caml_hash_string (value string) 
+ {
+-  uint32 h;
++  uint32_t h;
+   h = caml_hash_mix_string (0, string);
+   FINAL_MIX_AND_RETURN(h)
+ }
+ 
+ CAMLprim value caml_hash_double (value d)
+ {
+-  uint32 h;
++  uint32_t h;
+   h = caml_hash_mix_double (0, Double_val(d));
+   FINAL_MIX_AND_RETURN (h);
+ }
+-- 
+2.1.3
+

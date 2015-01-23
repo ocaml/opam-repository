@@ -1,0 +1,67 @@
+From 9a1e3d35ea11f422a1fff864eb12d6bcc1d12873 Mon Sep 17 00:00:00 2001
+From: Pierre Chambart <pierre.chambart@ocamlpro.com>
+Date: Thu, 18 Dec 2014 20:04:30 +0100
+Subject: [PATCH] Build with trunk
+
+* uint32 and int64 are not defined in ocaml headers anymore.
+---
+ lib/backtrace_stubs.c | 7 ++++---
+ lib/ocaml_utils.h     | 3 ++-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/lib/backtrace_stubs.c b/lib/backtrace_stubs.c
+index 647114d..61fc17c 100644
+--- a/lib/backtrace_stubs.c
++++ b/lib/backtrace_stubs.c
+@@ -14,6 +14,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <stdarg.h>
++#include <stdint.h>
+ 
+ #ifndef __x86_64__
+   #error "backtrace_stubs.c is for x86-64 only"
+@@ -127,7 +128,7 @@ static void extract_location_info(frame_descr * d,
+                                   /*out*/ struct loc_info * li)
+ {
+   uintnat infoptr;
+-  uint32 info1, info2;
++  uint32_t info1, info2;
+ 
+   /* If no debugging information available, print nothing.
+      When everything is compiled with -g, this corresponds to
+@@ -142,8 +143,8 @@ static void extract_location_info(frame_descr * d,
+              sizeof(char *) + sizeof(short) + sizeof(short) +
+              sizeof(short) * d->num_live + sizeof(frame_descr *) - 1)
+             & -sizeof(frame_descr *);
+-  info1 = ((uint32 *)infoptr)[0];
+-  info2 = ((uint32 *)infoptr)[1];
++  info1 = ((uint32_t *)infoptr)[0];
++  info2 = ((uint32_t *)infoptr)[1];
+   /* Format of the two info words:
+        llllllllllllllllllll aaaaaaaa bbbbbbbbbb nnnnnnnnnnnnnnnnnnnnnnnn kk
+                           44       36         26                       2  0
+diff --git a/lib/ocaml_utils.h b/lib/ocaml_utils.h
+index 125b6b5..23cbddd 100644
+--- a/lib/ocaml_utils.h
++++ b/lib/ocaml_utils.h
+@@ -12,6 +12,7 @@
+ #include <caml/callback.h>
+ #include <caml/custom.h>
+ #include <caml/unixsupport.h>
++#include <stdint.h>
+ 
+ #define XSTR(S) STR(S)
+ #define STR(S) #S
+@@ -24,7 +25,7 @@
+ #  define Int63_val(v) Int64_val(v)
+ #endif
+ 
+-typedef int64 int63;
++typedef int64_t int63;
+ 
+ #define DEFINE_INT63_CONSTANT(name,z) \
+   CAMLprim value name(value __unused v_unit) { return caml_alloc_int63(z); }
+-- 
+2.1.3
+
