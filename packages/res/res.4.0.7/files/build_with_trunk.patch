@@ -1,0 +1,26 @@
+diff -ur res.4.0.7/examples/weak_ex.ml res.4.0.7_mod/examples/weak_ex.ml
+--- res.4.0.7/examples/weak_ex.ml	2014-12-19 02:37:15.000000000 +0100
++++ res.4.0.7_mod/examples/weak_ex.ml	2015-01-13 16:29:48.025303723 +0100
+@@ -1,7 +1,6 @@
+ (* Demonstrates the correct behaviour of resizable weak arrays. *)
+ 
+ module W = Res.Weak
+-module Array = W  (* allows more convenient array access *)
+ 
+ class foo = object end
+ 
+@@ -9,12 +8,12 @@
+ 
+ let _ =
+   W.add_one ra (Some (new foo));
+-  match ra.(0) with
++  match W.get ra 0 with
+   | Some _ -> print_endline "Correctly allocated!"
+   | _ -> print_endline "Already deallocated??"
+ 
+ let _ =
+   Gc.full_major ();
+-  match ra.(0) with
++  match W.get ra 0 with
+   | Some _ -> print_endline "Still not deallocated?"
+   | _ -> print_endline "Correctly deallocated!"
