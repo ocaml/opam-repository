@@ -61,7 +61,7 @@ function build_one {
   # test for installability
   case "$OPAM_VERSION" in
       1.0.*|1.1.*)
-          avail_cmd="opam install $pkg --dry-run | grep -E -v \"The dependency [^ ]+ of package [^ ]+ is not available for your compiler or your OS.\" | grep -v \"Your request cannot be satisfied.\" || true"
+          avail_cmd="opam install $pkg --dry-run | grep -E -v \"The dependency [^ ]+ of package [^ ]+ is not available for your compiler or your OS.\" | grep -v \"Your request cannot be satisfied.\" | grep -v \"This is due to the following unmet dependencies(s):\" || true"
           ;;
       *)
           avail_cmd="opam list -s -a $pkg | grep -v \"No packages found.\""
