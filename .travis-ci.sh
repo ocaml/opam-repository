@@ -1,3 +1,6 @@
+bash -c "while true; do echo \$(date) - building ...; sleep 360; done" &
+PING_LOOP_PID=$!
+
 echo pull req: $TRAVIS_PULL_REQUEST
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   curl https://github.com/$TRAVIS_REPO_SLUG/pull/$TRAVIS_PULL_REQUEST.diff -o pullreq.diff
@@ -119,3 +122,5 @@ function build_one {
 for i in `cat tobuild.txt`; do
   build_one $i
 done
+
+kill $PING_LOOP_PID
