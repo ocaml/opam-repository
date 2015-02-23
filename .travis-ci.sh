@@ -1,3 +1,6 @@
+bash -c "while true; do echo \$(date) - building ...; sleep 360; done" &
+PING_LOOP_PID=$!
+
 echo pull req: $TRAVIS_PULL_REQUEST
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   curl https://github.com/$TRAVIS_REPO_SLUG/pull/$TRAVIS_PULL_REQUEST.diff -o pullreq.diff
@@ -61,7 +64,7 @@ function build_one {
   # test for installability
   case "$OPAM_VERSION" in
       1.0.*|1.1.*)
-          avail_cmd="opam install $pkg --dry-run | grep -E -v \"The dependency [^ ]+ of package [^ ]+ is not available for your compiler or your OS.\" | grep -v \"Your request cannot be satisfied.\" || true"
+          avail_cmd="opam install $pkg --dry-run | grep -E -v \"The dependency [^ ]+ of package [^ ]+ is not available for your compiler or your OS.\" | grep -v \"Your request cannot be satisfied.\" | grep -v \"This is due to the following unmet dependencies(s):\" || true"
           ;;
       *)
           avail_cmd="opam list -s -a $pkg | grep -v \"No packages found.\""
@@ -119,3 +122,5 @@ function build_one {
 for i in `cat tobuild.txt`; do
   build_one $i
 done
+
+kill $PING_LOOP_PID
