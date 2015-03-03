@@ -62,22 +62,20 @@ function build_one {
   echo Current switch is:
   opam switch
   # test for installability
-  case "$OPAM_VERSION" in
-      1.0.*|1.1.*)
-          avail_cmd="opam install $pkg --dry-run | grep -E -v \"The dependency [^ ]+ of package [^ ]+ is not available for your compiler or your OS.\" | grep -v \"Your request cannot be satisfied.\" | grep -v \"This is due to the following unmet dependencies(s):\" || true"
-          ;;
-      *)
-          avail_cmd="opam list -s -a $pkg | grep -v \"No packages found.\""
-          ;;
-  esac
-  is_available=$(eval $avail_cmd) # eval for a real pipe
-  if [ -z "$is_available" ] ; then
-      echo $avail_cmd
-      echo Skipping $pkg as not installable
+  echo "Checking for availability"
+  if ! opam list $pkg; then
+      echo "Package unavailable."
+      unav_arg=$(if [[ $OPAM_VERSION = 1.1.* ]];
+                 then echo "-a"; else echo "-A"; fi)
+      if opam list $unav_arg $pkg; then
+          echo "Package is unavailable on this configuration, skipping:"
+          opam install $pkg --dry-run || true
+      else
+          echo "ERROR: Package not found."
+          echo "Maybe its definition failed to parse, check above."
+          false
+      fi
   else
-    echo "Begin availability check:"
-    echo $avail_cmd
-    echo $is_available
     echo "End   availability check."
     case $TRAVIS_OS_NAME in
     linux)
