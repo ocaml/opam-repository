@@ -53,12 +53,6 @@ function build_one {
   echo build one: $pkg
   rm -rf ~/.opam
   opam init .
-  case $OCAML_VERSION,$TRAVIS_OS_NAME in
-  4.02.1,osx)
-    opam switch 4.02.1
-    eval `opam config env`
-    ;;
-  esac
   echo Current switch is:
   opam switch
   # test for installability
