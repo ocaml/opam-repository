@@ -44,8 +44,6 @@ install_on_osx () {
   sudo installer -verbose -pkg /Volumes/XQuartz-2.7.6/XQuartz.pkg -target /
   case "$OCAML_VERSION,$OPAM_VERSION" in
   4.02.1,1.2.0) brew update; brew install opam ;;
-  4.02.1,1.2.0) brew update; brew install opam ;;
-  4.02.1,1.2.1) brew update; brew install opam --HEAD ;;
   4.02.1,1.2.1) brew update; brew install opam --HEAD ;;
   *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
