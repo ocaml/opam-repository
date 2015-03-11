@@ -61,11 +61,9 @@ function build_one {
   opam switch
   # test for installability
   echo "Checking for availability"
-  if ! opam list $pkg; then
+  if ! opam install $pkg --dry-run; then
       echo "Package unavailable."
-      unav_arg=$(if [[ $OPAM_VERSION = 1.1.* ]];
-                 then echo "-a"; else echo "-A"; fi)
-      if opam list $unav_arg $pkg; then
+      if opam show $pkg; then
           echo "Package is unavailable on this configuration, skipping:"
           opam install $pkg --dry-run || true
       else
