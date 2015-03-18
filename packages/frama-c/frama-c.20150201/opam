@@ -1,4 +1,6 @@
 opam-version: "1.2.0"
+name: "frama-c"
+version: "20150201"
 maintainer: "francois.bobot@cea.fr"
 authors: [
   "Patrick Baudin"
@@ -15,13 +17,14 @@ authors: [
   "Benjamin Monate"
   "Yannick Moy"
   "Anne Pacalet"
-  "Virgile Prévosto"
+  "Virgile Prevosto"
   "Julien Signoles"
   "Boris Yakobowski"
 ]
 homepage: "http://frama-c.com/"
 license: "GNU Lesser General Public License version 2.1"
-doc: ["http://frama-c.com/download/user-manual-Fluorine-20130601.pdf"]
+doc: ["http://frama-c.com/download/user-manual-Sodium-20150201.pdf"]
+bug-reports: "https://bts.frama-c.com/"
 tags: [
   "deductive"
   "program verification"
@@ -36,24 +39,37 @@ tags: [
   "ACSL"
   "dataflow analysis"
 ]
+
 build: [
-  ["./configure" "--prefix" prefix "--sbindir=%{lib}%/frama-c/sbin" "--libexecdir=%{lib}%/frama-c/libexec" "--sysconfdir=%{lib}%/frama-c/etc" "--sharedstatedir=%{lib}%/frama-c/com" "--localstatedir=%{lib}%/frama-c/var" "--libdir=%{lib}%/frama-c/lib" "--includedir=%{lib}%/frama-c/include" "--datarootdir=%{lib}%/frama-c/share"]
+  ["./configure" "--prefix" prefix]
   [make]
   [make "install"]
 ]
+
+remove: [
+  ["./configure" "--prefix" prefix]
+  [make "uninstall"]
+  ["rm" "-rf" frama-c:doc]
+]
+
+build-doc: [
+   [make "-C" "doc" "download"]
+   [make "-C" "doc" "FRAMAC_DOCDIR=%{frama-c:doc}%" "install"]
+]
+
+build-test: [
+  [make "PTESTS_OPTS=-error-code" "tests"]
+]
+
 depends: [
   "ocamlgraph" { = "1.8.5" | = "1.8.6" }
-  "camlp4"
-]
-depopts: [
-  "lablgtk"
+  "lablgtk" { >= "2.18.2" } #for ocaml >= 4.02.1
   "conf-gtksourceview"
   "conf-gnomecanvas"
 ]
-patches: ["0004-Port-to-OCamlgraph-1.8.5.patch"]
 
 conflicts: [
-  "why3" { >= "0.85" }
+  "why3" { < "0.85" }
 ]
 
 available: [ ocaml-version >= "3.12" & ocaml-version != "4.02.0" ]
