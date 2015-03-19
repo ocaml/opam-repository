@@ -9,22 +9,12 @@ bug-reports: "https://github.com/ocaml/opam/issues"
 dev-repo: "https://github.com/ocaml/opam.git"
 build: [
   ["./configure"]
-  ["rm" "opam.install"]
+  ["make" "lib-ext"]
   [make "opam"]
 ]
 install: [
   ["sh" "-c" "echo \"%{version}%\" > \"%{root}%/opam.version\""]
-  ["install" "--backup" "-m" "755" "src/opam" "%{root}%/opam"]
-]
-remove: ["rm" "-f" "%{root}%/opam" "%{root}%/opam.version"]
-depends: [
-  "ocamlgraph" {build}
-  "cmdliner" {build}
-  "dose" {build & = "3.3"}
-  "cudf" {build}
-  "re" {build & >= "1.2.0"}
-  "ocamlfind" {build}
-  "jsonm" {build}
+  ["install" "-m" "755" "src/opam" "%{root}%/opam"]
 ]
 # Restrict self-upgrade to "official" versions, just in case
 available: [
@@ -38,8 +28,7 @@ available: [
    (compiler = "system" & ocaml-version >= "3.12.1" & ocaml-version < "4.03"))
 ]
 post-messages: [
-"IMPORTANT: OPAM %{version}% has been installed to %{root}%, and it will be used by default for ALL switches. In case of trouble, you can revert with:
-    opam remove %{name}% --switch %{switch}% --no-self-upgrade
-(or remove `%{root}%/opam' and `%{root}%/opam-version')
-" {success}
-]
+"IMPORTANT: OPAM %{version}% has been installed to %{root}%, and it will be used by default for ALL switches. To avoid accidentally downgrading, removing the package WON'T revert this.
+
+In case you need to downgrade to %{opam-version}% temporarily, use option --no-self-upgrade. To really uninstall, delete `%{root}%/opam' and `%{root}%/opam.version'.
+" {success} ]
