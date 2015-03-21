@@ -17,7 +17,7 @@ install_on_linux () {
   4.02.1,1.1.1) ppa=avsm/ocaml42+opam11 ;;
   4.02.1,1.2.0) ppa=avsm/ocaml42+opam120 ;;
   4.02.1,1.2.1) ppa=avsm/ocaml42+opam12 ;;
-  4.03.0,1.2.1) ppa=avsm/ocaml42+opam12 ;;
+  4.03.0,1.2.1) OCAML_VERSION=4.02.1; OCAML_SWITCH="4.03.0dev+trunk"; ppa=avsm/ocaml42+opam12 ;;
   *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
 
