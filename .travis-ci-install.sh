@@ -9,7 +9,7 @@ install_on_linux () {
   # Install OCaml and OPAM PPAs
   case "$OCAML_VERSION,$OPAM_VERSION" in
   3.12.1,1.1.1) ppa=avsm/ocaml312+opam11 ;;
-  3.12.1,1.2.0) ppa=avsm/ocaml312+opam12 ;;
+  3.12.1,1.2.1) ppa=avsm/ocaml312+opam12 ;;
   4.00.1,1.1.1) ppa=avsm/ocaml40+opam11 ;;
   4.00.1,1.2.1) ppa=avsm/ocaml40+opam12 ;;
   4.01.0,1.1.1) ppa=avsm/ocaml41+opam11 ;;
