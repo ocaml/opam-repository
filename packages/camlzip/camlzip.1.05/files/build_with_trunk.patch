@@ -1,0 +1,33 @@
+Seulement dans camlzip-1.05_/: dllcamlzip.so
+diff -ru camlzip-1.05/zip.ml camlzip-1.05_/zip.ml
+--- camlzip-1.05/zip.ml	2012-10-12 05:36:07.000000000 +0200
++++ camlzip-1.05_/zip.ml	2015-02-27 15:03:45.184500352 +0100
+@@ -73,8 +73,6 @@
+     mutable of_entries: entry list;
+     of_comment: string }
+ 
+-exception Error of string * string * string
+-
+ (* Return the position of the last occurrence of s1 in s2, or -1 if not
+    found. *)
+ 
+diff -ru camlzip-1.05/zlibstubs.c camlzip-1.05_/zlibstubs.c
+--- camlzip-1.05/zlibstubs.c	2012-10-12 05:36:07.000000000 +0200
++++ camlzip-1.05_/zlibstubs.c	2015-02-27 15:02:49.160684643 +0100
+@@ -16,6 +16,7 @@
+ /* Stub code to interface with Zlib */
+ 
+ #include <zlib.h>
++#include <stdint.h>
+ 
+ #include <caml/mlvalues.h>
+ #include <caml/alloc.h>
+@@ -168,7 +169,7 @@
+ 
+ value camlzip_update_crc32(value crc, value buf, value pos, value len)
+ {
+-  return caml_copy_int32(crc32((uint32) Int32_val(crc), 
++  return caml_copy_int32(crc32((uint32_t) Int32_val(crc), 
+                           &Byte_u(buf, Long_val(pos)),
+                           Long_val(len)));
+ }

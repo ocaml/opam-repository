@@ -1,6 +1,9 @@
+bash -c "while true; do echo \$(date) - building ...; sleep 360; done" &
+PING_LOOP_PID=$!
+
 echo pull req: $TRAVIS_PULL_REQUEST
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  curl https://github.com/$TRAVIS_REPO_SLUG/pull/$TRAVIS_PULL_REQUEST.diff -o pullreq.diff
+  curl -L https://github.com/$TRAVIS_REPO_SLUG/pull/$TRAVIS_PULL_REQUEST.diff -o pullreq.diff
 else
   git show > pullreq.diff.tmp
   merge=`grep "^Merge: " pullreq.diff.tmp | awk -F: '{print $2}'`
@@ -20,6 +23,10 @@ opam --version
 opam --git-version
 
 export OPAMYES=1
+
+case $TRAVIS_OS_NAME in
+osx) export OPAMFETCH=wget ;;
+esac
 
 cd $TRAVIS_BUILD_DIR
 echo Pull request:
@@ -50,31 +57,21 @@ function build_one {
   echo build one: $pkg
   rm -rf ~/.opam
   opam init .
-  case $OCAML_VERSION,$TRAVIS_OS_NAME in
-  4.02.1,osx)
-    opam switch 4.02.1
-    eval `opam config env`
-    ;;
-  esac
   echo Current switch is:
   opam switch
   # test for installability
-  case "$OPAM_VERSION" in
-      1.0.*|1.1.*)
-          avail_cmd="opam install $pkg --dry-run | grep -E -v \"The dependency [^ ]+ of package [^ ]+ is not available for your compiler or your OS.\" | grep -v \"Your request cannot be satisfied.\" || true"
-          ;;
-      *)
-          avail_cmd="opam list -s -a $pkg | grep -v \"No packages found.\""
-          ;;
-  esac
-  is_available=$(eval $avail_cmd) # eval for a real pipe
-  if [ -z "$is_available" ] ; then
-      echo $avail_cmd
-      echo Skipping $pkg as not installable
+  echo "Checking for availability"
+  if ! opam install $pkg --dry-run; then
+      echo "Package unavailable."
+      if opam show $pkg; then
+          echo "Package is unavailable on this configuration, skipping:"
+          opam install $pkg --dry-run || true
+      else
+          echo "ERROR: Package not found."
+          echo "Maybe its definition failed to parse, check above."
+          false
+      fi
   else
-    echo "Begin availability check:"
-    echo $avail_cmd
-    echo $is_available
     echo "End   availability check."
     case $TRAVIS_OS_NAME in
     linux)
@@ -119,3 +116,5 @@ function build_one {
 for i in `cat tobuild.txt`; do
   build_one $i
 done
+
+kill $PING_LOOP_PID

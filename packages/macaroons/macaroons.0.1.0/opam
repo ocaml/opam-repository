@@ -1,0 +1,24 @@
+opam-version: "1.2"
+maintainer: "Nicolas Ojeda Bar <n.oje.bar@gmail.com>"
+authors: "Nicolas Ojeda Bar <n.oje.bar@gmail.com>"
+homepage: "https://www.github.com/nojb/ocaml-macaroons"
+dev-repo: "https://www.github.com/nojb/ocaml-macaroons.git"
+bug-reports: "https://www.github.com/nojb/ocaml-macaroons/issues"
+license: "MIT"
+build: [
+  [make "macaroons"]
+  [make "sodium_macaroons"] {sodium:installed}
+]
+build-doc: [make "doc"]
+install: [
+  [make "install"] {!sodium:installed}
+  [make "install_sodium"] {sodium:installed}
+]
+remove: ["ocamlfind" "remove" "macaroons"]
+depends: [
+  "hex"
+  "base64" {>= "2.0.0"}
+  "ocamlfind" {build}
+]
+depopts: "sodium"
+available: [ocaml-version >= "4.01.0"]
