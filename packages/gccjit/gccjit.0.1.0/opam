@@ -1,0 +1,33 @@
+opam-version: "1.2"
+maintainer: "Nicolas Ojeda Bar <n.oje.bar@gmail.com>"
+authors: "Nicolas Ojeda Bar <n.oje.bar@gmail.com>"
+homepage: "https://www.github.com/nojb/ocaml-gccjit"
+bug-reports: "https://www.github.com/nojb/ocaml-gccjit/issues"
+license: "MIT"
+dev-repo: "https://www.github.com/nojb/ocaml-gccjit.git"
+build: [make]
+build-doc: [make "doc"]
+depends: [
+  "ctypes" {>= "0.4"}
+  "ocamlfind" {build}
+]
+available: [ocaml-version >= "4.01.0"]
+depexts: [
+  ["linux" "source"]
+  ["https://gist.githubusercontent.com/nojb/774a5debc6ffcc4acb99/raw/e4e57b14826b03a522c08bbd5cfac891aefe649a/install-libgccjit-from-source.sh"]
+]
+post-messages: [
+
+"In order for compilation to be successful the library `libgccjit` needs to be
+found by the C compiler using the `-lgccjit` flag.  If the `libgccjit` library in
+your system is a non-standard location, please set the `LIBGCCJIT_DIR` environment
+variable before installing this package, like this:
+
+```
+LIBGCCJIT_DIR=<directory where libgccjit lives> opam install gccjit
+```
+
+See https://gcc.gnu.org/wiki/JIT for instructions how to build `libgccjit`.
+" {failure}
+
+]
