@@ -1,0 +1,47 @@
+From 42eef0caa729a39467fdac61e4120a5cefabd4e4 Mon Sep 17 00:00:00 2001
+From: Mauricio Fernandez <mfp@acm.org>
+Date: Sun, 26 Apr 2015 17:22:56 +0200
+Subject: [PATCH] Check against lwt.preemptive instead of lwt.extra in
+ configure script.
+
+---
+ Makefile.options | 2 +-
+ configure        | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Makefile.options b/Makefile.options
+index bd3a8fa..060cdbe 100644
+--- a/Makefile.options
++++ b/Makefile.options
+@@ -26,7 +26,7 @@ endif
+ ## but also to generate src/baselib/ocsigen_config.ml and src/files/META
+ 
+ ifeq "$(PREEMPTIVE)" "YES"
+-LWT_EXTRA_PACKAGE:=lwt.extra
++LWT_EXTRA_PACKAGE:=lwt.preemptive
+ endif
+ 
+ BASE_PACKAGE := lwt ipaddr
+diff --git a/configure b/configure
+index 2e786ed..cec8fe7 100755
+--- a/configure
++++ b/configure
+@@ -454,12 +454,12 @@ if [ "$with_camlzip" -gt 0 ]; then
+     fi
+ fi
+ 
+-# Check Lwt.extra
++# Check lwt.preemptive
+ if [ "$with_preempt" -gt 0 ]; then
+-    if test_library lwt.extra; then
++    if test_library lwt.preemptive; then
+ 	echo -n
+     elif [ "$with_preempt" -gt 1 ]; then
+-	fail_library lwt.extra "Missing support for 'extra' in lwt."
++	fail_library lwt.extra "Missing support for 'preemptive' in lwt."
+     else
+ 	with_preempt=0
+     fi
+-- 
+1.8.5.2
+
