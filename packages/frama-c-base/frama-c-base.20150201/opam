@@ -1,5 +1,5 @@
 opam-version: "1.2.0"
-name: "frama-c"
+name: "frama-c-base"
 version: "20150201"
 maintainer: "francois.bobot@cea.fr"
 authors: [
@@ -40,12 +40,48 @@ tags: [
   "dataflow analysis"
 ]
 
+build: [
+  ["./configure" "--prefix" prefix
+                 "--disable-gui" { !conf-gtksourceview:installed | !conf-gnomecanvas:installed }
+]
+  [make]
+  [make "install"]
+]
+
+remove: [
+  ["./configure" "--prefix" prefix "--disable-local-ocamlgraph"
+                 "--disable-gui" { !conf-gtksourceview:installed | !conf-gnomecanvas:installed }
+]
+  [make "uninstall"]
+  ["rm" "-rf" frama-c:doc]
+]
+
+build-doc: [
+   [make "-C" "doc" "download"]
+   [make "-C" "doc" "FRAMAC_DOCDIR=%{frama-c:doc}%" "install"]
+]
+
+build-test: [
+  [make "PTESTS_OPTS=-error-code" "tests"]
+]
+
 depends: [
-  "frama-c-base" { = "20150201" }
+  "ocamlgraph" { = "1.8.5" | = "1.8.6" }
+  "ocamlfind"
+]
+
+depopts: [
   "zarith"
-  "lablgtk" { >= "2.18.2" } #for ocaml >= 4.02.1
+  "lablgtk"
   "conf-gtksourceview"
   "conf-gnomecanvas"
+  "coq" { build }
+]
+
+
+conflicts: [
+  "why3" { < "0.85" }
+  "lablgtk" { < "2.18.2" } #for ocaml >= 4.02.1
 ]
 
 available: [ ocaml-version >= "3.12" & ocaml-version != "4.02.0" ]

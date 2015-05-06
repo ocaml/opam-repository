@@ -17,15 +17,36 @@ tags: [
   "automated theorem prover"
   "interactive theorem prover"
 ]
+
+# Jessie3 (frama-c plugin) is *disabled* because it is not ready
+build: [
+  ["./configure" "--prefix" prefix "--disable-bench" "--disable-frama-c"
+                 "--disable-ide" { !conf-gtksourceview:installed }
+]
+  [make "opt" "byte"]
+  [make "install" "install-lib"]
+]
+
+build-doc: [
+  [make "doc" "stdlibdoc" "apidoc"]
+  [make "DOCDIR=%{doc}%/why3" "install-doc"]
+]
+
 depends: [
-  "why3-base" { = "0.85" }
+  "ocamlfind"
+]
+
+depopts: [
   "lablgtk"
   "conf-gtksourceview"
   "zarith"
   "camlzip"
   "ocamlgraph"
+  "coq"
 ]
 
-messages:[
-"Coq realization of why3 theories will not be available without coq" { !coq:installed }
+conflicts: [
+  "lablgtk" {< "2.14.2"}
+  "ocamlgraph" {< "1.8.2"}
+  "coq" {< "8.4"}
 ]
