@@ -10,10 +10,11 @@ if pkg-config --exists mirage-xen; then
 
   # WARNING: if you pass invalid cflags here, zarith will silently
   # fall back to compiling with the default flags instead!
-  CFLAGS="`pkg-config --cflags gmp-xen mirage-xen` -O2 -pedantic -fomit-frame-pointer -fno-builtin"
+  CFLAGS="`pkg-config --cflags gmp-xen mirage-xen-posix` -O2 -pedantic -fomit-frame-pointer -fno-builtin"
   export CFLAGS
   ./configure
   make
   cp libzarith.a "$PREFIX/lib/zarith/libzarith-xen.a"
+  mv "$PREFIX/lib/zarith/META" "$PREFIX/lib/zarith/META.old"
   cp META "$PREFIX/lib/zarith/META"
 fi
