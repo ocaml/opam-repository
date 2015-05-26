@@ -86,6 +86,8 @@ function build_one {
       fi
       ;;
     osx)
+      curl --version
+      curl --help
       depext=`opam install $pkg -e osx,homebrew`
       echo Homebrew depexts: $depext
       if [ "$depext" != "" ]; then
@@ -97,7 +99,7 @@ function build_one {
       fi
       ;;
     esac
-    opam install $pkg
+    opam install -vvv $pkg
     opam remove -a ${pkg%%.*}
     if [ "$depext" != "" ]; then
       case $TRAVIS_OS_NAME in
