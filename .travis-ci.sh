@@ -24,9 +24,9 @@ opam --git-version
 
 export OPAMYES=1
 
-case $TRAVIS_OS_NAME in
-osx) export OPAMFETCH=wget ;;
-esac
+# case $TRAVIS_OS_NAME in
+# osx) export OPAMFETCH=wget ;;
+# esac
 
 cd $TRAVIS_BUILD_DIR
 echo Pull request:
