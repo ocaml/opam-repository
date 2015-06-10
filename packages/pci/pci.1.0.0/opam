@@ -1,0 +1,33 @@
+opam-version: "1.2"
+maintainer:   "simon.beaumont@citrix.com"
+author:       "Si Beaumont"
+homepage:     "https://github.com/simonjbeaumont/ocaml-pci"
+bug-reports:  "https://github.com/simonjbeaumont/ocaml-pci/issues"
+dev-repo:     "https://github.com/simonjbeaumont/ocaml-pci.git"
+
+build: [
+  ["./configure"]
+  [make]
+]
+build-test: [
+  ["./configure" "--enable-tests"]
+  [make "test"]
+]
+install: [make "install"]
+remove: [make "uninstall"]
+depends: [
+  "ctypes" {>= "0.4"}
+  "ocamlfind" {build}
+  "ounit" {test}
+]
+available: [ocaml-version >= "4.01.0" & os = "linux"]
+depexts: [
+  [["debian"] ["libpci-dev"]]
+  [["ubuntu"] ["libpci-dev"]]
+  [["centos"] ["pciutils-devel"]]
+]
+post-messages: [
+  "This package requires libpci-dev (>= 3.2.0) to be installed on your system"     {failure & (os = "debian")}
+  "This package requires libpci-dev (>= 3.2.0) to be installed on your system"     {failure & (os = "ubuntu")}
+  "This package requires pciutils-devel (>= 3.2.0) to be installed on your system" {failure & (os = "centos")}
+]
