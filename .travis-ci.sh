@@ -37,23 +37,30 @@ echo To Build:
 cat tobuild.txt
 
 function make_report {
-    local failures=()
+    local errors=()
+    local warnings=()
     for p in "$@"; do
-        opam lint packages/${p%%.*}/$p/opam >>lint-report || failures+=($p)
+        if ! opam lint packages/${p%%.*}/$p/opam >>"lint-report-$p"
+        then errors+=($p)
+        elif [ -s "lint-report-$p" ]; then warnings+=($p)
+        else continue
+        fi
+        echo >>lint-report
+        sed 's/^ \+\([^:]*\):\(.*\)$/- **\1**: \2/' "lint-report-$p" >> lint-report
     done
     if [ $# -eq 0 ]; then
         echo "This pull-request doesn't affect any packages"
-        return;
-    elif [ ${#failures[@]} -eq 0 ] && [ ! -s lint-report ]; then
+        return
+    elif [ ${#errors[@]} -eq 0 ] && [ ${#warnings[@]} -eq 0 ]; then
         echo "### :white_check_mark: All lint checks passed"
         echo "$*"
         return
-    elif [ ${#failures[@]} -eq 0 ]; then
-        echo "### :exclamation: opam-lint warnings"
+    elif [ ${#errors[@]} -eq 0 ]; then
+        echo "### :exclamation: opam-lint warnings (${warnings[*]})"
     else
-        echo "### :x: opam-lint failure"
+        echo "### :x: opam-lint failure (${errors[*]})"
     fi
-    sed 's/^ \+\([^:]*\):\(.*\)$/- **\1**: \2/; t n; s/^/\n/; :n' lint-report
+    cat lint-report
 }
 
 function opam_version_compat {
