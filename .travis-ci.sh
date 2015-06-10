@@ -119,9 +119,14 @@ function build_one {
                 sudo dpkg -i binutils_2.24-5ubuntu3.1_amd64.deb
             fi
     esac
+    echo
+    echo "====== External dependency handling ======"
     opam install depext
     depext=$(opam depext -ls $pkg --no-sources)
     opam depext $pkg
+    opam remove depext -a
+    echo
+    echo "====== Installing package ======"
     opam install $pkg
     opam remove -a ${pkg%%.*}
     if [ "$depext" != "" ]; then
