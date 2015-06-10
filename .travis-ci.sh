@@ -113,6 +113,11 @@ function build_one {
       fi
       ;;
     esac
+    echo
+    echo "====== External dependency handling ======"
+    opam remove depext -a
+    echo
+    echo "====== Installing package ======"
     opam install $pkg
     opam remove -a ${pkg%%.*}
     if [ "$depext" != "" ]; then
