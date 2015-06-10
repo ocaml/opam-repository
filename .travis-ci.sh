@@ -36,6 +36,26 @@ cat pullreq.diff | sed -E -n -e 's,\+\+\+ b/packages/[^/]*/([^/]*)/.*,\1,p' | so
 echo To Build:
 cat tobuild.txt
 
+function make_report {
+    local failures=()
+    for p in "$@"; do
+        opam lint packages/${p%%.*}/$p/opam >>lint-report || failures+=($p)
+    done
+    if [ $# -eq 0 ]; then
+        echo "This pull-request doesn't affect any packages"
+        return;
+    elif [ ${#failures[@]} -eq 0 ] && [ ! -s lint-report ]; then
+        echo "### :white_check_mark: All lint checks passed"
+        echo "$*"
+        return
+    elif [ ${#failures[@]} -eq 0 ]; then
+        echo "### :exclamation: opam-lint warnings"
+    else
+        echo "### :x: opam-lint failure"
+    fi
+    sed 's/^ \+\([^:]*\):\(.*\)$/- **\1**: \2/; t n; s/^/\n/; :n' lint-report
+}
+
 function opam_version_compat {
   local OPAM_MAJOR OPAM_MINOR ocamlv bytev
   if [ -n "$opam_version_compat_done" ]; then return; fi
@@ -65,7 +85,7 @@ function build_one {
   fi
   eval `opam config env`
   # test for installability
-  echo "Checking for availability"
+  echo "Checking for availability..."
   if ! opam install $pkg --dry-run; then
       echo "Package unavailable."
       if opam show $pkg; then
@@ -77,42 +97,24 @@ function build_one {
           false
       fi
   else
-    echo "End   availability check."
+    echo "... package available."
     case $TRAVIS_OS_NAME in
-    linux)
-      # we need fresh gcc and binutils, maybe...
-      # this can soon be removed, once travis upgraded their infrastructure
-      if [ `opam install --dry-run $pkg | grep -c mirage-entropy-xen` -gt 0 ] ; then
-        echo "installing a recent gcc and binutils (mainly to get mirage-entropy-xen working!)"
-        sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-        sudo apt-get -qq update
-        sudo apt-get install -y gcc-4.8
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
-        wget http://mirrors.kernel.org/ubuntu/pool/main/b/binutils/binutils_2.24-5ubuntu3.1_amd64.deb
-        sudo dpkg -i binutils_2.24-5ubuntu3.1_amd64.deb
-      fi
-      depext=`opam install $pkg -e ubuntu`
-      echo Ubuntu depexts: $depext
-      if [ "$depext" != "" ]; then
-        sudo apt-get install -qq pkg-config build-essential m4 $depext
-      fi
-      srcext=`opam install $pkg -e source,linux`
-      if [ "$srcext" != "" ]; then
-        curl -sL ${srcext} | bash
-      fi
-      ;;
-    osx)
-      depext=`opam install $pkg -e osx,homebrew`
-      echo Homebrew depexts: $depext
-      if [ "$depext" != "" ]; then
-        brew install $depext
-      fi
-      srcext=`opam install $pkg -e osx,source`
-      if [ "$srcext" != "" ]; then
-        curl -sL ${srcext} | bash
-      fi
-      ;;
+        linux)
+            # we need fresh gcc and binutils, maybe...
+            # this can soon be removed, once travis upgraded their infrastructure
+            if [ `opam install --dry-run $pkg | grep -c mirage-entropy-xen` -gt 0 ] ; then
+                echo "installing a recent gcc and binutils (mainly to get mirage-entropy-xen working\!)"
+                sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+                sudo apt-get -qq update
+                sudo apt-get install -y gcc-4.8
+                sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
+                wget http://mirrors.kernel.org/ubuntu/pool/main/b/binutils/binutils_2.24-5ubuntu3.1_amd64.deb
+                sudo dpkg -i binutils_2.24-5ubuntu3.1_amd64.deb
+            fi
     esac
+    opam install depext
+    depext=$(opam depext -ls $pkg --no-sources)
+    opam depext $pkg
     opam install $pkg
     opam remove -a ${pkg%%.*}
     if [ "$depext" != "" ]; then
@@ -128,6 +130,28 @@ function build_one {
     fi
   fi
 }
+
+function push_pr_comment {
+    [ -n "$TRAVIS_PULL_REQUEST" ] || return;
+    echo "====== LINT REPORT ======"
+    cat $1
+    local json=$(python -c 'import json,sys; print json.dumps({"body":sys.stdin.read()})' <$1)
+    local api_url="https://api.github.com/repos/$TRAVIS_REPO_SLUG/issues/$TRAVIS_PULL_REQUEST/comments"
+    echo "==> Commenting back to GitHub PR ($api_url)"
+    if [ -z "$OPAM_CI_TOKEN" ]; then
+        echo "Err: GH token undefined"
+        return 2
+    fi
+    curl -u "opam-ci:$OPAM_CI_TOKEN" "$api_url" -d "$json" || true
+}
+
+if [ $OCAML_VERSION = 4.02.1 ] &&
+   [ $OPAM_VERSION = 1.2.2 ] &&
+   [ $TRAVIS_OS_NAME = linux ]
+then
+    make_report $(cat tobuild.txt) >report.txt
+    push_pr_comment report.txt
+fi
 
 for i in `cat tobuild.txt`; do
   build_one $i
