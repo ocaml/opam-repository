@@ -57,8 +57,13 @@ function build_one {
   echo build one: $pkg
   rm -rf ~/.opam
   opam init .
-  echo Current switch is:
-  opam switch
+  if [ "$OCAML_SWITCH" = "" ]; then
+    echo Current switch is:
+    opam switch
+  else
+    opam switch $OCAML_SWITCH
+  fi
+  eval `opam config env`
   # test for installability
   echo "Checking for availability"
   if ! opam install $pkg --dry-run; then
@@ -108,6 +113,11 @@ function build_one {
       fi
       ;;
     esac
+    echo
+    echo "====== External dependency handling ======"
+    opam remove depext -a
+    echo
+    echo "====== Installing package ======"
     opam install $pkg
     opam remove -a ${pkg%%.*}
     if [ "$depext" != "" ]; then
