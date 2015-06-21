@@ -1,0 +1,39 @@
+From dcf9988313f4e3110c12065ea889a1ee2a9badd8 Mon Sep 17 00:00:00 2001
+From: Mauricio Fernandez <mfp@acm.org>
+Date: Sun, 26 Apr 2015 12:42:47 +0200
+Subject: [PATCH] Fix build against recent Lwt.
+
+---
+ src/extensions/ocsigen_comet.ml | 2 +-
+ src/server/ocsigen_server.ml    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/extensions/ocsigen_comet.ml b/src/extensions/ocsigen_comet.ml
+index ad7d9dd..ccc0719 100644
+--- a/src/extensions/ocsigen_comet.ml
++++ b/src/extensions/ocsigen_comet.ml
+@@ -468,7 +468,7 @@ end = struct
+            Lwt.choose
+              [ (choosed >|= fun x -> Some x);
+                (Lwt_unix.sleep (get_timeout ()) >|= fun () -> None);
+-               (Lwt_event.next Security.kill >>= fun () -> Lwt.fail Kill);
++               (Lwt_react.E.next Security.kill >>= fun () -> Lwt.fail Kill);
+              ] >|= fun x ->
+            List.iter (fun c -> Channels.send_listeners c (-1)) active ;
+            let s = Messages.encode_downgoing ended x in
+diff --git a/src/server/ocsigen_server.ml b/src/server/ocsigen_server.ml
+index c5563a6..e548f5e 100644
+--- a/src/server/ocsigen_server.ml
++++ b/src/server/ocsigen_server.ml
+@@ -1040,7 +1040,7 @@ let rec wait_connection use_ssl port socket =
+          >>= decr_connected
+        in
+ 
+-       Lwt_util.iter handle_one l >>= fun () ->
++       Lwt_list.iter_p handle_one l >>= fun () ->
+        match e with
+        | Some e -> handle_exn e
+        | None -> Lwt.return ())
+-- 
+1.8.5.2
+

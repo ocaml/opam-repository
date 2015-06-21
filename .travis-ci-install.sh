@@ -19,6 +19,7 @@ install_on_linux () {
   4.01.0,1.2.0) ppa=avsm/ocaml41+opam12 ;;
   4.02.1,1.1.0) ppa=avsm/ocaml42+opam11 ;;
   4.02.1,1.2.0) ppa=avsm/ocaml42+opam12 ;;
+  4.02.1,1.2.1) ppa=avsm/ppa-opam-experimental ;;
   *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
 
@@ -42,10 +43,8 @@ install_on_osx () {
   sudo hdiutil attach XQuartz-2.7.6.dmg
   sudo installer -verbose -pkg /Volumes/XQuartz-2.7.6/XQuartz.pkg -target /
   case "$OCAML_VERSION,$OPAM_VERSION" in
-  4.01.0,1.1.*) brew install opam ;;
-  4.01.0,1.2.*) brew update; brew install opam --HEAD ;;
-  4.02.1,1.1.*) brew install opam ;;
-  4.02.1,1.2.*) brew update; brew install opam --HEAD ;;
+  4.02.1,1.2.0) brew update; brew install opam ;;
+  4.02.1,1.2.1) brew update; brew install opam --HEAD ;;
   *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
   esac
 }
