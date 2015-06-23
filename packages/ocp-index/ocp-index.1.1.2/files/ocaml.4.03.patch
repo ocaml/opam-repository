@@ -1,0 +1,66 @@
+diff --git a/src/grepMain.ml b/src/grepMain.ml
+index 2103e3e..cc0212f 100644
+--- a/src/grepMain.ml
++++ b/src/grepMain.ml
+@@ -85,7 +85,7 @@ end = struct
+         Filename.basename
+           (try Filename.chop_extension f with Invalid_argument _ -> f)
+       in
+-      String.mapi (function 0 -> Char.uppercase | _ -> fun x -> x) s
++      String.mapi (function 0 -> Char.uppercase_ascii | _ -> fun x -> x) s
+     in
+     let f (curpath, lookfor, last_scope, acc) scope tok pos =
+       let lookfor =
+diff --git a/src/indexBuild.ml b/src/indexBuild.ml
+index f640bd5..0cc6eb1 100644
+--- a/src/indexBuild.ml
++++ b/src/indexBuild.ml
+@@ -305,12 +305,21 @@ let trie_of_type_decl ?comments info ty_decl =
+         (fun { Types.cd_id; cd_args } ->
+           let ty =
+             let params = match cd_args with
+-              | [] -> Outcometree.Otyp_sum []
+-              | param::_ ->
++              | Cstr_tuple [] -> Outcometree.Otyp_sum []
++              | Cstr_tuple (param::_ as l) ->
+                      Printtyp.tree_of_typexp false
+-                       { Types. desc = Types.Ttuple cd_args;
++                       { Types. desc = Types.Ttuple l;
+                          level = param.Types.level;
+                          id = param.Types.id }
++              | Cstr_record params ->
++                  Outcometree.Otyp_record (
++                    List.map
++                      (fun l ->
++                         (Ident.name l.Types.ld_id,
++                          l.ld_mutable = Mutable,
++                          Printtyp.tree_of_typexp false l.ld_type)
++                      )
++                      params)
+             in
+             Outcometree.Osig_type (Outcometree.{
+                 otype_name    = "";
+@@ -902,8 +911,8 @@ let load_files t dirfiles =
+     try
+       let i = String.rindex file '.' in
+       let len = String.length file in
+-      let modul = String.capitalize (String.sub file 0 i) in
+-      let ext = String.lowercase (String.sub file (i+1) (len-i-1)) in
++      let modul = String.capitalize_ascii (String.sub file 0 i) in
++      let ext = String.lowercase_ascii (String.sub file (i+1) (len-i-1)) in
+       modul, ext
+     with Not_found -> file, ""
+   in
+diff --git a/src/indexOut.ml b/src/indexOut.ml
+index bf22816..c02821f 100644
+--- a/src/indexOut.ml
++++ b/src/indexOut.ml
+@@ -176,6 +176,8 @@ module IndexFormat = struct
+         tydecl fmt otype_type
+     | Osig_value (_,ty,_) ->
+         !Oprint.out_type fmt ty
++    | Osig_ellipsis ->
++        Format.fprintf fmt "..."
+ 
+   let ty ?(colorise = no_color) fmt id =
+     option_iter id.ty
