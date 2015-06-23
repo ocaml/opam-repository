@@ -24,9 +24,10 @@ opam --git-version
 
 export OPAMYES=1
 
-# case $TRAVIS_OS_NAME in
-# osx) export OPAMFETCH=wget ;;
-# esac
+case $TRAVIS_OS_NAME in
+osx) # https://github.com/ocaml/opam/issues/2164
+     echo 'download-command: wget' >> $HOME/.opam/config
+esac
 
 cd $TRAVIS_BUILD_DIR
 echo Pull request:
@@ -86,8 +87,6 @@ function build_one {
       fi
       ;;
     osx)
-      curl --version
-      curl --help
       depext=`opam install $pkg -e osx,homebrew`
       echo Homebrew depexts: $depext
       if [ "$depext" != "" ]; then
