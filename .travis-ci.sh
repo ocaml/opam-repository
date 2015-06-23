@@ -24,10 +24,6 @@ opam --git-version
 
 export OPAMYES=1
 
-case $TRAVIS_OS_NAME in
-osx) export OPAMFETCH=wget ;;
-esac
-
 cd $TRAVIS_BUILD_DIR
 echo Pull request:
 cat pullreq.diff
@@ -59,6 +55,12 @@ function build_one {
   opam init .
   echo Current switch is:
   opam switch
+
+  case $TRAVIS_OS_NAME in
+  osx) # https://github.com/ocaml/opam/issues/2164
+       echo 'download-command: wget' >> $HOME/.opam/config
+  esac
+
   # test for installability
   echo "Checking for availability"
   if ! opam install $pkg --dry-run; then
