@@ -11,11 +11,13 @@ build: [
       "--prefix" prefix
       "--%{cohttp:enable}%-http"
       "--%{git:enable}%-git"
-      "--%{base-unix:enable}%-unix"
-      "--%{cohttp+git+alcotest:enable}%-tests"]
+      "--%{base-unix:enable}%-unix"]
   [make]
 ]
-build-test: [make "test"]
+build-test: [
+  ["./configure" "--enable-tests"]
+  [make "test"]
+]
 install: [make "install"]
 remove: [
   ["ocamlfind" "remove" "irmin"]
@@ -37,11 +39,13 @@ depends: [
   "re"
   "cmdliner"
   "crunch"
-  "git" {test}
-  "cohttp" {test}
-  "alcotest" {test}
+  "base-unix" {test}
+  "git"       {test}
+  "cohttp"    {test}
+  "alcotest"  {test & <= "0.3.3"}
 ]
 depopts: [
+  "base-unix"
   "git"
   "cohttp"
 ]
