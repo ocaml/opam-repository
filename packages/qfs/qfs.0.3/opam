@@ -1,23 +1,26 @@
 opam-version: "1.2"
+name: "qfs"
 maintainer: "ygrek@autistici.org"
-homepage: "https://github.com/ahrefs/ocaml-qfs"
-authors: "Ahrefs Pte Ltd"
+authors: [ "Ahrefs Pte Ltd <github@ahrefs.com>" ]
 license: "LGPL-2.1 with OCaml linking exception"
 bug-reports: "https://github.com/ahrefs/ocaml-qfs/issues"
 dev-repo: "git://github.com/ahrefs/ocaml-qfs.git"
+homepage: "https://github.com/ahrefs/ocaml-qfs"
+tags: [ "clib:stdc" "clib:qfs"  ]
 build: [
-  [make]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
 ]
-install: [
-  [make "install"]
-]
-build-doc: [
-  [make "doc"]
-]
+install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "qfs"]
 ]
-depends: ["ocamlfind" {build} "base-unix" "base-bytes"]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "base-bytes"
+  "base-unix"
+  "ocamlfind" {build & >= "1.5"}
+]
 depexts: [
   [["debian"] ["libboost-dev"]]
   [["ubuntu"] ["libboost-dev"]]
