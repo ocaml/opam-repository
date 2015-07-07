@@ -1,0 +1,46 @@
+opam-version: "1.2"
+maintainer: "anil@recoil.org"
+authors: [
+  "Anil Madhavapeddy"
+  "Balraj Singh"
+  "Richard Mortier"
+  "Nicolas Ojeda Bar"
+  "Thomas Gazagnaire"
+  "Vincent Bernardoff"
+  "Magnus Skjegstad"
+  "Mindy Preston"
+  "Thomas Leonard"
+]
+homepage: "https://github.com/mirage/mirage-tcpip"
+bug-reports: "https://github.com/mirage/mirage-tcpip/issues"
+tags: "org:mirage"
+dev-repo: "https://github.com/mirage/mirage-tcpip.git"
+build: [
+  ["./configure" "--prefix" prefix "--%{mirage-xen:enable}%-xen"]
+  [make]
+]
+install: [make "install"]
+build-test: [
+  ["./configure" "--enable-tests"]
+  [make "test" "TESTFLAGS=-v"]
+]
+remove: ["ocamlfind" "remove" "tcpip"]
+depends: [
+  "ocamlfind" {build}
+  "cstruct" {>= "1.0.1"}
+  "channel"
+  "mirage-types" {>= "2.0.0"}
+  "mirage-unix" {>= "1.1.0"}
+  "mirage-console"
+  "mirage-clock-unix" {>= "1.0.0"}
+  "mirage-net-unix" {>= "1.1.0"}
+  "ipaddr" {>= "2.2.0"}
+  "mirage-profile" {>= "0.5"}
+  "mirage-flow" {test}
+  "mirage-vnetif" {test}
+  "alcotest" {test}
+  "pcap-format" {test}
+  "lwt" {>= "2.4.7"}
+]
+depopts: "mirage-xen"
+available: [ocaml-version >= "4.01.0"]
