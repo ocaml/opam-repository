@@ -1,17 +1,22 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "thomas@gazagnaire.org"
-authors: [ "Thomas Gazagnaire" ]
+authors: "Thomas Gazagnaire"
+homepage: "https://github.com/mirage/ocaml-git"
+bug-reports: "https://github.com/mirage/ocaml-git/issues"
 license: "ISC"
+dev-repo: "https://github.com/mirage/ocaml-git.git"
+
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{mirage-types:enable}%-mirage" ]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+      "--%{mirage-types+io-page+ipaddr:enable}%-mirage" ]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
+install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "git"]
   ["rm" "-f" "%{bin}%/ogit"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
+
 depends: [
   "dolog" {>= "0.4" & <= "0.6"}
   "mstruct" {>= "1.3.0"}
@@ -26,9 +31,11 @@ depends: [
   "conduit" {= "0.5.1"}
 ]
 depopts: [
-  ("mirage-types" & "io-page" & "ipaddr")
+  "mirage-types"
+  "io-page"
+  "ipaddr"
 ]
 conflicts: [
    "mirage-types" {< "1.1.0"}
 ]
-ocaml-version: [>= "4.01.0"]
+available: [ocaml-version >= "4.01.0"]
