@@ -1,21 +1,22 @@
 opam-version: "1.2"
+name: "mqueue"
+version: "0.5.3"
 maintainer: "Markus W. Weissmann <markus.weissmann@in.tum.de>"
-authors: "Markus W. Weissmann <markus.weissmann@in.tum.de>"
-homepage: "http://mqueue.forge.ocamlcore.org/"
-bug-reports: "http://mqueue.forge.ocamlcore.org/"
-dev-repo: "git://mqueue.forge.ocamlcore.org/"
+authors: [ "Markus W. Weissmann <markus.weissmann@in.tum.de>" ]
 license: "MIT"
+homepage: "http://mqueue.forge.ocamlcore.org/"
+tags: [ "clib:rt"  ]
 build: [
-  ["ocaml" "setup.ml" "-configure"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
-install: [
-  ["ocaml" "setup.ml" "-install"]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "mqueue"]
 ]
-remove: ["ocamlfind" "remove" "mqueue"]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
   "base-bytes"
-  "ocamlfind" {build}
+  "base-unix"
+  "ocamlfind" {>= "1.5"}
 ]
-available: [ os != "darwin" ]
-
