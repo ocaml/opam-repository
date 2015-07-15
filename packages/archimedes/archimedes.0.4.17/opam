@@ -1,25 +1,38 @@
-opam-version: "1"
-maintainer: "Christophe.Troestler@umons.ac.be"
-authors: [
-  "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
-  "Pierre Hauweele <pierre@hauweele.net>"
-  "Fabian Pijcke <fabian.pijcke@gmail.com>"
-  "Noémie Meunier <noemie_6462@hotmail.com>"
-  "Bertrand Desmons <bibi-6@hotmail.fr>"
-  "Xavier Deschuyteneer <xavier.deschuyteneer@gmail.com>"
-]
-homepage: "http://forge.ocamlcore.org/projects/archimedes/"
+opam-version: "1.2"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+           "Pierre Hauweele <pierre@hauweele.net>"
+           "Fabian Pijcke <fabian.pijcke@gmail.com>"
+           "Noémie Meunier <noemie_6462@hotmail.com>"
+           "Bertrand Desmons <bibi-6@hotmail.fr>"
+           "Xavier Deschuyteneer <xavier.deschuyteneer@gmail.com>" ]
 license: "LGPL-3.0 with OCaml linking exception"
+homepage: "http://forge.ocamlcore.org/projects/archimedes/"
+dev-repo: "http://forge.ocamlcore.org/anonscm/git/archimedes/archimedes.git"
+bug-reports: "https://forge.ocamlcore.org/tracker/?group_id=105"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-cairo2" {"%{cairo:installed}%" | "%{cairo2:installed}%"}]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+    "--%{ocamlfind:enable}%-graphics"
+    "--enable-cairo2" { "%{cairo2:installed}%" }]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
-build-doc: [["ocaml" "setup.ml" "-doc"]]
-remove: [["ocamlfind" "remove" "archimedes"]]
-depends: ["ocamlfind" "camlp4"]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "archimedes"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"
+    "--%{ocamlfind:enable}%-graphics"
+    "--enable-cairo2" { "%{cairo2:installed}%" }]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "base-bigarray"
+  "ocamlfind" {build}
+  "camlp4" {build}
+]
 depopts: [
-  "cairo" {= "0.4.2"}
-  "cairo" {= "0.4.1"}
   "cairo2"
 ]
