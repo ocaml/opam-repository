@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer: "Dario Teixeira <dario.teixeira@nleyten.com>"
+authors: ["Dario Teixeira <dario.teixeira@nleyten.com>"]
+homepage: "http://ocaml-bitcoin.forge.ocamlcore.org/"
+bug-reports: "https://github.com/darioteixeira/ocaml-bitcoin/issues"
+dev-repo: "https://github.com/darioteixeira/ocaml-bitcoin.git"
+license: "LGPL-2.1 with OCaml linking exception"
+build: [
+  ["./configure" "--prefix" prefix
+                 "--docdir" "%{doc}%/bitcoin"
+                 "--%{ocsigenserver:enable}%-ocsigen"
+                 "--%{ocamlnet:enable}%-ocamlnet"
+                 "--%{cohttp:enable}%-cohttp"
+                 "--%{ocurl:enable}%-ocurl"
+  ]
+  [make]
+  [make "doc"]
+  [make "install"]
+]
+remove: [["ocamlfind" "remove" "bitcoin"]]
+depends: [
+  "yojson"
+  "cryptokit"
+]
+depopts: [
+  "ocsigenserver"
+  "ocamlnet"
+  "cohttp"
+  "ocurl"
+]
+conflicts: ["ocamlnet" {< "4.0.0"}]
