@@ -1,10 +1,24 @@
-opam-version: "1"
-maintainer: "jp.deplaix@gmail.com"
+opam-version: "1.2"
+maintainer: "opam-devel@lists.ocaml.org"
+homepage: "https://forge.ocamlcore.org/projects/ocamlmod/"
+bug-reports: "https://forge.ocamlcore.org/tracker/?group_id=244"
+dev-repo: "https://forge.ocamlcore.org/anonscm/darcs/ocamlmod/ocamlmod"
+authors: [ "Sylvain Le Gall" ]
+license: "LGPL-2.1 with OCaml linking exception"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/ocamlmod/_oasis_remove_.ml" "%{etc}%/ocamlmod"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
 ]
 depends: [
-  "ocamlfind"
+  "ocamlfind" {build}
+  "ounit" {test & >= "2.0.0"}
 ]
