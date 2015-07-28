@@ -1,0 +1,49 @@
+opam-version: "1.2"
+name: "frama-c-e-acsl"
+version: "0.5"
+maintainer: "julien.signoles@cea.fr"
+authors: [
+  "Julien Signoles"
+  "Guillaume Petiot"
+]
+homepage: "http://frama-c.com/eacsl/"
+license: "GNU Lesser General Public License version 2.1"
+doc: "http://frama-c.com/download/e-acsl/e-acsl-user-manual.pdf"
+bug-reports: "https://bts.frama-c.com/"
+tags: [
+  "program verification"
+  "formal specification"
+  "runtime assertion checking"
+  "monitoring"
+  "C"
+  "plugins"
+  "ACSL"
+  "E-ACSL"
+]
+
+build: [
+  ["ocaml" "run_autoconf_if_needed.ml"] #when used in pinned mode the configure *can* not yet be generated
+  ["./configure" "--prefix" prefix]
+  [make]
+]
+
+install: [
+  [make "install"]
+]
+
+remove: [
+  ["ocaml" "run_autoconf_if_needed.ml"] #when used in pinned mode the configure *can* not yet be generated
+  ["./configure" "--prefix" prefix]
+  [make "uninstall"]
+  ["rm" "-rf" "%{frama-c:doc}%/e-acsl"]
+]
+
+build-doc: [
+   ["cp" "doc/manuals/*.pdf" "%{frama-c:doc}/e-acsl/"]
+]
+
+depends: [
+  "frama-c-base" { = "20150201" }
+]
+
+available: [ ocaml-version >= "3.12" & ocaml-version != "4.02.0" ]
