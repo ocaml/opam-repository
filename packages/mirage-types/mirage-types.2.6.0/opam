@@ -6,11 +6,12 @@ bug-reports:  "https://github.com/mirage/mirage/issues/"
 dev-repo:     "https://github.com/mirage/mirage.git"
 tags:         ["org:mirage" "org:xapi-project"]
 
-depends: [
-  "ocamlfind"
-  "lwt"
-  "cstruct" {>="1.4.0"}
-  "io-page" {>="1.4.0"}
-  "ipaddr"
-  "mirage-types" {>="2.3.0" & <"2.6.0"}
-]
+build:   [make "build-types"]
+install: [make "install-types"]
+remove:  ["ocamlfind" "remove" "mirage-types"]
+
+depends:   ["ocamlfind"]
+depopts:   ["lwt" "cstruct" "io-page" "ipaddr"]
+conflicts: ["ipaddr" {< "2.0.0"}]
+
+available: [ocaml-version >= "4.01.0"]
