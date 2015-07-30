@@ -1,4 +1,4 @@
-#!/bin/sh -ex
+#!/bin/bash -ex
 
 version=$1
 make=$2
@@ -24,6 +24,8 @@ brew_llvm_config=/usr/local/Cellar/llvm/${version}*/bin/llvm-config
 if ! stat -t $brew_llvm_config; then
     brew_llvm_config=
 fi
+
+shopt -s nullglob
 
 for config in llvm-config-$version llvm-config-mp-$version $brew_llvm_config llvm-config; do
     case `$config --version` in

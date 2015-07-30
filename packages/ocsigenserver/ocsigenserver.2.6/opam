@@ -1,0 +1,34 @@
+opam-version: "1.2"
+author: "dev@ocsigen.org"
+maintainer: "dev@ocsigen.org"
+homepage: "http://ocsigen.org/ocsigenserver/"
+bug-reports: "https://github.com/ocsigen/ocsigenserver/issues/"
+dev-repo: "https://github.com/ocsigen/ocsigenserver.git"
+license: "LGPL-2.1 with OCaml linking exception"
+build: [
+  ["sh" "configure" "--prefix" "%{prefix}%" "--ocsigen-user" "%{user}%" "--ocsigen-group" "%{group}%" "--commandpipe" "%{lib}%/ocsigenserver/var/run/ocsigenserver_command" "--logdir" "%{lib}%/ocsigenserver/var/log/ocsigenserver" "--mandir" "%{man}%/man1" "--docdir" "%{lib}%/ocsigenserver/share/doc/ocsigenserver" "--commandpipe" "%{lib}%/ocsigenserver/var/run/ocsigenserver_command" "--staticpagesdir" "%{lib}%/ocsigenserver/var/www" "--datadir" "%{lib}%/ocsigenserver/var/lib/ocsigenserver" "--sysconfdir" "%{lib}%/ocsigenserver/etc/ocsigenserver"]
+  [make]
+]
+install: [make "install"]
+remove: [
+  ["rm" "-rf" "%{lib}%/ocsigenserver"]
+  ["rm" "-rf" "%{doc}%/ocsigenserver"]
+  ["rm" "-f" "%{man}%/man1/ocsigenserver.1"]
+]
+depends: [
+  "ocamlfind"
+  "base-unix"
+  "base-threads"
+  "react"
+  "ssl"
+  "lwt" {>= "2.4.6"}
+  "ocamlnet" {>= "4.0.2"}
+  "pcre"
+  "cryptokit"
+  "tyxml" {>= "3.4.0"}
+  ("dbm" | "sqlite3")
+  "ipaddr" {>= "2.1"}
+  "camlp4"
+]
+depopts: "camlzip"
+conflicts: "camlzip" {< "1.04"}
