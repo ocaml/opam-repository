@@ -1,7 +1,7 @@
 opam-version: "1.2"
 name: "bap"
-version: "0.9.4"
-maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+version: "0.9.9"
+maintainer: "Ivan Gotovchits <ivg@cmu.edu>"
 authors: "BAP Team"
 homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
 bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
@@ -11,28 +11,24 @@ build: [
   ["./configure"
                  "--prefix=%{prefix}%"
                  "--with-cxx=`which clang++`"
-                 "--enable-docs"
-                 "--docdir=%{doc}%/bap"
                  "--mandir=%{man}%"]
   [make]
-  [make "doc"]
 ]
 install: [
   [make "install"]
-  ["cp" "bapbuild" "%{bin}%/bapbuild"]
-  ["cp" "baptop" "%{bin}%/baptop"]
+  ["bap-byteweight" "update"]
 ]
 
 remove: [
   ["ocamlfind" "remove" "bap"]
   ["ocamlfind" "remove" "core_lwt"]
   ["rm" "-rf" bap:doc]
-  ["rm" "-f" "%{prefix}%/share/bap/sigs.zip"]
+  ["rm" "-rf" "%{prefix}%/share/bap"]
   ["rm" "-f" "%{man}%/man1/bap-mc.1"]
-  ["rm" "-f" "%{man}%/man1/bap-objdump.1"]
+  ["rm" "-f" "%{man}%/man1/bap.1"]
   ["rm" "-f" "%{man}%/man1/bap-byteweight.1"]
   ["rm" "-f" "%{bin}%/bap-mc"]
-  ["rm" "-f" "%{bin}%/bap-objdump"]
+  ["rm" "-f" "%{bin}%/bap"]
   ["rm" "-f" "%{bin}%/bap-byteweight"]
   ["rm" "-f" "%{bin}%/bap-server"]
   ["rm" "-f" "%{bin}%/bapbuild"]
@@ -40,34 +36,46 @@ remove: [
 ]
 
 depends: [
- 	"base-unix"
- 	"bitstring"
+    "base-unix"
+    "bitstring"
     "camlzip"
-	"cmdliner"
-	"cohttp"
-    "core_kernel" {>= "111.28.0" & < "112.35.0"}
-	"ezjsonm" {>= "0.4.0"}
-	"faillib"
+    "cmdliner" {>= "0.9.6"}
+    "cohttp" {>= "0.15.0"}
+    "core_kernel" {>= "111.28.0"}
+    "ezjsonm" {>= "0.4.0"}
+    "faillib"
     "fileutils"
-	"lwt"
-	"oasis" {build & >= "0.4.0"}
+    "lwt"
+    "oasis" {build & >= "0.4.0"}
     "ocamlgraph"
-    "ocurl"
-	"re"
-	"uri"
+    "ocurl" {<= "0.7.1"}
+    "re"
+    "uri"
     "utop"
-	"zarith"
+    "zarith"
+    "piqi" {>= "0.7.4"}
+    "uuidm"
 ]
 
 depexts: [
     [["ubuntu"] [
-                "libgmp-dev"
-                "libzip-dev"
-                "libcurl4-gnutls-dev"
-                "llvm-3.4-dev"
-                "time" "clang"
-                "llvm" "m4"
-                ]]
+        "libgmp-dev"
+        "libzip-dev"
+        "libcurl4-gnutls-dev"
+        "llvm-3.4-dev"
+        "time"
+        "clang"
+        "llvm"
+        "m4"
+     ]]
+     [["osx" "macports"] [
+        "gmp"
+        "llvm-3.4"
+        "graphviz"
+        "curl"
+        "libzip"
+     ]
+    ]
 ]
 
-available: [ocaml-version >= "4.01"]
+available: [ocaml-version >= "4.01.0"]
