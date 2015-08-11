@@ -56,13 +56,7 @@ function build_one {
   pkg=$1
   echo build one: $pkg
   rm -rf ~/.opam
-  opam init .
-  if [ "$OCAML_SWITCH" = "" ]; then
-    echo Current switch is:
-    opam switch
-  else
-    opam switch $OCAML_SWITCH
-  fi
+  opam init . --comp=$OPAM_SWITCH
   eval `opam config env`
   # test for installability
   echo "Checking for availability..."
