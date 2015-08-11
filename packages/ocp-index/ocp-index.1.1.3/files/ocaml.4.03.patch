@@ -1,0 +1,88 @@
+diff --git a/opam b/opam
+index 7c58305..0050cb7 100644
+--- a/opam
++++ b/opam
+@@ -13,7 +13,7 @@ tags: [
+   "org:ocamlpro"
+   "org:typerex"
+ ]
+-dev-repo: "https://github.com/OCamlPro/ocp-index.git#4.02"
++dev-repo: "https://github.com/OCamlPro/ocp-index.git#4.03"
+ build: [
+   ["./configure" "--prefix" prefix]
+   [make]
+@@ -26,7 +26,7 @@ depends: [
+ ]
+ depopts: "lambda-term"
+ conflicts: "lambda-term" {< "1.7"}
+-available: [ocaml-version >= "4.02.0" & ocaml-version < "4.03"]
++available: [ocaml-version >= "4.03"]
+ messages: "For ocp-browser, please also install package lambda-term" {! lambda-term:installed}
+ post-messages:
+   "This package requires additional configuration for use in editors. Either install package 'user-setup', or manually:
+diff --git a/src/grepMain.ml b/src/grepMain.ml
+index 88b2fa9..a38abfd 100644
+--- a/src/grepMain.ml
++++ b/src/grepMain.ml
+@@ -85,7 +85,7 @@ end = struct
+         Filename.basename
+           (try Filename.chop_extension f with Invalid_argument _ -> f)
+       in
+-      String.mapi (function 0 -> Char.uppercase | _ -> fun x -> x) s
++      String.mapi (function 0 -> Char.uppercase_ascii | _ -> fun x -> x) s
+     in
+     let f (curpath, lookfor, last_scope, acc) scope tok pos =
+       let lookfor =
+diff --git a/src/indexBuild.ml b/src/indexBuild.ml
+index cf914c0..f4fb5a9 100644
+--- a/src/indexBuild.ml
++++ b/src/indexBuild.ml
+@@ -326,12 +326,21 @@ let trie_of_type_decl ?comments info ty_decl =
+         (fun { Types.cd_id; cd_args; cd_attributes } ->
+           let ty =
+             let params = match cd_args with
+-              | [] -> Outcometree.Otyp_sum []
+-              | param::_ ->
++              | Cstr_tuple [] -> Outcometree.Otyp_sum []
++              | Cstr_tuple (param::_ as l) ->
+                      Printtyp.tree_of_typexp false
+-                       { Types. desc = Types.Ttuple cd_args;
++                       { Types. desc = Types.Ttuple l;
+                          level = param.Types.level;
+                          id = param.Types.id }
++              | Cstr_record params ->
++                  Outcometree.Otyp_record (
++                    List.map
++                      (fun l ->
++                         (Ident.name l.Types.ld_id,
++                          l.ld_mutable = Mutable,
++                          Printtyp.tree_of_typexp false l.ld_type)
++                      )
++                      params)
+             in
+             Outcometree.Osig_type (Outcometree.{
+                 otype_name    = "";
+@@ -925,8 +934,8 @@ let load_files t dirfiles =
+     try
+       let i = String.rindex file '.' in
+       let len = String.length file in
+-      let modul = String.capitalize (String.sub file 0 i) in
+-      let ext = String.lowercase (String.sub file (i+1) (len-i-1)) in
++      let modul = String.capitalize_ascii (String.sub file 0 i) in
++      let ext = String.lowercase_ascii (String.sub file (i+1) (len-i-1)) in
+       modul, ext
+     with Not_found -> file, ""
+   in
+diff --git a/src/indexOut.ml b/src/indexOut.ml
+index b82b041..d9f69a5 100644
+--- a/src/indexOut.ml
++++ b/src/indexOut.ml
+@@ -176,6 +176,8 @@ module IndexFormat = struct
+         tydecl fmt otype_type
+     | Osig_value (_,ty,_) ->
+         !Oprint.out_type fmt ty
++    | Osig_ellipsis ->
++        Format.fprintf fmt "..."
+ 
+   let ty ?(colorise = no_color) fmt id =
+     option_iter id.ty

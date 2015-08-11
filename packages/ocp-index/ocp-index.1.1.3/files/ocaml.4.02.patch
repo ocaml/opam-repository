@@ -1,0 +1,808 @@
+diff --git a/opam b/opam
+index 3a9a458..7c58305 100644
+--- a/opam
++++ b/opam
+@@ -13,7 +13,7 @@ tags: [
+   "org:ocamlpro"
+   "org:typerex"
+ ]
+-dev-repo: "https://github.com/OCamlPro/ocp-index.git"
++dev-repo: "https://github.com/OCamlPro/ocp-index.git#4.02"
+ build: [
+   ["./configure" "--prefix" prefix]
+   [make]
+@@ -26,7 +26,7 @@ depends: [
+ ]
+ depopts: "lambda-term"
+ conflicts: "lambda-term" {< "1.7"}
+-available: [ocaml-version >= "4.01.0" & ocaml-version < "4.02"]
++available: [ocaml-version >= "4.02.0" & ocaml-version < "4.03"]
+ messages: "For ocp-browser, please also install package lambda-term" {! lambda-term:installed}
+ post-messages:
+   "This package requires additional configuration for use in editors. Either install package 'user-setup', or manually:
+diff --git a/src/browserMain.ml b/src/browserMain.ml
+index 2bd5191..49065a9 100644
+--- a/src/browserMain.ml
++++ b/src/browserMain.ml
+@@ -16,7 +16,7 @@ let rec eq l1 l2 = match l1, l2 with
+ let kind_to_tag, tag_to_style, register_ressource =
+   let h = Hashtbl.create 11 in
+   let kind_to_tag = function
+-    | LibIndex.Type -> "Type"
++    | LibIndex.Type | OpenType -> "Type"
+     | Value -> "Value"
+     | Exception -> "Exception"
+     | Field _  -> "Field"
+diff --git a/src/grepMain.ml b/src/grepMain.ml
+index a37cc77..88b2fa9 100644
+--- a/src/grepMain.ml
++++ b/src/grepMain.ml
+@@ -85,8 +85,7 @@ end = struct
+         Filename.basename
+           (try Filename.chop_extension f with Invalid_argument _ -> f)
+       in
+-      s.[0] <- Char.uppercase s.[0];
+-      s
++      String.mapi (function 0 -> Char.uppercase | _ -> fun x -> x) s
+     in
+     let f (curpath, lookfor, last_scope, acc) scope tok pos =
+       let lookfor =
+diff --git a/src/indexBuild.ml b/src/indexBuild.ml
+index ac77d03..cf914c0 100644
+--- a/src/indexBuild.ml
++++ b/src/indexBuild.ml
+@@ -36,13 +36,13 @@ let orig_file_name = function
+   | Cmt f | Cmti f | Cmi f -> f
+ 
+ let equal_kind k1 k2 = match k1,k2 with
+-  | Type,Type | Value,Value | Exception,Exception
++  | Type,Type | Value,Value | Exception,Exception | OpenType,OpenType
+   | Field _,Field _ | Variant _,Variant _ | Method _,Method _
+   | Module,Module | ModuleType,ModuleType
+   | Class,Class | ClassType,ClassType
+   | Keyword,Keyword ->
+       true
+-  | Type,_ | Value,_ | Exception,_
++  | Type,_ | Value,_ | Exception,_ | OpenType,_
+   | Field _,_ | Variant _,_ | Method _,_
+   | Module,_ | ModuleType,_
+   | Class,_ | ClassType,_
+@@ -146,8 +146,8 @@ let ty_of_sig_item =
+   function
+   | Types.Sig_value(id, decl) -> tree_of_value_description id decl
+   | Types.Sig_type(id, decl, rs) -> tree_of_type_declaration id decl rs
+-  | Types.Sig_exception(id, decl) -> tree_of_exception_declaration id decl
+-  | Types.Sig_module(id, mty, rs) -> tree_of_module id mty rs
++  | Types.Sig_typext(id, decl, es) -> tree_of_extension_constructor id decl es
++  | Types.Sig_module(id, { Types.md_type }, rs) -> tree_of_module id md_type rs
+   | Types.Sig_modtype(id, decl) -> tree_of_modtype_declaration id decl
+   | Types.Sig_class(id, decl, rs) -> tree_of_class_declaration id decl rs
+   | Types.Sig_class_type(id, decl, rs) -> tree_of_cltype_declaration id decl rs
+@@ -220,6 +220,7 @@ let qualify_ty (parents:parents) ty =
+     | Otyp_poly (str, ty) -> Otyp_poly (str, aux ty)
+     | Otyp_module (str, strl, tylist) ->
+         Otyp_module (str, strl, List.map aux tylist)
++    | Otyp_open -> Otyp_open
+   in
+   aux ty
+ 
+@@ -227,11 +228,15 @@ let qualify_ty_in_sig_item (parents:parents) =
+   let qual = qualify_ty parents in
+   let open Outcometree in
+   function
+-  | Osig_type ((str, list, ty, priv, tylist2), rc) ->
+-      Osig_type ((str, list, qual ty, priv,
+-        List.map (fun (ty1,ty2) -> qual ty1, qual ty2) tylist2), rc)
++  | Osig_type (out_type_decl, rc) ->
++      Osig_type ({ out_type_decl with
++        otype_type  = qual out_type_decl.otype_type;
++        otype_cstrs = List.map (fun (ty1,ty2) -> qual ty1, qual ty2)
++                          out_type_decl.otype_cstrs }, rc)
+   | Osig_value (str, ty, str2) -> Osig_value (str, qual ty, str2)
+-  | Osig_exception (str, tylist) -> Osig_exception (str, List.map qual tylist)
++  | Osig_typext (constr, es) ->
++      Osig_typext ({ constr with
++        oext_args = List.map qual constr.oext_args }, es)
+   | out_sig -> out_sig (* don't get down in modules, classes and their types *)
+ 
+ (* -- end -- *)
+@@ -239,19 +244,16 @@ let qualify_ty_in_sig_item (parents:parents) =
+ let loc_of_sig_item = function
+   | Types.Sig_value (_,descr) -> descr.Types.val_loc
+   | Types.Sig_type (_,descr,_) -> descr.Types.type_loc
+-  | Types.Sig_exception (_,descr) -> descr.Types.exn_loc
+-  (* Sadly the Types tree doesn't contain locations for those. This means we
+-     won't associate comments easily either (todo...) *)
+-  | Types.Sig_module _
+-  | Types.Sig_modtype _
+-  | Types.Sig_class _
+-  | Types.Sig_class_type _
+-    -> Location.none
++  | Types.Sig_typext (_,descr,_) -> descr.Types.ext_loc
++  | Types.Sig_module (_,descr,_) -> descr.Types.md_loc
++  | Types.Sig_modtype (_,descr) -> descr.Types.mtd_loc
++  | Types.Sig_class (_,descr,_) -> descr.Types.cty_loc
++  | Types.Sig_class_type (_,descr,_) -> descr.Types.clty_loc
+ 
+ let id_of_sig_item = function
+   | Types.Sig_value (id,_)
+   | Types.Sig_type (id,_,_)
+-  | Types.Sig_exception (id,_)
++  | Types.Sig_typext (id,_,_)
+   | Types.Sig_module (id,_,_)
+   | Types.Sig_modtype (id,_)
+   | Types.Sig_class (id,_,_)
+@@ -261,67 +263,129 @@ let id_of_sig_item = function
+ let kind_of_sig_item = function
+   | Types.Sig_value _ -> Value
+   | Types.Sig_type _ -> Type
+-  | Types.Sig_exception _ -> Exception
++  | Types.Sig_typext (_, _, Types.Text_exception) -> Exception
++  | Types.Sig_typext _ -> OpenType
+   | Types.Sig_module _ -> Module
+   | Types.Sig_modtype _ -> ModuleType
+   | Types.Sig_class _ -> Class
+   | Types.Sig_class_type _ -> ClassType
+ 
++let attrs_of_sig_item = function
++  | Types.Sig_value (_,descr) -> descr.Types.val_attributes
++  | Types.Sig_type (_,descr,_) -> descr.Types.type_attributes
++  | Types.Sig_typext (_,descr,_) -> descr.Types.ext_attributes
++  | Types.Sig_module (_,descr,_) -> descr.Types.md_attributes
++  | Types.Sig_modtype (_,descr) -> descr.Types.mtd_attributes
++  | Types.Sig_class (_,descr,_) -> descr.Types.cty_attributes
++  | Types.Sig_class_type (_,descr,_) -> descr.Types.clty_attributes
++
++let doc_of_attributes attrs =
++  let doc_loc_id = "ocaml.doc" in (* not exported ! *)
++  let open Parsetree in
++  match List.find (fun ({Location.txt},_) -> txt = doc_loc_id) attrs with
++  | _, PStr [{pstr_desc = Pstr_eval ({pexp_desc},_)}] ->
++      (match pexp_desc with
++       | Pexp_constant (Const_string (s,_)) -> Some s
++       | _ -> debug "Unexpected ocaml.doc docstring format"; None)
++  | _ -> None
++  | exception Not_found -> None
++
+ let trie_of_type_decl ?comments info ty_decl =
+   match ty_decl.Types.type_kind with
+   | Types.Type_abstract -> [], comments
++  | Types.Type_open -> [], comments
+   | Types.Type_record (fields,_repr) ->
+       List.map
+-        (fun (id, _mutable, ty_expr) ->
+-          let ty = Printtyp.tree_of_typexp false ty_expr in
++        (fun { Types.ld_id; ld_type; ld_attributes } ->
++          let ty = Printtyp.tree_of_typexp false ld_type in
+           let ty =
+-            Outcometree.Osig_type
+-              (("", [], ty, Asttypes.Public, []), Outcometree.Orec_not)
++            Outcometree.Osig_type (Outcometree.{
++                otype_name    = "";
++                otype_params  = [];
++                otype_type    = ty;
++                otype_private = Asttypes.Public;
++                otype_cstrs   = []; }, Outcometree.Orec_not)
+           in
+-          string_to_key id.Ident.name,
++          let doc = doc_of_attributes ld_attributes in
++          string_to_key ld_id.Ident.name,
+           Trie.create ~value:{
+             path = info.path;
+             orig_path = info.path;
+             kind = Field info;
+-            name = id.Ident.name;
++            name = ld_id.Ident.name;
+             ty = Some ty;
+             loc_sig = info.loc_sig;
+             loc_impl = info.loc_impl;
+-            doc = lazy None;
++            doc = lazy doc;
+             file = info.file;
+           } ())
+         fields,
+       comments
+   | Types.Type_variant variants ->
+       List.map
+-        (fun (id, ty_exprs, _constraints) ->
++        (fun { Types.cd_id; cd_args; cd_attributes } ->
+           let ty =
+-            let params = match ty_exprs with
++            let params = match cd_args with
+               | [] -> Outcometree.Otyp_sum []
+               | param::_ ->
+                      Printtyp.tree_of_typexp false
+-                       { Types. desc = Types.Ttuple ty_exprs;
++                       { Types. desc = Types.Ttuple cd_args;
+                          level = param.Types.level;
+                          id = param.Types.id }
+             in
+-            Outcometree.Osig_type
+-              (("", [], params, Asttypes.Public, []), Outcometree.Orec_not)
++            Outcometree.Osig_type (Outcometree.{
++                otype_name    = "";
++                otype_params  = [];
++                otype_type    = params;
++                otype_private = Asttypes.Public;
++                otype_cstrs   = []; }, Outcometree.Orec_not)
+           in
+-          string_to_key id.Ident.name,
++          let doc = doc_of_attributes cd_attributes in
++          string_to_key cd_id.Ident.name,
+           Trie.create ~value:{
+             path = info.path;
+             orig_path = info.path;
+             kind = Variant info;
+-            name = id.Ident.name;
++            name = cd_id.Ident.name;
+             ty = Some ty;
+             loc_sig = info.loc_sig;
+             loc_impl = info.loc_impl;
+-            doc = lazy None;
++            doc = lazy doc;
+             file = info.file;
+           } ())
+         variants,
+       comments
+ 
++(** Implements looking up a module path in the parents list *)
++let lookup_parents (parents:parents) path sig_path =
++  let sig_key, path_key = match sig_path with
++    | hd::tl ->
++        modpath_to_key [hd], modpath_to_key tl
++    | [] -> assert false
++  in
++  let rec lookup = function
++    | [] ->
++        if debug_enabled then
++          debug "WARN: Module or sig reference %s not found a %s\n"
++            (modpath_to_string sig_path)
++            (modpath_to_string path);
++        Trie.empty
++    | (parentpath, lazy t) :: parents ->
++        let s = Trie.sub t sig_key in
++        if s = Trie.empty then lookup parents else
++          let s = Trie.sub s path_key in
++          let rewrite_path =
++            fix_path_prefix (List.length parentpath + List.length sig_path) path
++          in
++          Trie.map (fun _k v -> rewrite_path v) s
++  in
++  lookup parents
++
++let rec path_of_ocaml = function
++  | Path.Pident id -> [id.Ident.name]
++  | Path.Pdot (path, s, _) -> path_of_ocaml path @ [s]
++  | Path.Papply (p1, _p2) -> path_of_ocaml p1
++
+ let rec trie_of_sig_item
+     ?comments implloc_trie (parents:parents) (orig_file:orig_file) path
+     sig_item next
+@@ -333,9 +397,10 @@ let rec trie_of_sig_item
+     | Some n -> loc_of_sig_item n
+   in
+   let doc, comments =
+-    match comments with
+-    | None -> lazy None, None
+-    | Some comments ->
++    match doc_of_attributes (attrs_of_sig_item sig_item), comments with
++    | Some s, _ -> lazy (Some s), comments
++    | None, None -> lazy None, None
++    | None, Some comments ->
+         let assoc = lazy (
+           associate_comment (Lazy.force comments) loc nextloc
+         ) in
+@@ -368,19 +433,21 @@ let rec trie_of_sig_item
+   in
+   (* ignore functor arguments *)
+   let rec sig_item_contents = function
+-    | Types.Sig_module (id, Types.Mty_functor (_,_,s), is_rec) ->
+-        sig_item_contents (Types.Sig_module (id, s, is_rec))
++    | Types.Sig_module
++        (id, ({Types.md_type = Types.Mty_functor (_,_,s)} as funct), is_rec) ->
++        let funct = {funct with Types.md_type = s} in
++        sig_item_contents (Types.Sig_module (id, funct, is_rec))
+     | Types.Sig_modtype
+-        (id, Types.Modtype_manifest (Types.Mty_functor (_,_,s))) ->
+-        sig_item_contents
+-          (Types.Sig_modtype (id, Types.Modtype_manifest s))
++        (id, ({Types.mtd_type = Some (Types.Mty_functor (_,_,s))} as funct)) ->
++        let funct = {funct with Types.mtd_type = Some s} in
++        sig_item_contents (Types.Sig_modtype (id, funct))
+     | si -> si
+   in
+   (* read module / class contents *)
+   let children, comments =
+     match sig_item_contents sig_item with
+-    | Types.Sig_module (id,Types.Mty_signature sign,_)
+-    | Types.Sig_modtype (id,Types.Modtype_manifest (Types.Mty_signature sign))
++    | Types.Sig_module (id,{ Types.md_type = Types.Mty_signature sign },_)
++    | Types.Sig_modtype (id,{ Types.mtd_type = Some (Types.Mty_signature sign) })
+       ->
+         let path = path @ [id.Ident.name] in
+         let children_comments = lazy (
+@@ -400,64 +467,43 @@ let rec trie_of_sig_item
+           | Some _, lazy (_, comments) -> comments
+         in
+         children, comments
+-    | Types.Sig_module (_,Types.Mty_ident sig_ident,_)
+-    | Types.Sig_modtype (_,Types.Modtype_manifest (Types.Mty_ident sig_ident)) ->
+-        let sig_path =
+-          let rec get_path = function
+-            | Path.Pident id -> [id.Ident.name]
+-            | Path.Pdot (path, s, _) -> get_path path @ [s]
+-            | Path.Papply (p1, _p2) -> get_path p1
+-          in
+-          get_path sig_ident
+-        in
+-        let sig_key, path_key = match sig_path with
+-          | hd::tl ->
+-              modpath_to_key [hd], modpath_to_key tl
+-          | [] -> assert false
+-        in
+-        let rec lookup = function
+-          | [] ->
+-              if debug_enabled then
+-                debug "WARN: Module or sig reference %s not found a %s\n"
+-                  (modpath_to_string sig_path)
+-                  (modpath_to_string (path@[id.Ident.name]));
+-              Trie.empty
+-          | (parentpath, lazy t) :: parents ->
+-              let s = Trie.sub t sig_key in
+-              if s = Trie.empty then lookup parents else
+-                let s = Trie.sub s path_key in
+-                let rewrite_path =
+-                  fix_path_prefix
+-                    (List.length parentpath + List.length sig_path)
+-                    (path @ [id.Ident.name])
+-                in
+-                Trie.map (fun _k v -> rewrite_path v) s
+-        in
++    | Types.Sig_module (_,{ Types.md_type =
++                              Types.Mty_ident sig_ident
++                            | Types.Mty_alias sig_ident},_)
++    | Types.Sig_modtype (_,{ Types.mtd_type =
++                               Some ( Types.Mty_ident sig_ident
++                                    | Types.Mty_alias sig_ident) }) ->
++        let sig_path = path_of_ocaml sig_ident in
+         let children = lazy (
+           (* Only keep the children, don't override the module reference *)
+-          Trie.graft_lazy Trie.empty [] (lazy (lookup parents))
++          Trie.graft_lazy Trie.empty []
++            (lazy (lookup_parents parents (path@[id.Ident.name]) sig_path))
+         ) in
+         children, comments
+     | Types.Sig_class (id,{Types.cty_type=cty},_)
+     | Types.Sig_class_type (id,{Types.clty_type=cty},_)
+       ->
+         let rec get_clsig = function
+-          | Types.Cty_constr (_,_,cty) | Types.Cty_fun (_,_,cty) ->
++          | Types.Cty_constr (_,_,cty) | Types.Cty_arrow (_,_,cty) ->
+               get_clsig cty
+           | Types.Cty_signature clsig -> clsig
+         in
+         let clsig = get_clsig cty in
+         let path = path@[id.Ident.name] in
+         let (fields, _) =
+-          Ctype.flatten_fields (Ctype.object_fields clsig.Types.cty_self)
++          Ctype.flatten_fields (Ctype.object_fields clsig.Types.csig_self)
+         in
+         lazy (List.fold_left (fun t (lbl,_,ty_expr) ->
+             if lbl = "*dummy method*" then t else
+               let _ = Printtyp.reset_and_mark_loops ty_expr in
+               let ty = Printtyp.tree_of_typexp false ty_expr in
+               let ty =
+-                Outcometree.Osig_type
+-                  (("", [], ty, Asttypes.Public, []), Outcometree.Orec_not)
++                Outcometree.Osig_type (Outcometree.{
++                    otype_name    = "";
++                    otype_params  = [];
++                    otype_type    = ty;
++                    otype_private = Asttypes.Public;
++                    otype_cstrs   = []; }, Outcometree.Orec_not)
+               in
+               Trie.add t (string_to_key lbl)
+                 { path = path;
+@@ -486,6 +532,139 @@ let rec trie_of_sig_item
+     :: siblings,
+     comments
+ 
++
++(* These four functions go through the typedtree to extract includes *)
++let rec lookup_trie_of_module_expr parents t path = function
++  | Typedtree.Tmod_ident (incpath,{ Location.txt = _lid}) ->
++      let incpath = path_of_ocaml incpath in
++      debug "Including %s impl at %s\n" (modpath_to_string incpath) (modpath_to_string path);
++      let parents = (path, lazy t) :: parents in
++      let sub = lookup_parents parents path incpath in
++      overriding_merge t sub
++  | Typedtree.Tmod_constraint (e,_,_,_)
++  (* | Typedtree.Tmod_apply (e,_,_) *) ->
++      lookup_trie_of_module_expr parents t path e.mod_desc
++  | Typedtree.Tmod_apply ({ mod_desc = Typedtree.Tmod_functor(id,_,_,f) },
++                          { mod_desc = Typedtree.Tmod_ident (arg,_)
++                                     | Typedtree.Tmod_constraint ({mod_desc = Typedtree.Tmod_ident (arg,_)},_,_,_)  },_) ->
++      let t = lookup_trie_of_module_expr parents t path f.Typedtree.mod_desc in
++      debug "Grafting %s at %s\n" id.Ident.name (modpath_to_string (path_of_ocaml arg));
++      let functor_arg = lazy (lookup_parents parents (path_of_ocaml arg) path) in
++      Trie.graft_lazy t (modpath_to_key [id.Ident.name]) functor_arg
++  | _ -> t
++let rec extract_includes_from_submodule_sig parents t path name = function
++  | Typedtree.Tmty_signature sign ->
++      let path = path @ [name] in
++      let sub_includes = lazy (
++        get_includes_sig ((path, lazy t) :: parents)
++          (Trie.sub t (modpath_to_key [name])) path sign
++      ) in
++      Trie.graft_lazy t (modpath_to_key [name]) sub_includes
++  | Typedtree.Tmty_functor (_,_,_,e)
++  | Typedtree.Tmty_with (e,_) ->
++      extract_includes_from_submodule_sig parents t path name e.Typedtree.mty_desc
++  | _ -> t
++and get_includes_impl parents t path ttree_struct =
++  let rec extract_submodule_impl t name = function
++    | Typedtree.Tmod_structure str ->
++        let path = path @ [name] in
++        let sub_includes = lazy (
++          get_includes_impl ((path, lazy t) :: parents)
++            (Trie.sub t (modpath_to_key [name])) path str
++        ) in
++        Trie.graft_lazy t (modpath_to_key [name]) sub_includes
++    (* | Typedtree.Tmod_functor (arg_id,_,arg_t,e) *)
++    | Typedtree.Tmod_apply ({ mod_desc = Typedtree.Tmod_functor(id,_,_,f) },
++                            { mod_desc = Typedtree.Tmod_ident (arg,_)
++                                       | Typedtree.Tmod_constraint ({mod_desc = Typedtree.Tmod_ident (arg,_)},_,_,_)  },_) ->
++        debug "Grafting %s at %s\n" id.Ident.name (modpath_to_string (path_of_ocaml arg));
++        let functor_arg = lazy (
++          lookup_parents
++            ((path, lazy t)::parents) (path_of_ocaml arg) (path@[name])
++        ) in
++        extract_submodule_impl
++          (Trie.graft_lazy t (modpath_to_key [id.Ident.name]) functor_arg)
++          name f.Typedtree.mod_desc
++    | Typedtree.Tmod_functor (_,_,_,e)
++    | Typedtree.Tmod_constraint (e,_,_,_) ->
++        extract_submodule_impl t name e.Typedtree.mod_desc
++    | _ -> t
++  in
++  List.fold_left (fun t struc_item ->
++      match struc_item.Typedtree.str_desc with
++      | Typedtree.Tstr_include
++          { Typedtree.incl_mod = { Typedtree.mod_desc = e }} ->
++          lookup_trie_of_module_expr parents t path e
++      | Typedtree.Tstr_open
++          { Typedtree.open_path = p } ->
++          let sub = lookup_parents ((path, lazy t) :: parents) path (path_of_ocaml p) in
++          overriding_merge t sub
++      | Typedtree.Tstr_module
++          { Typedtree.mb_id = id; mb_expr = { Typedtree.mod_desc } } ->
++          extract_submodule_impl t id.Ident.name mod_desc
++      | Typedtree.Tstr_recmodule l ->
++          List.fold_left
++            (fun t { Typedtree.mb_id; mb_expr = { Typedtree.mod_desc } } ->
++               extract_submodule_impl t mb_id.Ident.name mod_desc)
++            t l
++      | Typedtree.Tstr_modtype
++          { Typedtree.mtd_id = id; mtd_type = Some { Typedtree.mty_desc = e } } ->
++          extract_includes_from_submodule_sig parents t path id.Ident.name e
++      | _ -> t)
++    t ttree_struct.Typedtree.str_items
++and get_includes_sig parents t path ttree_sig =
++  let rec extract_includes t = function
++    | Typedtree.Tmty_ident (incpath,_) ->
++        let incpath = path_of_ocaml incpath in
++        debug "Including %s sig at %s\n" (modpath_to_string incpath) (modpath_to_string path);
++        let parents = (path, lazy t) :: parents in
++        let sub = lookup_parents parents path incpath in
++        overriding_merge t sub
++    | Typedtree.Tmty_with (e,_) ->
++        extract_includes t e.Typedtree.mty_desc
++    | Typedtree.Tmty_typeof e ->
++        lookup_trie_of_module_expr parents t path
++          e.Typedtree.mod_desc
++    | _ -> t
++  in
++  List.fold_left (fun t sig_item ->
++      match sig_item.Typedtree.sig_desc with
++      | Typedtree.Tsig_include
++          { Typedtree.incl_mod = { Typedtree.mty_desc = e }} ->
++          extract_includes t e
++      | Typedtree.Tsig_module
++          { Typedtree.md_id = id ; md_type = { Typedtree.mty_desc } }
++      | Typedtree.Tsig_modtype
++          { Typedtree.mtd_id = id; mtd_type = Some { Typedtree.mty_desc } } ->
++          extract_includes_from_submodule_sig parents t path
++            id.Ident.name mty_desc
++      | Typedtree.Tsig_recmodule l ->
++          List.fold_left
++            (fun t { Typedtree.md_id; md_type = { Typedtree.mty_desc } } ->
++               extract_includes_from_submodule_sig parents t path
++                 md_id.Ident.name mty_desc)
++            t l
++      | _ -> t)
++    t ttree_sig.Typedtree.sig_items
++
++let add_locs ~locs t =
++  Trie.map (fun path info ->
++      let loc_info = lazy (
++        List.find (has_kind info.kind) (Trie.find_all locs path)
++      ) in
++      let lookup fld none =
++        let loc = Lazy.force (fld info) in
++        if loc = none
++        then try Lazy.force (fld (Lazy.force loc_info)) with Not_found -> none
++        else loc
++      in
++      { info with
++        loc_sig = lazy (lookup (fun i -> i.loc_sig) Location.none);
++        loc_impl = lazy (lookup (fun i -> i.loc_impl) Location.none);
++        doc = lazy (lookup (fun i -> i.doc) None);
++      }
++    ) t
++
+ (* Can work in a subtree (t doesn't have to be the root) *)
+ let qualify_type_idents parents t =
+   let qualify _key id =
+@@ -524,6 +703,14 @@ let cmt_sign cmt_contents =
+     -> Some sign
+   | _ -> None
+ 
++let cmt_includes parents t path cmt_contents =
++  match cmt_contents.Cmt_format.cmt_annots with
++  | Cmt_format.Implementation impl ->
++      get_includes_impl parents t path impl
++  | Cmt_format.Interface sign ->
++      get_includes_sig parents t path sign
++  | _ -> Trie.empty
++
+ let protect_read reader f =
+   try reader f with
+   | Cmt_format.Error _ | Cmi_format.Error _ ->
+@@ -539,7 +726,7 @@ let lookup_loc_impl orig_file =
+       if not (Sys.file_exists cmt) then None else Some cmt
+ 
+ let load_loc_impl parents filename cmt_contents =
+-  debug "Registering %s (for implementation locations)..." filename;
++  debug " -Registering %s (for implementation locations)..." filename;
+   let chrono = timer () in
+   match cmt_sign cmt_contents with
+   | Some sign ->
+@@ -555,6 +742,8 @@ let load_loc_impl parents filename cmt_contents =
+           sign
+       in
+       debug " %.3fs\n%!" (chrono());
++      let includes = cmt_includes parents t [] cmt_contents in
++      let t = add_locs ~locs:includes t in
+       Some t
+   | _ ->
+       debug " %.3fs\n%!" (chrono());
+@@ -582,7 +771,7 @@ let load_cmi ?(qualify=false) root t modul orig_file =
+        ) in
+        let children = lazy (
+         let info = Lazy.force info in
+-        debug "Registering %s..." file;
++        debug " -Registering %s..." file;
+         let chrono = timer () in
+         let rec implloc_trie = lazy (
+           match Lazy.force impl_cmt with
+@@ -649,7 +838,7 @@ let load_cmt ?(qualify=false) root t modul orig_file =
+        ) in
+        let children = lazy (
+          let info = Lazy.force info in
+-         debug "Registering %s..." cmt_file;
++         debug " -Registering %s..." cmt_file;
+          let chrono = timer () in
+          let comments = Some (Lazy.from_val info.Cmt_format.cmt_comments) in
+          let rec implloc_trie = lazy (
+@@ -679,6 +868,13 @@ let load_cmt ?(qualify=false) root t modul orig_file =
+          debug " %.3fs\n%!" (chrono());
+          t
+        ) in
++       let children = lazy (
++         let includes =
++           cmt_includes [[modul], children; [], root]
++             t [] (Lazy.force info)
++         in
++         add_locs ~locs:includes (Lazy.force children)
++       ) in
+        let loc_sig, loc_impl =
+          let of_info i = match i.Cmt_format.cmt_sourcefile with
+            | Some f -> Location.in_file f
+diff --git a/src/indexMisc.ml b/src/indexMisc.ml
+index eee8666..8ba66f5 100644
+--- a/src/indexMisc.ml
++++ b/src/indexMisc.ml
+@@ -57,12 +57,12 @@ let string_to_key s =
+ 
+ let key_to_string l =
+   let rec aux n = function
+-    | [] -> String.create n
++    | [] -> Bytes.create n
+     | c::r ->
+         let s = aux (n+1) r in
+-        s.[n] <- if c = dot then '.' else c; s
++        Bytes.set s n (if c = dot then '.' else c); s
+   in
+-  aux 0 l
++  Bytes.to_string (aux 0 l)
+ 
+ let modpath_to_key ?(enddot=true) path =
+   List.fold_right (fun p acc ->
+@@ -70,22 +70,19 @@ let modpath_to_key ?(enddot=true) path =
+       string_to_key p @ acc) path []
+ 
+ let key_to_modpath l =
+-  let rec aux n = function
+-    | [] -> if n > 0 then [String.create n] else []
+-    | '\000'::r -> String.create n :: aux 0 r
+-    | c::r ->
+-        match aux (n+1) r with
+-        | s::_ as p -> s.[n] <- c; p
+-        | [] -> assert false
++  let rec aux acc1 acc2 = function
++    | '\000'::r -> aux [] (acc1::acc2) r
++    | c::r -> aux (c::acc1) acc2 r
++    | [] -> if acc1 = [] then acc2 else acc1::acc2
+   in
+-  aux 0 l
++  List.rev_map (fun l -> key_to_string (List.rev l)) (aux [] [] l)
+ 
+ let modpath_to_string path = String.concat "." path
+ 
+ let parent_type id =
+   match id.IndexTypes.kind with
+   | Field parent | Variant parent | Method parent -> Some parent
+-  | Type | Value | Exception | Module | ModuleType | Class
++  | Type | Value | Exception | OpenType | Module | ModuleType | Class
+   | ClassType | Keyword -> None
+ 
+ 
+diff --git a/src/indexOptions.ml b/src/indexOptions.ml
+index d5b5d18..1854bf5 100644
+--- a/src/indexOptions.ml
++++ b/src/indexOptions.ml
+@@ -37,7 +37,7 @@ let filter opt info =
+   let open LibIndex in
+   let kinds = opt.filter in
+   match info.kind with
+-  | Type -> kinds.t
++  | Type | OpenType -> kinds.t
+   | Value | Method _ -> kinds.v
+   | Exception -> kinds.e
+   | Field _ | Variant _ -> kinds.c
+diff --git a/src/indexOut.ml b/src/indexOut.ml
+index c2b5ca6..b82b041 100644
+--- a/src/indexOut.ml
++++ b/src/indexOut.ml
+@@ -57,7 +57,7 @@ module IndexFormat = struct
+   let color =
+     let f kind fstr fmt =
+       let colorcode = match kind with
+-        | Type -> "\027[36m"
++        | Type | OpenType -> "\027[36m"
+         | Value -> "\027[1m"
+         | Exception -> "\027[33m"
+         | Field _ | Variant _ -> "\027[34m"
+@@ -88,6 +88,7 @@ module IndexFormat = struct
+     | Type -> Format.pp_print_string fmt "type"
+     | Value -> Format.pp_print_string fmt "val"
+     | Exception -> Format.pp_print_string fmt "exception"
++    | OpenType -> Format.pp_print_string fmt "opentype"
+     | Field parentty ->
+         Format.fprintf fmt "field(%a)"
+           (colorise.f parentty.kind "%s") parentty.name
+@@ -159,20 +160,20 @@ module IndexFormat = struct
+     | Osig_class (_,_,_,ctyp,_)
+     | Osig_class_type (_,_,_,ctyp,_) ->
+         !Oprint.out_class_type fmt ctyp
+-    | Osig_exception (_,[]) ->
++    | Osig_typext ({ oext_args = [] }, _) ->
+         Format.pp_print_char fmt '-'
+-    | Osig_exception (_,tylst) ->
++    | Osig_typext ({ oext_args }, _) ->
+         list ~paren:true
+           !Oprint.out_type
+           (fun fmt () ->
+             Format.pp_print_char fmt ','; Format.pp_print_space fmt ())
+           fmt
+-          tylst
++          oext_args
+     | Osig_modtype (_,mtyp)
+     | Osig_module (_,mtyp,_) ->
+         !Oprint.out_module_type fmt mtyp
+-    | Osig_type ((_,_,ty,_,_),_) ->
+-        tydecl fmt ty
++    | Osig_type ({ otype_type },_) ->
++        tydecl fmt otype_type
+     | Osig_value (_,ty,_) ->
+         !Oprint.out_type fmt ty
+ 
+diff --git a/src/indexPredefined.ml b/src/indexPredefined.ml
+index 1e994d0..974adf3 100644
+--- a/src/indexPredefined.ml
++++ b/src/indexPredefined.ml
+@@ -24,8 +24,11 @@ let mktype name ?(params=[]) ?(def=Otyp_abstract) doc = {
+   kind = Type;
+   name = name;
+   ty = Some (Osig_type (
+-      (name,List.map (fun v -> v,(true,true)) params,def,Asttypes.Public,[]),
+-      Orec_not));
++      { otype_name    = name;
++        otype_params  = List.map (fun v -> v,(true,true)) params;
++        otype_type    = def;
++        otype_private = Asttypes.Public;
++        otype_cstrs   = [] }, Orec_not));
+   loc_sig = Lazy.from_val Location.none;
+   loc_impl = Lazy.from_val Location.none;
+   doc = Lazy.from_val (Some doc);
+@@ -37,11 +40,13 @@ let mkvariant name parent params = {
+   orig_path = [];
+   kind = Variant parent;
+   name = name;
+-  ty = Some (Osig_type (("", [],
+-                         (match params with [] -> Otyp_sum []
+-                                          | l -> Otyp_tuple l),
+-                         Asttypes.Public, []),
+-                        Outcometree.Orec_not));
++  ty = Some (Osig_type (
++      { otype_name    = "";
++        otype_params  = [];
++        otype_type    = (match params with [] -> Otyp_sum []
++                                         | l  -> Otyp_tuple l);
++        otype_private = Asttypes.Public;
++        otype_cstrs   = [] }, Orec_not));
+   loc_sig = Lazy.from_val Location.none;
+   loc_impl = Lazy.from_val Location.none;
+   doc = Lazy.from_val None;
+@@ -53,7 +58,13 @@ let mkexn name params doc = {
+   orig_path = [];
+   kind = Exception;
+   name = name;
+-  ty = Some (Osig_exception (name,params));
++  ty = Some (Osig_typext ({
++        oext_name        = name;
++        oext_type_name   = "exn";
++        oext_type_params = [];
++        oext_args        = params;
++        oext_ret_type    = None;
++        oext_private     = Asttypes.Public }, Oext_exception));
+   loc_sig = Lazy.from_val Location.none;
+   loc_impl = Lazy.from_val Location.none;
+   doc = Lazy.from_val (Some doc);
+diff --git a/src/indexTypes.ml b/src/indexTypes.ml
+index cb1ee67..342f86f 100644
+--- a/src/indexTypes.ml
++++ b/src/indexTypes.ml
+@@ -35,7 +35,7 @@ type info = { path: string list;
+ 
+ (** The kind of elements that can be stored in the trie *)
+ and kind =
+-  | Type | Value | Exception
++  | Type | Value | Exception | OpenType
+   | Field of info | Variant of info
+   | Method of info
+   | Module | ModuleType
+diff --git a/src/libIndex.mli b/src/libIndex.mli
+index d71b99b..9e27b1c 100644
+--- a/src/libIndex.mli
++++ b/src/libIndex.mli
+@@ -44,7 +44,7 @@ type info = IndexTypes.info = private {
+ 
+ (** The kind of elements that can be stored in the trie *)
+ and kind = IndexTypes.kind = private
+-  | Type | Value | Exception
++  | Type | Value | Exception | OpenType
+   | Field of info | Variant of info
+   | Method of info
+   | Module | ModuleType
+diff --git a/src/ocp-index.ocp b/src/ocp-index.ocp
+index d7f0fc9..47b1a55 100644
+--- a/src/ocp-index.ocp
++++ b/src/ocp-index.ocp
+@@ -1,4 +1,5 @@
+-comp += [ "-g" "-w" "+1..39-4-9-37-40" ]
++comp += [ "-g" "-w" "+1..39-4-9-37-40" "-safe-string" ]
++link += [ "-g" "-w" "+1..39-4-9-37-40" ]
+ 
+ begin library "ocp-index-lib"
+   sort = false
