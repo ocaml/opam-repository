@@ -54,7 +54,7 @@ opam_version_compat
 
 function build_one {
   pkg=$1
-  echo build one: $pkg
+  echo "build one: $pkg ($OPAM_SWITCH)"
   rm -rf ~/.opam
   opam init . --comp=$OPAM_SWITCH
   eval `opam config env`
