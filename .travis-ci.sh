@@ -1,6 +1,12 @@
 bash -c "while true; do echo \$(date) - building ...; sleep 360; done" &
 PING_LOOP_PID=$!
 
+# generated during the install step
+source .travis-ocaml.env
+
+echo OCAML_VERSION=$OCAML_VERSION
+echo OPAM_SWITCH=$OPAM_SWITCH
+
 echo pull req: $TRAVIS_PULL_REQUEST
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   curl -L https://github.com/$TRAVIS_REPO_SLUG/pull/$TRAVIS_PULL_REQUEST.diff -o pullreq.diff
