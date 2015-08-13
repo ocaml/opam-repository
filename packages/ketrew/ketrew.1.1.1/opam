@@ -1,0 +1,25 @@
+opam-version: "1"
+maintainer: "seb@mondet.org"
+homepage: "http://seb.mondet.org/software/ketrew"
+ocaml-version: [ >= "4.02.2" ]
+build: [
+  [make "_oasis"]
+  ["oasis" "setup" ]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "tools/please.ml" "generate" "metadata"]
+  ["ocaml" "setup.ml" "-build" ]
+  ["ocaml" "setup.ml" "-install" ]
+]
+remove: [
+  ["ocamlfind" "remove" "ketrew"]
+  ["ocamlfind" "remove" "ketrew_pure"]
+  ["rm" "-f" "%{bin}%/ketrew"]
+]
+depends: [
+  "oasis" "ocamlfind"
+  "trakeva" "sqlite3" "sosa" "nonstd" "docout" "pvem" "pvem_lwt_unix"
+  "cmdliner" "yojson" "uri"
+  "ppx_deriving" "ppx_deriving_yojson" {>= "2.3"} "ppx_include" "ppx_blob"
+  "cohttp" "lwt" "ssl"
+  "conduit"
+  ]
