@@ -6,7 +6,7 @@ prefix=$3
 libdir=$4
 
 common_configure() {
-    ./configure CC=gcc CXX=g++ --disable-compiler-version-checks --prefix="$prefix" \
+    ../configure CC=gcc CXX=g++ --disable-compiler-version-checks --prefix="$prefix" \
         --disable-doxygen --disable-docs --with-ocaml-libdir="$libdir/llvm" \
         --enable-static "$@"
 }
@@ -30,9 +30,11 @@ shopt -s nullglob
 for config in llvm-config-$version llvm-config-mp-$version $brew_llvm_config llvm-config; do
     case `$config --version` in
         $version|$version.*)
+            mkdir build
+            cd build
             configure
-            $make -C bindings/ocaml all SYSTEM_LLVM_CONFIG=$config
-            $make -C bindings/ocaml install SYSTEM_LLVM_CONFIG=$config
+            $make -C bindings all SYSTEM_LLVM_CONFIG=$config
+            $make -C bindings install SYSTEM_LLVM_CONFIG=$config
             mv "$libdir/llvm/META.llvm" "$libdir/llvm/META"
             for stublib in $libdir/llvm/dll*.so; do
                 mv "$stublib" "$libdir/stublibs/"
