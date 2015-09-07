@@ -1,0 +1,26 @@
+opam-version: "1.2"
+maintainer: "Rizo Isrof <rizo@odis.io>"
+authors: [ "Rizo Isrof <rizo@odis.io>" ]
+license: "http://movvo.com"
+homepage: "http://movvo.com"
+dev-repo: "https://github.com/rizo/ocaml-glfw.git"
+bug-reports: "https://github.com/rizo/ocaml-glfw/issues"
+tags: [ "clib:glfw3"  ]
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/ocaml-glfw/_oasis_remove_.ml" "%{etc}%/ocaml-glfw"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "ctypes"
+  "ocamlfind" {build}
+  ("tgls" {build & = "0.8.2"} | "tgls" {build & = "0.8.1"} | "tgls" {build & = "0.8.0"})
+]
