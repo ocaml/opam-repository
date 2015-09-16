@@ -1,6 +1,12 @@
 bash -c "while true; do echo \$(date) - building ...; sleep 360; done" &
 PING_LOOP_PID=$!
 
+# generated during the install step
+source .travis-ocaml.env
+
+echo OCAML_VERSION=$OCAML_VERSION
+echo OPAM_SWITCH=$OPAM_SWITCH
+
 echo pull req: $TRAVIS_PULL_REQUEST
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   curl -L https://github.com/$TRAVIS_REPO_SLUG/pull/$TRAVIS_PULL_REQUEST.diff -o pullreq.diff
@@ -54,15 +60,9 @@ opam_version_compat
 
 function build_one {
   pkg=$1
-  echo build one: $pkg
+  echo "build one: $pkg ($OPAM_SWITCH)"
   rm -rf ~/.opam
-  opam init .
-  if [ "$OCAML_SWITCH" = "" ]; then
-    echo Current switch is:
-    opam switch
-  else
-    opam switch $OCAML_SWITCH
-  fi
+  opam init . --comp=$OPAM_SWITCH
   eval `opam config env`
   # test for installability
   echo "Checking for availability..."

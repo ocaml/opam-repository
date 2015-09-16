@@ -1,28 +1,35 @@
 opam-version: "1.2"
-name: "tar-format"
-maintainer: "dave@recoil.org"
-authors: [ "Dave Scott" "Thomas Gazagnaire" "David Allsopp" ]
-tags: ["org:xapi-project" "org:mirage"]
-homepage: "https://github.com/mirage/ocaml-tar"
-bug-reports: "https://github.com/mirage/ocaml-tar/issues"
-dev-repo: "https://github.com/mirage/ocaml-tar.git"
+maintainer:   "dave@recoil.org"
+authors:      [ "Dave Scott" "Thomas Gazagnaire" "David Allsopp" ]
+tags:         ["org:xapi-project" "org:mirage"]
+homepage:     "https://github.com/mirage/ocaml-tar"
+bug-reports:  "https://github.com/mirage/ocaml-tar/issues"
+dev-repo:     "https://github.com/mirage/ocaml-tar.git"
+
 build: [
-["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{lwt:enable}%-lwtunix" "--%{mirage-types+io-page+ipaddr:enable}%-mirage" "--%{ounit:enable}%-tests" ]
+  ["ocaml" "setup.ml" "-configure"
+     "--prefix" prefix
+     "--%{lwt:enable}%-lwtunix"
+     "--%{mirage-types-lwt:enable}%-mirage" ]
   ["ocaml" "setup.ml" "-build"]
 ]
-build-test: [make "test"]
-install: [
-  ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure"
+    "--enable-tests" "--enable-lwtunix" "--enable-mirage"]
+  [make "test"]
 ]
-remove: [["ocamlfind" "remove" "tar"]]
+install: ["ocaml" "setup.ml" "-install"]
+remove:  ["ocamlfind" "remove" "tar"]
+
 depends: [
   "ocamlfind"
   "cstruct" {>= "0.6.0"}
   "re"
   "cmdliner"
-  "ounit" {test}
+  "ounit"             {test}
   "mirage-block-unix" {test}
-  "lwt"
-  "mirage-types-lwt"
+  "lwt"               {test}
+  "mirage-types-lwt"  {test}
 ]
+depopts: ["lwt" "mirage-types-lwt"]
 available: [ ocaml-version >= "4.01.0" ]
