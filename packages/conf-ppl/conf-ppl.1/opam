@@ -1,10 +1,13 @@
-opam-version: "1"
+opam-version: "1.2"
 author: "R. Bagnara, P. M. Hill, E. Zaffanella, A. Bagnara et. al."
 maintainer: "francois.berenger@inria.fr"
 homepage: "http://bugseng.com/products/ppl/"
+bug-reports: "http://bugseng.com/products/ppl/bugs"
 license: "GPL"
 build: [
-  ["sh" "-c" "cc test.c -lppl_c -lppl"]
+  ["sh" "-c"
+	"cc test.c -lppl_c -lppl" {os != "freebsd" & os != "openbsd"}
+	"cc test.c -I/usr/local/include -L/usr/local/lib -lppl_c -lppl" {os = "freebsd" | os = "openbsd"}]
 ]
 depexts: [
   [["debian"] ["ppl-dev" "libppl-dev"]]
@@ -12,4 +15,6 @@ depexts: [
   [["archlinux"] ["ppl"]]
   [["gentoo"] ["dev-libs/ppl"]]
   [["centos"] ["libppl" "libppl-devel"]]
+  [["freebsd"] ["ppl"]]
+  [["openbsd"] ["ppl"]]
 ]

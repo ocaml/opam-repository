@@ -1,12 +1,19 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "francois.berenger@inria.fr"
 homepage: "http://www.mpfr.org/"
+authors: "http://www.mpfr.org/credit.html"
 license: "LGPL"
-build: [["cc" "test.c" "-lgmp" "-lmpfr"]]
+build: [
+  ["sh" "-c"
+	"cc test.c -lgmp -lmpfr" { os != "openbsd" & os != "freebsd" }
+	"cc test.c -I/usr/local/include -L/usr/local/lib -lgmp -lmpfr" { os = "openbsd" | os = "freebsd" }]
+]
 depexts: [
   [["debian"] ["libmpfr-dev"]]
   [["ubuntu"] ["libmpfr-dev"]]
   [["osx" "homebrew"] ["mpfr"]]
+  [["freebsd"] ["mpfr"]]
+  [["openbsd"] ["mpfr"]]
 ]
 depends: [
   "conf-gmp"
