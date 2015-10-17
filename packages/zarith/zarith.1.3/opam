@@ -4,7 +4,7 @@ authors: "Xavier Leroy"
 homepage: "https://forge.ocamlcore.org/projects/zarith"
 build: [
   ["./configure"] { os != "openbsd" & os != "freebsd" }
-  ["env" "CFLAGS=-I/usr/local/include" "LDFLAGS=-L/usr/local/lib" "./configure"] { os = "openbsd" | os = "freebsd" }
+  ["env" "LDFLAGS=-L/usr/local/lib" "CC=cc" "CFLAGS=-I/usr/local/include -O3 -Wall -Wextra" "./configure"] { os = "openbsd" | os = "freebsd" }
   [make]
   [make "install"]
 ]
@@ -13,3 +13,4 @@ depends: [
   "ocamlfind"
   "conf-gmp"
 ]
+patches: [ "z_pp.pl.patch" ]
