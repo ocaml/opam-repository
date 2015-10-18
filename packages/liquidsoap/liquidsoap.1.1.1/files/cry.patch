@@ -1,0 +1,396 @@
+commit 76357b981692072e0cf5d5a03820b79289d23c20
+Author: Romain Beauxis <toots@rastageeks.org>
+Date:   Wed Oct 16 20:49:36 2013 -0500
+
+    Added verb and chunked options.
+
+diff --git a/configure.ac b/configure.ac
+index 05831fa..d42b57f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -324,7 +324,7 @@ fi
+ # Cry
+ #
+ 
+-AC_CHECK_OCAML_BINDING([cry],[0.2.2])
++AC_CHECK_OCAML_BINDING([cry],[0.3.0])
+ 
+ # ocaml-mm
+ #
+diff --git a/src/lang/builtins_cry.ml b/src/lang/builtins_cry.ml
+index 2017217..fa5acb3 100644
+--- a/src/lang/builtins_cry.ml
++++ b/src/lang/builtins_cry.ml
+@@ -82,7 +82,7 @@ let () =
+         let v = List.assoc "protocol" p in
+         match Lang.to_string v with
+           | "icy"  -> Cry.Icy
+-          | "http" -> Cry.Http
++          | "http" -> Cry.Http Cry.Source (* Verb doesn't matter here. *)
+           | _      -> 
+               raise (Lang.Invalid_value (v, "protocol should be one of: \
+                                              'icy' or 'http'."))
+diff --git a/src/outputs/harbor_output.camlp4 b/src/outputs/harbor_output.camlp4
+index 3cd7eda..ddc15e5 100644
+--- a/src/outputs/harbor_output.camlp4
++++ b/src/outputs/harbor_output.camlp4
+@@ -305,16 +305,12 @@ class output ~kind p =
+ 
+   let metaint = Lang.to_int (List.assoc "metaint" p) in
+ 
+-  let _,encoder_factory, 
+-      format,icecast_info,icy_metadata,
+-      ogg =
+-    encoder_data p
+-  in
++  let data = encoder_data p in
+ 
+   let out_enc =
+     match Lang.to_string (List.assoc "encoding" p) with
+       | "" ->
+-         if icy_metadata then
++         if data.icy_metadata then
+            "ISO-8859-1"
+          else
+            "UTF-8"
+@@ -445,7 +441,7 @@ object (self)
+     let meta = Hashtbl.create (Hashtbl.length m) in
+     let f = Configure.recode_tag ~out_enc in
+     Hashtbl.iter (fun a b -> Hashtbl.add meta a (f b)) m ;
+-    if icy_metadata then
++    if data.icy_metadata then
+       Tutils.mutexify metadata.metadata_m
+         (fun () -> 
+           metadata.metadata <- Some meta) ()
+@@ -461,7 +457,7 @@ object (self)
+     in
+     let metaint,icyheader = 
+       try
+-        assert(List.assoc "Icy-MetaData" headers = "1" && icy_metadata);
++        assert(List.assoc "Icy-MetaData" headers = "1" && data.icy_metadata);
+         metaint,Printf.sprintf "icy-metaint: %d\r\n" metaint
+       with
+         | _ -> -1,""
+@@ -473,7 +469,7 @@ object (self)
+     in
+     let reply = 
+       Printf.sprintf "%s 200 OK\r\nContent-type: %s\r\n%s%s\r\n" 
+-         protocol format icyheader extra_headers
++         protocol data.format icyheader extra_headers
+     in
+     let buffer = Buffer.create buflen in
+     begin
+@@ -642,7 +638,7 @@ object (self)
+ 
+   method output_start =
+     assert (encoder = None) ;
+-    let enc = encoder_factory self#id in
++    let enc = data.factory self#id in
+     encoder <- 
+        Some (enc (Encoder.Meta.empty_metadata)) ;
+     let handler ~protocol ~data ~headers ~socket
+diff --git a/src/outputs/harbor_output.ml b/src/outputs/harbor_output.ml
+index e2270cf..57953d7 100644
+--- a/src/outputs/harbor_output.ml
++++ b/src/outputs/harbor_output.ml
+@@ -265,14 +265,12 @@ class output ~kind p =
+                 (Lang.apply ~t: Lang.unit_t on_disconnect
+                    [ ("", (Lang.string s)) ])
+             in let metaint = Lang.to_int (List.assoc "metaint" p)
+-              in
+-                let (_, encoder_factory, format, icecast_info, icy_metadata,
+-                     ogg) =
+-                  encoder_data p
++              in let data = encoder_data p
+                 in
+                   let out_enc =
+                     match Lang.to_string (List.assoc "encoding" p) with
+-                    | "" -> if icy_metadata then "ISO-8859-1" else "UTF-8"
++                    | "" ->
++                        if data.icy_metadata then "ISO-8859-1" else "UTF-8"
+                     | s -> String.uppercase s
+                   in let timeout = Lang.to_float (List.assoc "timeout" p)
+                     in let buflen = Lang.to_int (List.assoc "buffer" p)
+@@ -521,6 +519,7 @@ class output ~kind p =
+                                                                     a (
+                                                                     f b)) m;
+                                                                     if
++                                                                    data.
+                                                                     icy_metadata
+                                                                     then
+                                                                     Tutils.
+@@ -572,6 +571,7 @@ class output ~kind p =
+                                                                     "Icy-MetaData"
+                                                                     headers)
+                                                                     = "1") &&
++                                                                    data.
+                                                                     icy_metadata);
+                                                                     (metaint,
+                                                                     (Printf.
+@@ -601,6 +601,7 @@ class output ~kind p =
+                                                                     sprintf
+                                                                     "%s 200 OK\r\nContent-type: %s\r\n%s%s\r\n"
+                                                                     protocol
++                                                                    data.
+                                                                     format
+                                                                     icyheader
+                                                                     extra_headers in
+@@ -1044,7 +1045,8 @@ class output ~kind p =
+                                                                     = None);
+                                                                    let enc 
+                                                                     =
+-                                                                    encoder_factory
++                                                                    data.
++                                                                    factory
+                                                                     self#id
+                                                                    in
+                                                                     (encoder
+diff --git a/src/outputs/icecast2.ml b/src/outputs/icecast2.ml
+index 452c559..80ae4a7 100644
+--- a/src/outputs/icecast2.ml
++++ b/src/outputs/icecast2.ml
+@@ -42,14 +42,6 @@ type icecast_info =
+ 
+ module Icecast = 
+ struct
+-
+-  type protocol = Cry.protocol
+-
+-  let protocol_of_icecast_protocol = 
+-    function
+-      | Icecast_utils.Http -> Cry.Http
+-      | Icecast_utils.Icy -> Cry.Icy 
+-
+   type content = Cry.content_type
+ 
+   let format_of_content x =
+@@ -187,6 +179,17 @@ let proto kind =
+            for \"http\" protocol and \"ISO-8859-1\" for \"icy\" \
+            protocol." ;
+     "genre", Lang.string_t, Some (Lang.string "Misc"), None ;
++    "protocol", Lang.string_t, (Some (Lang.string "http")),
++     Some "Protocol of the streaming server: \
++          'http' for Icecast, 'icy' for shoutcast." ;
++    "verb", Lang.string_t, (Some (Lang.string "SOURCE")),
++     Some "Verb to use with the 'http' protocol. One of: \
++           'SOURCE', 'PUT' or 'POST'.";
++    "chunked", Lang.string_t, (Some (Lang.bool false)),
++     Some "Used cunked transfer with the 'http' protocol.";
++    "icy_metadata", Lang.string_t, Some (Lang.string "guess"),
++     Some "Send new metadata using the ICY protocol. \
++           One of: \"guess\", \"true\", \"false\"";
+     "url", Lang.string_t, Some (Lang.string "http://savonet.sf.net"), None ;
+     ("description", Lang.string_t,
+      Some (Lang.string "Liquidsoap Radio!"), None) ;
+@@ -230,10 +233,38 @@ class output ~kind p =
+     Lang.to_float (Lang.apply ~t:Lang.unit_t on_error ["", Lang.string msg]) 
+   in
+ 
+-  let protocol,encoder_factory, 
+-      format,icecast_info,
+-      icy_metadata,ogg =
+-    encoder_data p
++  let data = encoder_data p in
++
++  let chunked = Lang.to_bool (List.assoc "chunked" p) in
++
++  let protocol = 
++    let verb =
++      let v = List.assoc "verb" p in
++      match Lang.to_string v with
++        | "SOURCE" -> Cry.Source
++        | "PUT"    -> Cry.Put
++        | "POST"   -> Cry.Post
++        | _ -> raise (Lang.Invalid_value
++                   (v, "Valid values are: 'SOURCE' \
++                       'PUT' or 'POST'.")) 
++    in  
++    let v = List.assoc "protocol" p in
++    match Lang.to_string v with
++      | "http" -> Cry.Http verb
++      | "icy" -> Cry.Icy
++      | _ ->
++          raise (Lang.Invalid_value
++                   (v, "Valid values are 'http' (icecast) \
++                        and 'icy' (shoutcast)"))
++  in
++  let icy_metadata = Lang.to_bool (List.assoc "icy_metadata" p) in
++
++  let ogg =
++    match data.format with
++     | x when x = Cry.ogg_application -> true
++     | x when x = Cry.ogg_audio -> true
++     | x when x = Cry.ogg_video -> true
++     | _ -> false
+   in
+ 
+   let out_enc =
+@@ -450,7 +481,7 @@ object (self)
+ 
+   method icecast_start =
+     assert (encoder = None) ;
+-    let enc = encoder_factory self#id in
++    let enc = data.factory self#id in
+     encoder <- 
+        Some (enc (Encoder.Meta.empty_metadata)) ; 
+     assert (Cry.get_status connection = Cry.Disconnected) ;
+@@ -465,10 +496,10 @@ object (self)
+         | Some q -> Hashtbl.add audio_info y (z q)
+         | None -> ()
+     in
+-      f icecast_info.bitrate "bitrate" string_of_int;
+-      f icecast_info.quality "quality" (fun x -> x);
+-      f icecast_info.samplerate "samplerate" string_of_int;
+-      f icecast_info.channels "channels" string_of_int;
++      f data.info.bitrate "bitrate" string_of_int;
++      f data.info.quality "quality" (fun x -> x);
++      f data.info.samplerate "samplerate" string_of_int;
++      f data.info.channels "channels" string_of_int;
+       let user_agent =
+         try
+           List.assoc "User-Agent" headers
+@@ -478,8 +509,8 @@ object (self)
+       let source = 
+         Cry.connection ~host ~port ~user ~password
+                        ~genre ~url ~description ~name
+-                       ~public ~protocol ~mount  
+-                       ~audio_info ~user_agent ~content_type:format ()
++                       ~public ~protocol ~mount ~chunked 
++                       ~audio_info ~user_agent ~content_type:data.format ()
+       in
+       List.iter (fun (x,y) -> 
+                       (* User-Agent has already been passed to Cry.. *)
+diff --git a/src/tools/icecast_utils.ml b/src/tools/icecast_utils.ml
+index 85a27df..a15242c 100644
+--- a/src/tools/icecast_utils.ml
++++ b/src/tools/icecast_utils.ml
+@@ -29,26 +29,14 @@ let aac_mime = "audio/aac"
+ let aacplus_mime = "audio/aacp"
+ let flac_mime = "audio/x-flac"
+ 
+-type icecast_protocol = Http | Icy
+-
+ let base_proto kind = 
+-    [("protocol", Lang.string_t, (Some (Lang.string "http")),
+-      Some "Protocol of the streaming server: \
+-           'http' for Icecast, 'icy' for shoutcast.") ;
+-      "icy_metadata", Lang.string_t, Some (Lang.string "guess"),
+-      Some "Send new metadata using the ICY protocol. \
+-            One of: \"guess\", \"true\", \"false\"";
+-     ("format", Lang.string_t, Some (Lang.string ""),
++    ["format", Lang.string_t, Some (Lang.string ""),
+       Some "Format, e.g. \"audio/ogg\". \
+-      When empty, the encoder is used to guess.") ;
+-      "", Lang.format_t kind, None, Some "Encoding format."]
++      When empty, the encoder is used to guess." ;
++     "", Lang.format_t kind, None, Some "Encoding format."]
+ 
+ module type Icecast_t =
+ sig
+-  type protocol
+-
+-  val protocol_of_icecast_protocol : icecast_protocol -> protocol
+-
+   type content
+ 
+   val format_of_content : string -> content
+@@ -56,12 +44,16 @@ sig
+   type info
+ 
+   val info_of_encoder : Encoder.format -> info
+-
+ end
+ 
+ module Icecast_v(M:Icecast_t) = 
+ struct
+-  type icy_metadata = Guess | True | False
++  type encoder_data = {
++    factory      : string -> Encoder.Meta.export_metadata -> Encoder.encoder;
++    format       : M.content;
++    icy_metadata : bool;
++    info         : M.info;
++  }
+ 
+   let mpeg = M.format_of_content mpeg_mime
+   let ogg_application = M.format_of_content ogg_application_mime
+@@ -73,15 +65,6 @@ struct
+   let aacplus = M.format_of_content aacplus_mime
+   let flac = M.format_of_content flac_mime
+ 
+-  let protocol p =
+-    let v = List.assoc "protocol" p in
+-      match Lang.to_string v with
+-        | "http" -> Http
+-        | "icy" -> Icy
+-        | _ ->
+-            raise (Lang.Invalid_value
+-                     (v, "Valid values are 'http' (icecast) \
+-                          and 'icy' (shoutcast)"))
+   let format_of_encoder =
+     function
+       | Encoder.MP3 _ -> Some mpeg
+@@ -95,19 +78,15 @@ struct
+       | Encoder.WAV _ -> Some wav
+       | Encoder.Ogg _ -> Some ogg
+ 
+-  let is_ogg =
++  let icy_metadata =
+     function
+       | Encoder.Ogg _ -> true
+       | _ -> false
+ 
+   let encoder_data p =
+-    let protocol = protocol p in
+     let v = Lang.assoc "" 1 p in
+     let enc = Lang.to_format v in
+     let info,format =
+-       if (is_ogg enc) && (protocol = Icy) then
+-         raise (Lang.Invalid_value
+-               (v, "icy protocol (shoutcast) does not support Ogg")) ;
+        M.info_of_encoder enc,format_of_encoder enc
+     in
+     let encoder_factory =
+@@ -125,39 +104,9 @@ struct
+                                                  "No format (mime) found, \
+                                                   please specify one."))
+     in
+-    let icy_metadata =
+-      let v = List.assoc "icy_metadata" p in
+-      match Lang.to_string v with
+-        | "guess" -> Guess
+-        | "true"  -> True
+-        | "false" -> False
+-        | _ ->
+-              raise (Lang.Invalid_value
+-                       (v, "Valid values are 'guess', \
+-                            'true' or 'false'"))
+-    in
+-    let icy_metadata =
+-      match format, icy_metadata with
+-        | _, True -> true
+-        | _, False -> false
+-        | x, _ when x = mpeg ||
+-                    x = wav ||
+-                    x = aac ||
+-                    x = aacplus ||
+-                    x = flac -> true
+-        | x, _ when x = ogg_application ||
+-                    x = ogg_audio ||
+-                    x = ogg_video -> false
+-        | _, Guess ->
+-             raise (Lang.Invalid_value
+-                      (List.assoc "icy_metadata" p,
+-                       "Could not guess icy_metadata for this format, \
+-                        please specify either 'true' or 'false'."))
+-    in
+-    let ogg = is_ogg enc in
+-    (M.protocol_of_icecast_protocol protocol),
+-    encoder_factory, format, info,
+-    icy_metadata, ogg
+-
++    { factory      = encoder_factory;
++      format       = format;
++      icy_metadata = icy_metadata enc;
++      info         = info }
+ end
+ 
