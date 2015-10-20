@@ -11,8 +11,7 @@ build: [
       "--prefix" prefix
       "--%{cohttp:enable}%-http"
       "--%{git:enable}%-git"
-      "--%{base-unix:enable}%-unix"
-      "--%{cohttp+git+alcotest:enable}%-examples"]
+      "--%{base-unix:enable}%-unix"]
   [make]
 ]
 build-test: [
@@ -25,7 +24,7 @@ remove: [
   ["rm" "-f" "%{bin}%/irmin"]
 ]
 depends: [
-  "ezjsonm" {>= "0.4.0"}
+  "ezjsonm" {>= "0.4.0" & < "0.4.2"}
   "ocamlgraph"
   "lwt" {>= "2.4.7"}
   "nocrypto" {test & >= "0.2.2"}
@@ -39,18 +38,19 @@ depends: [
   "re"
   "cmdliner"
   "crunch"
-  "git" {test}
-  "cohttp" {test}
-  "alcotest" {test}
+  "base-unix" {test}
+  "git"       {test}
+  "cohttp"    {test}
+  "alcotest"  {test & <= "0.3.3"}
 ]
 depopts: [
+  "base-unix"
   "git"
   "cohttp"
   "nocrypto"
 ]
 conflicts: [
-  "git"    {< "1.4.10"}
-  "cohttp" {< "0.14.0"}
-  "cohttp" {= "0.16.1"}
+  "git"    {<="1.4.10" & >="1.6.0"}
+  "cohttp" {< "0.14.0" & = "0.16.1"}
 ]
 available: [ocaml-version >= "4.01.0"]

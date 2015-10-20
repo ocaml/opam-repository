@@ -1,6 +1,12 @@
 bash -c "while true; do echo \$(date) - building ...; sleep 360; done" &
 PING_LOOP_PID=$!
 
+# generated during the install step
+source .travis-ocaml.env
+
+echo OCAML_VERSION=$OCAML_VERSION
+echo OPAM_SWITCH=$OPAM_SWITCH
+
 echo pull req: $TRAVIS_PULL_REQUEST
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   curl -L https://github.com/$TRAVIS_REPO_SLUG/pull/$TRAVIS_PULL_REQUEST.diff -o pullreq.diff
@@ -54,13 +60,12 @@ opam_version_compat
 
 function build_one {
   pkg=$1
-  echo build one: $pkg
+  echo "build one: $pkg ($OPAM_SWITCH)"
   rm -rf ~/.opam
-  opam init .
-  echo Current switch is:
-  opam switch
+  opam init . --comp=$OPAM_SWITCH
+  eval `opam config env`
   # test for installability
-  echo "Checking for availability"
+  echo "Checking for availability..."
   if ! opam install $pkg --dry-run; then
       echo "Package unavailable."
       if opam show $pkg; then
@@ -72,42 +77,29 @@ function build_one {
           false
       fi
   else
-    echo "End   availability check."
+    echo "... package available."
     case $TRAVIS_OS_NAME in
-    linux)
-      # we need fresh gcc and binutils, maybe...
-      # this can soon be removed, once travis upgraded their infrastructure
-      if [ `opam install --dry-run $pkg | grep -c mirage-entropy-xen` -gt 0 ] ; then
-        echo "installing a recent gcc and binutils (mainly to get mirage-entropy-xen working!)"
-        sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-        sudo apt-get -qq update
-        sudo apt-get install -y gcc-4.8
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
-        wget http://mirrors.kernel.org/ubuntu/pool/main/b/binutils/binutils_2.24-5ubuntu3.1_amd64.deb
-        sudo dpkg -i binutils_2.24-5ubuntu3.1_amd64.deb
-      fi
-      depext=`opam install $pkg -e ubuntu`
-      echo Ubuntu depexts: $depext
-      if [ "$depext" != "" ]; then
-        sudo apt-get install -qq pkg-config build-essential m4 $depext
-      fi
-      srcext=`opam install $pkg -e source,linux`
-      if [ "$srcext" != "" ]; then
-        curl -sL ${srcext} | bash
-      fi
-      ;;
-    osx)
-      depext=`opam install $pkg -e osx,homebrew`
-      echo Homebrew depexts: $depext
-      if [ "$depext" != "" ]; then
-        brew install $depext
-      fi
-      srcext=`opam install $pkg -e osx,source`
-      if [ "$srcext" != "" ]; then
-        curl -sL ${srcext} | bash
-      fi
-      ;;
+        linux)
+            # we need fresh gcc and binutils, maybe...
+            # this can soon be removed, once travis upgraded their infrastructure
+            if [ `opam install --dry-run $pkg | grep -c mirage-entropy-xen` -gt 0 ] ; then
+                echo "installing a recent gcc and binutils (mainly to get mirage-entropy-xen working\!)"
+                sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+                sudo apt-get -qq update
+                sudo apt-get install -y gcc-4.8
+                sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
+                wget http://mirrors.kernel.org/ubuntu/pool/main/b/binutils/binutils_2.24-5ubuntu3.1_amd64.deb
+                sudo dpkg -i binutils_2.24-5ubuntu3.1_amd64.deb
+            fi
     esac
+    echo
+    echo "====== External dependency handling ======"
+    opam install depext
+    depext=$(opam depext -ls $pkg --no-sources)
+    opam depext $pkg
+    opam remove depext -a
+    echo
+    echo "====== Installing package ======"
     opam install $pkg
     opam remove -a ${pkg%%.*}
     if [ "$depext" != "" ]; then

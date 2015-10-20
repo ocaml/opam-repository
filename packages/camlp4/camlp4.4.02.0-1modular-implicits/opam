@@ -1,13 +1,15 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "jeremie@dimino.org"
 homepage: "https://github.com/ocaml/camlp4"
 license: "LGPLv2"
 build: [
   ["./configure" "--bindir=%{bin}%" "--libdir=%{lib}%/ocaml" "--pkgdir=%{lib}%"]
   [make "all"]
-  [make "install" "install-META"]
 ]
 depends: ["ocamlfind"]
+install: [
+  [make "install" "install-META"]
+]
 remove: [
   ["rm" "-rf" "%{lib}%/camlp4"]
   ["rm" "-f" "%{bin}%/camlp4"  "%{bin}%/camlp4boot" "%{bin}%/mkcamlp4"
@@ -20,4 +22,8 @@ remove: [
 depexts: [
   [ ["centos"] ["which"] ]
 ]
-available: [ switch = "4.02.0+modular-implicits" ]
+available: [ opam-version >= "1.2.1"
+            & (compiler = "4.02.0+modular-implicits"
+             | compiler = "4.02.1+modular-implicits-ber") ]
+bug-reports: "https://github.com/ocaml/camlp4/issues"
+dev-repo: "https://github.com/ocaml/camlp4.git"

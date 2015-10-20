@@ -1,0 +1,64 @@
+diff --git a/lib/extended_unix_stubs.c b/lib/extended_unix_stubs.c
+index 40b4d10..cbede42 100644
+--- a/src/extended_unix_stubs.c
++++ b/src/extended_unix_stubs.c
+@@ -12,7 +12,10 @@
+ #include <string.h>
+ #include <time.h>
+ #include <sys/statvfs.h>
++#if (defined _LINUX_QUOTA_VERSION)
+ #include <sys/quota.h>
++#endif
++#include <sys/param.h>
+ #include <sys/mount.h>
+ 
+ #ifndef __USE_ISOC99
+@@ -117,17 +120,24 @@ CAMLprim value getloadavg_stub (value v_unit __unused)
+ #endif
+ 
+ int quota_command (value v_user_or_group, int command) {
++#ifdef USRQUOTA
+   if (v_user_or_group == caml_hash_variant("User"))
+     return QCMD(command, USRQUOTA);
++#endif
+ 
++#ifdef GRPQUOTA
+   if (v_user_or_group == caml_hash_variant("Group"))
+     return QCMD(command, GRPQUOTA);
++#endif
+ 
+   caml_failwith("Unix.Quota: I only know about `User and `Group");
+ }
+ 
+ CAMLprim value quota_query (value v_user_or_group, value v_id, value v_path)
+ {
++#ifndef Q_GETQUOTA
++  caml_failwith("quota_query not implemented on this OS");
++#else
+   int id, cmd;
+   struct dqblk quota;
+   int64_t bytes_used, bytes_soft, bytes_hard;
+@@ -162,11 +172,15 @@ CAMLprim value quota_query (value v_user_or_group, value v_id, value v_path)
+   Store_field(v_ret, 3, caml_alloc_int63(quota.dqb_curinodes));
+ 
+   CAMLreturn(v_ret);
++#endif
+ }
+ 
+ CAMLprim value quota_modify (value v_user_or_group, value v_id,
+                              value v_path, value v_bytes_limit, value v_inodes_limit)
+ {
++#ifndef Q_SETQUOTA
++  caml_failwith("quota_modify not implemented on this OS");
++#else
+   int id, cmd;
+   struct dqblk quota;
+   CAMLparam5(v_user_or_group, v_id, v_path, v_bytes_limit, v_inodes_limit);
+@@ -190,6 +204,7 @@ CAMLprim value quota_modify (value v_user_or_group, value v_id,
+     unix_error(errno, "Unix.Quota: unable to set quota", v_path);
+ 
+   CAMLreturn(Val_unit);
++#endif
+ }
+ 
+ CAMLprim value extended_ml_htonl (value v_num) {
