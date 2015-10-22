@@ -6,7 +6,8 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "https://github.com/ocaml/opam-repository.git"
 license: "GPL"
 build: [
-  ["sh" "-c" "cc -c $CFLAGS -I/usr/local/include test.c"]
+  ["sh" "-c" "cc -c $CFLAGS test.c"] {os != "openbsd" & os != "freebsd" & os != "darwin"}
+  ["sh" "-c" "cc -c $CFLAGS -I/usr/local/include -L/usr/local/lib test.c"] {os = "openbsd" | os = "freebsd" | os = "darwin"}
 ]
 depexts: [
   [["debian"] ["libgmp-dev"]]
