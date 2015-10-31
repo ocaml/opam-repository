@@ -1,0 +1,24 @@
+opam-version: "1.2"
+maintainer: "David Chemouil <david.chemouil+electrum@onera.fr>"
+authors: ["David Chemouil" "Julien Brunel" "Denis Kuperberg"]
+homepage: "https://forge.onera.fr/projects/electrum"
+bug-reports: "https://forge.onera.fr/projects/electrum"
+license: "GPL-3+"
+dev-repo: "https://git.onera.fr/electrum.git"
+build: [
+  ["./configure" "--prefix=%{prefix}%"]
+  [make]
+]
+install: [make "install"]
+remove: [
+  ["rm" "-f" "%{bin}%/electrumAnalyzer"] {os = "darwin" | os = "linux"}
+]
+depends: [
+  "batteries" {build}
+  ("cmdliner" {build & = "0.9.7"} | "cmdliner" {build & = "0.9.6"} |
+   "cmdliner" {build & = "0.9.5"})
+  "menhir" {build & >= "20150720"}
+  "ocamlfind" {build & >= "1.5.5"}
+  "pprint" {build}
+]
+available: [os = "darwin" | os = "linux" & ocaml-version >= "4.02"]
