@@ -1,28 +1,34 @@
 opam-version: "1.2"
+name: "raygun4ocaml"
+version: "0.1.0"
 maintainer: "Lidcore <it@lidcore.com>"
-authors: "Romain Beauxis"
-homepage: "https://github.com/lidcore/raygun4ocaml"
-bug-reports: "https://github.com/lidcore/raygun4ocaml/issues"
+authors: [ "Romain Beauxis" ]
 license: "ISC"
+homepage: "https://github.com/lidcore/raygun4ocaml"
 dev-repo: "https://github.com/lidcore/raygun4ocaml"
+bug-reports: "https://github.com/lidcore/raygun4ocaml/issues"
 build: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{lwt:enable}%-lwt"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+    "--%{lwt:enable}%-lwt"]
   ["ocaml" "setup.ml" "-build"]
 ]
 install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "raygun"]
+]
 build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--%{lwt:enable}%-lwt"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"
+    "--%{lwt:enable}%-lwt"]
   ["ocaml" "setup.ml" "-build"]
   ["ocaml" "setup.ml" "-test"]
 ]
-remove: ["ocamlfind" "remove" "raygun"]
 depends: [
   "ISO8601"
   "atdgen" {>= "1.5.0"}
   "base-unix"
-  "oasis" {build & >= "0.4"}
   "ocamlfind" {build}
 ]
-depopts: "cohttp"
+depopts: [
+  "cohttp"
+  "lwt"
+]
