@@ -2,22 +2,26 @@ opam-version: "1.2"
 maintainer: "Rizo Isrof <rizo@odis.io>"
 authors: [ "Rizo Isrof <rizo@odis.io>" ]
 license: "MIT"
-homepage: "http://github.com/rizo/ocaml-iter"
-dev-repo: "https://github.com/rizo/ocaml-iter.git"
-bug-reports: "https://github.com/rizo/ocaml-iter/issues"
+homepage: "http://github.com/rizo/flow"
+dev-repo: "https://github.com/rizo/flow.git"
+bug-reports: "https://github.com/rizo/flow/issues"
 build: [
+  ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
-  ["ocaml" "%{etc}%/iter/_oasis_remove_.ml" "%{etc}%/iter"]
+  ["ocamlfind" "remove" "io"]
 ]
 build-test: [
+  ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--enable-tests"]
   ["ocaml" "setup.ml" "-build"]
   ["ocaml" "setup.ml" "-test"]
 ]
 depends: [
+  "base-unix"
+  "oasis" {build & >= "0.4"}
   "ocamlfind" {build}
 ]
