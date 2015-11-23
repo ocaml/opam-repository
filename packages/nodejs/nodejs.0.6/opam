@@ -1,0 +1,63 @@
+opam-version: "1.2"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "https://github.com/fxfactorial/ocaml-nodejs"
+bug-reports: "https://github.com/fxfactorial/ocaml-nodejs/issues"
+license: "BSD-3-clause"
+dev-repo: "https://github.com/fxfactorial/ocaml-nodejs.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: ["ocamlfind" "remove" "nodejs"]
+depends: [
+  "js_of_ocaml" {>= "2.6"}
+  "oasis" {build & >= "0.4"}
+  "ocamlfind" {build}
+  "yojson"
+  "magic-mime"
+]
+depexts: [
+  [["debian"] ["nodejs"]]
+  [["homebrew" "osx"] ["nodejs"]]
+  [["ubuntu"] ["nodejs"]]
+]
+available: [ocaml-version >= "4.02.3"]
+post-messages: [
+  "Now you can write OCaml and execute on node."
+  "Example assuming file name of c.ml:"
+  "
+open Nodejs 
+
+let () = 
+
+  let server =
+  Http.create_server begin fun incoming response ->
+
+    Fs.read_file ~path:\"./client.html\" begin fun err data ->
+      response#write_head ~status_code:200 [(\"Content-type\", \"text/html\")];
+      response#end_ ~data:(String data) ()
+
+      end
+   end
+  in
+  ignore begin
+    server#listen ~port:8080 begin fun () ->
+
+      Printf.sprintf \"Started Server and Running node: %s\" (new process#version)
+      |> print_endline
+    end
+  end
+  "
+  "ocamlfind ocamlc c.ml -linkpkg -package nodejs -o T.out"
+  "js_of_ocaml T.out"
+  "node T.js"
+]
