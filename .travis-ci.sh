@@ -4,6 +4,16 @@ PING_LOOP_PID=$!
 # generated during the install step
 source .travis-ocaml.env
 
+# display info about OS distribution and version
+case $TRAVIS_OS_NAME in
+osx) sw_vers ;;
+*) cat /etc/*-release
+   lsb_release -a
+   uname -a
+   cat /proc/version
+   ;;
+esac
+
 echo OCAML_VERSION=$OCAML_VERSION
 echo OPAM_SWITCH=$OPAM_SWITCH
 
