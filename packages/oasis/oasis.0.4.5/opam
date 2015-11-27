@@ -12,7 +12,10 @@ build: [
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
-  ["ocaml" "%{etc}%/oasis/_oasis_remove_.ml" "%{etc}%/oasis"]
+  # If _oasis_remove_.ml is not present, this is an old installation
+  # and one needs to perform the removal "manually".  The next version of
+  # the package will use the first method only.
+  ["/bin/sh" "-c" "if [ -e '%{etc}%/oasis/_oasis_remove_.ml' ]; then ocaml '%{etc}%/oasis/_oasis_remove_.ml' '%{etc}%/oasis'; else ocamlfind remove plugin-loader; ocamlfind remove userconf; ocamlfind remove oasis; rm '%{bin}%/oasis'; fi"]
 ]
 build-test: [
   ["ocaml" "setup.ml" "-configure" "--enable-tests"
