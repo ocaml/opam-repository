@@ -1,0 +1,26 @@
+opam-version: "1.2"
+maintainer: "whitequark <whitequark@whitequark.org>"
+authors: [ "whitequark <whitequark@whitequark.org>" ]
+license: "LGPL-2.1"
+homepage: "https://github.com/whitequark/ocaml-inotify"
+doc: "http://whitequark.github.io/ocaml-inotify"
+bug-reports: "https://github.com/whitequark/ocaml-inotify/issues"
+dev-repo: "git://github.com/whitequark/ocaml-inotify.git"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--%{lwt:enable}%-lwt" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: [
+  ["ocaml" "setup.ml" "-install"]
+]
+remove: [
+  ["ocamlfind" "remove" "inotify"]
+]
+depends: [
+  "base-unix"
+  "base-bytes"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+depopts: ["lwt"]
+available: [os = "linux" | os = "darwin"]

@@ -1,0 +1,32 @@
+opam-version: "1.2"
+maintainer: "jonathan.ludlam@citrix.com"
+homepage: "https://github.com/jonludlam/ocaml-iso-filesystem"
+bug-reports: "https://github.com/jonludlam/ocaml-iso-filesystem/issues"
+dev-repo: "git://github.com/jonludlam/ocaml-iso-filesystem"
+authors: "Jon Ludlam"
+license: "ISC"
+available: [ocaml-version >= "4.01.0"]
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["lib_test/mkiso.sh"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: ["ocamlfind" "remove" "iso-filesystem"]
+depends: [
+  "cstruct"
+  "io-page" {build}
+  "lwt"
+  "mirage-block-unix" {build}
+  "mirage-types"
+  "ocamlfind" {build}
+  "ounit" {build}
+  "re"
+  "stringext"
+  "ocamlbuild" {build}
+]

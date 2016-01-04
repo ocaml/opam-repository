@@ -1,0 +1,29 @@
+opam-version: "1.2"
+name: "tdk"
+version: "0.2.0"
+homepage: "http://frenetic-lang.org"
+dev-repo: "https://github.com/frenetic-lang/ocaml-tdk.git"
+bug-reports: "https://github.com/frenetic-lang/ocaml-tdk/issues"
+maintainer: "Spiros Eliopoulos <seliopou@gmail.com>"
+authors: [ "Spiros Eliopoulos <seliopou@gmail.com>" ]
+license: "BSD-3-clause"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "tdk"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "ocamlfind" {build}
+  "ounit" {test & >= "1.0.2"}
+  "ocamlbuild" {build}
+]
+available: [ ocaml-version >= "4.00.1" ]

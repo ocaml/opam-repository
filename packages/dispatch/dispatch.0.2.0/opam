@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer: "Spiros Eliopoulos <spiros@inhabitedtype.com>"
+authors: [ "Spiros Eliopoulos <spiros@inhabitedtype.com>" ]
+license: "BSD-3-clause"
+homepage: "https://github.com/inhabitedtype/ocaml-dispatch"
+dev-repo: "https://github.com/inhabitedtype/ocaml-dispatch.git"
+bug-reports: "https://github.com/inhabitedtype/ocaml-dispatch/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+    "--%{js_of_ocaml:enable}%-js-of-ocaml"]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "dispatch"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"
+    "--%{js_of_ocaml:enable}%-js-of-ocaml"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "ocamlfind" {build}
+  "ounit" {test & >= "1.0.2"}
+  "result"
+  "ocamlbuild" {build}
+]
+depopts: [
+  "js_of_ocaml"
+]

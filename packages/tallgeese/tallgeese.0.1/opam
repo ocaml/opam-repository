@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "http://hyegar.com"
+bug-reports: "https://github.com/fxfactorial/tallgeese/issues"
+dev-repo: "https://github.com/fxfactorial/tallgeese.git"
+license: "BSD-3-clause"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: ["ocaml" "%{etc}%/tallgeese/_oasis_remove_.ml" "%{etc}%/tallgeese"]
+depends: [
+  "oasis" {build & >= "0.4"}
+  "ocamlfind" {build}
+  "cmdliner" {build}
+  "maxminddb" {build}
+  "libssh" {build}
+  "ocamlbuild" {build}
+]
+depexts: [["osx" "homebrew"] ["libmaxminddb"]]
+
+available: [ocaml-version >= "4.02.3" & os = "darwin"]

@@ -1,0 +1,45 @@
+opam-version: "1.2"
+name: "containers"
+authors: "Simon Cruanes"
+maintainer: "simon.cruanes@inria.fr"
+build: [
+    ["./configure"
+        "--prefix" prefix
+        "--%{base-threads:enable}%-thread"
+        "--disable-bench"
+        "--disable-tests"
+        "--%{base-bigarray:enable}%-bigarray"
+        "--%{sequence:enable}%-advanced"
+        "--%{base-unix:enable}%-unix"
+        "--enable-docs"
+    ]
+    [make "build"]
+]
+install: [
+    [make "install"]
+]
+build-doc: [ make "doc" ]
+build-test: [ make "test" ]
+remove: [
+    ["ocamlfind" "remove" "containers"]
+]
+depends: [
+  "ocamlfind" {build}
+  "base-bytes"
+  "cppo" {build}
+  "ocamlbuild" {build}
+]
+depopts: [ "sequence" "base-bigarray" "base-unix" "base-threads" ]
+tags: [ "stdlib" "containers" "iterators" "list" "heap" "queue" ]
+homepage: "https://github.com/c-cube/ocaml-containers/"
+doc: "http://cedeela.fr/~simon/software/containers/"
+available: [ocaml-version >= "4.00.0"]
+dev-repo: "https://github.com/c-cube/ocaml-containers.git"
+bug-reports: "https://github.com/c-cube/ocaml-containers/issues/"
+post-messages: [
+"containers.lwt and containers.misc have finally been moved into their
+own repository. This release contains a few breaking changes (see change log).
+Many new data structures, tests and functions have been added!
+
+change log: https://github.com/c-cube/ocaml-containers/blob/0.13/CHANGELOG.adoc"
+]

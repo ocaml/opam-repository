@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer: "whitequark <whitequark@whitequark.org>"
+authors: "whitequark <whitequark@whitequark.org>"
+homepage: "https://github.com/whitequark/ppx_deriving_yojson"
+bug-reports: "https://github.com/whitequark/ppx_deriving_yojson/issues"
+license: "MIT"
+doc: "http://whitequark.github.io/ppx_deriving_yojson"
+tags: ["syntax" "json"]
+dev-repo: "git://github.com/whitequark/ppx_deriving_yojson.git"
+substs: "pkg/META"
+build: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=%{ocaml-native}%"
+  "native-dynlink=%{ocaml-native-dynlink}%"
+]
+build-test: [
+  "ocamlbuild"
+  "-classic-display"
+  "-use-ocamlfind"
+  "src_test/test_ppx_yojson.byte"
+  "--"
+]
+depends: [
+  "yojson"
+  "ppx_deriving" {>= "2.0" & < "4.0"}
+  "ocamlfind" {build}
+  "ounit" {test}
+  "ppx_import" {test}
+  "ocamlbuild" {build}
+]

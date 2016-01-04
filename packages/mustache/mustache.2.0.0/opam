@@ -1,0 +1,36 @@
+opam-version: "1.2"
+maintainer: "rudi.grinberg@gmail.com"
+authors: ["Rudi Grinberg"]
+license: "MIT"
+
+homepage: "https://github.com/rgrinberg/ocaml-mustache"
+bug-reports: "https://github.com/rgrinberg/ocaml-mustache/issues"
+dev-repo: "https://github.com/rgrinberg/ocaml-mustache.git"
+
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure"]
+  ["ocaml" "setup.ml" "-build"]
+]
+
+install: ["ocaml" "setup.ml" "-install"]
+
+remove: [
+  ["ocamlfind" "remove" "mustache"]
+]
+
+build-doc: ["ocaml" "setup.ml" "-doc"]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+
+depends: [
+  "ocamlfind" {build}
+  "oasis" {build & >= "0.4.0"}
+  "ezjsonm" {>= "0.4.0"}
+  "ocamlbuild" {build}
+]
+available: [ocaml-version >= "4.01.0"]

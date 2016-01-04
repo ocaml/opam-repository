@@ -1,0 +1,49 @@
+opam-version: "1.2"
+maintainer: "vb@luminar.eu.org"
+homepage: "http://projects.camlcity.org/projects/ocamlnet.html"
+doc: ["http://projects.camlcity.org/projects/dl/ocamlnet-4.0.4/doc/html-main/index.html"]
+build: [
+  ["./configure" "-bindir" bin "-%{conf-gssapi:enable}%-gssapi" "-%{conf-gnutls:enable}%-gnutls" "-%{pcre:enable}%-pcre" "-%{lablgtk:enable}%-gtk2" "-%{camlzip:enable}%-zip" "-with-nethttpd"]
+  [make "all"]
+  [make "opt"]
+  [make "install"]
+]
+authors: ["Gerd Stolpmann"]
+remove: [
+  ["ocamlfind" "remove" "equeue"]
+  ["ocamlfind" "remove" "equeue-gtk2"] {"%{lablgtk:installed}%"}
+  ["ocamlfind" "remove" "netcamlbox"]
+  ["ocamlfind" "remove" "netcgi2"]
+  ["ocamlfind" "remove" "netcgi2-plex"]
+  ["ocamlfind" "remove" "netclient"]
+  ["ocamlfind" "remove" "netgss-system"] {"%{conf-gssapi:installed}%"}
+  ["ocamlfind" "remove" "nethttpd"]
+  ["ocamlfind" "remove" "netmulticore"]
+  ["ocamlfind" "remove" "netplex"]
+  ["ocamlfind" "remove" "netshm"]
+  ["ocamlfind" "remove" "netstring"]
+  ["ocamlfind" "remove" "netstring-pcre"] {"%{pcre:installed}%"}
+  ["ocamlfind" "remove" "netsys"]
+  ["ocamlfind" "remove" "nettls-gnutls"] {"%{conf-gnutls:installed}%"}
+  ["ocamlfind" "remove" "netunidata"]
+  ["ocamlfind" "remove" "netzip"] {"%{camlzip:installed}%"}
+  ["ocamlfind" "remove" "pop"]
+  ["ocamlfind" "remove" "rpc"]
+  ["ocamlfind" "remove" "rpc-auth-local"]
+  ["ocamlfind" "remove" "rpc-generator"]
+  ["ocamlfind" "remove" "shell"]
+  ["ocamlfind" "remove" "smtp"]
+
+]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild"
+]
+depopts: [
+  "conf-gnutls"
+  "conf-gssapi"
+  "lablgtk"
+  "pcre"
+  "camlzip"
+]
+available: [ ocaml-version >= "4.00.0"]
