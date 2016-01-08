@@ -6,7 +6,8 @@ dev-repo: "https://github.com/savonet/ocaml-ssl.git"
 bug-reports: "https://github.com/savonet/ocaml-ssl/issues"
 
 build: [
-  ["./configure" "--prefix" prefix]
+  ["./configure" "--prefix" prefix] { os != "darwin" }
+  ["./configure" "--prefix" prefix "CFLAGS=-I/usr/local/opt/openssl/include"] { os = "darwin" }
   [make]
 ]
 install: [[make "install"]]
