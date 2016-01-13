@@ -21,4 +21,7 @@ depexts: [
 post-messages: [
   "Could not build ocamlfind. The most common reason for that is a missing 'm4' system package." {failure}
 ]
-available: [ocaml-version >= "3.10.0"] # needs ocamldep -modules
+# needs 3.10.0 for ocamldep -modules but for some reason, when using
+# 3.11 an ocamlfind test needs native dynamic linking which is only from 3.12.0
+available: [ (ocaml-version >= "3.12.0") |
+             ((ocaml-version >= "3.10.0") & (ocaml-version < "3.11.0")) ]
