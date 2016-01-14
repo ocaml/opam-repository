@@ -1,0 +1,40 @@
+opam-version: "1.2"
+version: "2.0.1"
+maintainer: "dave@recoil.org"
+authors: [ "Jonathan Ludlam" "David Scott" ]
+license: "LGPL-2 with OCaml linking exception"
+homepage: "https://github.com/xapi-project/nbd"
+dev-repo: "https://github.com/xapi-project/nbd.git"
+bug-reports: "https://github.com/xapi-project/nbd/issues"
+
+build: [
+  ["oasis" "setup"]
+  ["./configure" "--prefix" prefix]
+  [make]
+]
+build-test: [
+  ["./configure" "--enable-tests"]
+  [make "test"]
+]
+install: [
+  [make "install" "BINDIR=%{bin}%"]
+]
+remove: [
+  [make "uninstall" "BINDIR=%{bin}%"]
+  ["ocamlfind" "remove" "nbd"]
+]
+depends: [
+  "oasis" {build}
+  "ounit" {test}
+  "ocamlfind" {build}
+  "lwt"
+  "cstruct" {> "1.0.0"}
+  "cmdliner"
+  "sexplib"
+  "mirage-block-unix"
+  "io-page"
+  "mirage"
+  "uri"
+]
+tags: [ "org:mirage" "org:xapi-project" ]
+available: [ ocaml-version >= "4.01.0" ]
