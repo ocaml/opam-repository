@@ -1,0 +1,36 @@
+opam-version: "1.2"
+name: "raygun4ocaml"
+version: "0.1.0"
+available: [ ocaml-version >= "4.02.0" ]
+maintainer: "Lidcore <it@lidcore.com>"
+authors: [ "Romain Beauxis" ]
+license: "ISC"
+homepage: "https://github.com/lidcore/raygun4ocaml"
+dev-repo: "https://github.com/lidcore/raygun4ocaml.git"
+bug-reports: "https://github.com/lidcore/raygun4ocaml/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+    "--%{lwt:enable}%-lwt"]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "raygun"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"
+    "--%{lwt:enable}%-lwt"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "ISO8601"
+  "atdgen" {>= "1.5.0"}
+  "base-unix"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+depopts: [
+  "cohttp"
+  "lwt"
+]

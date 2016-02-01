@@ -1,0 +1,18 @@
+opam-version: "1.2"
+maintainer: "Christopher Zimmermann <christopher@gmerlin.de>"
+author: "Samuel Mimram <samuel.mimram@ens-lyon.org>"
+homepage: "https://github.com/savonet/ocaml-ssl"
+dev-repo: "https://github.com/savonet/ocaml-ssl.git"
+bug-reports: "https://github.com/savonet/ocaml-ssl/issues"
+
+build: [
+  ["./configure" "--prefix" prefix] { os != "darwin" }
+  ["./configure" "--prefix" prefix "CFLAGS=-I/usr/local/opt/openssl/include"] { os = "darwin" }
+  [make]
+]
+install: [[make "install"]]
+remove: [["ocamlfind" "remove" name]]
+depends: [
+  "ocamlfind" {build}
+  "conf-openssl"
+]

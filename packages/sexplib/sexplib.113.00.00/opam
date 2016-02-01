@@ -5,17 +5,22 @@ homepage: "https://github.com/janestreet/sexplib"
 build: [
   ["./configure" "--%{type_conv:enable}%-syntax"]
   [make]
-  [make "install"]
 ]
 remove: [
   ["ocamlfind" "remove" "sexplib"]
   ["ocamlfind" "remove" "sexplib_num"]
   ["ocamlfind" "remove" "sexplib_unix"]
 ]
-depends: ["ocamlfind"]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+]
 depopts: ["camlp4" "type_conv"]
 conflicts: [
   "type_conv" {< "113.00.00"}
   "type_conv" {>= "113.01.00"}
 ]
-available: [ ocaml-version >= "4.02.1" ]
+available: [ ocaml-version >= "4.02.1" & ocaml-version < "4.03" ]
+bug-reports: "https://github.com/janestreet/sexplib/issues"
+dev-repo: "https://github.com/janestreet/sexplib.git"
+install: [[make "install"]]

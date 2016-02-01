@@ -1,12 +1,15 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "sebastien.fricker@gmail.com"
+authors: ["Sebastien Fricker"]
+homepage: "http://oqamldebug.forge.ocamlcore.org/"
+bug-reports: "https://forge.ocamlcore.org/projects/oqamldebug/"
+dev-repo: "https://forge.ocamlcore.org/anonscm/git/oqamldebug/oqamldebug.git"
 build: [
-  [ "qmake" "CONFIG-=app_bundle" "CONFIG+=release" "PREFIX_BIN=%{bin}%/" "CONFIG-=debug" "oqamldebug.pro" ]
+  [ "qmake" "CONFIG-=app_bundle" "CONFIG+=release" "PREFIX_BIN=%{bin}%/" "CONFIG-=debug" "LIBS+=-lX11" "oqamldebug.pro" ]
   [ make ]
-  [ make "install" ]
+  [ "strip" "oqamldebug" ]
 ]
-remove: [
-  [ "qmake" "CONFIG-=app_bundle" "CONFIG+=release" "PREFIX_BIN=%{bin}%/" "CONFIG-=debug" "oqamldebug.pro" ]
-  [ make "uninstall" ]
+depexts: [
+  [["debian"] ["qt4-qmake" "libqt4-dev"]]
+  [["ubuntu"] ["qt4-qmake" "libqt4-dev"]]
 ]
-

@@ -1,0 +1,27 @@
+opam-version: "1.2"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "https://github.com/fxfactorial/ocaml-nodejs"
+bug-reports: "https://github.com/fxfactorial/ocaml-nodejs/issues"
+license: "BSD-3-clause"
+dev-repo: "https://github.com/fxfactorial/ocaml-nodejs.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: ["ocamlfind" "remove" "nodejs"]
+depends: [
+  "js_of_ocaml"
+  "oasis" {build & >= "0.4"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+available: [ocaml-version >= "4.02"]

@@ -1,0 +1,34 @@
+opam-version: "1.2"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "http://hyegar.com"
+bug-reports: "https://github.com/fxfactorial/podge/issues"
+dev-repo: "http://github.com/fxfactorial/podge.git"
+license: "BSD-3-clause"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: ["ocaml" "%{etc}%/podge/_oasis_remove_.ml" "%{etc}%/podge"]
+depends: [
+  "ANSITerminal"
+  "base-unix"
+  "cohttp"
+  "ezxmlm"
+  "oasis" {build & >= "0.4"}
+  "ocamlfind" {build}
+  "re"
+  "tyxml"
+  "yojson"
+  "stringext"
+  "ocamlbuild" {build}
+]
+available: [ocaml-version >= "4.02.3"]

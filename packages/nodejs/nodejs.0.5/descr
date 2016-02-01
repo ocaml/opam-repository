@@ -1,0 +1,35 @@
+js_of_ocaml bindings for nodejs
+
+Write OCaml, run on node; these are js_of_ocaml bindings to the node
+JavaScript API. Get all the power of the node ecosystem with the type
+safety of OCaml.
+
+Here's how easy it is to make a server.
+
+(* Example assuming file name of c.ml *)
+open Nodejs 
+
+let () = 
+
+  let server =
+  Http.create_server begin fun incoming response ->
+
+    Fs.read_file ~path:"./client.html" begin fun err data ->
+      response#write_head ~status_code:200 [("Content-type", "text/html")];
+      response#end_ ~data:(String data) ()
+
+      end
+   end
+  in
+  ignore begin
+    server#listen ~port:8080 begin fun () ->
+      Printf.sprintf "Started Server and Running node: %s" (new process#version)
+      |> print_endline
+    end
+  end
+
+Compile, run with:
+
+$ ocamlfind ocamlc c.ml -linkpkg -package nodejs -o T.out
+$ js_of_ocaml T.out
+$ node T.js

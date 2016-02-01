@@ -1,0 +1,43 @@
+opam-version: "1.2"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "https://github.com/bean-code/ocaml-npm-colors-js"
+bug-reports: "https://github.com/bean-code/ocaml-npm-colors-js/issues"
+license: "BSD-3-clause"
+dev-repo: "https://github.com/bean-code/ocaml-npm-colors.git"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: ["ocamlfind" "remove" "nodemailer"]
+depends: [
+  "nodejs" {>= "0.4"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+post-messages: [
+  "Easily create colored output with OCaml compiled for node."
+  "
+let () =
+   let styled =
+     Colors_js.colorize ~msg:\"Hello World\"
+        ~styles:Colors_js.([Blue; Underline; White_bg])
+        []
+    in
+    let with_actions =
+      Colors_js.colorize ~msg:\"Foo Bar Baz\" ~styles:[] [Colors_js.America]
+    in
+    print_endline styled;
+    print_endline with_actions
+  "
+  "Compile with:"
+  "ocamlfind ocamlc code.ml -linkpkg -package colors_js -o T.out"
+  "js_of_ocaml T.out"
+  "node T.js"
+]
