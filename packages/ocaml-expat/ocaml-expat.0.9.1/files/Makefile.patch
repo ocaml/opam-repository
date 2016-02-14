@@ -1,0 +1,21 @@
+diff --git a/Makefile b/Makefile
+index b32f906..e428fa5 100644
+--- a/Makefile
++++ b/Makefile
+@@ -25,6 +25,7 @@ OCAMLDEP=ocamldep
+ OCAMLMKLIB=ocamlmklib 
+ OCAMLDOC=ocamldoc
+ OCAMLFIND=ocamlfind
++OCAMLDIR:=$(shell ocamlfind query stdlib)
+ 
+ .PHONY: all
+ all: $(ARCHIVE)
+@@ -32,7 +33,7 @@ all: $(ARCHIVE)
+ allopt:  $(XARCHIVE)
+ 
+ depend: *.c *.ml *.mli
+-	gcc -MM *.c > depend	
++	gcc -I $(OCAMLDIR) -MM *.c > depend
+ 	$(OCAMLDEP) *.mli *.ml >> depend
+ 
+ ## Library creation
