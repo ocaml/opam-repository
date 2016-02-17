@@ -10,6 +10,12 @@ build: [
   ["ocaml" "setup.ml" "-configure" "--%{lwt:enable}%-lwt" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
+build-test: [
+  ["ocaml" "setup.ml" "-configure"
+   "--%{lwt:enable}%-lwt" "--prefix" prefix "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
 install: [
   ["ocaml" "setup.ml" "-install"]
 ]
@@ -20,7 +26,7 @@ depends: [
   "base-unix"
   "base-bytes"
   "ocamlfind" {build}
-  "ocamlbuild" {build}
+  "fileutils" {test}
 ]
 depopts: ["lwt"]
-available: [os = "linux" | os = "darwin"]
+available: [os = "linux"]
