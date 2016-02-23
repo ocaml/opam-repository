@@ -60,6 +60,7 @@ function opam_version_compat {
   OPAM_MINOR=${OPAM_VERSION#*.}
   OPAM_MINOR=${OPAM_MINOR%%.*}
   if [ $OPAM_MAJOR -eq 1 ] && [ $OPAM_MINOR -lt 2 ]; then
+      opam_version_11=1
       ocamlv=$(ocamlrun -vnum)
       bytev=${ocamlv%.*}
       curl -L https://opam.ocaml.org/repo_compat_1_1.byte$bytev -o compat.byte
@@ -72,7 +73,18 @@ function build_one {
   pkg=$1
   echo "build one: $pkg ($OPAM_SWITCH)"
   rm -rf ~/.opam
-  opam init . --comp=$OPAM_SWITCH
+  if [ -n "${opam_version_11}" ]; then
+      # Hide OCaml build log
+      if opam init . --comp=$OPAM_SWITCH > build.log 2>&1 ; then
+          echo -n
+      else
+          rc=$?
+          cat build.log
+          exit $rc
+      fi
+  else
+      opam init . --comp=$OPAM_SWITCH
+  fi
   eval `opam config env`
   # test for installability
   echo "Checking for availability..."
