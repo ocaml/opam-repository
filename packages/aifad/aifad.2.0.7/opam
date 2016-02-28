@@ -1,0 +1,28 @@
+opam-version: "1.2"
+maintainer: "Markus Mottl <markus.mottl@gmail.com>"
+authors: [ "Markus Mottl <markus.mottl@gmail.com>" ]
+license: "LGPL-2.1+ with OCaml linking exception"
+homepage: "http://mmottl.github.io/aifad"
+dev-repo: "https://github.com/mmottl/aifad.git"
+bug-reports: "https://github.com/mmottl/aifad/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/aifad/_oasis_remove_.ml" "%{etc}%/aifad"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "base-threads" {build}
+  "cfg" {build}
+  "ocamlfind" {build & >= "1.3.1"}
+  "pcre" {build}
+  "res" {build}
+]
+available: [ ocaml-version >= "4.00" ]

@@ -12,10 +12,16 @@ remove: [
   [make "uninstall"]
 ]
 depexts: [
-  [ ["debian"] ["m4"] ]
-  [ ["ubuntu"] ["m4"] ] 
-  [ ["centos"] ["m4"] ]
+  [["debian"] ["m4" "ncurses-dev"]]
+  [["ubuntu"] ["m4" "ncurses-dev"]]
+  [["fedora"] ["m4"]]
+  [["centos"] ["m4"]]
+  [["alpine"] ["m4" "ncurses-dev"]]
 ]
 post-messages: [
   "Could not build ocamlfind. The most common reason for that is a missing 'm4' system package." {failure}
 ]
+# needs 3.10.0 for ocamldep -modules but for some reason, when using
+# 3.11 an ocamlfind test needs native dynamic linking which is only from 3.12.0
+available: [ (ocaml-version >= "3.12.0") |
+             ((ocaml-version >= "3.10.0") & (ocaml-version < "3.11.0")) ]
