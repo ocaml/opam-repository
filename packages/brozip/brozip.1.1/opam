@@ -1,0 +1,29 @@
+opam-version: "1.2"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "http://hyegar.com"
+bug-reports: "https://github.com/fxfactorial/brozip/issues"
+license: "BSD-3-clause"
+dev-repo: "https://github.com/fxfactorial/brozip.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: ["ocaml" "%{etc}%/brozip/_oasis_remove_.ml" "%{etc}%/brozip"]
+depends: [
+  "brotli" {build}
+  "cmdliner" {build}
+  "lwt" {build}
+  "oasis" {build & >= "0.4"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+available: [ocaml-version >= "4.02.3"]

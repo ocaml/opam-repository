@@ -1,0 +1,40 @@
+opam-version: "1.2"
+maintainer: "Markus Mottl <markus.mottl@gmail.com>"
+authors: [ "Alain Frisch <alain.frisch@lexifi.com>"
+           "Markus Mottl <markus.mottl@gmail.com>"
+           "Petter Urkedal <paurkedal@gmail.com>" ]
+license: "LGPL-2.1+ with OCaml linking exception"
+homepage: "http://mmottl.github.io/postgresql-ocaml"
+dev-repo: "https://github.com/mmottl/postgresql-ocaml.git"
+bug-reports: "https://github.com/mmottl/postgresql-ocaml/issues"
+tags: [ "clib:pq"  ]
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+    "--%{lablgtk:enable}%-lablgtk2"]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "postgresql"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"
+    "--%{lablgtk:enable}%-lablgtk2"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "base-bigarray"
+  "base-bytes"
+  "base-threads"
+  "ocamlfind" {build & >= "1.5"}
+]
+depopts: [
+  "lablgtk" {build}
+]
+available: [ ocaml-version >= "3.12" ]
+depexts: [
+  [["debian"] ["libpq-dev"]]
+  [["ubuntu"] ["libpq-dev"]]
+]

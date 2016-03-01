@@ -1,0 +1,32 @@
+opam-version: "1.2"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: [ "Christophe Troestler" ]
+license: "LGPL-2.0 with OCaml linking exception"
+homepage: "https://github.com/Chris00/mesh"
+dev-repo: "https://github.com/Chris00/mesh.git"
+bug-reports: "https://github.com/Chris00/mesh/issues"
+tags: [ "clib:triangle"  ]
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+    "--%{lacaml:enable}%-lacaml"]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "mesh"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"
+    "--%{lacaml:enable}%-lacaml"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "base-bigarray"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+depopts: [
+  "lacaml" {build}
+]

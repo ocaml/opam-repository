@@ -1,0 +1,28 @@
+opam-version: "1.2"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "http://hyegar.com"
+bug-reports: "https://github.com/fxfactorial/ocaml-brotli/issues"
+license: "BSD-3-clause"
+tags: ["clib:stdc" "clib:brotli"]
+dev-repo: "https://github.com/fxfactorial/ocaml-brotli.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: ["ocaml" "setup.ml" "-doc"]
+remove: ["ocamlfind" "remove" "brotli"]
+depends: [
+  "oasis"
+  "lwt"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+available: [ocaml-version >= "4.02.3"]

@@ -1,0 +1,44 @@
+opam-version: "1.2"
+name: "imaplet-lwt"
+version: "0.1.15"
+maintainer: "Gregory Tsipenyuk <gregtsip@gmail.com>"
+authors: "Gregory Tsipenyuk <gregtsip@gmail.com>"
+homepage: "https://github.com/gregtatcam/imaplet-lwt"
+bug-reports: "https://github.com/gregtatcam/imaplet-lwt/issues"
+dev-repo: "https://github.com/gregtatcam/imaplet-lwt.git"
+license: "MIT"
+
+build: [
+  ["./configure" "--prefix=%{prefix}%"]
+  [make]
+]
+install: [make "install"]
+remove: [
+  ["ocamlfind" "remove" "imaplet"]
+  ["rm" "-f"
+    "%{bin}%/imaplet"
+    "%{bin}%/imaplet_configure"
+    "%{bin}%/imaplet_create_account"
+    "%{bin}%/imaplet_deploy"
+    "%{bin}%/imaplet_irmin_build"
+    "%{bin}%/imaplet_irmin_read"
+    "%{bin}%/imaplet_maildir_index"
+    "%{bin}%/smtplet"
+  ]
+]
+depends: [
+  "ocamlfind" {build}
+  "lwt"
+  "cohttp" {>= "0.19.3"}
+  "git" {>= "1.7.1"}
+  "irmin" {>= "0.9.10" & < "0.10.0"}
+  "irmin-unix"
+  "re"
+  "tls" {>= "0.6.0"}
+  "nocrypto" {>= "0.5.1"}
+  "dns" {>= "0.15.3"}
+  "menhir"
+  "camlzip"
+  "ocamlbuild" {build}
+]
+available: [ ocaml-version >= "4.01.0" ]

@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer: "whitequark <whitequark@whitequark.org>"
+authors: "whitequark <whitequark@whitequark.org>"
+homepage: "https://github.com/whitequark/ppx_deriving"
+bug-reports: "https://github.com/whitequark/ppx_deriving/issues"
+license: "MIT"
+doc: "http://whitequark.github.io/ppx_deriving"
+tags: "syntax"
+dev-repo: "git://github.com/whitequark/ppx_deriving.git"
+substs: "pkg/META"
+build: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=%{ocaml-native-dynlink}%"
+  "native-dynlink=%{ocaml-native-dynlink}%"
+]
+build-test: [
+  "ocamlbuild"
+  "-classic-display"
+  "-use-ocamlfind"
+  "src_test/test_ppx_deriving.byte"
+  "--"
+]
+build-doc: [make "doc"]
+depends: [
+  "ppx_tools" {>= "0.99.2"}
+  "ocamlfind" {build & >= "1.5.4"}
+  "ounit" {test}
+  "ocamlbuild" {build}
+]
+available: [ocaml-version >= "4.02.2" & opam-version >= "1.2"]

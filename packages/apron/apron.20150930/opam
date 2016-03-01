@@ -1,0 +1,30 @@
+opam-version: "1.2"
+authors: ["Bertrand Jeannet" "Antoine Miné"]
+homepage: "http://apron.cri.ensmp.fr/library/"
+maintainer: "Nicolas Berthier <m@nberth.space>"
+# dev-repo: "svn+ssh://scm.gforge.inria.fr/svnroot/apron/apron/trunk"
+bug-reports: "https://gforge.inria.fr/tracker/?atid=8946&group_id=2625&func=browse"
+license: "LGPL-2.1 with linking exception"
+build: [
+  ["sh" "./configure" "--prefix" "%{share}%/apron"
+  		      "--no-ppl" {! conf-ppl:installed}
+		      "--no-java"
+		      "--absolute-dylibs" { os = "darwin" } ]
+  [make]
+]
+install: [
+  [make "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "apron"]
+  ["rm" "-r" "-f" "%{share}%/apron"]
+]
+tags: [ "flags:light-uninstall" ]
+depends: [
+  "ocamlfind"
+  "camlidl"
+  "mlgmpidl"
+]
+depopts: [
+  "conf-ppl"
+]

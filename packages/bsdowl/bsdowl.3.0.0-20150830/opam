@@ -1,0 +1,30 @@
+opam-version: "1.2"
+maintainer: "michipili@gmail.com"
+authors: "Michael Grünewald"
+license: "CeCILL-B"
+homepage: "https://github.com/michipili/bsdowl"
+bug-reports: "https://github.com/michipili/bsdowl/issues"
+dev-repo: "https://github.com/michipili/bsdowl.git"
+tags: [
+  "bsd"
+  "bmake"
+  "build"
+]
+build: [
+  ["./configure" "--prefix" prefix]
+  ["bmake" "-r" "build"] {os != "freebsd"}
+  ["make" "-r" "build"]  {os  = "freebsd"}
+]
+install: [
+  ["bmake" "install"] {os != "freebsd"}
+  ["make" "install"]  {os  = "freebsd"}
+]
+remove: [
+  ["sh" "%{build}%/opam/files/remove.sh" prefix]
+]
+depends: ["ocamlfind"]
+depexts: [
+  [["debian"] ["bmake"]]
+  [["ubuntu"] ["bmake"]]
+  [["osx" "macports"] ["bmake"]]
+]

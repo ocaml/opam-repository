@@ -1,0 +1,100 @@
+opam-version: "1.2"
+name: "frama-c-base"
+version: "20151002"
+maintainer: "francois.bobot@cea.fr"
+authors: [
+  "Patrick Baudin"
+  "François Bobot"
+  "Richard Bonichon"
+  "David Bühler"
+  "Loïc Correnson"
+  "Pascal Cuoq"
+  "Zaynah Dargaye"
+  "Jean-Christophe Filliâtre"
+  "Philippe Herrmann"
+  "Florent Kirchner"
+  "Matthieu Lemerre"
+  "Claude Marché"
+  "André Maroneze"
+  "Benjamin Monate"
+  "Yannick Moy"
+  "Anne Pacalet"
+  "Valentin Perrelle"
+  "Guillaume Petiot"
+  "Virgile Prevosto"
+  "Armand Puccetti"
+  "Muriel Roger"
+  "Julien Signoles"
+  "Boris Yakobowski"
+]
+homepage: "http://frama-c.com/"
+license: "GNU Lesser General Public License version 2.1"
+doc: ["http://frama-c.com/download/user-manual-Magnesium-20151002.pdf"]
+bug-reports: "https://bts.frama-c.com/"
+tags: [
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "interactive theorem prover"
+  "C"
+  "plugins"
+  "abstract interpretation"
+  "slicing"
+  "weakest precondition"
+  "ACSL"
+  "dataflow analysis"
+]
+
+build: [
+  ["./configure" "--prefix" prefix
+                 "--disable-gui" { !conf-gtksourceview:installed | !conf-gnomecanvas:installed }
+]
+  [make]
+]
+
+install: [
+  [make "install"]
+]
+
+remove: [
+  ["./configure" "--prefix" prefix "--disable-local-ocamlgraph"
+                 "--disable-gui" { !conf-gtksourceview:installed | !conf-gnomecanvas:installed }
+]
+  [make "uninstall"]
+  ["rm" "-rf" frama-c:doc]
+]
+
+build-doc: [
+   [make "-C" "doc" "download"]
+   [make "-C" "doc" "FRAMAC_DOCDIR=%{frama-c:doc}%" "install"]
+]
+
+build-test: [
+  [make "PTESTS_OPTS=-error-code" "tests"]
+]
+
+depends: [
+  "ocamlgraph" { = "1.8.5" | = "1.8.6" }
+  "ocamlfind"
+]
+
+depopts: [
+  "zarith"
+  "lablgtk"
+  "conf-gtksourceview"
+  "conf-gnomecanvas"
+  "coq" { build }
+]
+
+messages: [
+   "Why3 can be used by the WP plugin for running additional automatic solvers" { !why3:installed }
+   "Coq can be used with the WP plugin for proving interactively proof obligations" { !coq:installed }
+]
+
+conflicts: [
+  "why3" { < "0.85" }
+  "lablgtk" { < "2.18.2" } #for ocaml >= 4.02.1
+]
+
+available: [ ocaml-version >= "4.00.1" & ocaml-version != "4.02.0" & ocaml-version != "4.02.2" ]

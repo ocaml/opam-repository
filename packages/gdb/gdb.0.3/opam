@@ -1,0 +1,29 @@
+opam-version: "1.2"
+name: "gdb"
+license: "LGPL-2.1 with OCaml linking exception"
+maintainer: "ygrek@autistici.org"
+authors: [ "ygrek" ]
+homepage: "https://github.com/ygrek/ocaml-gdb"
+dev-repo: "git://github.com/ygrek/ocaml-gdb.git"
+bug-reports: "https://github.com/ygrek/ocaml-gdb/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--%{lambda-term:enable}%-build-rmp" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: [
+  ["ocaml" "setup.ml" "-install"]
+]
+remove: [["ocamlfind" "remove" "gdb"]]
+depends: [
+  "ocamlfind" {build}
+  "menhir"
+  ("extlib" | "extlib-compat")
+  "lwt" {>= "2.4.6"}
+  "ppx_deriving" {>= "1.0"}
+  "ppx_tools" {build & >= "0.99.1"}
+  "oasis" {build & >= "0.4"}
+  "cppo" {build}
+  "ocamlbuild" {build}
+]
+depopts: ["lambda-term" {build}]
+available: [ocaml-version >= "4.02.0"]

@@ -1,0 +1,27 @@
+js_of_ocaml bindings for npm's nodemailer
+
+These are js_of_ocaml bindings to npm's nodemailer package, to be used
+with NodeJS, easily create nodejs based applications that can send mail.
+Possibily the easiest way to send an email in OCaml.
+
+open Nodejs
+open Node_mailer
+
+let () =
+  let mailer = new Node_mailer.node_mailer in
+  let m_opts =
+    with_simple_defaults
+      ~from:"Some Name <some_one@gmail.com>"
+      ~to_:["another_person@gmail.com"]
+      ~subject:(Some "Greeting from OCaml code!")
+      (Some "Some silly body to show off")
+  in
+  let t_opts =
+    {service = Gmail;
+     auth = {user = "some_one@gmail.com"; pass = "some_password"}}
+  in
+  let our_transporter = mailer#create_transport t_opts in
+  our_transporter#send_mail m_opts ~on_done:begin fun error info ->
+    log error;
+    log info
+  end

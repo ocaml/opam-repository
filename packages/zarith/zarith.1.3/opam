@@ -1,13 +1,17 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "contact@ocamlpro.com"
+authors: "Xavier Leroy"
+homepage: "https://forge.ocamlcore.org/projects/zarith"
 build: [
-  ["./configure"] { os != "openbsd" }
-  ["env" "CFLAGS=-I/usr/local/include" "LDFLAGS=-L/usr/local/lib" "./configure"] { os = "openbsd" }
+  ["./configure"] { os != "openbsd" & os != "freebsd" & os != "darwin"}
+  ["env" "LDFLAGS=-L/usr/local/lib" "CC=cc" "CFLAGS=-I/usr/local/include -O3 -Wall -Wextra" "./configure"] { os = "openbsd" | os = "freebsd" | os = "darwin"}
   [make]
   [make "install"]
 ]
-remove: [["ocamlfind" "remove" "zarith"]]
+remove:  ["ocamlfind" "remove" "zarith"]
 depends: [
-  "conf-gmp"
   "ocamlfind"
+  "conf-gmp"
+  "conf-perl" {build}
 ]
+patches: [ "z_pp.pl.patch" ]

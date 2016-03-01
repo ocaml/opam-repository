@@ -1,0 +1,51 @@
+opam-version: "1.2"
+maintainer:    "jonathan.ludlam@eu.citrix.com"
+authors: [
+  "Vincent Bernardoff"
+  "Jon Ludlam"
+]
+homepage:    "http://github.com/mirage/ocaml-vchan"
+bug-reports: "http://github.com/mirage/ocaml-vchan/issues"
+dev-repo:    "http://github.com/mirage/ocaml-vchan.git"
+license:     "ISC"
+
+build: [
+  ["./configure"]
+  [make "build"]
+]
+build-test: [make "test"]
+install: [
+  [make "install"]
+  [make "js-install"]
+]
+remove: [
+  [make "js-uninstall"]
+  ["ocamlfind" "remove" "vchan"]
+]
+
+depends: [
+  "ocamlfind" {build}
+  "lwt" {>= "2.5.0"}
+  "cstruct" {>= "1.0.1"}
+  "io-page"
+  "mirage-types-lwt"
+  "xenstore" {>= "1.2.2"}
+  "xenstore_transport"
+  "sexplib" {< "113.01.00"}
+  "cmdliner"
+  "ounit" {test}
+  "ocamlbuild" {build}
+]
+depopts: [
+  "xen-evtchn"
+  "xen-gnt"
+  "mirage-xen"
+]
+conflicts: [
+ "xen-evtchn" {< "1.0.3"}
+ ]
+available: [ocaml-version >= "4.00.1"]
+depexts: [
+ [["debian"] ["libxen-dev" "uuid-dev"]]
+ [["ubuntu"] ["libxen-dev" "uuid-dev"]]
+]

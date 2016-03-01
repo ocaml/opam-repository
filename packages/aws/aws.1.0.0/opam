@@ -1,0 +1,45 @@
+opam-version: "1.2"
+maintainer: "Spiros Eliopoulos <spiros@inhabitedtype.com>"
+authors: [ "Spiros Eliopoulos <spiros@inhabitedtype.com>"
+           "Daniel Patterson <dbp@dbpmail.net>" ]
+license: "BSD-3-clause"
+homepage: "https://github.com/inhabitedtype/ocaml-aws"
+dev-repo: "https://github.com/inhabitedtype/ocaml-aws.git"
+bug-reports: "https://github.com/inhabitedtype/ocaml-aws/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+    "--%{lwt+cohttp+ssl:enable}%-lwt"
+    "--%{async+cohttp+async_ssl:enable}%-async"]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "aws"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"
+    "--%{lwt+cohttp+ssl:enable}%-lwt"
+    "--%{async+cohttp+async_ssl:enable}%-async"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "calendar"
+  "ezxmlm"
+  "nocrypto"
+  "ocamlfind" {build}
+  "uri"
+]
+depopts: [
+  "async"
+  "async_ssl"
+  "base-threads"
+  "base-unix"
+  "cohttp"
+  "lwt"
+  "ssl"
+]
+conflicts: [
+  "cohttp" {< "0.17.0"}
+]

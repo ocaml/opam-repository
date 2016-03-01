@@ -1,0 +1,33 @@
+opam-version: "1.2"
+authors: ["Julia Lawall et. al."]
+homepage: "http://coccinelle.lip6.fr/"
+license: "GPL"
+build: [
+  ["./configure" "--enable-release" "--enable-ocaml" "--prefix" prefix]
+  [make "clean"]
+  [make "all.opt"]
+]
+install: [
+  [make "install"]
+]
+remove: [
+  ["rm" "-f"  "%{prefix}%/bin/spatch"]
+  ["rm" "-f"  "%{prefix}%/bin/spatch.opt"]
+  ["rm" "-f"  "%{prefix}%/bin/pycocci"]
+  ["rm" "-rf" "%{prefix}%/lib/coccinelle"]
+  ["rm" "-f"  "%{prefix}%/share/man/man1/spatch.1"]
+  ["rm" "-f"  "%{prefix}%/share/man/man1/pycocci.1"]
+  ["rm" "-f"  "%{prefix}%/share/man/man3/Coccilib.3cocci"]
+]
+depends: [
+  "camlp4"
+  "menhir" {= "20140422"}
+  "ocamlfind"
+  "pcre" {<= "7.1.1"}
+  "conf-pkg-config"
+  "conf-python-2-7"
+  "conf-python-2-7-dev"
+  "parmap"
+  "ocamlbuild" {build}
+]
+dev-repo: "git://github.com/coccinelle/coccinelle"

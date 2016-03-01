@@ -1,0 +1,32 @@
+opam-version: "1.2"
+homepage: "https://bitbucket.org/Peter_Sewell/lem"
+maintainer: "tom.j.ridge@googlemail.com"
+authors: [
+  "The Lem Team"
+]
+dev-repo: "https://bitbucket.org/dsheets/lem.git"
+build-env: [
+  [BUILD_DIR = "%{lib}%/sibylfs-lem"]
+]
+build: [
+  [make "-e"]
+  [make "ocaml-libs"]
+  [make "coq-libs"] {"%{coq:installed}%"}
+  ["./generate_install_manifest.sh"]
+]
+install: [
+  ["./ocamlfind_install.sh"]
+]
+remove: [
+  ["rm" "-r" "%{sibylfs-lem:lib}%"]
+]
+conflicts: [
+  "lem"
+]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+]
+depopts: [
+  "coq"
+]

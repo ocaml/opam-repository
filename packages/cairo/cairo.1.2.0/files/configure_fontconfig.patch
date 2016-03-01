@@ -1,0 +1,23 @@
+diff --git a/configure.ac b/configure.ac
+index 6c8c4e9..b539ca6 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -32,6 +32,18 @@ PKG_CHECK_MODULES(LIBSVG_CAIRO, libsvg-cairo, use_libsvg_cairo=yes, use_libsvg_c
+ # Optional pango-cairo support
+ PKG_CHECK_MODULES(LIBPANGOCAIRO, pangocairo, use_libpangocairo=yes, use_libpangocairo=no)
+ 
++# Optional fontconfig support
++CFLAGS=$CAIRO_CFLAGS
++AC_CHECK_DECL(CAIRO_HAS_FT_FONT,
++              [require_fontconfig=yes],[require_fontconfig=no],
++              [[#include <cairo.h>]])
++
++if test $require_fontconfig = yes ; then
++  unset CAIRO_LIBS
++  unset CAIRO_CFLAGS
++  PKG_CHECK_MODULES(CAIRO, cairo >= 1.2 freetype2 fontconfig)
++fi
++
+ echo
+ echo "  GTK+         support: $use_gtk"
+ echo "  libsvg-cairo support: $use_libsvg_cairo"

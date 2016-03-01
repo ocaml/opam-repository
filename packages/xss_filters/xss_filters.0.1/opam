@@ -1,0 +1,37 @@
+opam-version: "1.2"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "https://github.com/bean-code/ocaml-npm-xss-filters"
+bug-reports: "https://github.com/bean-code/ocaml-npm-xss-filters/issues"
+license: "BSD-3-clause"
+dev-repo: "https://github.com/bean-code/ocaml-npm-xss-filters.git"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: ["ocamlfind" "remove" "xss_filters"]
+depends: [
+  "nodejs" {>= "0.5"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+post-messages: [
+  "Sanitize user input with Yahoo's xss-filters npm package"
+  "
+open Nodejs
+
+let () =
+  Xss_filters.in_html_data \"<script>edgar</script>\"
+  |> print_endline
+  "
+  "Compile with:"
+  "ocamlfind ocamlc code.ml -linkpkg -package xss_filters -o T.out"
+  "js_of_ocaml T.out"
+  "node T.js"
+]

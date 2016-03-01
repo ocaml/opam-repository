@@ -1,0 +1,23 @@
+opam-version: "1.2"
+maintainer: "sheets@alum.mit.edu"
+authors: "David Sheets"
+homepage: "https://github.com/dsheets/polyglot"
+bug-reports: "https://github.com/dsheets/polyglot/issues"
+license: "ISC"
+dev-repo: "https://github.com/dsheets/polyglot.git"
+substs: ["lib/META" "polyglot.version"]
+build: [
+  [make "lib"]
+  [make "tool"] {cmdliner:installed & base-unix:installed}
+]
+install: [make "install"]
+build-test: [make "test"]
+remove: ["ocamlfind" "remove" "polyglot"]
+depends: [
+  "ocamlfind" {build}
+  "xmlm"
+  "alcotest" {test}
+  "ocamlbuild" {build}
+]
+depopts: ["cmdliner" "base-unix"]
+available: [ocaml-version >= "4.00.0" & opam-version >= "1.2"]
