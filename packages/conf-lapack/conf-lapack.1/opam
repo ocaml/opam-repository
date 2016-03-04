@@ -4,9 +4,10 @@ author: "mmottl"
 homepage: "http://www.netlib.org/lapack"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "https://github.com/ocaml/opam-repository.git"
-license: "GPL"
+license: "GPL-2.0"
 build: [
-  ["sh" "-c" "cc" "-framework Accelerate" {os = "darwin"} "-llapack" "$CFLAGS" "test.c"]
+  ["sh" "-exc" "cc -llapack $CFLAGS test.c"] {os != "darwin"}
+  ["sh" "-exc" "cc -framework Accelerate -llapack $CFLAGS test.c"] {os = "darwin"}
 ]
 depexts: [
   [["debian"] ["liblapack-dev"]]

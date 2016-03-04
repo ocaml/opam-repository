@@ -4,9 +4,10 @@ author: "mmottl"
 homepage: "http://www.netlib.org/blas"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "https://github.com/ocaml/opam-repository.git"
-license: "GPL"
+license: "GPL-2.0"
 build: [
-  ["sh" "-c" "cc" "-framework Accelerate" {os = "darwin"} "-lblas" "$CFLAGS" "test.c"]
+  ["sh" "-exc" "cc -lblas $CFLAGS test.c"] {os != "darwin"}
+  ["sh" "-exc" "cc -framework Accelerate -lblas $CFLAGS test.c"] {os = "darwin"}
 ]
 depexts: [
   [["debian"] ["libblas-dev"]]
