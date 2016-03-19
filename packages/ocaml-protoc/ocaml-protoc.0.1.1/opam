@@ -1,0 +1,25 @@
+opam-version: "1.2"
+maintainer: "Maxime Ransan <maxime.ransan@gmail.com>"
+authors: [
+  "Maxime Ransan <maxime.ransan@gmail.com>"
+  "Peter Zotov <whitequark@whitequark.org>"
+]
+homepage: "https://github.com/mransan/ocaml-protoc"
+bug-reports: "https://github.com/mransan/ocaml-protoc/issues"
+license: "MIT"
+dev-repo: "https://github.com/mransan/ocaml-protoc.git"
+build: [
+  [make "lib.byte"]
+  [make "lib.native"] {ocaml-native}
+  [make "bin.byte"] {!ocaml-native}
+  [make "bin.native"] {ocaml-native}
+]
+install: [
+  [make "lib.install"]
+  [make "bin.install" "PREFIX=%{prefix}%" "BINDIR=%{bin}%"]
+]
+remove: [make "uninstall" "PREFIX=%{prefix}%" "BINDIR=%{bin}%"]
+depends: [
+  "ocamlfind" {build}
+  "ppx_deriving_protobuf"
+]
