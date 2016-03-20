@@ -1,0 +1,18 @@
+opam-version: "1.2"
+maintainer: "Gregoire.Henry@ocamlpro.com"
+homepage: "http://www.gtk.org/"
+license: "LGPL-2"
+build: [["pkg-config" "gtk+-2.0"]]
+depends: ["conf-pkg-config" {build}]
+depexts: [
+  [["debian"] ["libgtk2.0-dev"]]
+  [["ubuntu"] ["libgtk2.0-dev"]]
+  [["homebrew" "osx"] ["gtk"]]
+]
+post-messages: [
+  "This package requires gtk+ 2.0 development packages installed on your system" {failure}
+  "To solve pkg-config issues, you may need to do
+'export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig' (macports)
+or 'export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig' (homebrew)
+and retry" {failure & (os = "darwin")}
+]

@@ -3,13 +3,15 @@ maintainer: "contact@ocamlpro.com"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+]
+install: [
   ["ocaml" "setup.ml" "-install"]
 ]
 available: [ocaml-version >= "3.11.0"] # as indicated in README file
 remove: [["ocamlfind" "remove" "lablgtk2"]]
-depends: ["ocamlfind" "camlp4"]
-depexts: [
-  [["debian"] ["libgtk2.0-dev" "libexpat1-dev"]]
-  [["ubuntu"] ["libgtk2.0-dev" "libexpat1-dev"]]
-  [["homebrew" "osx"] ["gtk" "expat"]]
+depends: [
+  "ocamlfind" {build}
+  "conf-expat" {build}
+  "conf-gtk2" {build}
+  "camlp4"
 ]

@@ -7,18 +7,17 @@ tags: [ "clib:udunits2" "clib:m" "clib:expat"  ]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+]
+install: [
   ["ocaml" "setup.ml" "-install"]
 ]
 remove: [
   ["ocamlfind" "remove" "udunits"]
 ]
 depends: [
-  "ocamlfind"
+  "ocamlfind" {build}
   "ocamlbuild" {build}
-]
-depexts: [
-  [["debian"] ["libudunits2-dev" "libexpat1-dev"]]
-  [["ubuntu"] ["libudunits2-dev" "libexpat1-dev"]]
-  [["osx" "homebrew"] ["udunits" "expat"]]
+  "conf-expat" {build}
+  "conf-udunits" {build}
 ]
 dev-repo: "git://github.com/hcarty/ocaml-udunits"
