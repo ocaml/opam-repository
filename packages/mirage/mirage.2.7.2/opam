@@ -1,0 +1,36 @@
+opam-version: "1.2"
+maintainer:   ["anil@recoil.org" "thomas@gazagnaire.org"]
+authors:      [
+  "Anil Madhavapeddy" "Thomas Gazagnaire" "Dave Scott" "Richard Mortier"
+]
+homepage:     "http://http://www.openmirage.org/"
+bug-reports:  "https://github.com/mirage/mirage/issues/"
+dev-repo:     "https://github.com/mirage/mirage.git"
+tags:         ["org:mirage" "org:xapi-project"]
+
+build: [
+  ["ocaml" "setup.ml" "-configure"
+   "--prefix" prefix
+   "--bindir" bin
+  ]
+  [make]
+]
+install: [make "install"]
+remove: [
+  ["rm" "-f" "%{bin}%/mirage"]
+  ["ocamlfind" "remove" "mirage"]
+]
+depends: [
+  "mirage-types-lwt"
+  "mirage-types" {>= "2.6.0"}
+  "ipaddr"       {>= "2.6.0"}
+  "functoria"
+  "astring"
+]
+conflicts: [
+  "nocrypto" {< "0.4.0"}
+  "cstruct"  {< "1.0.1"}
+  "io-page"  {< "1.4.0"}
+  "crunch"   {< "1.2.2"}
+]
+available: [ocaml-version >= "4.01.0"]
