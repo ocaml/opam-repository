@@ -1,25 +1,24 @@
 opam-version: "1.2"
 name:         "tlstunnel"
-version:      "0.1.1"
 homepage:     "https://github.com/hannesm/tlstunnel"
 dev-repo:     "https://github.com/hannesm/tlstunnel.git"
 bug-reports:  "https://github.com/hannesm/tlstunnel/issues"
-authors:      ["Hannes Mehnert <hannes@mehnert.org>"]
+author:       ["Hannes Mehnert <hannes@mehnert.org>"]
 maintainer:   ["Hannes Mehnert <hannes@mehnert.org>"]
 license:      "BSD2"
 
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
-  ["ocaml" "setup.ml" "-build"]
+  [ "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
+                           "native-dynlink=%{ocaml-native-dynlink}%" ]
+  ["sh" "-exc" "if test -f ./tlstunnel.native; then ./tlstunnel.native --help > _build/tlstunnel.1; else ./tlstunnel.byte --help > _build/tlstunnel.1; fi"]
 ]
 depends: [
   "ocamlfind" {build}
-  "tls" {>= "0.6.0" & < "0.7.1"}
+  "ocamlbuild" {build}
+  "tls" {>= "0.6.0"}
   "x509" {>= "0.3.0"}
   "nocrypto" {>= "0.4.0"}
   "lwt"
-  "type_conv"
-  "sexplib" {< "113.01.00"}
+  "sexplib"
   "cmdliner"
-  "ocamlbuild" {build}
 ]
