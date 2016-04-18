@@ -7,7 +7,7 @@ build: [
     "--%{react:enable}%-react"
     "--%{ssl:enable}%-ssl"
     "--%{base-unix:enable}%-unix"
-    "--%{base-unix:enable}%-extra"
+    "--%{base-unix+base-threads:enable}%-extra"
     "--%{base-threads:enable}%-preemptive"
     "--%{lablgtk:enable}%-glib"
     "--%{ppx_tools:enable}%-ppx"]
@@ -18,7 +18,8 @@ remove: [["ocamlfind" "remove" "lwt"]]
 depends: [
   "ocamlfind" {>= "1.5.0"}
   "camlp4"
-  ( "base-no-ppx" | "ppx_tools" )
+  ("base-no-ppx" | "ppx_tools")
+  "ocamlbuild" {build}
 ]
 depopts: [
   "base-threads"
@@ -36,3 +37,4 @@ patches: [
   "patch-ocsigen-lwt-101.diff" {os = "darwin"}
 ]
 available: [compiler != "4.02.1+BER"]
+dev-repo: "git://github.com/ocsigen/lwt"

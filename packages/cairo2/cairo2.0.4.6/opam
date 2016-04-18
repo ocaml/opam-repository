@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "Christophe.Troestler@umons.ac.be"
 authors: [
   "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
@@ -9,20 +9,20 @@ license: "LGPL-3.0 with OCaml linking exception"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{lablgtk:enable}%-lablgtk2"]
   ["ocaml" "setup.ml" "-build"]
+]
+install: [
   ["ocaml" "setup.ml" "-install"]
 ]
 build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "cairo2"]]
-depends: ["ocamlfind"]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "conf-cairo" {build}
+]
 depopts: ["lablgtk"]
-depexts: [
-  [["debian"] ["libcairo2-dev" "liblablgtk2-ocaml-dev"]]
-  [["ubuntu"] ["libcairo2-dev"]]
-  [["freebsd"] ["Graphics/cairo"]]
-  [["mageia"] ["libcairo-devel"]]
-  [["openbsd"] ["Graphics/cairo"]]
-]
-conflicts: [
-  "cairo" {= "0.4.1"}
-  "cairo" {= "0.4.2"}
-]
+
+# The package does not build without Graphics,
+# which is not available by default on OS X.
+# Use cairo2 >= 0.5.
+available: [ os != "darwin" ]

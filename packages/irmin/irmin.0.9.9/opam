@@ -10,7 +10,7 @@ build: [
   ["./configure" "--prefix" prefix
       "--%{cohttp:enable}%-http"
       "--%{git:enable}%-git"
-      "--%{base-unix:enable}%-unix"
+      "--%{base-unix+git-unix:enable}%-unix"
       "--%{mirage-git:enable}%-mirage"]
   [make]
 ]
@@ -23,7 +23,7 @@ remove: ["ocamlfind" "remove" "irmin"]
 
 depends: [
   "ocamlfind" {build}
-  "ezjsonm" {>= "0.4.0" & < "0.4.2"}
+  "ezjsonm" {= "0.4.1"}
   "ocamlgraph"
   "lwt" {>= "2.4.7"}
   "dolog" {>= "0.4"}
@@ -37,18 +37,19 @@ depends: [
   "cmdliner"
   "crunch"
   "base-unix" {test}
-  "git"       {test}
-  "cohttp"    {test}
-  "alcotest"  {test & >="0.4.1"}
+  "git" {test}
+  "cohttp" {test}
+  "alcotest" {test & >= "0.4.1"}
+  "ocamlbuild" {build}
 ]
 depopts: [
-  "base-unix"
   "git"
-  "cohttp"
+  "base-unix"
+  "git-unix"
   "mirage-git"
 ]
 conflicts: [
   "cohttp" {< "0.18.3"}
-  "git"    {< "1.7.1"}
+  "git"    {< "1.7.1" & >= "1.8.0"}
 ]
 available: [ocaml-version >= "4.01.0"]

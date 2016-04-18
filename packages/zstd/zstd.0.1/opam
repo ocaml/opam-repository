@@ -1,0 +1,37 @@
+opam-version: "1.2"
+maintainer: "ygrek@autistici.org"
+homepage: "https://github.com/ygrek/ocaml-zstd"
+license: "BSD3"
+authors: [ "ygrek" ]
+#doc: ["http://ocurl.forge.ocamlcore.org/api/index.html"]
+dev-repo: "git://github.com/ygrek/ocaml-zstd.git"
+bug-reports: "https://github.com/ygrek/ocaml-zstd/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--disable-tests" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: [
+  ["ocaml" "setup.ml" "-install"]
+]
+build-doc: [
+  ["ocaml" "setup.ml" "-doc"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: [
+  ["ocamlfind" "remove" "zstd"]
+]
+depends: [
+  "ocamlfind" {build}
+  "oasis" {build}
+  "ocamlbuild" {build}
+  "ctypes"
+  ("extlib" {test} |"extlib-compat" {test})
+  "base-unix" {test}
+]
+depexts: [
+  [["debian"] ["libzstd-dev"]]
+]
