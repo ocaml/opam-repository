@@ -1,5 +1,5 @@
 opam-version: "1.2"
-name: "bap-byteweight"
+name: "bap-term-mapper"
 version: "1.0.0~alpha"
 maintainer: "Ivan Gotovchits <ivg@ieee.org>"
 authors: "BAP Team"
@@ -8,20 +8,22 @@ bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
 dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
 license: "MIT"
 build: [
-  ["./configure" "--prefix=%{prefix}%" "--enable-byteweight"]
+  ["./configure"
+                 "--prefix=%{prefix}%"
+                 "--mandir=%{man}%"
+                 "--enable-map-terms"]
   [make]
 ]
 
 install: [
   [make "install"]
-  ["wget" "-O" "%{share}%/bap" "https://github.com/BinaryAnalysisPlatform/bap/releases/download/v0.9.9/sigs.zip"]
 ]
 
-remove: [
-        ["ocamlfind" "remove" "bap-byteweight"]
-        ["ocamlfind" "remove" "bap-plugin-byteweight"]
-]
+remove: [[ "ocamlfind" "remove" "bap-plugin-map_terms"]
+         [ "ocamlfind" "remove" "bap-bml"]]
 
 depends: [
+    "oasis"             {build & >= "0.4.0"}
     "bap-std"
+    "cmdliner"
 ]
