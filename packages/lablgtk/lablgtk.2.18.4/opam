@@ -1,0 +1,34 @@
+opam-version: "1"
+maintainer: "garrigue@math.nagoya-u.ac.jp"
+homepage: "http://lablgtk.forge.ocamlcore.org/"
+build: [
+  ["./configure" "--prefix" prefix "LABLGLDIR=%{lib}%/lablgl"]
+  [make "world"]
+  [make "install"]
+]
+available: [ocaml-version >= "3.11.0"] # as indicated in README file
+remove: [["ocamlfind" "remove" "lablgtk2"]]
+depends: ["ocamlfind" {>= "1.2.1"} "camlp4"]
+depopts: [
+  "conf-gtksourceview"
+  "conf-gnomecanvas"
+  "conf-glade"
+  "lablgl"
+]
+depexts: [
+  [["debian"] ["libgtk2.0-dev" "libexpat1-dev"]]
+  [["ubuntu"] ["libgtk2.0-dev" "libexpat1-dev"]]
+  [["homebrew" "osx"] ["gtk" "expat"]]
+  [["centos"] ["gtk2-devel"]]
+  [["fedora"] ["gtk2-devel"]]
+  [["oraclelinux"] ["gtk2-devel"]]
+  [["alpine"] ["gtk+2.0-dev"]]
+]
+patches: ["lablgldir.patch"]
+post-messages: [
+  "This package requires gtk+ 2.0 development packages installed on your system" {failure}
+  "To solve pkg-config issues, you may need to do
+'export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig' (macports)
+or 'export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig' (homebrew)
+and retry" {failure & (os = "darwin")}
+]
