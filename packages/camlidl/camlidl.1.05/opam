@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "contact@ocamlpro.com"
 authors: ["Xavier Leroy"]
 homepage: "http://caml.inria.fr/pub/old_caml_site/camlidl/"
@@ -6,6 +6,7 @@ license: "QPL-1.0 and LGPL-2 with exceptions"
 build: [
   ["mv" "config/Makefile.unix" "config/Makefile"] {(os = "darwin") | ((os = "linux") | ((os = "freebsd") | ((os = "bsd") | ((os = "unix") | (os = "cygwin")))))}
   ["mv" "config/Makefile.win32" "config/Makefile"] {os = "win32"}
+  ["sh" "-c" "echo 'OCAMLC=ocamlc -g -warn-error -31' >> config/Makefile" ] { ocaml-version >= "4.03" }
   ["mkdir" "-p" bin "%{lib}%/camlidl" "%{lib}%/camlidl/caml"]
   [make "all"]
   [make "install" "BINDIR=%{bin}%" "OCAMLLIB=%{lib}%/camlidl"]
