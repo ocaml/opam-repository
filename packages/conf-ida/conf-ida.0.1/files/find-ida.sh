@@ -18,8 +18,9 @@
 # find. The slower solution make take some time especially on systems
 # with many files but no IDA.
 
-
-IFS=$'\n'
+# IFS=$'\n' doesn't work on dash, although it is posix
+IFS="
+"
 
 # fast and portable solution
 find_command() {
