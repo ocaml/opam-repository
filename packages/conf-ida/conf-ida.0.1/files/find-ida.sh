@@ -76,7 +76,7 @@ case $1 in
             HEADLESS=true
         fi
         ;;
-    macos*)
+    darwin)
         find
         [ $IDA_PATH ] || locate_macos
         ;;
