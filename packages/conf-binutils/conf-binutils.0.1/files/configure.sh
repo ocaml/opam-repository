@@ -43,8 +43,8 @@ collect_targets() {
 
 if   [ "is_$1" = "is_linux" ]; then
     OBJDUMPS=`locate -r 'objdump$'`
-elif [ "is_$1" = "is_macosx" ]; then
-    OBJDUMPS=`mfind -name objdump`
+elif [ "is_$1" = "is_darwin" ]; then
+    OBJDUMPS=`mdfind -name objdump`
 else
     echo "unsupported OS"
     exit 1
