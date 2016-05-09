@@ -9,41 +9,44 @@
 
 TARGETS=
 FOUND=
+OBJDUMP=
 OBJDUMPS=
 
 check_objdump() {
-    [ `which objdump` ] && FOUND=1
+    [ -n $OBJDUMP ] && FOUND=1
 }
 
+
+add_target() {
+    if [ -z $TARGETS ]; then
+        TARGETS="\\\"${1}\\\""
+    else
+        TARGETS="\\\"${1}\\\"; $TARGETS"
+    fi
+}
 
 
 collect_targets() {
     IFS="
 "
-    for path in $OBJDUMPS; do
+   for path in $OBJDUMPS; do
         file=`basename "${path}"`
         pref=${file%-objdump}
         if [ $pref -a -f $path -a -x $path -a "x${pref}" != "xllvm" -a "x${pref}" != "xobjdump" ]; then
             if [ `which ${file}`  ]; then
                 FOUND=1
-                if [ -z $TARGETS ]; then
-                    TARGETS="\\\"${pref}\\\""
-                else
-                    TARGETS="\\\"${pref}\\\"; $TARGETS"
-                fi
+                add_target $pref
             fi
         fi
     done
-
-    if [ -z $FOUND ]; then
-        exit 1
-    fi
 }
 
 
 if   [ "is_$1" = "is_linux" ]; then
+    OBJDUMP=`which objdump`
     OBJDUMPS=`locate -r 'objdump$'`
 elif [ "is_$1" = "is_darwin" ]; then
+    OBJDUMP=`which gobjdump`
     OBJDUMPS=`mdfind -name objdump`
 else
     echo "unsupported OS"
@@ -59,6 +62,9 @@ if [ -z $FOUND ]; then
 fi
 
 
+
+
 cat > conf-binutils.config <<EOF
+objdump: "${OBJDUMP}"
 targets: "[${TARGETS}]"
 EOF
