@@ -1,0 +1,34 @@
+opam-version: "1.2"
+maintainer: "Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"
+authors: [
+  "Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"
+  ]
+homepage: "http://github.com/OCamlPro/ocplib-concur"
+dev-repo: "https://github.com/OCamlPro/ocplib-concur.git"
+bug-reports: "https://github.com/OCamlPro/ocplib-concur/issues"
+
+build: [
+  [ "./configure" "--prefix" "%{prefix}%"  ]
+  [ make ]
+]
+install: [
+  [ make "install" ]
+]
+remove: [
+  [ "rm" "-rf" "%{prefix}%/lib/ocplib-concur-lwt" ]
+  [ "rm" "-rf" "%{prefix}%/lib/ocplib-concur-async" ]
+]
+depends: [
+    "ocamlfind" {build}
+    "ocp-build" {>= "1.99.14-beta" } (* not only build, we use StringCompat *)
+    "base-unix"
+    "lwt"  {>= "2.3.2" }
+    "ocplib-endian"
+  ]
+depopts: [
+    "async"
+]
+conflicts: [
+    "async" {< "111.25.0" }
+]
+available: [ocaml-version >= "4.01.0"]

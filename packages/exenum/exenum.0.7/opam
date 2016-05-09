@@ -1,0 +1,27 @@
+opam-version: "1.2"
+maintainer: "D. Le Botlan <lebotlan@users.forge.ocamlcore.org>"
+authors: [ "D. Le Botlan <lebotlan@users.forge.ocamlcore.org>" ]
+license: "GPL-3"
+homepage: "http://exenum.forge.ocamlcore.org/"
+dev-repo: "https://forge.ocamlcore.org/anonscm/git/exenum/exenum.git"
+bug-reports: "http://exenum.forge.ocamlcore.org/"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{lwt:enable}%-lwt"]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "exenum"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--%{lwt:enable}%-lwt"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "ocamlfind" {build}
+]
+depopts: [
+  "lwt"
+]
