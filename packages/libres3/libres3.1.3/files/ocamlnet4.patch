@@ -1,0 +1,957 @@
+From f118d9b73fef4ec822d67e49710b38caea82f120 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?T=C3=B6r=C3=B6k=20Edwin?= <edwin@skylable.com>
+Date: Wed, 5 Aug 2015 14:54:49 +0300
+Subject: [PATCH] update to OCamlnet 4.0.2 API
+
+---
+ libres3/INSTALL.txt                                |   4 +-
+ libres3/_oasis                                     |   2 +-
+ libres3/_tags                                      |  30 ++--
+ libres3/myocamlbuild.ml                            | 174 ++++++++++++++++++++-
+ libres3/setup.ml                                   |  75 ++++++---
+ libres3/src/server/dispatch.ml                     |   6 +-
+ libres3/src/server/libres3_setup.ml                |   4 +-
+ libres3/src/sxclient/http.ml                       |  24 ++-
+ libres3/src/sxclient/sXC.ml                        |  14 +-
+ libres3/test/netTest.ml                            |  18 ++-
+ opam/opam                                          |   3 +-
+ .../ocamlnet.3.7.7a/files/robust-host.patch        |   4 +-
+ 12 files changed, 279 insertions(+), 79 deletions(-)
+
+diff --git a/libres3/INSTALL.txt b/libres3/INSTALL.txt
+index 2b7e64a..c9d8397 100644
+--- a/libres3/INSTALL.txt
++++ b/libres3/INSTALL.txt
+@@ -1,5 +1,5 @@
+ (* OASIS_START *)
+-(* DO NOT EDIT (digest: 4d90c97c94e70e0c0138ab061a579c5f) *)
++(* DO NOT EDIT (digest: 5df151457fa988db58360e612f556c5c) *)
+ 
+ This is the INSTALL file for the libres3 distribution.
+ 
+@@ -25,12 +25,12 @@ In order to compile this package, you will need:
+   executable lwtio_test, executable misc_test, executable net_test,
+   executable sigv4_test
+ * ssl (>= 0.4.4) for library sxclient
+-* equeue-ssl for library sxclient
+ * lwt for library sxclient
+ * ipaddr for library server, library sxclient, executable libres3_report,
+   executable libres3_setup
+ * ocsigenserver for library server, library sxclient,
+   executable libres3_ocsigen
++* nettls-gnutls for library sxclient
+ * xmlm for library server
+ * netsys for library server, executable libres3_ocsigen
+ * ocplib-endian for library server
+diff --git a/libres3/_oasis b/libres3/_oasis
+index 31b2cfb..5c6da92 100644
+--- a/libres3/_oasis
++++ b/libres3/_oasis
+@@ -58,7 +58,7 @@ Library sxclient
+   Install: false
+   Modules: EventIO, SXIO, SXFile, SXC, SXDefaultIO, Config, EventLog, Accesslog
+   InternalModules: Http, Caching
+-  BuildDepends: netclient (>= 3.7.4), netstring, threads, jsonm, cryptokit (>= 1.3), ssl (>= 0.4.4), equeue-ssl, anycache, lwt.unix, ipaddr, ocsigenserver
++  BuildDepends: netclient (>= 3.7.4), netstring, threads, jsonm, cryptokit (>= 1.3), ssl (>= 0.4.4), anycache, lwt.unix, ipaddr, ocsigenserver, nettls-gnutls
+   CompiledObject: Best
+ 
+ Executable "sxuls"
+diff --git a/libres3/_tags b/libres3/_tags
+index 89d0fda..0443a50 100644
+--- a/libres3/_tags
++++ b/libres3/_tags
+@@ -1,5 +1,5 @@
+ # OASIS_START
+-# DO NOT EDIT (digest: 395a6cf3abbda5048719c647a5e10783)
++# DO NOT EDIT (digest: 6f673ff7b0847cfb5797aa8f6c3ffa53)
+ # Ignore VCS directories, you can use the same kind of rule outside
+ # OASIS_START/STOP if you want to exclude directories that contains
+ # useless stuff for the build process
+@@ -23,24 +23,24 @@ true: annot, bin_annot
+ # Library sxclient
+ "src/sxclient/sxclient.cmxs": use_sxclient
+ <src/sxclient/*.ml{,i,y}>: package(cryptokit)
+-<src/sxclient/*.ml{,i,y}>: package(equeue-ssl)
+ <src/sxclient/*.ml{,i,y}>: package(ipaddr)
+ <src/sxclient/*.ml{,i,y}>: package(jsonm)
+ <src/sxclient/*.ml{,i,y}>: package(lwt.unix)
+ <src/sxclient/*.ml{,i,y}>: package(netclient)
+ <src/sxclient/*.ml{,i,y}>: package(netstring)
++<src/sxclient/*.ml{,i,y}>: package(nettls-gnutls)
+ <src/sxclient/*.ml{,i,y}>: package(ocsigenserver)
+ <src/sxclient/*.ml{,i,y}>: package(ssl)
+ <src/sxclient/*.ml{,i,y}>: package(threads)
+ <src/sxclient/*.ml{,i,y}>: use_anycache
+ # Executable sxuls
+ <test/sxuls.{native,byte}>: package(cryptokit)
+-<test/sxuls.{native,byte}>: package(equeue-ssl)
+ <test/sxuls.{native,byte}>: package(ipaddr)
+ <test/sxuls.{native,byte}>: package(jsonm)
+ <test/sxuls.{native,byte}>: package(lwt.unix)
+ <test/sxuls.{native,byte}>: package(netclient)
+ <test/sxuls.{native,byte}>: package(netstring)
++<test/sxuls.{native,byte}>: package(nettls-gnutls)
+ <test/sxuls.{native,byte}>: package(ocsigenserver)
+ <test/sxuls.{native,byte}>: package(ssl)
+ <test/sxuls.{native,byte}>: package(threads)
+@@ -48,12 +48,12 @@ true: annot, bin_annot
+ <test/sxuls.{native,byte}>: use_sxclient
+ # Executable sxucp
+ <test/sxucp.{native,byte}>: package(cryptokit)
+-<test/sxucp.{native,byte}>: package(equeue-ssl)
+ <test/sxucp.{native,byte}>: package(ipaddr)
+ <test/sxucp.{native,byte}>: package(jsonm)
+ <test/sxucp.{native,byte}>: package(lwt.unix)
+ <test/sxucp.{native,byte}>: package(netclient)
+ <test/sxucp.{native,byte}>: package(netstring)
++<test/sxucp.{native,byte}>: package(nettls-gnutls)
+ <test/sxucp.{native,byte}>: package(ocsigenserver)
+ <test/sxucp.{native,byte}>: package(ssl)
+ <test/sxucp.{native,byte}>: package(threads)
+@@ -70,13 +70,13 @@ true: annot, bin_annot
+ # Executable libres3_ocsigen
+ <src/ocsigen/libres3_ocsigen.{native,byte}>: package(cryptokit)
+ <src/ocsigen/libres3_ocsigen.{native,byte}>: package(dns.lwt)
+-<src/ocsigen/libres3_ocsigen.{native,byte}>: package(equeue-ssl)
+ <src/ocsigen/libres3_ocsigen.{native,byte}>: package(ipaddr)
+ <src/ocsigen/libres3_ocsigen.{native,byte}>: package(jsonm)
+ <src/ocsigen/libres3_ocsigen.{native,byte}>: package(lwt.unix)
+ <src/ocsigen/libres3_ocsigen.{native,byte}>: package(netclient)
+ <src/ocsigen/libres3_ocsigen.{native,byte}>: package(netstring)
+ <src/ocsigen/libres3_ocsigen.{native,byte}>: package(netsys)
++<src/ocsigen/libres3_ocsigen.{native,byte}>: package(nettls-gnutls)
+ <src/ocsigen/libres3_ocsigen.{native,byte}>: package(ocplib-endian)
+ <src/ocsigen/libres3_ocsigen.{native,byte}>: package(ocsigenserver)
+ <src/ocsigen/libres3_ocsigen.{native,byte}>: package(re.posix)
+@@ -90,13 +90,13 @@ true: annot, bin_annot
+ <src/ocsigen/libres3_ocsigen.{native,byte}>: use_sxclient
+ <src/ocsigen/*.ml{,i,y}>: package(cryptokit)
+ <src/ocsigen/*.ml{,i,y}>: package(dns.lwt)
+-<src/ocsigen/*.ml{,i,y}>: package(equeue-ssl)
+ <src/ocsigen/*.ml{,i,y}>: package(ipaddr)
+ <src/ocsigen/*.ml{,i,y}>: package(jsonm)
+ <src/ocsigen/*.ml{,i,y}>: package(lwt.unix)
+ <src/ocsigen/*.ml{,i,y}>: package(netclient)
+ <src/ocsigen/*.ml{,i,y}>: package(netstring)
+ <src/ocsigen/*.ml{,i,y}>: package(netsys)
++<src/ocsigen/*.ml{,i,y}>: package(nettls-gnutls)
+ <src/ocsigen/*.ml{,i,y}>: package(ocplib-endian)
+ <src/ocsigen/*.ml{,i,y}>: package(ocsigenserver)
+ <src/ocsigen/*.ml{,i,y}>: package(re.posix)
+@@ -110,12 +110,12 @@ true: annot, bin_annot
+ <src/ocsigen/*.ml{,i,y}>: use_sxclient
+ # Executable libres3_setup
+ <src/server/libres3_setup.{native,byte}>: package(cryptokit)
+-<src/server/libres3_setup.{native,byte}>: package(equeue-ssl)
+ <src/server/libres3_setup.{native,byte}>: package(ipaddr)
+ <src/server/libres3_setup.{native,byte}>: package(jsonm)
+ <src/server/libres3_setup.{native,byte}>: package(lwt.unix)
+ <src/server/libres3_setup.{native,byte}>: package(netclient)
+ <src/server/libres3_setup.{native,byte}>: package(netstring)
++<src/server/libres3_setup.{native,byte}>: package(nettls-gnutls)
+ <src/server/libres3_setup.{native,byte}>: package(ocsigenserver)
+ <src/server/libres3_setup.{native,byte}>: package(re.str)
+ <src/server/libres3_setup.{native,byte}>: package(ssl)
+@@ -127,12 +127,12 @@ true: annot, bin_annot
+ # Executable libres3_report
+ <src/server/libres3_report.{native,byte}>: package(base64)
+ <src/server/libres3_report.{native,byte}>: package(cryptokit)
+-<src/server/libres3_report.{native,byte}>: package(equeue-ssl)
+ <src/server/libres3_report.{native,byte}>: package(ipaddr)
+ <src/server/libres3_report.{native,byte}>: package(jsonm)
+ <src/server/libres3_report.{native,byte}>: package(lwt.unix)
+ <src/server/libres3_report.{native,byte}>: package(netclient)
+ <src/server/libres3_report.{native,byte}>: package(netstring)
++<src/server/libres3_report.{native,byte}>: package(nettls-gnutls)
+ <src/server/libres3_report.{native,byte}>: package(ocsigenserver)
+ <src/server/libres3_report.{native,byte}>: package(re.posix)
+ <src/server/libres3_report.{native,byte}>: package(ssl)
+@@ -142,12 +142,12 @@ true: annot, bin_annot
+ <src/server/libres3_report.{native,byte}>: use_sxclient
+ <src/server/*.ml{,i,y}>: package(base64)
+ <src/server/*.ml{,i,y}>: package(cryptokit)
+-<src/server/*.ml{,i,y}>: package(equeue-ssl)
+ <src/server/*.ml{,i,y}>: package(ipaddr)
+ <src/server/*.ml{,i,y}>: package(jsonm)
+ <src/server/*.ml{,i,y}>: package(lwt.unix)
+ <src/server/*.ml{,i,y}>: package(netclient)
+ <src/server/*.ml{,i,y}>: package(netstring)
++<src/server/*.ml{,i,y}>: package(nettls-gnutls)
+ <src/server/*.ml{,i,y}>: package(ocsigenserver)
+ <src/server/*.ml{,i,y}>: package(re.posix)
+ <src/server/*.ml{,i,y}>: package(ssl)
+@@ -157,13 +157,13 @@ true: annot, bin_annot
+ <src/server/*.ml{,i,y}>: use_sxclient
+ # Executable server_test
+ <test/test_server.{native,byte}>: package(cryptokit)
+-<test/test_server.{native,byte}>: package(equeue-ssl)
+ <test/test_server.{native,byte}>: package(ipaddr)
+ <test/test_server.{native,byte}>: package(jsonm)
+ <test/test_server.{native,byte}>: package(lwt.unix)
+ <test/test_server.{native,byte}>: package(netclient)
+ <test/test_server.{native,byte}>: package(netstring)
+ <test/test_server.{native,byte}>: package(netsys)
++<test/test_server.{native,byte}>: package(nettls-gnutls)
+ <test/test_server.{native,byte}>: package(oUnit)
+ <test/test_server.{native,byte}>: package(ocplib-endian)
+ <test/test_server.{native,byte}>: package(ocsigenserver)
+@@ -176,13 +176,13 @@ true: annot, bin_annot
+ <test/test_server.{native,byte}>: use_sxclient
+ # Executable lwtio_test
+ <test/test_lwtio.{native,byte}>: package(cryptokit)
+-<test/test_lwtio.{native,byte}>: package(equeue-ssl)
+ <test/test_lwtio.{native,byte}>: package(ipaddr)
+ <test/test_lwtio.{native,byte}>: package(jsonm)
+ <test/test_lwtio.{native,byte}>: package(lwt.unix)
+ <test/test_lwtio.{native,byte}>: package(netclient)
+ <test/test_lwtio.{native,byte}>: package(netstring)
+ <test/test_lwtio.{native,byte}>: package(netsys)
++<test/test_lwtio.{native,byte}>: package(nettls-gnutls)
+ <test/test_lwtio.{native,byte}>: package(oUnit)
+ <test/test_lwtio.{native,byte}>: package(ocplib-endian)
+ <test/test_lwtio.{native,byte}>: package(ocsigenserver)
+@@ -197,13 +197,13 @@ true: annot, bin_annot
+ <test/*.ml{,i,y}>: use_anycache.test
+ # Executable misc_test
+ <test/test_misc.{native,byte}>: package(cryptokit)
+-<test/test_misc.{native,byte}>: package(equeue-ssl)
+ <test/test_misc.{native,byte}>: package(ipaddr)
+ <test/test_misc.{native,byte}>: package(jsonm)
+ <test/test_misc.{native,byte}>: package(lwt.unix)
+ <test/test_misc.{native,byte}>: package(netclient)
+ <test/test_misc.{native,byte}>: package(netstring)
+ <test/test_misc.{native,byte}>: package(netsys)
++<test/test_misc.{native,byte}>: package(nettls-gnutls)
+ <test/test_misc.{native,byte}>: package(oUnit)
+ <test/test_misc.{native,byte}>: package(ocplib-endian)
+ <test/test_misc.{native,byte}>: package(ocsigenserver)
+@@ -216,13 +216,13 @@ true: annot, bin_annot
+ <test/test_misc.{native,byte}>: use_sxclient
+ # Executable net_test
+ <test/netTest.{native,byte}>: package(cryptokit)
+-<test/netTest.{native,byte}>: package(equeue-ssl)
+ <test/netTest.{native,byte}>: package(ipaddr)
+ <test/netTest.{native,byte}>: package(jsonm)
+ <test/netTest.{native,byte}>: package(lwt.unix)
+ <test/netTest.{native,byte}>: package(netclient)
+ <test/netTest.{native,byte}>: package(netstring)
+ <test/netTest.{native,byte}>: package(netsys)
++<test/netTest.{native,byte}>: package(nettls-gnutls)
+ <test/netTest.{native,byte}>: package(oUnit)
+ <test/netTest.{native,byte}>: package(ocplib-endian)
+ <test/netTest.{native,byte}>: package(ocsigenserver)
+@@ -235,13 +235,13 @@ true: annot, bin_annot
+ <test/netTest.{native,byte}>: use_sxclient
+ # Executable sigv4_test
+ <test/sigv4Test.{native,byte}>: package(cryptokit)
+-<test/sigv4Test.{native,byte}>: package(equeue-ssl)
+ <test/sigv4Test.{native,byte}>: package(ipaddr)
+ <test/sigv4Test.{native,byte}>: package(jsonm)
+ <test/sigv4Test.{native,byte}>: package(lwt.unix)
+ <test/sigv4Test.{native,byte}>: package(netclient)
+ <test/sigv4Test.{native,byte}>: package(netstring)
+ <test/sigv4Test.{native,byte}>: package(netsys)
++<test/sigv4Test.{native,byte}>: package(nettls-gnutls)
+ <test/sigv4Test.{native,byte}>: package(oUnit)
+ <test/sigv4Test.{native,byte}>: package(ocplib-endian)
+ <test/sigv4Test.{native,byte}>: package(ocsigenserver)
+@@ -253,13 +253,13 @@ true: annot, bin_annot
+ <test/sigv4Test.{native,byte}>: use_server
+ <test/sigv4Test.{native,byte}>: use_sxclient
+ <test/*.ml{,i,y}>: package(cryptokit)
+-<test/*.ml{,i,y}>: package(equeue-ssl)
+ <test/*.ml{,i,y}>: package(ipaddr)
+ <test/*.ml{,i,y}>: package(jsonm)
+ <test/*.ml{,i,y}>: package(lwt.unix)
+ <test/*.ml{,i,y}>: package(netclient)
+ <test/*.ml{,i,y}>: package(netstring)
+ <test/*.ml{,i,y}>: package(netsys)
++<test/*.ml{,i,y}>: package(nettls-gnutls)
+ <test/*.ml{,i,y}>: package(oUnit)
+ <test/*.ml{,i,y}>: package(ocplib-endian)
+ <test/*.ml{,i,y}>: package(ocsigenserver)
+diff --git a/libres3/myocamlbuild.ml b/libres3/myocamlbuild.ml
+index 7be1a69..e3d1106 100644
+--- a/libres3/myocamlbuild.ml
++++ b/libres3/myocamlbuild.ml
+@@ -1,5 +1,5 @@
+ (* OASIS_START *)
+-(* DO NOT EDIT (digest: 6cceb8d7decb6f427647fa2ebd52344a) *)
++(* DO NOT EDIT (digest: c1748eaebba05d7a1a17637848a97adc) *)
+ module OASISGettext = struct
+ (* # 22 "src/oasis/OASISGettext.ml" *)
+ 
+@@ -29,6 +29,166 @@ module OASISGettext = struct
+ 
+ end
+ 
++module OASISString = struct
++(* # 22 "src/oasis/OASISString.ml" *)
++
++
++  (** Various string utilities.
++
++      Mostly inspired by extlib and batteries ExtString and BatString libraries.
++
++      @author Sylvain Le Gall
++    *)
++
++
++  let nsplitf str f =
++    if str = "" then
++      []
++    else
++      let buf = Buffer.create 13 in
++      let lst = ref [] in
++      let push () =
++        lst := Buffer.contents buf :: !lst;
++        Buffer.clear buf
++      in
++      let str_len = String.length str in
++        for i = 0 to str_len - 1 do
++          if f str.[i] then
++            push ()
++          else
++            Buffer.add_char buf str.[i]
++        done;
++        push ();
++        List.rev !lst
++
++
++  (** [nsplit c s] Split the string [s] at char [c]. It doesn't include the
++      separator.
++    *)
++  let nsplit str c =
++    nsplitf str ((=) c)
++
++
++  let find ~what ?(offset=0) str =
++    let what_idx = ref 0 in
++    let str_idx = ref offset in
++      while !str_idx < String.length str &&
++            !what_idx < String.length what do
++        if str.[!str_idx] = what.[!what_idx] then
++          incr what_idx
++        else
++          what_idx := 0;
++        incr str_idx
++      done;
++      if !what_idx <> String.length what then
++        raise Not_found
++      else
++        !str_idx - !what_idx
++
++
++  let sub_start str len =
++    let str_len = String.length str in
++    if len >= str_len then
++      ""
++    else
++      String.sub str len (str_len - len)
++
++
++  let sub_end ?(offset=0) str len =
++    let str_len = String.length str in
++    if len >= str_len then
++      ""
++    else
++      String.sub str 0 (str_len - len)
++
++
++  let starts_with ~what ?(offset=0) str =
++    let what_idx = ref 0 in
++    let str_idx = ref offset in
++    let ok = ref true in
++      while !ok &&
++            !str_idx < String.length str &&
++            !what_idx < String.length what do
++        if str.[!str_idx] = what.[!what_idx] then
++          incr what_idx
++        else
++          ok := false;
++        incr str_idx
++      done;
++      if !what_idx = String.length what then
++        true
++      else
++        false
++
++
++  let strip_starts_with ~what str =
++    if starts_with ~what str then
++      sub_start str (String.length what)
++    else
++      raise Not_found
++
++
++  let ends_with ~what ?(offset=0) str =
++    let what_idx = ref ((String.length what) - 1) in
++    let str_idx = ref ((String.length str) - 1) in
++    let ok = ref true in
++      while !ok &&
++            offset <= !str_idx &&
++            0 <= !what_idx do
++        if str.[!str_idx] = what.[!what_idx] then
++          decr what_idx
++        else
++          ok := false;
++        decr str_idx
++      done;
++      if !what_idx = -1 then
++        true
++      else
++        false
++
++
++  let strip_ends_with ~what str =
++    if ends_with ~what str then
++      sub_end str (String.length what)
++    else
++      raise Not_found
++
++
++  let replace_chars f s =
++    let buf = Buffer.create (String.length s) in
++    String.iter (fun c -> Buffer.add_char buf (f c)) s;
++    Buffer.contents buf
++
++  let lowercase_ascii =
++    replace_chars
++      (fun c ->
++         if (c >= 'A' && c <= 'Z') then
++           Char.chr (Char.code c + 32)
++         else
++           c)
++
++  let uncapitalize_ascii s =
++    if s <> "" then
++      (lowercase_ascii (String.sub s 0 1)) ^ (String.sub s 1 ((String.length s) - 1))
++    else
++      s
++
++  let uppercase_ascii =
++    replace_chars
++      (fun c ->
++         if (c >= 'a' && c <= 'z') then
++           Char.chr (Char.code c - 32)
++         else
++           c)
++
++  let capitalize_ascii s =
++    if s <> "" then
++      (uppercase_ascii (String.sub s 0 1)) ^ (String.sub s 1 ((String.length s) - 1))
++    else
++      s
++
++end
++
+ module OASISExpr = struct
+ (* # 22 "src/oasis/OASISExpr.ml" *)
+ 
+@@ -129,7 +289,7 @@ module OASISExpr = struct
+ end
+ 
+ 
+-# 132 "myocamlbuild.ml"
++# 292 "myocamlbuild.ml"
+ module BaseEnvLight = struct
+ (* # 22 "src/base/BaseEnvLight.ml" *)
+ 
+@@ -234,7 +394,7 @@ module BaseEnvLight = struct
+ end
+ 
+ 
+-# 237 "myocamlbuild.ml"
++# 397 "myocamlbuild.ml"
+ module MyOCamlbuildFindlib = struct
+ (* # 22 "src/plugins/ocamlbuild/MyOCamlbuildFindlib.ml" *)
+ 
+@@ -516,7 +676,7 @@ module MyOCamlbuildBase = struct
+                  | nm, [], intf_modules ->
+                      ocaml_lib nm;
+                      let cmis =
+-                       List.map (fun m -> (String.uncapitalize m) ^ ".cmi")
++                       List.map (fun m -> (OASISString.uncapitalize_ascii m) ^ ".cmi")
+                                 intf_modules in
+                      dep ["ocaml"; "link"; "library"; "file:"^nm^".cma"] cmis
+                  | nm, dir :: tl, intf_modules ->
+@@ -529,7 +689,7 @@ module MyOCamlbuildBase = struct
+                             ["compile"; "infer_interface"; "doc"])
+                        tl;
+                      let cmis =
+-                       List.map (fun m -> dir^"/"^(String.uncapitalize m)^".cmi")
++                       List.map (fun m -> dir^"/"^(OASISString.uncapitalize_ascii m)^".cmi")
+                                 intf_modules in
+                      dep ["ocaml"; "link"; "library"; "file:"^dir^"/"^nm^".cma"]
+                          cmis)
+@@ -603,7 +763,7 @@ module MyOCamlbuildBase = struct
+ end
+ 
+ 
+-# 606 "myocamlbuild.ml"
++# 766 "myocamlbuild.ml"
+ open Ocamlbuild_plugin;;
+ let package_default =
+   {
+@@ -631,7 +791,7 @@ let conf = {MyOCamlbuildFindlib.no_automatic_syntax = false}
+ 
+ let dispatch_default = MyOCamlbuildBase.dispatch_default conf package_default;;
+ 
+-# 635 "myocamlbuild.ml"
++# 795 "myocamlbuild.ml"
+ (* OASIS_STOP *)
+ Ocamlbuild_plugin.dispatch dispatch_default;;
+ let default_version =
+diff --git a/libres3/setup.ml b/libres3/setup.ml
+index f58b3aa..73736c1 100644
+--- a/libres3/setup.ml
++++ b/libres3/setup.ml
+@@ -1,9 +1,9 @@
+ (* setup.ml generated for the first time by OASIS v0.4.5 *)
+ 
+ (* OASIS_START *)
+-(* DO NOT EDIT (digest: fc759abc1549c125781cade486faaced) *)
++(* DO NOT EDIT (digest: b7b2f9d86dd35592b82e3f9b57765a74) *)
+ (*
+-   Regenerated by OASIS v0.4.5
++   Regenerated by OASIS v0.4.6
+    Visit http://oasis.forge.ocamlcore.org for more information and
+    documentation about functions used in this file.
+ *)
+@@ -246,6 +246,33 @@ module OASISString = struct
+     String.iter (fun c -> Buffer.add_char buf (f c)) s;
+     Buffer.contents buf
+ 
++  let lowercase_ascii =
++    replace_chars
++      (fun c ->
++         if (c >= 'A' && c <= 'Z') then
++           Char.chr (Char.code c + 32)
++         else
++           c)
++
++  let uncapitalize_ascii s =
++    if s <> "" then
++      (lowercase_ascii (String.sub s 0 1)) ^ (String.sub s 1 ((String.length s) - 1))
++    else
++      s
++
++  let uppercase_ascii =
++    replace_chars
++      (fun c ->
++         if (c >= 'a' && c <= 'z') then
++           Char.chr (Char.code c - 32)
++         else
++           c)
++
++  let capitalize_ascii s =
++    if s <> "" then
++      (uppercase_ascii (String.sub s 0 1)) ^ (String.sub s 1 ((String.length s) - 1))
++    else
++      s
+ 
+ end
+ 
+@@ -315,19 +342,15 @@ module OASISUtils = struct
+ 
+ 
+   let compare_csl s1 s2 =
+-    String.compare (String.lowercase s1) (String.lowercase s2)
++    String.compare (OASISString.lowercase_ascii s1) (OASISString.lowercase_ascii s2)
+ 
+ 
+   module HashStringCsl =
+     Hashtbl.Make
+       (struct
+          type t = string
+-
+-         let equal s1 s2 =
+-             (String.lowercase s1) = (String.lowercase s2)
+-
+-         let hash s =
+-           Hashtbl.hash (String.lowercase s)
++         let equal s1 s2 = (compare_csl s1 s2) = 0
++         let hash s = Hashtbl.hash (OASISString.lowercase_ascii s)
+        end)
+ 
+   module SetStringCsl =
+@@ -365,7 +388,7 @@ module OASISUtils = struct
+           else
+             buf
+         in
+-          String.lowercase buf
++          OASISString.lowercase_ascii buf
+       end
+ 
+ 
+@@ -471,7 +494,7 @@ module PropList = struct
+         order     = Queue.create ();
+         name_norm =
+           (if case_insensitive then
+-             String.lowercase
++             OASISString.lowercase_ascii
+            else
+              fun s -> s);
+       }
+@@ -1822,13 +1845,13 @@ module OASISUnixPath = struct
+   let capitalize_file f =
+     let dir = dirname f in
+     let base = basename f in
+-    concat dir (String.capitalize base)
++    concat dir (OASISString.capitalize_ascii base)
+ 
+ 
+   let uncapitalize_file f =
+     let dir = dirname f in
+     let base = basename f in
+-    concat dir (String.uncapitalize base)
++    concat dir (OASISString.uncapitalize_ascii base)
+ 
+ 
+ end
+@@ -2890,7 +2913,7 @@ module OASISFileUtil = struct
+ end
+ 
+ 
+-# 2893 "setup.ml"
++# 2916 "setup.ml"
+ module BaseEnvLight = struct
+ (* # 22 "src/base/BaseEnvLight.ml" *)
+ 
+@@ -2995,7 +3018,7 @@ module BaseEnvLight = struct
+ end
+ 
+ 
+-# 2998 "setup.ml"
++# 3021 "setup.ml"
+ module BaseContext = struct
+ (* # 22 "src/base/BaseContext.ml" *)
+ 
+@@ -5406,7 +5429,7 @@ module BaseSetup = struct
+ end
+ 
+ 
+-# 5409 "setup.ml"
++# 5432 "setup.ml"
+ module InternalConfigurePlugin = struct
+ (* # 22 "src/plugins/internal/InternalConfigurePlugin.ml" *)
+ 
+@@ -5845,8 +5868,8 @@ module InternalInstallPlugin = struct
+     let make_fnames modul sufx =
+       List.fold_right
+         begin fun sufx accu ->
+-          (String.capitalize modul ^ sufx) ::
+-          (String.uncapitalize modul ^ sufx) ::
++          (OASISString.capitalize_ascii modul ^ sufx) ::
++          (OASISString.uncapitalize_ascii modul ^ sufx) ::
+           accu
+         end
+         sufx
+@@ -6270,7 +6293,7 @@ module InternalInstallPlugin = struct
+ end
+ 
+ 
+-# 6273 "setup.ml"
++# 6296 "setup.ml"
+ module OCamlbuildCommon = struct
+ (* # 22 "src/plugins/ocamlbuild/OCamlbuildCommon.ml" *)
+ 
+@@ -6648,7 +6671,7 @@ module OCamlbuildDocPlugin = struct
+ end
+ 
+ 
+-# 6651 "setup.ml"
++# 6674 "setup.ml"
+ module CustomPlugin = struct
+ (* # 22 "src/plugins/custom/CustomPlugin.ml" *)
+ 
+@@ -6796,7 +6819,7 @@ module CustomPlugin = struct
+ end
+ 
+ 
+-# 6799 "setup.ml"
++# 6822 "setup.ml"
+ open OASISTypes;;
+ 
+ let setup_t =
+@@ -7126,11 +7149,11 @@ let setup_t =
+                            FindlibPackage
+                              ("ssl",
+                                Some (OASISVersion.VGreaterEqual "0.4.4"));
+-                           FindlibPackage ("equeue-ssl", None);
+                            InternalLibrary "anycache";
+                            FindlibPackage ("lwt.unix", None);
+                            FindlibPackage ("ipaddr", None);
+-                           FindlibPackage ("ocsigenserver", None)
++                           FindlibPackage ("ocsigenserver", None);
++                           FindlibPackage ("nettls-gnutls", None)
+                         ];
+                       bs_build_tools = [ExternalTool "ocamlbuild"];
+                       bs_c_sources = [];
+@@ -7715,9 +7738,9 @@ let setup_t =
+           plugin_data = []
+        };
+      oasis_fn = Some "_oasis";
+-     oasis_version = "0.4.5";
++     oasis_version = "0.4.6";
+      oasis_digest =
+-       Some "\241\216\179\129\253\\\136\017G@x\017\169\176\015\190";
++       Some "-\216\027\199\250\142\026\190\230\161\196B\134\231k\020";
+      oasis_exec = None;
+      oasis_setup_args = [];
+      setup_update = false
+@@ -7725,6 +7748,6 @@ let setup_t =
+ 
+ let setup () = BaseSetup.setup setup_t;;
+ 
+-# 7729 "setup.ml"
++# 7752 "setup.ml"
+ (* OASIS_STOP *)
+ let () = setup ();;
+diff --git a/libres3/src/server/dispatch.ml b/libres3/src/server/dispatch.ml
+index d5e1ff0..4e476c1 100644
+--- a/libres3/src/server/dispatch.ml
++++ b/libres3/src/server/dispatch.ml
+@@ -2171,7 +2171,7 @@ module Make
+                 ~id2:(CanonRequest.gen_debug ~canon)
+                 ~id:canon.CanonRequest.id ~path ~headers
+                 code details
+-            | Http_client.Http_protocol (Http_client.Timeout e) ->
++            | Nethttp_client.Http_protocol (Nethttp_client.Timeout e) ->
+               return_error_xml
+                 ~req:request
+                 ~id2:(CanonRequest.gen_debug ~canon)
+@@ -2190,14 +2190,14 @@ module Make
+                 ~id2:(CanonRequest.gen_debug ~canon)
+                 ~id:canon.CanonRequest.id ~path ~headers:[]
+                 Error.SlowDown (("SXTimeout",Printexc.to_string ex) :: detail)
+-            | Http_client.Http_protocol e ->
++            | Nethttp_client.Http_protocol e ->
+               return_error_xml
+                 ~req:request
+                 ~id2:(CanonRequest.gen_debug ~canon)
+                 ~id:canon.CanonRequest.id ~path ~headers:[]
+                 Error.RemoteServiceUnavailable [
+                 "SXUnavailable",(Printexc.to_string e)]
+-            | Detail (Http_client.Http_protocol e, detail) ->
++            | Detail (Nethttp_client.Http_protocol e, detail) ->
+               return_error_xml
+                 ~req:request
+                 ~id2:(CanonRequest.gen_debug ~canon)
+diff --git a/libres3/src/server/libres3_setup.ml b/libres3/src/server/libres3_setup.ml
+index 95a4c90..76b78a2 100644
+--- a/libres3/src/server/libres3_setup.ml
++++ b/libres3/src/server/libres3_setup.ml
+@@ -209,7 +209,7 @@ let () =
+ 
+ let () =
+   Printexc.register_printer (function
+-      | Http_client.Http_protocol e ->
++      | Nethttp_client.Http_protocol e ->
+         Some ("HTTP(S) error: " ^ (Printexc.to_string e))
+       | SXDefaultIO.Detail (e, l) ->
+         Some (Printf.sprintf "SX error: %s\n%s" (Printexc.to_string e)
+@@ -527,7 +527,7 @@ let generate_ssl_certificate ~ssl_key_file ~ssl_cert_file m =
+     let url = Neturl.make_url ~encoded:false
+         ~scheme:"sx" ~user:!Config.key_id ~port:!Config.sx_port ~host ~path:[""] SXC.syntax in
+     Printexc.register_printer (function
+-        | Http_client.Http_protocol e ->
++        | Nethttp_client.Http_protocol e ->
+           Some ("HTTP(S) error: " ^ (Printexc.to_string e))
+         | SXDefaultIO.Detail (e, l) ->
+           Some (Printf.sprintf "SX error: %s\n%s" (Printexc.to_string e)
+diff --git a/libres3/src/sxclient/http.ml b/libres3/src/sxclient/http.ml
+index 2927f6f..ab6cd05 100644
+--- a/libres3/src/sxclient/http.ml
++++ b/libres3/src/sxclient/http.ml
+@@ -69,7 +69,7 @@ let wait () =
+       Lwt_unix.send_notification notif_id
+     )
+ 
+-open Http_client
++open Nethttp_client
+ exception Reset of bool
+ exception Periodic of string
+ exception HTTP_Job_Callback of bool * int * http_call * (int -> http_call -> unit)
+@@ -84,9 +84,19 @@ exception HTTP_Job_Callback of bool * int * http_call * (int -> http_call -> uni
+ type pipeline = Unixqueue.event_system * Unixqueue.group * Thread.t
+ 
+ let https_setup pipeline =
+-  let ctx = Ssl.create_context Ssl.TLSv1 Ssl.Client_context in
+-  let tct = Https_client.https_transport_channel_type ctx in
+-  pipeline # configure_transport Http_client.https_cb_id tct
++    Nettls_gnutls.init();
++    let provider = Netsys_crypto.current_tls() in
++    let tls_config =
++    Netsys_tls.create_x509_config
++     ~system_trust:true
++     ~peer_auth:`None
++     provider in
++    let http_config = pipeline # get_options in
++    let new_config =
++      { http_config with
++        Nethttp_client.tls = Some tls_config
++      } in
++    pipeline # set_options new_config
+ 
+ let rec run esys =
+   try
+@@ -105,7 +115,7 @@ let new_pipeline esys cache =
+   pipeline#set_connection_cache cache;
+   https_setup pipeline;
+   pipeline#set_options { pipeline#get_options with
+-                         Http_client.connection_timeout = 60.;
++                         Nethttp_client.connection_timeout = 20.;
+                          (* we retry at the SXC level *)
+                          maximum_message_errors = 0;
+                          maximum_connection_failures = 0;
+@@ -116,7 +126,7 @@ let new_pipeline esys cache =
+ let http_thread (esys, keep_alive_group, handler_added) =
+   let cache = create_aggressive_cache () in
+   let pipeline_quick, pipeline_normal = new_pipeline esys cache, new_pipeline esys cache in
+-  (*      Http_client.Debug.enable := true;*)
++  (*      Nethttp_client.Debug.enable := true;*)
+   (*      Uq_ssl.Debug.enable := true; *)
+   (*        Netlog.Debug.enable_all ();*)
+   pipeline_normal#set_options { pipeline_normal#get_options with
+@@ -200,7 +210,7 @@ let http_call (esys,_,_) (category, call, host) =
+     if Lwt.state waiter = Lwt.Fail Lwt.Canceled then
+       wakener (result canceled)
+     else match call#status with
+-    | `Http_protocol_error (Http_client.Bad_message _ | Http_client.No_reply as exn) when retries < 4 ->
++    | `Http_protocol_error (Nethttp_client.Bad_message _ | Nethttp_client.No_reply as exn) when retries < 4 ->
+       (*      EventLog.debug ~exn (fun () -> "retrying after lost connection");*)
+       (* each of the cached connections may return an error once *)
+       Unixqueue.add_event esys
+diff --git a/libres3/src/sxclient/sXC.ml b/libres3/src/sxclient/sXC.ml
+index 91b4e5a..f255d83 100644
+--- a/libres3/src/sxclient/sXC.ml
++++ b/libres3/src/sxclient/sXC.ml
+@@ -338,11 +338,11 @@ let expect_content_type reply ct =
+     let expected = "Skylable" in
+     if (String.length server < String.length expected ||
+         String.sub server 0 (String.length expected) <> expected) then
+-      fail (Http_client.Http_protocol
++      fail (Nethttp_client.Http_protocol
+               (SXProto (Printf.sprintf "Not an SX server: %s" server)))
+     else
+       try
+-        let actual, _ = reply.headers#content_type () in
++        let actual, _ = Netmime_header.get_content_type reply.headers in
+         if actual <> ct then
+           fail (SXProto (Printf.sprintf
+                            "Bad content-type: %s, expected: %s" actual ct))
+@@ -442,13 +442,13 @@ let make_http_request ?quick p url =
+   let rec loop n =
+   Lwt.catch (fun () -> P.make_http_request ?quick p url)
+     (function
+-      | Http_client.Http_protocol (Http_client.Timeout _) as exn ->
++      | Nethttp_client.Http_protocol (Nethttp_client.Timeout _) as exn ->
+         EventLog.warning ~exn "HTTP(S) request timed out to %s:%d" url.host url.port;
+         Lwt.fail exn
+-      | Http_client.Http_protocol _ when n > 0 ->
++      | Nethttp_client.Http_protocol _ when n > 0 ->
+         Lwt_unix.yield () >>= fun () ->
+         loop (n-1)
+-      | Http_client.Http_protocol _ as exn ->
++      | Nethttp_client.Http_protocol _ as exn ->
+         EventLog.warning ~exn "HTTP(S) request failed to %s:%d" url.host url.port;
+         Lwt.fail exn
+       | e -> Lwt.fail e) in
+@@ -461,12 +461,12 @@ let make_http_request ?quick p url =
+     if apiver < Config.apiver_min || apiver > Config.apiver_max then
+       let msg = Printf.sprintf "Unsupported SX API version: %d, expected between %d and %d"
+           apiver Config.apiver_min Config.apiver_max in
+-      fail (XIO.Detail(Http_client.Http_protocol(Failure msg),
++      fail (XIO.Detail(Nethttp_client.Http_protocol(Failure msg),
+                        ["LibreS3ErrorMessage", msg]))
+     else return reply
+   with Failure _ ->
+     let msg = "Invalid SX API version: " ^ (String.concat "," apiverstr) in
+-    fail (Http_client.Http_protocol(Failure msg))
++    fail (Nethttp_client.Http_protocol(Failure msg))
+ 
+ let usercache = Caching.cache 128
+ let rec make_request_token ?(interval=100.) ?quick ~token meth ?(req_body="") ?etag url =
+diff --git a/libres3/test/netTest.ml b/libres3/test/netTest.ml
+index 0923324..12b12da 100644
+--- a/libres3/test/netTest.ml
++++ b/libres3/test/netTest.ml
+@@ -27,7 +27,7 @@
+ (*  wish to do so, delete this exception statement from your version.     *)
+ (**************************************************************************)
+ 
+-open Http_client
++open Nethttp_client
+ open HttpTest
+ 
+ let out = open_out "reply.log"
+@@ -63,18 +63,24 @@ let map_reply call =
+   };;
+ 
+ let () = Ssl.init ~thread_safe:true ();;
++
+ let perform_http_queries lst =
+   try
++    Nettls_gnutls.init();
+     let pipeline = new pipeline in
+-    (*  Http_client.Debug.enable := true;
++    (*  Nethttp_client.Debug.enable := true;
+         Uq_ssl.Debug.enable := true;
+         Netlog.Debug.enable_all ();*)
+-    let ctx = Ssl.create_context Ssl.TLSv1 Ssl.Client_context in
+-    let tct = Https_client.https_transport_channel_type ctx in
+-    pipeline # configure_transport Http_client.https_cb_id tct;
++    let provider = Netsys_crypto.current_tls() in
++    let tls_config =
++    Netsys_tls.create_x509_config
++     ~system_trust:true
++     ~peer_auth:`None
++     provider in
+     (* without this we get an 'EOF on message' error *)
+     pipeline#set_options { pipeline#get_options with
+-                           Http_client.connection_timeout = 10.; };
++                           Nethttp_client.tls = Some tls_config;
++                           Nethttp_client.connection_timeout = 10.; };
+     let calls = List.rev_map (fun req ->
+         let call = match req.meth with
+           | `GET -> new get_call
+diff --git a/opam/opam b/opam/opam
+index d2c45e8..08d25e8 100644
+--- a/opam/opam
++++ b/opam/opam
+@@ -17,7 +17,8 @@ depends: [
+   "xmlm"
+   "cryptokit" {>= "1.3"}
+   "ssl" {>= "0.4.4"}
+-  "ocamlnet" {>= "3.7.4" & < "4.0.0"}
++  "ocamlnet" {>= "4.0.2"}
++  "conf-gnutls"
+   "lwt" {>= "2.4.2"}
+   "ocsigenserver" {>= "2.5"}
+   "sqlite3" # for ocsigenserver, choose sqlite3 as dbm doesn't build
+diff --git a/opam/repository-overlay/packages/ocamlnet/ocamlnet.3.7.7a/files/robust-host.patch b/opam/repository-overlay/packages/ocamlnet/ocamlnet.3.7.7a/files/robust-host.patch
+index ee3f359..e01a893 100644
+--- a/opam/repository-overlay/packages/ocamlnet/ocamlnet.3.7.7a/files/robust-host.patch
++++ b/opam/repository-overlay/packages/ocamlnet/ocamlnet.3.7.7a/files/robust-host.patch
+@@ -28,7 +28,7 @@ index 446b031..cbbca97 100644
+                     Uq_engines.multiplex_controller
+ +  method default_port : int option
+  end
+- (** Same as {!Http_client.transport_channel_type} *)	  
++ (** Same as {!Nethttp_client.transport_channel_type} *)	  
+  
+ diff --git a/src/netclient/http_client.ml b/src/netclient/http_client.ml
+ index 23b4051..e708254 100644
+@@ -59,7 +59,7 @@ index 23b4051..e708254 100644
+  	  if close_flag then
+ @@ -3573,9 +3578,10 @@ object
+                     string -> int -> Unixqueue.event_system ->
+-                    Http_client_conncache.private_data ->
++                    Nethttp_client_conncache.private_data ->
+                       Uq_engines.multiplex_controller
+ +  method default_port : int option
+  end
+-- 
+2.8.2
+
