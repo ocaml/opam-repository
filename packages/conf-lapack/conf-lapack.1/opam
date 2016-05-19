@@ -6,11 +6,13 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "https://github.com/ocaml/opam-repository.git"
 license: "GPL-2.0"
 build: [
-  ["sh" "-exc" "cc $CFLAGS test.c -llapack"] {os != "darwin"}
+  ["sh" "-exc" "cc $CFLAGS test.c -llapack"] {os != "darwin" & os != "win32"}
   ["sh" "-exc" "cc -framework Accelerate $CFLAGS test.c -llapack"] {os = "darwin"}
+  ["%{build}%/test-win.sh"] {os = "win32"}
 ]
 depexts: [
   [["debian"] ["liblapack-dev"]]
   [["ubuntu"] ["liblapack-dev"]]
   [["centos"] ["lapack-devel"]]
+  [["fedora"] ["lapack-devel"]]
 ]

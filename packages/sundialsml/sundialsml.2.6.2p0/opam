@@ -1,0 +1,51 @@
+opam-version: "1.2"
+name: "sundialsml"
+maintainer: "tim@tbrk.org"
+authors: [
+    "Timothy Bourke <tim@tbrk.org>"
+    "Jun Inoue <Jun.Lambda@gmail.com>"
+    "Marc Pouzet <Marc.Pouzet@ens.fr>"
+]
+homepage: "http://inria-parkas.github.io/sundialsml/"
+bug-reports: "https://github.com/inria-parkas/sundialsml/issues"
+doc: "http://inria-parkas.github.io/sundialsml/"
+tags: [
+    "numerical"
+    "simulation"
+    "mathematics"
+    "science"
+]
+license: "BSD3"
+build: [
+    ["./configure" "--stubdir=%{stublibs}%/"
+		   "--libdir=%{lib}%/"
+		   "--docdir=%{doc}%/"]
+]
+install: [
+    [make "install-findlib"]
+]
+build-doc: [
+    [make "doc"]
+    [make "install-doc"]
+]
+build-test: [
+    [make "tests.opt.log"]
+]
+remove: [["ocamlfind" "remove" "sundialsml"]]
+depends: [
+    "base-bigarray"
+    "ocamlfind"
+]
+depopts: [
+    "mpi"
+]
+depexts: [
+    [["debian"] ["libsundials-serial-dev"]]
+    [["ubuntu"] ["libsundials-serial-dev"]]
+    [["fedora"] ["lapack-devel" "sundials-devel"]]
+    [["centos"] ["epel-release" "lapack-devel" "sundials-devel"]]
+    [["osx" "homebrew"] ["homebrew/science/sundials"]]
+    [["osx" "macports"] ["sundials"]]
+]
+available: [ ocaml-version >= "3.12.1" ]
+dev-repo: "git://github.com/inria-parkas/sundialsml"

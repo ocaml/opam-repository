@@ -1,0 +1,27 @@
+opam-version: "1.2"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "https://github.com/fxfactorial/valentine"
+bug-reports: "https://github.com/fxfactorial/valentine/issues"
+license: "BSD-3-clause"
+dev-repo: "https://github.com/fxfactorial/valentine.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+available: [ ocaml-version >= "4.02.0" ]
+remove: ["ocaml" "%{etc}%/valentine/_oasis_remove_.ml" "%{etc}%/valentine"]
+depends: [
+  "cmdliner" {build}
+  "markup" {build}
+  "oasis" {build & >= "0.4"}
+  "ocamlfind" {build}
+]
