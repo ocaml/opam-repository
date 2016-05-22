@@ -11,8 +11,16 @@ depends: [
   "bsdowl"
   "ocamlfind"
   "camomile"
+  "conf-bmake"
 ]
 build: [
   ["./configure" "--prefix" prefix]
-  ["bmake" "-I%{bsdowl:share}%" "all"]
+  ["%{conf-bmake:path}%" "-I%{bsdowl:share}%" "all"]
+]
+install: [
+  ["%{conf-bmake:path}%" "-I%{bsdowl:share}%" "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "gasoline"]
+  ["rm" "-rf" "%{share}%/doc/gasoline"]
 ]

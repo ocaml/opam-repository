@@ -10,12 +10,15 @@ tags: [
 ]
 build: [
   ["./configure" "--prefix" prefix]
-  ["bmake" "-r" "build"]
+  ["%{conf-bmake:path}%" "-r" "build"]
 ]
-depends: ["ocamlfind"]
-depexts: [
-  [["debian"] ["bmake"]]
-  [["ubuntu"] ["bmake"]]
-  [["osx" "macports"] ["bmake"]]
-  [["freebsd"] ["devel/bmake"]]
+install: [
+  ["%{conf-bmake:path}%" "install"]
+]
+remove: [
+  ["sh" "%{build}%/opam/files/remove.sh" prefix]
+]
+depends: [
+  "conf-bmake"
+  "ocamlfind"
 ]
