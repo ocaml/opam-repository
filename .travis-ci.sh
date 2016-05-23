@@ -123,7 +123,6 @@ function build_one {
     opam install depext
     depext=$(opam depext -ls $pkg --no-sources)
     opam depext $pkg
-    opam remove depext -a
     echo
     echo "====== Installing package ======"
     opam install $pkg
