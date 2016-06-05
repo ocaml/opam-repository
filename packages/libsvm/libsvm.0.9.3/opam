@@ -8,11 +8,8 @@ dev-repo: "https://bitbucket.org/ogu/libsvm-ocaml.git"
 bug-reports: "https://bitbucket.org/ogu/libsvm-ocaml/issues"
 tags: [ "clib:svm"  ]
 build: [
-  ["./configure" "--prefix" prefix] { os != "darwin" }
-  ["sh" "-exc"
-   "./configure --prefix %{prefix}% CPPFLAGS=\"$CPPFLAGS -I/usr/local/include\""
-  ] { os = "darwin" }
-  [make]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
@@ -32,9 +29,8 @@ depopts: [
   "gsl"
   "ppx_sexp_conv"
 ]
-available: [ ocaml-version >= "4.02.1" & ocaml-version < "4.03" ]
+available: [ ocaml-version >= "4.02.1" & ocaml-version < "4.03" & os != "darwin" ]
 depexts: [
   [["ubuntu"]["libsvm-dev"]]
   [["debian"]["libsvm-dev"]]
-  [["osx" "homebrew"]["libsvm"]]
 ]
