@@ -8,8 +8,11 @@ dev-repo: "https://bitbucket.org/ogu/libsvm-ocaml.git"
 bug-reports: "https://bitbucket.org/ogu/libsvm-ocaml/issues"
 tags: [ "clib:svm"  ]
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
-  ["ocaml" "setup.ml" "-build"]
+  ["./configure" "--prefix" prefix] { os != "darwin" }
+  ["sh" "-exc"
+   "./configure --prefix %{prefix}% CPPFLAGS=\"$CPPFLAGS -I/usr/local/include\""
+  ] { os = "darwin" }
+  [make]
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
