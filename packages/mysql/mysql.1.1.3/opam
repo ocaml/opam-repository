@@ -3,8 +3,7 @@ maintainer: "ygrek@autistici.org"
 homepage: "http://ocaml-mysql.forge.ocamlcore.org"
 doc: "http://ocaml-mysql.forge.ocamlcore.org/doc/index.html"
 build: [
-  ["./configure" "--prefix" "%{prefix}%"] { os != "freebsd" }
-  ["env" "CPPFLAGS=-I/usr/local/include/mysql" "LDFLAGS=-L/usr/local/lib/mysql" "./configure" "--prefix" "%{prefix}%"] { os = "freebsd" }
+  ["./configure" "--prefix" prefix conf-autoconf:cflags conf-autoconf:ldflags]
   [make]
   [make "install"]
 ]
@@ -14,7 +13,11 @@ build-doc: [
 remove: [
   ["ocamlfind" "remove" "mysql"]
 ]
-depends: ["ocamlfind" "camlp4"]
+depends: [
+  "conf-autoconf"
+  "ocamlfind"
+  "camlp4"
+]
 depexts: [
   [ [ "debian" ] [ "libmysqlclient-dev" ] ]
   [ [ "ubuntu" ] [ "libmysqlclient-dev" ] ]
