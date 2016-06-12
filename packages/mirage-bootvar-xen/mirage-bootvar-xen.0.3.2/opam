@@ -1,0 +1,27 @@
+opam-version: "1.2"
+name: "mirage-bootvar-xen"
+maintainer: "Magnus Skjegstad <magnus@skjegstad.com>"
+authors: "Magnus Skjegstad <magnus@skjegstad.com>"
+homepage: "https://github.com/mirage/mirage-bootvar-xen"
+bug-reports: "https://github.com/mirage/mirage-bootvar-xen/issues/"
+dev-repo: "https://github.com/mirage/mirage-bootvar-xen.git"
+license: "ISC"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--disable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+install: [make "install"]
+remove: [
+  ["ocamlfind" "remove" "mirage-bootvar"]
+]
+depends: [
+  "mirage-xen" { >= "2.2.0" }
+  "mirage-types"
+  "ipaddr"
+  "astring"
+]
