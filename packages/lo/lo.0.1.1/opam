@@ -3,15 +3,17 @@ maintainer: "Romain Beauxis <toots@rastageeks.org>"
 authors: "The Savonet Team <savonet-users@lists.sourceforge.net>"
 homepage: "https://github.com/savonet/ocaml-lo"
 build: [
-  ["./configure" "--prefix" prefix] { os != "darwin" }
-  ["./configure" "CFLAGS=-I/usr/local/include" "LDFLAGS=-L/usr/local/lib" "OCAMLFLAGS=-ccopt -I/usr/local/include -cclib -L/usr/local/lib" "--prefix" prefix] { os = "darwin" }
+  ["./configure" "--prefix" prefix conf-autoconf:cflags conf-autoconf:ldflags conf-autoconf:ocamlflags]
   [make]
 ]
 install: [
   [make "install"]
 ]
 remove: ["ocamlfind" "remove" "lo"]
-depends: ["ocamlfind"]
+depends: [
+  "conf-autoconf"
+  "ocamlfind"
+]
 depexts: [
  [["ubuntu"]["liblo-dev"]]
  [["debian"]["liblo-dev"]]
