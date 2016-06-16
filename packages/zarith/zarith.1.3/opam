@@ -3,14 +3,14 @@ maintainer: "contact@ocamlpro.com"
 authors: "Xavier Leroy"
 homepage: "https://forge.ocamlcore.org/projects/zarith"
 build: [
-  ["./configure"] { os != "openbsd" & os != "freebsd" & os != "darwin"}
-  ["env" "LDFLAGS=-L/usr/local/lib" "CC=cc" "CFLAGS=-I/usr/local/include -O3 -Wall -Wextra" "./configure"] { os = "openbsd" | os = "freebsd" | os = "darwin"}
+  ["env" opamconfig:cflags opamconfig:ldflags "./configure"]
   [make]
   [make "install"]
 ]
 remove:  ["ocamlfind" "remove" "zarith"]
 depends: [
   "ocamlfind"
+  "opamconfig"
   "conf-gmp"
   "conf-perl" {build}
 ]
