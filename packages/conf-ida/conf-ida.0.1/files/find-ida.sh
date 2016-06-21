@@ -33,7 +33,7 @@ find_command() {
 
 # can be very slow
 locate_linux() {
-    results=`locate -w -r 'idaq64$'`
+    results=`locate -w -r 'idaq64$' | sort -n -r`
 
     for path in $results; do
         if [ -x $path ]; then
@@ -46,7 +46,7 @@ locate_linux() {
 # locate on mac os x doesn't accept -r and -w flags,
 # moreover, we have a better alternative - mfind
 locate_macos() {
-    results=`mdfind -name idaq`
+    results=`mdfind -name idaq | sort -n -r`
 
     for path in $results; do
         echo "$path"
