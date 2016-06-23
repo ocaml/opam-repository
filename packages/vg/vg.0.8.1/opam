@@ -7,7 +7,6 @@ doc: "http://erratique.ch/software/vg/doc/Vg"
 #bug-reports: "https://github.com/dbuenzli/vg/issues"
 tags: [ "pdf" "svg" "html-canvas" "declarative" "graphics" "org:erratique" ]
 license: "BSD3"
-ocaml-version: [>= "4.01.0"]
 depends: [
   "ocamlfind"
   "gg" {>= "0.9.0"}
@@ -15,12 +14,14 @@ depends: [
 ]
 depopts: [ "uutf" "otfm" "js_of_ocaml"  ]
 conflicts: [ "uutf" {> "0.9.4"} ]
-build:
-[
-  [ "ocaml" "pkg/git.ml" ]
-  [ "ocaml" "pkg/build.ml" "native=true" # TODO fixme
-                           "native-dynlink=true" #TODO fixme
-                           "uutf=%{uutf:installed}%"
-                           "otfm=%{otfm:installed}%"
-                           "jsoo=%{js_of_ocaml:installed}%" ]
+build: ["ocaml" "pkg/git.ml"]
+available: ocaml-version >= "4.01.0"
+install: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=true"
+  "native-dynlink=true"
+  "uutf=%{uutf:installed}%"
+  "otfm=%{otfm:installed}%"
+  "jsoo=%{js_of_ocaml:installed}%"
 ]

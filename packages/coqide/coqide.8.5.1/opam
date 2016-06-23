@@ -6,10 +6,22 @@ bug-reports: "https://coq.inria.fr/bugs/"
 dev-repo: "https://github.com/coq/coq.git"
 license: "LGPL-2.1"
 build: [
-  ["./configure" "-configdir" "%{lib}%/coq/config" "-mandir" man "-docdir" doc "-prefix" prefix "-usecamlp5" "-camlp5dir" "%{lib}%/camlp5"]
+  [
+    "./configure"
+    "-configdir"
+    "%{lib}%/coq/config"
+    "-mandir"
+    man
+    "-docdir"
+    doc
+    "-prefix"
+    prefix
+    "-usecamlp5"
+    "-camlp5dir"
+    "%{lib}%/camlp5"
+  ]
   [make "-j%{jobs}%" "coqide-files"]
   [make "-j%{jobs}%" "coqide-binaries"]
-  [make "install-ide-bin" "install-ide-files" "install-ide-info" "install-ide-devfiles"]
 ]
 remove: ["rm" "-R" "%{lib}%/coq/ide" "%{doc}%/FAQ-CoqIde"]
 depends: [
@@ -17,4 +29,11 @@ depends: [
   "coq" {= "8.5.1"}
   "lablgtk"
   "conf-gtksourceview"
+]
+install: [
+  make
+  "install-ide-bin"
+  "install-ide-files"
+  "install-ide-info"
+  "install-ide-devfiles"
 ]
