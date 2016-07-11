@@ -3,17 +3,22 @@ maintainer: "jonathan.ludlam@citrix.com"
 authors: "xen-api@lists.xen.org"
 homepage: "https://xapi-project.github.io/"
 bug-reports: "https://github.com/xapi-project/netdev/issues"
-build: make
+dev-repo: "git://github.com/xapi-project/netdev.git"
+build: [
+  ["oasis" "setup"]
+  [make]
+]
+install: [
+  [make "install" "BINDIR=%{bin}%"]
+]
 remove: [
   [make "uninstall" "BINDIR=%{bin}%"]
   ["ocamlfind" "remove" "netdev"]
 ]
+available: [ os = "linux" ]
 depends: [
   "ocamlfind"
-  "xapi-stdext" {< "2.0.0"}
+  "xapi-stdext" {>="2.0.0"}
   "xapi-forkexecd"
-  "ocamlbuild" {build}
+  "oasis" {build}
 ]
-dev-repo: "git://github.com/xapi-project/netdev"
-available: os = "linux"
-install: [make "install" "BINDIR=%{bin}%"]
