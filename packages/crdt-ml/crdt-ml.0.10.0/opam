@@ -1,0 +1,30 @@
+opam-version: "1.2"
+maintainer: "Borja o'Cook <borjaocook@gmail.com>"
+authors: "Borja o'Cook <borjaocook@gmail.com>"
+homepage: "https://github.com/ergl/crdt-ml/"
+bug-reports: "https://github.com/ergl/crdt-ml/issues"
+license: "GPL-3"
+dev-repo: "https://github.com/ergl/crdt-ml.git"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: ["ocaml" "setup.ml" "-doc"]
+remove: [
+  ["ocamlfind" "remove" "crdt"]
+  ["ocamlfind" "remove" "crdt_immutable"]
+  ["ocamlfind" "remove" "crdt_mutable"]
+  ["ocamlfind" "remove" "crdt_util"]
+]
+depends: [
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "qtest" {test}
+]
+available: [ocaml-version >= "4.02.0"]

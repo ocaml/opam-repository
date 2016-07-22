@@ -13,11 +13,15 @@ depends: [
   "ocamlbuild" {build}
 ]
 depopts: [ "uutf" "cmdliner" ]
-build: 
-[
-  [ "ocaml" "pkg/git.ml" ]
-  [ "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                           "native-dynlink=%{ocaml-native-dynlink}%"
-                           "uutf=%{uutf:installed}%"
-                           "cmdliner=%{cmdliner:installed}%" ]
+conflicts: [
+  "uutf" {!= "0.9.4"}
+]
+build: ["ocaml" "pkg/git.ml"]
+install: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=%{ocaml-native}%"
+  "native-dynlink=%{ocaml-native-dynlink}%"
+  "uutf=%{uutf:installed}%"
+  "cmdliner=%{cmdliner:installed}%"
 ]

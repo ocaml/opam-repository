@@ -17,25 +17,16 @@ remove: [
   # the package will use the first method only.
   ["/bin/sh" "-c" "if [ -e '%{etc}%/oasis/_oasis_remove_.ml' ]; then ocaml '%{etc}%/oasis/_oasis_remove_.ml' '%{etc}%/oasis'; else ocamlfind remove plugin-loader; ocamlfind remove userconf; ocamlfind remove oasis; rm '%{bin}%/oasis'; fi"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"
-    "--%{gettext:enable}%-gettext"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
   "base-unix"
-  "expect" {test & >= "0.0.4"}
-  "fileutils" {test & >= "0.4.2"}
   "ocaml-data-notation" {>= "0.0.11"}
   "ocamlfind" {>= "1.3.1"}
   "ocamlify" {build}
   "ocamlmod" {build}
-  "ounit" {test & >= "2.0.0"}
-  "pcre" {test}
   "ocamlbuild"
 ]
+depopts: ["gettext"]
 conflicts: [
   "oasis-mirage" {= "0.3.0a"}
   "oasis-mirage" {= "0.3.0"}

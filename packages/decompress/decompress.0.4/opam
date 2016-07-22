@@ -1,0 +1,47 @@
+opam-version: "1.2"
+maintainer:   "Romain Calascibetta <romain.calascibetta@gmail.com>"
+authors:      "Romain Calascibetta <romain.calascibetta@gmail.com>"
+homepage:     "https://github.com/oklm-wsh/Decompress"
+bug-reports:  "https://github.com/oklm-wsh/Decompress/issues"
+dev-repo:     "https://github.com/oklm-wsh/Decompress.git"
+license:      "MIT"
+
+build: [
+  ["./configure"
+    "--%{base-unix:enable}%-unix"
+    "--prefix=%{prefix}%"
+    "--%{cmdliner:enable}%-cmdliner"]
+  [make]
+]
+
+build-test: [
+  ["./configure"
+    "--enable-tests"
+    "--%{base-unix:enable}%-unix"
+    "--%{cmdliner:enable}%-cmdliner"
+    "--%{camlzip:enable}%-camlzip"
+    "--enable-istub"
+    "--prefix=%{prefix}%"]
+  [make "test"]
+]
+
+install: [make "install"]
+remove: ["ocamlfind" "remove" "decompress"]
+
+depends: [
+  "oasis"          {build}
+  "ocamlfind"      {build}
+  "base-bytes"
+  "alcotest"       {test}
+  "re"             {test}
+  "camlzip"        {test}
+  "cmdliner"       {test}
+  "ctypes"         {test}
+  "ctypes-foreign" {test}
+]
+
+depopts: [
+  "base-unix"
+]
+
+available: [ocaml-version >= "4.02.0"]
