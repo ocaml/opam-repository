@@ -1,0 +1,40 @@
+opam-version: "1.2"
+authors: ["Pippijn van Steenhoven"]
+maintainer: "francois.berenger@inria.fr"
+homepage: "https://github.com/Antique-team/clangml"
+bug-reports: "https://github.com/Antique-team/clangml/issues"
+dev-repo: "https://github.com/Antique-team/clangml.git"
+build: [
+  [make]
+]
+install: [
+  [make "install"]
+]
+remove: [
+  [make "uninstall"]
+]
+depends: [
+  "dolog"
+  "batteries"
+  "deriving"
+  "ANSITerminal"
+  "base-unix"
+  "camlp4" {build}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+depexts: [
+  [["debian"] ["libboost-dev" "llvm-3.5-dev" "clang-3.5" "libclang-3.5-dev"
+               "binutils-dev"]]
+  [["ubuntu"] ["libboost-dev" "llvm-3.5-dev" "clang-3.5" "libclang-3.5-dev"
+               "binutils-dev"]]
+  [["gentoo"] ["dev-libs/boost" "sys-devel/binutils"
+               "sys-devel/binutils-libs"]]
+  [["archlinux"] ["boost" "binutils"]]
+]
+available: [
+  ocaml-version >= "4.03.0" & !preinstalled & os != "darwin"
+]
+post-messages: [
+  "This package requires llvm-3.5, clang-3.5, boost and binutils" {failure}
+]

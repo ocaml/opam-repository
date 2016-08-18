@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer: "Thomas Gazagnaire <thomas@gazagnaire.org>"
+authors: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+homepage: "https://github.com/samoht/irmin-watcher"
+doc: "https://samoht.github.io/irmin-watcher/"
+license: "ISC"
+dev-repo: "https://github.com/samoht/irmin-watcher.git"
+bug-reports: "https://github.com/samoht/irmin-watcher/issues"
+available: [ ocaml-version >= "4.02.0" & opam-version >= "1.2.2" ]
+depends: [
+  "ocamlfind"  {build}
+  "ocamlbuild" {build}
+  "topkg"      {build}
+  "cppo"       {build}
+  "alcotest"   {test}
+  "lwt" "logs" "fmt" "astring"
+]
+depopts: ["inotify" "osx-fsevents"]
+build: [
+  "ocaml" "pkg/pkg.ml" "build" "--tests" "false"
+    "--pinned" pinned
+    "--with-fsevents" osx-fsevents:installed
+    "--with-inotify" inotify:installed
+]
+build-test: [
+  ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"
+     "--pinned" pinned
+     "--with-fsevents" osx-fsevents:installed
+     "--with-inotify" inotify:installed]
+  ["ocaml" "pkg/pkg.ml" "test"]
+]
