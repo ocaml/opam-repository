@@ -1,0 +1,35 @@
+opam-version: "1.2"
+maintainer: "p.donadeo@gmail.com"
+authors: [
+  "Paolo Donadeo"
+  "Sylvain Le Gall"
+]
+homepage: "http://ocaml-lua.forge.ocamlcore.org"
+license: "MIT"
+build: [
+  [
+    "./configure"
+    "--enable-docs"
+    "--prefix"
+    prefix
+    "--docdir"
+    "%{doc}%/ocaml-lua"
+    "--libdir"
+    "%{lib}%/ocaml-lua"
+  ]
+  [make]
+  [make "doc"]
+]
+remove: [["ocamlfind" "remove" "lua"]]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+]
+depexts: [
+  [["debian"] ["liblua5.1-0-dev"]]
+  [["ubuntu"] ["liblua5.1-0-dev"]]
+  [["fedora"] ["compat-lua-devel"]]
+  [["centos"] ["lua-devel"]]
+]
+available: ocaml-version >= "4.02.1"
+install: [make "install"]
