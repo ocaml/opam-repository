@@ -1,3 +1,30 @@
+## Split build and install steps (2016-05-18)
+
+The opam tool has been separating the "build" and "install" steps of packages
+since version 1.2.2, but historically packages could only define a "build:"
+field in their metadata, that did both steps. There are many usages and tools
+that can benefit from the split (like tracking of installed files without losing
+build parallelism), and it is cleaner overall.
+
+To upgrade older packages that didn't make the move yet, an heuristic has been
+applied to automatically do the split. It's in the
+[admin-scripts/split-install.ml](https://github.com/ocaml/opam/blob/ce8605e0572335beb7f9ae04713c9cc8048cf707/admin-scripts/split_install.ml)
+script and simply reads commands from the end, detecting calls to `install`,
+`cp` to appropriate destinations, and commands mentioning `install`.
+
+The main invariant to respect is that the `build` stage should never write
+outside of its build directory and the temp dir, while the `install` stage
+should be as fast as possible. So in case of doubt, it is better to put
+everything in `install:` instead (but we don't do that automatically, since many
+correct packages only have `build:` and a `.install` file, which we can't detect
+from the metadata alone).
+
+In turn, opam guarantees that `install` and `remove` commands are never run
+concurrently.
+
+Please remember to correctly split the two stages from now on, as advised by
+`opam lint`; tools to check the invariants are being put in place.
+
 ## Camlp4 syntax extensions split from Jane Street packages (2016-01-11)
 
 Jane Street packages no longer support camlp4 after the 113.09.00
