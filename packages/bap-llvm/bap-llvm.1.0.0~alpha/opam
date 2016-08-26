@@ -11,6 +11,7 @@ build: [
   ["./configure"
                  "--prefix=%{prefix}%"
                  "--with-cxx=`which clang++`"
+                 "--with-llvm-version=%{conf-llvm:version}%"
                  "--enable-llvm"]
   [make]
 ]
@@ -25,18 +26,11 @@ remove: [
 
 depends: [
     "bap-std"
+    "conf-llvm" {= "3.4" | = "3.8"}
 ]
 
 depexts: [
-    [["ubuntu"] [
-        "llvm-3.4-dev"
-        "clang"
-        "llvm"
-     ]]
-     [["osx" "macports"] [
-        "llvm-3.4"
-     ]
-    ]
+    [["ubuntu"] ["clang"]]
 ]
 
 available: [ocaml-version >= "4.02.3"]
