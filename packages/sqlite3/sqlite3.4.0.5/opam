@@ -9,7 +9,9 @@ bug-reports: "https://github.com/mmottl/sqlite3-ocaml/issues"
 tags: [ "clib:sqlite3" "clib:pthread"  ]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
-  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-build"] { os != "darwin" }
+  ["env" "SQLITE3_OCAML_BREWCHECK=1"
+   "ocaml" "setup.ml" "-build"] { os = "darwin" }
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
@@ -35,4 +37,5 @@ depexts: [
   [["rhel"] ["sqlite-devel"]]
   [["fedora"] ["sqlite-devel"]]
   [["alpine"] ["sqlite-dev"]]
+  [["osx" "homebrew"] ["sqlite3"]]
 ]
