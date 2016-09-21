@@ -1,0 +1,36 @@
+opam-version: "1.2"
+name: "bap-veri"
+version: "0.2"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bil-veri/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bil-veri/issues"
+dev-repo: "https://github.com/BinaryAnalysisPlatform/bil-veri/"
+license: "MIT"
+
+build: [
+  ["oasis" "setup"]
+  ["./configure" "--prefix=%{prefix}%"]
+  [make]
+]
+
+install: [[make "install"]]
+
+remove: [
+  ["ocamlfind" "remove" "bap-veri"]
+  ["rm" "-f" "%{bin}%/bap-veri"]
+]
+
+depends: [
+    "bap-std"
+    "bap-traces"
+    "core_kernel" {>= "113.33.03"}
+    "cmdliner"
+    "oasis"       {build}
+    "ounit"
+    "pcre"
+    "textutils"
+    "uri"
+]
+
+available: [ocaml-version >= "4.02.3"]
