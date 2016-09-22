@@ -1,5 +1,17 @@
 #!/bin/sh
 
+config="llvm-config"
+
+if ! which $config ; then
+    if [ "os-$1" == "os-darwin" ]; then
+        for minor in `seq 1 10`; do
+            config="llvm-config-mp-3.$minor"
+            if which $config; then break; fi 
+        done
+    fi
+fi
+
 cat > conf-llvm.config <<EOF
-version: "$(llvm-config --version)"
+config: "$config"
+version: "`$config --version`"
 EOF
