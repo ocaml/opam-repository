@@ -1,7 +1,10 @@
 opam-version: "1"
-version: "3.09.3"
-src: "http://caml.inria.fr/pub/distrib/ocaml-3.09/ocaml-3.09.3.tar.gz"
+version: "3.07"
+src: "http://caml.inria.fr/pub/distrib/ocaml-3.07/ocaml-3.07.tar.gz"
+patches: ["http://caml.inria.fr/pub/distrib/ocaml-3.07/ocaml-3.07-patch1.diffs"]
 build: [
+  # ensure sed is not interpreting characters >= 128
+  ["sed" "-i" "-e" "$s/^/LC_ALL=C /" "ocamldoc/remove_DEBUG"]
   ["./configure" "-prefix" prefix]
   [make "world"]
   [make "world.opt"]
