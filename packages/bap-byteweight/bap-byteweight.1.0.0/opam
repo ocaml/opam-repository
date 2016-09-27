@@ -1,0 +1,28 @@
+opam-version: "$new"
+name: "bap-byteweight"
+version: "$new"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure" "--prefix=%{prefix}%" "--enable-byteweight"]
+  [make]
+]
+
+install: [
+  [make "install"]
+  ["mkdir" "-p" "%{share}%/bap/"]
+  ["wget" "-O" "%{share}%/bap/sigs.zip" "https://github.com/BinaryAnalysisPlatform/bap/releases/download/v0.9.9/sigs.zip"]
+]
+
+remove: [
+        ["ocamlfind" "remove" "bap-byteweight"]
+        ["ocamlfind" "remove" "bap-plugin-byteweight"]
+]
+
+depends: [
+    "bap-std"
+]
