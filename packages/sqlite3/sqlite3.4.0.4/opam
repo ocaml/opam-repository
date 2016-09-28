@@ -8,9 +8,10 @@ dev-repo: "https://github.com/mmottl/sqlite3-ocaml.git"
 bug-reports: "https://github.com/mmottl/sqlite3-ocaml/issues"
 tags: [ "clib:sqlite3" "clib:pthread"  ]
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix] { os != "darwin" }
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--disable-loadable-extensions"] { os = "darwin" }
-  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"] { os != "darwin" }
+  ["env" "SQLITE3_OCAML_BREWCHECK=1"
+   "ocaml" "setup.ml" "-build"] { os = "darwin" }
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
@@ -27,6 +28,9 @@ depends: [
   "ocamlfind" {build & >= "1.3.1"}
 ]
 available: [ ocaml-version >= "3.12" ]
+depends: [
+  "conf-pkg-config" {build}
+]
 depexts: [
   [["debian"] ["libsqlite3-dev"]]
   [["freebsd"] ["database/sqlite3"]]
@@ -36,4 +40,5 @@ depexts: [
   [["rhel"] ["sqlite-devel"]]
   [["fedora"] ["sqlite-devel"]]
   [["alpine"] ["sqlite-dev"]]
+  [["osx" "homebrew"] ["sqlite3"]]
 ]
