@@ -1,0 +1,68 @@
+opam-version: "1.2"
+maintainer:   "thomas@gazagnaire.org"
+authors:      "Thomas Gazagnaire"
+license:      "ISC"
+homepage:     "https://github.com/mirage/ocaml-git"
+bug-reports:  "https://github.com/mirage/ocaml-git/issues"
+dev-repo:     "https://github.com/mirage/ocaml-git.git"
+doc:          "https://mirage.github.io/ocaml-git/"
+
+build: [
+  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"
+      "--with-http"   "%{cohttp:installed}%"
+      "--with-unix"   "%{conduit+cohttp+camlzip+nocrypto+base-unix:installed}%"
+      "--with-mirage" "%{mirage-http+mirage-flow+mirage-types-lwt+channel:installed}%"
+]
+build-test: [
+  ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"
+      "--with-http"   "%{cohttp:installed}%"
+      "--with-unix"   "%{conduit+cohttp+camlzip+nocrypto+base-unix:installed}%"
+      "--with-mirage" "%{mirage-http+mirage-flow+mirage-types-lwt+channel:installed}%"]
+  ["ocaml" "pkg/pkg.ml" "test"]
+]
+
+depends: [
+  "cmdliner"
+  "mstruct"    {>= "1.3.1"}
+  "ocamlgraph"
+  "uri"        {>= "1.3.12"}
+  "lwt"        {>= "2.4.7"}
+  "mtime"
+  "logs"
+  "fmt"
+  "hex"
+  "astring"
+  "crc"
+  "alcotest"         {test}
+  "mirage-types-lwt" {test}
+  "mirage-http"      {test}
+  "mirage-flow"      {test}
+  "channel"          {test}
+  "mirage-fs-unix"   {test & >="1.1.4"}
+  "cohttp"           {test}
+  "conduit"          {test}
+  "base-unix"        {test}
+  "camlzip"          {test & >= "1.06"}
+  "nocrypto"         {test}
+]
+depopts: [
+  # --enable-mirage
+  "mirage-types-lwt"
+  "mirage-http"
+  "mirage-flow"
+  "channel"
+  # --enable-unix
+  "cohttp"
+  "conduit"
+  "base-unix"
+  "camlzip"
+  "nocrypto"
+]
+conflicts: [
+ "cohttp"   {< "0.19.1"}
+ "conduit"  {< "0.8.4"}
+ "alcotest" {< "0.4.0"}
+ "camlzip"  {< "1.06"}
+ "nocrypto" {< "0.2.0"}
+]
+available: [ocaml-version >= "4.02.3"]
