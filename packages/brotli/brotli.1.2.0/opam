@@ -1,0 +1,58 @@
+opam-version: "1.2"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "http://hyegar.com"
+bug-reports: "https://github.com/fxfactorial/ocaml-brotli/issues"
+license: "BSD-3-clause"
+tags: ["clib:stdc" "clib:brotli"]
+dev-repo: "https://github.com/fxfactorial/ocaml-brotli.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: ["ocaml" "setup.ml" "-doc"]
+remove: ["ocamlfind" "remove" "brotli"]
+depends: [
+  "oasis" {build}
+  "conf-autoconf" {build}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+depexts: [
+  [["debian"] ["clang" "libc++-dev"]]
+  [
+    ["linux" "osx" "source"]
+    [
+      "https://raw.githubusercontent.com/fxfactorial/ocaml-brotli/master/prepare.sh"
+    ]
+  ]
+  [["ubuntu"] ["clang" "libc++-dev"]]
+]
+available: [ocaml-version >= "4.03.0"]
+messages: [
+  "You'll need to have libbrotli installed, it is available via a depext"
+  "opam depext brotli"
+  "Or install it yourself: https://github.com/bagder/libbrotli"
+]
+post-messages: [
+  "Simple example:"
+  "
+let raw_data =
+    {|
+<html>
+  <div>
+    Hello World World World World
+  </div>
+</html>
+|}
+  "
+  "let compressed = Brotli.Compress.bytes raw_data"
+  "let decompressed = Brotli.Decompress.bytes compressed" {success}
+]
