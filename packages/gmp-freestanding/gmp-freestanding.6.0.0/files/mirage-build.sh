@@ -30,7 +30,7 @@ ac_cv_func_obstack_vprintf=no \
 ac_cv_func_localeconv=no \
 ./configure \
     --host=x86_64-unknown-none --enable-fat --disable-shared \
-    CC=gcc "CPPFLAGS=$(pkg-config --cflags ${PKG_CONFIG_DEPS})"
+    CC=cc "CPPFLAGS=$(pkg-config --cflags ${PKG_CONFIG_DEPS})"
 
 make SUBDIRS="mpn mpz mpq mpf" \
     PRINTF_OBJECTS= SCANF_OBJECTS= \
