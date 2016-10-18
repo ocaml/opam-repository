@@ -1,0 +1,726 @@
+commit 2bd33495267e1d5c7eae507c25d4d7a49b3b61f4
+Author: Maxime Dénès <mail@maximedenes.fr>
+Date:   Fri Mar 4 17:40:10 2016 +0100
+
+    Rename Ephemeron -> CEphemeron.
+    
+    Fixes compilation of Coq with OCaml 4.03 beta 1.
+
+diff --git a/checker/check.mllib b/checker/check.mllib
+index 0d36e3a..902ab9d 100644
+--- a/checker/check.mllib
++++ b/checker/check.mllib
+@@ -32,7 +32,7 @@ CStack
+ Util
+ Ppstyle
+ Errors
+-Ephemeron
++CEphemeron
+ Future
+ CUnix
+ System
+diff --git a/dev/printers.mllib b/dev/printers.mllib
+index ab7e9fc..ad9a5d7 100644
+--- a/dev/printers.mllib
++++ b/dev/printers.mllib
+@@ -48,7 +48,7 @@ Rtree
+ Heap
+ Genarg
+ Stateid
+-Ephemeron
++CEphemeron
+ Future
+ RemoteCounter
+ Monad
+diff --git a/kernel/csymtable.ml b/kernel/csymtable.ml
+index fc7e1b9..7e1a5d5 100644
+--- a/kernel/csymtable.ml
++++ b/kernel/csymtable.ml
+@@ -131,8 +131,8 @@ let key rk =
+   match !rk with
+   | None -> raise NotEvaluated
+   | Some k ->
+-      try Ephemeron.get k
+-      with Ephemeron.InvalidKey -> raise NotEvaluated
++      try CEphemeron.get k
++      with CEphemeron.InvalidKey -> raise NotEvaluated
+ 
+ (************************)
+ (* traduction des patch *)
+@@ -171,7 +171,7 @@ let rec slot_for_getglobal env kn =
+ 	 | BCconstant -> set_global (val_of_constant kn)
+     in
+ (*Pp.msgnl(str"value stored at: "++int pos);*)
+-    rk := Some (Ephemeron.create pos);
++    rk := Some (CEphemeron.create pos);
+     pos
+ 
+ and slot_for_fv env fv =
+diff --git a/kernel/entries.mli b/kernel/entries.mli
+index b2a77dd..f94068f 100644
+--- a/kernel/entries.mli
++++ b/kernel/entries.mli
+@@ -104,7 +104,7 @@ type side_eff =
+   | SEscheme of (inductive * constant * Declarations.constant_body * seff_env) list * string
+ 
+ type side_effect = {
+-  from_env : Declarations.structure_body Ephemeron.key;
++  from_env : Declarations.structure_body CEphemeron.key;
+   eff      : side_eff;
+ }
+ 
+diff --git a/kernel/pre_env.ml b/kernel/pre_env.ml
+index e1fe025..df34955 100644
+--- a/kernel/pre_env.ml
++++ b/kernel/pre_env.ml
+@@ -25,7 +25,7 @@ open Declarations
+ (* The key attached to each constant is used by the VM to retrieve previous *)
+ (* evaluations of the constant. It is essentially an index in the symbols table *)
+ (* used by the VM. *)
+-type key = int Ephemeron.key option ref 
++type key = int CEphemeron.key option ref 
+ 
+ (** Linking information for the native compiler. *)
+ 
+@@ -50,17 +50,17 @@ type stratification = {
+ }
+ 
+ type val_kind =
+-    | VKvalue of (values * Id.Set.t) Ephemeron.key
++    | VKvalue of (values * Id.Set.t) CEphemeron.key
+     | VKnone
+ 
+ type lazy_val = val_kind ref
+ 
+ let force_lazy_val vk = match !vk with
+ | VKnone -> None
+-| VKvalue v -> try Some (Ephemeron.get v) with Ephemeron.InvalidKey -> None
++| VKvalue v -> try Some (CEphemeron.get v) with CEphemeron.InvalidKey -> None
+ 
+ let dummy_lazy_val () = ref VKnone
+-let build_lazy_val vk key = vk := VKvalue (Ephemeron.create key)
++let build_lazy_val vk key = vk := VKvalue (CEphemeron.create key)
+ 
+ type named_vals = (Id.t * lazy_val) list
+ 
+diff --git a/kernel/pre_env.mli b/kernel/pre_env.mli
+index 23f9a3f..99d3e2e 100644
+--- a/kernel/pre_env.mli
++++ b/kernel/pre_env.mli
+@@ -19,7 +19,7 @@ type link_info =
+   | LinkedInteractive of string
+   | NotLinked
+ 
+-type key = int Ephemeron.key option ref 
++type key = int CEphemeron.key option ref 
+ 
+ type constant_key = constant_body * (link_info ref * key)
+ 
+diff --git a/kernel/safe_typing.ml b/kernel/safe_typing.ml
+index 4c32648..0926d35 100644
+--- a/kernel/safe_typing.ml
++++ b/kernel/safe_typing.ml
+@@ -231,11 +231,11 @@ let constant_entry_of_private_constant = function
+ 
+ let private_con_of_con env c =
+   let cbo = Environ.lookup_constant c env.env in
+-  { Entries.from_env = Ephemeron.create env.revstruct;
++  { Entries.from_env = CEphemeron.create env.revstruct;
+     Entries.eff      = Entries.SEsubproof (c,cbo,get_opaque_body env.env cbo) }
+ 
+ let private_con_of_scheme ~kind env cl =
+-  { Entries.from_env = Ephemeron.create env.revstruct;
++  { Entries.from_env = CEphemeron.create env.revstruct;
+     Entries.eff      = Entries.SEscheme(
+       List.map (fun (i,c) ->
+         let cbo = Environ.lookup_constant c env.env in
+diff --git a/kernel/term_typing.ml b/kernel/term_typing.ml
+index 510f435..fdbd1e3 100644
+--- a/kernel/term_typing.ml
++++ b/kernel/term_typing.ml
+@@ -126,14 +126,14 @@ let check_signatures curmb sl =
+     | None -> None, None
+     | Some curmb ->
+         try
+-          let mb = Ephemeron.get mb in
++          let mb = CEphemeron.get mb in
+           match sl with
+           | None -> sl, None
+           | Some n ->
+               if List.length mb >= how_many && CList.skipn how_many mb == curmb
+               then Some (n + how_many), Some mb
+               else None, None
+-        with Ephemeron.InvalidKey -> None, None in
++        with CEphemeron.InvalidKey -> None, None in
+   let sl, _ = List.fold_left is_direct_ancestor (Some 0,Some curmb) sl in
+   sl
+ 
+diff --git a/lib/cEphemeron.ml b/lib/cEphemeron.ml
+new file mode 100644
+index 0000000..a38ea11
+--- /dev/null
++++ b/lib/cEphemeron.ml
+@@ -0,0 +1,89 @@
++(************************************************************************)
++(*  v      *   The Coq Proof Assistant  /  The Coq Development Team     *)
++(* <O___,, *   INRIA - CNRS - LIX - LRI - PPS - Copyright 1999-2016     *)
++(*   \VV/  **************************************************************)
++(*    //   *      This file is distributed under the terms of the       *)
++(*         *       GNU Lesser General Public License Version 2.1        *)
++(************************************************************************)
++
++type key_type = int
++
++type boxed_key = key_type ref ref
++
++let mk_key : unit -> boxed_key =
++  (* TODO: take a random value here. Is there a random function in OCaml? *) 
++  let bid = ref 0 in
++  (* According to OCaml Gc module documentation, Pervasives.ref is one of the
++     few ways of getting a boxed value the compiler will never alias. *)
++  fun () -> incr bid; Pervasives.ref (Pervasives.ref !bid)
++
++(* A phantom type to preserve type safety *)
++type 'a key = boxed_key
++
++(* Comparing keys with == grants that if a key is unmarshalled (in the same
++   process where it was created or in another one) it is not mistaken for
++   an already existing one (unmarshal has no right to alias).  If the initial
++   value of bid is taken at random, then one also avoids potential collisions *)
++module HT = Hashtbl.Make(struct
++  type t = key_type ref
++  let equal k1 k2 = k1 == k2
++  let hash id = !id
++end)
++
++(* A key is the (unique) value inside a boxed key, hence it does not
++   keep its corresponding boxed key reachable (replacing key_type by boxed_key
++   would make the key always reachable) *)
++let values : Obj.t HT.t = HT.create 1001
++
++(* To avoid a race contidion between the finalization function and
++   get/create on the values hashtable, the finalization function just
++   enqueues in an imperative list the item to be collected.  Being the list
++   imperative, even if the Gc enqueue an item while run_collection is operating,
++   the tail of the list is eventually set to Empty on completion.
++   Kudos to the authors of Why3 that came up with this solution for their
++   implementation of weak hash tables! *)
++type imperative_list = cell ref
++and cell = Empty | Item of key_type ref * imperative_list
++
++let collection_queue : imperative_list ref = ref (ref Empty)
++
++let enqueue x = collection_queue := ref (Item (!x, !collection_queue))
++
++let run_collection () =
++  let rec aux l = match !l with
++    | Empty -> ()
++    | Item (k, tl) -> HT.remove values k; aux tl in
++  let l = !collection_queue in
++  aux l;
++  l := Empty
++
++(* The only reference to the boxed key is the one returned, when the user drops
++   it the value eventually disappears from the values table above *)
++let create (v : 'a) : 'a key =
++  run_collection ();
++  let k = mk_key () in
++  HT.add values !k (Obj.repr v);
++  Gc.finalise enqueue k;
++  k
++
++(* Avoid raising Not_found *)
++exception InvalidKey
++let get (k : 'a key) : 'a =
++  run_collection ();
++  try Obj.obj (HT.find values !k)
++  with Not_found -> raise InvalidKey
++
++(* Simple utils *)
++let default k v =
++  try get k
++  with InvalidKey -> v
++
++let iter_opt k f =
++  match
++    try Some (get k)
++    with InvalidKey -> None
++  with
++  | None -> ()
++  | Some v -> f v
++
++let clear () = run_collection ()
+diff --git a/lib/cEphemeron.mli b/lib/cEphemeron.mli
+new file mode 100644
+index 0000000..1200e4e
+--- /dev/null
++++ b/lib/cEphemeron.mli
+@@ -0,0 +1,52 @@
++(************************************************************************)
++(*  v      *   The Coq Proof Assistant  /  The Coq Development Team     *)
++(* <O___,, *   INRIA - CNRS - LIX - LRI - PPS - Copyright 1999-2016     *)
++(*   \VV/  **************************************************************)
++(*    //   *      This file is distributed under the terms of the       *)
++(*         *       GNU Lesser General Public License Version 2.1        *)
++(************************************************************************)
++
++(* Use case:
++     You have a data structure that needs to be marshalled but it contains
++     unmarshallable data (like a closure, or a file descriptor).  Actually
++     you don't need this data to be preserved by marshalling, it just happens
++     to be there.
++     You could produced a trimmed down data structure, but then, once
++     unmarshalled, you can't used the very same code to process it, unless you
++     re-inject the trimmed down data structure into the standard one, using
++     dummy values for the unmarshallable stuff.
++     Similarly you could change your data structure turning all types [bad]
++     into [bad option], then just before marshalling you set all values of type
++     [bad option] to [None].  Still this pruning may be expensive and you have
++     to code it.
++
++   Desiderata:
++     The marshalling operation automatically discards values that cannot be
++     marshalled or cannot be properly unmarshalled.
++
++   Proposed solution:
++     Turn all occurrences of [bad] into [bad key] in your data structure.
++     Use [crate bad_val] to obtain a unique key [k] for [bad_val], and store
++     [k] in the data structure.  Use [get k] to obtain [bad_val].
++
++     An ['a key] can always be marshalled.  When marshalled, a key loses its
++     value.  The function [get] raises Not_found on unmarshalled keys.
++     
++     If a key is garbage collected, the corresponding value is garbage
++     collected too (unless extra references to it exist).
++     In short no memory management hassle, keys can just replace their
++     corresponding value in the data structure.  *)
++
++type 'a key
++
++val create : 'a -> 'a key
++
++(* May raise InvalidKey *)
++exception InvalidKey
++val get : 'a key -> 'a
++
++(* These never fail. *)
++val iter_opt : 'a key -> ('a -> unit) -> unit
++val default : 'a key -> 'a -> 'a
++
++val clear : unit -> unit
+diff --git a/lib/ephemeron.ml b/lib/ephemeron.ml
+deleted file mode 100644
+index a38ea11..0000000
+--- a/lib/ephemeron.ml
++++ /dev/null
+@@ -1,89 +0,0 @@
+-(************************************************************************)
+-(*  v      *   The Coq Proof Assistant  /  The Coq Development Team     *)
+-(* <O___,, *   INRIA - CNRS - LIX - LRI - PPS - Copyright 1999-2016     *)
+-(*   \VV/  **************************************************************)
+-(*    //   *      This file is distributed under the terms of the       *)
+-(*         *       GNU Lesser General Public License Version 2.1        *)
+-(************************************************************************)
+-
+-type key_type = int
+-
+-type boxed_key = key_type ref ref
+-
+-let mk_key : unit -> boxed_key =
+-  (* TODO: take a random value here. Is there a random function in OCaml? *) 
+-  let bid = ref 0 in
+-  (* According to OCaml Gc module documentation, Pervasives.ref is one of the
+-     few ways of getting a boxed value the compiler will never alias. *)
+-  fun () -> incr bid; Pervasives.ref (Pervasives.ref !bid)
+-
+-(* A phantom type to preserve type safety *)
+-type 'a key = boxed_key
+-
+-(* Comparing keys with == grants that if a key is unmarshalled (in the same
+-   process where it was created or in another one) it is not mistaken for
+-   an already existing one (unmarshal has no right to alias).  If the initial
+-   value of bid is taken at random, then one also avoids potential collisions *)
+-module HT = Hashtbl.Make(struct
+-  type t = key_type ref
+-  let equal k1 k2 = k1 == k2
+-  let hash id = !id
+-end)
+-
+-(* A key is the (unique) value inside a boxed key, hence it does not
+-   keep its corresponding boxed key reachable (replacing key_type by boxed_key
+-   would make the key always reachable) *)
+-let values : Obj.t HT.t = HT.create 1001
+-
+-(* To avoid a race contidion between the finalization function and
+-   get/create on the values hashtable, the finalization function just
+-   enqueues in an imperative list the item to be collected.  Being the list
+-   imperative, even if the Gc enqueue an item while run_collection is operating,
+-   the tail of the list is eventually set to Empty on completion.
+-   Kudos to the authors of Why3 that came up with this solution for their
+-   implementation of weak hash tables! *)
+-type imperative_list = cell ref
+-and cell = Empty | Item of key_type ref * imperative_list
+-
+-let collection_queue : imperative_list ref = ref (ref Empty)
+-
+-let enqueue x = collection_queue := ref (Item (!x, !collection_queue))
+-
+-let run_collection () =
+-  let rec aux l = match !l with
+-    | Empty -> ()
+-    | Item (k, tl) -> HT.remove values k; aux tl in
+-  let l = !collection_queue in
+-  aux l;
+-  l := Empty
+-
+-(* The only reference to the boxed key is the one returned, when the user drops
+-   it the value eventually disappears from the values table above *)
+-let create (v : 'a) : 'a key =
+-  run_collection ();
+-  let k = mk_key () in
+-  HT.add values !k (Obj.repr v);
+-  Gc.finalise enqueue k;
+-  k
+-
+-(* Avoid raising Not_found *)
+-exception InvalidKey
+-let get (k : 'a key) : 'a =
+-  run_collection ();
+-  try Obj.obj (HT.find values !k)
+-  with Not_found -> raise InvalidKey
+-
+-(* Simple utils *)
+-let default k v =
+-  try get k
+-  with InvalidKey -> v
+-
+-let iter_opt k f =
+-  match
+-    try Some (get k)
+-    with InvalidKey -> None
+-  with
+-  | None -> ()
+-  | Some v -> f v
+-
+-let clear () = run_collection ()
+diff --git a/lib/ephemeron.mli b/lib/ephemeron.mli
+deleted file mode 100644
+index 1200e4e..0000000
+--- a/lib/ephemeron.mli
++++ /dev/null
+@@ -1,52 +0,0 @@
+-(************************************************************************)
+-(*  v      *   The Coq Proof Assistant  /  The Coq Development Team     *)
+-(* <O___,, *   INRIA - CNRS - LIX - LRI - PPS - Copyright 1999-2016     *)
+-(*   \VV/  **************************************************************)
+-(*    //   *      This file is distributed under the terms of the       *)
+-(*         *       GNU Lesser General Public License Version 2.1        *)
+-(************************************************************************)
+-
+-(* Use case:
+-     You have a data structure that needs to be marshalled but it contains
+-     unmarshallable data (like a closure, or a file descriptor).  Actually
+-     you don't need this data to be preserved by marshalling, it just happens
+-     to be there.
+-     You could produced a trimmed down data structure, but then, once
+-     unmarshalled, you can't used the very same code to process it, unless you
+-     re-inject the trimmed down data structure into the standard one, using
+-     dummy values for the unmarshallable stuff.
+-     Similarly you could change your data structure turning all types [bad]
+-     into [bad option], then just before marshalling you set all values of type
+-     [bad option] to [None].  Still this pruning may be expensive and you have
+-     to code it.
+-
+-   Desiderata:
+-     The marshalling operation automatically discards values that cannot be
+-     marshalled or cannot be properly unmarshalled.
+-
+-   Proposed solution:
+-     Turn all occurrences of [bad] into [bad key] in your data structure.
+-     Use [crate bad_val] to obtain a unique key [k] for [bad_val], and store
+-     [k] in the data structure.  Use [get k] to obtain [bad_val].
+-
+-     An ['a key] can always be marshalled.  When marshalled, a key loses its
+-     value.  The function [get] raises Not_found on unmarshalled keys.
+-     
+-     If a key is garbage collected, the corresponding value is garbage
+-     collected too (unless extra references to it exist).
+-     In short no memory management hassle, keys can just replace their
+-     corresponding value in the data structure.  *)
+-
+-type 'a key
+-
+-val create : 'a -> 'a key
+-
+-(* May raise InvalidKey *)
+-exception InvalidKey
+-val get : 'a key -> 'a
+-
+-(* These never fail. *)
+-val iter_opt : 'a key -> ('a -> unit) -> unit
+-val default : 'a key -> 'a -> 'a
+-
+-val clear : unit -> unit
+diff --git a/lib/future.ml b/lib/future.ml
+index 5cd2beb..e8f33db 100644
+--- a/lib/future.ml
++++ b/lib/future.ml
+@@ -62,7 +62,7 @@ and 'a comp =
+   | Exn of Exninfo.iexn  (* Invariant: this exception is always "fixed" as in fix_exn *)
+ 
+ and 'a comput =
+-  | Ongoing of string * (UUID.t * fix_exn * 'a comp ref) Ephemeron.key
++  | Ongoing of string * (UUID.t * fix_exn * 'a comp ref) CEphemeron.key
+   | Finished of 'a
+ 
+ and 'a computation = 'a comput ref
+@@ -70,13 +70,13 @@ and 'a computation = 'a comput ref
+ let unnamed = "unnamed"
+ 
+ let create ?(name=unnamed) ?(uuid=UUID.fresh ()) f x =
+-  ref (Ongoing (name, Ephemeron.create (uuid, f, Pervasives.ref x)))
++  ref (Ongoing (name, CEphemeron.create (uuid, f, Pervasives.ref x)))
+ let get x =
+   match !x with
+   | Finished v -> unnamed, UUID.invalid, id, ref (Val (v,None))
+   | Ongoing (name, x) ->
+-      try let uuid, fix, c = Ephemeron.get x in name, uuid, fix, c
+-      with Ephemeron.InvalidKey ->
++      try let uuid, fix, c = CEphemeron.get x in name, uuid, fix, c
++      with CEphemeron.InvalidKey ->
+         name, UUID.invalid, id, ref (Exn (NotHere name, Exninfo.null))
+ 
+ type 'a value = [ `Val of 'a | `Exn of Exninfo.iexn  ]
+diff --git a/lib/lib.mllib b/lib/lib.mllib
+index f3f6ad8..6805ce4 100644
+--- a/lib/lib.mllib
++++ b/lib/lib.mllib
+@@ -15,6 +15,6 @@ Rtree
+ Heap
+ Unionfind
+ Genarg
+-Ephemeron
++CEphemeron
+ Future
+ RemoteCounter
+diff --git a/plugins/funind/functional_principles_types.ml b/plugins/funind/functional_principles_types.ml
+index c47602b..1820030 100644
+--- a/plugins/funind/functional_principles_types.ml
++++ b/plugins/funind/functional_principles_types.ml
+@@ -291,7 +291,7 @@ let build_functional_principle (evd:Evd.evar_map ref) interactive_proof old_prin
+     (* 	  let dur1 = System.time_difference tim1 tim2 in *)
+     (* 	  Pp.msgnl (str ("Time to compute proof: ") ++ str (string_of_float dur1)); *)
+     (* 	end; *)
+-    get_proof_clean true, Ephemeron.create hook
++    get_proof_clean true, CEphemeron.create hook
+   end
+ 
+ 
+diff --git a/plugins/funind/indfun_common.ml b/plugins/funind/indfun_common.ml
+index aa47e26..2449678 100644
+--- a/plugins/funind/indfun_common.ml
++++ b/plugins/funind/indfun_common.ml
+@@ -163,7 +163,7 @@ let save with_clean id const (locality,_,kind) hook =
+ 	(locality, ConstRef kn)
+   in
+   if with_clean then  Pfedit.delete_current_proof ();
+-  Ephemeron.iter_opt hook (fun f -> Lemmas.call_hook fix_exn f l r);
++  CEphemeron.iter_opt hook (fun f -> Lemmas.call_hook fix_exn f l r);
+   definition_message id
+ 
+ 
+diff --git a/plugins/funind/indfun_common.mli b/plugins/funind/indfun_common.mli
+index 23f1da1..e5c756f 100644
+--- a/plugins/funind/indfun_common.mli
++++ b/plugins/funind/indfun_common.mli
+@@ -47,7 +47,7 @@ val jmeq : unit -> Term.constr
+ val jmeq_refl : unit -> Term.constr
+ 
+ val save : bool -> Id.t -> Safe_typing.private_constants Entries.definition_entry  -> Decl_kinds.goal_kind ->
+-  unit Lemmas.declaration_hook Ephemeron.key -> unit
++  unit Lemmas.declaration_hook CEphemeron.key -> unit
+ 
+ (* [get_proof_clean do_reduce] : returns the proof name, definition, kind and hook and
+    abort the proof
+diff --git a/proofs/proof_global.ml b/proofs/proof_global.ml
+index f22cdbc..541f299 100644
+--- a/proofs/proof_global.ml
++++ b/proofs/proof_global.ml
+@@ -36,7 +36,7 @@ let find_proof_mode n =
+     Errors.error (Format.sprintf "No proof mode named \"%s\"." n)
+ 
+ let register_proof_mode ({name = n} as m) =
+-  Hashtbl.add proof_modes n (Ephemeron.create m)
++  Hashtbl.add proof_modes n (CEphemeron.create m)
+ 
+ (* initial mode: standard mode *)
+ let standard = { name = "No" ; set = (fun ()->()) ; reset = (fun () -> ()) }
+@@ -52,7 +52,7 @@ let _ =
+     optname = "default proof mode" ;
+     optkey = ["Default";"Proof";"Mode"] ;
+     optread = begin fun () ->
+-      (Ephemeron.default !default_proof_mode standard).name
++      (CEphemeron.default !default_proof_mode standard).name
+     end;
+     optwrite = begin fun n ->
+       default_proof_mode := find_proof_mode n
+@@ -83,12 +83,12 @@ type closed_proof = proof_object * proof_terminator
+ 
+ type pstate = {
+   pid : Id.t;
+-  terminator : proof_terminator Ephemeron.key;
++  terminator : proof_terminator CEphemeron.key;
+   endline_tactic : Tacexpr.raw_tactic_expr option;
+   section_vars : Context.section_context option;
+   proof : Proof.proof;
+   strength : Decl_kinds.goal_kind;
+-  mode : proof_mode Ephemeron.key;
++  mode : proof_mode CEphemeron.key;
+   universe_binders: universe_binders option;
+ }
+ 
+@@ -103,11 +103,11 @@ let current_proof_mode = ref !default_proof_mode
+ let update_proof_mode () =
+   match !pstates with
+   | { mode = m } :: _ ->
+-      Ephemeron.iter_opt !current_proof_mode (fun x -> x.reset ());
++      CEphemeron.iter_opt !current_proof_mode (fun x -> x.reset ());
+       current_proof_mode := m;
+-      Ephemeron.iter_opt !current_proof_mode (fun x -> x.set ())
++      CEphemeron.iter_opt !current_proof_mode (fun x -> x.set ())
+   | _ ->
+-      Ephemeron.iter_opt !current_proof_mode (fun x -> x.reset ());
++      CEphemeron.iter_opt !current_proof_mode (fun x -> x.reset ());
+       current_proof_mode := find_proof_mode "No"
+ 
+ (* combinators for the current_proof lists *)
+@@ -215,9 +215,9 @@ let set_proof_mode mn =
+   set_proof_mode (find_proof_mode mn) (get_current_proof_name ())
+ 
+ let activate_proof_mode mode =
+-  Ephemeron.iter_opt (find_proof_mode mode) (fun x -> x.set ())
++  CEphemeron.iter_opt (find_proof_mode mode) (fun x -> x.set ())
+ let disactivate_proof_mode mode =
+-  Ephemeron.iter_opt (find_proof_mode mode) (fun x -> x.reset ())
++  CEphemeron.iter_opt (find_proof_mode mode) (fun x -> x.reset ())
+ 
+ (** [start_proof sigma id str goals terminator] starts a proof of name
+     [id] with goals [goals] (a list of pairs of environment and
+@@ -230,7 +230,7 @@ let disactivate_proof_mode mode =
+ let start_proof sigma id ?pl str goals terminator =
+   let initial_state = {
+     pid = id;
+-    terminator = Ephemeron.create terminator;
++    terminator = CEphemeron.create terminator;
+     proof = Proof.start sigma goals;
+     endline_tactic = None;
+     section_vars = None;
+@@ -242,7 +242,7 @@ let start_proof sigma id ?pl str goals terminator =
+ let start_dependent_proof id ?pl str goals terminator =
+   let initial_state = {
+     pid = id;
+-    terminator = Ephemeron.create terminator;
++    terminator = CEphemeron.create terminator;
+     proof = Proof.dependent_start goals;
+     endline_tactic = None;
+     section_vars = None;
+@@ -375,7 +375,7 @@ let close_proof ~keep_body_ucst_separate ?feedback_id ~now fpl =
+   in
+   { id = pid; entries = entries; persistence = strength;
+     universes = (universes, binders) },
+-  fun pr_ending -> Ephemeron.get terminator pr_ending
++  fun pr_ending -> CEphemeron.get terminator pr_ending
+ 
+ type closed_proof_output = (Term.constr * Safe_typing.private_constants) list * Evd.evar_universe_context
+ 
+@@ -423,11 +423,11 @@ let close_proof ~keep_body_ucst_separate fix_exn =
+ 
+ (** Gets the current terminator without checking that the proof has
+     been completed. Useful for the likes of [Admitted]. *)
+-let get_terminator () = Ephemeron.get ( cur_pstate() ).terminator
++let get_terminator () = CEphemeron.get ( cur_pstate() ).terminator
+ let set_terminator hook =
+   match !pstates with
+   | [] -> raise NoCurrentProof
+-  | p :: ps -> pstates := { p with terminator = Ephemeron.create hook } :: ps
++  | p :: ps -> pstates := { p with terminator = CEphemeron.create hook } :: ps
+ 
+ 
+ 
+diff --git a/stm/asyncTaskQueue.ml b/stm/asyncTaskQueue.ml
+index cc97326..5f018ec 100644
+--- a/stm/asyncTaskQueue.ml
++++ b/stm/asyncTaskQueue.ml
+@@ -314,7 +314,7 @@ module Make(T : Task) = struct
+         let response = slave_respond request in
+         report_status "Idle";
+         marshal_response (Option.get !slave_oc) response;
+-        Ephemeron.clear ()
++        CEphemeron.clear ()
+       with
+       | MarshalError s ->
+         pr_err ("Fatal marshal error: " ^ s); flush_all (); exit 2
+diff --git a/toplevel/obligations.ml b/toplevel/obligations.ml
+index 314789c..26aa7f9 100644
+--- a/toplevel/obligations.ml
++++ b/toplevel/obligations.ml
+@@ -323,11 +323,11 @@ type program_info_aux = {
+   prg_sign: named_context_val;
+ }
+ 
+-type program_info = program_info_aux Ephemeron.key
++type program_info = program_info_aux CEphemeron.key
+ 
+ let get_info x =
+-  try Ephemeron.get x
+-  with Ephemeron.InvalidKey ->
++  try CEphemeron.get x
++  with CEphemeron.InvalidKey ->
+     Errors.anomaly Pp.(str "Program obligation can't be accessed by a worker")
+ 
+ let assumption_message = Declare.assumption_message
+@@ -460,7 +460,7 @@ let subst_deps_obl obls obl =
+ 
+ module ProgMap = Map.Make(Id)
+ 
+-let map_replace k v m = ProgMap.add k (Ephemeron.create v) (ProgMap.remove k m)
++let map_replace k v m = ProgMap.add k (CEphemeron.create v) (ProgMap.remove k m)
+ 
+ let map_keys m = ProgMap.fold (fun k _ l -> k :: l) m []
+ 
+@@ -674,7 +674,7 @@ let init_prog_info ?(opaque = false) sign n b t ctx deps fixkind notations obls
+ let map_cardinal m =
+   let i = ref 0 in
+   ProgMap.iter (fun _ v ->
+-		if snd (Ephemeron.get v).prg_obligations > 0 then incr i) m;
++		if snd (CEphemeron.get v).prg_obligations > 0 then incr i) m;
+   !i
+ 
+ exception Found of program_info
+@@ -682,7 +682,7 @@ exception Found of program_info
+ let map_first m =
+   try
+     ProgMap.iter (fun _ v ->
+-		  if snd (Ephemeron.get v).prg_obligations > 0 then
++		  if snd (CEphemeron.get v).prg_obligations > 0 then
+ 		    raise (Found v)) m;
+     assert(false)
+   with Found x -> x
+@@ -1008,7 +1008,7 @@ let add_definition n ?term t ctx ?(implicits=[]) ?(kind=Global,false,Definition)
+   else (
+     let len = Array.length obls in
+     let _ = Flags.if_verbose msg_info (info ++ str ", generating " ++ int len ++ str " obligation(s)") in
+-      progmap_add n (Ephemeron.create prg);
++      progmap_add n (CEphemeron.create prg);
+       let res = auto_solve_obligations (Some n) tactic in
+ 	match res with
+ 	| Remain rem -> Flags.if_verbose (fun () -> show_obligations ~msg:false (Some n)) (); res
+@@ -1022,7 +1022,7 @@ let add_mutual_definitions l ctx ?tactic ?(kind=Global,false,Definition) ?(reduc
+     (fun  (n, b, t, imps, obls) ->
+      let prg = init_prog_info sign ~opaque n (Some b) t ctx deps (Some fixkind)
+        notations obls imps kind reduce hook 
+-     in progmap_add n (Ephemeron.create prg)) l;
++     in progmap_add n (CEphemeron.create prg)) l;
+     let _defined =
+       List.fold_left (fun finished x ->
+ 	if finished then finished

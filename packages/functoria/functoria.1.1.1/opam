@@ -1,0 +1,32 @@
+opam-version: "1.2"
+name:         "functoria"
+maintainer:   "Gabriel Radanne <drupyog@zoho.com>"
+authors:      [ "Thomas Gazagnaire"
+                "Anil Madhavapeddy"
+                "Dave Scott"
+                "Thomas Leonard"
+                "Gabriel Radanne" ]
+homepage:     "https://github.com/mirage/functoria"
+bug-reports:  "https://github.com/mirage/functoria/issues"
+dev-repo:     "https://github.com/mirage/functoria.git"
+license:      "ISC"
+
+build: [
+  ["./configure" "--prefix=%{prefix}%" "--%{ounit:enable}%-tests"]
+  [make]
+]
+build-test: [
+  [make "test"]
+]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "functoria"]
+depends: [
+  "ocamlfind" {build}
+  "base-unix"
+  "cmdliner" {>= "0.9.8"}
+  "rresult"
+  "fmt"
+  "ocamlgraph"
+  "ounit" {test}
+]
+available: [ocaml-version >= "4.01"]

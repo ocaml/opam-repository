@@ -8,16 +8,22 @@ build: [
   ["./configure"]
   [make "all"]
   [make "test"]
-  [make "install" "STUBLIBDIR=%{lib}%/stublibs" "LIBDIR=%{lib}%/dbm"]
-  ["cp" "META" "%{lib}%/dbm"]
 ]
 depends: ["ocamlfind"]
 depexts: [
   [["debian"] ["libgdbm-dev"]]
   [["ubuntu"] ["libgdbm-dev"]]
+  [["nixpkgs"] ["gdbm"]]
+  [["centos"] ["gdbm-devel"]]
+  [["rhel"] ["gdbm-devel"]]
+  [["fedora"] ["gdbm-devel"]]
 ]
 patches: [
   "hasgotfix.patch"
   "include_fix.patch"
   "mkdir-stublibs.patch"
+]
+install: [
+  [make "install" "STUBLIBDIR=%{lib}%/stublibs" "LIBDIR=%{lib}%/dbm"]
+  ["cp" "META" "%{lib}%/dbm"]
 ]
