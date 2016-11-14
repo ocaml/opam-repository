@@ -1,0 +1,52 @@
+opam-version: "1.2"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "https://github.com/fxfactorial/ocaml-radare2"
+bug-reports: "https://github.com/fxfactorial/ocaml-radare2/issues"
+license: "BSD-3-clause"
+dev-repo: "https://github.com/fxfactorial/ocaml-radare2.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: ["ocamlfind" "remove" "radare2"]
+depends: [
+  "base-unix"
+  "oasis" {build & >= "0.4"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  ("yojson" {>= "1.3.2"} | "yojson-android" {>= "1.3.2"})
+]
+depexts: [
+  [["debian"] ["radare2"]]
+  [["homebrew" "osx"] ["radare2"]]
+  [["ubuntu"] ["radare2"]]
+]
+available: [ocaml-version >= "4.03.0"]
+messages: [
+  "You need to have r2 (radare2) installed and in your path"
+  "Use `opam depext radare2` to get it installed with your system package manager"
+]
+post-messages: [
+  "Play with radare2 interactively from within an OCaml repl like utop"
+  "Example in utop:"
+  ""
+  "#require \"radare2\";;"
+  "
+let result = R2.with_command_j ~cmd:\"/j chown\" \"/bin/ls\";;
+val result : Yojson.Basic.json =
+`List 
+  [`Assoc
+       [(\"offset\", `Int 4294987375); (\"id:\", `Int 0);
+        (\"data\", `String \"ywritesecuritychownfile_inheritdi\")]]
+  "
+    {success}
+]

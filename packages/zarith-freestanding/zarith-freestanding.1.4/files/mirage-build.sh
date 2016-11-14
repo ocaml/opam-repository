@@ -8,6 +8,10 @@ export PKG_CONFIG_PATH
 # fall back to compiling with the default flags instead!
 CFLAGS="$(pkg-config --cflags gmp-freestanding ocaml-freestanding)" \
 LDFLAGS="$(pkg-config --libs gmp-freestanding)" \
-./configure
+./configure -gmp
 
-make
+if [ `uname -s` = "FreeBSD" ]; then
+    gmake
+else
+    make
+fi

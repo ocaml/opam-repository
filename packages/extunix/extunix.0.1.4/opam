@@ -1,0 +1,47 @@
+opam-version: "1.2"
+maintainer: "ygrek@autistici.org"
+homepage: "http://extunix.forge.ocamlcore.org/"
+dev-repo: "git://github.com/ygrek/extunix.git"
+bug-reports: "https://github.com/ygrek/extunix/issues"
+doc: "http://extunix.forge.ocamlcore.org/api/index.html"
+license: "LGPL-2.1 with OCaml linking exception"
+authors: [ "ygrek"
+           "Sylvain Le Gall"
+           "Stéphane Glondu"
+           "Kaustuv Chaudhuri"
+           "Joshua Smith"
+           "Niki Yoshiuchi"
+           "Gerd Stolpmann"
+           "Goswin von Brederlow"
+           "Andre Nathan"
+           "Zhenya Lykhovyd"
+           "Mehdi Dogguy"
+           "Roman Vorobets"
+           "Pierre Chambart"
+           "Dmitry Grebeniuk"
+           "François Bobot" ]
+build: [
+  ["ocaml" "setup.ml" "-configure" "--%{ounit:enable}%-tests" "--prefix" prefix] {ocaml-version >= "4.02.0"}
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix] {ocaml-version < "4.02.0"}
+  ["ocaml" "setup.ml" "-build"]
+]
+install: [
+  ["ocaml" "setup.ml" "-install"]
+]
+build-doc: [
+  ["ocaml" "setup.ml" "-doc"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: [
+  ["ocamlfind" "remove" "extunix"]
+]
+depends: [
+  "ocamlfind" {build}
+  "camlp4" {build}
+  "ounit" {test & >= "1.0.3"}
+  "base-bigarray"
+  "base-unix"
+  "ocamlbuild" {build}
+]

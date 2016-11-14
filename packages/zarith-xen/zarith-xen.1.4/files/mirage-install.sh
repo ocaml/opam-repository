@@ -13,6 +13,9 @@ CFLAGS="`pkg-config --cflags gmp-xen mirage-xen-posix` -O2 -pedantic -fomit-fram
 export CFLAGS
 ./configure
 make
+
 cp libzarith.a "$PREFIX/lib/zarith/libzarith-xen.a"
-mv "$PREFIX/lib/zarith/META" "$PREFIX/lib/zarith/META.old"
-cp META "$PREFIX/lib/zarith/META"
+
+cat >>"$PREFIX/lib/zarith/META" <<EOM
+xen_linkopts = "-lzarith-xen -L@gmp-xen -lgmp-xen"
+EOM
