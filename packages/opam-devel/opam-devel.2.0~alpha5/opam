@@ -10,7 +10,7 @@ authors: [
   "Vincent Bernardoff  <vb@luminar.eu.org>"
   "Roberto Di Cosmo    <roberto@dicosmo.org>"
 ]
-homepage: "https://opam.ocaml.org/"
+homepage: "https://opam.ocaml.org"
 bug-reports: "https://github.com/ocaml/opam/issues"
 dev-repo: "https://github.com/ocaml/opam.git"
 build: [
@@ -18,7 +18,14 @@ build: [
   [make name]
   [make "%{name}%.install"]
 ]
+build-test: [make "tests"]
 depends: [
-  "opam-core" {= "2.0~alpha4"}
+  "opam-client" {= "2.0~alpha5"}
+  "cmdliner" {>= "0.9.8"}
+]
+post-messages: [
+"The development version of opam has been successfuly compiled into %{lib}%/%{name}%. You should not run it from there, please install the binaries to your PATH, e.g. with
+    sudo cp %{lib}%/%{name}%/* /usr/local/bin"
+  {success}
 ]
 available: ocaml-version >= "4.01.0"
