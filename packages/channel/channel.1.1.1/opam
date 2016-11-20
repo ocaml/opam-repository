@@ -7,12 +7,12 @@ license: "ISC"
 dev-repo: "https://github.com/mirage/mirage-channel.git"
 bug-reports: "https://github.com/mirage/mirage-channel/issues"
 tags: ["org:mirage"]
-available: [ ocaml-version >= "4.01.0"]
+available: [ocaml-version >= "4.01.0"]
 depends: [
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "topkg" {build} 
-  "mirage-types-lwt"
+  "topkg" {build}
+  "mirage-types-lwt" {< "3.0.0"}
   "io-page"
   "lwt" {>= "2.4.7"}
   "cstruct"
@@ -21,7 +21,13 @@ depends: [
   "ounit" {test}
   "mirage-flow" {test}
 ]
-conflicts: [ "tcpip" {<"2.5.0"} ]
-depopts: []
-build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
-build-test: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ]
+conflicts: [
+  "tcpip" {< "2.5.0"}
+]
+
+build: [
+  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+]
+build-test: [
+  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"
+]
