@@ -5,7 +5,10 @@ homepage:      "https://github.com/mirage/ocaml-gnt"
 bug-reports:   "https://github.com/mirage/ocaml-gnt/issues"
 dev-repo:      "https://github.com/mirage/ocaml-gnt.git"
 build: [
-  [make]
+  [make "TESTS_FLAG=--disable-tests"]
+]
+build-test: [
+  [make "TESTS_FLAG=--enable-tests"]
 ]
 install: [
   [make "PREFIX=%{prefix}%" "install"]
@@ -14,7 +17,9 @@ remove: [
   [make "PREFIX=%{prefix}%" "uninstall"]
 ]
 depends: [
-  "ounit"
+  "ocamlfind"      {build}
+  "ocamlbuild"     {build}
+  "ounit"          {test}
   "cstruct" {>= "1.0.1"}
   "io-page"
   "lwt" {>="2.4.3"}
