@@ -1,0 +1,30 @@
+opam-version: "1.2"
+maintainer: "Romain Calascibetta <romain.calascibetta@gmail.com>"
+authors: ["Romain Calascibetta" "Christophe Troestler"]
+homepage: "https://github.com/Cumulus/Syndic"
+bug-reports: "https://github.com/Cumulus/Syndic/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Cumulus/Syndic.git"
+build: [
+  ["./configure" "--prefix=%{prefix}%"]
+  [make]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["./configure" "--enable-tests" "--prefix=%{prefix}%"]
+  [make "test"]
+]
+build-doc: ["ocaml" "setup.ml" "-doc"]
+remove: ["ocamlfind" "remove" "syndic"]
+depends: [
+  "ssl" {test}
+  "tls" {test}
+  "cohttp" {test}
+  "lwt" {test}
+  "ocamlfind" {build}
+  "oasis" {build}
+  "uri" {>= "1.9"}
+  "xmlm" {>= "1.2.0"}
+  "ptime"
+]
+available: [ocaml-version >= "4.01"]

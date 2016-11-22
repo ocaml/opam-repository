@@ -1,19 +1,37 @@
-opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+opam-version: "1.2"
+maintainer: "fabrice.le_fessant@ocamlpro.com"
+authors: [
+    "Robert Julien"
+    "Von Tokarski Guillaume"
+    "Filliatre Jean-Christophe"
+    "Conchon Sylvain"
+    "Le Fessant Fabrice"
+]
 substs: ["opam.patch"]
+homepage: "http://ocamlviz.forge.ocamlcore.org/"
+# dev-repo: "svn://svn.forge.ocamlcore.org/svn/ocamlviz/"
+bug-reports: "https://forge.ocamlcore.org/tracker/?atid=503&group_id=104&func=browse"
+license: "LGPL-2.0"
 build: [
   ["mkdir" "-p" "%{lib}%/ocamlviz/camlp4"]
   ["autoconf"]
   ["./configure" "--prefix" prefix]
   [make]
+]
+install: [
   [make "install" "BINDIR=%{bin}%" "MANDIR=%{man}%" "OCAMLLIB=%{lib}%/ocamlviz"]
+]
+remove: [
+  ["rm" "-rf"
+    "%{bin}%/ocamlviz-ascii"
+    "%{bin}%/ocamlviz-gui"
+    "%{man}%/man1/ocamlviz.1"
+    "%{lib}%/ocamlviz"]
 ]
 depends: [
   "cairo2"
   "lablgtk"
+  "conf-autoconf"
+  "camlp4"
 ]
 patches: ["opam.patch"]
-depexts: [
-  [["ubuntu"]["autoconf"]]
-  [["debian"]["autoconf"]]
-]

@@ -4,12 +4,18 @@ authors: ["Xavier Clerc"]
 homepage: "http://bisect.x9c.fr/"
 license: "GPL v3"
 build: [
-  ["sh" "configure" "-ocaml-prefix" prefix "-ocamlfind" "%{bin}%/ocamlfind"] 
+  ["sh" "configure" "-ocaml-prefix" prefix "-ocamlfind" "%{bin}%/ocamlfind"]
     {ocaml-version != "4.00.1"}
-  ["sh" "configure" "-ocaml-prefix" prefix "-ocamlfind" "%{bin}%/ocamlfind" "-ppx"]
-    {ocaml-version = "4.00.1"}
+  [
+    "sh"
+    "configure"
+    "-ocaml-prefix"
+    prefix
+    "-ocamlfind"
+    "%{bin}%/ocamlfind"
+    "-ppx"
+  ] {ocaml-version = "4.00.1"}
   [make "all"]
-  [make "install"]
 ]
 remove: [["ocamlfind" "remove" "bisect"]]
 depends: [
@@ -21,3 +27,4 @@ patches: [
   "install-thread.patch"
   "opam.patch"
 ]
+install: [make "install"]

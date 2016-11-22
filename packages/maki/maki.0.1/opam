@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer: "simon.cruanes@inria.fr"
+authors: "Simon Cruanes"
+homepage: "https://github.com/c-cube/maki/"
+bug-reports: "https://github.com/c-cube/maki/issues/"
+doc: "http://cedeela.fr/~simon/software/maki/"
+tags: ["incremental" "persistent" "memoization"]
+dev-repo: "https://github.com/c-cube/maki.git"
+build: [
+  ["./configure" "--prefix" prefix "--%{yojson:enable}%-yojson"]
+  [make "build"]
+]
+install: [make "install"]
+build-test: [make "test"]
+build-doc: [make "doc"]
+remove: [
+  ["ocamlfind" "remove" "maki"]
+  ["rm" "%{bin}%/maki_gc"]
+]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "result"
+  "lwt" { >= "2.4.7" }
+  "base-unix"
+  "bencode"
+  "sha"
+  "base-threads"
+]
+depopts: "yojson"
+available: [ocaml-version >= "4.02.0"]

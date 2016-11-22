@@ -14,16 +14,16 @@ build: [
 build-test: [
   ["ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
                           "native-dynlink=%{ocaml-native-dynlink}%"]
-  ["sh" "-c" "if test -f ./feedback.native; then ./feedback.native; else ./feedback.byte; fi"]
+  ["sh" "-exc" "if test -f ./feedback.native; then ./feedback.native; else ./feedback.byte; fi"]
 ]
 
 depends: [
   "ocamlfind" {build}
-  "cstruct" {>= "1.6.0"}
+  "cstruct" {>= "1.6.0" & < "2.0.0"}
   "type_conv"
   "sexplib" {< "113.01.00"}
-  "nocrypto" {>= "0.5.0"}
+  "nocrypto" {>= "0.5.0" & < "0.5.3"}
   "astring"
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.01.0" ]
+available: [ ocaml-version >= "4.01.0" & ocaml-version < "4.03" ]
