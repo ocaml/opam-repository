@@ -13,12 +13,12 @@ OBJDUMP=
 OBJDUMPS=
 
 check_objdump() {
-    [ -n $OBJDUMP ] && FOUND=1
+    [ -n "$OBJDUMP" ] && FOUND=1
 }
 
 
 add_target() {
-    if [ -z $TARGETS ]; then
+    if [ -z "$TARGETS" ]; then
         TARGETS="\\\"${1}\\\""
     else
         TARGETS="\\\"${1}\\\"; $TARGETS"
@@ -56,7 +56,7 @@ fi
 check_objdump
 collect_targets
 
-if [ -z $FOUND ]; then
+if [ -z "$FOUND" ]; then
     echo "Failed to find objdump executable(s)"
     exit 1
 fi

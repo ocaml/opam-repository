@@ -9,11 +9,13 @@ dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
 license: "MIT"
 build: [
   ["./configure"
-                 "--prefix=%{prefix}%"
-                 "--with-cxx=`which clang++`"
-                 "--with-llvm-version=3.4" {conf-env-travis:active}
-                 "--with-llvm-version=%{conf-llvm:version}%" {!conf-env-travis:active}
-                 "--enable-llvm"]
+  "--prefix=%{prefix}%"
+  "--with-cxx=`which clang++`"
+  "--with-llvm-version=%{conf-bap-llvm:version}%" {conf-bap-llvm:installed}
+  "--with-llvm-version=%{conf-llvm:version}%"     {conf-llvm:installed}
+  "--with-llvm-config=%{conf-bap-llvm:config}%" {conf-bap-llvm:installed}
+  "--with-llvm-config=%{conf-llvm:config}%"     {conf-llvm:installed}
+  "--enable-llvm"]
   [make]
 ]
 
@@ -28,7 +30,7 @@ remove: [
 depends: [
     "bap-std"
     "cmdliner"
-    "conf-llvm"
+    ("conf-bap-llvm" | "conf-llvm")
     "conf-env-travis"
 ]
 
