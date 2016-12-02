@@ -1,0 +1,24 @@
+diff -Naur camlidl-1.05/runtime/Makefile.unix camlidl-1.05-patched/runtime/Makefile.unix
+--- camlidl-1.05/runtime/Makefile.unix	2000-08-19 12:05:00.000000000 +0100
++++ camlidl-1.05-patched/runtime/Makefile.unix	2016-12-02 11:26:21.847071889 +0000
+@@ -14,7 +14,11 @@
+ 
+ OBJS=idlalloc.o comintf.o comerror.o
+ 
+-all: libcamlidl.a
++all: dllcamlidl.so libcamlidl.a
++
++dllcamlidl.so: $(OBJS)
++	- rm -f $@
++	ocamlmklib -o camlidl  $(OBJS) 
+ 
+ libcamlidl.a: $(OBJS)
+ 	- rm -f $@
+@@ -24,6 +28,7 @@
+ install:
+ 	cp camlidlruntime.h $(OCAMLLIB)/caml/camlidlruntime.h
+ 	cp libcamlidl.a $(OCAMLLIB)/libcamlidl.a
++	cp dllcamlidl.so $(OCAMLLIB)/stublibs/dllcamlidl.so
+ 	cd $(OCAMLLIB); $(RANLIB) libcamlidl.a
+ 
+ clean:

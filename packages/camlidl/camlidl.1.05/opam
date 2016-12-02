@@ -12,27 +12,8 @@ build: [
   ["mv" "config/Makefile.win32" "config/Makefile"] {os = "win32"}
   [make "all"]
 ]
-install: [
-  ["mkdir" "-p" bin "%{lib}%/camlidl" "%{lib}%/camlidl/caml"]
-  [make "install" "BINDIR=%{bin}%" "OCAMLLIB=%{lib}%/camlidl"]
-]
-remove: [
-  ["rm" "-r" "-f"
-	"%{bin}%/camlidl"     { os != "win32" }
-	"%{bin}%/camlidl.exe" { os  = "win32" }
-	"%{lib}%/camlidl/caml"
-	"%{lib}%/camlidl/com.a"   { os != "win32" }
-	"%{lib}%/camlidl/com.lib" { os  = "win32" }
-	"%{lib}%/camlidl/com.cma"
-	"%{lib}%/camlidl/com.cmxa"
-	"%{lib}%/camlidl/com.cmi"
-	"%{lib}%/camlidl/libcamlidl.a"   { os != "win32" }
-	"%{lib}%/camlidl/libcamlidl.lib" { os  = "win32" }
-	"%{lib}%/camlidl/cfactory.obj"   { os  = "win32" }
-  ]
-]
 patches: [
   "cpp-location.diff"
   "disable-fatal-warn-31.diff" { ocaml-version >= "4.03" }
+  "build-dll.diff"
 ]
-install: [make "install" "BINDIR=%{bin}%" "OCAMLLIB=%{lib}%/camlidl"]
