@@ -1,0 +1,55 @@
+opam-version: "1.2"
+maintainer: "francois.berenger@inria.fr"
+authors: "Pippijn van Steenhoven"
+homepage: "https://github.com/Antique-team/clangml"
+bug-reports: "https://github.com/Antique-team/clangml/issues"
+dev-repo: "https://github.com/Antique-team/clangml.git"
+build: [
+  ["sh" "-c" "test -d ${HOME}/usr/clang39 ||
+              ( wget http://llvm.org/releases/3.9.0/clang+llvm-3.9.0-x86_64-apple-darwin.tar.xz &&
+                tar -xf clang+llvm-3.9.0-x86_64-apple-darwin.tar.xz &&
+                mkdir -p ${HOME}/usr/clang39 && mv clang+llvm-3.9.0-x86_64-apple-darwin/* ${HOME}/usr/clang39 )"] {os = "darwin"}
+  [make]
+]
+install: [make "install"]
+remove: [make "uninstall"]
+depends: [
+  "dolog"
+  "batteries"
+  "deriving"
+  "ANSITerminal"
+  "base-unix"
+  "camlp4" {build}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "conf-wget" {build}
+]
+depexts: [
+  [["archlinux"]
+      ["binutils"
+       "boost"]]
+  [["gentoo"]
+      ["dev-libs/boost"
+       "sys-devel/binutils"
+       "sys-devel/binutils-libs"]]
+  [["debian"]
+      ["binutils-dev"
+       "clang-3.9"
+       "libboost-dev"
+       "libclang-3.9-dev"
+       "llvm-3.9-dev"
+       "libncurses-dev"]]
+  [["ubuntu"]
+      ["binutils-dev"
+       "clang-3.9"
+       "libboost-dev"
+       "libclang-3.9-dev"
+       "llvm-3.9-dev"
+       "libncurses-dev"]]
+  [["osx" "homebrew"]
+      ["boost160"]]
+]
+available: [ocaml-version >= "4.03.0"]
+post-messages: [
+  "This package requires llvm-3.9, clang-3.9, boost and binutils" {failure}
+]

@@ -1,0 +1,35 @@
+opam-version: "1.2"
+maintainer: "Sylvain Le Gall <sylvain@le-gall.net>>"
+authors: [ "Sylvain Le Gall" ]
+license: "LGPL-2.1 with OCaml linking exception"
+homepage: "https://github.com/gildor478/opam-build-revdeps"
+dev-repo: "git://github.com/gildor478/opam-build-revdeps.git"
+bug-reports: "https://github.com/gildor478/opam-build-revdeps/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/opam-build-revdeps/_oasis_remove_.ml"
+    "%{etc}%/opam-build-revdeps"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "base-unix" {build}
+  "calendar" {build & >= "2.03"}
+  "cmdliner" {build & >= "0.9"}
+  "fileutils" {build & >= "0.5.1"}
+  "jingoo" {build & >= "1.2"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build & >= "1.3.1"}
+  "opam-lib" {build & = "1.2.2"}
+  "re" {build & >= "1.7"}
+  "uuidm" {build & >= "0.9.6"}
+  "ocamlify" {build}
+]
+available: [ ocaml-version >= "3.12.1" ]

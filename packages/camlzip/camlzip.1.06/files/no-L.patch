@@ -1,0 +1,52 @@
+commit 66bf764adf66ded8c47717b816742fbf2df09b12
+Author: Thomas Gazagnaire <thomas@gazagnaire.org>
+Date:   Tue Nov 15 10:40:40 2016 +0000
+
+    Do not add -L<dir> to the cm{x}a
+    
+    This breaks on OSX when using libffi and ctypes, as ctypes requires
+    the version of libffi installed by brew, not the system one (installed
+    in /usr/lib`).
+    
+    As we have no way to keep the order of linker flags (due to
+    https://caml.inria.fr/mantis/view.php?id=7150) it is safer to just not
+    use -L if possible. In the case of camlzip, this doesn't seem needed.
+
+diff --git a/Makefile b/Makefile
+index 8f2fba9..37daba2 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,10 +3,6 @@
+ # The name of the Zlib library.  Usually -lz
+ ZLIB_LIB=-lz
+ 
+-# The directory containing the Zlib library (libz.a or libz.so)
+-ZLIB_LIBDIR=/usr/lib
+-# ZLIB_LIBDIR=/usr/local/lib
+-
+ # The directory containing the Zlib header file (zlib.h)
+ ZLIB_INCLUDE=/usr/include
+ # ZLIB_INCLUDE=/usr/local/include
+@@ -36,19 +32,16 @@ all: libcamlzip.a zip.cma
+ allopt: libcamlzip.a zip.cmxa $(CMXS)
+ 
+ zip.cma: $(OBJS)
+-	$(OCAMLMKLIB) -o zip -oc camlzip $(OBJS) \
+-            -L$(ZLIB_LIBDIR) $(ZLIB_LIB)
++	$(OCAMLMKLIB) -o zip -oc camlzip $(OBJS) $(ZLIB_LIB)
+ 
+ zip.cmxa: $(OBJS:.cmo=.cmx)
+-	$(OCAMLMKLIB) -o zip -oc camlzip $(OBJS:.cmo=.cmx) \
+-            -L$(ZLIB_LIBDIR) $(ZLIB_LIB)
++	$(OCAMLMKLIB) -o zip -oc camlzip $(OBJS:.cmo=.cmx) $(ZLIB_LIB)
+ 
+ zip.cmxs: zip.cmxa
+ 	$(OCAMLOPT) -shared -linkall -I ./ -o $@ $^
+ 
+ libcamlzip.a: $(C_OBJS)
+-	$(OCAMLMKLIB) -oc camlzip $(C_OBJS) \
+-            -L$(ZLIB_LIBDIR) $(ZLIB_LIB)
++	$(OCAMLMKLIB) -oc camlzip $(C_OBJS) $(ZLIB_LIB)
+ 
+ .SUFFIXES: .mli .ml .cmo .cmi .cmx
+ 
