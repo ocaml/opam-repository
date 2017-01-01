@@ -17,7 +17,7 @@ for llvm_config in llvm-config-$version llvm-config-mp-$version $brew_llvm_confi
                 "shared")
                     patch -p1 < link.patch;;
                 "static")
-                    continue;;
+                    ;;
                 *)
                     echo "Error: '$llvm_config' should have returned either shared or static"
                     exit 1;;
