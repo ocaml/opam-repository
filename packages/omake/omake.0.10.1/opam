@@ -14,8 +14,17 @@ bug-reports: "https://github.com/ocaml-omake/issues"
 
 build: [
   ["./configure" "-prefix" "%{prefix}%"]
-  [make]
-  [make "install"]
+  [make "PREFIX=%{prefix}%"]
+]
+
+install: [
+  [make "install" "PREFIX=%{prefix}%"]
+]
+
+remove: [
+  [ "rm" "-f" "%{prefix}%/bin/omake" ]
+  [ "rm" "-f" "%{prefix}%/bin/osh" ]
+  [ "rm" "-rf" "%{prefix}%/lib/omake" ]
 ]
 
 depends: ["ocamlfind"]

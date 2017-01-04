@@ -4,7 +4,7 @@ used by the default installation of [OPAM](https://opam.ocaml.org/).
 ## How to Contribute
 
 You are welcome to clone this repository and send us pull
-requests. You can find more documentation and useful work-flows at
+requests. You can find more documentation and useful workflows at
 [https://opam.ocaml.org](https://opam.ocaml.org/).
 
 ## License
