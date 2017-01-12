@@ -1,0 +1,27 @@
+opam-version: "1.2"
+maintainer: "Alessandro Strada <alessandro.strada@gmail.com>"
+authors: [ "Vincenzo Ciancia" ]
+license: "GPL"
+homepage: "http://sourceforge.net/apps/mediawiki/ocamlfuse"
+bug-reports: "https://github.com/astrada/ocamlfuse/issues"
+dev-repo: "https://github.com/astrada/ocamlfuse.git"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "Fuse"]
+]
+depends: [
+  "base-bigarray"
+  "base-threads"
+  "base-unix"
+  "camlidl"
+  "ocamlfind" {build}
+]
+depexts: [
+  [["debian"] ["libfuse-dev"]]
+  [["ubuntu"] ["libfuse-dev"]]
+]
+available: [ ocaml-version >= "3.08.0" & os != "darwin" ]
