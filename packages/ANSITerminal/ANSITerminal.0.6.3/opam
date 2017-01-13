@@ -11,10 +11,17 @@ build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
+install: ["ocaml" "setup.ml" "-install"]
 remove: [["ocamlfind" "remove" "ANSITerminal"]]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
   "ocamlfind"
   "ocamlbuild" {build}
+  "ocamlfind" {build}
 ]
-install: ["ocaml" "setup.ml" "-install"]
 available: [ocaml-version < "4.05.0"]
