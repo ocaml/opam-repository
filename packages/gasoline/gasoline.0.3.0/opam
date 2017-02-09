@@ -6,7 +6,7 @@ license: "CeCILL-B"
 homepage: "https://github.com/michipili/gasoline"
 bug-reports: "https://github.com/michipili/gasoline/issues"
 dev-repo: "https://github.com/michipili/gasoline.git"
-ocaml-version: [>= "4.02.0"]
+available: [ ocaml-version >= "4.02.0" ]
 tags: [
   "application"
 ]
@@ -14,6 +14,7 @@ depends: [
   "broken" {>= "0.4.2"}
   "bsdowl" {>= "3.0.0"}
   "camomile" {>= "0.8.5"}
+  "conf-bmake"
   "configuration" {>= "0.4.1"}
   "getopts" {>= "0.3.2"}
   "lemonade" {>= "0.2.1"}
@@ -21,12 +22,10 @@ depends: [
 ]
 build: [
   ["./configure" "--prefix" prefix]
-  ["bmake" "-I%{bsdowl:share}%" "all"] {os != "freebsd"}
-  ["make" "-I%{bsdowl:share}%" "all"]  {os  = "freebsd"}
+  [conf-bmake:path "-I%{bsdowl:share}%" "all"]
 ]
 install: [
-  ["bmake" "-I%{bsdowl:share}%" "install"] {os != "freebsd"}
-  ["make" "-I%{bsdowl:share}%" "install"]  {os  = "freebsd"}
+  [conf-bmake:path "-I%{bsdowl:share}%" "install"]
 ]
 remove: [
   ["ocamlfind" "remove" "gasoline"]

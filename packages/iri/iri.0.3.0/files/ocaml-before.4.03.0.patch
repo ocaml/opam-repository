@@ -1,0 +1,30 @@
+diff --git a/iri_types.ml b/iri_types.ml
+index 491720f..1ca8694 100644
+--- a/iri_types.ml
++++ b/iri_types.ml
+@@ -492,13 +492,13 @@ let normalize_host s =
+   let len = String.length s in
+   if len > 0 then
+     match String.get s 0 with
+-      '[' -> String.uppercase_ascii s (* uppercase hexa *)
+-    | _ -> String.lowercase_ascii s (* lowercase regname *)
++      '[' -> String.uppercase s (* uppercase hexa *)
++    | _ -> String.lowercase s (* lowercase regname *)
+   else
+     s
+ 
+ let normalize_port t =
+-  match String.lowercase_ascii t.scheme, t.port with
++  match String.lowercase t.scheme, t.port with
+     "http", Some 80 -> { t with port = None }
+   | "https", Some 443 -> { t with port = None }
+   | "ftp", Some 21 -> { t with port = None }
+@@ -509,7 +509,7 @@ let normalize_port t =
+ 
+ let normalize_case t =
+   { t with
+-    scheme = String.lowercase_ascii t.scheme ;
++    scheme = String.lowercase t.scheme ;
+     host = map_opt normalize_host t.host ;
+   }
+ 

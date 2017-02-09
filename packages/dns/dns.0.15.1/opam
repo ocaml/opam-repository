@@ -22,12 +22,12 @@ tags: [
 ]
 dev-repo: "https://github.com/mirage/ocaml-dns.git"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{base-unix:enable}%-lwt" "--%{mirage-types:enable}%-mirage"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-lwt" "--%{mirage-types:enable}%-mirage"]
   ["ocaml" "setup.ml" "-build"]
 ]
 install: ["ocaml" "setup.ml" "-install"]
 build-test: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{base-unix:enable}%-lwt" "--%{mirage-types:enable}%-mirage" "--enable-tests"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-lwt" "--%{mirage-types:enable}%-mirage" "--enable-tests"]
   ["ocaml" "setup.ml" "-build"]
   ["ocaml" "setup.ml" "-test" "-runner" "sequential"]
 ]
@@ -35,7 +35,7 @@ remove: ["ocamlfind" "remove" "dns"]
 depends: [
   "base-bytes"
   "lwt" {>= "2.4.3"}
-  "cstruct" {>= "1.0.1"}
+  "cstruct" {>= "1.0.1" & <"2.0.0"}
   "ocamlfind"
   "re"
   "cmdliner"
@@ -49,10 +49,11 @@ depends: [
 ]
 depopts: [
   "tcpip"
+  "mirage-types"
   "async"
 ]
 conflicts: [
-  "mirage-types" {< "1.2.0"}
+  "mirage-types" {< "1.2.0" & >"3.0.0"}
   "async" {< "112.24.00"}
 ]
 available: [ocaml-version >= "4.00.0"]

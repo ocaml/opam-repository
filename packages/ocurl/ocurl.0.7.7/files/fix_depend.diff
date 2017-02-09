@@ -1,0 +1,19 @@
+commit fbe426ff8543050b6acd00ca0572024d656b4694 (HEAD, master)
+Author: ygrek <ygrek@autistici.org>
+Date:   Mon May 16 23:06:29 2016 +0300
+
+    Makefile: fix build on OCaml < 4.02.0
+
+diff --git a/Makefile.in b/Makefile.in
+index 8990bdf..dc1d2f0 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -158,7 +158,7 @@ distclean: clean
+ 		@rm -f Makefile
+ 
+ depend:
+-		@$(OCAMLDEP) *.mli *.ml > .depend
++		@$(OCAMLDEP) *.mli $(filter-out errors.ml print_ext.ml, $(wildcard *.ml)) > .depend
+ 
+ ifeq ($(wildcard .depend),.depend)
+ ifneq ($(MAKECMDGOALS),clean)

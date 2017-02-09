@@ -1,0 +1,22 @@
+opam-version: "1.2"
+name: "bap-objdump"
+version: "1.1.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure" "--prefix=%{prefix}%"
+                 "--enable-objdump"
+                 "--objdump-targets=%{conf-binutils:targets}%"
+                 "--objdump-path=%{conf-binutils:objdump}%"
+                 ]
+  [make]
+]
+install: [[make "install"]]
+remove: [["ocamlfind" "remove" "bap-plugin-objdump"]
+	 ["bapbundle" "remove" "objdump.plugin"]
+]
+depends: ["bap-std" "re" "cmdliner" "conf-binutils"]

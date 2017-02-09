@@ -1,0 +1,27 @@
+opam-version: "1.2"
+maintainer: "Louis Roché <louis@louisroche.net>"
+authors: "Louis Roché <louis@louisroche.net>"
+homepage: "https://github.com/Khady/slack-backup"
+bug-reports: "https://github.com/Khady/slack-backup/issues"
+dev-repo: "git+https://github.com/Khady/slack-backup.git"
+license: "MIT"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: [
+  "ocaml" "%{etc}%/slack-backup/_oasis_remove_.ml" "%{etc}%/slack-backup"
+]
+depends: [
+  "cmdliner" {build}
+  "ocamlfind" {build}
+  "result"
+  "slacko"
+]
+available: [ ocaml-version >= "4.02.1" ]

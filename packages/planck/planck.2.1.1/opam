@@ -1,21 +1,30 @@
-opam-version: "1"
+opam-version: "1.2"
+version: "2.1.1"
+authors: "Jun Furuse"
 maintainer: "jun.furuse@gmail.com"
-homepage: "https://bitbucket.org/camlspotter/planck"
+homepage: "https://bitbucket.org/camlspotter/planck/"
+bug-reports: "https://bitbucket.org/camlspotter/planck/issues?status=new&status=open"
+dev-repo: "hg://https://bitbucket.org/camlspotter/planck"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
-  ["sh" "-c" "ocaml setup.ml -build || :"]
-  ["env" "PREFIX=%{prefix}%" "omake" "pa_bind_inline/pa_bind_inline.cmo"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
+  [ "ocaml" "setup.ml" "-configure" "--prefix" prefix ]
+  [ "ocaml" "setup.ml" "-build" ]
 ]
-remove: [["ocamlfind" "remove" "planck"]]
+install: [
+  [ "ocaml" "setup.ml" "-install" ]
+]
+remove: [
+  [ "ocaml" "setup.ml" "-configure" "--prefix" prefix ]
+  [ "ocaml" "setup.ml" "-uninstall" ]
+]
 depends: [
-  "ocamlfind"
-  "sexplib" {>= "108.07.00"}
+  "ocamlfind" { build }
   "type_conv"
-  "spotlib" {>= "2.2.0"}
-  "ocamlgraph" {>= "1.8.2"}
-  "omake"
+  "sexplib" { >= "108.07.00" & < "113.01.00" }
+  "spotlib" { >= "2.2.0" & < "3.0.0" }
+  "ocamlgraph" { >= "1.8.2" }
+  "omake" { build }
   "pa_monad_custom"
 ]
-ocaml-version: [>= "4.00.1"]
+available: [
+  ocaml-version >= "4.00.1" & ocaml-version < "4.03.0"
+]

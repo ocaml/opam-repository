@@ -1,0 +1,28 @@
+opam-version: "1.2"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: [ "Richard Jones"
+           "Christophe Troestler" ]
+license: "LGPL-2.1 with OCaml linking exception"
+homepage: "https://github.com/Chris00/ocaml-csv"
+dev-repo: "https://github.com/Chris00/ocaml-csv.git"
+bug-reports: "https://github.com/Chris00/ocaml-csv/issues"
+tags: [ "database" "science"  ]
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/csv/_oasis_remove_.ml" "%{etc}%/csv"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "base-bytes"
+  "ocamlbuild" {build}
+  "ocamlfind" {build & >= "1.5"}
+]

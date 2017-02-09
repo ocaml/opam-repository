@@ -5,9 +5,17 @@ tags: [
   "org:xapi-project"
 ]
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{lwt:enable}%-lwt" "--%{mirage-net:enable}%-mirage" "--%{async:enable}%-async"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{lwt:enable}%-lwt"
+    "--%{mirage-net:enable}%-mirage"
+    "--%{async:enable}%-async"
+  ]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 remove: [["ocamlfind" "remove" "dns"]]
 depends: [
@@ -19,8 +27,9 @@ depends: [
   "ocamlbuild" {build}
 ]
 depopts: ["lwt" "mirage-net"]
-ocaml-version: [>= "4.00.0"]
 conflicts: [
   "lwt" {< "2.4.1"}
   "mirage-net" {> "0.9.4"}
 ]
+available: ocaml-version >= "4.00.0"
+install: ["ocaml" "setup.ml" "-install"]
