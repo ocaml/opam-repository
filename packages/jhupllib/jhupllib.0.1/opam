@@ -1,0 +1,32 @@
+opam-version: "1.2"
+maintainer: "JHU PL Lab <pl.cs@jhu.edu>"
+authors: "JHU PL Lab <pl.cs@jhu.edu>"
+homepage: "http://www.big-bang-lang.org/"
+bug-reports: "https://github.com/JHU-PL-Lab/jhu-pl-lib/issues"
+license: "Apache"
+dev-repo: "https://github.com/JHU-PL-Lab/jhu-pl-lib.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: ["ocaml" "%{etc}%/jhupllib/_oasis_remove_.ml" "%{etc}%/jhupllib"]
+depends: [
+  "base-threads"
+  "batteries"
+  "monadlib"
+  "oasis" {build & >= "0.4"}
+  "ocaml-monadic"
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {build}
+  "ppx_deriving"
+  "yojson"
+]

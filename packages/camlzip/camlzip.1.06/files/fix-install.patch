@@ -1,0 +1,76 @@
+From e13f6c12aa9f4a17111b21d0874a78d207e0244b Mon Sep 17 00:00:00 2001
+From: Etienne Millon <etienne@cryptosense.com>
+Date: Thu, 1 Sep 2016 11:13:41 +0200
+Subject: [PATCH 1/2] fix-install
+
+---
+ META     |  1 +
+ Makefile | 18 ++++++++++++++----
+ 2 files changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/META b/META
+index cc4c1b3..05c85fa 100644
+--- a/META
++++ b/META
+@@ -2,3 +2,4 @@ version="1.06"
+ requires="unix"
+ archive(byte)="zip.cma"
+ archive(native)="zip.cmxa"
++archive(native,plugin)="zip.cmxs"
+diff --git a/Makefile b/Makefile
+index 1e1503f..8f2fba9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -25,9 +25,15 @@ OCAMLMKLIB=ocamlmklib
+ OBJS=zlib.cmo zip.cmo gzip.cmo
+ C_OBJS=zlibstubs.o
+ 
++NATDYNLINK := $(shell if [ -f `ocamlc -where`/dynlink.cmxa ]; then echo YES; else echo NO; fi)
++
++ifeq "${NATDYNLINK}" "YES"
++CMXS = zip.cmxs
++endif
++
+ all: libcamlzip.a zip.cma
+ 
+-allopt: libcamlzip.a zip.cmxa
++allopt: libcamlzip.a zip.cmxa $(CMXS)
+ 
+ zip.cma: $(OBJS)
+ 	$(OCAMLMKLIB) -o zip -oc camlzip $(OBJS) \
+@@ -37,6 +43,9 @@ zip.cmxa: $(OBJS:.cmo=.cmx)
+ 	$(OCAMLMKLIB) -o zip -oc camlzip $(OBJS:.cmo=.cmx) \
+             -L$(ZLIB_LIBDIR) $(ZLIB_LIB)
+ 
++zip.cmxs: zip.cmxa
++	$(OCAMLOPT) -shared -linkall -I ./ -o $@ $^
++
+ libcamlzip.a: $(C_OBJS)
+ 	$(OCAMLMKLIB) -oc camlzip $(C_OBJS) \
+             -L$(ZLIB_LIBDIR) $(ZLIB_LIB)
+@@ -58,7 +67,7 @@ clean:
+ 
+ install:
+ 	mkdir -p $(INSTALLDIR)
+-	cp zip.cma zip.cmi gzip.cmi zip.mli gzip.mli libcamlzip.a $(INSTALLDIR)
++	cp zip.cma zip.cmi gzip.cmi zlib.cmi zip.mli gzip.mli zlib.mli libcamlzip.a $(INSTALLDIR)
+ 	if test -f dllcamlzip.so; then \
+ 	  cp dllcamlzip.so $(INSTALLDIR); \
+           ldconf=`$(OCAMLC) -where`/ld.conf; \
+@@ -68,10 +77,11 @@ install:
+         fi
+ 
+ installopt:
+-	cp zip.cmxa zip.a zip.cmx gzip.cmx $(INSTALLDIR)
++	cp zip.cmxa $(CMXS) zip.a zip.cmx gzip.cmx zlib.cmx $(INSTALLDIR)
+ 
+ install-findlib:
+-	ocamlfind install zip META *.mli *.a *.cmi *.cma $(wildcard *.cmxa) $(wildcard *.so)
++	ocamlfind install zip META *.mli *.a *.cmi *.cma $(wildcard *.cmx) $(wildcard *.cmxa) $(wildcard *.cmxs) $(wildcard *.so)
++	echo 'directory="../zip"' >> META && ocamlfind install camlzip META
+ 
+ depend:
+ 	gcc -MM -I$(ZLIB_INCLUDE) *.c > .depend
+-- 
+2.9.3
+

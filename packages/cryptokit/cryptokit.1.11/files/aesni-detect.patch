@@ -1,0 +1,46 @@
+From 933fcba1f1851dc3a0e254746373c5c8fb87131c Mon Sep 17 00:00:00 2001
+From: Etienne Millon <etienne@cryptosense.com>
+Date: Fri, 18 Nov 2016 16:15:56 +0100
+Subject: [PATCH] Reliably detect AES-NI
+
+As reported in [1], the original detection code fails on 32 bit
+targets. This improves the patch a bit by falling back to the software
+implementation if CPUID fails.
+
+[1]: https://forge.ocamlcore.org/tracker/index.php?func=detail&aid=1646&group_id=133&atid=628
+---
+ src/aesni.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/src/aesni.c b/src/aesni.c
+index 57a8ae7..f2ff483 100644
+--- a/src/aesni.c
++++ b/src/aesni.c
+@@ -18,16 +18,19 @@
+ 
+ #ifdef __AES__
+ #include <wmmintrin.h>
++#include <cpuid.h>
+ 
+ int aesni_available = -1;
+ 
+ int aesni_check_available(void)
+ {
+-  unsigned int ax, bx, cx, dx;
+-  __asm__ __volatile__ ("cpuid"
+-                        : "=a" (ax), "=b" (bx), "=c" (cx), "=d" (dx)
+-                        : "a" (1));
+-  return (aesni_available = (cx & 0x2000000) != 0);
++  unsigned int eax, ebx, ecx, edx;
++  if(__get_cpuid(1, &eax, &ebx, &ecx, &edx)) {
++    aesni_available = (ecx & 0x2000000) != 0;
++  } else {
++    aesni_available = 0;
++  }
++  return aesni_available;
+ }
+ 
+ static inline __m128i aesni_128_assist(__m128i t1, __m128i t2)
+-- 
+2.10.2
+
