@@ -9,7 +9,12 @@ dev-repo:     "https://github.com/docker/datakit.git"
 doc:          "https://docker.github.io/datakit/"
 
 build: [
-  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "-n" "datakit-github"
+  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "-n" name "--tests" "false"
+]
+
+build-test: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "-n" name "--tests" "true"]
+  ["ocaml" "pkg/pkg.ml" "test"]
 ]
 
 depends: [
@@ -17,14 +22,17 @@ depends: [
   "ocamlbuild" {build}
   "topkg"      {build}
   "cmdliner"
-  "lwt" "asetmap"
+  "lwt" {>= "2.7.0"}
+  "datakit-github"
   "logs" "fmt" "mtime" "asl" "win-eventlog"
-  "uri" {>= "1.8.0"}
   "hvsock" {>= "0.8.1"}
-  "named-pipe" {>= "0.4.0"}
   "hex" "nocrypto" "conduit"
-  "datakit-server" {>= "0.7.0"}
-  "datakit-client" {>= "0.7.0"}
+  "prometheus-app"
+  "uri" {>= "1.8.0"}
+  "protocol-9p" {>= "0.8.0"}
+  "datakit-server" {>= "0.9.0"}
+  "datakit-client" {>= "0.9.0"}
   "github-hooks" {>= "0.1.1"}
-  "github" {>= "2.2.0"}
+  "github" {>= "2.1.0"}
+  "datakit" {test}
 ]
