@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer: "talex5@gmail.com"
+authors: [ "Thomas Leonard" ]
+license: "ISC"
+homepage: "https://github.com/mirage/mirage-logs"
+dev-repo: "https://github.com/mirage/mirage-logs.git"
+bug-reports: "https://github.com/mirage/mirage-logs/issues"
+tags: ["org:mirage"]
+available: [ ocaml-version >= "4.01.0"]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "logs" { >= "0.5.0" }
+  "ptime"
+  "mirage-clock" { >= "1.2.0"}
+  "mirage-profile"
+  "lwt"
+  "alcotest" {test}
+]
+depopts: []
+build: [
+  "ocaml" "pkg/pkg.ml" "build"
+          "--tests" "false"
+          "--pinned" "%{pinned}%" ]
+build-test: [
+  [ "ocaml" "pkg/pkg.ml" "build"
+          "--tests" "true"
+          "--pinned" "%{pinned}%" ]
+  [ "ocaml" "pkg/pkg.ml" "test" ]
+]
