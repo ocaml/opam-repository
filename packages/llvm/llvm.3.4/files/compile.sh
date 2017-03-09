@@ -40,7 +40,8 @@ then
     brew_llvm_config=
 fi
 
-for config in llvm-config-$version llvm-config-mp-$version $brew_llvm_config llvm-config; do
+version_sans_dot=$(echo $version | tr -d .)
+for config in llvm-config-$version llvm-config$version_sans_dot llvm-config-mp-$version $brew_llvm_config llvm-config; do
     case `"$config" --version` in
         $version|$version.*)
             configure
@@ -53,5 +54,5 @@ for config in llvm-config-$version llvm-config-mp-$version $brew_llvm_config llv
     esac
 done
 
-echo "Error: LLVM is not installed."
+echo "Error: LLVM $version is not installed."
 exit 1
