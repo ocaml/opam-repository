@@ -10,14 +10,15 @@ fi
 
 shopt -s nullglob
 
-for llvm_config in llvm-config-$version llvm-config-mp-$version $brew_llvm_config llvm-config; do
+version_sans_dot=$(echo $version | tr -d .)
+for llvm_config in llvm-config-$version llvm-config$version_sans_dot llvm-config-mp-$version $brew_llvm_config llvm-config; do
     case `$llvm_config --version` in
         $version|$version.*)
             case `$llvm_config --shared-mode` in
                 "shared")
                     patch -p1 < link.patch;;
                 "static")
-                    continue;;
+                    ;;
                 *)
                     echo "Error: '$llvm_config' should have returned either shared or static"
                     exit 1;;
@@ -31,5 +32,5 @@ for llvm_config in llvm-config-$version llvm-config-mp-$version $brew_llvm_confi
     esac
 done
 
-echo "Error: LLVM is not installed."
+echo "Error: LLVM $version is not installed."
 exit 1

@@ -1,0 +1,39 @@
+opam-version: "1.2"
+homepage:     "https://github.com/mirleft/ocaml-nocrypto"
+dev-repo:     "https://github.com/mirleft/ocaml-nocrypto.git"
+bug-reports:  "https://github.com/mirleft/ocaml-nocrypto/issues"
+doc:          "https://mirleft.github.io/ocaml-nocrypto/doc"
+authors:      ["David Kaloper <david@numm.org>"]
+maintainer:   "David Kaloper <david@numm.org>"
+license:      "ISC"
+tags:          [ "org:mirage" ]
+available:     [ ocaml-version >= "4.02.0" ]
+
+build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+                "--with-lwt" "%{lwt:installed}%"
+                "--xen" "%{mirage-xen:installed}%"
+                "--freestanding" "%{ocaml-freestanding:installed}%"]
+
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "cpuid" {build}
+  "ocb-stubblr" {build}
+  "ppx_sexp_conv" {build}
+  "ounit" {test}
+  "cstruct"
+  "zarith"
+  "sexplib"
+  ("mirage-no-xen" | ("mirage-xen" & "mirage-entropy" & "zarith-xen"))
+  ("mirage-no-solo5" | ("mirage-solo5" & "mirage-entropy" & "zarith-freestanding"))
+]
+
+depopts: [ "lwt" ]
+conflicts: [
+  "topkg" {<"0.8.0"}
+  "ocb-stubblr" {<"0.1.0"}
+  "cstruct" {<"2.3.0"}
+  "mirage-xen" {<"2.2.0"}
+]
+
