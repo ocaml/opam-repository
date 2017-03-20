@@ -43,7 +43,7 @@ for llvm_config in llvm-config-$version llvm-config${version//./} llvm-config-mp
         $version*)
             shopt -u nullglob
             llvm_libdir=$($llvm_config --libdir)
-            sed -i "s,%%LIBDIR%%,${llvm_libdir}," static-link.patch
+            sed -i.bak "s,%%LIBDIR%%,${llvm_libdir}," static-link.patch
             llvm_save
             llvm_install static
             llvm_install dynamic
