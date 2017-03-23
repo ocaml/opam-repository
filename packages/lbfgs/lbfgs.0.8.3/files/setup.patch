@@ -1,0 +1,31 @@
+diff --git a/setup.ml b/setup.ml
+index b638f37..ff88aea 100644
+--- a/setup.ml
++++ b/setup.ml
+@@ -5244,7 +5244,7 @@ let fortran_lib =
+       (String.concat ", " fortran_compilers);
+     exit 1
+ 
+-let _ = BaseEnv.var_define "fortran_library" (lazy fortran_lib)
++let _ = BaseEnv.var_define "fortran_library" (fun () -> fortran_lib)
+ 
+ let lbfgsb_ver =
+   if Sys.file_exists "src/Lbfgsb.3.0/lbfgsb.f" then "3.0"
+@@ -5256,14 +5256,14 @@ let lbfgsb_ver =
+     exit 1
+   )
+ 
+-let _ = BaseEnv.var_define "lbfgsb_ver" (lazy lbfgsb_ver)
++let _ = BaseEnv.var_define "lbfgsb_ver" (fun () -> lbfgsb_ver)
+ let _ = BaseEnv.var_define "lbfgsb_wa_coef_n1" (* function of [m] *)
+-  (lazy (match lbfgsb_ver with
++  (fun ()  -> (match lbfgsb_ver with
+   | "2.1" -> "(2 * m + 4)"
+   | "3.0" -> "(2 * m + 5)"
+   | _ -> assert false))
+ let _ = BaseEnv.var_define "lbfgsb_wa_coef_n0" (* function of [m] *)
+-  (lazy (match lbfgsb_ver with
++  (fun () -> (match lbfgsb_ver with
+   | "2.1" -> "12 * m * (m + 1)"
+   | "3.0" -> "m * (11 * m + 8)"
+   | _ -> assert false))
