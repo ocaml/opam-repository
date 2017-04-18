@@ -15,7 +15,19 @@ build: [
       "--localstatedir=%{lib}%/fftw3/var"
       "--libdir=%{lib}%/fftw3/lib"
       "--includedir=%{lib}%/fftw3/include"
-      "--datarootdir=%{lib}%/fftw3/share"]
+      "--datarootdir=%{lib}%/fftw3/share"] { os != "darwin" }
+  ["./configure" 
+      "CFLAGS=-I/usr/local/include"
+      "LDFLAGS=-L/usr/local/lib"
+      "OCAMLFLAGS=-ccopt -I/usr/local/include -cclib -L/usr/local/lib"
+      "--prefix" prefix "--sbindir=%{lib}%/fftw3/sbin"
+      "--libexecdir=%{lib}%/fftw3/libexec"
+      "--sysconfdir=%{lib}%/fftw3/etc"
+      "--sharedstatedir=%{lib}%/fftw3/com"
+      "--localstatedir=%{lib}%/fftw3/var"
+      "--libdir=%{lib}%/fftw3/lib"
+      "--includedir=%{lib}%/fftw3/include"
+      "--datarootdir=%{lib}%/fftw3/share"] { os = "darwin" }
   [make]
 ]
 install: [
