@@ -1,0 +1,24 @@
+diff --git a/configure b/configure
+index d2a26d1..3985b43 100755
+--- a/configure
++++ b/configure
+@@ -1,7 +1,7 @@
+ #!/bin/sh
+ 
+ # OASIS_START
+-# DO NOT EDIT (digest: 6f7b8221311e800a7093dc3b793f67ca)
++# DO NOT EDIT (digest: 67dd0def14e1d99625d2485f6a4d5df1)
+ set -e
+ 
+ FST=true
+@@ -23,5 +23,9 @@ for i in "$@"; do
+   esac
+ done
+ 
+-make configure CONFIGUREFLAGS="$*"
++if [ ! -e setup.exe ] || [ _oasis -nt setup.exe ] || [ setup.ml -nt setup.exe ] || [ configure -nt setup.exe ]; then
++  ocamlfind ocamlopt -o setup.exe setup.ml || ocamlfind ocamlc -o setup.exe setup.ml || exit 1
++  rm -f setup.cmi setup.cmo setup.cmx setup.o
++fi
++./setup.exe -configure "$@"
+ # OASIS_STOP
