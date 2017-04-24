@@ -1,0 +1,38 @@
+opam-version: "1.2"
+maintainer: "dave@recoil.org"
+authors: [ "David Scott" "Rolf Neugebauer" "Anil Madhavapeddy" "Simon Ferquel"]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-hvsock"
+dev-repo: "https://github.com/mirage/ocaml-hvsock.git"
+bug-reports: "https://github.com/mirage/ocaml-hvsock/issues"
+
+build: [
+  ["ocaml" "setup.ml" "-configure" "--%{alcotest:enable}%-tests" ]
+  [make]
+]
+
+build-test:[
+  [make "test"]
+]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "hvsock"]
+
+depends: [
+  "base-bytes"
+  "base-threads"
+  "lwt" {>= "2.4.7"}
+  "logs"
+  "fmt"
+  "base-unix"
+  "cmdliner"
+  "mirage-flow-lwt" {>= "1.2.0"}
+  "mirage-time-lwt" {>= "1.0.0"}
+  "cstruct"
+  "duration"
+  "bos"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "alcotest" {test & >= "0.4.0"}
+]
+
+available: [ ocaml-version >= "4.03.0" ]
