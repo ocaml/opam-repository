@@ -10,7 +10,7 @@ build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix
     "--%{webmachine:enable}%-webmachine"
     "--%{postgresql:enable}%-postgresql"
-    "--%{redis:enable}%-redis"
+    "--%{redis-lwt:enable}%-redis"
     "--%{lwt:enable}%-lwt"
     "--%{cohttp:enable}%-cohttp"
     "--%{async:enable}%-async"]
@@ -24,7 +24,7 @@ build-test: [
   ["ocaml" "setup.ml" "-configure" "--enable-tests"
     "--%{webmachine:enable}%-webmachine"
     "--%{postgresql:enable}%-postgresql"
-    "--%{redis:enable}%-redis"
+    "--%{redis-lwt:enable}%-redis"
     "--%{lwt:enable}%-lwt"
     "--%{cohttp:enable}%-cohttp"
     "--%{async:enable}%-async"]
@@ -42,11 +42,17 @@ depopts: [
   "async"
   "base-threads"
   "cohttp"
-  "lwt"
   "postgresql"
-  "redis"
+  # If session ever switches to jbuilder, then this constraint should turn into
+  # something along the lines of the following constraint in
+  # session-redis-lwt.opam:
+  #
+  #   depends: [
+  #     ...
+  #     ("redis-lwt" | ("redis" & "lwt"))
+  #     ...
+  #   ]
+  "lwt"
+  "redis-lwt"
   "webmachine"
-]
-conflicts: [
-  "redis" {>="0.3.4"}
 ]
