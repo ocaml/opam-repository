@@ -1,0 +1,25 @@
+opam-version: "1.2"
+maintainer: "opam-devel@lists.ocaml.org"
+authors: [ "Sylvain Le Gall" ]
+license: "LGPL-2.1 with OCaml linking exception"
+dev-repo: "https://github.com/gildor478/ocaml-fileutils"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "fileutils"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "base-unix"
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {test & >= "2.0.0"}
+]
