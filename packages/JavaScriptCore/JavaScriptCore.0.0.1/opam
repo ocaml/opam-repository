@@ -1,0 +1,39 @@
+opam-version: "1.2"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "https://github.com/fxfactorial/ocaml-javascriptcore"
+bug-reports: "https://github.com/fxfactorial/ocaml-javascriptcore/issues"
+license: "BSD-3-clause"
+tags: ["clib:javascriptcoregtk" "clib:c"]
+dev-repo: "https://github.com/fxfactorial/ocaml-javascriptcore.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: ["ocaml" "setup.ml" "-doc"]
+remove: ["ocamlfind" "remove" "javascriptcore"]
+depends: [
+  "cohttp" {build}
+  "lwt" {build & >= "2.5.2"}
+  "oasis" {build & >= "0.4"}
+  "ocamlbuild" {build}
+  "alcotest" {build}
+  "ocamlfind" {build}
+]
+depexts: [
+  [["debian"] ["libc++-dev" "libjavascriptcoregtk-3.0-dev"]]
+  [["ubuntu"] ["libc++-dev" "libjavascriptcoregtk-3.0-dev"]]
+]
+available: [ocaml-version >= "4.03.0"]
+messages: [
+  "Installation might fail on Linux, follow depext instructions and try again."
+    {os = "linux"}
+]
