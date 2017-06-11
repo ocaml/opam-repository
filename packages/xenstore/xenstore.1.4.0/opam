@@ -10,25 +10,20 @@ authors:      [
 homepage:     "https://github.com/mirage/ocaml-xenstore"
 bug-reports:  "https://github.com/mirage/ocaml-xenstore/issues"
 dev-repo:     "https://github.com/mirage/ocaml-xenstore.git"
+doc:          "https://mirage.github.io/ocaml-xenstore"
 
 build: [
-  [make "all"]
+  [ "jbuilder" "subst"] {pinned}
+  [ "jbuilder" "build" "-p" name "-j" jobs ]
 ]
-install: [make "install"]
-remove: ["ocamlfind" "remove" "xenstore"]
 
 depends: [
   "ocamlfind" {build}
+  "jbuilder"  {build & >="1.0+beta9"}
   "cstruct" {>= "2.4.0"}
   "ppx_cstruct" {build}
-  "ppx_tools"
+  "ppx_tools" {build}
   "lwt"
   "ounit" {build}
-]
-depexts: [
-  [["debian"] ["libxen-dev" "uuid-dev"]]
-  [["ubuntu"] ["libxen-dev" "uuid-dev"]]
-  [["centos"] ["xen-devel"]]
-  [["xenserver"] ["xen-dom0-libs-devel" "xen-libs-devel"]]
 ]
 available: [ ocaml-version >= "4.02.0" ]
