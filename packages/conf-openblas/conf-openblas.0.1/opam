@@ -6,11 +6,16 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "https://github.com/ocaml/opam-repository.git"
 license: "BSD"
 build: [
-  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os != "darwin" & os != "freebsd" & os != "win32"}
+  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os = "ubuntu" }
+  ["%{build}%/centos_install.sh"] {os = "centos"}
+  ["sh" "-exc" "cc $CFLAGS test.c -L/opt/OpenBLAS/lib -lopenblas"] {os = "centos"}
+  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os = "alpine" }
   ["sh" "-exc" "cc $CFLAGS test.c -L/usr/local/opt/openblas/lib -lopenblas"] {os = "darwin"}
 ]
 depexts: [
   [["ubuntu"] ["libopenblas-dev liblapacke-dev"]]
   [["debian"] ["libopenblas-dev liblapacke-dev"]]
+  [["centos"] [""]]
+  [["alpine"] ["libc-dev openblas-dev"]]
   [["osx" "homebrew"] ["homebrew/science/openblas"]]
 ]
