@@ -1,0 +1,28 @@
+opam-version: "1.2"
+maintainer:   "Thomas Gazagnaire <thomas@gazagnaire.org>"
+authors:      "Thomas Gazagnaire <thomas@gazagnaire.org>"
+homepage:     "https://github.com/mirage/irmin-watcher"
+doc:          "https://mirage.github.io/irmin-watcher/"
+dev-repo:     "https://github.com/mirage/irmin-watcher.git"
+bug-reports:  "https://github.com/mirage/irmin-watcher/issues"
+license:      "ISC"
+
+build: [
+  ["jbuilder" "subst"] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+build-test: ["jbuilder" "runtest" "-p" name]
+
+depends: [
+  "jbuilder" {>= "1.0+beta10"}
+  "alcotest" {test}
+  "mtime"    {test & >= "1.0.0"}
+  "lwt"
+  "logs"
+  "fmt"
+  "astring"
+]
+depopts: ["inotify" "osx-fsevents"]
+conflicts: [ "osx-fsevents" {< "0.2.0"} ]
+
+available: [ocaml-version >= "4.02.0"]
