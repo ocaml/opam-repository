@@ -7,16 +7,13 @@ dev-repo:     "https://github.com/mirage/ocaml-9p.git"
 bug-reports:  "https://github.com/mirage/ocaml-9p/issues"
 doc:          "https://mirage.github.io/ocaml-9p/"
 
-build: [
-  [ "jbuilder" "build" "--only-packages=protocol-9p-unix,protocol-9p" ]
-]
-
-build-test: [
-  [ "jbuilder" "runtest" ]
-]
+build: ["jbuilder" "build" "-p" "protocol-9p,protocol-9p-unix" "-j" jobs]
+build-test: ["jbuilder" "runtest"]
 
 depends: [
+  "jbuilder" {build & >= "1.0+beta7"}
   "protocol-9p" {= "0.11.0" }
+  "io-page-unix" {>= "2.0.0"}
   "base-bytes"
   "cstruct" {>= "1.9.0"}
   "sexplib" {> "113.00.00" }
