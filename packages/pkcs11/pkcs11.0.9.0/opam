@@ -1,0 +1,45 @@
+opam-version: "1.2"
+maintainer: "Etienne Millon <etienne@cryptosense.com>"
+authors: "Etienne Millon <etienne@cryptosense.com>"
+homepage: "https://github.com/cryptosense/pkcs11"
+bug-reports: "https://github.com/cryptosense/pkcs11/issues"
+license: "BSD-2"
+dev-repo: "https://github.com/cryptosense/pkcs11.git"
+doc: "https://cryptosense.github.io/pkcs11/doc"
+build: [
+  [ "ocaml" "pkg/pkg.ml" "build"
+    "--pinned" "%{pinned}%"
+    "--with-cmdliner" "%{cmdliner:installed}%"
+    "--with-driver" "%{ctypes:installed}%"
+  ]
+]
+build-test: [
+  [ "ocaml" "pkg/pkg.ml" "build"
+    "--pinned" "%{pinned}%"
+    "--tests" "true"
+    "--with-cmdliner" "%{cmdliner:installed}%"
+    "--with-driver" "%{ctypes:installed}%"
+  ]
+  [ "ocaml" "pkg/pkg.ml" "test" ]
+]
+depends: [
+  "hex" { >= "1.0.0" }
+  "integers"
+  "key-parsers" { >= "0.5.0" & != "0.6.0" }
+  "ppx_deriving" { >= "4.0" }
+  "ppx_deriving_yojson" { >= "3.0" }
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "topkg" {build}
+  "ounit" {test}
+]
+depopts: [
+  "cmdliner"
+  "ctypes"
+  "ctypes-foreign"
+]
+conflicts: [
+  "ctypes" { < "0.12.0" }
+]
+tags: ["org:cryptosense"]
+available: [ocaml-version >= "4.02.0" & os != "darwin"]
