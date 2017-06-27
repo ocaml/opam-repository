@@ -1,4 +1,5 @@
-extern double cblas_dnrm2(int N, double *X, int INCX);
+#include <cblas.h>
+#include <lapacke.h>
 
 int main(int argc, char **argv)
 {
