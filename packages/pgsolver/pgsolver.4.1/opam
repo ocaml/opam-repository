@@ -1,0 +1,33 @@
+opam-version: "1.2"
+name: "pgsolver"
+version: "4.1"
+maintainer: "opam-devel@lists.ocaml.org"
+authors: [ "Oliver Friedmann"
+           "Martin Lange" ]
+license: "BSD-3-clause"
+homepage: "https://github.com/tcsprojects/pgsolver"
+dev-repo: "git://github.com/tcsprojects/pgsolver.git"
+bug-reports: "https://github.com/tcsprojects/pgsolver/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/pgsolver/setup.ml" "-C" "%{etc}%/pgsolver" "-uninstall"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "TCSLib" {>= "0.2"}
+  ("extlib" | "extlib-compat")
+  "minisat"
+  "ocaml-sat-solvers"
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {build}
+]
+available: [ ocaml-version >= "4.03.0" ]
