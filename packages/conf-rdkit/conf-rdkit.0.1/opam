@@ -1,20 +1,19 @@
 opam-version: "1.2"
-authors: "http://www.rdkit.org/"
+authors: "https://github.com/rdkit/rdkit/graphs/contributors"
 homepage: "http://www.rdkit.org/"
 maintainer: "Francois BERENGER <ligand@free.fr>"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "https://github.com/ocaml/opam-repository.git"
 license: "BSD-3"
 build: [
-  ["python2.7" "test.py"]
+  ["sh" "-c" "brew tap rdkit/rdkit && brew install rdkit"] {os = "darwin"}
+  ["c++" "test.cpp" "-o" "test"
+         "-I/usr/local/include" "-L/usr/local/lib" "-lRDGeneral"]
 ]
-depends: [
-  "conf-python-2-7"
-]
+install: ["./test"]
+remove: []
 depexts: [
   [["debian"] ["librdkit-dev" "python-rdkit"]]
   [["ubuntu"] ["librdkit-dev" "python-rdkit"]]
-  [["osx" "homebrew"] ["tap" "rdkit/rdkit"]]
-  [["osx" "homebrew"] ["rdkit"]]
   [["centos"] ["rdkit-devel" "python2-rdkit"]]
 ]
