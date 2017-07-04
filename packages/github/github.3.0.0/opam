@@ -13,39 +13,26 @@ authors: [
 ]
 homepage: "https://github.com/mirage/ocaml-github"
 bug-reports: "https://github.com/mirage/ocaml-github/issues"
-tags: ["org:mirage" "org:xapi-project" "git"]
 dev-repo: "https://github.com/mirage/ocaml-github.git"
-build: [
-  [
-    "ocaml"
-    "setup.ml"
-    "-configure"
-    "--%{base-unix:enable}%-unix"
-    "--%{js_of_ocaml:enable}%-js"
-    "--prefix"
-    prefix
-  ]
-  ["ocaml" "setup.ml" "-build"]
+tags: [
+  "org:mirage"
+  "org:xapi-project"
+  "git"
 ]
-install: ["ocaml" "setup.ml" "-install"]
-remove: ["ocamlfind" "remove" "github"]
+build: [
+  ["jbuilder" "subst"] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+build-test: [
+  ["jbuilder" "runtest" "-p" name]
+]
 depends: [
-  "ocamlfind" {build}
-  "ocamlbuild" {build}
-  "tls"
+  "jbuilder" {build & >= "1.0+beta10"}
   "uri" {>= "1.9.0"}
   "cohttp" {>= "0.17.0" & <"0.99"}
   "lwt" {>= "2.4.4"}
   "atdgen" {>= "1.10.0"}
   "yojson" {>= "1.2.0"}
   "stringext"
-  "lambda-term"
-  "cmdliner" {>= "0.9.8"}
-  "base-unix"
 ]
-depopts: "js_of_ocaml"
-conflicts: [
-  "js_of_ocaml" {< "2.4.0"}
-  "js_of_ocaml" {>= "3.0"}
-]
-available: [ocaml-version >= "4.02.3"]
+available: [ ocaml-version >= "4.03.0" ]
