@@ -1,5 +1,5 @@
 opam-version: "1.2"
-maintainer:   "mirageos-devel@lists.xenproject.org"
+maintainer:   "Gabriel Radanne <drupyog@zoho.com>"
 authors:      [ "Thomas Gazagnaire"
                 "Anil Madhavapeddy"
                 "Dave Scott"
@@ -8,24 +8,24 @@ authors:      [ "Thomas Gazagnaire"
 homepage:     "https://github.com/mirage/functoria"
 bug-reports:  "https://github.com/mirage/functoria/issues"
 dev-repo:     "https://github.com/mirage/functoria.git"
+doc:          "https://mirage.github.io/functoria/"
 license:      "ISC"
+tags:         ["org:mirage"]
 
 build: [
-  ["./configure" "--prefix=%{prefix}%" "--%{ounit:enable}%-tests"]
-  [make]
+  ["jbuilder" "subst"] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
 ]
 build-test: [
-  [make "test"]
+  ["jbuilder" "runtest"]
 ]
-install: [make "install"]
-remove: ["ocamlfind" "remove" "functoria"]
+
 depends: [
-  "ocamlfind" {build}
-  "base-unix"
+  "jbuilder" {build & >="1.0+beta10"}
   "cmdliner" {>= "0.9.8"}
-  "rresult"
   "fmt"
-  "ocamlgraph"
-  "ounit" {test & >="2.0.0"}
 ]
-available: [ocaml-version >= "4.01"]
+conflicts: [
+  "functoria" {< "2.0.0"}
+]
+available: [ocaml-version >= "4.02"]
