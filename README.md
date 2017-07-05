@@ -3,9 +3,13 @@ used by the default installation of [OPAM](https://opam.ocaml.org/).
 
 ## How to Contribute
 
-You are welcome to clone this repository and send us pull
-requests. You can find more documentation and useful workflows at
-[https://opam.ocaml.org](https://opam.ocaml.org/).
+Contributions are welcome !
+
+The [CONTRIBUTING.md](CONTRIBUTING.md) document has general guidelines
+on how to contribute.
+
+If you would like to add a new package consult
+[these instructions](https://opam.ocaml.org/doc/Packaging.html#Publishing).
 
 ## License
 
