@@ -5,6 +5,10 @@ Contributions under the form of new packages, issue reports and pull
 requests to fix and enhance the quality of packages are always
 welcome. Thanks for your time and involvement.
 
+Becoming the maintainer of orphaned packages is
+[easy](#adopting-and-relinquishing-package-maintainership) and very
+welcome.
+
 The following lists a few points that help in making the contribution
 process and repository management as smooth and efficient as possible
 for everyone involved.
@@ -43,3 +47,30 @@ Adding new packages
 Information about creating new packages and adding them to repository
 is available in
 [opam's manual](https://opam.ocaml.org/doc/Packaging.html).
+
+
+Adopting and relinquishing package maintainership
+-------------------------------------------------
+
+Orphaned packages either have no `maintainer:` field or the field is
+set to the repository issue tracker:
+
+```
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+```
+
+If you care about a package and it is orphaned we are keen on having
+you as the maintainer of the package. In order to do so simply issue a
+pull request on the latest version of the package and add your contact
+details in the `maintainer:` field.
+
+If it is no longer possible for you to commit to maintain a package
+you can either:
+
+1. Try to find a person to replace yourself in that role. Let her
+issue a pull request that updates all the `maintainer:` fields that
+contain your details with her own and do acknowledge the transfer on
+her pull request.
+2. Or, if you cannot find someone to replace you, simply issue a pull
+request that updates all the `maintainer:` fields that have your details
+with the address of the repository issue tracker (see above).
