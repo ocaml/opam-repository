@@ -1,7 +1,6 @@
 #!/bin/sh
-echo "--env------------------------------------------------------------------"
 env
-echo "--brew-config----------------------------------------------------------"
+brew install gmp
 brew config | grep 'HOMEBREW_VERSION\|HOMEBREW_PREFIX\|BOOTTLE\|macOS'
-brew list --versions | grep gmp
+stat /usr/local/lib/libgmp.a
 exit 1
