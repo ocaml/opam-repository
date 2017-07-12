@@ -1,0 +1,23 @@
+opam-version: "1.2"
+maintainer:   "anil@recoil.org"
+authors:      ["Anil Madhavapeddy" "Thomas Gazagnaire"]
+homepage:     "https://github.com/mirage/ocaml-crunch"
+bug-reports:  "https://github.com/mirage/ocaml-crunch/issues"
+license:      "ISC"
+dev-repo:     "https://github.com/mirage/ocaml-crunch.git"
+tags:         ["org:mirage" "org:xapi-project"]
+available:     [ ocaml-version >= "4.03.0" ]
+
+depends: [
+  "cmdliner"
+  "jbuilder" {build & >= "1.0+beta10"}
+  "cstruct" {test}
+  "lwt" {test}
+  "mirage-kv-lwt" {test & >= "1.0.0"}
+  "io-page-unix" {test}
+]
+build: [
+  ["jbuilder" "subst" "-n" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
