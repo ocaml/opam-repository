@@ -14,7 +14,7 @@ patches: [
   "cmake.patch"
 ]
 build: [
-  ["bash" "-ex" "./build.sh" version lib]
+  ["bash" "-ex" "build.sh" "%{conf-llvm:config}%" lib "%{conf-cmake:cmd}%"]
   [make "-C" "build" "ocaml_all"]
 ]
 install: [
@@ -28,10 +28,6 @@ depends: [
   "ctypes" {>= "0.4"}
   "ounit" {test}
   "ocamlfind" {build}
-]
-depexts: [
-  [["debian"] ["llvm-3.9-dev" "cmake"]]
-  [["centos"] ["llvm-3.9-devel" "cmake3"]]
-  [["source" "linux"] ["https://gist.githubusercontent.com/jpdeplaix/53a7f91155e9d98dcfb18afcd1d6c529/raw"]]
+  "conf-llvm" {build & = "3.9"}
 ]
 available: [ocaml-version >= "4.00.0"]
