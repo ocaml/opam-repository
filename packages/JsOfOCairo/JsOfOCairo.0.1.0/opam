@@ -1,0 +1,28 @@
+opam-version: "1.2"
+maintainer: "Vincent Jacques <vincent@vincent-jacques.net>"
+authors: "Vincent Jacques <vincent@vincent-jacques.net>"
+homepage: "https://github.com/jacquev6/JsOfOCairo"
+bug-reports: "http://github.com/jacquev6/JsOfOCairo/issues/"
+doc: "https://github.com/jacquev6/JsOfOCairo"
+dev-repo: "https://github.com/jacquev6/JsOfOCairo.git"
+build: [
+  "sh"
+  "-c"
+  "cd src; ocamlbuild -use-ocamlfind -plugin-tag \"package(js_of_ocaml.ocamlbuild)\" JsOfOCairo.cma"
+]
+install: [
+  ["mkdir" "-p" "%{prefix}%/lib/JsOfOCairo"]
+  [
+    "cp"
+    "META"
+    "src/_build/JsOfOCairo.cmi"
+    "src/_build/JsOfOCairo.cma"
+    "%{prefix}%/lib/JsOfOCairo"
+  ]
+]
+remove: ["ocamlfind" "remove" "JsOfOCairo"]
+depends: [
+  "ocamlfind" {build}
+  "js_of_ocaml" {>= "2.8" & < "3.0"}
+]
+available: [ocaml-version >= "4.02.2" & ocaml-version < "4.05.0"]
