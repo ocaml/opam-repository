@@ -8,7 +8,7 @@ libdir="$4"
 common_configure() {
     ../configure CC=gcc CXX=g++ --disable-compiler-version-checks --prefix="$prefix" \
         --disable-doxygen --disable-docs --with-ocaml-libdir="$libdir/llvm" \
-        --enable-static "$@"
+        --enable-static --with-python="`command -v python2.7`" "$@"
 }
 
 configure() {
