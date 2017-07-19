@@ -1,0 +1,27 @@
+authors: [ "Richard W.M. Jones" ]
+bug-reports: "https://github.com/xguerin/ppx_bitstring/issues"
+dev-repo: "https://github.com/xguerin/bitstring.git"
+doc: ["http://et.redhat.com/~rjones/bitstring/html/Bitstring.html"]
+homepage: "https://github.com/xguerin/bitstring"
+license: "LGPLv2+ with exceptions and GPLv2+"
+maintainer: "Xavier Guérin <github@applepine.org>"
+opam-version: "1.2"
+version: "2.1.1"
+
+build: [
+  ["./configure" "--prefix" prefix]
+  [make "srcdir=./"]
+]
+build-test: [[make "check"]]
+patches: [
+  "fix_402.patch" {ocaml-version = "4.02"}
+  "fix_404.patch"
+]
+remove: [["ocamlfind" "remove" "bitstring"]]
+depends: [
+  "ocamlfind" {build}
+  "camlp4" {build}
+  "conf-time"
+]
+available: [ ocaml-version >= "3.10" ]
+install: [make "install"]
