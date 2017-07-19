@@ -1,7 +1,8 @@
 #!/bin/bash -ex
 
-version=${1/%.?/}
-libdir=$2
+llvm_config="$1"
+libdir="$2"
+cmake="$3"
 
 function llvm_save {
     cp cmake/modules/AddOCaml.cmake AddOCaml.cmake.save
@@ -27,7 +28,7 @@ function llvm_install {
     mkdir build
     cd build
 
-    cmake -DLLVM_OCAML_OUT_OF_TREE=TRUE -DLLVM_OCAML_INSTALL_PATH="${libdir}" ..
+    "$cmake" -DLLVM_OCAML_OUT_OF_TREE=TRUE -DLLVM_OCAML_INSTALL_PATH="${libdir}" ..
     make ocaml_all
     make -C bindings/ocaml install/fast
 
@@ -43,37 +44,20 @@ function llvm_install {
     llvm_restore
 }
 
-if hash brew 2>/dev/null; then
-    brew_llvm_config="$(brew --cellar)"/llvm/${version}*/bin/llvm-config
+llvm_save
+if $llvm_config --link-static --libs && $llvm_config --link-shared --libs; then
+    patch -p1 < META.patch
+    llvm_install static "${llvm_config}" static
+    llvm_install dynamic "${llvm_config}" shared
+elif $llvm_config --link-static --libs; then
+    sed -i.bak "s,%%LINKAGE%%,static," link-META.patch
+    patch -p1 < link-META.patch
+    llvm_install static "${llvm_config}" static
+elif $llvm_config --link-shared --libs; then
+    sed -i.bak "s,%%LINKAGE%%,dynamic," link-META.patch
+    patch -p1 < link-META.patch
+    llvm_install dynamic "${llvm_config}" shared
+else
+    echo "WTF..."
+    exit 1
 fi
-
-shopt -s nullglob
-for llvm_config in llvm-config-$version llvm-config${version//./} llvm-config-mp-$version ${brew_llvm_config} llvm-config; do
-    case `$llvm_config --version` in
-        $version*)
-            shopt -u nullglob
-            llvm_save
-            if $llvm_config --link-static --libs && $llvm_config --link-shared --libs; then
-                patch -p1 < META.patch
-                llvm_install static "${llvm_config}" static
-                llvm_install dynamic "${llvm_config}" shared
-            elif $llvm_config --link-static --libs; then
-                sed -i.bak "s,%%LINKAGE%%,static," link-META.patch
-                patch -p1 < link-META.patch
-                llvm_install static "${llvm_config}" static
-            elif $llvm_config --link-shared --libs; then
-                sed -i.bak "s,%%LINKAGE%%,dynamic," link-META.patch
-                patch -p1 < link-META.patch
-                llvm_install dynamic "${llvm_config}" shared
-            else
-                echo "WTF..."
-                exit 1
-            fi
-            exit 0;;
-        *)
-            continue;;
-    esac
-done
-
-echo "Error: LLVM ${version} is not installed."
-exit 1
