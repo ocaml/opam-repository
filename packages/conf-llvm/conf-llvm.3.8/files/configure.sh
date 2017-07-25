@@ -15,6 +15,7 @@ for llvm_config in llvm-config-$version llvm-config${version//./} llvm-config-mp
         echo "version: \"$llvm_version\"" >> conf-llvm.config
         exit 0;;
     *)
+        echo "Note: '$llvm_config' doesn't match the required version. Got '$llvm_version' but required '$version'."
         continue;;
     esac
 done
