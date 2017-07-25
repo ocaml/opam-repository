@@ -3,7 +3,7 @@
 version=${1/%.?/}
 
 if hash brew 2>/dev/null; then
-    brew_llvm_config="$(brew --cellar)"/llvm/${version}*/bin/llvm-config
+    brew_llvm_config="$(brew --cellar)"/llvm*/${version}*/bin/llvm-config
 fi
 
 shopt -s nullglob
