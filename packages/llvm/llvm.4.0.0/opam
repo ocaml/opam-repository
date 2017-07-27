@@ -10,7 +10,7 @@ bug-reports: "http://llvm.org/bugs/"
 dev-repo: "http://llvm.org/git/llvm.git"
 homepage: "http://llvm.moe"
 install: [
-  ["bash" "-ex" "install.sh" version lib]
+  ["bash" "-ex" "install.sh" "%{conf-llvm:config}%" lib "%{conf-cmake:cmd}%"]
 ]
 remove: [
   ["rm" "-rf" "%{lib}%/llvm"]
@@ -20,9 +20,8 @@ depends: [
   "ctypes" {>= "0.4"}
   "ounit" {test}
   "ocamlfind" {build}
-]
-depexts: [
-  [["debian"] ["llvm-4.0-dev" "cmake"]]
-  [["source" "linux"] ["https://gist.githubusercontent.com/jpdeplaix/8c67a7b7619983fb49a3e315bc53ae79/raw"]]
+  "conf-llvm" {build & = "4.0.0"}
+  "conf-python-2-7" {build}
+  "conf-cmake" {build}
 ]
 available: [ocaml-version >= "4.00.0"]
