@@ -1,0 +1,84 @@
+Automated Induction of Functions over Algebraic Data Types
+
+---------------------------------------------------------------------------
+
+What is AIFAD?
+--------------
+
+AIFAD stands for _Automated Induction of Functions over Algebraic Data Types_
+and is an application written in [OCaml](http://www.ocaml.org) that improves
+decision tree learning by supporting significantly more complex kinds of data.
+This allows users to more conveniently describe the data they want to learn
+functions on and can improve the accuracy and complexity of resulting models.
+
+Features
+--------
+
+  * Handles multi-valued attributes.  This has already become widespread among
+    decision tree learners, but some implementations still only support
+    binary ones.
+
+  * Allows multiple target attributes.  There are hardly any implementations
+    that support this feature in a unified way.
+
+  * Supports structured data, both for input and target attributes.
+    Structured data is still a hot research topic in machine learning.
+
+  * Allows recursive data.  AIFAD can learn models for recursive data but
+    only induce non-recursive functions.
+
+  * Handles missing values by allowing users to encode them as option types.
+    This is a clean solution compared to often-employed hacks and has
+    competitive accuracy.
+
+  * Provides several heuristics for generating models, including a generalized
+    gain ratio criterion as used by the state-of-the-art decision tree
+    learner C4.5.
+
+  * Can read data specifications as understood by C4.5.
+
+  * Pretty efficient.  Even though it was written to handle structured
+    data, it is only about 3-5 times slower than C4.5 on datasets that the
+    latter supports.  The memory footprint is somewhat larger due to the
+    impossibility of performing certain operations in-place, but still low
+    enough to handle even large datasets (hundreds of thousands of samples
+    with 10s of attributes) on stock hardware.
+
+AIFAD essentially offers you the same amount of expressiveness on both sides
+of the data (input and output).  Discrete data specifications as supported
+by more common decision tree learners (e.g. C4.5) are a strict subcase of
+algebraic data types as used in AIFAD.  Furthermore, all kinds of algorithms
+that operate on "normal" decision trees (e.g. pruning algorithms) should be
+generalizable to the more expressive representation.
+
+### Missing Features
+
+* Cannot (yet) handle numerical values.  Users can work around this by
+  preprocessing numeric data to cast it into discrete domains.  Since AIFAD
+  supports structured data, encodings more flexible than mere assignment to
+  "flat" domains can be used.  This will likely improve predictive accuracy.
+  If there is numerical data in C4.5-data, AIFAD will ignore it during
+  learning, thus only considering discrete data.
+
+* Does not (yet) provide post-pruning.  Can be easily added (e.g. reduced
+  error pruning).
+
+* Cannot (yet) learn recursive functions.
+
+---------------------------------------------------------------------------
+
+Using AIFAD
+-----------
+
+### Specification of Algebraic Data Types
+
+Before AIFAD can learn from data, you will have to tell it what your data
+looks like.  This requires creating a file with the extension `.ads`
+(algebraic data type specification), which contains a set of (possibly
+recursive) type equations.  If you happen to know modern functional or logic
+programming languages, this concept will be common to you.
+
+Here is an example of a specification file (file `examples/test.ads` in
+the distribution):
+
+```text
