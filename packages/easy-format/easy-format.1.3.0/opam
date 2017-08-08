@@ -5,11 +5,11 @@ homepage: "http://mjambon.com/easy-format.html"
 bug-reports: "https://github.com/mjambon/easy-format/issues"
 dev-repo: "https://github.com/mjambon/easy-format.git"
 build: [
-  [make] {ocaml-native}
-  [make "all"] {!ocaml-native}
+  ["jbuilder" "build" "-p" name "-j" jobs]
 ]
-install: [
-  [make "install"]
+
+build-test: [
+  ["jbuilder" "runtest" "-p" name]
 ]
-remove: [["ocamlfind" "remove" "easy-format"]]
-depends: ["ocamlfind"]
+depends: ["jbuilder" {build}]
+available: [ ocaml-version >= "4.02.3"]
