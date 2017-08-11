@@ -12,12 +12,15 @@ dev-repo:     "https://github.com/Kakadu/lablqml.git"
 build: [
     ["sh" "-exc" "echo \"Your Qt version is `PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH qmake -query QT_VERSION`\"" ] 
     ["sh" "-exc" "min=\"5.2.1\" cur=`PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH qmake -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort | head -n 1`; [ \"$res\" = \"$min\" ]"
-    ] 
+    ]
 ]
 
-available: [ os != "darwin" ]
+post-messages: [
+  "It's recommended to set PKG_CONFIG_PATH to /usr/local/opt/qt/lib/pkgconfig to enable pkg-config" { os = "darwin" }
+]
 
 depexts: [
+  [ ["osx" "homebrew"] ["qt5"] ]
   [ ["ubuntu"] ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"] ]
   [ ["debian"] ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"] ]
   [ ["alpine"] ["qt5-qtbase-dev" "qt5-qtdeclarative-dev"] ]
