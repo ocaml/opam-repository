@@ -10,6 +10,7 @@
 TARGETS=
 FOUND=
 OBJDUMP=
+CXXFILT=
 OBJDUMPS=
 
 check_objdump() {
@@ -44,9 +45,11 @@ collect_targets() {
 
 if   [ "is_$1" = "is_linux" ]; then
     OBJDUMP=`which objdump`
+    CXXFILT=`which c++filt`
     OBJDUMPS=`locate -r 'objdump$'`
 elif [ "is_$1" = "is_darwin" ]; then
     OBJDUMP=`which gobjdump`
+    CXXFILT=`which c++filt`
     OBJDUMPS=`mdfind -name objdump`
 else
     echo "unsupported OS"
@@ -65,6 +68,7 @@ fi
 
 
 cat > conf-binutils.config <<EOF
+cxxfilt: "${CXXFILT}"
 objdump: "${OBJDUMP}"
 targets: "[${TARGETS}]"
 EOF
