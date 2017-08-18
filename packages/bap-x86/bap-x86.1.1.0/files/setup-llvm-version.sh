@@ -1,7 +1,7 @@
 VERSION=3.4
 
-if `opam config var conf-bap-llvm:installed` == "true"; then
-    VERSION=`opam config var conf-bap-llvm:version`
+if `opam config var conf-llvm:installed` == "true"; then
+    VERSION=`opam config var conf-llvm:version`
 else
     VERSION=`opam config var conf-llvm:version`
 fi
