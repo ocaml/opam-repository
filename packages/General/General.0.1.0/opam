@@ -1,0 +1,34 @@
+opam-version: "1.2"
+maintainer: "Vincent Jacques <vincent@vincent-jacques.net>"
+authors: "Vincent Jacques <vincent@vincent-jacques.net>"
+homepage: "https://jacquev6.github.io/General/"
+bug-reports: "http://github.com/jacquev6/General/issues/"
+dev-repo: "https://github.com/jacquev6/General.git"
+build: [
+  "ocamlbuild"
+  "-use-ocamlfind"
+  "-plugin-tag"
+  "package(cppo_ocamlbuild)"
+  "General.cma"
+  "General.cmxa"
+]
+install: [
+  ["mkdir" "-p" "%{prefix}%/lib/General"]
+  [
+    "cp"
+    "META"
+    "_build/src/General.cmi"
+    "_build/src/General.cma"
+    "_build/src/General.a"
+    "_build/src/General.cmx"
+    "_build/src/General.cmxa"
+    "%{prefix}%/lib/General"
+  ]
+]
+remove: ["ocamlfind" "remove" "General"]
+depends: [
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "cppo" {build & >= "1.3" & < "2"}
+]
+available: [ocaml-version >= "4.02.2" & ocaml-version < "5"]
