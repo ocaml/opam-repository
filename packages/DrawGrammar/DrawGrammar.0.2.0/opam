@@ -7,9 +7,11 @@ dev-repo: "https://github.com/jacquev6/DrawGrammar.git"
 build: [
   "sh"
   "-c"
-  "cd src; ocamlbuild -use-ocamlfind -no-plugin -menhir \"menhir --table\" draw_grammar.byte"
+  "cd src; ocamlbuild -use-ocamlfind -no-plugin -menhir \"menhir --table\" draw_grammar.native"
 ]
-install: ["cp" "src/_build/draw_grammar.byte" "%{prefix}%/bin/draw_grammar"]
+install: [
+  "cp" "src/_build/draw_grammar.native" "%{prefix}%/bin/draw_grammar"
+]
 remove: ["rm" "-f" "%{prefix}%/bin/draw_grammar"]
 depends: [
   "ocamlbuild" {build}
@@ -17,6 +19,6 @@ depends: [
   "menhir"
   "JsOfOCairo"
   "cairo2"
-  "General"
+  "General" {>= "0.2"}
 ]
-available: [ocaml-version >= "4.02.2" & ocaml-version < "4.06.0"]
+available: [ocaml-version >= "4.02.3" & ocaml-version < "4.06.0"]
