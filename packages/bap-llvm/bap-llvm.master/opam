@@ -8,11 +8,12 @@ bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
 dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
 license: "MIT"
 build: [
+  ["bash" "-ex" "configure.sh"]
   ["./configure"
   "--prefix=%{prefix}%"
   "--with-cxx=`which clang++`"
-  "--with-llvm-version=%{conf-llvm:version}%"   {conf-llvm:installed}
-  "--with-llvm-config=%{conf-llvm:config}%"     {conf-llvm:installed}
+  "--with-llvm-version=%{bap-llvm:version}%"
+  "--with-llvm-config=%{bap-llvm:config}%"
   "--enable-llvm"]
   [make]
 ]
@@ -32,7 +33,6 @@ remove: [
 depends: [
     "bap-std"
     "cmdliner"
-    "conf-llvm" {= "3.4" | = "3.8" | = "4.0.0" }
     "conf-env-travis"
     "ogre"
     "monads"
