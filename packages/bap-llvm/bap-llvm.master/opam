@@ -8,15 +8,18 @@ bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
 dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
 license: "MIT"
 build: [
-  ["bash" "-ex" "configure.sh"]
   ["./configure"
   "--prefix=%{prefix}%"
   "--with-cxx=`which clang++`"
-  "--with-llvm-version=%{bap-llvm:version}%"
-  "--with-llvm-config=%{bap-llvm:config}%"
+  "--with-llvm-version=%{conf-llvm-3_4:llvm_version}%"   {conf-llvm-3_4:installed}
+  "--with-llvm-config=%{conf-llvm-3_4:llvm_config}%"     {conf-llvm-3_4:installed}
+  "--with-llvm-version=%{conf-llvm-3_8:llvm_version}%"   {conf-llvm-3_8:installed}
+  "--with-llvm-config=%{conf-llvm-3_8:llvm_config}%"     {conf-llvm-3_8:installed}
+  "--with-llvm-version=%{conf-llvm-4_0_0:llvm_version}%" {conf-llvm-4_0_0:installed}
+  "--with-llvm-config=%{conf-llvm-4_0_0:llvm_config}%"   {conf-llvm-4_0_0:installed}
   "--enable-llvm"]
   [make]
-]
+  ]
 
 install: [
   [make "install"]
@@ -34,13 +37,14 @@ depends: [
     "bap-std"
     "cmdliner"
     "conf-env-travis"
+    ("conf-llvm-3_4" | "conf-llvm-3_8" | "conf-llvm-4_0_0")
     "ogre"
     "monads"
 ]
 
 depexts: [
-    [["ubuntu"] ["clang" "llvm-dev"]]
-    [["debian"] ["clang" "llvm-dev"]]
+    [["ubuntu"] ["clang"]]
+    [["debian"] ["clang"]]
 ]
 
 available: [ocaml-version >= "4.02.3"]
