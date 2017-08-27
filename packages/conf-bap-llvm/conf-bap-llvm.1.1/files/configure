@@ -16,21 +16,24 @@
 config=${LLVM_CONFIG}
 
 if ! which "$env_config" ; then
+    config="llvm-config"
     versions="3.4 3.8 4.0"
 
-    if hash brew 2>/dev/null; then
-        brew_llvm_config="$(brew --cellar)"/llvm*/${version}*/bin/llvm-config
-    fi
-
     for version in $versions; do
-        configs="llvm-config-$version llvm-config${version//./} llvm-config-mp-$version $brew_llvm_config llvm-config"
+
+        if hash brew 2>/dev/null; then
+            brew_llvm_config="$(brew --cellar)"/llvm*/${version}*/bin/llvm-config
+        fi
+
+        configs="llvm-config-$version llvm-config${version//./} llvm-config-mp-$version $brew_llvm_config"
+
         for llvm_config in $configs; do
             llvm_version="`$llvm_config --version`" || true
             case $llvm_version in
                 $version*)
                     echo "config: $llvm_config"
                     echo "version: $llvm_version"
-                    config=$llvm_config;;
+                    config=$llvm_config
                 *)
                     echo "Note: '$llvm_config' doesn't match the required version. Got '$llvm_version' but required '$version'."
                     continue;
