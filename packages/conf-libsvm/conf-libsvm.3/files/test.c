@@ -1,5 +1,9 @@
 #include <stdio.h>
+#ifdef DARWIN
+#include <svm.h>
+#else
 #include <libsvm/svm.h>
+#endif
 
 void print(const char * s) {
   puts(s);
