@@ -6,7 +6,7 @@ bug-reports: "https://llvm.org/bugs/"
 dev-repo: "https://github.com/ocaml/opam-repository.git"
 license: "BSD"
 build: [
-  ["sh" "-x" "configure" os]
+  ["bash" "-ex" "configure" version]
 ]
 depends: [
   "conf-which" {build}
@@ -15,5 +15,9 @@ depexts: [
   [["debian"] ["llvm-3.4-dev"]]
   [["ubuntu"] ["llvm-3.4-dev"]]
   [["osx" "macports"] ["llvm-3.4"]]
-  [["osx" "homebrew"] ["homebrew/versions/llvm34"]]
+]
+
+post-messages: [
+  "If you use homebrew, please build and install llvm-3.4 manually, since brew formula is not available for this version"
+  { failure & (os = "osx" | os = "darwin") }
 ]

@@ -1,12 +1,5 @@
-VERSION=3.4
-
-if `opam config var conf-bap-llvm:installed` == "true"; then
-    VERSION=`opam config var conf-bap-llvm:version`
-else
-    VERSION=`opam config var conf-llvm:version`
-fi
+VERSION=`opam config var conf-bap-llvm:package-version`
 
 cat > plugins/x86/x86_llvm_config.ml.ab <<EOF
 let llvm_version = "$VERSION"
-
 EOF

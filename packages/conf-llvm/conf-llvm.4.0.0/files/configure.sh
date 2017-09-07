@@ -2,12 +2,14 @@
 
 version=${1/%.?/}
 
+config=${LLVM_CONFIG}
+
 if hash brew 2>/dev/null; then
     brew_llvm_config="$(brew --cellar)"/llvm*/${version}*/bin/llvm-config
 fi
 
 shopt -s nullglob
-for llvm_config in llvm-config-$version llvm-config${version//./} llvm-config-mp-$version $brew_llvm_config llvm-config; do
+for llvm_config in $config llvm-config-$version llvm-config${version//./} llvm-config-mp-$version $brew_llvm_config llvm-config; do
     llvm_version="`$llvm_config --version`" || true
     case $llvm_version in
     $version*)
