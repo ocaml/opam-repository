@@ -6,21 +6,11 @@ bug-reports: "http://github.com/jacquev6/sphinxcontrib-ocaml/issues/"
 license: "MIT"
 doc: "https://jacquev6.github.io/sphinxcontrib-ocaml/"
 dev-repo: "https://github.com/jacquev6/sphinxcontrib-ocaml.git"
-build: [
-  "sh"
-  "-c"
-  "cd ocaml_autodoc; ocamlbuild -use-ocamlfind ocaml_autodoc.native"
-]
-install: [
-  "cp"
-  "ocaml_autodoc/_build/ocaml_autodoc.native"
-  "%{prefix}%/bin/sphinxcontrib-ocaml-autodoc"
-]
-remove: ["rm" "-f" "%{prefix}%/bin/sphinxcontrib-ocaml-autodoc"]
+build: ["jbuilder" "build" "-p" name "-j" jobs]
+build-test: ["jbuilder" "runtest" "-p" name]
 depends: [
-  "ocamlbuild" {build}
-  "ocamlfind" {build}
-  "General" {>= "0.2" & < "0.4"}
+  "jbuilder" {build}
+  "General" {>= "0.4.0"}
   "yojson"
 ]
 available: [ocaml-version = "4.05.0"]
