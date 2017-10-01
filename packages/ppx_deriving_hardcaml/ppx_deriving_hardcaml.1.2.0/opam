@@ -1,0 +1,29 @@
+opam-version: "1.2"
+maintainer: "Xavier Guerin <github@applepine.org>"
+authors: "Xavier Guerin <github@applepine.org>"
+homepage: "https://github.com/xguerin/ppx_deriving_hardcaml"
+bug-reports: "https://github.com/xguerin/ppx_deriving_hardcaml/issues"
+license: "ISC"
+tags: ["syntax" "hardcaml"]
+dev-repo: "git://github.com/xguerin/ppx_deriving_hardcaml.git"
+substs: "pkg/META"
+build: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=%{ocaml-native}%"
+  "native-dynlink=%{ocaml-native-dynlink}%"
+]
+build-test: [
+  "ocamlbuild"
+  "-classic-display"
+  "-use-ocamlfind"
+  "src_test/test_ppx_hardcaml.byte"
+  "--"
+]
+depends: [
+  "hardcaml" {>= "1.1.0"}
+  "ocamlfind" {build}
+  "ounit" {test}
+  "ppx_deriving" {>= "4.0" & < "5.0"}
+]
+available: [ocaml-version >= "4.03"]
