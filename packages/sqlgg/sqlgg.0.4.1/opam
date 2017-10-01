@@ -1,0 +1,34 @@
+opam-version: "1.2"
+maintainer: "ygrek@autistici.org"
+authors: ["ygrek"]
+homepage: "http://ygrek.org.ua/p/sqlgg/"
+dev-repo: "https://github.com/ygrek/sqlgg.git"
+bug-reports: "https://github.com/ygrek/sqlgg/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--%{mysql:enable}%-mysql" "--%{sqlite3:enable}%-sqlite3" "--prefix" prefix] {ocaml-version >= "4.02.0"}
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix] {ocaml-version < "4.02.0"}
+  ["ocaml" "setup.ml" "-build"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-test"]
+]
+install: [
+  ["ocaml" "setup.ml" "-install"]
+]
+remove: [
+  ["ocamlfind" "remove" "sqlgg"]
+  ["rm" "-f" "%{bin}%/sqlgg" "%{bin}%/sqlgg.exe"]
+]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "menhir"
+  "deriving"
+  ("extlib" | "extlib-compat")
+  "base-unix"
+  "ounit"
+]
+depopts: [
+  "mysql"
+  "sqlite3"
+]
