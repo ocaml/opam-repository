@@ -5,13 +5,17 @@ libdir="$2"
 cmake="$3"
 make="$4"
 
+function filter_experimental_targets {
+    sed 's/AVR//g' | sed 's/Nios2//g' | sed 's/WebAssembly//g' | xargs
+}
+
 function llvm_install {
     mkdir build
     cd build
 
     "$cmake" \
         -DCMAKE_BUILD_TYPE="`"$llvm_config" --build-mode`" \
-        -DLLVM_TARGETS_TO_BUILD="`"$llvm_config" --targets-built | sed 's/ /;/g'`" \
+        -DLLVM_TARGETS_TO_BUILD="`"$llvm_config" --targets-built | filter_experimental_targets | sed 's/ /;/g'`" \
         -DLLVM_OCAML_EXTERNAL_LLVM_LIBDIR="`"$llvm_config" --libdir`" \
         -DBUILD_SHARED_LIBS=`[ $1 = "shared" ] && echo TRUE || echo FALSE` \
         -DLLVM_OCAML_OUT_OF_TREE=TRUE \
