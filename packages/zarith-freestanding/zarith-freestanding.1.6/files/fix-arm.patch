@@ -1,0 +1,27 @@
+From a8e5c659e106ecc39d5c9e95388ae409deb07df9 Mon Sep 17 00:00:00 2001
+From: snoopy0815 <snoopy0815@users.noreply.github.com>
+Date: Wed, 11 Oct 2017 16:11:17 +0200
+Subject: [PATCH] fix build on Raspberry Debian Jessie
+
+see https://github.com/ocaml/Zarith/issues/14 as reference.
+
+Replacing the @ with % in the .section .note.GNU-stack,"",@progbits in order to be able to install Zarith again on Raspberry Debian Jessie.
+
+Tested it on Raspberry Pi Debian Jessie (2017-09-07).
+---
+ caml_z_arm.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/caml_z_arm.S b/caml_z_arm.S
+index 9c15aa1..9aac78f 100644
+--- a/caml_z_arm.S
++++ b/caml_z_arm.S
+@@ -22,7 +22,7 @@
+ 
+         
+         /* makes the stack non-executable. */
+-        .section .note.GNU-stack,"",@progbits
++        .section .note.GNU-stack,"",%progbits
+ 
+ 
+         /* helper functions */
