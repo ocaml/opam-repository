@@ -1,0 +1,29 @@
+opam-version: "2.0"
+synopsis: "OCaml 4.02, with improved type error messages"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.02.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" "%{prefix}%"]
+  ["%{make}%" "world"]
+  ["%{make}%" "world.opt"]
+]
+install: ["%{make}%" "install"]
+patches: "improved-error.patch"
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.0.tar.gz"
+  checksum: "md5=8bba7e7d872083af1723dd450e07a5f4"
+}
+extra-source "improved-error.patch" {
+  src:
+    "https://gist.githubusercontent.com/andrewray/1928825fea090e50c0de/raw/e121b5cd176cdf6b882bc402276235b1c0a71b69/improved-error.patch"
+  checksum: "md5=047e4294cf4a00448985cabb7b75fba6"
+}

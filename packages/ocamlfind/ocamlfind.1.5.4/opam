@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "2.0"
 maintainer: "https://github.com/ocaml/opam-repository/issues"
 patches: [ "1.5.4-sed-bsd-compat.patch" ]
 build: [
@@ -12,18 +12,45 @@ build: [
     man
     "-config"
     "%{lib}%/findlib.conf"
-    "-no-topfind" {preinstalled}
+    "-no-topfind" {ocaml:preinstalled}
   ]
   [make "all"]
   [make "opt"]
 ]
 remove: [
   ["ocamlfind" "remove" "bytes"]
-  ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-custom" "-no-topfind" {preinstalled}]
+  [
+    "./configure"
+    "-bindir"
+    bin
+    "-sitelib"
+    lib
+    "-mandir"
+    man
+    "-config"
+    "%{lib}%/findlib.conf"
+    "-no-custom"
+    "-no-topfind" {ocaml:preinstalled}
+  ]
   [make "uninstall"]
 ]
 depends: [
+  "ocaml" {>= "3.12.0"}
   "conf-m4"
 ]
-available: [ocaml-version >= "3.12.0"] # ocamlfind refers to cmxs
 install: [make "install"]
+synopsis: "A library manager for OCaml"
+description: """
+Findlib is a library manager for OCaml. It provides a convention how
+to store libraries, and a file format ("META") to describe the
+properties of libraries. There is also a tool (ocamlfind) for
+interpreting the META files, so that it is very easy to use libraries
+in programs and scripts."""
+extra-files: [
+  ["ocamlfind.install" "md5=06f2c282ab52d93aa6adeeadd82a2543"]
+  ["1.5.4-sed-bsd-compat.patch" "md5=3d91c65a5214120838da38353619055f"]
+]
+url {
+  src: "http://download.camlcity.org/download/findlib-1.5.4.tar.gz"
+  checksum: "md5=e18f7fa25b109a40412dd60858ecf6d5"
+}

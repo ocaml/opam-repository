@@ -1,27 +1,37 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "essdotteedot <essdotteedot@gmail.com>"
 authors: "essdotteedot <essdotteedot@gmail.com>"
 homepage: "https://github.com/essdotteedot/distributed"
 bug-reports: "https://github.com/essdotteedot/distributed/issues"
 license: "MIT"
-dev-repo: "https://github.com/essdotteedot/distributed.git"
+dev-repo: "git+https://github.com/essdotteedot/distributed.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{lwt:enable}%-lwt"]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--%{lwt:enable}%-lwt"]
+    {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--%{lwt:enable}%-lwt"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "distributed"]
 depends: [
+  "ocaml" {>= "4.02.3"}
   "base-threads"
   "base-unix"
   "lwt"
   "ocamlfind" {build}
-  "ounit" {test & >= "2.0"}
+  "ounit" {with-test & >= "2.0"}
 ]
-available: [ (os = "linux" | os = "darwin") & ocaml-version >= "4.02.3"]
+available: os = "linux" | os = "darwin"
+synopsis:
+  "Library to provide Erlang style distributed computations. This library is inspired by Cloud Haskell."
+description: """
+Library to provide Erlang style distributed computations. This library
+is inspired by Cloud Haskell."""
+flags: light-uninstall
+url {
+  src: "https://github.com/essdotteedot/distributed/archive/v0.3.0.tar.gz"
+  checksum: "md5=e478f6d968cef13c82267afaffa376d6"
+}

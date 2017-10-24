@@ -1,20 +1,32 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors: "Simon Cruanes"
 maintainer: "simon.cruanes@inria.fr"
 build: [
-    ["./configure" "--prefix" prefix "--disable-thread" "--disable-bench" "--disable-tests" "--disable-cgi" "--disable-lwt" "--enable-docs" "--enable-misc"]
-    [make "build"]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--disable-thread"
+    "--disable-bench"
+    "--disable-tests"
+    "--disable-cgi"
+    "--disable-lwt"
+    "--enable-docs"
+    "--enable-misc"
+  ]
+  [make "build"]
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
 ]
 install: [
     [make "install"]
 ]
-build-doc: [ make "doc" ]
-build-test: [ make "test" ]
 remove: [
     ["ocamlfind" "remove" "containers"]
 ]
 post-messages: [ "in containers, modules start with 'CC' (stands for 'core containers')" ]
 depends: [
+  "ocaml" {>= "4.00.0"}
   "ocamlfind" {build}
   "base-bytes"
   "cppo" {build}
@@ -23,6 +35,20 @@ depends: [
 tags: [ "stdlib" "containers" "iterators" "list" "heap" "queue" ]
 homepage: "https://github.com/c-cube/ocaml-containers/"
 doc: "http://cedeela.fr/~simon/software/containers/"
-available: [ocaml-version >= "4.00.0"]
-dev-repo: "https://github.com/c-cube/ocaml-containers.git"
+dev-repo: "git+https://github.com/c-cube/ocaml-containers.git"
 bug-reports: "https://github.com/c-cube/ocaml-containers/issues/"
+synopsis: "A modular standard library focused on data structures."
+description: """
+Containers is a standard library (BSD license) focused on data structures,
+combinators and iterators, without dependencies on unix. Every module is
+independent and is prefixed with 'CC' in the global namespace. Some modules
+extend the stdlib (e.g. CCList provides safe map/fold_right/append, and
+additional functions on lists).
+
+It also features an optional library for dealing with strings, and a `misc`
+library full of experimental ideas (not stable, not necessarily usable)."""
+flags: light-uninstall
+url {
+  src: "https://github.com/c-cube/ocaml-containers/archive/0.5.tar.gz"
+  checksum: "md5=c7c09138da1071a7a168bab78a558434"
+}

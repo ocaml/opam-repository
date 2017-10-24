@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "David Scott <dave.scott@docker.com>"
 authors: [
 	"Anil Madhavapeddy <anil@recoil.org>"
@@ -14,7 +14,7 @@ authors: [
 ]
 homepage:     "https://github.com/docker/vpnkit"
 bug-reports:  "https://github.com/docker/vpnkit/issues"
-dev-repo:     "https://github.com/docker/vpnkit.git"
+dev-repo: "git+https://github.com/docker/vpnkit.git"
 doc:          "https://docker.github.io/vpnkit/"
 
 build: [
@@ -24,32 +24,54 @@ install: [make "install" "BINDIR=%{bin}%"]
 remove: [make "uninstall" "BINDIR=%{bin}%"]
 
 depends: [
-  "ocamlfind"  {build}
+  "ocaml"
+  "ocamlfind" {build}
   "ocamlbuild" {build}
-  "oasis"      {build}
-  "alcotest"   {test}
+  "oasis" {build}
+  "alcotest" {with-test}
   "result"
-  "tar-format" {>="0.6.0" & <"0.7.0"}
+  "tar-format" {>= "0.6.0" & < "0.7.0"}
   "ipaddr"
-  "lwt" { < "2.7.0" }
-  "uwt" { = "0.0.3" }
-  "tcpip" { >= "2.8.0" & < "3.0.0" }
+  "lwt" {< "2.7.0"}
+  "uwt" {= "0.0.3"}
+  "tcpip" {>= "2.8.0" & < "3.0.0"}
   "pcap-format"
   "dns"
   "dns-forward"
   "datakit-server" {< "0.10.0"}
   "hashcons" {= "1.0.1"}
-  "pcap-format" { >= "0.4.0" }
+  "pcap-format" {>= "0.4.0"}
   "cmdliner"
-  "charrua-core" { >= "0.3" }
-  "named-pipe" { >= "0.4.0" }
-  "hvsock"     { >= "0.8.1" & < "0.13.0" }
+  "charrua-core" {>= "0.3"}
+  "named-pipe" {>= "0.4.0"}
+  "hvsock" {>= "0.8.1" & < "0.13.0"}
   "asl"
   "win-eventlog"
   "fd-send-recv"
   "logs"
   "fmt"
   "astring"
-  "mirage-flow" { >= "1.1.0" }
-  "mirage-types-lwt" { < "3.0.0" }
+  "mirage-flow" {>= "1.1.0"}
+  "mirage-types-lwt" {< "3.0.0"}
 ]
+synopsis:
+  "VPN-friendly networking devices for [HyperKit](https://github.com/docker/hyperkit)"
+description: """
+Running a VM usually involves modifying the network configuration on the host, for example
+by activating Ethernet bridges, new routing table entries, DNS and firewall/NAT configurations.
+Activating a VPN involves modifying the same routing tables, DNS and firewall/NAT configurations
+and therefore there can be a clash -- this often results in the network connection to the VM
+being disconnected.
+
+VPNKit, part of [HyperKit](https://github.com/docker/hyperkit)
+attempts to work nicely with VPN software by intercepting the VM traffic at the Ethernet level,
+parsing and understanding protocols like NTP, DNS, UDP, TCP and doing the "right thing" with
+respect to the host's VPN configuration.
+
+VPNKit operates by reconstructing Ethernet traffic from the VM and translating it into the
+relevant socket API calls on OSX or Windows. This allows the host application to generate
+traffic without requiring low-level Ethernet bridging support."""
+url {
+  src: "https://github.com/djs55/vpnkit/archive/v0.0.0.tar.gz"
+  checksum: "md5=9bd05f1339ba9d48a119ee394b701c8f"
+}

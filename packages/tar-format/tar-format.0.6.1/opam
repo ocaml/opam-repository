@@ -1,38 +1,59 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "dave@recoil.org"
 authors:      [ "Dave Scott" "Thomas Gazagnaire" "David Allsopp" ]
 tags:         ["org:xapi-project" "org:mirage"]
 homepage:     "https://github.com/mirage/ocaml-tar"
 bug-reports:  "https://github.com/mirage/ocaml-tar/issues"
-dev-repo:     "https://github.com/mirage/ocaml-tar.git"
-
+dev-repo: "git+https://github.com/mirage/ocaml-tar.git"
 build: [
-  ["ocaml" "setup.ml" "-configure"
-     "--prefix" prefix
-     "--%{lwt:enable}%-lwtunix"
-     "--%{mirage-types-lwt:enable}%-mirage" ]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{lwt:enable}%-lwtunix"
+    "--%{mirage-types-lwt:enable}%-mirage"
+  ]
   ["ocaml" "setup.ml" "-build"]
-]
-build-test: [
-  ["ocaml" "setup.ml" "-configure"
-    "--enable-tests" "--enable-lwtunix" "--enable-mirage"]
-  [make "test"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--enable-lwtunix"
+    "--enable-mirage"
+  ] {with-test}
+  [make "test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove:  ["ocamlfind" "remove" "tar"]
 
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind"
-  "cstruct"           {>= "1.9.0" & <"3.0.0"}
-  "ppx_cstruct"       {build}
+  "cstruct" {>= "1.9.0" & < "3.0.0"}
+  "ppx_cstruct" {build}
   "cstruct-lwt"
   "re"
   "result"
   "cmdliner"
-  "ounit"             {test}
-  "mirage-block-unix" {test & < "2.5.0"}
-  "lwt"               {test}
-  "mirage-types-lwt"  {test & < "3.0.0"}
+  "ounit" {with-test}
+  "mirage-block-unix" {with-test & < "2.5.0"}
+  "lwt" {with-test}
+  "mirage-types-lwt" {with-test & < "3.0.0"}
 ]
 depopts: ["lwt" "mirage-types-lwt"]
-available: [ ocaml-version >= "4.01.0" ]
+synopsis: "A pure OCaml library to read and write tar files"
+description: """
+This allows easy processing of tar-formatted data: creating archives,
+listing archives and extracting archives. Together with camlzip, it can
+directly process compressed .tar.gz archives.
+
+A mirage interface is also provided which exposes a tar-formatted block
+device as a read-only key=value store."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-tar/archive/v0.6.1.tar.gz"
+  checksum: "md5=bc6475a9ece5d914213e1d2275667418"
+}

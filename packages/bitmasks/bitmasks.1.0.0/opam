@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "david.allsopp@metastack.com"
 authors: [ "David Allsopp" ]
 license: "BSD-3-clause with OCaml linking exception"
@@ -6,14 +6,26 @@ homepage: "http://forge.ocamlcore.org/projects/bitmasks"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 remove: [
   ["ocamlfind" "remove" "bitmasks"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "3.12.0"}
   "ocamlfind"
   "ocamlbuild" {build}
 ]
-available: ocaml-version >= "3.12.0"
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "BitMasks over int and int64 exposed as sets"
+description: """
+Library for exposing bitmasks (typically as int or int64) in an
+implementation compatible with OCaml's Set. The underlying data
+representation is unaltered, allowing the value to be manipulated
+either as a bitmask or as a set without conversion."""
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1386/bitmasks-1.0.0.tar.gz"
+  checksum: "md5=5f3e3092eac1a535db3f9996e10b4b45"
+}

@@ -1,0 +1,22 @@
+opam-version: "2.0"
+synopsis: "4.06 release branch with -safe-string enabled."
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.06.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix "-with-debug-runtime" "-safe-string"]
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.06.tar.gz"
+  checksum: "md5=e82c7688067f4de5aeee95628b75ec6f"
+}

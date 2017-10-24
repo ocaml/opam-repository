@@ -1,21 +1,38 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "martin@mjambon.com"
 authors: ["Martin Jambon"]
 homepage: "http://mjambon.com/yojson.html"
 bug-reports: "https://github.com/mjambon/yojson/issues"
-dev-repo: "https://github.com/mjambon/yojson.git"
+dev-repo: "git+https://github.com/mjambon/yojson.git"
 build: [
-  [make] {ocaml-native}
-  [make "all"] {!ocaml-native}
+  [make] {ocaml:native}
+  [make "all"] {!ocaml:native}
 ]
 install: [
   [make "install" "BINDIR=%{bin}%"]
 ]
 remove: [["ocamlfind" "remove" "yojson"]]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind"
   "cppo"
   "easy-format"
   "biniou" {>= "1.0.2"}
 ]
-available: [ ocaml-version >= "4.01.0"]
+synopsis:
+  "Yojson is an optimized parsing and printing library for the JSON format"
+description: """
+It addresses a few shortcomings of json-wheel including 2x speedup,
+polymorphic variants and optional syntax for tuples and variants.
+
+ydump is a pretty-printing command-line program provided with the
+yojson package.
+
+The program atdgen can be used to derive OCaml-JSON serializers and
+deserializers from type definitions."""
+flags: light-uninstall
+extra-files: ["yojson.install" "md5=992a663b313888121778a1b7b18b622c"]
+url {
+  src: "https://github.com/mjambon/yojson/archive/v1.1.3.tar.gz"
+  checksum: "md5=248258adbea24b9d8cecb0071e9e933e"
+}

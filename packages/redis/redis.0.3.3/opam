@@ -1,18 +1,19 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "aluuu@husa.su"
 authors: ["Mike Wells" "David Höppner" "Alexander Dinu"]
 homepage: "https://github.com/0xffea/ocaml-redis"
 bug-reports: "https://github.com/0xffea/ocaml-redis/issues"
 license: "BSD3"
-dev-repo: "https://github.com/0xffea/ocaml-redis.git"
+dev-repo: "git+https://github.com/0xffea/ocaml-redis.git"
 build: [
   ["./configure" "--prefix" prefix "--%{lwt:enable}%-lwt"]
   [make]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: [make "PREFIX=%{prefix}%" "install"]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "redis"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "base-bytes"
@@ -20,4 +21,9 @@ depends: [
   "re"
 ]
 depopts: "lwt"
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Bindings for the key-value cache and store redis."
+flags: light-uninstall
+url {
+  src: "https://github.com/0xffea/ocaml-redis/archive/0.3.3.tar.gz"
+  checksum: "md5=975ae5cfc535deb5c5167632ddf20c23"
+}

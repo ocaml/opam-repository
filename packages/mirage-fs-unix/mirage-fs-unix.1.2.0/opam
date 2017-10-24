@@ -1,31 +1,35 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors: [
   "Mindy Preston" "Hannes Mehnert" "Anil Madhavapeddy" "Thomas Gazagnaire"
 ]
 maintainer: ["anil@recoil.org" "thomas@gazagnaire.org"]
 homepage: "https://github.com/mirage/mirage-fs-unix"
-dev-repo: "https://github.com/mirage/mirage-fs-unix.git"
+dev-repo: "git+https://github.com/mirage/mirage-fs-unix.git"
 bug-reports: "https://github.com/mirage/mirage-fs-unix/issues"
 tags: ["org:mirage"]
 build: [
   ["./configure" "--prefix" prefix]
   [make]
-]
-build-test: [
-  ["./configure" "--prefix" prefix "--enable-tests"]
-  [make "test"]
+  ["./configure" "--prefix" prefix "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "mirage-fs-unix"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "cstruct" {>= "1.4.0"}
   "mirage-types-lwt" {< "3.0.0"}
   "camlp4"
-  "mirage-clock-unix" {test}
-  "alcotest" {test}
-  "ounit" {test}
+  "mirage-clock-unix" {with-test}
+  "alcotest" {with-test}
+  "ounit" {with-test}
   "ocamlbuild" {build}
   "cstruct-lwt"
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "MirageOS filesystem passthrough driver for Unix"
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/mirage-fs-unix/archive/v1.2.0.tar.gz"
+  checksum: "md5=3a95a7d4d3557cd405e9f2a3f005c76c"
+}

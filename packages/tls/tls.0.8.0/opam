@@ -1,28 +1,43 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name:         "tls"
 homepage:     "https://github.com/mirleft/ocaml-tls"
-dev-repo:     "https://github.com/mirleft/ocaml-tls.git"
+dev-repo: "git+https://github.com/mirleft/ocaml-tls.git"
 bug-reports:  "https://github.com/mirleft/ocaml-tls/issues"
 doc:          "https://mirleft.github.io/ocaml-tls/doc"
-author:       ["David Kaloper <david@numm.org>" "Hannes Mehnert <hannes@mehnert.org>"]
 maintainer:   ["Hannes Mehnert <hannes@mehnert.org>" "David Kaloper <david@numm.org>"]
 license:      "BSD2"
 
 build: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"
-    "--tests" "false"
-    "--with-lwt" "%{lwt:installed}%"
-    "--with-mirage" "%{mirage-flow-lwt+mirage-kv-lwt+mirage-clock:installed}%" ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "false"
+    "--with-lwt"
+    "%{lwt:installed}%"
+    "--with-mirage"
+    "%{mirage-flow-lwt+mirage-kv-lwt+mirage-clock:installed}%"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+    "--with-lwt"
+    "%{lwt:installed}%"
+    "--with-mirage"
+    "%{mirage-flow-lwt+mirage-kv-lwt+mirage-clock:installed}%"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"
-    "--tests" "true"
-    "--with-lwt" "%{lwt:installed}%"
-    "--with-mirage" "%{mirage-flow-lwt+mirage-kv-lwt+mirage-clock:installed}%" ]
-  ["ocaml" "pkg/pkg.ml" "test"]
-]
-
 depends: [
+  "ocaml" {>= "4.02.2"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
@@ -35,8 +50,8 @@ depends: [
   "sexplib"
   "nocrypto" {>= "0.5.4"}
   "x509" {>= "0.5.0"}
-  "ounit" {test}
-  "ptime" {>= "0.8.1"} (* only necessary for mirage subpackage, but unable to express this here *)
+  "ounit" {with-test}
+  "ptime" {>= "0.8.1"}
 ]
 depopts: [
   "lwt"
@@ -52,4 +67,26 @@ conflicts: [
 ]
 
 tags: [ "org:mirage"]
-available: [ ocaml-version >= "4.02.2" ]
+synopsis: "Transport Layer Security purely in OCaml"
+description: """
+Transport Layer Security (TLS) is probably the most widely deployed security
+protocol on the Internet. It provides communication privacy to prevent
+eavesdropping, tampering, and message forgery. Furthermore, it optionally
+provides authentication of the involved endpoints. TLS is commonly deployed for
+securing web services ([HTTPS](http://tools.ietf.org/html/rfc2818)), emails,
+virtual private networks, and wireless networks.
+
+TLS uses asymmetric cryptography to exchange a symmetric key, and optionally
+authenticate (using X.509) either or both endpoints. It provides algorithmic
+agility, which means that the key exchange method, symmetric encryption
+algorithm, and hash algorithm are negotiated.
+
+Read [further](https://nqsb.io) and our [Usenix Security 2015 paper](https://usenix15.nqsb.io)."""
+authors: [
+  "David Kaloper <david@numm.org>" "Hannes Mehnert <hannes@mehnert.org>"
+]
+url {
+  src:
+    "https://github.com/mirleft/ocaml-tls/releases/download/0.8.0/tls-0.8.0.tbz"
+  checksum: "md5=c81f72d53d0551a3d792d275a1ea095f"
+}

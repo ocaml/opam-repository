@@ -1,11 +1,11 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "https://github.com/ocaml/opam-repository/issues"
 authors: ["Xavier Clerc"]
 homepage: "http://bisect.x9c.fr/"
 license: "GPL v3"
 build: [
   ["sh" "configure" "-ocaml-prefix" prefix "-ocamlfind" "%{bin}%/ocamlfind"]
-    {ocaml-version != "4.00.1"}
+    {ocaml:version != "4.00.1"}
   [
     "sh"
     "configure"
@@ -14,11 +14,12 @@ build: [
     "-ocamlfind"
     "%{bin}%/ocamlfind"
     "-ppx"
-  ] {ocaml-version = "4.00.1"}
+  ] {ocaml:version = "4.00.1"}
   [make "all"]
 ]
 remove: [["ocamlfind" "remove" "bisect"]]
 depends: [
+  "ocaml"
   "ocamlfind"
   "camlp4"
   "ocamlbuild" {build}
@@ -28,3 +29,20 @@ patches: [
   "opam.patch"
 ]
 install: [make "install"]
+synopsis: "Code coverage tool for the OCaml language"
+description: """
+Bisect is a code coverage tool for the OCaml language. It is a
+camlp4-based tool that allows to instrument your application before
+running tests. After application execution, it is possible to generate
+a report in HTML format that is the replica of the application source
+code annotated with code coverage information."""
+flags: light-uninstall
+extra-files: [
+  ["opam.patch" "md5=85e88ebfbe0b3fd36b707379139c2965"]
+  ["install-thread.patch" "md5=a2ab1b151d25c4f57247c1f91847e1b6"]
+  ["bisect.install" "md5=2106aa627796b3e457d35f1100295f27"]
+]
+url {
+  src: "http://bisect.x9c.fr/distrib/bisect-1.3.tar.gz"
+  checksum: "md5=8481342a3d9f17d5502bc84c04c206e3"
+}

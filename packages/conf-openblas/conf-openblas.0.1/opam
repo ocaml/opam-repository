@@ -1,9 +1,8 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Liang Wang (ryanrhymes@gmail.com)"
-author: "Liang Wang (ryanrhymes@gmail.com)"
 homepage: "https://github.com/xianyi/OpenBLAS"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-dev-repo: "https://github.com/ocaml/opam-repository.git"
+dev-repo: "git+https://github.com/ocaml/opam-repository.git"
 license: "BSD"
 build: [
   ["sh" "-exc" "%{build}%/centos_install.sh"] {os = "centos"}
@@ -13,9 +12,18 @@ build: [
   ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os != "darwin" & os != "debian" & os != "centos" & os != "alpine"}
 ]
 depexts: [
-  [["centos"] [""]]
-  [["alpine"] ["libc-dev openblas-dev"]]
-  [["ubuntu"] ["libopenblas-dev liblapacke-dev"]]
-  [["debian"] ["libopenblas-dev liblapacke-dev"]]
-  [["osx" "homebrew"] ["homebrew/science/openblas"]]
+  [""] {os-distribution = "centos"}
+  ["libc-dev openblas-dev"] {os-distribution = "alpine"}
+  ["libopenblas-dev liblapacke-dev"] {os-distribution = "ubuntu"}
+  ["libopenblas-dev liblapacke-dev"] {os-distribution = "debian"}
+  ["homebrew/science/openblas"] {os = "macos" & os-distribution = "homebrew"}
+]
+synopsis: "Virtual package to install OpenBLAS and LAPACKE."
+description:
+  "The package prepares OpenBLAS (CBLAS) and LAPACKE backend for Owl (OCaml numerical library). It can only be installed if OpenBLAS and LAPACKE are installed on the system."
+authors: "Liang Wang (ryanrhymes@gmail.com)"
+depends: ["ocaml"]
+extra-files: [
+  ["test.c" "md5=dcf8ee02542457dde43e1e4917897416"]
+  ["centos_install.sh" "md5=46ee889588a424b2d5b25b3de906ed6c"]
 ]

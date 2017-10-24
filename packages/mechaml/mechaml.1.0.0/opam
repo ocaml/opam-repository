@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Yann Hamdaoui <yann.hamdaoui@gmail.com>"
 authors: "Yann Hamdaoui <yann.hamdaoui@gmail.com>"
 homepage: "https://github.com/yannham/mechaml"
@@ -8,15 +8,14 @@ dev-repo: "git://github.com/yannham/mechaml.git"
 build: [
   ["./configure" "--prefix=%{prefix}%"]
   [make]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
+  ["make doc"] {with-doc}
 ]
 install: [make "install"]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test"]
-]
-build-doc: ["make doc"]
 remove: ["ocamlfind" "remove" "mechaml"]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
   "cohttp" {>= "0.21.0"}
@@ -25,6 +24,23 @@ depends: [
   "lwt"
   "uri"
   "lambdasoup" {< "0.7.0"}
-  "alcotest" {test & >= "0.8.0"}
+  "alcotest" {with-test & >= "0.8.0"}
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis:
+  "Functional web scraping library based on Cohttp, Lambdasoup and Lwt"
+description: """
+Mechaml is a web scraping library that allows to :
+* Fetch web content
+* Analyze, fill and submit HTML forms
+* Handle cookies, headers and redirections
+
+Mechaml is built on top of existing libraries that provide low-level features : Cohttp (https://github.com/mirage/ocaml-cohttp) and
+Lwt (https://github.com/ocsigen/lwt) for asynchronous I/O and HTTP handling, and
+ Lambdasoup (https://github.com/aantron/lambda-soup) to parse HTML. It provides
+an interface that handles the interactions between these and add a few
+other features."""
+flags: light-uninstall
+url {
+  src: "https://github.com/yannham/mechaml/archive/1.0.0.tar.gz"
+  checksum: "md5=eae9ae1c4614447314de681018886030"
+}

@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "jerome.vouillon@pps.univ-paris-diderot.fr"
 authors: [
   "Jerome Vouillon"
@@ -8,22 +8,34 @@ authors: [
 homepage: "https://github.com/ocaml/ocaml-re"
 bug-reports: "https://github.com/ocaml/ocaml-re/issues"
 license: "LGPL-2.0 with OCaml linking exception"
-dev-repo: "https://github.com/ocaml/ocaml-re.git"
+dev-repo: "git+https://github.com/ocaml/ocaml-re.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "re"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "base-bytes"
-  "ounit" {test}
+  "ounit" {with-test}
   "ocamlbuild" {build}
 ]
+synopsis: "RE is a regular expression library for OCaml"
+description: """
+Pure OCaml regular expressions with:
+* Perl-style regular expressions (module Re_perl)
+* Posix extended regular expressions (module Re_posix)
+* Emacs-style regular expressions (module Re_emacs)
+* Shell-style file globbing (module Re_glob)
+* Compatibility layer for OCaml's built-in Str module (module Re_str)"""
+flags: light-uninstall
+url {
+  src: "https://github.com/ocaml/ocaml-re/archive/ocaml-re-1.3.0.tar.gz"
+  checksum: "md5=c206c50f4c89342953dacf34def8d15d"
+}

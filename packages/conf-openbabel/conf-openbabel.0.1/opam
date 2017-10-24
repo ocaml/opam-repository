@@ -1,17 +1,23 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Francois BERENGER <ligand@free.fr>"
 homepage: "http://openbabel.org/"
 license: "GPL"
 authors: "http://openbabel.org/wiki/THANKS"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-dev-repo: "https://github.com/ocaml/opam-repository.git"
+dev-repo: "git+https://github.com/ocaml/opam-repository.git"
 build: [
   ["c++" "-I/usr/include/openbabel-2.0" "test.cpp" "-lopenbabel"] { os != "darwin" }
   ["c++" "-I/usr/local/include/openbabel-2.0" "test.cpp" "-L/usr/local/lib" "-lopenbabel"] { os = "darwin" }
 ]
 depexts: [
-  [["debian"] ["libopenbabel-dev"]]
-  [["ubuntu"] ["libopenbabel-dev"]]
-  [["osx" "homebrew"] ["open-babel"]]
-  [["centos"] ["openbabel-devel"]]
+  ["libopenbabel-dev"] {os-distribution = "debian"}
+  ["libopenbabel-dev"] {os-distribution = "ubuntu"}
+  ["open-babel"] {os = "macos" & os-distribution = "homebrew"}
+  ["openbabel-devel"] {os-distribution = "centos"}
 ]
+synopsis: "Virtual package relying on openbabel library installation."
+description: """
+This package can only install if the openbabel devel library is installed
+on the system."""
+depends: ["ocaml"]
+extra-files: ["test.cpp" "md5=0a2f6ad381a1624089cd12718bfbfdd8"]

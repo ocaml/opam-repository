@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Markus Mottl <markus.mottl@gmail.com>"
 authors: [ "Egbert Ammicht <eammicht@lucent.com>"
            "Patrick Cousot <Patrick.Cousot@ens.fr>"
@@ -11,30 +11,38 @@ authors: [ "Egbert Ammicht <eammicht@lucent.com>"
            "Martin Willensdorfer <ma.wi@gmx.at>" ]
 license: "LGPL-2.1+ with OCaml linking exception"
 homepage: "http://mmottl.github.io/lacaml"
-dev-repo: "https://github.com/mmottl/lacaml.git"
+dev-repo: "git+https://github.com/mmottl/lacaml.git"
 bug-reports: "https://github.com/mmottl/lacaml/issues"
 tags: [ "clib:lapack" "clib:blas"  ]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "lacaml"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "3.12"}
   "base-bigarray"
   "base-bytes"
   "ocamlfind" {build & >= "1.5"}
   "ocamlbuild" {build}
-  # Included from _opam file
   "conf-blas"
   "conf-lapack"
 ]
-available: [ ocaml-version >= "3.12" ]
+synopsis: "OCaml-bindings to BLAS and LAPACK."
+description: """
+This library interfaces the BLAS-library (Basic Linear Algebra
+Subroutines) and LAPACK-library (Linear Algebra routines), which are
+written in FORTRAN."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/mmottl/lacaml/releases/download/v8.1.1/lacaml-8.1.1.tar.gz"
+  checksum: "md5=9e4f13df392ebe7363b82d284f98439f"
+}

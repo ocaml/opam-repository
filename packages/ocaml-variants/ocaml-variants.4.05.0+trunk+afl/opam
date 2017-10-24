@@ -1,0 +1,22 @@
+opam-version: "2.0"
+synopsis: "latest 4.05 snapshot with afl-fuzz instrumentation"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.05.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix "-afl-instrument"]
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.05.tar.gz"
+  checksum: "md5=8d617469055774eab343991175f55333"
+}

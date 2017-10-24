@@ -1,25 +1,28 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "containers"
 authors: "Simon Cruanes"
 maintainer: "simon.cruanes@inria.fr"
 build: [
-    ["./configure"
-        "--prefix" prefix
-        "--%{base-threads:enable}%-thread"
-        "--disable-bench"
-        "--disable-tests"
-        "--%{lwt:enable}%-lwt"
-        "--%{base-bigarray:enable}%-bigarray"
-        "--%{sequence:enable}%-advanced"
-        "--enable-docs"
-        "--enable-misc"]
-    [make "build"]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--%{base-threads:enable}%-thread"
+    "--disable-bench"
+    "--disable-tests"
+    "--%{lwt:enable}%-lwt"
+    "--%{base-bigarray:enable}%-bigarray"
+    "--%{sequence:enable}%-advanced"
+    "--enable-docs"
+    "--enable-misc"
+  ]
+  [make "build"]
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
 ]
 install: [
     [make "install"]
 ]
-build-doc: [ make "doc" ]
-build-test: [ make "test" ]
 remove: [
     ["ocamlfind" "remove" "containers"]
 ]
@@ -30,6 +33,7 @@ post-messages: [
     `gen` and `sequence` on opam."
 ]
 depends: [
+  "ocaml" {>= "4.00.0"}
   "ocamlfind" {build}
   "base-bytes"
   "cppo" {build}
@@ -39,6 +43,20 @@ depopts: [ "lwt" "sequence" "base-bigarray" ]
 tags: [ "stdlib" "containers" "iterators" "list" "heap" "queue" ]
 homepage: "https://github.com/c-cube/ocaml-containers/"
 doc: "http://cedeela.fr/~simon/software/containers/"
-available: [ocaml-version >= "4.00.0"]
-dev-repo: "https://github.com/c-cube/ocaml-containers.git"
+dev-repo: "git+https://github.com/c-cube/ocaml-containers.git"
 bug-reports: "https://github.com/c-cube/ocaml-containers/issues/"
+synopsis: "A modular standard library focused on data structures."
+description: """
+Containers is a standard library (BSD license) focused on data structures,
+combinators and iterators, without dependencies on unix. Every module is
+independent and is prefixed with 'CC' in the global namespace. Some modules
+extend the stdlib (e.g. CCList provides safe map/fold_right/append, and
+additional functions on lists).
+
+It also features an optional library for dealing with strings, and a `misc`
+library full of experimental ideas (not stable, not necessarily usable)."""
+flags: light-uninstall
+url {
+  src: "https://github.com/c-cube/ocaml-containers/archive/0.8.tar.gz"
+  checksum: "md5=e5642a704f506e91f0bdf99bc2c0d405"
+}

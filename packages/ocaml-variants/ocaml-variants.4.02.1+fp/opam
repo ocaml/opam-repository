@@ -1,0 +1,29 @@
+opam-version: "2.0"
+synopsis: "OCaml 4.02.1 release with frame pointers enabled"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.02.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-with-frame-pointers"
+  ]
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.1.tar.gz"
+  checksum: "md5=3c35318eefd201f96797c093c920b343"
+}

@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "2.0"
 maintainer: "Francois.Bobot@cea.fr"
 authors: [
   "François Bobot"
@@ -33,16 +33,9 @@ build: [
     "--disable-bench"
   ]
   [make "opt" "byte"]
+  [make "stdlibdoc" "apidoc"] {with-doc}
 ]
-build-doc: [
-  [make "stdlibdoc" "apidoc"]
-  [make "DOCDIR=%{doc}%/why3" "install-doc"]
-]
-depends: [
-  "alt-ergo"
-  "lablgtk"
-  "conf-gtksourceview"
-]
+depends: ["ocaml" "alt-ergo" "lablgtk" "conf-gtksourceview"]
 depopts: ["ocamlgraph" "coq"]
 patches: [
   "configure.patch"
@@ -52,4 +45,35 @@ conflicts: [
   "coq" {< "8.3"}
   "ocamlgraph" {< "1.8.2"}
 ]
-install: [make "install" "install-lib"]
+install: [
+  [make "install" "install-lib"]
+  [make "DOCDIR=%{doc}%/why3" "install-doc"] {with-doc}
+]
+synopsis: "Why3 is a platform for deductive program verification."
+description: """
+It provides a rich language for specification and programming, called
+WhyML, and relies on external theorem provers, both automated and
+interactive, to discharge verification conditions. Why3 comes with a
+standard library of logical theories (integer and real arithmetic,
+Boolean operations, sets and maps, etc.) and basic programming data
+structures (arrays, queues, hash tables, etc.). A user can write WhyML
+programs directly and get correct-by-construction OCaml programs
+through an automated extraction mechanism. WhyML is also used as an
+intermediate language for the verification of C, Java, or Ada
+programs.
+
+Why3 is a complete reimplementation of the former Why platform. Among
+the new features are: numerous extensions to the input language, a new
+architecture for calling external provers, and a well-designed API,
+allowing to use Why3 as a software library. An important emphasis is
+put on modularity and genericity, giving the end user a possibility to
+easily reuse Why3 formalizations or to add support for a new external
+prover if wanted."""
+extra-files: [
+  ["configure.patch" "md5=0a1669a5f3ed0e21d8491c354f4970d4"]
+  ["Makefile.patch" "md5=1e2faceff4f76c0a5feab7aa2a9213c9"]
+]
+url {
+  src: "https://gforge.inria.fr/frs/download.php/33491/why3-0.81.tar.gz"
+  checksum: "md5=82253969f7bc8ea88ca60ee694909b31"
+}

@@ -1,15 +1,47 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
 authors: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
 homepage: "https://github.com/haesbaert/rawlink"
 bug-reports: "https://github.com/haesbaert/rawlink/issues"
 license: "ISC"
-dev-repo: "https://github.com/haesbaert/rawlink.git"
+dev-repo: "git+https://github.com/haesbaert/rawlink.git"
 build: ["sh" "build.sh"]
 depends: [
+  "ocaml" {>= "4.02"}
   "ocamlfind" {build}
   "lwt" {>= "2.4.7"}
-  "cstruct" {>="1.0.1" & <"2.0.0"}
+  "cstruct" {>= "1.0.1" & < "2.0.0"}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.02"]
+synopsis: "A portable library to read and write raw packets."
+description: """
+Rawlink is an ocaml library for sending and receiving raw packets at the link
+layer level. Sometimes you need to have full control of the packet, including
+building the full ethernet frame.
+
+The API is platform independent, it uses BPF on real UNIXes and AF_SOCKET on
+linux. Some functionality is sacrificed so that the API is portable enough. 
+
+Currently BPF and AF_PACKET are implemented, including filtering capabilities.
+Writing a BPF program is a pain in the ass, so no facilities are provided for
+it. If you need a BPF filter, I suggest you write a small .c file with a
+function that returns the BPF program as a string, check `rawlink_stubs.c` for
+an example.
+
+Both normal blocking functions as well as `Lwt` monadic variants are provided.
+
+A typical code for receiving all packets and just sending them back on an
+specified interface are detailed below:
+
+```
+let link = Rawlink.open_link "eth0" in
+let buf = Rawlink.read_packet link in
+Printf.printf "got a packet with %d bytes.\\n%!" (Cstruct.len buf);
+Rawlink.send_packet link buf
+```
+
+Check the mli interface for more options."""
+url {
+  src: "https://github.com/haesbaert/rawlink/archive/v0.1.tar.gz"
+  checksum: "md5=1c600ed9fcb47617daa7431991e9e00f"
+}

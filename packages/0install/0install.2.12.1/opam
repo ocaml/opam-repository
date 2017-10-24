@@ -1,19 +1,18 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "talex5@gmail.com"
 authors: "zero-install-devel@lists.sourceforge.net"
 homepage: "http://0install.net/"
 bug-reports: "https://github.com/0install/0install/issues"
-dev-repo: "https://github.com/0install/0install.git"
+dev-repo: "git+https://github.com/0install/0install.git"
 build: [
   [make "all"]
-]
-build-test: [
-  [make "test"]
+  [make "test"] {with-test}
 ]
 depends: [
+  "ocaml" {>= "4.02.3"}
   "yojson"
   "xmlm"
-  "ounit" {test}
+  "ounit" {with-test}
   "lwt" {< "3.0.0"}
   "lwt_react"
   "extlib"
@@ -24,8 +23,20 @@ depends: [
 ]
 depopts: [ "obus" "lablgtk" "lwt_glib" ]
 depexts: [
-  [["ubuntu"] ["unzip"]]
-  [["debian"] ["unzip"]]
-  [["osx" "homebrew"] ["gnupg2"]]
+  ["unzip"] {os-distribution = "ubuntu"}
+  ["unzip"] {os-distribution = "debian"}
+  ["gnupg2"] {os = "macos" & os-distribution = "homebrew"}
 ]
-available: [ ocaml-version >= "4.02.3" ]
+synopsis: "The antidote to app-stores"
+description: """
+Zero Install is a decentralised cross-distribution software installation system.
+Other features include full support for shared libraries (with a SAT solver for
+dependency resolution), sharing between users, and integration with native platform
+package managers. It supports both binary and source packages, and works on Linux,
+Mac OS X, Unix and Windows systems."""
+extra-files: ["0install.install" "md5=db6ee7a35da5d98136e5a56bad08496e"]
+url {
+  src:
+    "https://downloads.sf.net/project/zero-install/0install/2.12.1/0install-2.12.1.tar.bz2"
+  checksum: "md5=e272f9acf4362b613e31c51dcaf5e946"
+}

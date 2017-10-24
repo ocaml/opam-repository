@@ -1,0 +1,26 @@
+opam-version: "2.0"
+synopsis: "MetaOCaml 3.09 alpha 030"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "3.09.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix]
+  [make "world"]
+  [make "install"]
+  ["mkdir" "-p" "%{prefix}%/lib/ocaml/compiler-libs"]
+]
+install: [
+  "cp" "-r" "typing" "parsing" "utils" "%{prefix}%/lib/ocaml/compiler-libs/"
+]
+url {
+  src:
+    "http://web.archive.org/web/20120209151915/www.metaocaml.org/dist/old/MetaOCaml_309_alpha_030.tar.gz"
+  checksum: "md5=28fca7ec424a1fd9fcdcf89fa2929f2a"
+}

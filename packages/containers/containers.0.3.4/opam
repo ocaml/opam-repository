@@ -1,23 +1,26 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "simon.cruanes@inria.fr"
 build: [
-  "./configure"
-  "--prefix"
-  prefix
-  "--disable-thread"
-  "--disable-bench"
-  "--disable-tests"
-  "--disable-cgi"
-  "--disable-lwt"
-  "--enable-docs"
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--disable-thread"
+    "--disable-bench"
+    "--disable-tests"
+    "--disable-cgi"
+    "--disable-lwt"
+    "--enable-docs"
+  ]
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
 ]
-build-doc: [ make "doc" ]
-build-test: [ make "test" ]
 remove: [
     ["ocamlfind" "remove" "containers"]
 ]
 post-messages: [ "in containers, modules start with 'CC' (stands for 'core containers')" ]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind"
   "ocamlbuild" {build}
 ]
@@ -25,5 +28,19 @@ tags: [ "stdlib" "containers" "iterators" "list" "heap" "queue" ]
 homepage: "https://github.com/c-cube/ocaml-containers/"
 doc: "http://cedeela.fr/~simon/software/containers/"
 dev-repo: "git://github.com/c-cube/ocaml-containers"
-available: ocaml-version >= "4.01.0"
 install: [make "build" "install"]
+synopsis: "A modular standard library focused on data structures."
+description: """
+Containers is a standard library (BSD license) focused on data structures,
+combinators and iterators, without dependencies on unix. Every module is
+independent and is prefixed with 'CC' in the global namespace. Some modules
+extend the stdlib (e.g. CCList provides safe map/fold_right/append, and
+additional functions on lists).
+
+It also features an optional library for dealing with strings, and a `misc`
+library full of experimental ideas (not stable, not necessarily usable)."""
+flags: light-uninstall
+url {
+  src: "https://github.com/c-cube/ocaml-containers/archive/0.3.4.tar.gz"
+  checksum: "md5=ed3afee86d38ee2ce7e61df491277040"
+}

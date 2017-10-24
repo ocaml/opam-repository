@@ -1,7 +1,7 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "anil@recoil.org"
 homepage:     "https://github.com/mirage/mirage-tcpip"
-dev-repo:     "https://github.com/mirage/mirage-tcpip.git"
+dev-repo: "git+https://github.com/mirage/mirage-tcpip.git"
 bug-reports:  "https://github.com/mirage/mirage-tcpip/issues"
 authors: [
   "Anil Madhavapeddy" "Balraj Singh" "Richard Mortier" "Nicolas Ojeda Bar"
@@ -14,13 +14,11 @@ tags: ["org:mirage"]
 build: [
   ["jbuilder" "subst"] {pinned}
   ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-build-test: [
-  ["jbuilder" "runtest" "-p" name "-j" jobs]
-]
-
 depends: [
-  "jbuilder"     {build & >="1.0+beta10"}
+  "ocaml" {>= "4.03.0"}
+  "jbuilder" {build & >= "1.0+beta10"}
   "configurator" {build}
   "rresult"
   "cstruct" {>= "3.0.2"}
@@ -42,10 +40,64 @@ depends: [
   "duration"
   "io-page-unix"
   "randomconv"
-  "mirage-flow" {test & >= "1.2.0"}
-  "mirage-vnetif" {test & >= "0.4.0"}
-  "alcotest" {test & >="0.7.0"}
-  "pcap-format" {test}
-  "mirage-clock-unix" {test & >= "1.2.0"}
+  "mirage-flow" {with-test & >= "1.2.0"}
+  "mirage-vnetif" {with-test & >= "0.4.0"}
+  "alcotest" {with-test & >= "0.7.0"}
+  "pcap-format" {with-test}
+  "mirage-clock-unix" {with-test & >= "1.2.0"}
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis: "An OCaml TCP/IP networking stack"
+description: """
+`mirage-tcpip` provides a networking stack for the [Mirage operating
+system](https://mirage.io). It provides implementations for the following module types
+(which correspond with the similarly-named protocols):
+
+* ETHERNET
+* ARP
+* IP (via the IPv4 and IPv6 modules)
+* ICMP
+* UDP
+* TCP
+
+## Implementations
+
+There are two implementations of the IP, ICMP, UDP, and TCP module types -
+the `socket` stack, and the `direct` stack.
+
+### The `socket` stack
+
+The `socket` stack uses socket calls to a traditional operating system to
+provide the functionality described in the module types.
+
+See the [`src/stack-unix/`](./src/stack-unix/) directory for the modules used as implementations of the
+`socket` stack. 
+
+The `socket` stack is used for testing or other applications which do not
+expect to run as unikernels.
+
+### The `direct` stack
+
+The `direct` stack expects to write to a device implementing the `NETIF` module
+type defined for MirageOS.
+
+See the [`src/`](./src/) directory for the modules used as implementations of the
+`direct` stack, which is the expected stack for most MirageOS applications.
+
+The `direct` stack is the only usable set of implementations for
+applications which will run as unikernels on a hypervisor target.
+
+## Community
+
+* WWW: <https://mirage.io>
+* E-mail: <mirageos-devel@lists.xenproject.org>
+* Issues: <https://github.com/mirage/mirage-tcpip/issues>
+* API docs: <http://docs.mirage.io/tcpip/index.html>
+
+## License
+
+`mirage-tcpip` is distributed under the ISC license."""
+url {
+  src:
+    "https://github.com/mirage/mirage-tcpip/releases/download/v3.3.0/tcpip-3.3.0.tbz"
+  checksum: "md5=a3a5e94da2c12b9192d08d72a10040d7"
+}

@@ -1,21 +1,24 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Anders Fugmann <anders@fugmann.net>"
 authors: [ "Anders Fugmann" ]
 homepage: "https://github.com/andersfugmann/amqp-client"
 bug-reports: "https://github.com/andersfugmann/amqp-client/issues"
-dev-repo: "https://github.com/andersfugmann/amqp-client.git"
+dev-repo: "git+https://github.com/andersfugmann/amqp-client.git"
 license: "BSD3"
 version: "1.1.0"
-build: [["jbuilder" "build" "-p" name "-j" jobs]]
-build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+]
 install: [jbuilder install]
 remove: [jbuilder uninstall]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "jbuilder" {build}
   "xml-light" {build}
   "ocplib-endian" {>= "0.6"}
-  "async" {test}
-  "lwt" {test}
+  "async" {with-test}
+  "lwt" {with-test}
 ]
 depopts: [
   "async"
@@ -24,4 +27,13 @@ depopts: [
 conflicts: [
   "lwt" {< "2.4.6"}
 ]
-available: [ ocaml-version >= "4.03.0" ]
+synopsis: "Amqp client library compatable with async and lwt."
+description: """
+This library provides high level client bindings for amqp. The library
+is tested against rabbitmq, but should work against other amqp
+servers. The library is written in pure OCaml and supports both Async
+and Lwt for concurrency."""
+url {
+  src: "https://github.com/andersfugmann/amqp-client/archive/1.1.0.tar.gz"
+  checksum: "md5=5bf2b7aa664bcac575ebb014df7eed13"
+}

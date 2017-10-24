@@ -1,21 +1,38 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Andreas Garnaes <andreas.garnaes@gmail.com>"
 authors: "Andreas Garnaes <andreas.garnaes@gmail.com>"
 homepage: "https://github.com/andreas/ocaml-graphql-server"
 doc: "https://andreas.github.io/ocaml-graphql-server/"
 bug-reports: "https://github.com/andreas/ocaml-graphql-server/issues"
-dev-repo: "https://github.com/andreas/ocaml-graphql-server.git"
-build: [["jbuilder" "build" "-p" name "-j" jobs]]
-build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
+dev-repo: "git+https://github.com/andreas/ocaml-graphql-server.git"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "jbuilder" {build}
   "angstrom" {>= "0.4.0"}
   "sexplib"
   "ppx_sexp_conv" {>= "0.9.0"}
   "yojson"
   "rresult"
-  "alcotest" {test}
+  "alcotest" {with-test}
 ]
-available: [
-  ocaml-version >= "4.03.0"
-]
+synopsis: "Build GraphQL schemas and execute queries against them"
+description: """
+`graphql` is a package for creating GraphQL servers. Current feature set includes:
+
+- Type-safe schema design
+- GraphQL parser in pure OCaml using [angstrom](https://github.com/inhabitedtype/angstrom) (April 2016 RFC draft)
+- Query execution
+- Introspection of schemas
+- Arguments for fields
+- Allows variables in queries
+
+Use `graphql-lwt` for Lwt support, or `graphql-async` for Async support."""
+url {
+  src:
+    "https://github.com/andreas/ocaml-graphql-server/releases/download/0.1.0/graphql-0.1.0.tbz"
+  checksum: "md5=07da45cbc0ade2a2d0182b66a8029239"
+}

@@ -1,0 +1,28 @@
+opam-version: "2.0"
+synopsis: "latest trunk with frame-pointers"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.07.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-with-frame-pointers"
+  ]
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/trunk.tar.gz"
+  checksum: "md5=efc8c15a3ed9795fade551c68babb08b"
+}

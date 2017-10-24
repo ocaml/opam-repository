@@ -1,0 +1,22 @@
+opam-version: "2.0"
+synopsis: "4.05.0 with lto patch"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.05.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix "-with-debug-runtime" "-flambda" "-lto"]
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/chambart/ocaml-1/archive/lto_4.05.tar.gz"
+  checksum: "md5=3be9b0feafd90acebbbe730ab3882699"
+}

@@ -1,19 +1,39 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Didier Wenzek <didier.wenzek@acidalie.com>"
 authors: "Didier Wenzek <didier.wenzek@acidalie.com>"
 homepage: "https://github.com/didier-wenzek/ocaml-kyotocabinet"
 bug-reports: "https://github.com/didier-wenzek/ocaml-kyotocabinet/issues"
 license: "GPL"
-dev-repo: "https://github.com/didier-wenzek/ocaml-kyotocabinet.git"
+dev-repo: "git+https://github.com/didier-wenzek/ocaml-kyotocabinet.git"
 build: [
-  "jbuilder" "build" "--only" "kyotocabinet" "--root" "." "-j" jobs "@install"
+  [
+    "jbuilder"
+    "build"
+    "--only"
+    "kyotocabinet"
+    "--root"
+    "."
+    "-j"
+    jobs
+    "@install"
+  ]
+  ["jbuilder" "runtest" "-p" name] {with-test}
 ]
-build-test: [ "jbuilder" "runtest" "-p" name ]
-depends: "jbuilder"
+depends: ["ocaml" "jbuilder"]
 depexts: [
-  [[ "ubuntu"] ["libkyotocabinet-dev"]]
-  [[ "debian"] ["libkyotocabinet-dev"]]
-  [[ "fedora"] ["kyotocabinet-devel"]]
-  [[ "osx" "homebrew"] ["kyoto-cabinet"]]
-  [[ "osx" "macports"] ["kyotocabinet"]]
+  ["libkyotocabinet-dev"] {os-distribution = "ubuntu"}
+  ["libkyotocabinet-dev"] {os-distribution = "debian"}
+  ["kyotocabinet-devel"] {os-distribution = "fedora"}
+  ["kyoto-cabinet"] {os = "macos" & os-distribution = "homebrew"}
+  ["kyotocabinet"] {os = "macos" & os-distribution = "macports"}
 ]
+synopsis: "OCaml bindings for Kyoto Cabinet DBM"
+description: """
+Kyoto Cabinet is a key-value store featuring
+both B+ tree and hash databases
+with either in-memory or on-disk persistence."""
+url {
+  src:
+    "https://github.com/didier-wenzek/ocaml-kyotocabinet/archive/1.0.tar.gz"
+  checksum: "md5=f075dd4386c9fbfb6abdccfad75f9751"
+}

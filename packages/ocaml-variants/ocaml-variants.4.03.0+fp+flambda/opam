@@ -1,0 +1,29 @@
+opam-version: "2.0"
+synopsis: "Official 4.03.0 release with frame-pointers and flambda activated"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.03.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-with-frame-pointers"
+    "-flambda"
+  ]
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.03.0.tar.gz"
+  checksum: "md5=4ddf4977de7708f11adad692c63e87ec"
+}

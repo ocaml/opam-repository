@@ -1,11 +1,11 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Julian Squires <julian@cipht.net>"
 authors: "Julian Squires <julian@cipht.net>"
 homepage: "http://github.com/tokenrove/tsdl-image"
 bug-reports: "http://github.com/tokenrove/tsdl-image/issues"
 license: "BSD3"
 tags: ["bindings" "graphics"]
-dev-repo: "https://github.com/tokenrove/tsdl-image.git"
+dev-repo: "git+https://github.com/tokenrove/tsdl-image.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure"]
@@ -14,6 +14,7 @@ build: [
 install: ["ocaml" "setup.ml" "-install"]
 remove: ["ocamlfind" "remove" "tsdl_image"]
 depends: [
+  "ocaml" {>= "4.01"}
   "ctypes" {>= "0.4.0"}
   "ctypes-foreign"
   "tsdl" {>= "0.9.0"}
@@ -21,8 +22,16 @@ depends: [
   "oasis" {build}
 ]
 depexts: [
-  [["debian"] ["libsdl2-image-dev"]]
-  [["homebrew" "osx"] ["sdl2_image"]]
-  [["ubuntu"] ["libsdl2-image-dev"]]
+  ["libsdl2-image-dev"] {os-distribution = "debian"}
+  ["sdl2_image"] {os-distribution = "homebrew" & os = "macos"}
+  ["libsdl2-image-dev"] {os-distribution = "ubuntu"}
 ]
-available: [ocaml-version >= "4.01"]
+synopsis: "SDL2_Image bindings to go with Tsdl"
+description: """
+Tsdl_image provides bindings to SDL2_Image intended to be used with
+Tsdl."""
+flags: light-uninstall
+url {
+  src: "https://github.com/tokenrove/tsdl-image/archive/0.2.0.tar.gz"
+  checksum: "md5=db28fc8090a0098d6c10bb144ed04c3f"
+}

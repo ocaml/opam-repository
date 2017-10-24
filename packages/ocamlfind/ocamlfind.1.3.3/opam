@@ -1,13 +1,36 @@
-opam-version: "1"
+opam-version: "2.0"
 maintainer: "https://github.com/ocaml/opam-repository/issues"
 build: [
-  ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-topfind" {preinstalled}]
+  [
+    "./configure"
+    "-bindir"
+    bin
+    "-sitelib"
+    lib
+    "-mandir"
+    man
+    "-config"
+    "%{lib}%/findlib.conf"
+    "-no-topfind" {ocaml:preinstalled}
+  ]
   [make "all"]
   [make "opt"]
   [make "install"]
   ["ocamlfind" "remove" "dbm"]
 ]
-available: [(ocaml-version >= "3.08") & (ocaml-version <= "4.01.0")] # ocamlfind uses Arg.align of 3.08
 depends: [
+  "ocaml" {>= "3.08" & <= "4.01.0"}
   "conf-m4"
 ]
+synopsis: "A library manager for OCaml"
+description: """
+Findlib is a library manager for OCaml. It provides a convention how
+to store libraries, and a file format ("META") to describe the
+properties of libraries. There is also a tool (ocamlfind) for
+interpreting the META files, so that it is very easy to use libraries
+in programs and scripts."""
+extra-files: ["ocamlfind.install" "md5=aba2fbf5de8c723a190d49fbb46d0637"]
+url {
+  src: "http://download.camlcity.org/download/findlib-1.3.3.tar.gz"
+  checksum: "md5=a4c22ad5e0d38367a73cf58a25fcbebd"
+}

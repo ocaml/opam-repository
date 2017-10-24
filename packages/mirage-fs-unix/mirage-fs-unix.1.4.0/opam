@@ -1,29 +1,34 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors:      [ "Mindy Preston" "Hannes Mehnert" "Anil Madhavapeddy"
                 "Thomas Gazagnaire" ]
 maintainer:   [ "anil@recoil.org" "thomas@gazagnaire.org"]
 homepage:     "https://github.com/mirage/mirage-fs-unix"
-dev-repo:     "https://github.com/mirage/mirage-fs-unix.git"
+dev-repo: "git+https://github.com/mirage/mirage-fs-unix.git"
 bug-reports:  "https://github.com/mirage/mirage-fs-unix/issues"
 doc:          "https://mirage.github.io/mirage-fs-unix/"
 tags:         [ "org:mirage" ]
 build: [
   ["jbuilder" "subst"] {pinned}
   ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
-
 depends: [
-  "jbuilder" {build & >="1.0+beta7"}
+  "ocaml" {>= "4.02.3"}
+  "jbuilder" {build & >= "1.0+beta7"}
   "cstruct" {>= "1.4.0"}
   "cstruct-lwt"
   "mirage-kv-lwt" {>= "1.0.0"}
   "mirage-fs-lwt" {>= "1.0.0"}
   "lwt"
   "result"
-  "rresult" {test}
-  "mirage-clock-unix" {test & >= "1.2.0"}
-  "alcotest" {test & >= "0.7.1"}
-  "ptime" {test}
+  "rresult" {with-test}
+  "mirage-clock-unix" {with-test & >= "1.2.0"}
+  "alcotest" {with-test & >= "0.7.1"}
+  "ptime" {with-test}
 ]
-available: [ ocaml-version >= "4.02.3"]
+synopsis: "MirageOS filesystem passthrough driver for Unix"
+url {
+  src:
+    "https://github.com/mirage/mirage-fs-unix/releases/download/v1.4.0/mirage-fs-unix-1.4.0.tbz"
+  checksum: "md5=52fe007d81f7576aceac8437dbffc21f"
+}

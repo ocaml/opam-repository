@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "frama-c-base"
 version: "20161101"
 maintainer: "francois.bobot@cea.fr"
@@ -31,7 +31,7 @@ authors: [
 ]
 homepage: "http://frama-c.com/"
 license: "GNU Lesser General Public License version 2.1"
-dev-repo: "https://github.com/Frama-C/Frama-C-snapshot.git"
+dev-repo: "git+https://github.com/Frama-C/Frama-C-snapshot.git"
 doc: ["http://frama-c.com/download/user-manual-Silicon-20161101.pdf"]
 bug-reports: "https://bts.frama-c.com/"
 tags: [
@@ -50,20 +50,22 @@ tags: [
 ]
 
 build: [
-  ["sh" "-eux" "./run_autoconf_if_needed.sh"] # when used in pinned mode,
-                                              # the configure *cannot* yet be
-                                              # generated
-  ["./configure" "--prefix" prefix
-                 "--disable-gui" { !conf-gtksourceview:installed |
-                                   !conf-gnomecanvas:installed }
-]
+  ["sh" "-eux" "./run_autoconf_if_needed.sh"]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--disable-gui"
+      {!conf-gtksourceview:installed | !conf-gnomecanvas:installed}
+  ]
   [make "-j%{jobs}%"]
+  [make "-j%{jobs}%" "PTESTS_OPTS=-error-code" "tests"] {with-test}
+  [make "-C" "doc" "download"] {with-doc}
 ]
-
 install: [
   [make "install"]
+  [make "-C" "doc" "FRAMAC_DOCDIR=%{frama-c-base:doc}%" "install"] {with-doc}
 ]
-
 remove: [
   ["sh" "-eux" "./run_autoconf_if_needed.sh"] # when used in pinned mode,
                                               # the configure *cannot* yet be
@@ -76,21 +78,12 @@ remove: [
   ["rm" "-rf" frama-c-base:doc]
 ]
 
-build-doc: [
-   [make "-C" "doc" "download"]
-   [make "-C" "doc" "FRAMAC_DOCDIR=%{frama-c-base:doc}%" "install"]
-]
-
-build-test: [
-  [make "-j%{jobs}%" "PTESTS_OPTS=-error-code" "tests"]
-]
-
 depends: [
-  "ocamlgraph" { >= "1.8.5" & < "1.9~" }
+  "ocaml" {>= "4.02.3"}
+  "ocamlgraph" {>= "1.8.5" & < "1.9~"}
   "ocamlfind"
   "num"
 ]
-
 depopts: [
   "zarith"
   "lablgtk"
@@ -111,10 +104,29 @@ conflicts: [
   "lablgtk" { < "2.18.2" } #for ocaml >= 4.02.1
 ]
 
-available: [ ocaml-version >= "4.02.3" ]
-
-# the patch below is part of Frama-C's 4.05-compatibility branch (currently the only commit)
-#   https://github.com/Frama-C/Frama-C-snapshot/compare/silicium-4.05-compatibility
 patches: [
   "4.05-support.patch"
 ]
+synopsis:
+  "Platform dedicated to the analysis of source code written in C. Silicon version."
+description: """
+Frama-C gathers several analysis techniques in a single collaborative
+framework, based on analyzers (called "plug-ins") that can build upon the
+results computed by other analyzers in the framework.
+Thanks to this approach, Frama-C provides sophisticated tools, including:
+- an analyzer based on abstract interpretation (EVA plug-in);
+- a program proof framework based on weakest precondition calculus (WP plug-in);
+- a program slicer (Slicing plug-in);
+- a tool for verification of temporal (LTL) properties (Aoraï plug-in);
+- several tools for code base exploration and dependency analysis
+  (plug-ins From, Impact, Metrics, Occurrence, Scope, etc.).
+These plug-ins communicate between each other via the Frama-C API
+and via ACSL (ANSI/ISO C Specification Language) properties."""
+extra-files: [
+  ["run_autoconf_if_needed.sh" "md5=8896537e4468e4228e7b0112f1cfd0ed"]
+  ["4.05-support.patch" "md5=7ae4f16dc92798d9599a00f7f0ec2dca"]
+]
+url {
+  src: "http://frama-c.com/download/frama-c-Silicon-20161101.tar.gz"
+  checksum: "md5=454cce7dd6c4d2ce80db2395b90f912e"
+}

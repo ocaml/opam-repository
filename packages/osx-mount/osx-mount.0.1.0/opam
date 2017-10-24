@@ -1,22 +1,33 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sheets@alum.mit.edu"
 authors: "David Sheets"
 homepage: "https://github.com/dsheets/ocaml-osx-mount"
 bug-reports: "https://github.com/dsheets/ocaml-osx-mount/issues"
 license: "ISC"
 tags: ["osx" "mount" "mountpoint" "mtab" "mount table" "file system"]
-dev-repo: "https://github.com/dsheets/ocaml-osx-mount.git"
-build: [make "build"]
+dev-repo: "git+https://github.com/dsheets/ocaml-osx-mount.git"
+build: [
+  [make "build"]
+  [make "test"] {with-test}
+]
 install: [make "install"]
-build-test: [make "test"]
 remove: [make "uninstall"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "ctypes" {>= "0.4.0" & < "0.6.0"}
   "unix-errno" {>= "0.4.0"}
   "base-unix"
 ]
 depopts: "lwt"
 available: [os = "darwin"]
+synopsis: "Bindings to OS X mount system calls"
+description: """
+`getmntinfo` and `statfs` are bound as well as the statfs struct as a
+record type."""
+url {
+  src: "https://github.com/dsheets/ocaml-osx-mount/archive/0.1.0.tar.gz"
+  checksum: "md5=5e03ce2886b33fecf9ea25cc2f4ee9f3"
+}

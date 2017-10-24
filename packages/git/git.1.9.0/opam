@@ -1,50 +1,66 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      "Thomas Gazagnaire"
 license:      "ISC"
 homepage:     "https://github.com/mirage/ocaml-git"
 bug-reports:  "https://github.com/mirage/ocaml-git/issues"
-dev-repo:     "https://github.com/mirage/ocaml-git.git"
+dev-repo: "git+https://github.com/mirage/ocaml-git.git"
 doc:          "https://mirage.github.io/ocaml-git/"
 
 build: [
-  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"
-      "--with-http"   "%{cohttp:installed}%"
-      "--with-unix"   "%{conduit+cohttp+camlzip+nocrypto+base-unix:installed}%"
-      "--with-mirage" "%{mirage-http+mirage-flow+mirage-types-lwt+channel:installed}%"
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--with-http"
+    "%{cohttp:installed}%"
+    "--with-unix"
+    "%{conduit+cohttp+camlzip+nocrypto+base-unix:installed}%"
+    "--with-mirage"
+    "%{mirage-http+mirage-flow+mirage-types-lwt+channel:installed}%"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--tests"
+    "true"
+    "--with-http"
+    "%{cohttp:installed}%"
+    "--with-unix"
+    "%{conduit+cohttp+camlzip+nocrypto+base-unix:installed}%"
+    "--with-mirage"
+    "%{mirage-http+mirage-flow+mirage-types-lwt+channel:installed}%"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-build-test: [
-  ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"
-      "--with-http"   "%{cohttp:installed}%"
-      "--with-unix"   "%{conduit+cohttp+camlzip+nocrypto+base-unix:installed}%"
-      "--with-mirage" "%{mirage-http+mirage-flow+mirage-types-lwt+channel:installed}%"]
-  ["ocaml" "pkg/pkg.ml" "test"]
-]
-
 depends: [
-  "cmdliner"   {< "1.0.0"}
-  "mstruct"    {>= "1.3.1"}
+  "ocaml" {>= "4.02.3"}
+  "cmdliner" {< "1.0.0"}
+  "mstruct" {>= "1.3.1"}
   "ocamlgraph"
-  "uri"        {>= "1.3.12"}
-  "lwt"        {>= "2.4.7"}
-  "mtime"      {< "1.0.0"}
+  "uri" {>= "1.3.12"}
+  "lwt" {>= "2.4.7"}
+  "mtime" {< "1.0.0"}
   "logs"
   "fmt"
   "hex"
   "astring"
-  "crc"       {<= "1.0.0"}
+  "crc" {<= "1.0.0"}
   "ocplib-endian" {>= "0.6"}
-  "alcotest"         {test}
-  "mirage-types-lwt" {test}
-  "mirage-http"      {test}
-  "mirage-flow"      {test}
-  "channel"          {test}
-  "mirage-fs-unix"   {test & >="1.1.4"}
-  "cohttp"           {test}
-  "conduit"          {test}
-  "base-unix"        {test}
-  "camlzip"          {test & >= "1.06"}
-  "nocrypto"         {test}
+  "alcotest" {with-test}
+  "mirage-types-lwt" {with-test}
+  "mirage-http" {with-test}
+  "mirage-flow" {with-test}
+  "channel" {with-test}
+  "mirage-fs-unix" {with-test & >= "1.1.4"}
+  "cohttp" {with-test}
+  "conduit" {with-test}
+  "base-unix" {with-test}
+  "camlzip" {with-test & >= "1.06"}
+  "nocrypto" {with-test}
 ]
 depopts: [
   # --enable-mirage
@@ -72,4 +88,30 @@ conflicts: [
  "cmdliner" {>= "1.0.0"}
  "mirage-flow" {> "1.1.0"}
 ]
-available: [ocaml-version >= "4.02.3"]
+synopsis: "Git format and protocol in pure OCaml"
+description: """
+Support for on-disk and in-memory Git stores. Can read and write all
+the Git objects: the usual blobs, trees, commits and tags but also
+the pack files, pack indexes and the index file (where the staging area
+lives).
+
+All the objects share a consistent API, and convenience functions are
+provided to manipulate the different objects. For instance, it is
+possible to make a pack file position independent (as the Zlib
+compression might change the relative offsets between the packed
+objects), to generate pack indexes from pack files, or to expand
+the filesystem of a given commit.
+
+The library comes with a command-line tool called `ogit` which shares
+a similar interface with `git`, but where all operations are mapped to
+the API exposed `ocaml-git` (and hence using only OCaml code).
+
+The API documentation is available
+[online](http://mirage.github.io/ocaml-git/).
+
+[![Build Status](https://travis-ci.org/mirage/ocaml-git.png?branch=master)](https://travis-ci.org/mirage/ocaml-git)"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-git/releases/download/1.9.0/git-1.9.0.tbz"
+  checksum: "md5=43b5fc463eed0d021b764ca08205f392"
+}

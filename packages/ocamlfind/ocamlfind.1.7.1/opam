@@ -1,27 +1,65 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "Thomas Gazagnaire <thomas@gazagnaire.org>"
-author:       "Gerd Stolpmann <gerd@gerd-stolpmann.de>"
 homepage:     "http://projects.camlcity.org/projects/findlib.html"
 bug-reports:  "https://gitlab.camlcity.org/gerd/lib-findlib/issues"
-dev-repo:     "https://gitlab.camlcity.org/gerd/lib-findlib.git"
-
+dev-repo: "git+https://gitlab.camlcity.org/gerd/lib-findlib.git"
 build: [
-  ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-custom" "-no-topfind" {preinstalled}]
+  [
+    "./configure"
+    "-bindir"
+    bin
+    "-sitelib"
+    lib
+    "-mandir"
+    man
+    "-config"
+    "%{lib}%/findlib.conf"
+    "-no-custom"
+    "-no-topfind" {ocaml:preinstalled}
+  ]
   [make "all"]
-  [make "opt"] { ocaml-native }
+  [make "opt"] {ocaml:native}
 ]
 install: [
   [make "install"]
-  ["install" "-m" "0755" "ocaml-stub" "%{bin}%/ocaml"] {preinstalled}
+  ["install" "-m" "0755" "ocaml-stub" "%{bin}%/ocaml"] {ocaml:preinstalled}
 ]
 remove: [
   ["ocamlfind" "remove" "bytes"]
-  ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-topfind" {preinstalled}]
+  [
+    "./configure"
+    "-bindir"
+    bin
+    "-sitelib"
+    lib
+    "-mandir"
+    man
+    "-config"
+    "%{lib}%/findlib.conf"
+    "-no-topfind" {ocaml:preinstalled}
+  ]
   [make "uninstall"]
-  ["rm" "-f" "%{bin}%/ocaml"] {preinstalled}
+  ["rm" "-f" "%{bin}%/ocaml"] {ocaml:preinstalled}
 ]
 patches: [ "termux.patch" ]
-available: [ocaml-version >= "3.12.0"] # ocamlfind refers to cmxs
 depends: [
+  "ocaml" {>= "3.12.0"}
   "conf-m4" {build}
 ]
+synopsis: "A library manager for OCaml"
+description: """
+Findlib is a library manager for OCaml. It provides a convention how
+to store libraries, and a file format ("META") to describe the
+properties of libraries. There is also a tool (ocamlfind) for
+interpreting the META files, so that it is very easy to use libraries
+in programs and scripts."""
+authors: "Gerd Stolpmann <gerd@gerd-stolpmann.de>"
+extra-files: [
+  ["termux.patch" "md5=d57f6e12d869926d1ec3301071e22d63"]
+  ["ocamlfind.install" "md5=06f2c282ab52d93aa6adeeadd82a2543"]
+  ["ocaml-stub" "md5=181f259c9e0bad9ef523e7d4abfdf87a"]
+]
+url {
+  src: "http://download.camlcity.org/download/findlib-1.7.1.tar.gz"
+  checksum: "md5=108717618e724295d8a01c21ba3f7311"
+}

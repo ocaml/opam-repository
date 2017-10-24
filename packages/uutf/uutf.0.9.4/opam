@@ -1,25 +1,44 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
 authors: ["Daniel Bünzli <daniel.buenzl i@erratique.ch>"]
 homepage: "http://erratique.ch/software/uutf"
 doc: "http://erratique.ch/software/uutf/doc/Uutf"
-dev-repo: "http://erratique.ch/repos/uutf.git"
+dev-repo: "git+http://erratique.ch/repos/uutf.git"
 bug-reports: "https://github.com/dbuenzli/uutf/issues"
 tags: [ "unicode" "text" "utf-8" "utf-16" "codec" "org:erratique" ]
 license: "BSD3"
-available: [ ocaml-version >= "4.00.0"]
 depends: [
+  "ocaml" {>= "4.00.0"}
   "ocamlfind"
   "ocamlbuild" {build}
 ]
-depopts: ["cmdliner"
-          "cmdliner" {test} ]
+depopts: [
+  "cmdliner"
+  "cmdliner" {with-test}
+]
 conflicts : ["cmdliner" { < "0.9.6" } ]
 build: ["ocaml" "pkg/git.ml"]
 install: [
   "ocaml"
   "pkg/build.ml"
-  "native=%{ocaml-native}%"
-  "native-dynlink=%{ocaml-native-dynlink}%"
+  "native=%{ocaml:native}%"
+  "native-dynlink=%{ocaml:native-dynlink}%"
   "cmdliner=%{cmdliner:installed}%"
 ]
+synopsis: "Non-blocking streaming Unicode codec for OCaml"
+description: """
+Uutf is a non-blocking streaming codec to decode and encode the UTF-8,
+UTF-16, UTF-16LE and UTF-16BE encoding schemes. It can efficiently
+work character by character without blocking on IO. Decoders perform
+character position tracking and support newline normalization.
+
+Functions are also provided to fold over the characters of UTF encoded
+OCaml string values and to directly encode characters in OCaml
+Buffer.t values.
+
+Uutf is made of a single, independent, module and distributed under
+the BSD3 license."""
+url {
+  src: "http://erratique.ch/software/uutf/releases/uutf-0.9.4.tbz"
+  checksum: "md5=bf5880a8f2e75d0a9152d896ea288ba7"
+}

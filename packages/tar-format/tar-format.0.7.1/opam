@@ -1,39 +1,66 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "dave@recoil.org"
 authors:      [ "Dave Scott" "Thomas Gazagnaire" "David Allsopp" ]
 tags:         ["org:xapi-project" "org:mirage"]
 homepage:     "https://github.com/mirage/ocaml-tar"
 bug-reports:  "https://github.com/mirage/ocaml-tar/issues"
-dev-repo:     "https://github.com/mirage/ocaml-tar.git"
+dev-repo: "git+https://github.com/mirage/ocaml-tar.git"
 doc:          "https://mirage.github.io/ocaml-tar/"
 
 build: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
-    "--with-mirage" "%{mirage-types-lwt+mirage-block+mirage-block-lwt+io-page:installed}%"
-    "--with-lwt" "%{lwt:installed}%" ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "false"
+    "--with-mirage"
+    "%{mirage-types-lwt+mirage-block+mirage-block-lwt+io-page:installed}%"
+    "--with-lwt"
+    "%{lwt:installed}%"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+    "--with-lwt"
+    "true"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" "--with-lwt" "true" ]
-  [ "ocaml" "pkg/pkg.ml" "test" ]
-]
-
 depends: [
-  "ocamlbuild"        {build}
-  "ocamlfind"         {build}
-  "topkg"             {build & >= "0.8.0"}
-  "cstruct"           {>= "1.9.0" & <"3.0.0"}
-  "ppx_cstruct"       {build}
-  "cstruct-lwt"       {build}
+  "ocaml" {>= "4.01.0"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "topkg" {build & >= "0.8.0"}
+  "cstruct" {>= "1.9.0" & < "3.0.0"}
+  "ppx_cstruct" {build}
+  "cstruct-lwt" {build}
   "re"
   "result"
-  "mirage-block-unix" {test & >= "2.5.0"}
-  "mirage-types-lwt"  {test & >= "3.0.0"}
-  "ounit"             {test}
-  "lwt"               {test}
+  "mirage-block-unix" {with-test & >= "2.5.0"}
+  "mirage-types-lwt" {with-test & >= "3.0.0"}
+  "ounit" {with-test}
+  "lwt" {with-test}
 ]
 depopts: ["lwt" "mirage-types-lwt" "mirage-block" "mirage-block-lwt" "io-page"]
 conflicts: [
   "mirage-types-lwt" {< "3.0.0"}
 ]
-available: [ ocaml-version >= "4.01.0" ]
+synopsis: "Decode and encode tar files"
+description: """
+tar-format is a simple library to read and write tar files with an emphasis on
+streaming.
+
+This is pure OCaml code, no C bindings."""
+url {
+  src:
+    "https://github.com/mirage/ocaml-tar/releases/download/v0.7.1/tar-format-0.7.1.tbz"
+  checksum: "md5=554ee6120f06017828f8f4e74515cbfa"
+}

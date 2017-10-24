@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "ygrek@autistici.org"
 homepage: "http://ocurl.forge.ocamlcore.org"
 license: "MIT"
@@ -7,14 +7,23 @@ doc: ["http://ocurl.forge.ocamlcore.org/api/index.html"]
 build: [
   ["./configure"]
   [make]
+  [make "doc"] {with-doc}
 ]
-build-doc: [[make "doc"]]
 remove: [["ocamlfind" "remove" "curl"]]
-depends: ["ocamlfind" "base-unix" "camlp4"]
+depends: ["ocaml" "ocamlfind" "base-unix" "camlp4"]
 depopts: ["lwt"]
 depexts: [
-  [["debian"] ["libcurl4-gnutls-dev"]]
-  [["ubuntu"] ["libcurl4-gnutls-dev"]]
-  [["centos"] ["libcurl-devel" "openssl-devel"]]
+  ["libcurl4-gnutls-dev"] {os-distribution = "debian"}
+  ["libcurl4-gnutls-dev"] {os-distribution = "ubuntu"}
+  ["libcurl-devel" "openssl-devel"] {os-distribution = "centos"}
 ]
 install: [make "install"]
+synopsis: "Bindings to libcurl"
+description: """
+Client-side URL transfer library, supporting HTTP and a multitude of
+other network protocols (FTP/SMTP/RTSP/etc)."""
+flags: light-uninstall
+url {
+  src: "https://forge.ocamlcore.org/frs/download.php/1400/ocurl-0.7.1.tar.gz"
+  checksum: "md5=d138fd78538ae3bd008d6e9c2993d240"
+}

@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Markus W. Weissmann <markus.weissmann@in.tum.de>"
 authors: [ "Markus W. Weissmann <markus.weissmann@in.tum.de>" ]
 license: "MIT"
@@ -10,13 +10,14 @@ tags: [ "clib:rt"  ]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "posix-mqueue"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml"
   "result"
   "base-bytes"
   "base-unix"
@@ -25,3 +26,15 @@ depends: [
   "ocamlbuild" {build}
 ]
 available: [ os != "darwin" ]
+synopsis: "POSIX message queues"
+description: """
+The posix-mqueue library is a small OCaml library providing types and
+functions for using POSIX message queues.  This library has been tested on
+Linux, but FreeBSD, QNX, Solaris etc. should work, too. Mac OS X does NOT
+provide POSIX message queues (OS X 10.10)."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/mwweissmann/ocaml-posix-mqueue/archive/0.7.2.tar.gz"
+  checksum: "md5=5458623dbb9eafbab77eb5f1f7320021"
+}

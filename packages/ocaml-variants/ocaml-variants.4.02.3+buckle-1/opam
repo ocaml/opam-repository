@@ -1,0 +1,26 @@
+opam-version: "2.0"
+synopsis: "4.02.3+buckle-1"
+description: """
+==================================
+
+Provides patches required for [bucklescript](https://github.com/bloomberg/bucklescript)"""
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.02.3" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix "-with-debug-runtime"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/bloomberg/ocaml/archive/4.02.3+buckle-1.tar.gz"
+  checksum: "md5=081dd8b58ef668a77c74ec910ae06a39"
+}

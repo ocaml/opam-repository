@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: ["Louis Gesbert <louis.gesbert@ocamlpro.com>"
              "Anil Madhavapeddy <anil@recoil.org>" ]
 authors: ["Louis Gesbert <louis.gesbert@ocamlpro.com>"
@@ -6,15 +6,43 @@ authors: ["Louis Gesbert <louis.gesbert@ocamlpro.com>"
 homepage: "https://github.com/ocaml/opam-depext"
 bug-reports: "https://github.com/ocaml/opam-depext/issues"
 license: "LGPL-3.0 with OCaml linking exception"
-dev-repo: "https://github.com/ocaml/opam-depext.git"
+dev-repo: "git+https://github.com/ocaml/opam-depext.git"
 build: [
-  ["ocamlopt" "-I" cmdliner:lib "unix.cmxa" "cmdliner.cmxa"
-     "-o" "opam-depext" "depext.ml"]
-    { ocaml-native }
-  ["ocamlc" "-I" cmdliner:lib "unix.cma" "cmdliner.cma"
-     "-o" "opam-depext" "depext.ml"]
-    { !ocaml-native }
+  [
+    "ocamlopt"
+    "-I"
+    cmdliner:lib
+    "unix.cmxa"
+    "cmdliner.cmxa"
+    "-o"
+    "opam-depext"
+    "depext.ml"
+  ] {ocaml:native}
+  [
+    "ocamlc"
+    "-I"
+    cmdliner:lib
+    "unix.cma"
+    "cmdliner.cma"
+    "-o"
+    "opam-depext"
+    "depext.ml"
+  ] {!ocaml:native}
 ]
-depends: [ "cmdliner" {build & = "0.9.8"} ]
+depends: [
+  "ocaml"
+  "cmdliner" {build & = "0.9.8"}
+]
 available: [ opam-version >= "1.1.0" ]
-tags: "flags:plugin"
+synopsis: "Query and install external dependencies of OPAM packages"
+description: """
+opam-depext is a simple program intended to facilitate the interaction between
+OPAM packages and the host package management system. It can perform OS and
+distribution detection, query OPAM for the right external dependencies on a set
+of packages, and call the OS's package manager in the appropriate way to install
+them."""
+flags: plugin
+url {
+  src: "https://github.com/ocaml/opam-depext/archive/1.0.2.tar.gz"
+  checksum: "md5=4a1fff257d85da950914b5bdb230b4dd"
+}

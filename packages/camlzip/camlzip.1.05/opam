@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "2.0"
 maintainer: "seb@mondet.org"
 authors: ["Xavier Leroy"]
 homepage: "http://forge.ocamlcore.org/projects/camlzip/"
@@ -11,17 +11,28 @@ remove: [
   ["ocamlfind" "remove" "zip"]
   ["ocamlfind" "remove" "camlzip"]
 ]
-depends: ["ocamlfind"]
+depends: ["ocaml" "ocamlfind"]
 depexts: [
-  [["debian"] ["zlib1g-dev"]]
-  [["ubuntu"] ["zlib1g-dev"]]
-  [["centos"] ["zlib-devel"]]
-  [["rhel"]   ["zlib-devel"]]
-  [["fedora"] ["zlib-devel"]]
-  [["alpine"] ["zlib-dev"]]
+  ["zlib1g-dev"] {os-distribution = "debian"}
+  ["zlib1g-dev"] {os-distribution = "ubuntu"}
+  ["zlib-devel"] {os-distribution = "centos"}
+  ["zlib-devel"] {os-distribution = "rhel"}
+  ["zlib-devel"] {os-distribution = "fedora"}
+  ["zlib-dev"] {os-distribution = "alpine"}
 ]
 patches: [
   "fix-install.patch"
   "build_with_trunk.patch"
 ]
 install: [make "install-findlib"]
+synopsis:
+  "Provides easy access to compressed files in ZIP, GZIP and JAR format"
+flags: light-uninstall
+extra-files: [
+  ["fix-install.patch" "md5=594479824fc5a27615516885050fea65"]
+  ["build_with_trunk.patch" "md5=4d2ed9ceea2fa6bf008e80df62476e90"]
+]
+url {
+  src: "http://forge.ocamlcore.org/frs/download.php/1037/camlzip-1.05.tar.gz"
+  checksum: "md5=e85c179d5dc79821e6e8d90e636599f1"
+}

@@ -1,0 +1,35 @@
+opam-version: "2.0"
+synopsis: "OCaml 4.01.0 release with frame pointers enabled"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.01.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-with-frame-pointers"
+  ]
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+patches: "bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-4.01/ocaml-4.01.0.tar.gz"
+  checksum: "md5=04dfdd7da189462a4f10ec6530359cef"
+}
+extra-source "bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff" {
+  src:
+    "https://github.com/diml/ocaml/compare/bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
+  checksum: "md5=a8c6dd8e547a7b766138f7ca3eb1cbfd"
+}

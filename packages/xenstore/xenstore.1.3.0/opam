@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "dave@recoil.org"
 authors:      [
   "Vincent Hanquez"
@@ -9,8 +9,7 @@ authors:      [
 ]
 homepage:     "https://github.com/mirage/ocaml-xenstore"
 bug-reports:  "https://github.com/mirage/ocaml-xenstore/issues"
-dev-repo:     "https://github.com/mirage/ocaml-xenstore.git"
-
+dev-repo: "git+https://github.com/mirage/ocaml-xenstore.git"
 build: [
   [make "all"]
 ]
@@ -18,6 +17,7 @@ install: [make "install"]
 remove: ["ocamlfind" "remove" "xenstore"]
 
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
   "cstruct" {>= "2.4.0"}
   "ppx_cstruct" {build}
@@ -26,9 +26,14 @@ depends: [
   "ounit" {build}
 ]
 depexts: [
-  [["debian"] ["libxen-dev" "uuid-dev"]]
-  [["ubuntu"] ["libxen-dev" "uuid-dev"]]
-  [["centos"] ["xen-devel"]]
-  [["xenserver"] ["xen-dom0-libs-devel" "xen-libs-devel"]]
+  ["libxen-dev" "uuid-dev"] {os-distribution = "debian"}
+  ["libxen-dev" "uuid-dev"] {os-distribution = "ubuntu"}
+  ["xen-devel"] {os-distribution = "centos"}
+  ["xen-dom0-libs-devel" "xen-libs-devel"] {os = "xenserver"}
 ]
-available: [ ocaml-version >= "4.02.0" ]
+synopsis: "Xenstore protocol clients and server"
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-xenstore/archive/v1.3.0.tar.gz"
+  checksum: "md5=09cf2342f22b189d4b90793abd72d5da"
+}

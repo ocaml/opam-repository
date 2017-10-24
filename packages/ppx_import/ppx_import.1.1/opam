@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "whitequark <whitequark@whitequark.org>"
 authors: [ "whitequark <whitequark@whitequark.org>" ]
 license: "MIT"
@@ -8,18 +8,33 @@ dev-repo: "git://github.com/whitequark/ppx_import.git"
 tags: [ "syntax" ]
 substs: [ "pkg/META" ]
 build: [
-  "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                         "native-dynlink=%{ocaml-native-dynlink}%"
-]
-build-test: [
-  "ocamlbuild" "-classic-display" "-use-ocamlfind" "src_test/test_ppx_import.byte" "--"
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+  ]
+  [
+    "ocamlbuild"
+    "-classic-display"
+    "-use-ocamlfind"
+    "src_test/test_ppx_import.byte"
+    "--"
+  ] {with-test}
 ]
 depends: [
-  "ppx_tools"    {>= "0.99.1"}
-  "ocamlfind"    {build}
-  "cppo"         {build}
+  "ocaml" {>= "4.02.0"}
+  "ppx_tools" {>= "0.99.1"}
+  "ocamlfind" {build}
+  "cppo" {build}
   "cppo_ocamlbuild" {build}
-  "ounit"        {test}
-  "ppx_deriving" {test & >= "2.0"}
+  "ounit" {with-test}
+  "ppx_deriving" {with-test & >= "2.0"}
 ]
-available: [ ocaml-version >= "4.02.0" & opam-version >= "1.2.2" ]
+available: opam-version >= "1.2.2"
+synopsis:
+  "A syntax extension for importing declarations from interface files"
+url {
+  src: "https://github.com/whitequark/ppx_import/archive/v1.1.tar.gz"
+  checksum: "md5=9cb4f59dd6ef023141232265892cd53a"
+}

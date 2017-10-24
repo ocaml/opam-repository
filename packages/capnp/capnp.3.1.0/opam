@@ -1,14 +1,15 @@
-opam-version: "1.2"
+opam-version: "2.0"
 homepage: "https://github.com/capnproto/capnp-ocaml"
 bug-reports: "https://github.com/capnproto/capnp-ocaml/issues"
-dev-repo: "https://github.com/capnproto/capnp-ocaml.git"
-author: "Paul Pelzl <pelzlpj@gmail.com>"
+dev-repo: "git+https://github.com/capnproto/capnp-ocaml.git"
 maintainer: "Paul Pelzl <pelzlpj@gmail.com>"
 
-build: ["jbuilder" "build" "-p" name "-j" jobs]
-build-test: ["jbuilder" "build" "@runtest" "@src/benchmark/benchmarks"]
-
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "build" "@runtest" "@src/benchmark/benchmarks"] {with-test}
+]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "jbuilder" {build}
   "result"
   "core_kernel" {>= "112.24.00"}
@@ -16,14 +17,26 @@ depends: [
   "ocplib-endian" {>= "0.7"}
   "res"
   "uint"
-  "core" {test}
-  "ounit" {test}
+  "core" {with-test}
+  "ounit" {with-test}
 ]
 depexts: [
-  [["debian"] ["capnproto" "libcapnp-dev"]]
-  [["ubuntu"] ["capnproto" "libcapnp-dev"]]
-  [["fedora"] ["capnproto"]]
-  [["centos"] ["capnproto"]]
-  [["osx"] ["capnp"]]
+  ["capnproto" "libcapnp-dev"] {os-distribution = "debian"}
+  ["capnproto" "libcapnp-dev"] {os-distribution = "ubuntu"}
+  ["capnproto"] {os-distribution = "fedora"}
+  ["capnproto"] {os-distribution = "centos"}
+  ["capnp"] {os = "macos"}
 ]
-available: [ ocaml-version >= "4.02.0" ]
+synopsis:
+  "OCaml code generation plugin for the Cap'n Proto serialization framework"
+description: """
+Cap'n Proto is a multi-language code generation framework designed for
+high performance through the use of lazy parsing and arena allocation.
+This package provides a plugin for the Cap'n Proto compiler which enables
+OCaml code generation, as well as corresponding runtime library support."""
+authors: "Paul Pelzl <pelzlpj@gmail.com>"
+url {
+  src:
+    "https://github.com/capnproto/capnp-ocaml/releases/download/v3.1.0/capnp-3.1.0.tbz"
+  checksum: "md5=e89487638acd8a10da2676b06d855d02"
+}

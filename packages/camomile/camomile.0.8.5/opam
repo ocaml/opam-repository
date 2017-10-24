@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "gregoire@ocamlpro.com"
 authors: ["Yoriyuki Yamagata"]
 homepage: "https://github.com/yoriyuki/Camomile/wiki"
 bug-reports: "https://github.com/yoriyuki/Camomile/issues"
-dev-repo: "https://github.com/yoriyuki/Camomile.git"
+dev-repo: "git+https://github.com/yoriyuki/Camomile.git"
 license: "LGPL-2+ with OCaml linking exception"
 patches: [
   "cmxs.patch"
@@ -13,12 +13,32 @@ patches: [
 ]
 build: [
   ["./configure" "--prefix" prefix]
-  [make] {ocaml-native}
-  [make "byte" "unidata" "unimaps" "charmap_data" "locale_data"] {!ocaml-native}
+  [make] {ocaml:native}
+  [make "byte" "unidata" "unimaps" "charmap_data" "locale_data"]
+    {!ocaml:native}
 ]
 remove: [["ocamlfind" "remove" "camomile"]]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "cppo" {build}
 ]
 install: [make "install"]
+synopsis: "A comprehensive Unicode library"
+description: """
+Camomile is a Unicode library for OCaml. Camomile provides Unicode
+character type, UTF-8, UTF-16, UTF-32 strings, conversion to/from
+about 200 encodings, collation and locale-sensitive case mappings, and
+more. The library is currently designed for Unicode Standard 3.2."""
+flags: light-uninstall
+extra-files: [
+  ["no-camlp4.patch" "md5=1b51ed7f60446bcbfd055d55303c5fb4"]
+  ["cmxs.patch" "md5=74d1b84e557b3be36c46a80f6f1f5419"]
+  ["cmx.patch" "md5=e9183939d3751735de7a7527fb9976d3"]
+  ["4.05-typing-fix.patch" "md5=a27ed34adc9c93d5d60cc71e4b2714a5"]
+]
+url {
+  src:
+    "https://github.com/yoriyuki/Camomile/releases/download/rel-0.8.5/camomile-0.8.5.tar.bz2"
+  checksum: "md5=1e25b6cd4efd26ab38a667db18d83f02"
+}

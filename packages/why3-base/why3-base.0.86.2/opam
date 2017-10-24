@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Guillaume.Melquiond@inria.fr"
 authors: [
   "François Bobot"
@@ -17,8 +17,6 @@ tags: [
   "automated theorem prover"
   "interactive theorem prover"
 ]
-available: [ ocaml-version >= "4.01.0" ]
-# Jessie3 (frama-c plugin) is *disabled* because it is not ready
 build: [
   [
     "./configure"
@@ -28,18 +26,14 @@ build: [
     "--disable-ide" {!conf-gtksourceview:installed}
   ]
   [make "opt" "byte"]
+  [make "doc" "stdlibdoc" "apidoc"] {with-doc}
 ]
-build-doc: [
-  [make "doc" "stdlibdoc" "apidoc"]
-  [make "DOCDIR=%{doc}%/why3" "install-doc"]
-]
-
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind"
-  "menhir" { <= "20141015" }
+  "menhir" {<= "20141015"}
   "num"
 ]
-
 depopts: [
   "lablgtk"
   "conf-gtksourceview"
@@ -55,4 +49,16 @@ conflicts: [
   "coq" {< "8.4"}
   "coq" {>= "8.5"}
 ]
-install: [make "install" "install-lib"]
+install: [
+  [make "install" "install-lib"]
+  [make "DOCDIR=%{doc}%/why3" "install-doc"] {with-doc}
+]
+synopsis: "Why3 environment for deductive program verification (base)"
+description: """
+This package is for advanced users only, normal users should use the
+full why3 package."""
+url {
+  src:
+    "https://gforge.inria.fr/frs/download.php/file/35214/why3-0.86.2.tar.gz"
+  checksum: "md5=ef0f4c133fc0da25a6b90adefddefa9a"
+}

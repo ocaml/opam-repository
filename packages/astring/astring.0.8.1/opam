@@ -1,18 +1,42 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
 authors: ["Daniel Bünzli <daniel.buenzl i@erratique.ch>"]
 homepage: "http://erratique.ch/software/astring"
 doc: "http://erratique.ch/software/astring"
-dev-repo: "http://erratique.ch/repos/astring.git"
+dev-repo: "git+http://erratique.ch/repos/astring.git"
 bug-reports: "https://github.com/dbuenzli/astring/issues"
 tags: [ "string" "org:erratique" ]
 license: "BSD-3-Clause"
-available: [ ocaml-version >= "4.01.0"]
-depends: [ "ocamlfind" {build}
-           "ocamlbuild" {build} ]
-build:
-[
-  [ "ocaml" "pkg/git.ml" ]
-  [ "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                           "native-dynlink=%{ocaml-native-dynlink}%" ]
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
 ]
+build: [
+  ["ocaml" "pkg/git.ml"]
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+  ]
+]
+synopsis: "Alternative String module for OCaml"
+description: """
+Astring exposes an alternative `String` module for OCaml. This module
+tries to balance minimality and expressiveness for basic, index-free,
+string processing and provides types and functions for substrings,
+string sets and string maps.
+
+Remaining compatible with the OCaml `String` module is a non-goal. The
+`String` module exposed by Astring has exception safe functions,
+removes deprecated and rarely used functions, alters some signatures
+and names, adds a few missing functions and fully exploits OCaml's
+newfound string immutability.
+
+Astring depends only on the OCaml standard library. It is distributed
+under the BSD3 license."""
+url {
+  src: "http://erratique.ch/software/astring/releases/astring-0.8.1.tbz"
+  checksum: "md5=f93bc586a1383848ca0d5d9b1779aea2"
+}

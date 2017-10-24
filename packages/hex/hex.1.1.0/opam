@@ -1,13 +1,32 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      ["Thomas Gazagnaire" "Trevor Summers Smith"]
 homepage:     "https://github.com/mirage/ocaml-hex"
 bug-reports:  "https://github.com/mirage/ocaml-hex/issues"
-dev-repo:     "https://github.com/mirage/ocaml-hex.git"
+dev-repo: "git+https://github.com/mirage/ocaml-hex.git"
 license:      "ISC"
-build: [ [ "jbuilder" "build" ] ]
-build-test: [ [ "jbuilder" "runtest" ] ]
+build: [
+  ["jbuilder" "build"]
+  ["jbuilder" "runtest"] {with-test}
+]
 depends: [
-  "jbuilder" {build & >="1.0+beta8"}
+  "ocaml"
+  "jbuilder" {build & >= "1.0+beta8"}
   "cstruct" {>= "1.7.0"}
 ]
+synopsis: "Minimal library providing hexadecimal converters."
+description: """
+```ocaml
+#require "hex";;
+# Hex.of_string "Hello world!";;
+- : Hex.t = "48656c6c6f20776f726c6421"
+# Hex.to_string "dead-beef";;
+- : string = "ޭ��"
+# Hex.hexdump (Hex.of_string "Hello world!\\n")
+00000000: 4865 6c6c 6f20 776f 726c 6421 0a        Hello world!.
+- : unit = ()
+```"""
+url {
+  src: "https://github.com/mirage/ocaml-hex/archive/1.1.0.tar.gz"
+  checksum: "md5=42c9b40590dbe0c6b0492f340c70f3a4"
+}

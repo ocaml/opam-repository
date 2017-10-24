@@ -1,30 +1,76 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Markus Mottl <markus.mottl@gmail.com>"
 authors: [ "Markus Mottl <markus.mottl@gmail.com>" ]
 license: "LGPL-2.1+ with OCaml linking exception"
 homepage: "http://mmottl.github.io/gpr"
-dev-repo: "https://github.com/mmottl/gpr.git"
+dev-repo: "git+https://github.com/mmottl/gpr.git"
 bug-reports: "https://github.com/mmottl/gpr/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocaml" "%{etc}%/gpr/setup.ml" "-C" "%{etc}%/gpr" "-uninstall"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "4.00.1"}
   "base-threads"
-  ("core" {= "113.00.00"} | "core" {= "112.35.01"} | "core" {= "112.35.00"} | "core" {= "112.24.01"} | "core" {= "112.24.00"} | "core" {= "112.17.00"} | "core" {= "112.06.02"} | "core" {= "112.06.01"} | "core" {= "112.06.00"} | "core" {= "112.01.01"} | "core" {= "112.01.00"} | "core" {= "111.28.01"} | "core" {= "111.28.00"} | "core" {= "111.25.00"} | "core" {= "111.21.00"} | "core" {= "111.17.00"} | "core" {= "111.13.00"} | "core" {= "111.11.01"} | "core" {= "111.11.00"} | "core" {= "111.08.00"} | "core" {= "111.06.00"} | "core" {= "111.03.00"} | "core" {= "110.01.00"} | "core" {= "109.60.00"} | "core" {= "109.58.00"} | "core" {= "109.55.02"} | "core" {= "109.55.00"} | "core" {= "109.53.01"} | "core" {= "109.53.00"} | "core" {= "109.47.00"} | "core" {= "109.45.00"} | "core" {= "109.42.00"} | "core" {= "109.41.00"} | "core" {= "109.40.00"} | "core" {= "109.38.00"} | "core" {= "109.37.00"} | "core" {= "109.36.00"} | "core" {= "109.35.00"} | "core" {= "109.34.00"} | "core" {= "109.32.00"} | "core" {= "109.31.00"})
+  ("core" {= "113.00.00"} | "core" {= "112.35.01"} | "core" {= "112.35.00"} |
+   "core" {= "112.24.01"} |
+   "core" {= "112.24.00"} |
+   "core" {= "112.17.00"} |
+   "core" {= "112.06.02"} |
+   "core" {= "112.06.01"} |
+   "core" {= "112.06.00"} |
+   "core" {= "112.01.01"} |
+   "core" {= "112.01.00"} |
+   "core" {= "111.28.01"} |
+   "core" {= "111.28.00"} |
+   "core" {= "111.25.00"} |
+   "core" {= "111.21.00"} |
+   "core" {= "111.17.00"} |
+   "core" {= "111.13.00"} |
+   "core" {= "111.11.01"} |
+   "core" {= "111.11.00"} |
+   "core" {= "111.08.00"} |
+   "core" {= "111.06.00"} |
+   "core" {= "111.03.00"} |
+   "core" {= "110.01.00"} |
+   "core" {= "109.60.00"} |
+   "core" {= "109.58.00"} |
+   "core" {= "109.55.02"} |
+   "core" {= "109.55.00"} |
+   "core" {= "109.53.01"} |
+   "core" {= "109.53.00"} |
+   "core" {= "109.47.00"} |
+   "core" {= "109.45.00"} |
+   "core" {= "109.42.00"} |
+   "core" {= "109.41.00"} |
+   "core" {= "109.40.00"} |
+   "core" {= "109.38.00"} |
+   "core" {= "109.37.00"} |
+   "core" {= "109.36.00"} |
+   "core" {= "109.35.00"} |
+   "core" {= "109.34.00"} |
+   "core" {= "109.32.00"} |
+   "core" {= "109.31.00"})
   "gsl"
   "lacaml" {>= "9.2.3"}
   "ocamlbuild" {build}
   "ocamlfind" {build & >= "1.3.1"}
 ]
-available: [ ocaml-version >= "4.00.1" ]
+synopsis: "GPR - Library and Application for Gaussian Process Regression"
+description: """
+Gaussian process regression is a modern Bayesian approach to machine
+learning, and GPR implements some of the latest advances in this field"""
+extra-files: ["gpr.install" "md5=ecc97c692bb2f70fe50124a88d705fde"]
+url {
+  src:
+    "https://github.com/mmottl/gpr/releases/download/v1.2.2/gpr-1.2.2.tar.gz"
+  checksum: "md5=0aaa8fea073258c3696487dad5fc539f"
+}

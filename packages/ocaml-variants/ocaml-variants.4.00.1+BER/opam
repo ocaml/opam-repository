@@ -1,0 +1,27 @@
+opam-version: "2.0"
+synopsis: "BER MetaOCaml (http://okmij.org/ftp/ML/MetaOCaml.html)"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.00.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix "-no-tk"]
+  [make "-C" "metalib" "patch"]
+  [make "core"]
+  [make "coreboot"]
+  [make "all"]
+  [make "-i" "install"]
+  [make "-C" "metalib" "all"]
+]
+install: [make "-C" "metalib" "install"]
+url {
+  src: "https://github.com/metaocaml/ber-metaocaml/archive/ber-N100.tar.gz"
+  checksum: "md5=5bfe2ec41fdfb2d467f56d47e2f70b94"
+}

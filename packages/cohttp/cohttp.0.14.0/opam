@@ -1,11 +1,10 @@
-opam-version: "1.2"
-
+opam-version: "2.0"
 name: "cohttp"
 maintainer: "anil@recoil.org"
 license: "ISC"
 
 homepage: "https://github.com/mirage/ocaml-cohttp"
-dev-repo: "https://github.com/mirage/ocaml-cohttp.git"
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
 bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
 
 tags: [
@@ -15,33 +14,29 @@ tags: [
 
 build: [
   [make "PREFIX=%{prefix}%"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-
 install: [make "PREFIX=%{prefix}%" "install"]
 
 remove: [["ocamlfind" "remove" "cohttp"]]
 
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "cmdliner" {build & >= "0.9.4"}
   "re"
   "uri" {>= "1.5.0"}
   "fieldslib" {>= "109.20.00" & < "113.01.00"}
   "sexplib" {>= "109.53.00" & < "113.01.00"}
-  "conduit" {>= "0.7.0" & <"0.16.0"}
+  "conduit" {>= "0.7.0" & < "0.16.0"}
   "stringext"
   "base64" {< "2.0.0"}
-  "ounit" {test}
+  "ounit" {with-test}
   "ocamlbuild" {build}
 ]
-build-doc: ["ocaml" "setup.ml" "-doc"]
-
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-
 depopts: [
   "async"
   "lwt"
@@ -55,4 +50,16 @@ conflicts: [
   "lwt" {>= "2.5.0"}
   "js_of_ocaml" {>="3.0"}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "HTTP library for Lwt, Async and Mirage"
+description: """
+There are several optional dependencies which activate functionality:
+
+* Lwt: `opam install lwt cohttp`
+* Lwt and SSL: `opam install lwt ssl cohttp`
+* Async: `opam install async cohttp`
+* Async and SSL: `opam install async_ssl cohttp`"""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-cohttp/archive/v0.14.0.tar.gz"
+  checksum: "md5=9841ea7065be56c7751cc51e37b93e80"
+}

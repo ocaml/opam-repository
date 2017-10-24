@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Juergen Hoetzel <juergen@archlinux.org>"
 authors: "Juergen Hoetzel <juergen@archlinux.org>"
 homepage: "https://github.com/juergenhoetzel/ocaml-systemd/"
 bug-reports:  "https://github.com/mirage/mirage/issues/"
-dev-repo:     "https://github.com/juergenhoetzel/ocaml-systemd.git"
+dev-repo: "git+https://github.com/juergenhoetzel/ocaml-systemd.git"
 license: "LGPL-3 with OCaml linking exception"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
@@ -11,9 +11,20 @@ build: [
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "systemd"]
-depends: "ocamlfind"
+depends: ["ocaml" "ocamlfind"]
 depexts: [
-  [["debian"] ["libsystemd-dev"]]
-  [["ubuntu"] ["libsystemd-dev"]]
-  [["centos"] ["systemd-devel"]]
+  ["libsystemd-dev"] {os-distribution = "debian"}
+  ["libsystemd-dev"] {os-distribution = "ubuntu"}
+  ["systemd-devel"] {os-distribution = "centos"}
 ]
+synopsis: "OCaml module for native access to the systemd facilities"
+description: """
+* Logging to the Journal
+* Socket activation
+* Watchdog
+* Notifications"""
+flags: light-uninstall
+url {
+  src: "https://github.com/juergenhoetzel/ocaml-systemd/archive/1.2.tar.gz"
+  checksum: "md5=f9206f1284addca555934100b1e68928"
+}

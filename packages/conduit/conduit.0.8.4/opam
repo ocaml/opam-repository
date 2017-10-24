@@ -1,8 +1,8 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "anil@recoil.org"
 authors:      ["Anil Madhavapeddy" "Thomas Leonard" "Thomas Gazagnaire"]
 homepage:     "https://github.com/mirage/ocaml-conduit"
-dev-repo:     "https://github.com/mirage/ocaml-conduit.git"
+dev-repo: "git+https://github.com/mirage/ocaml-conduit.git"
 bug-reports:  "https://github.com/mirage/ocaml-conduit/issues"
 tags:         "org:mirage"
 license:      "ISC"
@@ -12,6 +12,7 @@ install: [make "install"]
 remove:  ["ocamlfind" "remove" "conduit"]
 
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind"
   "sexplib" {>= "109.15.00" & < "113.01.00"}
   "stringext"
@@ -41,4 +42,23 @@ conflicts: [
   "vchan" {<"2.0.0"}
   "nocrypto" {<"0.4.0"}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Network connection library for TCP and SSL"
+description: """
+The `conduit` library takes care of establishing and listening for TCP and
+SSL/TLS connections for the Lwt and Async libraries.
+
+The reason this library exists is to provide a degree of abstraction
+from the precise SSL library used, since there are a variety of ways to bind to
+a library (e.g. the C FFI, or the Ctypes library), as well as well as which
+library is used (either OpenSSL or a native OCaml TLS implementation).
+
+If you are using the `Lwt_unix` version of the library, you can set two
+environment variables to control the behaviour of the library:
+
+- `CONDUIT_DEBUG=1` will output debug information to standard error.
+- `CONDUIT_TLS=native` will force the use of the pure OCaml TLS library."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-conduit/archive/v0.8.4.tar.gz"
+  checksum: "md5=6deac1a85a8c62b2307d6c16c79f18bc"
+}

@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Gabriel Radanne <drupyog@zoho.com>"
 authors: "Gabriel Radanne <drupyog@zoho.com>"
 homepage: "https://github.com/Drup/llvmgraph"
@@ -8,23 +8,30 @@ tags: [
   "llvm"
   "ocamlgraph"
 ]
-dev-repo: "https://github.com/Drup/llvmgraph.git"
+dev-repo: "git+https://github.com/Drup/llvmgraph.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests"]
+    {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "llvmgraph"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "llvm" {>= "3.6"}
   "ocamlgraph" {>= "1.8.5"}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Ocamlgraph overlay for llvm"
+description:
+  "This overlay allows you to read and walk (but not write) the control flow graph of an llvm function using the same interface as an ocamlgraph. In particular, read-only ocamlgraph's algorithm can be applied."
+flags: light-uninstall
+url {
+  src: "https://github.com/Drup/llvmgraph/archive/0.2.tar.gz"
+  checksum: "md5=3427e4d33667338b11d995afcdc7bff0"
+}

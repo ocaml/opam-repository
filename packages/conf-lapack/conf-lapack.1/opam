@@ -1,9 +1,8 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "mmottl"
-author: "mmottl"
 homepage: "http://www.netlib.org/lapack"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-dev-repo: "https://github.com/ocaml/opam-repository.git"
+dev-repo: "git+https://github.com/ocaml/opam-repository.git"
 license: "GPL-2.0"
 build: [
   ["sh" "-exc" "cc $CFLAGS test.c -llapack"] {os != "darwin" & os != "freebsd" & os != "win32"}
@@ -12,13 +11,24 @@ build: [
   ["%{build}%/test-win.sh"] {os = "win32"}
 ]
 depexts: [
-  [["debian"] ["liblapack-dev"]]
-  [["mageia"] ["liblapack-devel"]]
-  [["ubuntu"] ["liblapack-dev"]]
-  [["centos"] ["lapack-devel"]]
-  [["fedora"] ["lapack-devel"]]
-  [["rhel"] ["lapack-devel"]]
-  [["alpine"] ["lapack-dev"]]
-  [["opensuse"] ["lapack-devel"]]
-  [["freebsd"] ["lapack" "gcc"]]
+  ["liblapack-dev"] {os-distribution = "debian"}
+  ["liblapack-devel"] {os-distribution = "mageia"}
+  ["liblapack-dev"] {os-distribution = "ubuntu"}
+  ["lapack-devel"] {os-distribution = "centos"}
+  ["lapack-devel"] {os-distribution = "fedora"}
+  ["lapack-devel"] {os-distribution = "rhel"}
+  ["lapack-dev"] {os-distribution = "alpine"}
+  ["lapack-devel"] {os-distribution = "opensuse"}
+  ["lapack" "gcc"] {os = "freebsd"}
+]
+synopsis:
+  "Virtual package relying on a LAPACK (Linear Algebra) library installation."
+description: """
+This package can only install if a compatible LAPACK library is found on
+the system (e.g. reference LAPACK, vendor-implementations, etc.)."""
+authors: "mmottl"
+depends: ["ocaml"]
+extra-files: [
+  ["test.c" "md5=ac2a49147c4af466c3b3251dbd3960ff"]
+  ["test-win.sh" "md5=6f1f0d9efc5653aeb4c46a4a5bd08eee"]
 ]

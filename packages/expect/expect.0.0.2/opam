@@ -1,18 +1,32 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "https://github.com/ocaml/opam-repository/issues"
 build: [
-  ["rm" "setup.ml"] {ocaml-version >= "4.00.0"}
-  ["oasis" "setup"] {ocaml-version >= "4.00.0"}
+  ["rm" "setup.ml"] {ocaml:version >= "4.00.0"}
+  ["oasis" "setup"] {ocaml:version >= "4.00.0"}
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
 remove: [["ocamlfind" "remove" "expect"]]
 depends: [
+  "ocaml"
   "ocamlfind"
   "extlib" {= "1.5.3"}
   "ounit"
   "pcre"
-  "oasis" {>= "0.3.0" & <"0.4.2"}
+  "oasis" {>= "0.3.0" & < "0.4.2"}
   "ocamlbuild" {build}
 ]
 install: ["ocaml" "setup.ml" "-install"]
+synopsis:
+  "Simple implementation of \"expect\" to help building unitary testing of interactive program"
+description: """
+You can match the question using a regular expression or a timeout.
+
+See the Expect manual for more information:
+http://expect.nist.gov/"""
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/475/ocaml-expect-0.0.2.tar.gz"
+  checksum: "md5=723288a1c9078f86e6185e78a6baa577"
+}

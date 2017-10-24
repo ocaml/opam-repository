@@ -1,0 +1,25 @@
+opam-version: "2.0"
+synopsis: "OCaml 4.02, with support for modular implicits."
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.02.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+  "base-implicits" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" "%{prefix}%"]
+  ["%{make}%" "world"]
+  ["%{make}%" "world.opt"]
+]
+install: ["%{make}%" "install"]
+url {
+  src:
+    "https://github.com/ocamllabs/ocaml-modular-implicits/archive/modular-implicits.tar.gz"
+  checksum: "md5=a943f1fe4ae63deb7e4f898c6a8159ba"
+}

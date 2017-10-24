@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "guillaume.melquiond@inria.fr"
 authors: [
   "François Bobot"
@@ -12,8 +12,7 @@ homepage: "http://why3.lri.fr/"
 license: "GNU Lesser General Public License version 2.1"
 doc: "http://why3.lri.fr/#documentation"
 bug-reports: "https://gforge.inria.fr/tracker/?func=browse&group_id=2990&atid=10293"
-dev-repo: "https://scm.gforge.inria.fr/anonscm/git/why3/why3.git"
-
+dev-repo: "git+https://scm.gforge.inria.fr/anonscm/git/why3/why3.git"
 tags: [
   "deductive"
   "program verification"
@@ -21,36 +20,36 @@ tags: [
   "automated theorem prover"
   "interactive theorem prover"
 ]
-available: [ ocaml-version >= "4.01.0" ]
-
 patches: "disable-ocamldep-native.patch"
 
 # Jessie3 (frama-c plugin) is *disabled* because it is not ready
 build: [
-  ["./configure" "--prefix" prefix "--disable-frama-c"
-                 "--disable-ide" { !conf-gtksourceview:installed }]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--disable-frama-c"
+    "--disable-ide" {!conf-gtksourceview:installed}
+  ]
   [make "opt" "byte"]
+  [make "doc" "stdlibdoc" "apidoc"] {with-doc}
 ]
-
-install: [make "install" "install-lib"]
-
+install: [
+  [make "install" "install-lib"]
+  [make "DOCDIR=%{doc}%/why3" "install-doc"] {with-doc}
+]
 remove: [
   ["rm" "%{bin}%/why3"]
   ["rm" "-r" "%{lib}%/why3"]
   ["rm" "-r" "%{share}%/why3"]
 ]
 
-build-doc: [
-  [make "doc" "stdlibdoc" "apidoc"]
-  [make "DOCDIR=%{doc}%/why3" "install-doc"]
-]
-
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind"
   "menhir"
   "num"
 ]
-
 depopts: [
   "lablgtk"
   "conf-gtksourceview"
@@ -65,3 +64,16 @@ conflicts: [
   "ocamlgraph" {< "1.8.2"}
   "coq" {< "8.4"}
 ]
+synopsis: "Why3 environment for deductive program verification (base)"
+description: """
+This package is for advanced users only, normal users should use the
+full why3 package."""
+flags: light-uninstall
+extra-files: [
+  "disable-ocamldep-native.patch" "md5=93d5f52eb33c955f47c3baa3e7f7e3b0"
+]
+url {
+  src:
+    "https://gforge.inria.fr/frs/download.php/file/35893/why3-0.87.1.tar.gz"
+  checksum: "md5=f1780c8579e6fec9a7ece3ecd05a01e2"
+}

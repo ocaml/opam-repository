@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Sylvain Le Gall <sylvain@le-gall.net>"
 authors: [ "Sylvain Le Gall" ]
 license: "LGPL-2.1 with OCaml linking exception"
@@ -8,13 +8,14 @@ bug-reports: "https://github.com/ocaml/oasis/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocaml" "%{etc}%/oasis/setup.ml" "-C" "%{etc}%/oasis" "-uninstall"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "3.12.1"}
   "base-unix"
   "ocamlbuild"
   "ocamlfind" {>= "1.3.1"}
@@ -29,4 +30,32 @@ conflicts: [
   "oasis-mirage" {= "0.3.0"}
   "oasis-mirage" {= "0.3.0a"}
 ]
-available: [ ocaml-version >= "3.12.1" ]
+synopsis: "Tooling for building OCaml libraries and applications"
+description: """
+OASIS generates a full configure, build and install system for your
+application. It starts with a simple `_oasis` file at the toplevel of
+your project and creates everything required.
+
+OASIS leverages existing OCaml tooling to perform most of it's work.
+In fact, it might be more appropriate to think of it as simply the
+glue that binds these other subsystems together and coordinates the
+work that they do. It should support the following tools:
+
+* OCamlbuild
+* OMake
+* OCamlMakefile (todo),
+* ocaml-autoconf (todo)
+
+It also features a do-it-yourself command line invocation and an
+internal configure/install scheme. Libraries are managed through
+findlib. It has been tested on GNU Linux and Windows.
+
+It also allows to have standard entry points and description. It helps
+to integrates your libraries and software with third parties tools
+like OPAM."""
+extra-files: ["oasis.install" "md5=ecc97c692bb2f70fe50124a88d705fde"]
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1694/oasis-0.4.10.tar.gz"
+  checksum: "md5=84de67188d6c1ba4499aee6d4cb8cb54"
+}

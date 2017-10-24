@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "anil@recoil.org"
 authors: [
   "Anil Madhavapeddy"
@@ -13,28 +13,60 @@ homepage: "https://github.com/mirage/ocaml-cohttp"
 bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
 license: "ISC"
 tags: ["org:mirage" "org:xapi-project"]
-dev-repo: "https://github.com/mirage/ocaml-cohttp.git"
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
 build: [
   ["jbuilder" "subst" "-n" name] {pinned}
   ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "base-bytes"
   "jbuilder" {build & >= "1.0+beta10"}
   "re"
   "uri" {>= "1.9.0"}
   "fieldslib"
   "sexplib"
-  "ppx_fields_conv" {>="v0.9.0"}
-  "ppx_sexp_conv" {>="v0.9.0"}
+  "ppx_fields_conv" {>= "v0.9.0"}
+  "ppx_sexp_conv" {>= "v0.9.0"}
   "stringext"
   "base64" {>= "2.0.0"}
   "magic-mime"
   "fmt"
   "logs"
   "jsonm" {build}
-  "ounit" {test}
-  "alcotest" {test}
+  "ounit" {with-test}
+  "alcotest" {with-test}
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis: "An OCaml library for HTTP clients and servers"
+description: """
+[![Join the chat at https://gitter.im/mirage/ocaml-cohttp](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mirage/ocaml-cohttp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+Cohttp is an OCaml library for creating HTTP daemons. It has a portable
+HTTP parser, and implementations using various asynchronous programming
+libraries:
+
+* `Cohttp_lwt_unix` uses the [Lwt](http://ocsigen.org/lwt) library, and
+  specifically the UNIX bindings.
+* `Cohttp_async` uses the [Async](https://realworldocaml.org/v1/en/html/concurrent-programming-with-async.html)
+  library.
+* `Cohttp_lwt` exposes an OS-independent Lwt interface, which is used
+  by the [Mirage](http://www.openmirage.org) interface
+  to generate standalone microkernels (see the [mirage-http](https://github.com/mirage/mirage-http)
+  repository).
+* `Cohttp_lwt_xhr` compiles to a JavaScript module that maps the Cohttp
+   calls to XMLHTTPRequests.  This is used to compile OCaml libraries like
+   the GitHub bindings to JavaScript and still run efficiently.
+
+You can implement other targets using the parser very easily. Look at the `IO`
+signature in `lib/s.mli` and implement that in the desired backend.
+
+You can activate some runtime debugging by setting `COHTTP_DEBUG` to any
+value, and all requests and responses will be written to stderr.  Further
+debugging of the connection layer can be obtained by setting `CONDUIT_DEBUG`
+to any value."""
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v0.99.0/cohttp-0.99.0.tbz"
+  checksum: "md5=a789a9ed492005257bdb217e2248da0d"
+}

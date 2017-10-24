@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "4.01.0 release compiled with lsbcc."
+description: """
+Requires the Linux Standard Base SDK installed in /opt/lsb:
+http://www.linuxfoundation.org/collaborate/workgroups/lsb/download"""
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.01.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: [
+  [LSBCC_LSBVERSION = "4.0"]
+  [LSBCC_BESTEFFORT = "1"]
+  [CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"]
+]
+build: [
+  ["sed" "-i" "-e" "s/lcurses/lncurses/" "configure"]
+  [
+    "sed"
+    "-i"
+    "-e"
+    "s/typedef greg_t context_reg;/#include <ucontext.h>\\ntypedef greg_t context_reg;/"
+    "asmrun/signals_osdep.h"
+  ]
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-cc"
+    "/opt/lsb/bin/lsbcc"
+    "-aspp"
+    "/opt/lsb/bin/lsbcc -c"
+    "-no-shared-libs"
+  ]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-4.01/ocaml-4.01.0.tar.gz"
+  checksum: "md5=04dfdd7da189462a4f10ec6530359cef"
+}

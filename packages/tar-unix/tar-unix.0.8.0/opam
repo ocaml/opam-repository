@@ -1,28 +1,34 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "dave@recoil.org"
 authors:      [ "Dave Scott" "Thomas Gazagnaire" "David Allsopp" ]
 tags:         ["org:xapi-project" "org:mirage"]
 homepage:     "https://github.com/mirage/ocaml-tar"
 bug-reports:  "https://github.com/mirage/ocaml-tar/issues"
-dev-repo:     "https://github.com/mirage/ocaml-tar.git"
+dev-repo: "git+https://github.com/mirage/ocaml-tar.git"
 doc:          "https://mirage.github.io/ocaml-tar/"
 
 build: [
-  [ "jbuilder" "build" "--only-packages=tar,tar-unix" ]
+  ["jbuilder" "build" "--only-packages=tar,tar-unix"]
+  ["jbuilder" "runtest"] {with-test}
 ]
-
-build-test: [
-  [ "jbuilder" "runtest" ]
-]
-
 depends: [
-  "jbuilder"          {build & >="1.0+beta7"}
-  "ocamlfind"         {build}
+  "ocaml" {>= "4.01.0"}
+  "jbuilder" {build & >= "1.0+beta7"}
+  "ocamlfind" {build}
   "tar"
-  "cstruct"           {>= "1.9.0"}
+  "cstruct" {>= "1.9.0"}
   "cstruct-lwt"
   "re"
   "result"
   "lwt"
 ]
-available: [ ocaml-version >= "4.01.0" ]
+synopsis: "Decode and encode tar files"
+description: """
+tar-format is a simple library to read and write tar files with an emphasis on
+streaming.
+
+This is pure OCaml code, no C bindings."""
+url {
+  src: "https://github.com/mirage/ocaml-tar/archive/v0.8.0.tar.gz"
+  checksum: "md5=bf7aefc14b7454a6e73be2fb47e6edd8"
+}

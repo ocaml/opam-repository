@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors: ["Pippijn van Steenhoven"]
 maintainer: "francois.berenger@inria.fr"
 homepage: "https://github.com/Antique-team/clangml"
 bug-reports: "https://github.com/Antique-team/clangml/issues"
-dev-repo: "https://github.com/Antique-team/clangml.git"
+dev-repo: "git+https://github.com/Antique-team/clangml.git"
 build: [
   [make]
 ]
@@ -14,6 +14,7 @@ remove: [
   [make "uninstall"]
 ]
 depends: [
+  "ocaml" {>= "4.02.3"}
   "dolog"
   "batteries"
   "deriving"
@@ -24,16 +25,31 @@ depends: [
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["libboost-dev" "llvm-3.6-dev" "clang-3.6" "libclang-3.6-dev"
-               "binutils-dev"]]
-  [["ubuntu"] ["libboost-dev" "llvm-3.6-dev" "clang-3.6" "libclang-3.6-dev"
-               "binutils-dev"]]
-  [["gentoo"] ["dev-libs/boost" "sys-devel/binutils"]]
-  [["archlinux"] ["boost" "binutils"]]
+  [
+    "libboost-dev"
+    "llvm-3.6-dev"
+    "clang-3.6"
+    "libclang-3.6-dev"
+    "binutils-dev"
+  ] {os-distribution = "debian"}
+  [
+    "libboost-dev"
+    "llvm-3.6-dev"
+    "clang-3.6"
+    "libclang-3.6-dev"
+    "binutils-dev"
+  ] {os-distribution = "ubuntu"}
+  ["dev-libs/boost" "sys-devel/binutils"] {os-distribution = "gentoo"}
+  ["boost" "binutils"] {os-distribution = "archlinux"}
 ]
-available: [
-  ocaml-version >= "4.02.3" & !preinstalled & os != "darwin"
-]
+available: os != "darwin"
 post-messages: [
   "This package requires llvm-3.6, clang-3.6, boost and binutils" {failure}
 ]
+synopsis: "clang OCaml bindings"
+conflicts: ["ocaml-system"]
+extra-files: ["clangml.install" "md5=347541519ab211a1cf2eb1049a6125f2"]
+url {
+  src: "https://github.com/Antique-team/clangml/archive/v3.6.0.2.tar.gz"
+  checksum: "md5=35cf616eb6b3673bd7ef2daeef989a7a"
+}

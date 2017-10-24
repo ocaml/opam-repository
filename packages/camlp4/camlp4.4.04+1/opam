@@ -1,15 +1,21 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors: ["Daniel de Rauglaudre" "Nicolas Pouillard"]
 maintainer: "jeremie@dimino.org"
 homepage: "https://github.com/ocaml/camlp4"
 license: "LGPLv2"
 build: [
-  ["./configure" "--bindir=%{bin}%" "--libdir=%{lib}%/ocaml" "--pkgdir=%{lib}%"]
+  [
+    "./configure"
+    "--bindir=%{bin}%"
+    "--libdir=%{lib}%/ocaml"
+    "--pkgdir=%{lib}%"
+  ]
   [make "clean"]
-  [make "all"] {ocaml-native}
-  [make "byte"] {!ocaml-native}
+  [make "all"] {ocaml:native}
+  [make "byte"] {!ocaml:native}
 ]
 depends: [
+  "ocaml" {>= "4.04" & < "4.05"}
   "ocamlbuild" {build}
 ]
 install: [
@@ -25,6 +31,23 @@ remove: [
 ]
 
 patches: [ "termux.patch" ]
-available: [ (!preinstalled) & (ocaml-version >= "4.04") & (ocaml-version < "4.05") ]
 bug-reports: "https://github.com/ocaml/camlp4/issues"
-dev-repo: "https://github.com/ocaml/camlp4.git"
+dev-repo: "git+https://github.com/ocaml/camlp4.git"
+synopsis:
+  "Camlp4 is a system for writing extensible parsers for programming languages"
+description: """
+It provides a set of OCaml libraries that are used to define grammars as well
+as loadable syntax extensions of such grammars. Camlp4 stands for Caml
+Preprocessor and Pretty-Printer and one of its most important applications is
+the definition of domain-specific extensions of the syntax of OCaml.
+
+Camlp4 was part of the official OCaml distribution until its version 4.01.0.
+Since then it has been replaced by a simpler system which is easier to maintain
+and to learn: ppx rewriters and extension points."""
+conflicts: ["ocaml-system"]
+flags: light-uninstall
+extra-files: ["termux.patch" "md5=91fbe07cda753ad87789fd5717371494"]
+url {
+  src: "https://github.com/ocaml/camlp4/archive/4.04+1.tar.gz"
+  checksum: "md5=305f61ffd98c4c03eb0d9b7749897e59"
+}

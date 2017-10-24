@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "2.0"
 maintainer: "Francois.Bobot@cea.fr"
 authors: [
   "François Bobot"
@@ -20,14 +20,12 @@ tags: [
 build: [
   ["./configure" "--prefix" prefix "--disable-bench"]
   [make "opt" "byte"]
-]
-build-doc: [
-  [make "doc" "stdlibdoc" "apidoc"]
-  [make "DOCDIR=%{doc}%/why3" "install-doc"]
+  [make "doc" "stdlibdoc" "apidoc"] {with-doc}
 ]
 depends: [
+  "ocaml"
   "alt-ergo"
-  "lablgtk"    {>= "2.14.2"}
+  "lablgtk" {>= "2.14.2"}
   "conf-gtksourceview"
   "camlzip"
   "zarith"
@@ -37,4 +35,31 @@ conflicts: [
   "coq" {< "8.4"}
   "ocamlgraph" {< "1.8.2"}
 ]
-install: [make "install" "install-lib"]
+install: [
+  [make "install" "install-lib"]
+  [make "DOCDIR=%{doc}%/why3" "install-doc"] {with-doc}
+]
+synopsis: "Why3 is a platform for deductive program verification."
+description: """
+It provides a rich language for specification and programming, called
+WhyML, and relies on external theorem provers, both automated and
+interactive, to discharge verification conditions. Why3 comes with a
+standard library of logical theories (integer and real arithmetic,
+Boolean operations, sets and maps, etc.) and basic programming data
+structures (arrays, queues, hash tables, etc.). A user can write WhyML
+programs directly and get correct-by-construction OCaml programs
+through an automated extraction mechanism. WhyML is also used as an
+intermediate language for the verification of C, Java, or Ada
+programs.
+
+Why3 is a complete reimplementation of the former Why platform. Among
+the new features are: numerous extensions to the input language, a new
+architecture for calling external provers, and a well-designed API,
+allowing to use Why3 as a software library. An important emphasis is
+put on modularity and genericity, giving the end user a possibility to
+easily reuse Why3 formalizations or to add support for a new external
+prover if wanted."""
+url {
+  src: "https://gforge.inria.fr/frs/download.php/file/33976/why3-0.84.tar.gz"
+  checksum: "md5=286ac2816f539f11e31f84fcafc32120"
+}
