@@ -5,7 +5,14 @@ patches: [
   "https://gist.githubusercontent.com/andrewray/1928825fea090e50c0de/raw/e121b5cd176cdf6b882bc402276235b1c0a71b69/improved-error.patch"
 ]
 build: [
-  ["./configure" "-prefix" "%{prefix}%"]
+  ["./configure"
+    "-prefix" "%{prefix}%"
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" "%{prefix}%"
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   ["%{make}%" "world"]
   ["%{make}%" "world.opt"]
   ["%{make}%" "install"]

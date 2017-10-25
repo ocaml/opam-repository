@@ -2,7 +2,14 @@ opam-version: "1"
 version: "4.00.1"
 src: "https://github.com/metaocaml/ber-metaocaml/archive/ber-N100.tar.gz"
 build: [
-  ["./configure" "-prefix" prefix "-no-tk"]
+  ["./configure"
+    "-prefix" prefix "-no-tk"
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" prefix "-no-tk"
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "-C" "metalib" "patch"]
   [make "core"]
   [make "coreboot"]

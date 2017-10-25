@@ -7,7 +7,14 @@ build: [
     "-exc"
     "echo \"* : lto = 1\" > %{lib}%/ocaml/ocaml_compiler_internal_params"
   ]
-  ["./configure" "-prefix" prefix "-with-debug-runtime" "-flambda"]
+  ["./configure"
+    "-prefix" prefix "-with-debug-runtime" "-flambda"
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" prefix "-with-debug-runtime" "-flambda"
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world"]
   [make "world.opt"]
   [make "install"]

@@ -8,7 +8,16 @@ build: [
     prefix
     "-with-debug-runtime"
     "-with-frame-pointers"
-  ]
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-with-frame-pointers"
+    "-cc" "cc -O2 -pipe"
+    "-aspp" "cc -O2 -pipe -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world"]
   [make "world.opt"]
   [make "install"]
