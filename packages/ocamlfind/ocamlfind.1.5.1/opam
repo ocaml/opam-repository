@@ -1,5 +1,10 @@
-opam-version: "1"
-maintainer: "https://github.com/ocaml/opam-repository/issues"
+opam-version: "1.2"
+maintainer:   "Thomas Gazagnaire <thomas@gazagnaire.org>"
+author:       "Gerd Stolpmann <gerd@gerd-stolpmann.de>"
+homepage:     "http://projects.camlcity.org/projects/findlib.html"
+bug-reports:  "https://gitlab.camlcity.org/gerd/lib-findlib/issues"
+dev-repo:     "https://gitlab.camlcity.org/gerd/lib-findlib.git"
+
 build: [
   [
     "./configure"
@@ -27,6 +32,9 @@ depends: [
 ]
 # needs 3.10.0 for ocamldep -modules but for some reason, when using
 # 3.11 an ocamlfind test needs native dynamic linking which is only from 3.12.0
-available: [ (ocaml-version >= "3.12.0") |
-             ((ocaml-version >= "3.10.0") & (ocaml-version < "3.11.0")) ]
+available: [
+    (ocaml-version >= "3.12.0") |
+    ((ocaml-version >= "3.10.0") & (ocaml-version < "3.11.0"))
+  & ocaml-version < "4.06.0"  # ocamlfind uses unsafe strings
+]
 install: [make "install"]
