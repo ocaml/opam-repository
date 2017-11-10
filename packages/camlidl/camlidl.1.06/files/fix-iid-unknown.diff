@@ -1,0 +1,16 @@
+diff -Naur camlidl-1.05/runtime/comstuff.h camlidl-1.05-patched/runtime/comstuff.h
+--- camlidl-1.05/runtime/comstuff.h	2001-06-09 16:48:20.000000000 +0200
++++ camlidl-1.05-patched/runtime/comstuff.h	2016-12-05 15:54:33.869099329 +0100
+@@ -40,7 +40,11 @@
+ #define IsEqualIID(a,b) (memcmp(a, b, sizeof(IID)) == 0)
+ #define InterlockedIncrement(p) (++(*(p)))
+ #define InterlockedDecrement(p) (--(*(p)))
+-extern IID IID_IUnknown;
++// R1: prevent to generate a usable dllcamlidl.so on unix arch
++// R1: hence i've copied a fake value from ../tests/comcomp.c
++// extern IID IID_IUnknown;
++#define IID_IUnknown (IID){0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xC0,0x00,0x00,0x00,0x00,0x00,0x00,0x46}
++
+ #define S_TRUE S_OK
+ #define S_FALSE 1
+ #define E_NOINTERFACE 0x80004002
