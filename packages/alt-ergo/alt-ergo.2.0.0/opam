@@ -1,0 +1,52 @@
+opam-version: "1.2"
+name: "alt-ergo"
+version: "2.0.0"
+
+maintainer: "alt-ergo@ocamlpro.com"
+authors: "Alt-Ergo developers"
+license: "OCamlPro Non-Commercial License + Apache"
+homepage: "http://alt-ergo.ocamlpro.com/"
+bug-reports: "https://github.com/OCamlPro/alt-ergo/issues"
+dev-repo: "https://github.com/OCamlPro/alt-ergo.git"
+
+build:
+[
+        ["autoconf"]
+        ["./configure" "-prefix" "%{prefix}%"]
+	[make]
+]
+
+install:
+[
+	[make "install" "MANDIR=%{man}%"]
+]
+
+remove: [
+        ["autoconf"]
+        ["./configure" "-prefix" "%{prefix}%"]
+	[make "uninstall" "MANDIR=%{man}%"]
+]
+
+depends: [
+        "num"
+	"zarith"
+	"camlzip"
+	"ocplib-simplex" {>= "0.4" }
+        "menhir"
+        "conf-autoconf" {build}
+]
+
+depopts: [
+        "lablgtk"
+        "conf-gtksourceview"
+]
+
+available: [ ocaml-version >= "4.04.0" ]
+
+conflicts: [
+	"alt-ergo" {< "2.0.0" }
+	"altgr-ergo" {< "2.0.0" }
+	"satML-plugin" {< "2.0.0" }
+	"profiler-plugin" {< "2.0.0" }
+	"fm-simplex-plugin" {< "2.0.0" }
+]
