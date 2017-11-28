@@ -1,28 +1,26 @@
 opam-version: "1.2"
 maintainer: "sylvain.pogodalla@inria.fr"
+
 build: [
-  ["./configure" "--prefix=%{prefix}%" "--disable-warning-as-errors"]
-  [make "all"]
+  ["jbuilder" "subst"] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
 ]
-install: [
-  [make "install-all"]
-]
-remove: [
-  ["./configure" "--prefix=%{prefix}%"]
-  [make "uninstall-all"]
-]
+
 depends: [
+  "jbuilder" {build}
   "dypgen"
   "camlp4"
   "bolt"
   "ANSITerminal"
   "cairo2"
-  "yojson" { < "1.4.0" }
-  "easy-format" { < "1.3.0" }
+  "yojson"
+  "easy-format"
   "ocf"
 ]
 
 available: [ ocaml-version >= "4.03.0" ]
+
+dev-repo: "https://gitlab.inria.fr/ACG/dev/ACGtk.git"
 
 homepage: "http://acg.gforge.inria.fr/"
 license: "CeCILL"
