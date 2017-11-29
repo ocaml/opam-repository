@@ -1,0 +1,34 @@
+opam-version: "1.2"
+maintainer: "Tadeu Zagallo <tadeu@uber.com>"
+authors: "Tadeu Zagallo <tadeu@uber.com>"
+homepage: "https://github.com/uber/neal"
+bug-reports: "https://github.com/uber/neal/issues"
+license: "MIT"
+dev-repo: "https://github.com/uber/NEAL.git"
+build: [
+  [make "-C" "src/core" "build" "LIB_PATH=%{prefix}%/lib/neal" "NATIVE=1"]
+  [make "-C" "src" "register" "LIB_PATH=%{prefix}%/lib/neal" "NATIVE=1"]
+  [make "-C" "src/providers" "build" "LIB_PATH=%{prefix}%/lib/neal" "NATIVE=1"]
+  [make "-C" "src/reporters" "build" "LIB_PATH=%{prefix}%/lib/neal" "NATIVE=1"]
+]
+install: [
+  ["mkdir" "-p" "%{prefix}%/lib/neal/providers/helpers"]
+  ["cp" "-a" "src/providers/helpers/." "%{prefix}%/lib/neal/providers/helpers"]
+]
+remove: [
+  ["rm" "-r" "%{prefix}%/lib/neal/providers"]
+  ["rm" "-r" "%{prefix}%/lib/neal/reporters"]
+  ["ocamlfind" "remove" "neal"]
+]
+depends: [
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "camlp4" {build}
+  "cmdliner" {>= "1.0.0"}
+  "angstrom" {= "0.6.0"}
+  "core"
+  "menhir"
+  "yojson"
+  "bisect_ppx"
+]
+available: [ocaml-version >= "4.04.0"]
