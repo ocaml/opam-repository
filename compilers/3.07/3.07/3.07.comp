@@ -4,7 +4,14 @@ src: "http://caml.inria.fr/pub/distrib/ocaml-3.07/ocaml-3.07.tar.gz"
 build: [
   # ensure sed is not interpreting characters >= 128
   ["sed" "-i" "-e" "$s/^/LC_ALL=C /" "ocamldoc/remove_DEBUG"]
-  ["./configure" "-prefix" prefix]
+  ["./configure"
+    "-prefix" prefix
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" prefix
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world"]
   [make "world.opt"]
   [make "install"]

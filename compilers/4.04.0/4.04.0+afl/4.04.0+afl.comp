@@ -4,7 +4,14 @@ src: "https://github.com/stedolan/ocaml/archive/afl-backport.tar.gz"
 build: [
   ["mkdir" "-p" "%{lib}%/ocaml/"]
   ["sh" "-exc" "echo \"* : g = 1\" > %{lib}%/ocaml/ocaml_compiler_internal_params"]
-  ["./configure" "-prefix" prefix]
+  ["./configure"
+    "-prefix" prefix
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" prefix
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world"]
   [make "world.opt"]
   [make "install"]

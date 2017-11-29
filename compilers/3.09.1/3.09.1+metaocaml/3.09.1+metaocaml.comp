@@ -2,7 +2,14 @@ opam-version: "1"
 version: "3.09.1"
 src: "http://web.archive.org/web/20120209151915/www.metaocaml.org/dist/old/MetaOCaml_309_alpha_030.tar.gz"
 build: [
-  ["./configure" "-prefix" prefix]
+  ["./configure"
+    "-prefix" prefix
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" prefix
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world"]
   [make "install"]
   ["mkdir" "-p" "%{prefix}%/lib/ocaml/compiler-libs"]

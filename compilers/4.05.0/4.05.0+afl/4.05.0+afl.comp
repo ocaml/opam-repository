@@ -2,7 +2,14 @@ opam-version: "1"
 version: "4.05.0"
 src: "https://github.com/ocaml/ocaml/archive/4.05.0.tar.gz"
 build: [
-  ["./configure" "-prefix" prefix "-afl-instrument"]
+  ["./configure"
+    "-prefix" prefix "-afl-instrument"
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" prefix "-afl-instrument"
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world"]
   [make "world.opt"]
   [make "install"]
