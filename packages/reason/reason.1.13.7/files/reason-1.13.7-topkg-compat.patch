@@ -1,0 +1,79 @@
+diff --git a/Makefile b/Makefile
+index 42264a3..9de0d96 100644
+--- a/Makefile
++++ b/Makefile
+@@ -16,7 +16,7 @@ setup_convenient_bin_links:
+ 
+ precompile:
+ 	cp pkg/META.in pkg/META
+-	ocamlbuild -package topkg pkg/build.native
++	ocamlbuild -use-ocamlfind -package topkg pkg/build.native
+ 
+ build_without_utop: compile_error setup_convenient_bin_links precompile
+ 	./build.native build --utop false
+diff --git a/opam b/opam
+index c88f78a..d1c0e2c 100644
+--- a/opam
++++ b/opam
+@@ -13,7 +13,7 @@ tags: [ "syntax" ]
+ substs: [ "pkg/META" ]
+ build: [
+   [make "compile_error"]
+-  ["ocamlbuild" "-package" "topkg" "pkg/build.native"]
++  ["ocamlbuild" "-use-ocamlfind" "-package" "topkg" "pkg/build.native"]
+   ["./build.native" "build"
+                     "--native" "%{ocaml-native}%"
+                     "--native-dynlink" "%{ocaml-native-dynlink}%"
+@@ -21,11 +21,11 @@ build: [
+ ]
+ depends: [
+   "ocamlfind"               {build}
+-  "menhir"                  {= "20170418"}
++  "menhir"                  {>= "20170418" & <= "20170712"}
+   "utop"                    {>= "1.17"}
+   "merlin-extend"           {>= "0.3"}
+   "result"                  {=  "1.2"}
+-  "topkg"                   {>=  "0.8.1" & < "0.9"}
++  "topkg"                   {>=  "0.8.1"}
+   "ocaml-migrate-parsetree"
+   "ppx_tools_versioned"     {>= "5.0beta"}
+ ]
+@@ -34,4 +34,4 @@ depopts: [
+ conflicts: [
+   "utop" {< "1.17"}
+ ]
+-available: [ ocaml-version >= "4.02" & ocaml-version < "4.05" ]
++available: [ ocaml-version >= "4.02" & ocaml-version < "4.06" ]
+diff --git a/opam.in b/opam.in
+index 69fe60f..18ca420 100644
+--- a/opam.in
++++ b/opam.in
+@@ -12,7 +12,7 @@ tags: [ "syntax" ]
+ substs: [ "pkg/META" ]
+ build: [
+   [make "compile_error"]
+-  ["ocamlbuild" "-package" "topkg" "pkg/build.native"]
++  ["ocamlbuild" "-use-ocamlfind" "-package" "topkg" "pkg/build.native"]
+   ["./build.native" "build"
+                     "--native" "%{ocaml-native}%"
+                     "--native-dynlink" "%{ocaml-native-dynlink}%"
+@@ -20,11 +20,11 @@ build: [
+ ]
+ depends: [
+   "ocamlfind"               {build}
+-  "menhir"                  {= "20170418"}
++  "menhir"                  {>= "20170418" & <= "20170712"}
+   "utop"                    {>= "1.17"}
+   "merlin-extend"           {>= "0.3"}
+   "result"                  {=  "1.2"}
+-  "topkg"                   {>=  "0.8.1" & < "0.9"}
++  "topkg"                   {>=  "0.8.1"}
+   "ocaml-migrate-parsetree"
+   "ppx_tools_versioned"     {>= "5.0beta"}
+ ]
+@@ -33,4 +33,4 @@ depopts: [
+ conflicts: [
+   "utop" {< "1.17"}
+ ]
+-available: [ ocaml-version >= "4.02" & ocaml-version < "4.05" ]
++available: [ ocaml-version >= "4.02" & ocaml-version < "4.06" ]

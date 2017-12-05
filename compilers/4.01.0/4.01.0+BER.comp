@@ -6,7 +6,14 @@ patches:[
   "https://github.com/diml/ocaml/compare/bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
 ]
 build: [
-  ["./configure" "-prefix" "%{prefix}%"]
+  ["./configure"
+    "-prefix" "%{prefix}%"
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" "%{prefix}%"
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   ["%{make}%" "world"]
   ["%{make}%" "world.opt"]
   ["%{make}%" "-i" "install"]

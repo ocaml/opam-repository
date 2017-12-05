@@ -1,0 +1,36 @@
+opam-version: "1.2"
+maintainer: "Yoichi Hirai <i@yoichihirai.com>"
+authors: "Yoichi Hirai <i@yoichihirai.com>"
+homepage: "https://github.com/pirapira/bamboo"
+bug-reports: "https://github.com/pirapira/bamboo/issues"
+license: "Apache-2.0"
+dev-repo: "https://github.com/pirapira/bamboo.git"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: [
+  "ocaml" "%{etc}%/bamboo/setup.ml" "-C" "%{etc}%/bamboo" "-uninstall"
+]
+depends: [
+  "batteries" {build}
+  "cryptokit" {build & >= "1.12"}
+  ("hex" {build & = "1.0.0"} | "hex" {build & = "0.2.0"} |
+   "hex" {build & = "0.1.0"})
+  ("menhir" {build & = "20151005"} | "menhir" {build & = "20150921"} |
+   "menhir" {build & = "20150914"} |
+   "menhir" {build & = "20141215"} |
+   "menhir" {build & = "20140422"} |
+   "menhir" {build & = "20130911"} |
+   "menhir" {build & = "20130116"} |
+   "menhir" {build & = "20120123"})
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "rope" {build}
+]

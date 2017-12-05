@@ -2,7 +2,14 @@ opam-version: "1"
 version: "4.04.0"
 src: "https://github.com/metaocaml/ber-metaocaml/archive/ber-n104.tar.gz"
 build: [
-  ["./configure" "-prefix" "%{prefix}%"]
+  ["./configure"
+    "-prefix" "%{prefix}%"
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" "%{prefix}%"
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world"]
   [make "bootstrap"]
   [make "world.opt"]

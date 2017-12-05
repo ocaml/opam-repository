@@ -3,8 +3,15 @@ version: "4.04.0"
 src: "https://github.com/ocaml/ocaml/archive/4.04.0.tar.gz"
 build: [
   [
-    "./configure" "-prefix" prefix "-with-debug-runtime" "-no-native-compiler"
-  ]
+    "./configure"
+    "-prefix" prefix "-with-debug-runtime" "-no-native-compiler"
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  [
+    "./configure"
+    "-prefix" prefix "-with-debug-runtime" "-no-native-compiler"
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world"]
   [make "install"]
 ]
