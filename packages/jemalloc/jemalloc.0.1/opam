@@ -1,0 +1,37 @@
+opam-version: "1.2"
+maintainer: "joris.giovannangeli@ahrefs.com"
+authors: "joris giovannangeli"
+homepage: "https://github.com/ahrefs/ocaml-jemalloc"
+bug-reports: "https://github.com/ahrefs/ocaml-jemalloc/issues"
+license: "MIT"
+tags: "clib:jemalloc"
+dev-repo: "git://github.com/ahrefs/ocaml-jemalloc"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: ["ocamlfind" "remove" "jemalloc_ctl"]
+depends: [
+  ("oasis" {build & >= "0.4.7"} | "oasis-mirage" {build & >= "0.4.7"})
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+]
+depexts: [
+  [ [ "alpine"] [ "jemalloc-dev" ] ]
+  [ ["debian"] ["libjemalloc-dev"] ]
+  [ ["ubuntu"] ["libjemalloc-dev"] ]
+  [ ["fedora"] ["jemalloc-devel"] ]
+  [ ["mageia"] ["jemalloc-devel"] ]
+  [ ["rhel"] ["jemalloc-devel"] ]
+  [ ["centos"] ["jemalloc-devel"] ]
+  [ ["osx"] [ "jemalloc"] ]
+]
+available: [ocaml-version >= "4.04.1"]
