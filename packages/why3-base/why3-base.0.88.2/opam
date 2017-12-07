@@ -1,0 +1,66 @@
+opam-version: "1.2"
+maintainer: "guillaume.melquiond@inria.fr"
+authors: [
+  "François Bobot"
+  "Jean-Christophe Filliâtre"
+  "Claude Marché"
+  "Guillaume Melquiond"
+  "Andrei Paskevich"
+]
+
+homepage: "http://why3.lri.fr/"
+license: "GNU Lesser General Public License version 2.1"
+doc: "http://why3.lri.fr/doc/"
+bug-reports: "https://gitlab.inria.fr/why3/why3/issues"
+dev-repo: "https://gitlab.inria.fr/why3/why3.git"
+
+tags: [
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "interactive theorem prover"
+]
+available: [ ocaml-version >= "4.02.3" ]
+
+# Jessie3 (frama-c plugin) is *disabled* because it is not ready
+build: [
+  ["./configure" "--prefix" prefix "--disable-frama-c"
+                 "--disable-ide" { !conf-gtksourceview:installed }]
+  [make "-j%{jobs}%" "all" "opt" "byte"]
+]
+
+install: [make "install" "install-lib"]
+
+remove: [
+  ["rm" "%{bin}%/why3"]
+  ["rm" "-r" "%{lib}%/why3"]
+  ["rm" "-r" "%{share}%/why3"]
+]
+
+build-doc: [
+  [make "doc" "stdlibdoc" "apidoc"]
+  [make "DOCDIR=%{doc}%/why3" "install-doc"]
+]
+
+depends: [
+  "ocamlfind"
+  "menhir"
+  "num"
+]
+
+depopts: [
+  "lablgtk"
+  "conf-gtksourceview"
+  "zarith"
+  "camlzip"
+  "ocamlgraph"
+  "coq"
+]
+
+conflicts: [
+  "lablgtk" {< "2.14.2"}
+  "ocamlgraph" {< "1.8.2"}
+  "coq" {< "8.4"}
+  "coq" {>= "8.8"}
+]
