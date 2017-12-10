@@ -4,32 +4,56 @@ version: "8.7.0"
 maintainer: "Maxime Dénès <mail@maximedenes.fr>"
 authors: "The Coq development team, INRIA, CNRS, University Paris Sud, University Paris 7, Ecole Polytechnique."
 homepage: "https://coq.inria.fr/"
-bug-reports: "https://coq.inria.fr/bugs/"
+bug-reports: "https://github.com/coq/coq/issues"
 dev-repo: "https://github.com/coq/coq.git"
-license: "LGPL 2.1"
+license: "LGPL-2.1"
 build: [
   [
     "./configure"
-    "-configdir"
-    "%{lib}%/coq/config"
-    "-mandir"
-    man
-    "-prefix"
-    prefix
+    "-configdir" "%{lib}%/coq/config"
+    "-prefix" prefix
+    "-mandir" man
+    "-docdir" doc
+    "-libdir" "%{lib}%/coq"
+    "-datadir" "%{share}%/coq"
     "-usecamlp5"
-    "-camlp5dir"
-    "%{lib}%/camlp5"
-    "-coqide"
-    "no"
-    "-debug"
+    "-camlp5dir" "%{lib}%/camlp5"
+    "-coqide" "no"
   ]
   [make "-j%{jobs}%"]
+  [make "-j%{jobs}%" "byte"]
 ]
-remove: ["rm" "-R" "%{lib}%/coq"]
+install: [
+  [make "install"]
+  [make "install-byte"]
+]
+remove: [
+  ["rm" "-R" "%{lib}%/coq" "%{share}%/coq"]
+  ["rm"
+  "%{man}%/man1/coqc.1"
+  "%{man}%/man1/coqchk.1"
+  "%{man}%/man1/coqdep.1"
+  "%{man}%/man1/coqdoc.1"
+  "%{man}%/man1/coqide.1"
+  "%{man}%/man1/coq_makefile.1"
+  "%{man}%/man1/coqmktop.1"
+  "%{man}%/man1/coq-tex.1"
+  "%{man}%/man1/coqtop.1"
+  "%{man}%/man1/coqtop.byte.1"
+  "%{man}%/man1/coqtop.opt.1"
+  "%{man}%/man1/coqwc.1"
+  "%{man}%/man1/gallina.1"
+  "%{share}%/texmf/tex/latex/misc/coqdoc.sty"
+  "%{share}%/emacs/site-lisp/coq-font-lock.el"
+  "%{share}%/emacs/site-lisp/coq-inferior.el"
+  "%{share}%/emacs/site-lisp/gallina-db.el"
+  "%{share}%/emacs/site-lisp/gallina.el"
+  "%{share}%/emacs/site-lisp/gallina-syntax.el"
+  ]
+]
 depends: [
   "ocamlfind"
   "camlp5"
   "num"
 ]
-available: [ocaml-version >= "4.02.3"]
-install: [make "install"]
+available: [ocaml-version >= "4.02.3" & ocaml-version < "4.06.0"]
