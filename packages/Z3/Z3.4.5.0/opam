@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer: [
+  "Gabriel Radanne <drupyog@zoho.com>"
+  "Simon Cruanes <simon.cruanes.2007@m4x.org"
+]
+authors: "Z3 authors"
+homepage: "http://z3prover.github.io/"
+dev-repo: "https://github.com/Z3Prover/z3.git"
+bug-reports: "https://github.com/Z3Prover/z3/issues"
+license: "MIT"
+
+build: [
+  ["python2.7" "scripts/mk_make.py" "--ml" "--prefix" prefix]
+  [make "-C" "build" "-j" jobs]
+]
+install: [
+  [make "-C" "build" "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "Z3"]
+]
+depends: [
+  "ocamlfind" {build}
+  "num"
+  "conf-python-2-7"
+]
+
+messages: [
+  "Before installing any package depending on Z3, please export the following variable:
+  export LD_LIBRARY_PATH=\"$(ocamlfind printconf destdir)/stublibs:${LD_LIBRARY_PATH}\""
+]
