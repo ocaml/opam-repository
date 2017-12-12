@@ -12,25 +12,30 @@ authors: [
 ]
 homepage: "https://opam.ocaml.org"
 bug-reports: "https://github.com/ocaml/opam/issues"
-dev-repo: "https://github.com/ocaml/opam.git"
+dev-repo: "git+https://github.com/ocaml/opam.git"
 build: [
   ["./configure" "--disable-checks" "--prefix" prefix]
   [make "%{name}%.install"]
 ]
-build-test: [make "tests"]
 depends: [
   "opam-client" {= "2.0.0~beta5"}
   "cmdliner" {>= "0.9.8"}
   "jbuilder" {build & >= "1.0+beta12"}
 ]
-available: [ocaml-version >= "4.02.3"]
 post-messages: [
-  "
-The development version of opam has been successfuly compiled into %{lib}%/%{name}%. You should not run it from there, please install the binaries to your PATH, e.g. with
-    sudo cp %{lib}%/%{name}%/opam /usr/local/bin
+"The development version of opam has been successfuly compiled into %{lib}%/%{name}%. You should not run it from there, please install the binaries to your PATH, e.g. with
+    sudo cp %{lib}%/%{name}%/* /usr/local/bin
 
 If you just want to give it a try without altering your current installation, you could use instead:
-    alias opam2=\"OPAMROOT=~/.opam2 %{lib}%/%{name}%/opam\"
-  "
-    {success}
+    alias opam2=\"OPAMROOT=~/.opam2 %{lib}%/%{name}%/opam\""
+  {success}
 ]
+available: ocaml-version >= "4.02.3"
+run-test: [make "tests"]
+url {
+  src: "https://github.com/ocaml/opam/archive/2.0.0-beta5.tar.gz"
+  checksum: [
+    "md5=9347fabff36c99bc631b30b1007e20db"
+    "sha512=39db31528b62e7de12c2c8097d4ab14dd36ca540cc32a4d8d70589922b1b9311abd459e8e2ae1e010c84e881040cba9ecba86782b43def7f3fa666c0a9a3d7e8"
+  ]
+}
