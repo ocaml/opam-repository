@@ -1,0 +1,55 @@
+(**************************************************************)
+(*                                                            *)
+(*      This file is managed by ocp-autoconf                  *)
+(*  Remove it from `manage_files` in 'ocp-autoconf.config'    *)
+(*  if you want to modify it manually (or use 'opam.trailer') *)
+(*                                                            *)
+(**************************************************************)
+
+opam-version: "1.2"
+maintainer: "Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"
+authors: [
+  "Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"
+]
+homepage: "http://www.typerex.org/ocp-build.html"
+dev-repo: "https://github.com/OCamlPro/ocp-build.git"
+bug-reports: "https://github.com/OCamlPro/ocp-build/issues"
+build: [
+  [     "./configure"
+    "--prefix"
+    "%{prefix}%"
+  ]
+  [ make ]
+]
+install: [
+  [ make "install" ]
+]
+remove: [
+  [ "rm" "-f" "%{prefix}%/bin/ocp-build"   ]
+  [ "rm" "-f" "%{prefix}%/bin/ocp-pp"   ]
+  [ "rm" "-rf" "%{prefix}%/lib/ocaml/typerex/ocp-build"   ]
+  [ "rm" "-rf" "%{prefix}%/lib/ocaml/typerex/ocplib-compat"   ]
+  [ "rm" "-rf" "%{prefix}%/lib/ocaml/typerex/ocplib-debug"   ]
+  [ "rm" "-rf" "%{prefix}%/lib/ocaml/typerex/ocplib-lang"   ]
+  [ "rm" "-rf" "%{prefix}%/lib/ocaml/typerex/ocplib-subcmd"   ]
+  [ "rm" "-rf" "%{prefix}%/lib/ocaml/typerex/ocplib-system"   ]
+  [ "rm" "-rf" "%{prefix}%/lib/ocaml/typerex/ocplib-unix"   ]
+  [ "rm" "-rf" "%{prefix}%/lib/ocaml/typerex/installed.ocp"   ]
+  [ "rm" "-rf" "%{prefix}%/lib/ocaml/site-ocp2/ocp-build"   ]
+  [ "sh" "-exc" "rmdir %{prefix}%/lib/ocaml/typerex || true"   ]
+]
+available: [ocaml-version >= "4.02.1"]
+
+(**************************************************************)
+(*                                                            *)
+(* From opam.trailer:                                         *)
+(*                                                            *)
+(**************************************************************)
+
+conflicts: [ "typerex"  {< "1.99.7"} "typerex-build" ]
+depends: [
+    "ocamlfind" (* not strictly needed by ocp-build, but
+                  since opam installs packages in a non-standard
+                  repository, we need it... *)
+    "cmdliner" { >= "1.0" }
+]
