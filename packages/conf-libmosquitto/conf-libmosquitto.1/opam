@@ -3,11 +3,15 @@ maintainer: "Markus W. Weissmann <markus.weissmann@in.tum.de>"
 authors: [ "Markus W. Weissmann <markus.weissmann@in.tum.de>" ]
 homepage: "https://mosquitto.org/"
 license: [ "Eclipse Public License v1.0" "Eclipse Distribution License 1.0" ]
-build: [["ls" "/usr/include/mosquitto.h"]]
+build: [
+  ["ls" "/usr/include/mosquitto.h" {os != "darwin"}]
+  ["brew" "ls" "--versions" "mosquitto" {os = "darwin"}]
+]
 depexts: [
   ["libmosquitto-dev"] {os-distribution = "debian"}
   ["libmosquitto-dev"] {os-distribution = "ubuntu"}
   ["mosquitto-dev"] {os-distribution = "alpine"}
+  ["mosquitto"] {os = "macos" & os-distribution = "homebrew"}
 ]
 synopsis: "Virtual package relying on a libmosquitto system installation."
 description:

@@ -12,11 +12,22 @@ flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
   ["./configure" "-prefix" prefix "-afl-instrument"]
+    {os != "openbsd" & os != "freebsd" & os != "darwin"}
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-afl-instrument"
+    "-cc"
+    "cc"
+    "-aspp"
+    "cc -c"
+  ] {os = "openbsd" | os = "freebsd" | os = "darwin"}
   [make "world"]
   [make "world.opt"]
 ]
 install: [make "install"]
 url {
   src: "https://github.com/ocaml/ocaml/archive/trunk.tar.gz"
-  checksum: "md5=efc8c15a3ed9795fade551c68babb08b"
+  checksum: "md5=8661575839a2b9e805687b840b31a71a"
 }

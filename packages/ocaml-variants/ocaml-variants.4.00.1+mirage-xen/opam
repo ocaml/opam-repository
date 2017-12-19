@@ -15,6 +15,9 @@ setenv: [
 ]
 build: [
   ["./configure" "-prefix" prefix]
+    {os != "openbsd" & os != "freebsd" & os != "darwin"}
+  ["./configure" "-prefix" prefix "-cc" "cc" "-aspp" "cc -c"]
+    {os = "openbsd" | os = "freebsd" | os = "darwin"}
   [make "world"]
   [make "world.opt"]
   [make "install"]

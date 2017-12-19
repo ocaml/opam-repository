@@ -13,11 +13,22 @@ flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
   ["./configure" "-prefix" prefix "-with-debug-runtime"]
+    {os != "openbsd" & os != "freebsd" & os != "darwin"}
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-cc"
+    "cc"
+    "-aspp"
+    "cc -c"
+  ] {os = "openbsd" | os = "freebsd" | os = "darwin"}
   [make "world"]
   [make "world.opt"]
 ]
 install: [make "install"]
 url {
-  src: "https://github.com/jhjourdan/ocaml/archive/memprof.tar.gz"
-  checksum: "md5=4454a938e4821e4f22bf7784bb6179df"
+  src: "https://github.com/jhjourdan/ocaml/archive/memprof_4.03.tar.gz"
+  checksum: "md5=c7efec04685e83c28fc0ed3ec185eca1"
 }

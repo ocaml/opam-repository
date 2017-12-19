@@ -11,7 +11,11 @@ build: [
   [make]
 ]
 install: [[make "install"]]
-remove:  [[make "uninstall"]]
+remove:  [
+  ["mkdir" "-p" "%{zenon:lib}%" ] # Needed otherwise configure fails
+  ["./configure" "--prefix" "%{prefix}%" "--tools_prefix" "%{zenon:lib}%"]
+  [make "uninstall"]
+]
 synopsis: "An Extensible Automated Theorem Prover Producing Checkable Proofs"
 description: """
 Automated theorem prover for first order classical logic (with

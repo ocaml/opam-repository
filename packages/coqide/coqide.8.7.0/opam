@@ -4,30 +4,27 @@ version: "8.7.0"
 maintainer: "Maxime Dénès <mail@maximedenes.fr>"
 authors: "The Coq development team, INRIA, CNRS, University Paris Sud, University Paris 7, Ecole Polytechnique."
 homepage: "https://coq.inria.fr/"
-bug-reports: "https://coq.inria.fr/bugs/"
+bug-reports: "https://github.com/coq/coq/issues"
 dev-repo: "git+https://github.com/coq/coq.git"
 license: "LGPL-2.1"
 build: [
   [
     "./configure"
-    "-configdir"
-    "%{lib}%/coq/config"
-    "-mandir"
-    man
-    "-docdir"
-    doc
-    "-prefix"
-    prefix
+    "-configdir" "%{lib}%/coq/config"
+    "-prefix" prefix
+    "-mandir" man
+    "-docdir" doc
+    "-libdir" "%{lib}%/coq"
+    "-datadir" "%{share}%/coq"
     "-usecamlp5"
-    "-camlp5dir"
-    "%{lib}%/camlp5"
+    "-camlp5dir" "%{lib}%/camlp5"
   ]
   [make "-j%{jobs}%" "coqide-files"]
   [make "-j%{jobs}%" "coqide-opt"]
 ]
 remove: ["rm" "-R" "%{lib}%/coq/ide" "%{doc}%/FAQ-CoqIde"]
 depends: [
-  "ocaml" {>= "4.02.3"}
+  "ocaml" {>= "4.02.3" & < "4.06.0"}
   "camlp5"
   "coq" {= "8.7.0"}
   "lablgtk"

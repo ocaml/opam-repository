@@ -15,6 +15,9 @@ flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
   ["./configure" "-prefix" "%{prefix}%"]
+    {os != "openbsd" & os != "freebsd" & os != "darwin"}
+  ["./configure" "-prefix" "%{prefix}%" "-cc" "cc" "-aspp" "cc -c"]
+    {os = "openbsd" | os = "freebsd" | os = "darwin"}
   ["%{make}%" "world" "opt" "opt.opt"]
   ["%{make}%" "install"]
 ]

@@ -12,11 +12,22 @@ flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
   ["./configure" "-prefix" prefix "-afl-instrument"]
+    {os != "openbsd" & os != "freebsd" & os != "darwin"}
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-afl-instrument"
+    "-cc"
+    "cc"
+    "-aspp"
+    "cc -c"
+  ] {os = "openbsd" | os = "freebsd" | os = "darwin"}
   [make "world"]
   [make "world.opt"]
 ]
 install: [make "install"]
 url {
   src: "https://github.com/ocaml/ocaml/archive/4.05.tar.gz"
-  checksum: "md5=8d617469055774eab343991175f55333"
+  checksum: "md5=7a0db0fe438ba1a180887daa96f0aa31"
 }
