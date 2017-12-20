@@ -1,28 +1,37 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
 authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>" ]
 license: "LGPL-3.0 with OCaml linking exception"
 homepage: "https://github.com/Chris00/ocaml-docker"
-dev-repo: "https://github.com/Chris00/ocaml-docker.git"
+dev-repo: "git+https://github.com/Chris00/ocaml-docker.git"
 bug-reports: "https://github.com/Chris00/ocaml-docker/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "docker"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml"
   "base-bytes"
   "base-unix"
   "ocamlbuild" {build}
   "ocamlfind" {build & >= "1.5"}
   "yojson"
 ]
+synopsis: "Binding to the Docker Remote API"
+description: """
+Control Docker <https://www.docker.com/> containers using the remote
+API."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/Chris00/ocaml-docker/releases/download/0.1/docker-api-0.1.tar.gz"
+  checksum: "md5=6745c33bddc7437d8bd725b91e783b93"
+}

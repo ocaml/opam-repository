@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "alessandro.strada@gmail.com"
 authors: [ "Alessandro Strada" ]
 license: "MIT"
@@ -6,12 +6,13 @@ homepage: "http://gapi-ocaml.forge.ocamlcore.org"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 remove: [
   ["ocamlfind" "remove" "gapi-ocaml"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "3.12.0"}
   "cryptokit"
   ("extlib" | "extlib-compat")
   "ocamlfind"
@@ -25,5 +26,20 @@ depopts: [
   "ounit"
   "pa_monad_custom"
 ]
-available: ocaml-version >= "3.12.0"
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "A simple OCaml client for Google Services."
+description: """
+gapi-ocaml is a simple, unofficial, OCaml client for Google Services.
+The library supports ClientLogin, OAuth 1.0a, and OAuth 2.0
+authentication. Supported RESTful APIs: Calendar APIs v3, Google+ API
+v1, Tasks API v1, APIs Discovery Service v1, URL Shortener API v1,
+OAuth2 API v2, Custom Search API v1, Google Analytics API v3, Page
+Speed Online API v1, Blogger API v2, Site Verification API v1, AdSense
+Management API v1.1, BigQuery API v2, Drive API v2, Gmail API v1.
+Google Data Protocol APIs (GData): Google Documents List API v3."""
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1460/gapi-ocaml-0.2.5.tar.gz"
+  checksum: "md5=656396569f5bb469f9ea8ebd09d49dbb"
+}

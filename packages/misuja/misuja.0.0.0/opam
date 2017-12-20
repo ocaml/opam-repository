@@ -1,28 +1,37 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Seb Mondet <seb@mondet.org>"
 authors: "Seb Mondet <seb@mondet.org>"
 homepage: "https://gitlab.com/smondet/misuja"
 bug-reports: "https://gitlab.com/smondet/misuja/issues"
 license: "MIT"
-dev-repo: "https://gitlab.com/smondet/misuja.git"
+dev-repo: "git+https://gitlab.com/smondet/misuja.git"
 build: [make "lib"]
 install: [make "install"]
 remove: [make "uninstall"]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "ocamlfind" {build}
   "base-unix"
 ]
 depexts: [
-  [["ubuntu"] ["libjack-jackd2-dev"]]
-  [["debian"] ["libjack-jackd2-dev"]]
-  [["alpine"] ["jack-dev"]]
-  [["fedora"] ["jack-audio-connection-kit-devel"]]
-  # Those RPMs depend on the EPEL package repository:
-  [["centos"] ["epel-release" "jack-audio-connection-kit-devel"]]
-  [["rhel"] ["jack-audio-connection-kit-devel"]]
-  # This one seems to require: "openSUSE Multimedia Libs"
-  [["opensuse"] ["libjack-devel"]]
-  # Cf. https://github.com/ocaml/opam-repository/pull/10167 for OSX:
-  [["homebrew" "osx"] ["jack"]]
+  ["libjack-jackd2-dev"] {os-distribution = "ubuntu"}
+  ["libjack-jackd2-dev"] {os-distribution = "debian"}
+  ["jack-dev"] {os-distribution = "alpine"}
+  ["jack-audio-connection-kit-devel"] {os-distribution = "fedora"}
+  ["epel-release" "jack-audio-connection-kit-devel"]
+    {os-distribution = "centos"}
+  ["jack-audio-connection-kit-devel"] {os-distribution = "rhel"}
+  ["libjack-devel"] {os-distribution = "opensuse"}
+  ["jack"] {os-distribution = "homebrew" & os = "macos"}
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis:
+  "A library to drive the MIDI system of the Jack Audio Connection Kit."
+description: """
+Misuja is a low-latency “MIDI communications thread” implemented in C
+which is manipulated with an OCaml API (communicating through
+ring-buffers provided by the Jack API)."""
+url {
+  src:
+    "https://gitlab.com/smondet/misuja/repository/misuja.0.0.0/archive.tar.gz"
+  checksum: "md5=a30de68e28d4edd1073b1bb6110e613b"
+}

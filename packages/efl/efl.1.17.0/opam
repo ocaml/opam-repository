@@ -1,10 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Alexis Bernadet <alexis.bernadet at noos.fr>"
 authors: "Alexis Bernadet <alexis.bernadet at noos.fr>"
-available: [ ocaml-version >= "3.12"]
 homepage: "https://forge.ocamlcore.org/projects/ocaml-efl/"
 license: "LGPL with linking exception"
-dev-repo: "https://github.com/axiles/ocaml-efl.git"
+dev-repo: "git+https://github.com/axiles/ocaml-efl.git"
 build: [
   ["./configure" "--prefix=%{prefix}%" "OCAMLFIND_DESTDIR=%{lib}%"]
   [make]
@@ -12,10 +11,28 @@ build: [
 install: [make "install"]
 remove: ["ocamlfind" "remove" "efl"]
 depends: [
+  "ocaml" {>= "3.12"}
   "ocamlfind"
   "ocamlbuild" {build}
 ]
-depexts: [
-  [["osx" "homebrew"] ["elementary"]]
-  [["source" "linux"] ["https://gist.githubusercontent.com/axiles/6e0f43192045c5f9b460/raw/f7c0668e063e12ded850f9b67fc4432b31ca1a7b/install_efl_1_17_on_ubuntu"]]
-]
+depexts: ["elementary"] {os = "macos" & os-distribution = "homebrew"}
+synopsis:
+  "An OCaml interface to the Enlightenment Foundation Libraries (EFL) and Elementary."
+description: """
+The Enlightenment Fondation Libraires provide both a semi-traditional toolkit
+set in Elementary as well as the object canvas (Evas) and powerful abstracted
+objects (Edje) that you can combine, mix and match, even layer on top of each
+other with alpha channels and events in-tact. It has 3D transformations for all
+objects and more.
+https://www.enlightenment.org/
+Currently, only the interfacing of Elementary is more or less complete.
+This project is still in alpha stage.
+Ocamlforge page and github page:
+https://forge.ocamlcore.org/projects/ocaml-efl/
+https://github.com/axiles/ocaml-efl"""
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1598/ocaml-efl-1.17.0.tar.gz"
+  checksum: "md5=c9a34031f788470efb5f437c12af8b6b"
+}

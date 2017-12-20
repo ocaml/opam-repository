@@ -1,13 +1,10 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "anil@recoil.org"
 authors: [ "Anil Madhavapeddy" ]
 homepage: "https://github.com/avsm/opam-sync-github-prs"
 bug-reports: "https://github.com/avsm/opam-sync-github-prs/issues"
-dev-repo: "https://github.com/avsm/opam-sync-github-prs.git"
-tags: [
-  "org:ocamllabs"
-  "flags:plugin"
-]
+dev-repo: "git+https://github.com/avsm/opam-sync-github-prs.git"
+tags: "org:ocamllabs"
 build: [
   [make]
 ]
@@ -16,10 +13,45 @@ install: [
 ]
 remove: [["rm" "-f" "%{bin}%/opam-sync-github-prs"]]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "core" {build & >= "109.53.01"}
   "github" {build & >= "1.0.0" & < "3.0.0"}
   "lwt" {build & >= "2.4.2"}
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.01.0" ]
+synopsis: "Sync OCaml GitHub issues with OPAM"
+description: """
+This command-line tool generates an OPAM repository that contains a set of
+compiler switches that apply patches from GitHub pull requests to OCaml.
+
+For example, here is a shortened list of outputs:
+
+```
+$ opam switch --all
+system  C system                      System compiler (4.01.0)
+--     -- 3.11.2                      Official 3.11.2 release
+--     -- 3.12.1                      Official 3.12.1 release
+--     -- 4.00.0                      Official 4.00.0 release
+--     -- 4.00.1                      Official 4.00.1 release
+--     -- 4.01.0                      Official 4.01.0 release
+--     -- 4.02.0dev+pr2               Parse -.x**2. (unary -.) as -.(x**2.).  Fix PR#3414
+--     -- 4.02.0dev+pr3               Extend record punning to allow destructuring.
+--     -- 4.02.0dev+pr4               Fix for PR#4832 (Filling bigarrays may block out runtime)
+--     -- 4.02.0dev+pr6               Warn user when a type variable in a type constraint has been instantiated.
+--     -- 4.02.0dev+pr7               Extend ocamllex with actions before refilling
+--     -- 4.02.0dev+pr8               Adds a .gitignore to ignore all generated files during `make world.opt'
+```
+
+You can experiment with the lexing PR by running:
+
+```
+open switch 4.02.0dev+pr7
+eval `opam config env`
+ocamllex ...
+```"""
+flags: [light-uninstall plugin]
+url {
+  src: "https://github.com/avsm/opam-sync-github-prs/archive/v1.1.0.tar.gz"
+  checksum: "md5=fa6d18a09ff3a5dabdf9173ca91fc29b"
+}

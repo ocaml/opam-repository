@@ -1,28 +1,40 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "essdotteedot <essdotteedot@gmail.com>"
 authors: "essdotteedot <essdotteedot@gmail.com>"
 homepage: "https://github.com/essdotteedot/distributed"
 bug-reports: "https://github.com/essdotteedot/distributed/issues"
 license: "MIT"
-dev-repo: "https://github.com/essdotteedot/distributed.git"
+dev-repo: "git+https://github.com/essdotteedot/distributed.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{lwt:enable}%-lwt"]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--%{lwt:enable}%-lwt"]
+    {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--%{lwt:enable}%-lwt"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "distributed"]
 depends: [
+  "ocaml" {>= "4.02.3"}
   "base-threads"
   "base-unix"
   "batteries"
   "lwt"
   "ocamlfind" {build}
-  "ounit" {test & >= "2.0"}
+  "ounit" {with-test & >= "2.0"}
 ]
-available: [os = "linux" & ocaml-version >= "4.02.3"]
+available: os = "linux"
+synopsis:
+  "Library to provide Erlang style distributed computations. This library is inspired by Cloud Haskell."
+description: """
+Primitive for spawning processes (in the Erlang sense) either remotely or locally, monitoring/unmonitoring spawned processes, sending, 
+receiving, broadcasting messages to those processes. Unlike Erlang, the messages that are sent between processes are typed.
+
+For more information see the Distributed.Process.S signature and the example in the examples directory."""
+flags: light-uninstall
+url {
+  src: "https://github.com/essdotteedot/distributed/archive/v0.2.0.tar.gz"
+  checksum: "md5=65a13e43d57117daa61f1496c2ab2d84"
+}

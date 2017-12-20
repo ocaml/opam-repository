@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "TCSLib"
 version: "0.2"
 maintainer: "opam-devel@lists.ocaml.org"
@@ -11,20 +11,25 @@ bug-reports: "https://github.com/tcsprojects/tcslib/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "TCSLib"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml" {>= "4.03.0"}
   ("extlib" | "extlib-compat")
   "ocamlbuild" {build}
   "ocamlfind" {build}
   "num"
 ]
-available: [ ocaml-version >= "4.03.0" ]
+synopsis: "A multi-purpose library for OCaml."
+description: "A multi-purpose library for OCaml."
+flags: light-uninstall
+url {
+  src: "https://github.com/tcsprojects/tcslib/archive/v0.2.tar.gz"
+  checksum: "md5=71333662af6be2559532729ed7a88864"
+}

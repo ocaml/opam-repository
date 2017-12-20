@@ -1,16 +1,17 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "anil@recoil.org"
 authors: [ "Anil Madhavapeddy" ]
 license: "ISC"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 remove: [
   ["ocamlfind" "remove" "ezxmlm"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind"
   "xmlm" {>= "1.1.0"}
   "ocamlbuild" {build}
@@ -20,5 +21,40 @@ tags: [
   "org:ocamllabs"
 ]
 dev-repo: "git://github.com/avsm/ezxmlm"
-available: ocaml-version >= "4.01.0"
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "Combinators to use with XMLM for parsing and selection"
+description: """
+An "easy" interface on top of the Xmlm [1] library.  This version provides more
+convenient (but far less flexible) input and output functions that go to and
+from [string] values.  This avoids the need to write signal code, which is
+useful for quick scripts that manipulate XML.
+   
+More advanced users should go straight to the Xmlm library and use it directly,
+rather than be saddled with the Ezxmlm interface.  Since the types in this
+library are more specific than Xmlm, it should interoperate just fine with it
+if you decide to switch over.
+
+# Example
+
+In the toplevel, here's an example of how some XHTML can be selected out
+quickly using the Ezxmlm combinators.  Note that this particular HTML has
+been post-processed into valid XML using `xmllint --html --xmlout`.
+
+```
+# #require "ezxmlm" ;;
+# open Ezxmlm ;;
+# let (_,xml) = from_channel (open_in "html/variants.html") ;;
+# member "html" x |> member "head" |> member_with_attr "meta" ;;
+- : Xmlm.attribute list * nodes = ([(("", "name"), "generator"); (("", "content"), "DocBook XSL Stylesheets V1.78.1")], [])
+# member "html" x |> member "head" |> member "title" |> data_to_string;;
+- : string = "Chapter 6. Variants"                                                                                                                                                                                                                                                                                          
+```
+
+Ez peezy lemon squeezy!
+
+[1] https://github.com/dbuenzli/xmlm"""
+flags: light-uninstall
+url {
+  src: "https://github.com/avsm/ezxmlm/archive/v1.0.1.tar.gz"
+  checksum: "md5=62beb40ede8d29a21adfff7c3bbe5de1"
+}

@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sheets@alum.mit.edu"
 tags: ["org:mirage"]
 build: [
@@ -7,6 +7,7 @@ build: [
 ]
 remove: [["ocamlfind" "remove" "sodium"]]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "base-bigarray"
   "base-bytes"
   "ocamlfind"
@@ -14,11 +15,22 @@ depends: [
   "ocamlbuild" {build}
 ]
 depexts: [
-  [ ["debian"] ["libsodium-dev"] ]
-  [ ["source" "linux"] ["https://gist.github.com/avsm/9037146/raw"] ]
-  [ ["freebsd"] ["security/libsodium"] ]
-  [ ["osx" "homebrew"] ["libsodium"] ]
+  ["libsodium-dev"] {os-distribution = "debian"}
+  ["security/libsodium"] {os = "freebsd"}
+  ["libsodium"] {os = "macos" & os-distribution = "homebrew"}
 ]
-available: [ocaml-version >= "4.01.0"]
 dev-repo: "git://github.com/dsheets/ocaml-sodium"
 install: [make "PREFIX=%{prefix}%" "install"]
+synopsis: "Binding to libsodium UNAUDITED"
+description: """
+Binding to libsodium 0.6.1+, a shared library wrapper for djb's NaCl.
+
+Binding uses ctypes' stub generation system. GNU/Linux, FreeBSD, and OS
+X are supported.
+
+UNAUDITED"""
+flags: light-uninstall
+url {
+  src: "https://github.com/dsheets/ocaml-sodium/archive/0.3.0.tar.gz"
+  checksum: "md5=7dafca32822d88e229648cec369bcc7e"
+}

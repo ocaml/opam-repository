@@ -1,8 +1,8 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "gles3"
 version: "20160307.alpha"
 maintainer: "Christophe Raffalli <raffalli@univ-savoie.fr>"
-available:  [ ocaml-version >= "4.02.0" & os != "darwin" ]
+available: os != "darwin"
 authors:
   "Christophe Raffalli <raffalli@univ-savoie.fr>, Alexandre Miquel<amiquel@fing.edu.uy>"
 homepage: "http://lama.univ-savoie.fr/~raffalli/gles3"
@@ -13,16 +13,48 @@ build: [make]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "gles3"]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
 ]
 depexts: [
-  [[ "debian" ] [ "libgles2-mesa-dev" ]]
-  [[ "ubuntu" ] [ "libgles2-mesa-dev" ]]
-  [[ "mageia" ] [ "libmesaglesv2_2-devel" ]]
-  [[ "centos" ] [ "mesa-libGLES" "mesa-libGLES-devel" ]]
-  [[ "fedora" ] [ "mesa-libGLES-devel" ]]
+  ["libgles2-mesa-dev"] {os-distribution = "debian"}
+  ["libgles2-mesa-dev"] {os-distribution = "ubuntu"}
+  ["libmesaglesv2_2-devel"] {os-distribution = "mageia"}
+  ["mesa-libGLES" "mesa-libGLES-devel"] {os-distribution = "centos"}
+  ["mesa-libGLES-devel"] {os-distribution = "fedora"}
 ]
 post-messages: [
   "gles3 requires libgles2-mesa (>= 10.1) which is only available on ubuntu trusty (12.10) or more recent"     {failure & (os = "ubuntu")}
   "gles3 requires gles, egl and X11" { failure & (os != "ubuntu") }
 ]
+synopsis: "OCaml GLES 3.0 bindings"
+description: """
+This project aims at providing a portable way to do OpenGL (precisely
+GLES) application using OCaml. It comes in three parts:
+     * Low level bindings which allow to call directly GLES functions.
+       This binding tries to be reasonably type-safe using polymorphic
+       variants to encode Glenum type. The low level bindings also provide
+       some sanity checks for the size of bigarrays which allow to capture
+       quite a lot of errors with clear messages.
+     * High level bindings: to provide some auxiliary functions like
+       matrix inversion and ease the development. For instance, to use
+       shaders, with the high level bindings, you use compile_shader with
+       the sources code, get a value of type unit program. Then, you can
+       set the variables of the shaders (uniform or attributes), either as
+       constant or function and get a function to finally run the shaders.
+     * A way to open a window, start the main loop and interact. Currently
+       only EGL under X11 is supported but it would be nice to have
+       support for other platforms (windows, OSX, android, ios, wayland,
+       ...) with exactly the same interface.
+
+Authors
+
+     * [3]Alexandre Miquel (initial low level bindings for GLES 2)
+     * [4]Christophe Raffalli (partial port to GLES 3.0, high-level
+       bindings and examples)"""
+flags: light-uninstall
+url {
+  src:
+    "https://lama.univ-savoie.fr/~raffalli/gles3/gles3-20160307.alpha.tar.gz"
+  checksum: "md5=86b0d72e42fd3e7eed18f3ced34de66a"
+}

@@ -1,10 +1,10 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "The Savonet Team <savonet-users@lists.sourceforge.net>"
 authors: "The Savonet Team <savonet-users@lists.sourceforge.net>"
 homepage: "https://github.com/savonet/ocaml-shine"
 bug-reports: "https://github.com/savonet/ocaml-shine/issues"
 license: "GPL-2.0"
-dev-repo: "https://github.com/savonet/ocaml-shine.git"
+dev-repo: "git+https://github.com/savonet/ocaml-shine.git"
 build: [
   ["./configure" "--prefix=%{prefix}%"] { os != "darwin" }
   ["./configure" "OCAMLFLAGS=-cclib -L/usr/local/lib" "--prefix=%{prefix}%"] { os = "darwin" }
@@ -13,14 +13,25 @@ build: [
 install: [make "install"]
 remove: ["ocamlfind" "remove" "shine"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
 ]
 depexts: [
-  [["alpine"] ["shine"]]
-  [["centos"] ["libshine-devel"]]
-  [["fedora"] ["libshine-devel"]]
-  [["opensuse"] ["libshine-devel"]]
-  [["debian"] ["libshine-dev"]]
-  [["ubuntu"] ["libshine-dev"]]
-  [["osx" "homebrew"] ["drfill/liquidsoap/libshine"]]
+  ["shine"] {os-distribution = "alpine"}
+  ["libshine-devel"] {os-distribution = "centos"}
+  ["libshine-devel"] {os-distribution = "fedora"}
+  ["libshine-devel"] {os-distribution = "opensuse"}
+  ["libshine-dev"] {os-distribution = "debian"}
+  ["libshine-dev"] {os-distribution = "ubuntu"}
+  ["drfill/liquidsoap/libshine"]
+    {os = "macos" & os-distribution = "homebrew"}
 ]
+synopsis: "Fixed-point MP3 encoder."
+description:
+  "shine is a super fast mp3 encoding library implemented in fixed-point arithmetic."
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/savonet/ocaml-shine/releases/download/0.2.1/ocaml-shine-0.2.1.tar.gz"
+  checksum: "md5=0f8921966ac445295425cc52af3a84a6"
+}

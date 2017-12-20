@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "qfs"
 version: "0.5"
 maintainer: "Ahrefs Pte Ltd <github@ahrefs.com>"
@@ -11,18 +11,17 @@ tags: [ "clib:stdc" "clib:qfs"  ]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "qfs"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "base-bytes"
   "base-unix"
   ("extlib" | "extlib-compat")
@@ -30,9 +29,14 @@ depends: [
   "ocamlfind" {build & >= "1.5"}
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.02.0" ]
 depexts: [
-  [["debian"] ["libboost-dev"]]
-  [["ubuntu"] ["libboost-dev"]]
-  [["source" "linux"] ["https://gist.githubusercontent.com/ygrek/7bb217d6ab7b25a765b7/raw"]]
+  ["libboost-dev"] {os-distribution = "debian"}
+  ["libboost-dev"] {os-distribution = "ubuntu"}
 ]
+synopsis: "bindings to libqfs - client library to access QFS"
+description: "QFS is a distributed fault-tolerant filesystem by Quantcast"
+flags: light-uninstall
+url {
+  src: "https://github.com/ahrefs/ocaml-qfs/archive/0.5.tar.gz"
+  checksum: "md5=0d932738cb8cabac807b50a0b9a6b144"
+}

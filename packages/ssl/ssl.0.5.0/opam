@@ -1,8 +1,7 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christopher Zimmermann <christopher@gmerlin.de>"
-author: "Samuel Mimram <samuel.mimram@ens-lyon.org>"
 homepage: "https://github.com/savonet/ocaml-ssl"
-dev-repo: "https://github.com/savonet/ocaml-ssl.git"
+dev-repo: "git+https://github.com/savonet/ocaml-ssl.git"
 bug-reports: "https://github.com/savonet/ocaml-ssl/issues"
 
 build: [
@@ -12,12 +11,26 @@ build: [
 ]
 patches: ["fix-meta.diff"]
 remove: [["ocamlfind" "remove" "ssl"]]
-depends: ["ocamlfind"]
+depends: [
+  "ocaml" {< "4.04.0"}
+  "ocamlfind"
+]
 depexts: [
-  [["debian"] ["libssl-dev"]]
-  [["ubuntu"] ["libssl-dev"]]
-  [["centos"] ["openssl-devel"]]
-  [["fedora"] ["openssl-devel"]]
+  ["libssl-dev"] {os-distribution = "debian"}
+  ["libssl-dev"] {os-distribution = "ubuntu"}
+  ["openssl-devel"] {os-distribution = "centos"}
+  ["openssl-devel"] {os-distribution = "fedora"}
 ]
 install: [make "install"]
-available: [ocaml-version < "4.04.0"]
+synopsis: "Bindings for OpenSSL"
+authors: "Samuel Mimram <samuel.mimram@ens-lyon.org>"
+flags: light-uninstall
+extra-files: [
+  ["pkgconfigure" "md5=74b0a92d673e3adb377da123a712f221"]
+  ["fix-meta.diff" "md5=9ba3f27fad7229dba0966109800ea6ed"]
+  ["configure" "md5=ccce622eed248ba684a6af1d1bd7a6f6"]
+]
+url {
+  src: "https://github.com/savonet/ocaml-ssl/archive/0.5.0.tar.gz"
+  checksum: "md5=cb9f2aa427c78cb2ecd83922628de9a9"
+}

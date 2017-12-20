@@ -1,19 +1,22 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sheets@alum.mit.edu"
 authors: "David Sheets"
 homepage: "https://github.com/dsheets/ocaml-unix-time"
 bug-reports: "https://github.com/dsheets/ocaml-unix-time/issues"
 license: "ISC"
 tags: ["unix" "posix" "time.h" "tm" "timespec"]
-dev-repo: "https://github.com/dsheets/ocaml-unix-time.git"
-build: [make "build"]
+dev-repo: "git+https://github.com/dsheets/ocaml-unix-time.git"
+build: [
+  [make "build"]
+  [make "test"] {with-test}
+]
 install: [make "install"]
-build-test: [make "test"]
 remove: [make "uninstall"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "unix-errno" {>= "0.4.0"}
   "ctypes"
 ]
@@ -21,3 +24,16 @@ depopts: "base-unix"
 conflicts: [
   "ctypes" {< "0.4.0"}
 ]
+synopsis: "Unix time.h types, maps, and support"
+description: """
+unix-time provides access to the features exposed in time.h in a way
+that is not tied to the implementation on the host system.
+
+The Time module provides types which are analogous to those defined in
+time.h such as timespec.
+
+The Time_unix module provides a ctypes view for timespec."""
+url {
+  src: "https://github.com/dsheets/ocaml-unix-time/archive/0.1.0.tar.gz"
+  checksum: "md5=e53ba3b7ffee0605dc7975b7269f9efe"
+}

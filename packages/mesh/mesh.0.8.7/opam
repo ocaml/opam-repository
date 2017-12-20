@@ -1,28 +1,38 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
 authors: [ "Christophe Troestler" ]
 license: "LGPL-2.0 with OCaml linking exception"
 homepage: "https://github.com/Chris00/mesh"
-dev-repo: "https://github.com/Chris00/mesh.git"
+dev-repo: "git+https://github.com/Chris00/mesh.git"
 bug-reports: "https://github.com/Chris00/mesh/issues"
 tags: [ "clib:triangle"  ]
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
-    "--%{lacaml:enable}%-lacaml"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{lacaml:enable}%-lacaml"
+  ]
   ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{lacaml:enable}%-lacaml"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "mesh"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"
-    "--%{lacaml:enable}%-lacaml"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml"
   "base-bigarray"
   "base-bytes"
   "ocamlbuild" {build}
@@ -31,3 +41,15 @@ depends: [
 depopts: [
   "lacaml"
 ]
+synopsis: "Triangular mesh generation and manipulation."
+description: """
+This is an interface to various mesh generators, in particular
+triangle. It also provides functions to optimize the numbering of mesh
+points and to export meshes and piecewise linear functions defined on
+them to TikZ, Scilab, Matlab, and Mathematica formats."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/Chris00/mesh/releases/download/0.8.7/mesh-0.8.7.tar.gz"
+  checksum: "md5=eec68a09280a9c1440170715c7432166"
+}

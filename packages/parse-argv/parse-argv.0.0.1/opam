@@ -1,24 +1,29 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name:         "parse-argv"
 maintainer:   ["Mindy Preston <mindy.preston@docker.com>"]
 authors:      ["Jon Ludlam" "Magnus Skjegstad" "Mindy Preston"]
 homepage:     "https://github.com/mirage/parse-argv"
 bug-reports:  "https://github.com/mirage/parse-argv/issues"
-dev-repo:     "https://github.com/mirage/parse-argv.git"
+dev-repo: "git+https://github.com/mirage/parse-argv.git"
 tags:         [ "org:mirage"]
 doc:          "https://docs.mirage.io"
 
-build: ["ocaml" "pkg/pkg.ml" "build"]
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--tests" "true" ]
-  [ "ocaml" "pkg/pkg.ml" "test" ]
+build: [
+  ["ocaml" "pkg/pkg.ml" "build"]
+  ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-
 depends: [
+  "ocaml" {>= "4.03"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
-  "topkg"     {build}
-  "ounit"     {test}
+  "topkg" {build}
+  "ounit" {with-test}
   "astring"
 ]
-available: [ocaml-version >= "4.03"]
+synopsis: "process strings into sets of command-line arguments"
+description: "parse-argv is a small implementation of a simple argv parser."
+url {
+  src: "https://github.com/mirage/parse-argv/archive/v0.0.1.tar.gz"
+  checksum: "md5=3084fc1d2116706a1f4f5825e8dded05"
+}

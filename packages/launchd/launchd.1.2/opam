@@ -1,31 +1,37 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "launchd"
 maintainer: "dave@recoil.org"
 version: "1.2"
 authors: [ "David Scott" ]
 license: "ISC"
 homepage: "https://github.com/mirage/ocaml-launchd"
-dev-repo: "https://github.com/mirage/ocaml-launchd.git"
+dev-repo: "git+https://github.com/mirage/ocaml-launchd.git"
 bug-reports: "https://github.com/mirage/ocaml-launchd/issues"
-
-tags: [
-]
 
 build: [
   [make "PREFIX=%{prefix}%"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-
 install: [make "PREFIX=%{prefix}%" "install"]
 
 remove: [["ocamlfind" "remove" "launchd"]]
 
 depends: [
+  "ocaml"
   "result"
   "lwt" {>= "2.4.3"}
   "cstruct" {>= "0.7.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
-build-doc: ["ocaml" "setup.ml" "-doc"]
-
 available: [ os = "darwin" ]
+synopsis: "Bindings for the launchd socket activation API"
+description: """
+Launchd on OS X takes care of binding and listening on sockets for you
+and can launch your program on demand. The API bindings are needed to
+receive the listening sockets from launchd."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-launchd/archive/v1.2.tar.gz"
+  checksum: "md5=abf6eb7d8d44211dd64c5a632b78c336"
+}

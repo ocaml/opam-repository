@@ -1,24 +1,26 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "andreashauptmann@t-online.de"
 homepage: "https://github.com/libuv/libuv"
 license: "MIT"
 bug-reports: "https://github.com/libuv/libuv/issues"
 authors: [ "Ryan Dahl" "Bert Belder" "et al." ]
-depends: ["conf-pkg-config"]
+depends: ["ocaml" "conf-pkg-config"]
 build: [
   ["pkg-config" "libuv" "--atleast-version=1"]
 ]
 depexts: [
-  [["debian"] ["libuv1-dev"]]
-  [["ubuntu"] ["libuv1-dev"]]
-  [["osx" "homebrew"] ["libuv"]]
-  [["freebsd"] ["libuv"]]
-  [["alpine"] ["libuv-dev"]]
-  [["centos"] ["libuv-devel"]]
-  [["rhel"]   ["libuv-devel"]]
-  [["fedora"] ["libuv-devel"]]
-  [["source" "linux"] ["https://gist.githubusercontent.com/fdopen/cbfb14114f4ec423a1a4/raw/6ba4cef74e94a7307391bddb7ff20db5d8065bfe/install-libuv.sh"]]
+  ["libuv1-dev"] {os-distribution = "debian"}
+  ["libuv1-dev"] {os-distribution = "ubuntu"}
+  ["libuv"] {os = "macos" & os-distribution = "homebrew"}
+  ["libuv"] {os = "freebsd"}
+  ["libuv-dev"] {os-distribution = "alpine"}
+  ["libuv-devel"] {os-distribution = "centos"}
+  ["libuv-devel"] {os-distribution = "rhel"}
+  ["libuv-devel"] {os-distribution = "fedora"}
 ]
 post-messages: [
   "This package requires libuv 1.x development packages installed on your system" {failure}
 ]
+synopsis: "Virtual package relying on a libuv system installation."
+description:
+  "This package can only install if libuv 1.0 or later is installed on the system."
