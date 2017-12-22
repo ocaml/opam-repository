@@ -1,25 +1,25 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "protocol-9p"
 maintainer: "dave@recoil.org"
 version: "0.3"
 authors: ["David Scott" "David Sheets" "Thomas Leonard"]
 license: "ISC"
 homepage: "https://github.com/mirage/ocaml-9p"
-dev-repo: "https://github.com/mirage/ocaml-9p.git"
+dev-repo: "git+https://github.com/mirage/ocaml-9p.git"
 bug-reports: "https://github.com/mirage/ocaml-9p/issues"
 build: [
   ["./configure"]
   [make "PREFIX=%{prefix}%"]
-]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: [make "PREFIX=%{prefix}%" "install"]
 remove: [
   ["ocamlfind" "remove" "protocol-9p"]
 ]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "base-bytes"
   "cstruct"
   "sexplib" {<= "113.00.00"}
@@ -34,7 +34,17 @@ depends: [
   "fmt"
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "alcotest" {test & >= "0.4.0"}
+  "alcotest" {with-test & >= "0.4.0"}
 ]
-build-doc: ["ocaml" "setup.ml" "-doc"]
-available: [ocaml-version >= "4.02.0"]
+synopsis:
+  "Client and server implementation of 9P, in a Mirage-friendly style"
+description: """
+Protocol-9p is an implementation of the plan9 9P fileserver protocol,
+building on top of the Mirage libraries. Client and server implementations
+are provided. The library supports 9P2000 and 9P2000.u protocol variants.
+The server code is compatible with the Linux kernel client."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-9p/archive/v0.3.tar.gz"
+  checksum: "md5=f69315d992ab6c9adbd5b256241bbe42"
+}

@@ -1,10 +1,11 @@
-opam-version: "1.2"
+opam-version: "2.0"
 version: "0.9.5.0"
 maintainer: "taramana@microsoft.com"
 authors: "Nik Swamy <nswamy@microsoft.com>,Jonathan Protzenko <protz@microsoft.com>,Tahina Ramananandro <taramana@microsoft.com>"
 homepage: "http://fstar-lang.org"
 license: "Apache"
 depends: [
+  "ocaml" {>= "4.02.3" & (< "4.03.0" | >= "4.04.0")}
   "ocamlfind"
   "batteries"
   "zarith"
@@ -12,12 +13,10 @@ depends: [
   "yojson"
   "ocamlbuild" {build}
   "fileutils"
-  "menhir" { >= "20161115" }
+  "menhir" {>= "20161115"}
   "pprint"
 ]
-depexts: [
-  [ ["osx" "homebrew"] ["coreutils"] ]
-]
+depexts: ["coreutils"] {os = "macos" & os-distribution = "homebrew"}
 build: [
   [make "PREFIX=%{prefix}%" "-C" "src/ocaml-output"]
   [make "PREFIX=%{prefix}%" "-C" "ulib/ml"]
@@ -33,6 +32,11 @@ remove: [
       "%{prefix}%/bin/fstar"
       "%{prefix}%/share/fstar" ]
 ]
-available: [ ocaml-version >= "4.02.3" & (ocaml-version < "4.03.0" | ocaml-version >= "4.04.0") ]
 dev-repo: "git://github.com/FStarLang/FStar"
 bug-reports: "https://github.com/FStarLang/FStar/issues"
+synopsis: "An ML-like language with a type system for program verification."
+flags: light-uninstall
+url {
+  src: "https://github.com/FStarLang/FStar/archive/v0.9.5.0-opam.tar.gz"
+  checksum: "md5=aeb396184a96dc957f04c28675159170"
+}

@@ -1,18 +1,19 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "\"Christoph Höger <christoph.hoeger@tu-berlin.de>\""
 authors: "\"Christoph Höger <christoph.hoeger@tu-berlin.de>\""
 homepage: "http://github.com/choeger/modelica.ml"
 license: "BSD-3-clause"
 bug-reports: "https://github.com/choeger/modelica.ml/issues"
-dev-repo: "https://github.com/choeger/modelica.ml.git"
+dev-repo: "git+https://github.com/choeger/modelica.ml.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "modelica_ml"]
 depends: [
+  "ocaml" {>= "4.02.1"}
   "batteries"
   "menhir"
   "ocamlfind"
@@ -25,4 +26,16 @@ depends: [
   "ocamlbuild" {build}
 ]
 depopts: "ounit"
-available: [ocaml-version >= "4.02.1"]
+synopsis: "Modelica abstract syntax and parser"
+description: """
+Modelica_ml is a Modelica frontend implemented in OCaml. It is written
+with compilation in mind, but should also be useful for other
+applications. Modelica_ml currently supports abstract syntax, parsing,
+pretty printing and a form of lookup analysis (class normalization).
+Patches welcome!"""
+flags: light-uninstall
+extra-files: ["modelica.ml.install" "md5=2df92bb9ba50b1bb6d012a880b33150f"]
+url {
+  src: "https://github.com/choeger/modelica.ml/archive/v0.2.0.tar.gz"
+  checksum: "md5=5c1780b0a016f106ccc256b0a6f0b388"
+}

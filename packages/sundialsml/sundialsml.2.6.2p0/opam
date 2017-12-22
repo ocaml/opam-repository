@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "sundialsml"
 maintainer: "tim@tbrk.org"
 authors: [
@@ -17,35 +17,71 @@ tags: [
 ]
 license: "BSD3"
 build: [
-    ["./configure" "--stubdir=%{stublibs}%/"
-		   "--libdir=%{lib}%/"
-		   "--docdir=%{doc}%/"]
+  [
+    "./configure"
+    "--stubdir=%{stublibs}%/"
+    "--libdir=%{lib}%/"
+    "--docdir=%{doc}%/"
+  ]
+  [make "tests.opt.log"] {with-test}
+  [make "doc"] {with-doc}
 ]
 install: [
-    [make "install-findlib"]
-]
-build-doc: [
-    [make "doc"]
-    [make "install-doc"]
-]
-build-test: [
-    [make "tests.opt.log"]
+  [make "install-findlib"]
+  [make "install-doc"] {with-doc}
 ]
 remove: [["ocamlfind" "remove" "sundialsml"]]
 depends: [
-    "base-bigarray"
-    "ocamlfind"
+  "ocaml" {>= "3.12.1"}
+  "base-bigarray"
+  "ocamlfind"
 ]
 depopts: [
     "mpi"
 ]
 depexts: [
-    [["debian"] ["libsundials-serial-dev"]]
-    [["ubuntu"] ["libsundials-serial-dev"]]
-    [["fedora"] ["lapack-devel" "sundials-devel"]]
-    [["centos"] ["epel-release" "lapack-devel" "sundials-devel"]]
-    [["osx" "homebrew"] ["homebrew/science/sundials"]]
-    [["osx" "macports"] ["sundials"]]
+  ["libsundials-serial-dev"] {os-distribution = "debian"}
+  ["libsundials-serial-dev"] {os-distribution = "ubuntu"}
+  ["lapack-devel" "sundials-devel"] {os-distribution = "fedora"}
+  ["epel-release" "lapack-devel" "sundials-devel"]
+    {os-distribution = "centos"}
+  ["homebrew/science/sundials"] {os = "macos" & os-distribution = "homebrew"}
+  ["sundials"] {os = "macos" & os-distribution = "macports"}
 ]
-available: [ ocaml-version >= "3.12.1" ]
 dev-repo: "git://github.com/inria-parkas/sundialsml"
+synopsis:
+  "Sundials/ML is an interface to the Sundials suite of numerical solvers."
+description: """
+Sundials is a collection of six numerical solvers: CVODE, CVODES, IDA, IDAS,
+ARKODE, and KINSOL. This interface provides access to all features of the
+underlying library.
+
+The structure of the OCaml interface mostly follows that of the original
+library, both for ease of reading the existing documentation and for
+converting existing source code, but several changes have been made for
+programming convenience and to increase safety, namely:
+
+- solver sessions are mostly configured via algebraic data types rather than
+  multiple function calls;
+
+- errors are signalled by exceptions not return codes (also from
+  user-supplied callback routines);
+
+- user data is shared between callback routines via closures (partial
+  applications of functions);
+
+- vectors are checked for compatibility with a session (using a combination
+  of static and dynamic checks), and;
+
+- explicit free commands are not necessary since OCaml is a
+  garbage-collected language.
+
+The OCaml documentation contains extensive cross-links to the original
+documentation. OCaml versions of the standard examples usually have an
+overhead of about 30% compared to the original C versions, and almost never
+more than 50%."""
+flags: light-uninstall
+url {
+  src: "https://github.com/inria-parkas/sundialsml/archive/v2.6.2p0.zip"
+  checksum: "md5=91985c269fb326d758bef9db044a433a"
+}

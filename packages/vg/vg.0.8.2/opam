@@ -1,14 +1,14 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
 homepage: "http://erratique.ch/software/vg"
 authors: ["Daniel Bünzli <daniel.buenzl i@erratique.ch>"]
 doc: "http://erratique.ch/software/vg/doc/Vg"
-dev-repo: "http://erratique.ch/repos/vg.git"
+dev-repo: "git+http://erratique.ch/repos/vg.git"
 bug-reports: "https://github.com/dbuenzli/vg/issues"
 tags: [ "pdf" "svg" "html-canvas" "declarative" "graphics" "org:erratique" ]
 license: "BSD-3-Clause"
-available: [ ocaml-version >= "4.02.0"]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind"
   "gg" {>= "0.9.0"}
   "ocamlbuild" {build}
@@ -20,10 +20,35 @@ build: ["ocaml" "pkg/git.ml"]
 install: [
   "ocaml"
   "pkg/build.ml"
-  "native=%{ocaml-native}%"
-  "native-dynlink=%{ocaml-native-dynlink}%"
+  "native=%{ocaml:native}%"
+  "native-dynlink=%{ocaml:native-dynlink}%"
   "uutf=%{uutf:installed}%"
   "otfm=%{otfm:installed}%"
   "cairo2=%{cairo2:installed}%"
   "jsoo=%{js_of_ocaml:installed}%"
 ]
+synopsis: "Declarative 2D vector graphics for OCaml"
+description: """
+Vg is an OCaml module for declarative 2D vector graphics. In Vg,
+images are values that denote functions mapping points of the
+cartesian plane to colors. The module provides combinators to define
+and compose these values.
+
+Renderers for PDF, SVG, Cairo and the HTML canvas are distributed with the
+module. An API allows to implement new renderers.
+     
+Vg depends only on [Gg][1]. The SVG renderer has no dependency, the
+PDF renderer depends on [Uutf][2] and [Otfm][3], the HTML canvas
+renderer depends on [js_of_ocaml][4], the Cairo renderer depends on
+[cairo2][5]. Vg and its renderers are distributed under the BSD3
+license.
+     
+[1]: http://erratique.ch/software/gg
+[2]: http://erratique.ch/software/uutf
+[3]: http://erratique.ch/software/otfm
+[4]: http://ocsigen.org/js_of_ocaml/ 
+[5]: https://forge.ocamlcore.org/projects/cairo/"""
+url {
+  src: "http://erratique.ch/software/vg/releases/vg-0.8.2.tbz"
+  checksum: "md5=f8e7efd20d6ffd5f50ea78f993d28b9e"
+}

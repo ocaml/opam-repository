@@ -1,10 +1,10 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Alessandro Strada <alessandro.strada@gmail.com>"
 authors: [ "Vincenzo Ciancia" ]
 license: "GPL"
 homepage: "http://sourceforge.net/apps/mediawiki/ocamlfuse"
 bug-reports: "https://github.com/astrada/ocamlfuse/issues"
-dev-repo: "https://github.com/astrada/ocamlfuse.git"
+dev-repo: "git+https://github.com/astrada/ocamlfuse.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
@@ -14,6 +14,7 @@ remove: [
   ["ocamlfind" "remove" "Fuse"]
 ]
 depends: [
+  "ocaml" {>= "3.08.0"}
   "base-bigarray"
   "base-threads"
   "base-unix"
@@ -21,7 +22,14 @@ depends: [
   "ocamlfind" {build}
 ]
 depexts: [
-  [["debian"] ["libfuse-dev"]]
-  [["ubuntu"] ["libfuse-dev"]]
+  ["libfuse-dev"] {os-distribution = "debian"}
+  ["libfuse-dev"] {os-distribution = "ubuntu"}
 ]
-available: [ ocaml-version >= "3.08.0" & os != "darwin" ]
+available: os != "darwin"
+synopsis: "OCaml bindings for FUSE (Filesystem in UserSpacE)"
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1662/ocamlfuse-2.7.1-cvs3.tar.gz"
+  checksum: "md5=96217775a14e5c91f1267a2cdf42cfeb"
+}

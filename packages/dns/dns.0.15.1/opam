@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "anil@recoil.org"
 authors: [
   "Anil Madhavapeddy"
@@ -20,30 +20,46 @@ tags: [
   "org:mirage"
   "org:xapi-project"
 ]
-dev-repo: "https://github.com/mirage/ocaml-dns.git"
+dev-repo: "git+https://github.com/mirage/ocaml-dns.git"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-lwt" "--%{mirage-types:enable}%-mirage"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--enable-lwt"
+    "--%{mirage-types:enable}%-mirage"
+  ]
   ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--enable-lwt"
+    "--%{mirage-types:enable}%-mirage"
+    "--enable-tests"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test" "-runner" "sequential"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-lwt" "--%{mirage-types:enable}%-mirage" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test" "-runner" "sequential"]
-]
 remove: ["ocamlfind" "remove" "dns"]
 depends: [
+  "ocaml" {>= "4.00.0"}
   "base-bytes"
   "lwt" {>= "2.4.3" & < "3.0.0"}
-  "cstruct" {>= "1.0.1" & <"2.0.0"}
+  "cstruct" {>= "1.0.1" & < "2.0.0"}
   "ocamlfind"
   "re"
   "cmdliner"
-  "ipaddr" {>= "2.6.0" & <"2.8.0"}
-  "uri" {>= "1.7.0" & <"1.9.4"}
+  "ipaddr" {>= "2.6.0" & < "2.8.0"}
+  "uri" {>= "1.7.0" & < "1.9.4"}
   "base64" {>= "2.0.0"}
   "ounit"
-  "pcap-format" {test}
+  "pcap-format" {with-test}
   "mirage-profile"
   "ocamlbuild" {build}
 ]
@@ -56,4 +72,13 @@ conflicts: [
   "mirage-types" {< "1.2.0" & >"3.0.0"}
   "async" {< "112.24.00"}
 ]
-available: [ocaml-version >= "4.00.0"]
+synopsis: "DNS client and server implementation"
+description: """
+This is a pure OCaml implementation of the DNS protocol. It is intended to be a
+reasonably high-performance implementation, but clarity is preferred rather
+than low-level performance hacks."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-dns/archive/v0.15.1.tar.gz"
+  checksum: "md5=2466edb1a52425496641fb6699b180d9"
+}

@@ -1,15 +1,16 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "dave@recoil.org"
 authors: ["David Scott"]
 license: "ISC"
 homepage: "https://github.com/mirage/ocaml-qcow"
-dev-repo: "https://github.com/mirage/ocaml-qcow.git"
+dev-repo: "git+https://github.com/mirage/ocaml-qcow.git"
 bug-reports: "https://github.com/mirage/ocaml-qcow/issues"
 tags: [
   "org:mirage"
 ]
 
 depends: [
+  "ocaml" {>= "4.03.0"}
   "astring"
   "cmdliner"
   "cstruct"
@@ -33,18 +34,39 @@ depends: [
   "ppx_tools" {build}
   "ppx_sexp_conv" {build}
   "ppx_type_conv" {build}
-  "ounit" {test}
-  "mirage-block-ramdisk" {test}
-  "ezjsonm" {test}
-  "nbd" {test & >= "2.0.1"}
+  "ounit" {with-test}
+  "mirage-block-ramdisk" {with-test}
+  "ezjsonm" {with-test}
+  "nbd" {with-test & >= "2.0.1"}
 ]
-
 build: [
-  [ "ocaml" "detect_word_size.ml" ]
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
+  ["ocaml" "detect_word_size.ml"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ]
-  [ "ocaml" "pkg/pkg.ml" "test" ]
-]
-available: [ocaml-version >= "4.03.0"]
+synopsis: "Support for Qcow2 images"
+description: """
+[![Build Status](https://travis-ci.org/mirage/ocaml-qcow.png?branch=master)](https://travis-ci.org/mirage/ocaml-qcow) [![Coverage Status](https://coveralls.io/repos/mirage/ocaml-qcow/badge.png?branch=master)](https://coveralls.io/r/mirage/ocaml-qcow?branch=master)
+
+Please read [the API documentation](https://mirage.github.io/ocaml-qcow/).
+
+Features
+--------
+
+- supports `resize`
+- exposes sparseness information
+- produces files which can be understood by qemu (although not in
+  reverse since we don't support many features)
+
+Example
+-------
+
+In a top-level like utop:
+```ocaml"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-qcow/releases/download/0.9.5/qcow-0.9.5.tbz"
+  checksum: "md5=d6a656883006023730749a8b4744cfa0"
+}

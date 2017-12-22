@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Etienne Millon <etienne@cryptosense.com>"
 authors: ["Xavier Leroy"]
 homepage: "http://forge.ocamlcore.org/projects/camlzip/"
@@ -12,14 +12,17 @@ remove: [
   ["ocamlfind" "remove" "zip"]
   ["ocamlfind" "remove" "camlzip"]
 ]
-depends: ["ocamlfind"]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind"
+]
 depexts: [
-  [["debian"] ["zlib1g-dev"]]
-  [["ubuntu"] ["zlib1g-dev"]]
-  [["centos"] ["zlib-devel"]]
-  [["rhel"]   ["zlib-devel"]]
-  [["fedora"] ["zlib-devel"]]
-  [["alpine"] ["zlib-dev"]]
+  ["zlib1g-dev"] {os-distribution = "debian"}
+  ["zlib1g-dev"] {os-distribution = "ubuntu"}
+  ["zlib-devel"] {os-distribution = "centos"}
+  ["zlib-devel"] {os-distribution = "rhel"}
+  ["zlib-devel"] {os-distribution = "fedora"}
+  ["zlib-dev"] {os-distribution = "alpine"}
 ]
 patches: [
   "fix-install.patch"
@@ -27,4 +30,16 @@ patches: [
   "no-L.patch" {os = "darwin"}
 ]
 install: [make "install-findlib"]
-available: [ ocaml-version >= "4.02.0" ]
+synopsis:
+  "Provides easy access to compressed files in ZIP, GZIP and JAR format"
+flags: light-uninstall
+extra-files: [
+  ["no-L.patch" "md5=a87a3ee77f84d745dd2956e34c635cf9"]
+  ["fix-install.patch" "md5=0d35b1372c52b8de9695212b67a597d7"]
+  ["build_with_trunk.patch" "md5=59df579d4344f758eaffbb7f32645e30"]
+]
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1616/camlzip-1.06.tar.gz"
+  checksum: "md5=0874be16d02a7165dfc31edc06636e4c"
+}

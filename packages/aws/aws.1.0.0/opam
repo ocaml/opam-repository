@@ -1,30 +1,40 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Spiros Eliopoulos <spiros@inhabitedtype.com>"
 authors: [ "Spiros Eliopoulos <spiros@inhabitedtype.com>"
            "Daniel Patterson <dbp@dbpmail.net>" ]
 license: "BSD-3-clause"
 homepage: "https://github.com/inhabitedtype/ocaml-aws"
-dev-repo: "https://github.com/inhabitedtype/ocaml-aws.git"
+dev-repo: "git+https://github.com/inhabitedtype/ocaml-aws.git"
 bug-reports: "https://github.com/inhabitedtype/ocaml-aws/issues"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
     "--%{lwt+cohttp+ssl:enable}%-lwt"
-    "--%{async+cohttp+async_ssl:enable}%-async"]
+    "--%{async+cohttp+async_ssl:enable}%-async"
+  ]
   ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{lwt+cohttp+ssl:enable}%-lwt"
+    "--%{async+cohttp+async_ssl:enable}%-async"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "aws"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"
-    "--%{lwt+cohttp+ssl:enable}%-lwt"
-    "--%{async+cohttp+async_ssl:enable}%-async"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml"
   "calendar"
   "ezxmlm"
   "nocrypto"
@@ -44,3 +54,15 @@ conflicts: [
   "cohttp" {< "0.17.0"}
   "cohttp" {>="0.99"}
 ]
+synopsis: "Amazon Web Services SDK"
+description: """
+ocaml-aws is an Amazon Web Services SDK for OCaml. Its source
+distribution includes a core runtime API and a code generation tool
+that generates individual libraries from [botocore][] service
+descriptions."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/inhabitedtype/ocaml-aws/releases/download/aws-v1.0.0/aws-v1.0.0.tar.gz"
+  checksum: "md5=f9ce8b3f61e5ebb726f3ef6189104a61"
+}

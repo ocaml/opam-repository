@@ -1,36 +1,39 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "rudi.grinberg@gmail.com"
 authors: ["Rudi Grinberg"]
 license: "MIT"
 
 homepage: "https://github.com/rgrinberg/async-mvar"
 bug-reports: "https://github.com/rgrinberg/async-mvar/issues"
-dev-repo: "https://github.com/rgrinberg/async-mvar.git"
-
+dev-repo: "git+https://github.com/rgrinberg/async-mvar.git"
 build: [
   ["obuild" "configure"]
   ["obuild" "build"]
+  ["obuild" "configure" "--enable-tests"] {with-test}
+  ["obuild" "build"] {with-test}
+  ["obuild" "test"] {with-test}
 ]
-
 install: ["obuild" "install"]
 
 remove: [
   ["ocamlfind" "remove" "async_mvar"]
 ]
 
-build-test: [
-  ["obuild" "configure" "--enable-tests"]
-  ["obuild" "build"]
-  ["obuild" "test"]
-]
-
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "obuild" {build}
   "core_kernel" {< "113.24.00"}
   "async_kernel"
-  "core" {test}
-  "async" {test}
+  "core" {with-test}
+  "async" {with-test}
 ]
-
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Async-mvar is a port of Lwt's Lwt_mvar"
+description: """
+This package provides a single module - `Async_mvar`. It it analagous to
+Lwt's `Lwt_mvar`."""
+flags: light-uninstall
+url {
+  src: "https://github.com/rgrinberg/async-mvar/archive/v0.1.0.tar.gz"
+  checksum: "md5=0ca7827c947b1ce59690f215121550cf"
+}

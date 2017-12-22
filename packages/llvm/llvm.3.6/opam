@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "jp.deplaix@gmail.com"
 authors: [
   "whitequark <whitequark@whitequark.org>"
@@ -8,17 +8,25 @@ homepage: "http://llvm.moe"
 license: "MIT"
 doc: "http://llvm.moe/ocaml-3.6"
 bug-reports: "http://llvm.org/bugs/"
-dev-repo: "http://llvm.org/git/llvm.git"
+dev-repo: "git+http://llvm.org/git/llvm.git"
 remove: [["ocamlfind" "remove" "llvm"]]
 depends: [
+  "ocaml" {>= "4.00.0"}
   "ctypes" {>= "0.3.4" & < "0.4"}
-  "ounit" {test}
+  "ounit" {with-test}
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["llvm-3.6-dev"]]
-  [["source" "linux"] ["https://gist.githubusercontent.com/whitequark/cc737ffcb8896e4d7b91/raw/ed2ba05691bc3a0500b1cc2dcd7156dd10c5b652/gistfile1.sh"]]
-  [["osx" "homebrew"] ["homebrew/versions/llvm36"]]
+  ["llvm-3.6-dev"] {os-distribution = "debian"}
+  ["homebrew/versions/llvm36"] {os = "macos" & os-distribution = "homebrew"}
 ]
-available: ocaml-version >= "4.00.0" & opam-version >= "1.2"
+available: opam-version >= "1.2"
 install: ["bash" "-ex" "./install.sh" version make prefix lib]
+synopsis: "The OCaml bindings distributed with LLVM"
+description: "Note: LLVM should be installed first."
+flags: light-uninstall
+extra-files: ["install.sh" "md5=16648eb8986c49acf5d29e11f4431bf4"]
+url {
+  src: "http://llvm.org/releases/3.6.0/llvm-3.6.0.src.tar.xz"
+  checksum: "md5=f1e14e949f8df3047c59816c55278cec"
+}

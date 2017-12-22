@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "rmlbuild"
 maintainer: "Louis Mandel <louis.mandel@reactiveml.org>"
 version: "0.11.0-00"
@@ -11,24 +11,34 @@ authors: [
 ]
 
 license: "LGPL-2 with OCaml linking exception"
-dev-repo: "https://github.com/reactiveml/rmlbuild.git"
+dev-repo: "git+https://github.com/reactiveml/rmlbuild.git"
 homepage: "https://github.com/reactiveml/rmlbuild/"
 bug-reports: "https://github.com/reactiveml/rmlbuild/issues"
 
 build: [
-  [make "-f" "configure.make" "all"
+  [
+    make
+    "-f"
+    "configure.make"
+    "all"
     "OCAMLBUILD_PREFIX=%{prefix}%"
     "OCAMLBUILD_BINDIR=%{bin}%"
     "OCAMLBUILD_LIBDIR=%{lib}%"
     "OCAMLBUILD_MANDIR=%{man}%"
-    "OCAML_NATIVE=%{ocaml-native}%"
-    "OCAML_NATIVE_TOOLS=%{ocaml-native}%"]
+    "OCAML_NATIVE=%{ocaml:native}%"
+    "OCAML_NATIVE_TOOLS=%{ocaml:native}%"
+  ]
   [make "check-if-preinstalled" "all" "opam-install"]
 ]
-
-available: [ocaml-version >= "4.03"]
-depends: [ ]
+depends: [
+  "ocaml" {>= "4.03"}
+]
 conflicts: [
   "base-ocamlbuild"
   "ocamlfind" {< "1.6.2"}
 ]
+synopsis: "rmlbuild is a fork of ocamlbuild that handles ReactiveML projets."
+url {
+  src: "https://github.com/reactiveml/rmlbuild/archive/0.11.0-00.tar.gz"
+  checksum: "md5=d43b2fa408e0e6bc26a346d0bf81ff86"
+}

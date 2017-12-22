@@ -1,34 +1,37 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "simon.beaumont@citrix.com"
 authors:      "Si Beaumont"
 homepage:     "https://github.com/simonjbeaumont/ocaml-pci"
 bug-reports:  "https://github.com/simonjbeaumont/ocaml-pci/issues"
-dev-repo:     "https://github.com/simonjbeaumont/ocaml-pci.git"
-
+dev-repo: "git+https://github.com/simonjbeaumont/ocaml-pci.git"
 build: [
   ["./configure"]
   [make]
-]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: [make "uninstall"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ctypes" {>= "0.4"}
   "ocamlfind" {build}
-  "ounit" {test}
+  "ounit" {with-test}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.01.0" & os = "linux"]
+available: os = "linux"
 depexts: [
-  [["debian"] ["libpci-dev"]]
-  [["ubuntu"] ["libpci-dev"]]
-  [["centos"] ["pciutils-devel"]]
+  ["libpci-dev"] {os-distribution = "debian"}
+  ["libpci-dev"] {os-distribution = "ubuntu"}
+  ["pciutils-devel"] {os-distribution = "centos"}
 ]
 post-messages: [
   "This package requires libpci-dev (>= 3.2.0) to be installed on your system"     {failure & (os = "debian")}
   "This package requires libpci-dev (>= 3.2.0) to be installed on your system"     {failure & (os = "ubuntu")}
   "This package requires pciutils-devel (>= 3.2.0) to be installed on your system" {failure & (os = "centos")}
 ]
+synopsis: "Ctypes bindings to libpci for OCaml"
+url {
+  src: "https://github.com/simonjbeaumont/ocaml-pci/archive/v0.2.0.tar.gz"
+  checksum: "md5=220ba275078eab5bd41cb8febf2d74f3"
+}

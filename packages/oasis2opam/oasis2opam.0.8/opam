@@ -1,33 +1,42 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
 authors: [ "Christophe Troestler" ]
 license: "GPL-3 with OCaml linking exception"
 homepage: "https://github.com/ocaml/oasis2opam"
-dev-repo: "https://github.com/ocaml/oasis2opam.git"
+dev-repo: "git+https://github.com/ocaml/oasis2opam.git"
 bug-reports: "https://github.com/ocaml/oasis2opam/issues"
 tags: [ "build" "install"  ]
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocaml" "%{etc}%/oasis2opam/setup.ml" "-C" "%{etc}%/oasis2opam"
     "-uninstall"]
 ]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml"
   "base-bytes" {build}
   "base-unix" {build}
   "oasis" {build & >= "0.4.8"}
   "ocamlbuild" {build}
   "ocamlfind" {build & >= "1.5"}
-  "ounit" {test & >= "2.0.0"}
-  ("qcheck" {test & >= "0.4"} | "qtest" {test & >= "0.4"})
+  "ounit" {with-test & >= "2.0.0"}
+  ("qcheck" {with-test & >= "0.4"} | "qtest" {with-test & >= "0.4"})
 ]
+synopsis: "Tool to convert OASIS metadata to OPAM package descriptions"
+description: """
+Generate OPAM files from _oasis. Most of the metadata supported by
+oasis is translated to OPAM. A simple .install file is written to
+preserve Oasis setup.{ml,data,log} in order to be able to use oasis
+for removal."""
+url {
+  src: "https://github.com/ocaml/oasis2opam/archive/0.8.tar.gz"
+  checksum: "md5=8acd8fe35f2deef6ac617c23942089f2"
+}

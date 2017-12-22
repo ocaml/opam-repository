@@ -1,20 +1,17 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors:      "Dave Scott <dave@recoil.org>"
 maintainer:   "dave@recoil.org"
 homepage:     "https://github.com/mirage/mirage-block-unix"
-dev-repo:     "https://github.com/mirage/mirage-block-unix.git"
+dev-repo: "git+https://github.com/mirage/mirage-block-unix.git"
 bug-reports:  "https://github.com/mirage/mirage-block-unix/issues"
 
 
 build: [
-  [ "jbuilder" "build" ]
+  ["jbuilder" "build"]
+  ["jbuilder" "runtest"] {with-test}
 ]
-
-build-test: [
-  [ "jbuilder" "runtest" ]
-]
-
 depends: [
+  "ocaml" {>= "4.02.3"}
   "ocamlfind" {build}
   "jbuilder" {build}
   "cstruct" {>= "1.3.0"}
@@ -25,12 +22,14 @@ depends: [
   "io-page" {>= "1.0.0"}
   "uri"
   "logs"
-  "ounit" {test}
-  "fmt" {test}
+  "ounit" {with-test}
+  "fmt" {with-test}
   "cstruct-lwt"
 ]
-available: [ ocaml-version >= "4.02.3" ]
-depexts: [
- [["alpine"] ["linux-headers"]]
-]
+depexts: ["linux-headers"] {os-distribution = "alpine"}
 tags: "org:mirage"
+synopsis: "MirageOS disk block driver for Unix"
+url {
+  src: "https://github.com/mirage/mirage-block-unix/archive/v2.8.2.tar.gz"
+  checksum: "md5=58dc51096e65da48ec87617be3110467"
+}
