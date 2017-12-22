@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Dario Teixeira <dario.teixeira@nleyten.com>"
 authors: ["Dario Teixeira <dario.teixeira@nleyten.com>"]
 homepage: "http://camlhighlight.forge.ocamlcore.org/"
 bug-reports: "https://github.com/darioteixeira/camlhighlight/issues"
-dev-repo: "https://github.com/darioteixeira/camlhighlight.git"
+dev-repo: "git+https://github.com/darioteixeira/camlhighlight.git"
 license: "GPL-2.0"
 build: [
     ["./configure" "--prefix" prefix "--docdir" "%{doc}%/camlhighlight"]
@@ -13,6 +13,7 @@ build: [
 install: [[make "install"]]
 remove: [["ocamlfind" "remove" "camlhighlight"]]
 depends: [
+  "ocaml"
   "ocamlfind"
   "batteries" {>= "2"}
   "sexplib" {< "113.01.00"}
@@ -21,9 +22,25 @@ depends: [
   "ocamlbuild" {build}
 ]
 depexts: [
-    [["debian"] ["libsource-highlight-dev"]]
-    [["ubuntu"] ["libsource-highlight-dev"]]
-    [["osx" "homebrew"] ["source-highlight"]]
+  ["libsource-highlight-dev"] {os-distribution = "debian"}
+  ["libsource-highlight-dev"] {os-distribution = "ubuntu"}
+  ["source-highlight"] {os = "macos" & os-distribution = "homebrew"}
 ]
 substs: ["sexp-dir.patch"]
 patches: ["sexp-dir.patch"]
+synopsis:
+  "Camlhighlight provides syntax highlighting facilities for OCaml applications."
+description: """
+The library works by parsing the output of GNU Source-highlight,
+a widely available library supporting the most common programming
+and markup languages."""
+flags: light-uninstall
+extra-files: [
+  ["sexp-dir.patch.in" "md5=2eb006bfafae89b4de92cf821c75790d"]
+  ["camlhighlight.install" "md5=27a856977ec205a26db3b54e20c5ba85"]
+]
+url {
+  src:
+    "http://forge.ocamlcore.org/frs/download.php/1435/camlhighlight-3.0.tgz"
+  checksum: "md5=f626399d41dbcb77af48d32beb3d9814"
+}

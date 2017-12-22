@@ -1,30 +1,47 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "datakit@docker.com"
 authors:      ["Thomas Leonard" "Anil Madhavapeddy"
                "Dave Tucker" "Thomas Gazagnaire" ]
 license:      "Apache"
 homepage:     "https://github.com/docker/datakit"
 bug-reports:  "https://github.com/docker/datakit/issues"
-dev-repo:     "https://github.com/docker/datakit.git"
+dev-repo: "git+https://github.com/docker/datakit.git"
 doc:          "https://docker.github.io/datakit/"
 
 build: [
-  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" "-n" name
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "false"
+    "-n"
+    name
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+    "-n"
+    name
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-
-build-test: [
-  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" "-n" name]
-  ["ocaml" "pkg/pkg.ml" "test"]
-]
-
 depends: [
+  "ocaml" {>= "4.03.0"}
   "ocamlfind" {build}
   "multipart-form-data"
   "datakit-client" {>= "0.9.0" & < "0.10.0"}
   "datakit-github" {>= "0.9.0" & < "0.10.0"}
   "protocol-9p" {>= "0.8.0"}
   "astring"
-  "cmdliner" {<"1.0.0"}
+  "cmdliner" {< "1.0.0"}
   "fmt"
   "logs"
   "tyxml" {>= "4.0.0"}
@@ -35,7 +52,7 @@ depends: [
   "pbkdf"
   "webmachine" {>= "0.3.2"}
   "session" {< "0.3.2"}
-  "redis" {<"0.3.4"}
+  "redis" {< "0.3.4"}
   "asetmap"
   "github-unix"
   "prometheus-app"
@@ -43,8 +60,19 @@ depends: [
   "ppx_deriving" {build}
   "ppx_sexp_conv" {build}
   "crunch" {build}
-  "datakit" {test & < "0.10.0"}
-  "irmin-unix" {test & = "0.12.0"}
-  "alcotest" {test}
+  "datakit" {with-test & < "0.10.0"}
+  "irmin-unix" {with-test & = "0.12.0"}
+  "alcotest" {with-test}
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis: "Continuous Integration service using DataKit"
+description: """
+DataKitCI is a continuous integration service that monitors your
+GitHub project and tests each branch, tag and pull request. It
+displays the test results as status indicators in the GitHub UI. It
+keeps all of its state and logs in DataKit, rather than a traditional
+relational database, allowing review with the usual Git tools."""
+url {
+  src:
+    "https://github.com/docker/datakit/releases/download/0.9.0/datakit-0.9.0.tbz"
+  checksum: "md5=46e4fcd1e9c05e4587ae1663518a8c74"
+}

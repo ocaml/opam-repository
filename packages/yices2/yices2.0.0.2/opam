@@ -1,25 +1,24 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Mickaël Delahaye <mickael.delahaye@gmail.com>"
 authors: "Mickaël Delahaye <mickael.delahaye@gmail.com>"
 homepage: "http://micdel.fr/ocamlyices2.html"
 bug-reports: "https://github.com/polazarus/ocamlyices2/issues"
 license: "ISC license and non-commercial use"
-dev-repo: "https://github.com/maelvalais/ocamlyices2.git"
+dev-repo: "git+https://github.com/maelvalais/ocamlyices2.git"
 build: [
   ["./configure" "--prefix=%{prefix}%"]
   [make]
+  ["./configure"] {with-test}
+  [make test] {with-test}
 ]
 install: [make "install"]
-build-test: [
-  ["./configure"]
-  [make test]
-]
 remove: ["ocamlfind" "remove" "yices2"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "conf-gmp" {build}
   "zarith"
-  "ounit" {test}
+  "ounit" {with-test}
 ]
 post-messages: [
   "
@@ -29,3 +28,13 @@ License terms: http://yices.csl.sri.com/yices-newnewlicense.html
   "
     {success}
 ]
+synopsis: "Yices2 SMT solver binding"
+description: """
+Yices is a Satisfiability Modulo Theories (SMT) solver from SRI.
+It is available freely for non-commercial purposes.
+License terms: http://yices.csl.sri.com/yices-newnewlicense.html"""
+flags: light-uninstall
+url {
+  src: "https://github.com/maelvalais/ocamlyices2/archive/v0.0.2.tar.gz"
+  checksum: "md5=29425e5046be099a542d6ab5ca48ac86"
+}

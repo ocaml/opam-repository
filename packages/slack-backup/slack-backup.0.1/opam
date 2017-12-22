@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Louis Roché <louis@louisroche.net>"
 authors: "Louis Roché <louis@louisroche.net>"
 homepage: "https://github.com/Khady/slack-backup"
@@ -8,20 +8,28 @@ license: "MIT"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 remove: [
   "ocaml" "%{etc}%/slack-backup/_oasis_remove_.ml" "%{etc}%/slack-backup"
 ]
 depends: [
+  "ocaml" {>= "4.02.1"}
   "cmdliner" {build}
   "ocamlfind" {build}
   "result"
   "slacko"
 ]
-available: [ ocaml-version >= "4.02.1" ]
+synopsis: "Small tool to backup IM and channels from slack."
+description: "Binary and library to backup IM and channels from slack."
+extra-files: [
+  ["slack-backup.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src: "https://github.com/Khady/slack-backup/archive/0.1.zip"
+  checksum: "md5=021171eb1436d2c24a007c46f8ba2f0d"
+}

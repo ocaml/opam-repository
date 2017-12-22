@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "qfs"
 maintainer: "ygrek@autistici.org"
 authors: [ "Ahrefs Pte Ltd <github@ahrefs.com>" ]
@@ -10,20 +10,27 @@ tags: [ "clib:stdc" "clib:qfs"  ]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "qfs"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml"
   "base-bytes"
   "base-unix"
   "ocamlfind" {build & >= "1.5"}
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["libboost-dev"]]
-  [["ubuntu"] ["libboost-dev"]]
-  [["source" "linux"] ["https://gist.githubusercontent.com/ygrek/7bb217d6ab7b25a765b7/raw"]]
+  ["libboost-dev"] {os-distribution = "debian"}
+  ["libboost-dev"] {os-distribution = "ubuntu"}
 ]
+synopsis: "Bindings to libqfs - client library to access QFS"
+description: "QFS is a distributed fault-tolerant filesystem by Quantcast"
+flags: light-uninstall
+url {
+  src: "https://github.com/ahrefs/ocaml-qfs/archive/0.4.tar.gz"
+  checksum: "md5=f1fdbc75ef2f930d55e61ac4c3076235"
+}

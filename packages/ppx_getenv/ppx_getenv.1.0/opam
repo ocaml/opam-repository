@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Peter Zotov <whitequark@whitequark.org>"
 authors: [ "Peter Zotov <whitequark@whitequark.org>" ]
 license: "Public domain"
@@ -7,15 +7,29 @@ bug-reports: "https://github.com/whitequark/ppx_getenv/issues"
 dev-repo: "git://github.com/whitequark/ppx_getenv.git"
 tags: [ "syntax" ]
 build: [
-  "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                         "native-dynlink=%{ocaml-native-dynlink}%"
-]
-build-test: [
-  "ocamlbuild" "-classic-display" "-use-ocamlfind" "src_test/test_ppx_getenv.byte" "--"
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+  ]
+  [
+    "ocamlbuild"
+    "-classic-display"
+    "-use-ocamlfind"
+    "src_test/test_ppx_getenv.byte"
+    "--"
+  ] {with-test}
 ]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ppx_tools" {>= "0.99.1"}
-  "ounit" {test}
+  "ounit" {with-test}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.02.0"]
+synopsis:
+  "A syntax extension to insert value of an environment variable as a string"
+url {
+  src: "https://github.com/whitequark/ppx_getenv/archive/v1.0.tar.gz"
+  checksum: "md5=0af72aeb30007cca21f95eef91808293"
+}

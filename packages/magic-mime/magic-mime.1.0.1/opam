@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Anil Madhavapeddy <anil@recoil.org>"
 authors: "Anil Madhavapeddy <anil@recoil.org>"
 homepage: "https://github.com/mirage/ocaml-magic-mime"
 bug-reports: "https://github.com/mirage/ocaml-magic-mime/issues"
-dev-repo: "https://github.com/mirage/ocaml-magic-mime.git"
+dev-repo: "git+https://github.com/mirage/ocaml-magic-mime.git"
 doc: "https://mirage.github.io/ocaml-magic-mime"
 license: "ISC"
 
@@ -13,7 +13,33 @@ build: [
 ]
 
 depends: [
+  "ocaml" {>= "4.03.0"}
   "ocamlfind" {build}
-  "jbuilder"  {build & >="1.0+beta9"}
+  "jbuilder" {build & >= "1.0+beta9"}
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis: "Convert file extensions to MIME types"
+description: """
+This library contains a database of MIME types that maps filename extensions
+into MIME types suitable for use in many Internet protocols such as HTTP or
+e-mail.  It is generated from the `mime.types` file found in Unix systems, but
+has no dependency on a filesystem since it includes the contents of the
+database as an ML datastructure.
+
+For example, here's how to lookup MIME types in the [utop] REPL:
+
+    #require "magic-mime";;
+    Magic_mime.lookup "/foo/bar.txt";;
+    - : bytes = "text/plain"
+    Magic_mime.lookup "bar.css";;
+    - : bytes = "text/css"
+
+More information:
+
+* WWW: <https://github.com/mirage/ocaml-magic-mime>
+* E-mail: <mirageos-devel@lists.xenproject.org>
+* Issues <https://github.com/mirage/ocaml-magic-mime/issues>"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-magic-mime/releases/download/1.0.1/magic-mime-1.0.1.tbz"
+  checksum: "md5=bd05c33aee8a461f63c23c3d0515d224"
+}

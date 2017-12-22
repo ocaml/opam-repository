@@ -1,22 +1,22 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      "Thomas Gazagnaire"
 license:      "ISC"
 homepage:     "https://github.com/mirage/irmin"
 bug-reports:  "https://github.com/mirage/irmin/issues"
-dev-repo:     "https://github.com/mirage/irmin.git"
-
+dev-repo: "git+https://github.com/mirage/irmin.git"
 build: [
-  ["./configure"
-      "--prefix" prefix
-      "--%{cohttp:enable}%-http"
-      "--%{git:enable}%-git"
-      "--%{base-unix:enable}%-unix"]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--%{cohttp:enable}%-http"
+    "--%{git:enable}%-git"
+    "--%{base-unix:enable}%-unix"
+  ]
   [make]
-]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: [
@@ -24,10 +24,11 @@ remove: [
   ["rm" "-f" "%{bin}%/irmin"]
 ]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ezjsonm" {>= "0.4.0" & < "0.4.2"}
   "ocamlgraph"
   "lwt" {>= "2.4.7"}
-  "nocrypto" {test & >= "0.2.2"}
+  "nocrypto" {with-test & >= "0.2.2"}
   "dolog" {>= "0.4"}
   "cstruct" {>= "1.0.1"}
   "mirage-tc" {>= "0.3.0"}
@@ -38,10 +39,10 @@ depends: [
   "re"
   "cmdliner"
   "crunch"
-  "base-unix" {test}
-  "git" {test}
-  "cohttp" {test}
-  "alcotest" {test & <= "0.3.3"}
+  "base-unix" {with-test}
+  "git" {with-test}
+  "cohttp" {with-test}
+  "alcotest" {with-test & <= "0.3.3"}
   "ocamlbuild" {build}
 ]
 depopts: [
@@ -56,4 +57,17 @@ conflicts: [
   "cohttp" {< "0.14.0"}
   "cohttp" {= "0.16.1"}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Irmin, the database that never forgets"
+description: """
+Irmin is a distributed database with built-in snapshot, branch and
+revert mechanisms. It is designed to use a large variety of backends,
+although it is optimized for append-only store.
+
+Irmin is written in pure OCaml. It can thus be compiled to Javascript
+-- and run in the browsers; or into a MirageOS unikernel -- and run directly
+on top of Xen."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/irmin/archive/0.9.5.tar.gz"
+  checksum: "md5=c71a8c5ec717c691b6398745025c35c5"
+}

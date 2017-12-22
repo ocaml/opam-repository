@@ -1,21 +1,27 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Akinori ABE <aabe.65535@gmail.com>"
 authors: [ "Akinori ABE <aabe.65535@gmail.com>" ]
 license: "MIT"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-dev-repo: "https://github.com/ocaml/opam-repository.git"
+dev-repo: "git+https://github.com/ocaml/opam-repository.git"
 homepage: "https://www.csie.ntu.edu.tw/~cjlin/libsvm/"
 build: [
   [ "sh" "-exc" "cc $CFLAGS test.c -lsvm" ] { os = "linux" }
   [ "sh" "-exc" "cc $CFLAGS -DDARWIN test.c -lsvm" ] { os = "darwin" }
 ]
 depexts: [
-  [["ubuntu"] ["libsvm-dev"]]
-  [["debian"] ["libsvm-dev"]]
-  [["archlinux"] ["libsvm"]]
-  [["gentoo"] ["sci-libs/libsvm"]]
-  [["fedora"] ["libsvm-devel"]]
-  [["source" "centos"] ["https://gist.githubusercontent.com/akabe/918c5018809abceb3a3a83bd985c42c8/raw/libsvm.sh"]]
-  [["source" "alpine"] ["https://gist.githubusercontent.com/akabe/918c5018809abceb3a3a83bd985c42c8/raw/libsvm.sh"]]
-  [["osx" "homebrew"] ["libsvm"]]
+  ["libsvm-dev"] {os-distribution = "ubuntu"}
+  ["libsvm-dev"] {os-distribution = "debian"}
+  ["libsvm"] {os-distribution = "archlinux"}
+  ["sci-libs/libsvm"] {os-distribution = "gentoo"}
+  ["libsvm-devel"] {os-distribution = "fedora"}
+  ["libsvm"] {os = "macos" & os-distribution = "homebrew"}
 ]
+synopsis: "Virtual package relying on libsvm library installation."
+description: """
+This package can only install if the libsvm library is available on the system:
+
+- `libsvm/svm.h` is at an include path.
+- `libsvm.so` is at a library path."""
+depends: ["ocaml"]
+extra-files: ["test.c" "md5=a8bf07a6d8723a85c7777bde2d041e3f"]

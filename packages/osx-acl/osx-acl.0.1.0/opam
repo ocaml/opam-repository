@@ -1,19 +1,22 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sheets@alum.mit.edu"
 authors: "David Sheets"
 homepage: "https://github.com/dsheets/ocaml-osx-acl"
 bug-reports: "https://github.com/dsheets/ocaml-osx-acl/issues"
 license: "ISC"
 tags: ["osx" "acl" "file system" "POSIX.1e" "security"]
-dev-repo: "https://github.com/dsheets/ocaml-osx-acl.git"
-build: [make "build"]
+dev-repo: "git+https://github.com/dsheets/ocaml-osx-acl.git"
+build: [
+  [make "build"]
+  [make "test"] {with-test}
+]
 install: [make "install"]
-build-test: [make "test"]
 remove: [make "uninstall"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "ctypes" {>= "0.9.0"}
   "unix-errno" {>= "0.5.0"}
   "base-unix"
@@ -22,3 +25,12 @@ depends: [
 ]
 depopts: "lwt"
 available: [os = "darwin"]
+synopsis: "OS X POSIX.1e file system access control list (ACL) bindings"
+description: """
+Provides access to OS X functions for getting and setting POSIX.1e file
+system access control lists (ACLs). This functionality offers a
+finer-grained permissions model than traditional UNIX permissions."""
+url {
+  src: "https://github.com/dsheets/ocaml-osx-acl/archive/0.1.0.tar.gz"
+  checksum: "md5=e6e750e1fdae0a3fb3e32b48be3e757a"
+}

@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "anil@recoil.org"
 authors: [
   "Anil Madhavapeddy"
@@ -13,17 +13,18 @@ homepage: "https://github.com/mirage/ocaml-cohttp"
 bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
 license: "ISC"
 tags: ["org:mirage" "org:xapi-project"]
-dev-repo: "https://github.com/mirage/ocaml-cohttp.git"
-build: [make "PREFIX=%{prefix}%"]
-install: [make "PREFIX=%{prefix}%" "install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+build: [
+  [make "PREFIX=%{prefix}%"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-build-doc: ["ocaml" "setup.ml" "-doc"]
+install: [make "PREFIX=%{prefix}%" "install"]
 remove: ["ocamlfind" "remove" "cohttp"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "base-bytes"
   "ocamlfind" {build}
   "ocamlbuild" {build}
@@ -32,7 +33,7 @@ depends: [
   "uri" {>= "1.9.0"}
   "fieldslib"
   "sexplib"
-  "conduit" {>= "0.14.0" & <"0.16.0"}
+  "conduit" {>= "0.14.0" & < "0.16.0"}
   "ppx_fields_conv"
   "ppx_deriving" {build}
   "ppx_sexp_conv"
@@ -41,8 +42,8 @@ depends: [
   "magic-mime"
   "fmt"
   "logs"
-  "ounit" {test}
-  "alcotest" {test}
+  "ounit" {with-test}
+  "alcotest" {with-test}
 ]
 depopts: ["async" "lwt" "js_of_ocaml"]
 conflicts: [
@@ -51,4 +52,16 @@ conflicts: [
   "js_of_ocaml" {< "2.8"}
   "js_of_ocaml" {>= "3.0"}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "HTTP(S) library for Lwt, Async and Mirage"
+description: """
+There are several optional dependencies which activate functionality:
+
+* Lwt: `opam install lwt cohttp`
+* Lwt and SSL: `opam install lwt ssl cohttp`
+* Async: `opam install async cohttp`
+* Async and SSL: `opam install async_ssl cohttp`"""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-cohttp/archive/v0.22.0.tar.gz"
+  checksum: "md5=1698d2e565ac5fe0474372e04ff265d8"
+}

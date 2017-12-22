@@ -1,8 +1,8 @@
-opam-version: "1.2"
+opam-version: "2.0"
 version:      "1.0.0"
 name:         "rfc6287"
 homepage:     "https://github.com/sg2342/ocaml-rfc6287"
-dev-repo:     "https://github.com/sg2342/ocaml-rfc6287.git"
+dev-repo: "git+https://github.com/sg2342/ocaml-rfc6287.git"
 bug-reports:  "https://github.com/sg2342/ocaml-rfc6287/issues"
 authors:      ["Stefan Grundmann <sg2342@googlemail.com>"]
 maintainer:   ["Stefan Grundmann <sg2342@googlemail.com>"]
@@ -11,22 +11,27 @@ license:      "ICS"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["./configure" "--%{ounit:enable}%-tests" "--%{bisect:enable}%-coverage"]
+    {with-test}
+  [make "cover_test"] {with-test}
 ]
 install: [ make "install" ]
 remove:  [ "ocamlfind" "remove" "rfc6287" ]
 
 depends: [
+  "ocaml" {> "4.02.0"}
   "ocamlfind" {build}
   "nocrypto" {>= "0.5.1" & < "0.5.3"}
   "stringext"
   "hex"
   "rresult"
-  "ounit" {test}
-  "bisect" {test}
+  "ounit" {with-test}
+  "bisect" {with-test}
   "ocamlbuild" {build}
 ]
-build-test: [
-  [ "./configure" "--%{ounit:enable}%-tests" "--%{bisect:enable}%-coverage" ]
-  [ make "cover_test" ] ]
-
-available: [ocaml-version > "4.02.0"]
+synopsis: "RFC6287 OCRA (OATH Challenge-Response Algorithm) library"
+flags: light-uninstall
+url {
+  src: "https://github.com/sg2342/ocaml-rfc6287/archive/1.0.0.tar.gz"
+  checksum: "md5=634307bc9653d4672e6d5e88f8718fdf"
+}

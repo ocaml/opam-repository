@@ -1,18 +1,19 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sheets@alum.mit.edu"
 authors: ["David Sheets" "Jeremy Yallop"]
 homepage: "https://github.com/dsheets/ocaml-unix-dirent"
 bug-reports: "https://github.com/dsheets/ocaml-unix-dirent/issues"
 license: "ISC"
 tags: ["unix" "posix" "dirent" "syscall" "readdir"]
-dev-repo: "https://github.com/dsheets/ocaml-unix-dirent.git"
+dev-repo: "git+https://github.com/dsheets/ocaml-unix-dirent.git"
 build: [make "build"]
 install: [make "install"]
 remove: [make "uninstall"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "base-bytes"
 ]
 depopts: [
@@ -22,4 +23,21 @@ conflicts: [
   "ctypes" {< "0.6.0"}
   "unix-errno" {< "0.5.0"}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis:
+  "ocaml-unix-dirent provides access to the features exposed in dirent.h"
+description: """
+in a way that is not tied to the implementation on the host system.
+
+The Dirent module provides functions for translating between the file kinds
+accessible through dirent.h and their values on particular systems.
+
+The Dirent_unix provides bindings to functions that use the types in Dirent
+along with a representation of the host system.  The bindings support a more
+comprehensive range of file kinds than the corresponding functions in the
+standard OCaml Unix module.  The Dirent_unix_lwt module exports non-blocking
+versions of the functions in Dirent_unix based on the Lwt cooperative
+threading library."""
+url {
+  src: "https://github.com/dsheets/ocaml-unix-dirent/archive/0.3.5.tar.gz"
+  checksum: "md5=87ead4a7a966fc784647c842264268ed"
+}

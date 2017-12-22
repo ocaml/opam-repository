@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "2.0"
 maintainer: "francois.berenger@inria.fr"
 homepage: "http://zeromq.org/"
 license: "LGPL"
@@ -6,10 +6,15 @@ build: [
   ["cc" "test.c" "-I/usr/local/include" "-L/usr/local/lib" "-lzmq"]
 ]
 depexts: [
-  [["debian"] ["libzmq3-dev"]]
-  [["ubuntu"] ["libzmq3-dev"]]
-  [["osx" "homebrew"] ["zeromq"]]
-  [["alpine"] ["zeromq-dev"]]
-  [["source" "centos"] ["https://gist.githubusercontent.com/akabe/9352e05d2413ccbefb2b52ea6ae81599/raw/7ad60a2be120849341cd7c5bf14656773cb7d405/centos-zmq.sh"]]
-  [["fedora"] ["zeromq-devel"]]
+  ["libzmq3-dev"] {os-distribution = "debian"}
+  ["libzmq3-dev"] {os-distribution = "ubuntu"}
+  ["zeromq"] {os = "macos" & os-distribution = "homebrew"}
+  ["zeromq-dev"] {os-distribution = "alpine"}
+  ["zeromq-devel"] {os-distribution = "fedora"}
 ]
+synopsis: "Virtual package relying on zmq library installation."
+description: """
+This package can only install if the zmq devel library is installed
+on the system."""
+depends: ["ocaml"]
+extra-files: ["test.c" "md5=2272935eca81c8bc500270c30c558fa3"]

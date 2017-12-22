@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors: "https://github.com/rdkit/rdkit/graphs/contributors"
 homepage: "http://www.rdkit.org/"
 maintainer: "Francois BERENGER <ligand@free.fr>"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-dev-repo: "https://github.com/ocaml/opam-repository.git"
+dev-repo: "git+https://github.com/ocaml/opam-repository.git"
 license: "BSD-3"
 build: [
   ["sh" "-c" "brew tap rdkit/rdkit && brew install rdkit"] {os = "darwin"}
@@ -11,9 +11,15 @@ build: [
          "-I/usr/local/include" "-L/usr/local/lib" "-lRDGeneral"]
 ]
 install: ["./test"]
-remove: []
 depexts: [
-  [["debian"] ["librdkit-dev" "python-rdkit"]]
-  [["ubuntu"] ["librdkit-dev" "python-rdkit"]]
-  [["centos"] ["rdkit-devel" "python2-rdkit"]]
+  ["librdkit-dev" "python-rdkit"] {os-distribution = "debian"}
+  ["librdkit-dev" "python-rdkit"] {os-distribution = "ubuntu"}
+  ["rdkit-devel" "python2-rdkit"] {os-distribution = "centos"}
 ]
+synopsis: "Virtual package relying on rdkit library installation."
+description: """
+This package can only install if the rdkit devel library is installed
+on the system."""
+depends: ["ocaml"]
+flags: light-uninstall
+extra-files: ["test.cpp" "md5=8079a0c593690540fbcb2f848f5b43d5"]

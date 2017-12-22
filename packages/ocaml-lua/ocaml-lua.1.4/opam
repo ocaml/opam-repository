@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "p.donadeo@gmail.com"
 authors: [
   "Paolo Donadeo"
@@ -6,7 +6,7 @@ authors: [
 ]
 homepage: "https://pdonadeo.github.io/ocaml-lua/"
 bug-reports: "https://github.com/pdonadeo/ocaml-lua/issues"
-dev-repo: "https://github.com/pdonadeo/ocaml-lua.git"
+dev-repo: "git+https://github.com/pdonadeo/ocaml-lua.git"
 license: "MIT"
 build: [
   [
@@ -27,17 +27,33 @@ remove: [
     ["rm" "-R" "%{doc}%/ocaml-lua"]
 ]
 depends: [
+  "ocaml" {>= "4.02.1" & < "4.03"}
   "ocamlfind"
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["liblua5.1-0-dev"]]
-  [["ubuntu"] ["liblua5.1-0-dev"]]
-  [["fedora"] ["compat-lua-devel"]]
-  [["centos"] ["lua-devel"]]
-  [["osx" "homebrew"] ["lua51"]]
-  [["alpine"] ["lua-dev"]]
-  [["opensuse"] ["lua51-devel"]]
+  ["liblua5.1-0-dev"] {os-distribution = "debian"}
+  ["liblua5.1-0-dev"] {os-distribution = "ubuntu"}
+  ["compat-lua-devel"] {os-distribution = "fedora"}
+  ["lua-devel"] {os-distribution = "centos"}
+  ["lua51"] {os = "macos" & os-distribution = "homebrew"}
+  ["lua-dev"] {os-distribution = "alpine"}
+  ["lua51-devel"] {os-distribution = "opensuse"}
 ]
-available: [ ocaml-version >= "4.02.1" & ocaml-version < "4.03" ]
 install: [make "install"]
+synopsis: "Lua bindings"
+description: """
+Lua is a powerful, light-weight programming language designed for
+extending applications. It provides a good general purpose programming
+language to replace DSL that don't really need to be specific.
+
+This library provides bindings to Lua API which allows the application
+to exchange data with Lua programs and also to extend Lua with OCaml
+functions.
+
+[Lua homepage](http://www.lua.org)"""
+flags: light-uninstall
+url {
+  src: "https://github.com/pdonadeo/ocaml-lua/archive/v1.4.tar.gz"
+  checksum: "md5=a075c9905e564dc39cbd8d21db4aacbd"
+}

@@ -1,22 +1,27 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Dario Teixeira <dario.teixeira@nleyten.com>"
 authors: ["Dario Teixeira <dario.teixeira@nleyten.com>"]
 homepage: "http://lambdoc.forge.ocamlcore.org/"
 bug-reports: "https://github.com/darioteixeira/lambdoc/issues"
-dev-repo: "https://github.com/darioteixeira/lambdoc.git"
+dev-repo: "git+https://github.com/darioteixeira/lambdoc.git"
 license: "GPL-2.0"
-available: [ocaml-version >= "4.02.0"]
 build: [
-    ["./configure" "--prefix" prefix
-                   "--docdir" "%{doc}%/lambdoc"
-                   "--%{alcotest:enable}%-tests"]
-    [make]
-    [make "doc"]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--docdir"
+    "%{doc}%/lambdoc"
+    "--%{alcotest:enable}%-tests"
+  ]
+  [make]
+  [make "doc"]
+  [make "test"] {with-test}
 ]
-build-test: [make "test"]
 install: [[make "install"]]
 remove: [["ocamlfind" "remove" "lambdoc"]]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind"
   "camlp4"
   "batteries" {>= "2"}
@@ -31,6 +36,29 @@ depends: [
   "omd" {>= "1.0.0"}
   "blahcaml"
   "camlhighlight" {>= "3.0" & < "4"}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "ocamlbuild" {build}
 ]
+synopsis:
+  "Library providing support for semantically rich documents in web applications."
+description: """
+Lambdoc was built with Ocsigen/Eliom integration in mind. It includes parsers
+for four different markup languages: Lambtex, Lambxml, Lambwiki, and Markdown.
+The first is inspired by LaTeX, the second is an XML-based markup based
+on HTML, the third is a lightweight markup language in the spirit of Wiki
+Creole, and the last is the popular lightweight markup language. The library
+also includes the possibility of outputing any Lambdoc document as an Ocsigen
+(Tyxml) HTML5 value. Additional capabilities include the runtime customisation
+of available document features (you may, for example, declare that a certain
+class of users is only allowed to produce documents containing nothing more
+than paragraphs of plain text), detailed error messages, and the definition
+of basic macros. Particularly of note is a powerful extension mechanism that
+allows the definition of custom commands tailored to a particular application.
+It also ships with 'lambcmd', a CLI application that allows the conversion
+between any of the input formats into one of the supported output targets."""
+flags: light-uninstall
+extra-files: ["lambdoc.install" "md5=971ede381fa9ce100bc7484a58f8ff73"]
+url {
+  src: "https://github.com/darioteixeira/lambdoc/archive/v1.0-beta4.tar.gz"
+  checksum: "md5=a1409daed14f5469cc98fff08def0c9e"
+}

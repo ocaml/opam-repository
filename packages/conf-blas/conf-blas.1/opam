@@ -1,9 +1,8 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "mmottl"
-author: "mmottl"
 homepage: "http://www.netlib.org/blas"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-dev-repo: "https://github.com/ocaml/opam-repository.git"
+dev-repo: "git+https://github.com/ocaml/opam-repository.git"
 license: "GPL-2.0"
 build: [
   ["sh" "-exc" "cc $CFLAGS test.c -lblas"] {os != "darwin" & os != "freebsd" & os != "win32"}
@@ -12,13 +11,24 @@ build: [
   ["%{build}%/test-win.sh"] {os = "win32"}
 ]
 depexts: [
-  [["debian"] ["libblas-dev"]]
-  [["mageia"] ["libblas-devel"]]
-  [["ubuntu"] ["libblas-dev"]]
-  [["centos"] ["blas-devel"]]
-  [["fedora"] ["blas-devel"]]
-  [["rhel"] ["blas-devel"]]
-  [["alpine"] ["lapack-dev"]]
-  [["opensuse"] ["blas-devel"]]
-  [["freebsd"] ["blas" "gcc"]]
+  ["libblas-dev"] {os-distribution = "debian"}
+  ["libblas-devel"] {os-distribution = "mageia"}
+  ["libblas-dev"] {os-distribution = "ubuntu"}
+  ["blas-devel"] {os-distribution = "centos"}
+  ["blas-devel"] {os-distribution = "fedora"}
+  ["blas-devel"] {os-distribution = "rhel"}
+  ["lapack-dev"] {os-distribution = "alpine"}
+  ["blas-devel"] {os-distribution = "opensuse"}
+  ["blas" "gcc"] {os = "freebsd"}
+]
+synopsis:
+  "Virtual package relying on a BLAS (Basic Linear Algebra Subroutines) library"
+description: """
+installation.  This package can only install if a compatible BLAS library is
+found on the system (e.g. reference BLAS, ATLAS, vendor-implementations, etc.)."""
+authors: "mmottl"
+depends: ["ocaml"]
+extra-files: [
+  ["test.c" "md5=2bf678ea49b283c0afeee23d2e05606d"]
+  ["test-win.sh" "md5=27c1bbeb22dc796f94c91f93e280e385"]
 ]

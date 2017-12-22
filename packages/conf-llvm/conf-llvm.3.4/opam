@@ -1,23 +1,25 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Ivan Gotovchits <ivg@ieee.org>"
 authors: "The LLVM team"
 homepage: "http://llvm.org"
 bug-reports: "https://llvm.org/bugs/"
-dev-repo: "https://github.com/ocaml/opam-repository.git"
+dev-repo: "git+https://github.com/ocaml/opam-repository.git"
 license: "BSD"
 build: [
   ["bash" "-ex" "configure" version]
 ]
 depends: [
+  "ocaml"
   "conf-which" {build}
 ]
 depexts: [
-  [["debian"] ["llvm-3.4-dev"]]
-  [["ubuntu"] ["llvm-3.4-dev"]]
-  [["osx" "macports"] ["llvm-3.4"]]
+  ["llvm-3.4-dev"] {os-distribution = "debian"}
+  ["llvm-3.4-dev"] {os-distribution = "ubuntu"}
+  ["llvm-3.4"] {os = "macos" & os-distribution = "macports"}
 ]
-
 post-messages: [
   "If you use homebrew, please build and install llvm-3.4 manually, since brew formula is not available for this version"
   { failure & (os = "osx" | os = "darwin") }
 ]
+synopsis: "Virtual package relying on llvm library installation."
+extra-files: ["configure" "md5=67afff0753bd62bc5adbe9e205c91138"]

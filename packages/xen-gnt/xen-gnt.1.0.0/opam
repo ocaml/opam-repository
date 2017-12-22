@@ -1,22 +1,30 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "john.else@citrix.com"
 build: make
 remove: [
   [make "PREFIX=%{prefix}%" "uninstall"]
 ]
 depends: [
+  "ocaml" {>= "4.00.0"}
   "ocamlbuild" {build}
-  "camlp4"     {build}
-  "ounit"      {test}
+  "camlp4" {build}
+  "ounit" {with-test}
   "cstruct" {>= "1.0.1"}
   "io-page" {< "1.3.0"}
   "lwt"
   "cmdliner"
 ]
 depexts: [
-  [["debian"] ["libxen-dev"]]
-  [["ubuntu"] ["libxen-dev"]]
+  ["libxen-dev"] {os-distribution = "debian"}
+  ["libxen-dev"] {os-distribution = "ubuntu"}
 ]
 dev-repo: "git://github.com/xapi-project/ocaml-gnt"
-available: ocaml-version >= "4.00.0"
 install: [make "PREFIX=%{prefix}%" "install"]
+synopsis: "Xen grant table bindings"
+description: """
+These allow your program (running either in userspace or in kernelspace via
+MirageOS) to read and write memory exported by other VMs on the same host."""
+url {
+  src: "https://github.com/xapi-project/ocaml-gnt/archive/v1.0.0.tar.gz"
+  checksum: "md5=29f719f45d73cc1e80c21e8e296041f2"
+}

@@ -1,16 +1,17 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "louis.gesbert@ocamlpro.com"
 authors: ["Louis Gesbert" "Gabriel Radanne"]
 homepage: "http://www.typerex.org/ocp-index.html"
 bug-reports: "https://github.com/OCamlPro/ocp-index/issues"
 license: "LGPL"
 tags: ["org:ocamlpro" "org:typerex"]
-dev-repo: "https://github.com/OCamlPro/ocp-index.git"
+dev-repo: "git+https://github.com/OCamlPro/ocp-index.git"
 build: [
   ["./configure" "--prefix" prefix]
   [make]
 ]
 depends: [
+  "ocaml" {>= "4.01.0" & < "4.03"}
   "ocp-build" {build & >= "1.99.6-beta"}
   "ocp-indent" {>= "1.4.2"}
   "re"
@@ -20,7 +21,6 @@ depopts: "lambda-term"
 conflicts: [
   "lambda-term" {< "1.7"}
 ]
-available: [ocaml-version >= "4.01.0" & ocaml-version < "4.03" ]
 messages: [
   "For ocp-browser, please also install package lambda-term"
     {!lambda-term:installed}
@@ -38,5 +38,25 @@ This package requires additional configuration for use in editors. Either instal
   "
     {success & !user-setup:installed}
 ]
-patches: [ "ocaml.4.02.patch" { ocaml-version >= "4.02" }
-           "ocaml.4.03.patch" { ocaml-version >= "4.03" } ]
+patches: [
+  "ocaml.4.02.patch" {ocaml:version >= "4.02"}
+  "ocaml.4.03.patch" {ocaml:version >= "4.03"}
+]
+synopsis:
+  "Lightweight completion and documentation browsing for OCaml libraries"
+description: """
+This package includes
+* The `ocp-index` library and command-line tool
+* `ocp-browser`, an interface browser for installed and in-project modules. This requires lambda-term installed
+* `ocp-grep`, a tool that finds uses of a given (qualified) identifier in a source tree
+* bindings for emacs and vim (sublime text also [available](https://github.com/whitequark/sublime-ocp-index/))
+
+To automatically configure your editors, install this with package `user-setup`."""
+extra-files: [
+  ["ocaml.4.03.patch" "md5=cae082436d0f23f4c355e00995c95133"]
+  ["ocaml.4.02.patch" "md5=5f424fde9d196bd40bde2c9a8570731d"]
+]
+url {
+  src: "https://github.com/OCamlPro/ocp-index/archive/1.1.3.tar.gz"
+  checksum: "md5=9f316811b8336cc57a8f245dd3becc3e"
+}

@@ -1,22 +1,28 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Jan Doms <jan.doms@gmail.com>"
 authors: "Jan Doms <jan.doms@gmail.com>"
 homepage: "https://github.com/domsj/orocksdb"
 bug-reports: "https://github.com/domsj/orocksdb"
 license: "MIT"
-dev-repo: "https://github.com/domsj/orocksdb.git"
+dev-repo: "git+https://github.com/domsj/orocksdb.git"
 build: [make]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "rocks"]
 depends: [
+  "ocaml" {>= "4.02.2"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "ctypes" {>= "0.4.0"}
   "ctypes-foreign" {>= "0.4.0"}
 ]
 depexts: [
-  [["debian"] ["libbz2-dev" "libgflags-dev" "libsnappy-dev"]]
-  [["linux" "source"] [ "https://raw.githubusercontent.com/domsj/orocksdb/0.3.0/install_rocksdb.sh" ]]
-  [["ubuntu"] ["libbz2-dev" "libgflags-dev" "libsnappy-dev"]]
+  ["libbz2-dev" "libgflags-dev" "libsnappy-dev"] {os-distribution = "debian"}
+  ["libbz2-dev" "libgflags-dev" "libsnappy-dev"] {os-distribution = "ubuntu"}
 ]
-available: [ ocaml-version >= "4.02.2" & os = "linux" ]
+available: os = "linux"
+synopsis: "ctypes based bindings for rocksdb"
+flags: light-uninstall
+url {
+  src: "https://github.com/domsj/orocksdb/archive/0.3.0.tar.gz"
+  checksum: "md5=77d535a7303099001d834e7ef515a3ed"
+}

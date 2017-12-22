@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Jordan Walke <jordojw@gmail.com>"
 authors: "Jordan Walke <jordojw@gmail.com>"
 homepage: "https://github.com/facebook/reason"
@@ -14,21 +14,22 @@ build: [
     "./build.native"
     "build"
     "--native"
-    "%{ocaml-native}%"
+    "%{ocaml:native}%"
     "--native-dynlink"
-    "%{ocaml-native-dynlink}%"
+    "%{ocaml:native-dynlink}%"
     "--utop"
     "%{utop:installed}%"
   ]
-]
-build-test: [
-  "ocamlbuild"
-  "-classic-display"
-  "-use-ocamlfind"
-  "src_test/test_reason.byte"
-  "--"
+  [
+    "ocamlbuild"
+    "-classic-display"
+    "-use-ocamlfind"
+    "src_test/test_reason.byte"
+    "--"
+  ] {with-test}
 ]
 depends: [
+  "ocaml" {>= "4.02" & < "4.05"}
   "ocamlfind" {build}
   "utop" {>= "1.17" & < "2.0"}
   "merlin-extend" {>= "0.3"}
@@ -40,4 +41,12 @@ depends: [
 conflicts: [
   "utop" {< "1.17"}
 ]
-available: [ocaml-version >= "4.02" & ocaml-version < "4.05"]
+synopsis: "Reason: Meta Language Toolchain"
+description: """
+reason allows development of Meta Language syntax trees in non-text format. It
+allows a development model that is equivalent to collaborating on syntax trees
+that have been committed to a source code repository."""
+url {
+  src: "https://github.com/facebook/reason/archive/1.13.4.tar.gz"
+  checksum: "md5=b9793a31ec41f1720923a14d20d51363"
+}

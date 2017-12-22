@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "martin@lucina.net"
 authors: [
   "Dan Williams <djwillia@us.ibm.com>"
@@ -8,18 +8,34 @@ authors: [
 homepage: "https://github.com/solo5/solo5"
 bug-reports: "https://github.com/solo5/solo5/issues"
 license: "ISC"
-dev-repo: "https://github.com/solo5/solo5.git"
+dev-repo: "git+https://github.com/solo5/solo5.git"
 build: [make "ukvm"]
 install: [make "opam-ukvm-install" "PREFIX=%{prefix}%"]
 remove: [make "opam-ukvm-uninstall" "PREFIX=%{prefix}%"]
-depends: "conf-pkg-config"
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "conf-pkg-config"
+]
 depexts: [
-  [["alpine"] ["linux-headers"]]
-  [["debian"] ["linux-libc-dev"]]
-  [["fedora"] ["kernel-headers"]]
-  [["rhel"] ["kernel-headers"]]
-  [["ubuntu"] ["linux-libc-dev"]]
+  ["linux-headers"] {os-distribution = "alpine"}
+  ["linux-libc-dev"] {os-distribution = "debian"}
+  ["kernel-headers"] {os-distribution = "fedora"}
+  ["kernel-headers"] {os-distribution = "rhel"}
+  ["linux-libc-dev"] {os-distribution = "ubuntu"}
 ]
 conflicts: "solo5-kernel-virtio"
-available: [ocaml-version >= "4.02.3" & arch = "x86_64" & os = "linux"]
+available: arch = "x86_64" & os = "linux"
 patches: [ "solo5-no-werror.diff" "solo5-no-asm-msr-index.diff" ]
+synopsis: "Solo5 unikernel base (ukvm target)"
+description: """
+This package provides the Solo5 base layer to run MirageOS unikernels on the
+"ukvm" target. ukvm, a specialized unikernel monitor, runs as a Linux process
+and uses KVM."""
+extra-files: [
+  ["solo5-no-werror.diff" "md5=504ea2e71ca098974c9ab0e85eef309b"]
+  ["solo5-no-asm-msr-index.diff" "md5=f50b0388f20ef08c19fe76a554b18dc9"]
+]
+url {
+  src: "https://github.com/Solo5/solo5/archive/v0.2.2.tar.gz"
+  checksum: "md5=29e344999bd7476e6e83e9533b8a4dd9"
+}

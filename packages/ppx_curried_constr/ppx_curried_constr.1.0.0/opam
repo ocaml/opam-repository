@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 version: "1.0.0"
 authors: "Jun Furuse"
 maintainer: "jun.furuse@gmail.com"
@@ -17,9 +17,103 @@ remove: [
   [ "ocaml" "setup.ml" "-uninstall" ]
 ]
 depends: [
-  "ocamlfind" { build } 
-  "omake" { build & < "0.10.1" }
+  "ocaml" {>= "4.02.2" & < "4.03.0"}
+  "ocamlfind" {build}
+  "omake" {build & < "0.10.1"}
 ]
-available: [
-  ocaml-version >= "4.02.2" & ocaml-version < "4.03.0"
-]
+synopsis: "ppx_curried_constr: ppx extension for curried constructors"
+description: """
+# Variant constructors as functions
+
+Suppose we have:
+
+```ocaml
+type t = Foo of int * float
+```
+
+Then
+
+```ocaml
+Foo
+```
+
+is equal to `fun (x,y) -> Foo (x,y)`. And,
+
+```
+!Foo
+```
+
+is equal to `fun x y -> Foo (x,y)`.
+
+# Polymorphic variants as functions
+
+```ocaml
+!`Foo
+```
+
+is equivalent to 
+
+```ocaml
+fun x -> `Foo x
+```
+
+Note that ``!`Foo`` always take only one argument:
+the arity of the polymorphic variant constructors is at most one
+and  it is determined purely syntactically. 
+
+
+```ocaml
+!`Foo (1,2,3)  (* `Foo (1,2,3) *)
+!`Foo 1 2 3    (* (`Foo 1) 2 3  which ends in a type error *)
+```
+
+Code ``(`Foo)`` has no special meaning. It is just equivalent to `` `Foo``.
+
+# How to build
+
+```shell
+$ omake
+$ omake install
+```
+
+or `opam install ppx_curried_constr`.
+
+# How to use
+
+```shell
+$ ocamlfind ocamlc -package ppx_curried_constr ...
+```
+
+# Samples
+
+You can try examples at `tests/test.ml`:
+
+```
+$ ocaml -ppx src/ppx_curried_constr -c -i tests/test.ml
+```
+
+To check the output,
+
+```
+$ src/ppx_curried_constr -debug tests/test.ml
+```
+
+# Limitations
+
+## No support of REPL (toplevel)
+
+`ppx_currired_constr` is a "typeful PPX" which performs typing in it.
+It does not work with OCaml REPL (`ocaml` command), where ppx commands
+are called for each toplevel phrase without carrying over the type environment.
+
+Do you use REPL?  Personally, I use it only as a calculator.
+
+## Cons constructor
+
+Cons constructor `(::)` is specially handled in OCaml
+and it is outside of the support of `ppx_curried_constr`."""
+url {
+  src:
+    "https://bitbucket.org/camlspotter/ppx_curried_constr/get/1.0.0.tar.gz"
+  checksum: "md5=5360d9f6c68056c66a46ccf9c680d4e1"
+}
