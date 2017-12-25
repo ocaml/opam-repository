@@ -1,22 +1,30 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Etienne Millon <etienne@cryptosense.com>"
 authors: "Etienne Millon <etienne@cryptosense.com>"
 homepage: "https://github.com/cryptosense/terminal_size"
 bug-reports: "https://github.com/cryptosense/terminal_size/issues"
 license: "BSD-2"
-dev-repo: "https://github.com/cryptosense/terminal_size.git"
+dev-repo: "git+https://github.com/cryptosense/terminal_size.git"
 doc: "https://cryptosense.github.io/terminal_size/doc"
 build: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" ]
-]
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ] { os != "darwin" }
-  [ "ocaml" "pkg/pkg.ml" "test" ] { os != "darwin" }
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test & os != "darwin"}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test & os != "darwin"}
 ]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "topkg" {build}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Get the dimensions of the terminal"
+description: """
+You can use this small library to detect the dimensions of the terminal window
+attached to a process."""
+url {
+  src:
+    "https://github.com/cryptosense/terminal_size/releases/download/v0.1.1/terminal_size-0.1.1.tbz"
+  checksum: "md5=46fe5f36bf485b47b4d88cbdb2cc17f2"
+}

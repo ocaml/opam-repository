@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name:         "mlmpfr"
 version:      "3.1.6"
 maintainer:   "Laurent Thévenoux <laurent.thevenoux@gmail.com>"
@@ -6,7 +6,7 @@ authors:      "Laurent Thévenoux <laurent.thevenoux@gmail.com>"
 homepage:     "https://github.com/thvnx/mlmpfr"
 bug-reports:  "https://github.com/thvnx/mlmpfr/issues"
 license:      "LGPL-3.0"
-dev-repo:     "https://github.com/thvnx/mlmpfr.git"
+dev-repo: "git+https://github.com/thvnx/mlmpfr.git"
 build: [
   ["oasis" "setup"]
   ["./configure" "--prefix=%{prefix}%"]
@@ -14,9 +14,18 @@ build: [
 ]
 install: [make "install"]
 remove:  ["ocamlfind" "remove" "mlmpfr"]
-depends: ["ocamlfind" "oasis"]
-available: [ ocaml-version >= "4.04" ]
-depexts: [
- [ ["ubuntu"] ["libmpfr-dev"] ]
- [ ["debian"] ["libmpfr-dev"] ]
+depends: [
+  "ocaml" {>= "4.04"}
+  "ocamlfind"
+  "oasis"
 ]
+depexts: [
+  ["libmpfr-dev"] {os-distribution = "ubuntu"}
+  ["libmpfr-dev"] {os-distribution = "debian"}
+]
+synopsis: "OCaml C bindings for MPFR 3.1.6."
+flags: light-uninstall
+url {
+  src: "https://github.com/thvnx/mlmpfr/archive/mlmpfr.3.1.6.tar.gz"
+  checksum: "md5=9cb14670f034e0c588ecb96863cd6386"
+}

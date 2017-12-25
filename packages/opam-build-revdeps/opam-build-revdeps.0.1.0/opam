@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Sylvain Le Gall <sylvain@le-gall.net>>"
 authors: [ "Sylvain Le Gall" ]
 license: "LGPL-2.1 with OCaml linking exception"
@@ -8,18 +8,17 @@ bug-reports: "https://github.com/gildor478/opam-build-revdeps/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocaml" "%{etc}%/opam-build-revdeps/_oasis_remove_.ml"
     "%{etc}%/opam-build-revdeps"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml" {>= "3.12.1"}
   "base-unix" {build}
   "calendar" {build & >= "2.03"}
   "cmdliner" {build & >= "0.9"}
@@ -32,4 +31,20 @@ depends: [
   "uuidm" {build & >= "0.9.6"}
   "ocamlify" {build}
 ]
-available: [ ocaml-version >= "3.12.1" ]
+synopsis: "Build reverse dependencies of a package in OPAM."
+description: """
+opam-build-revdeps builds the reverse dependencies of a given OPAM
+package. It can also build two different versions of the same package,
+in order to compare the results.
+This program has been designed to test what can other packages can
+break in OPAM, if we inject a new version. It was specifically
+targeted to check OASIS reverse dependencies."""
+extra-files: [
+  ["opam-build-revdeps.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src:
+    "https://github.com/gildor478/opam-build-revdeps/releases/download/0.1.0/opam-build-revdeps-0.1.0.tar.gz"
+  checksum: "md5=07d04ea5b2df5f18e9a12bc5db43855f"
+}

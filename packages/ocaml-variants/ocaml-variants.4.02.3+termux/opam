@@ -1,0 +1,27 @@
+opam-version: "2.0"
+synopsis: "Official 4.02.3 release + termux patch"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.02.3" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["sh" "./configure" "-prefix" prefix "-with-debug-runtime"]
+  [make "world.opt"]
+]
+install: [make "install"]
+patches: "ocaml-4.02.3+termux.patch"
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.3.tar.gz"
+  checksum: "md5=ef1a324608c97031cbd92a442d685ab7"
+}
+extra-source "ocaml-4.02.3+termux.patch" {
+  src: "http://ygrek.org.ua/files/ocaml-4.02.3+termux.patch"
+  checksum: "md5=090c878fd3bfdbbdf175c2645533ad50"
+}

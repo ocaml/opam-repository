@@ -1,39 +1,43 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "drupyog@zoho.com"
 authors: ["Gabriel Radanne <drupyog@zoho.com>"]
 homepage: "https://github.com/Drup/LILiS"
 bug-reports: "https://github.com/Drup/LILiS/issues"
-dev-repo: "https://github.com/Drup/LILiS.git"
+dev-repo: "git+https://github.com/Drup/LILiS.git"
 doc: "https://drup.github.io/LILiS/0.2/"
 license: "MIT"
 tags: [ "lsystem" "grammar" "graphics" "logo" ]
 
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
-	   "--enable-containers"
-	   "--%{batteries:enable}%-batteries"
-	   "--%{cfstream:enable}%-cfstream"
-	   "--%{core_kernel:enable}%-core-kernel"
-	   "--%{cairo2:enable}%-cairo" {"%{lablgtk:installed}%"}
-	   "--%{tyxml:enable}%-tyxml"
-	   "--%{js_of_ocaml:enable}%-js-of-ocaml"
-	   "--%{cmdliner:enable}%-executable"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--enable-containers"
+    "--%{batteries:enable}%-batteries"
+    "--%{cfstream:enable}%-cfstream"
+    "--%{core_kernel:enable}%-core-kernel"
+    "--%{cairo2:enable}%-cairo" {"%{lablgtk:installed}%"}
+    "--%{tyxml:enable}%-tyxml"
+    "--%{js_of_ocaml:enable}%-js-of-ocaml"
+    "--%{cmdliner:enable}%-executable"
+  ]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-doc: ["ocaml" "setup.ml" "-doc"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 remove: [
   ["ocamlfind" "remove" "calc"]
   ["ocamlfind" "remove" "lilis"]
   ["ocamlfind" "remove" "glilis"]
 ]
-available: [ocaml-version >= "4.01.0"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "cppo" {build & >= "0.9.4"}
   "cppo_ocamlbuild" {build}
@@ -62,3 +66,10 @@ messages: [
     {!cairo2:installed | !lablgtk:installed | !cmdliner:installed}
   "To enable the svg output, you should install tyxml" {!tyxml:installed}
 ]
+synopsis: "Library to Interpret Lindenmayer Systems"
+description: "A Library to interpret, evaluate and draw L-systems."
+flags: light-uninstall
+url {
+  src: "https://github.com/Drup/LILiS/archive/v0.2.1.tar.gz"
+  checksum: "md5=bed47cf7984eaefebca6fcf58f2b5bda"
+}

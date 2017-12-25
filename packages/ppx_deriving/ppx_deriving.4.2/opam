@@ -1,33 +1,48 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "whitequark <whitequark@whitequark.org>"
 authors: [ "whitequark <whitequark@whitequark.org>" ]
 license: "MIT"
 homepage: "https://github.com/ocaml-ppx/ppx_deriving"
 doc: "https://whitequark.github.io/ppx_deriving"
 bug-reports: "https://github.com/ocaml-ppx/ppx_deriving/issues"
-dev-repo: "https://github.com/ocaml-ppx/ppx_deriving.git"
+dev-repo: "git+https://github.com/ocaml-ppx/ppx_deriving.git"
 tags: [ "syntax" ]
 substs: [ "pkg/META" ]
 build: [
-  # If there is no native dynlink, we can't use native builds
-  "ocaml" "pkg/build.ml" "native=%{ocaml-native-dynlink}%"
-                         "native-dynlink=%{ocaml-native-dynlink}%"
-]
-build-test: [
-  "ocamlbuild" "-classic-display" "-use-ocamlfind" "src_test/test_ppx_deriving.byte" "--"
-]
-build-doc: [
-  make "doc"
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native-dynlink}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+  ]
+  [
+    "ocamlbuild"
+    "-classic-display"
+    "-use-ocamlfind"
+    "src_test/test_ppx_deriving.byte"
+    "--"
+  ] {with-test}
+  [make "doc"] {with-doc}
 ]
 depends: [
+  "ocaml" {> "4.03.0" & < "4.06.0"}
   "ocamlbuild" {build}
-  "ocamlfind"  {build & >= "1.6.0"}
-  "cppo"       {build}
+  "ocamlfind" {build & >= "1.6.0"}
+  "cppo" {build}
   "cppo_ocamlbuild" {build}
   "ocaml-migrate-parsetree"
   "ppx_derivers"
-  "ppx_tools"  {>= "4.02.3"}
+  "ppx_tools" {>= "4.02.3"}
   "result"
-  "ounit"      {test}
+  "ounit" {with-test}
 ]
-available: [ ocaml-version > "4.03.0" & opam-version >= "1.2" & ocaml-version < "4.06.0" ]
+available: opam-version >= "1.2"
+synopsis: "Type-driven code generation for OCaml >=4.02"
+description: """
+ppx_deriving provides common infrastructure for generating
+code based on type definitions, and a set of useful plugins
+for common tasks."""
+url {
+  src: "https://github.com/whitequark/ppx_deriving/archive/v4.2.tar.gz"
+  checksum: "md5=76231b39815ffd8ddbdcdc93ea930a75"
+}

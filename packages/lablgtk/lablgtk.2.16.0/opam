@@ -1,14 +1,16 @@
-opam-version: "1"
+opam-version: "2.0"
 maintainer: "https://github.com/ocaml/opam-repository/issues"
 homepage: "http://lablgtk.forge.ocamlcore.org/"
 build: [
   ["./configure" "--prefix" prefix "LABLGLDIR=%{lib}%/lablgl"]
   [make "world"]
 ]
-available: [ ocaml-version >= "3.11.0" # as indicated in README file
-           & ocaml-version < "4.04.0" ]
 remove: [["ocamlfind" "remove" "lablgtk2"]]
-depends: ["ocamlfind" {>= "1.2.1"} "camlp4"]
+depends: [
+  "ocaml" {>= "3.11.0" & < "4.04.0"}
+  "ocamlfind" {>= "1.2.1"}
+  "camlp4"
+]
 depopts: [
   "conf-gtksourceview"
   "conf-gnomecanvas"
@@ -16,14 +18,14 @@ depopts: [
   "lablgl"
 ]
 depexts: [
-  [["debian"] ["libgtk2.0-dev" "libexpat1-dev"]]
-  [["ubuntu"] ["libgtk2.0-dev" "libexpat1-dev"]]
-  [["homebrew" "osx"] ["gtk" "expat"]]
-  [["centos"] ["gtk2-devel"]]
-  [["fedora"] ["gtk2-devel"]]
-  [["oraclelinux"] ["gtk2-devel"]]
-  [["alpine"] ["gtk+2.0-dev"]]
-  [["opensuse"] ["gtk2-devel"]]
+  ["libgtk2.0-dev" "libexpat1-dev"] {os-distribution = "debian"}
+  ["libgtk2.0-dev" "libexpat1-dev"] {os-distribution = "ubuntu"}
+  ["gtk" "expat"] {os-distribution = "homebrew" & os = "macos"}
+  ["gtk2-devel"] {os-distribution = "centos"}
+  ["gtk2-devel"] {os-distribution = "fedora"}
+  ["gtk2-devel"] {os-distribution = "oraclelinux"}
+  ["gtk+2.0-dev"] {os-distribution = "alpine"}
+  ["gtk2-devel"] {os-distribution = "opensuse"}
 ]
 patches: ["lablgldir.patch"]
 post-messages: [
@@ -34,3 +36,20 @@ or 'export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig' (homebrew)
 and retry" {failure & (os = "darwin")}
 ]
 install: [make "install"]
+synopsis: "OCaml interface to GTK+"
+description: """
+If you have problems compiling this on MacOS X, try this using Homebrew:
+
+$ brew install gtk+
+$ export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig
+$ opam install lablgtk"""
+flags: light-uninstall
+extra-files: [
+  ["lablgtk.install" "md5=1a3468258dd50aab33b9844db158b11a"]
+  ["lablgldir.patch" "md5=8cf5f3efbcb7bb8294424c30f77ea81f"]
+]
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/979/lablgtk-2.16.0.tar.gz"
+  checksum: "md5=052519ce2a77d2316732bc4d565b6399"
+}

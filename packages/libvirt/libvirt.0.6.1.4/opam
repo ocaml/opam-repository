@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "dave.scott@eu.citrix.com"
 homepage: "https://libvirt.org/ocaml/"
 bug-reports: "http://libvirt.org/bugs.html"
@@ -17,10 +17,28 @@ build: [
   [make "opt"]
 ]
 remove: [["ocamlfind" "remove" "libvirt"]]
-depends: ["ocamlfind"]
-depexts: [
-  [["debian"] ["libvirt-dev"]]
-  [["ubuntu"] ["libvirt-dev"]]
-  [["osx" "homebrew"] ["libvirt"]]
+depends: [
+  "ocaml" {< "4.03.0"}
+  "ocamlfind"
 ]
-available: [ocaml-version < "4.03.0"]
+depexts: [
+  ["libvirt-dev"] {os-distribution = "debian"}
+  ["libvirt-dev"] {os-distribution = "ubuntu"}
+  ["libvirt"] {os = "macos" & os-distribution = "homebrew"}
+]
+synopsis:
+  "Libvirt is a portable toolkit to interact with the virtualisation capabilities of Linux, Solaris and other operating systems."
+description: """
+From http://libvirt.org/ocaml/
+
+Some things which you might want to do with ocaml-libvirt:
+
+  * Monitor performance of virtual machines
+  * Pause and resume virtual machines according to demand
+  * Provision new virtual machines automatically for customers
+  * Configure how virtual machines are networked together"""
+flags: light-uninstall
+url {
+  src: "http://libvirt.org/sources/ocaml/ocaml-libvirt-0.6.1.4.tar.gz"
+  checksum: "md5=92723c155c009880475f3c9a093d1fe6"
+}

@@ -1,27 +1,36 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "john.else@citrix.com"
 authors: ["Anil Madhavapeddy" "John Else" "Thomas Leonard" "Andrew Cooper" "David Scott"]
 homepage:      "https://github.com/mirage/ocaml-gnt"
 bug-reports:   "https://github.com/mirage/ocaml-gnt/issues"
-dev-repo:      "https://github.com/mirage/ocaml-gnt.git"
-
+dev-repo: "git+https://github.com/mirage/ocaml-gnt.git"
 build: [
   [ "jbuilder" "subst"] {pinned}
   [ "jbuilder" "build" "-p" name "-j" jobs ]
 ]
 
 depends: [
+  "ocaml" {>= "4.00.0"}
   "ocamlfind" {build}
-  "jbuilder"  {build & >="1.0+beta9"}
+  "jbuilder" {build & >= "1.0+beta9"}
   "xen-gnt"
   "io-page"
 ]
 depexts: [
-  [["alpine"] ["xen-dev"]]
-  [["debian"] ["libxen-dev"]]
-  [["ubuntu"] ["libxen-dev"]]
-  [["centos"] ["xen-devel"]]
-  [["fedora"] ["xen-devel"]]
-  [["archlinux"] ["xenstore"]]
+  ["xen-dev"] {os-distribution = "alpine"}
+  ["libxen-dev"] {os-distribution = "debian"}
+  ["libxen-dev"] {os-distribution = "ubuntu"}
+  ["xen-devel"] {os-distribution = "centos"}
+  ["xen-devel"] {os-distribution = "fedora"}
+  ["xenstore"] {os-distribution = "archlinux"}
 ]
-available: [ ocaml-version >= "4.00.0" ]
+synopsis: "Xen grant table bindings"
+description: """
+These allow your program (running either in userspace or in kernelspace
+via MirageOS) to read and write memory exported by other VMs on the same host.
+These APIs are the foundation of all inter-VM communication on Xen."""
+url {
+  src:
+    "https://github.com/mirage/ocaml-gnt/releases/download/3.0.0/xen-gnt-3.0.0.tbz"
+  checksum: "md5=ecd263c195ac32bc9d5f866f881f54fa"
+}

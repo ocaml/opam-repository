@@ -1,14 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors:      "kakadu.hafanana@gmail.com"
 maintainer:   "kakadu.hafanana@gmail.com"
 homepage:     "http://kakadu.github.io/lablqml/"
 bug-reports:  "https://github.com/kakadu/lablqml/issues"
-dev-repo:     "https://github.com/Kakadu/lablqml.git"
-
-# There we adjust PATH variable only because we want to make CI on Alpine and Fedora happy.
-# Other GNU/Linux distributions won't need this but we can't adjust paths separately (yet).
-# We need opam 2.0 improvements (particulary https://github.com/ocaml/opam/issues/2919 )
-
+dev-repo: "git+https://github.com/Kakadu/lablqml.git"
 build: [
     ["sh" "-exc" "echo \"Your Qt version is `PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH qmake -query QT_VERSION`\"" ] 
     ["sh" "-exc" "min=\"5.2.1\" cur=`PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH qmake -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort | head -n 1`; [ \"$res\" = \"$min\" ]"
@@ -20,11 +15,14 @@ post-messages: [
 ]
 
 depexts: [
-  [ ["osx" "homebrew"] ["qt5"] ]
-  [ ["ubuntu"] ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"] ]
-  [ ["debian"] ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"] ]
-  [ ["alpine"] ["qt5-qtbase-dev" "qt5-qtdeclarative-dev"] ]
-  [ ["centos"] ["qt5-qtbase-devel" "qt5-qtdeclarative-devel"] ]
-  [ ["fedora"] ["qt5-qtbase-devel" "qt5-qtdeclarative-devel"] ]
+  ["qt5"] {os = "macos" & os-distribution = "homebrew"}
+  ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"]
+    {os-distribution = "ubuntu"}
+  ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"]
+    {os-distribution = "debian"}
+  ["qt5-qtbase-dev" "qt5-qtdeclarative-dev"] {os-distribution = "alpine"}
+  ["qt5-qtbase-devel" "qt5-qtdeclarative-devel"] {os-distribution = "centos"}
+  ["qt5-qtbase-devel" "qt5-qtdeclarative-devel"] {os-distribution = "fedora"}
 ]
-
+synopsis: "Installation of Qt5 using APT packages or from source."
+depends: ["ocaml"]

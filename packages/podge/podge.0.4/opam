@@ -1,24 +1,23 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 homepage: "http://hyegar.com"
 bug-reports: "https://github.com/fxfactorial/podge/issues"
-dev-repo: "http://github.com/fxfactorial/podge.git"
+dev-repo: "git+http://github.com/fxfactorial/podge.git"
 license: "BSD-3-clause"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 remove: ["ocamlfind" "remove" "podge"]
 depends: [
+  "ocaml" {>= "4.02.3"}
   "ANSITerminal" {>= "0.6.5"}
   "base-unix"
   "cohttp" {>= "0.9.7"}
@@ -30,4 +29,31 @@ depends: [
   "yojson"
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.02.3"]
+synopsis: "Shortcuts and helpers for common tasks in OCaml ecosystem"
+description: """
+If you're doing any modern OCaml then you're doubtlessly annoyed by
+the state of libraries and committing to one of the big ones can be
+restricting. Podge is a single module containing specialized modules
+for their respectives usages for seemingly common tasks.
+
+Some conveniences with Podge:
+1) Web: Simple HTTP get/put requests that return Yojson objects
+2) Yojson: Pretty printing, updating keys, and removing key-value pairs
+   from Yojson objects
+3) Unix: Read output of a process, simple daemonize.
+4) Xml: Simple reading of node content given a path.
+5) ANSITerminal: Create a colored string for the shell,
+   with or without current time.
+6) Other modules: Math, Html5, Analyze, Cohttp, Printf, Debugging,
+   and List.
+
+Podge is especially useful for Hackathons and prototyping."""
+flags: light-uninstall
+extra-files: [
+  ["podge.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src: "https://github.com/fxfactorial/podge/archive/v0.0.4.tar.gz"
+  checksum: "md5=a2755ba37df9af3709270a5bf6c33ed8"
+}

@@ -1,11 +1,11 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Romain Slootmaekers <romain.slootmaekers@openvstorage.com>"
 authors: ["Romain Slootmaekers <romain.slootmaekers@openvstorage.com>"
           "Jan Doms <jan.doms@openvstorage.com>"]
 homepage: "https://github.com/openvstorage/arakoon"
 bug-reports: "https://github.com/openvstorage/arakoon/issues"
 license: "Apache 2.0"
-dev-repo: "https://github.com/openvstorage/arakoon.git"
+dev-repo: "git+https://github.com/openvstorage/arakoon.git"
 build: [ [make] ]
 
 install: [make "install"   "OCAML_LIBDIR=%{prefix}%/lib" "PREFIX=%{prefix}%"]
@@ -16,8 +16,9 @@ remove:  [
 ]
 
 depends: [
+  "ocaml" {>= "4.03.0"}
   "ocamlfind" {build}
-  "bisect" {test & >= "1.3"}
+  "bisect" {with-test & >= "1.3"}
   "camltc" {>= "0.9.4"}
   "camlbz2" {>= "0.6.0"}
   "conf-libev" {>= "4-11"}
@@ -27,15 +28,20 @@ depends: [
   "ssl" {>= "0.5.3"}
   "snappy" {>= "0.1.0"}
   "quickcheck" {>= "1.0.2"}
-  "core" {>="0.9.0"}
+  "core" {>= "0.9.0"}
   "ocamlbuild" {build}
   "redis" {= "0.3.3"}
   "uri" {>= "1.9.2"}
 ]
-available: [ocaml-version >= "4.03.0" & opam-version >= "1.2" & os != "darwin" ]
-
-
-depexts:[
-  [[ "ubuntu"] ["help2man"] ]
-  [[ "debian"] ["help2man"] ]
+available: opam-version >= "1.2" & os != "darwin"
+depexts: [
+  ["help2man"] {os-distribution = "ubuntu"}
+  ["help2man"] {os-distribution = "debian"}
 ]
+synopsis:
+  "A distributed key-value store that guarantees consistency above anything else."
+url {
+  src:
+    "https://github.com/openvstorage/arakoon/archive/1a5da78cd06e7662c6d262ae0c723c4d54d94542.tar.gz"
+  checksum: "md5=6c1236864a12cf037719b1b3517f5b48"
+}

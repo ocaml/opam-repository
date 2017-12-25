@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "mlin@mlin.net"
 authors: ["Mike Lin"]
 homepage: "https://github.com/mlin/forkwork"
@@ -6,13 +6,31 @@ license: "LGPL-2.1 with OCaml linking exception"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "forkwork"]]
 depends: [
+  "ocaml"
   "ocamlfind"
   "ocamlbuild" {build}
 ]
 depopts: ["kaputt"]
 dev-repo: "git://github.com/mlin/forkwork"
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "Fork child processes to perform work on multiple cores"
+description: """
+ForkWork is intended for workloads that a master process can partition
+into independent jobs, each of which will typically take a while to
+execute (several seconds, or more). Also, the resulting values should
+not be too massive, since they must be marshalled for transmission
+back to the master process.
+
+Among the numerous tools for multicore parallelism available in the
+OCaml ecosystem, ForkWork fits somewhere in between Netmcore and
+Parmap. It's a bit easier to use than the former, and a bit more
+flexible than the latter."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mlin/forkwork/archive/v0.3.2.tar.gz"
+  checksum: "md5=d1ab07dd323c47b80f3c0bf80bd0531a"
+}

@@ -1,14 +1,15 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "talex5@gmail.com"
 authors: "Thomas Leonard"
 homepage: "https://github.com/mirage/mirage-logs"
 bug-reports: "https://github.com/mirage/mirage-logs/issues"
 license: "ISC"
-dev-repo: "https://github.com/mirage/mirage-logs.git"
+dev-repo: "git+https://github.com/mirage/mirage-logs.git"
 build: [make "PREFIX=%{prefix}%"]
 install: [make "PREFIX=%{prefix}%" "install"]
 remove: ["ocamlfind" "remove" "mirage-logs"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "logs" {>= "0.5.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
@@ -16,4 +17,14 @@ depends: [
   "mirage-profile"
   "lwt"
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis:
+  "A reporter for the Logs library that writes log messages to stderr, using a Mirage `CLOCK` to add timestamps."
+description: """
+It can also log only important messages to the console, while writing all received messages to a ring buffer which is displayed if an exception occurs.
+
+If tracing is enabled (via mirage-profile), it also writes each log message to the trace buffer."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/mirage-logs/archive/v0.2.tar.gz"
+  checksum: "md5=8a2d211deb69970b95b8890e68194357"
+}

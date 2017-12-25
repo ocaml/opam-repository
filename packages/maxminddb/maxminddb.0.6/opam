@@ -1,27 +1,40 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 homepage: "http://hyegar.com"
 bug-reports: "https://github.com/fxfactorial/ocaml-maxminddb/issues"
 license: "BSD-3-clause"
 tags: "clib:maxminddb"
-dev-repo: "http://github.com/fxfactorial/ocaml-maxmindddb.git"
+dev-repo: "git+http://github.com/fxfactorial/ocaml-maxmindddb.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "maxminddb"]
 depends: [
+  "ocaml" {>= "4.02.3"}
   "oasis" {build & >= "0.4"}
   "ocamlfind" {build}
 ]
-available: [ocaml-version >= "4.02.3"]
+synopsis: "Bindings to Maxmind.com's libmaxminddb library, like geoip2"
+description: """
+Maxminddb provides OCaml bindings to MaxMind's libmaxminddb C
+library, libmaxminddb is the database powering GeoIP2.  GeoIP2
+provides geographical/geolocation information about ip addresses
+like city of origin, country of origin and more. This library comes
+with the the free GeoLite2 City and Country MaxMindDB files.
+
+This product includes GeoLite2 data created by MaxMind, available
+from <a href="http://www.maxmind.com">http://www.maxmind.com</a>."""
+flags: light-uninstall
+url {
+  src: "https://github.com/fxfactorial/ocaml-maxminddb/archive/v0.6.tar.gz"
+  checksum: "md5=04c05c3c324dc80f7cae0e6879d5a67c"
+}

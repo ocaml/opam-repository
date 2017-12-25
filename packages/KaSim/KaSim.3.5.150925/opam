@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "KaSim"
 version: "3.5.150925"
 maintainer: "Pierre Boutillier <pierre.boutillier@laposte.net>"
@@ -6,19 +6,25 @@ authors: [ "Jean Krivine" "Jérôme Feret" ]
 license: "LGPL-3.0"
 homepage: "http://dev.executableknowledge.org/"
 bug-reports: "https://github.com/Kappa-Dev/KaSim/issues"
-dev-repo: "https://github.com/Kappa-Dev/KaSim.git"
-
-build: [ make ]
+dev-repo: "git+https://github.com/Kappa-Dev/KaSim.git"
+build: [
+  [make]
+  [
+    "cd man && pdflatex KaSim_manual.tex && bibtex KaSim_manual && pdflatex KaSim_manual.tex"
+  ] {with-doc}
+]
 install: [
  ["cp" "KaSim" "%{bin}%/" ]  {os != "win32"}
  ["cp" "KaSim.exe" "%{bin}%/" ] {os  = "win32"}
 ]
-build-doc:
- [ "cd man && pdflatex KaSim_manual.tex && bibtex KaSim_manual && pdflatex KaSim_manual.tex" ]
 remove: [
  ["rm" "%{bin}%/KaSim" ]  {os != "win32"}
  ["rm" "%{bin}%/KaSim.exe" ] {os  = "win32"}
 ]
-depends: [
-  "num"
-]
+depends: ["ocaml" "num"]
+synopsis: "Command line stochastic simulator for kappa models."
+flags: light-uninstall
+url {
+  src: "https://github.com/Kappa-Dev/KaSim/archive/v3.5-250915.tar.gz"
+  checksum: "md5=fa9998f9b31e033b16113e11deecc97b"
+}
