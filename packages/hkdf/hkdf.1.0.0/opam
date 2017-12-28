@@ -1,26 +1,32 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Hannes Mehnert <hannes@mehnert.org>"
 authors: "Hannes Mehnert <hannes@mehnert.org>"
 homepage: "https://github.com/hannesm/ocaml-hkdf"
 bug-reports: "https://github.com/hannesm/ocaml-hkdf/issues"
 license: "BSD2"
-dev-repo: "https://github.com/hannesm/ocaml-hkdf.git"
+dev-repo: "git+https://github.com/hannesm/ocaml-hkdf.git"
 build: [
   ["./configure" "--prefix" prefix]
   [make]
+  ["./configure" "--%{alcotest:enable}%-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "hkdf"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind"
   "cstruct" {>= "1.6.0"}
   "nocrypto" {>= "0.5.0"}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.01.0"]
-
-build-test: [
-  [ "./configure" "--%{alcotest:enable}%-tests" ]
-  [ make "test" ]
-]
+synopsis:
+  "HMAC-based Extract-and-Expand Key Derivation Function (HKDF), RFC5869"
+description:
+  "An implementation of HKDF, including test cases from RFC 5869, in OCaml.  This is used in various protocols, including IKEv2, PANA, EAP-AKA."
+flags: light-uninstall
+url {
+  src: "https://github.com/hannesm/ocaml-hkdf/archive/1.0.0.tar.gz"
+  checksum: "md5=c6012ebf7bb23fb8155d90a01e3679e2"
+}

@@ -1,30 +1,37 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
 authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
            "Edgar Friendly <thelema314@gmail.com>" ]
 license: "LGPL-3.0 with OCaml linking exception"
 homepage: "http://forge.ocamlcore.org/projects/root1d/"
-dev-repo: "ssh://forge.ocamlcore.org//git/root1d/root1d.git"
+dev-repo: "git+ssh://forge.ocamlcore.org//git/root1d/root1d.git"
 bug-reports: "http://forge.ocamlcore.org/projects/root1d/"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "root1d"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "4.0.0"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
 ]
 depopts: [
   "benchmark"
 ]
-available: [ ocaml-version >= "4.0.0" ]
+synopsis: "Find roots of 1D functions."
+description: """
+Collection of functions to seek roots of functions float -> float.
+Pure OCaml code."""
+flags: light-uninstall
+url {
+  src: "https://forge.ocamlcore.org/frs/download.php/1599/root1d-0.4.tar.gz"
+  checksum: "md5=620bfdd6bd38221fb820968518a62831"
+}

@@ -1,28 +1,37 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "dave@recoil.org"
 authors:      [ "David Scott" "Thomas Gazagnaire"]
 license:      "ISC"
 homepage:     "https://github.com/mirage/ocaml-named-pipe"
-dev-repo:     "https://github.com/mirage/ocaml-named-pipe.git"
+dev-repo: "git+https://github.com/mirage/ocaml-named-pipe.git"
 bug-reports:  "https://github.com/mirage/ocaml-named-pipe/issues"
 doc:          "https://mirage.github.io/ocaml-named-pipe/"
 
-build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
-build-test:[
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
   ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
-  ["ocaml" "pkg/pkg.ml" "test"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-
 depends: [
-  "ocamlfind"   {build}
-  "ocamlbuild"  {build & >= "0.9.3"}
-  "topkg"       {build & >= "0.8.1"}
+  "ocaml" {>= "3.12.1"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build & >= "0.9.3"}
+  "topkg" {build & >= "0.8.1"}
   "ocb-stubblr" {build & >= "0.1.0"}
   "base-bytes"
   "lwt" {>= "2.4.7"}
   "base-unix"
   "cmdliner"
-  "alcotest" {test & >= "0.4.0"}
+  "alcotest" {with-test & >= "0.4.0"}
 ]
-
-available: [ ocaml-version >= "3.12.1" ]
+synopsis: "Bindings for named pipes"
+description: """
+Named pipes are used on Windows for local (and remote) IPC. Where a Unix
+system would use a Unix domain socket, a Windows system will probably used
+a named pipe."""
+url {
+  src:
+    "https://github.com/mirage/ocaml-named-pipe/releases/download/0.4.0/named-pipe-0.4.0.tbz"
+  checksum: "md5=ec3a7aaec3cc0efd6560dd1668da6def"
+}

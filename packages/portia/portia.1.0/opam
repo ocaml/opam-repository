@@ -1,21 +1,32 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "portia"
 version: "1.0"
 maintainer: "Cedric Cellier <rixed@happyleptic.org>"
 authors: "Cedric Cellier <rixed@happyleptic.org>"
 homepage: "http://pim.happyleptic.org/~rixed/portia.html"
-dev-repo: "https://github.com/rixed/portia.git"
+dev-repo: "git+https://github.com/rixed/portia.git"
 bug-reports: "mailto:rixed-opam@happyleptic.org"
-build: [[make]]
-build-doc: [[make "doc"]]
+build: [
+  [make]
+  [make "doc"] {with-doc}
+]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "portia"]
-depends: ["ocamlfind" "batteries"]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind"
+  "batteries"
+]
 depexts: [
-  [["debian"] ["asciidoc"]]
-  [["ubuntu"] ["asciidoc"]]
+  ["asciidoc"] {os-distribution = "debian"}
+  ["asciidoc"] {os-distribution = "ubuntu"}
 ]
 post-messages: [
   "This package requires asciidoc to build the doc." {failure}
 ]
-available: [ocaml-version >= "4.02.0"]
+synopsis: "Literate Programming Preprocessor."
+flags: light-uninstall
+url {
+  src: "https://github.com/rixed/portia/archive/v1.0.tar.gz"
+  checksum: "md5=bf67490818183da1db4b18f803629ab7"
+}

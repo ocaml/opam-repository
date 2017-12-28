@@ -1,21 +1,30 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Marco Aurélio <marcoonroad@gmail.com>"
 authors: "Marco Aurélio <marcoonroad@gmail.com>"
 homepage: "http://github.com/marcoonroad/subtype-refinement"
 bug-reports: "http://github.com/marcoonroad/subtype-refinement/issues"
 license: "MIT"
-dev-repo: "http://github.com/marcoonroad/subtype-refinement.git"
+dev-repo: "git+http://github.com/marcoonroad/subtype-refinement.git"
 build: [
   ["oasis" "setup"]
   ["./configure" "--prefix=%{prefix}%" "--%{ounit:enable}%-tests"]
   [make]
+  [make "test"] {with-test}
 ]
 install: [make "install"]
-build-test: [make "test"]
 remove: ["ocamlfind" "remove" "subtype-refinement"]
 depends: [
-  "ounit" {test}
+  "ocaml" {>= "3.12"}
+  "ounit" {with-test}
   "oasis" {build}
   "ocamlfind" {build}
 ]
-available: [ocaml-version >= "3.12"]
+synopsis: "Refinement types encoded with private types in OCaml."
+description:
+  "Generating refinement constraints through OCaml's Applicative Functors and private types."
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/marcoonroad/subtype-refinement/archive/v0.1.tar.gz"
+  checksum: "md5=84c3ab089fc771450917f0bd2613ed9c"
+}

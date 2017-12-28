@@ -1,37 +1,44 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "fftw3"
 version: "0.7.3"
 authors: ["Christophe Troestler <Christophe.Troestler@umons.ac.be>"]
 maintainer: "Christophe.Troestler@umons.ac.be"
 license: "LGPL-2.1 with OCaml linking exception"
 homepage: "https://github.com/Chris00/fftw-ocaml"
-dev-repo: "https://github.com/Chris00/fftw-ocaml.git"
+dev-repo: "git+https://github.com/Chris00/fftw-ocaml.git"
 bug-reports: "https://github.com/Chris00/fftw-ocaml/issues"
 build: [
-  ["./configure"
-      "--prefix" prefix
-      "--sbindir=%{lib}%/fftw3/sbin"
-      "--libexecdir=%{lib}%/fftw3/libexec"
-      "--sysconfdir=%{lib}%/fftw3/etc"
-      "--sharedstatedir=%{lib}%/fftw3/com"
-      "--localstatedir=%{lib}%/fftw3/var"
-      "--libdir=%{lib}%/fftw3/lib"
-      "--includedir=%{lib}%/fftw3/include"
-      "--datarootdir=%{lib}%/fftw3/share"] { os != "darwin" }
-  ["./configure"
-      "CFLAGS=-I/usr/local/include"
-      "LDFLAGS=-L/usr/local/lib"
-      "OCAMLFLAGS=-ccopt -I/usr/local/include -cclib -L/usr/local/lib"
-      "--prefix" prefix
-      "--sbindir=%{lib}%/fftw3/sbin"
-      "--libexecdir=%{lib}%/fftw3/libexec"
-      "--sysconfdir=%{lib}%/fftw3/etc"
-      "--sharedstatedir=%{lib}%/fftw3/com"
-      "--localstatedir=%{lib}%/fftw3/var"
-      "--libdir=%{lib}%/fftw3/lib"
-      "--includedir=%{lib}%/fftw3/include"
-      "--datarootdir=%{lib}%/fftw3/share"] { os = "darwin" }
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--sbindir=%{lib}%/fftw3/sbin"
+    "--libexecdir=%{lib}%/fftw3/libexec"
+    "--sysconfdir=%{lib}%/fftw3/etc"
+    "--sharedstatedir=%{lib}%/fftw3/com"
+    "--localstatedir=%{lib}%/fftw3/var"
+    "--libdir=%{lib}%/fftw3/lib"
+    "--includedir=%{lib}%/fftw3/include"
+    "--datarootdir=%{lib}%/fftw3/share"
+  ] {os != "darwin"}
+  [
+    "./configure"
+    "CFLAGS=-I/usr/local/include"
+    "LDFLAGS=-L/usr/local/lib"
+    "OCAMLFLAGS=-ccopt -I/usr/local/include -cclib -L/usr/local/lib"
+    "--prefix"
+    prefix
+    "--sbindir=%{lib}%/fftw3/sbin"
+    "--libexecdir=%{lib}%/fftw3/libexec"
+    "--sysconfdir=%{lib}%/fftw3/etc"
+    "--sharedstatedir=%{lib}%/fftw3/com"
+    "--localstatedir=%{lib}%/fftw3/var"
+    "--libdir=%{lib}%/fftw3/lib"
+    "--includedir=%{lib}%/fftw3/include"
+    "--datarootdir=%{lib}%/fftw3/share"
+  ] {os = "darwin"}
   [make]
+  [make "doc"] {with-doc}
 ]
 install: [
   [make "install"]
@@ -39,19 +46,25 @@ install: [
 remove: [
   ["ocamlfind" "remove" "fftw3"]
 ]
-build-doc: [ make "doc" ]
 depends: [
+  "ocaml" {>= "3.12.1"}
   "ocamlfind" {build}
-  "archimedes" {test}
-  "lacaml" {test}
+  "archimedes" {with-test}
+  "lacaml" {with-test}
 ]
-available: [ ocaml-version >= "3.12.1" ]
 depexts: [
-  [ [ "alpine"  ] [ "fftw-dev" ] ]
-  [ [ "ubuntu"  ] [ "libfftw3-dev" ] ]
-  [ [ "debian"  ] [ "libfftw3-dev" ] ]
-  [ [ "centos"  ] [ "fftw-devel" ] ]
-  [ [ "freebsd" ] [ "math/fftw3" ] ]
-  [ [ "openbsd" ] [ "math/fftw3" ] ]
-  [ [ "osx" "homebrew" ] [ "fftw" ] ]
+  ["fftw-dev"] {os-distribution = "alpine"}
+  ["libfftw3-dev"] {os-distribution = "ubuntu"}
+  ["libfftw3-dev"] {os-distribution = "debian"}
+  ["fftw-devel"] {os-distribution = "centos"}
+  ["math/fftw3"] {os = "freebsd"}
+  ["math/fftw3"] {os = "openbsd"}
+  ["fftw"] {os = "macos" & os-distribution = "homebrew"}
 ]
+synopsis: "Binding to the famous Fast Fourier Transform library FFTW"
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/Chris00/fftw-ocaml/releases/download/0.7.3/ocaml-fftw3-0.7.3.tar.gz"
+  checksum: "md5=a0734fc307014c6bf30512fd5f6ab2a4"
+}

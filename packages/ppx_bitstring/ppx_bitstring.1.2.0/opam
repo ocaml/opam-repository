@@ -1,27 +1,40 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "ppx_bitstring"
 version: "1.2.0"
 maintainer: "Xavier Guérin <github@applepine.org>"
 authors: "Xavier Guérin <github@applepine.org>"
 homepage: "https://github.com/xguerin/ppx_bitstring"
 bug-reports: "https://github.com/xguerin/ppx_bitstring/issues"
-dev-repo: "https://github.com/xguerin/ppx_bitstring.git"
+dev-repo: "git+https://github.com/xguerin/ppx_bitstring.git"
 license: "ISC"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{ounit:enable}%-tests"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{ounit:enable}%-tests"
+  ]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
-build-test: ["ocaml" "setup.ml" "-test"]
 install: [
   ["ocaml" "setup.ml" "-install"]
 ]
 remove: ["ocamlfind" "remove" "ppx_bitstring"]
 depends: [
-  "bitstring"     {build}
-  "core"          {build}
-  "ocamlbuild"    {build}
-  "ocamlfind"     {build}
-  "ppx_tools"     {build}
-  "ounit"         {build}
-  ]
-available: [ocaml-version >= "4.03" & ocaml-version < "4.04"]
+  "ocaml" {>= "4.03" & < "4.04"}
+  "bitstring" {build}
+  "core" {build}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ppx_tools" {build}
+  "ounit" {build}
+]
+synopsis: "PPX extension for the bitstring library."
+flags: light-uninstall
+url {
+  src: "https://github.com/xguerin/ppx_bitstring/archive/v1.2.0.tar.gz"
+  checksum: "md5=0d39ebed5c45704aa8c5095e29347357"
+}

@@ -1,34 +1,38 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "anil@recoil.org"
 authors:      ["Anil Madhavapeddy" "Richard Mortier" "Thomas Gazagnaire"
                "Pierre Chambart" "David Kaloper" "Jeremy Yallop" ]
 homepage:     "https://github.com/mirage/ocaml-cstruct"
 license:      "ISC"
-dev-repo:     "https://github.com/mirage/ocaml-cstruct.git"
+dev-repo: "git+https://github.com/mirage/ocaml-cstruct.git"
 bug-reports:  "https://github.com/mirage/ocaml-cstruct/issues"
 tags: [
   "org:mirage"
   "org:xapi-project"
 ]
 build: [
-  ["./configure"
-      "--prefix" prefix
-      "--%{lwt+base-unix:enable}%-lwt"
-      "--%{ppx_tools:enable}%-ppx"
-      "--%{async:enable}%-async"
-      "--%{base-unix:enable}%-unix"]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--%{lwt+base-unix:enable}%-lwt"
+    "--%{ppx_tools:enable}%-ppx"
+    "--%{async:enable}%-async"
+    "--%{base-unix:enable}%-unix"
+  ]
   [make]
-]
-build-test: [
-  ["./configure"
-      "--prefix" prefix
-      "--%{lwt:enable}%-lwt"
-      "--%{ppx_tools:enable}%-ppx"
-      "--%{async:enable}%-async"
-      "--%{base-unix:enable}%-unix"
-      "--enable-tests"]
-  [make]
-  [make "test"]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--%{lwt:enable}%-lwt"
+    "--%{ppx_tools:enable}%-ppx"
+    "--%{async:enable}%-async"
+    "--%{base-unix:enable}%-unix"
+    "--enable-tests"
+  ] {with-test}
+  [make] {with-test}
+  [make "test"] {with-test}
 ]
 install: [
   [make "install"]
@@ -39,8 +43,9 @@ remove:  [
   ["ocamlfind" "remove" "cstruct"]
 ]
 depends: [
+  "ocaml" {>= "4.02.3" & < "4.05.0"}
   "ocamlfind" {build}
-  "ounit" {test}
+  "ounit" {with-test}
   "ocplib-endian"
   "sexplib"
   "base-bytes"
@@ -52,4 +57,29 @@ depopts: [
   "lwt"
   "base-unix"
 ]
-available: [ocaml-version >= "4.02.3" & ocaml-version < "4.05.0"]
+synopsis: "access C structures via a camlp4 extension"
+description: """
+Cstruct is a library and syntax extension to make it easier to access C-like
+structures directly from OCaml. It supports both reading and writing to these
+structures, and they are accessed via the Bigarray module.
+
+An example pcap description using PPX extension points is:
+
+```
+[%%cstruct
+type pcap_header = {
+  magic_number: uint32_t;   (* magic number *)
+  version_major: uint16_t;  (* major version number *)
+  version_minor: uint16_t;  (* minor version number *)
+  thiszone: uint32_t;       (* GMT to local correction *)
+  sigfigs: uint32_t;        (* accuracy of timestamps *)
+  snaplen: uint32_t;        (* max length of captured packets, in octets *)
+  network: uint32_t;        (* data link type *)
+} [@@little_endian]]
+```
+
+For Camlp4 support, please use a version of Cstruct that is `<=1.9.0`"""
+url {
+  src: "https://github.com/mirage/ocaml-cstruct/archive/v2.3.0.tar.gz"
+  checksum: "md5=f84097a0618715e2849542ee8e893454"
+}

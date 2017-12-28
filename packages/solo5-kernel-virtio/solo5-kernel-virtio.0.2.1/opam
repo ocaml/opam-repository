@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "martin@lucina.net"
 authors: [
   "Dan Williams <djwillia@us.ibm.com>"
@@ -8,13 +8,28 @@ authors: [
 homepage: "https://github.com/solo5/solo5"
 bug-reports: "https://github.com/solo5/solo5/issues"
 license: "ISC"
-dev-repo: "https://github.com/solo5/solo5.git"
+dev-repo: "git+https://github.com/solo5/solo5.git"
 build: [make "virtio"]
 install: [make "opam-virtio-install" "PREFIX=%{prefix}%"]
 remove: [make "opam-virtio-uninstall" "PREFIX=%{prefix}%"]
-depends: "conf-pkg-config"
-conflicts: "solo5-kernel-ukvm"
-available: [
-  ocaml-version >= "4.02.3" & (arch = "x86_64" | arch = "amd64") &
-  os != "darwin"
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "conf-pkg-config"
 ]
+conflicts: "solo5-kernel-ukvm"
+available: (arch = "x86_64" | arch = "amd64") & os != "darwin"
+synopsis: "Solo5 unikernel base (virtio target)"
+description: """
+This package provides the Solo5 base layer to run MirageOS unikernels on the
+"virtio" target. Unikernels built for the "virtio" target run directly on
+existing hypervisors, such as KVM/QEMU and bhyve.
+
+Additionally, this package installs the "solo5-run-virtio" tool, a wrapper for
+launching unikernels on various hypervisors, and the "solo5-mkimage" tool for
+building MBR-partitioned disk images with a bootloader and unikernel installed.
+The latter includes support for building images suitable for upload to Google
+Compute Engine."""
+url {
+  src: "https://github.com/Solo5/solo5/archive/v0.2.1.tar.gz"
+  checksum: "md5=09114a0655aa13553f3750665daf66ff"
+}

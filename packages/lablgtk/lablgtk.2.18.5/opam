@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "garrigue@math.nagoya-u.ac.jp"
 authors: ["Jacques Garrigue et al., Nagoya University"]
 homepage: "http://lablgtk.forge.ocamlcore.org/"
 bug-reports: "https://forge.ocamlcore.org/tracker/?group_id=220"
-dev-repo: "https://github.com/garrigue/lablgtk.git"
+dev-repo: "git+https://github.com/garrigue/lablgtk.git"
 license: "LGPL with linking exception"
 build: [
   ["./configure" "--prefix" prefix "LABLGLDIR=%{lib}%/lablgl"]
@@ -12,9 +12,11 @@ build: [
 install: [
   [make "install"]
 ]
-available: [ocaml-version >= "3.11.0"] # as indicated in README file
 remove: [["ocamlfind" "remove" "lablgtk2"]]
-depends: ["ocamlfind" {>= "1.2.1"}]
+depends: [
+  "ocaml" {>= "3.11.0"}
+  "ocamlfind" {>= "1.2.1"}
+]
 depopts: [
   "conf-gtksourceview"
   "conf-gnomecanvas"
@@ -22,14 +24,14 @@ depopts: [
   "lablgl"
 ]
 depexts: [
-  [["debian"] ["libgtk2.0-dev" "libexpat1-dev"]]
-  [["ubuntu"] ["libgtk2.0-dev" "libexpat1-dev"]]
-  [["homebrew" "osx"] ["gtk" "expat"]]
-  [["centos"] ["gtk2-devel"]]
-  [["fedora"] ["gtk2-devel"]]
-  [["oraclelinux"] ["gtk2-devel"]]
-  [["alpine"] ["gtk+2.0-dev"]]
-  [["opensuse"] ["gtk2-devel"]]
+  ["libgtk2.0-dev" "libexpat1-dev"] {os-distribution = "debian"}
+  ["libgtk2.0-dev" "libexpat1-dev"] {os-distribution = "ubuntu"}
+  ["gtk" "expat"] {os-distribution = "homebrew" & os = "macos"}
+  ["gtk2-devel"] {os-distribution = "centos"}
+  ["gtk2-devel"] {os-distribution = "fedora"}
+  ["gtk2-devel"] {os-distribution = "oraclelinux"}
+  ["gtk+2.0-dev"] {os-distribution = "alpine"}
+  ["gtk2-devel"] {os-distribution = "opensuse"}
 ]
 patches: ["lablgldir.patch"]
 post-messages: [
@@ -37,3 +39,14 @@ post-messages: [
   "To solve pkg-config issues, you may need to do
 'export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig' and retry" {failure & (os = "darwin")}
 ]
+synopsis: "OCaml interface to GTK+"
+flags: light-uninstall
+extra-files: [
+  ["lablgtk.install" "md5=1a3468258dd50aab33b9844db158b11a"]
+  ["lablgldir.patch" "md5=8cf5f3efbcb7bb8294424c30f77ea81f"]
+]
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1627/lablgtk-2.18.5.tar.gz"
+  checksum: "md5=43eb7062439f7ddd0d8ad96c3e3b87dd"
+}

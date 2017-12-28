@@ -1,36 +1,59 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "charrua-core"
 maintainer: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
 authors: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
 license: "ISC"
 homepage: "https://github.com/mirage/charrua-core"
 bug-reports: "https://github.com/mirage/charrua-core/issues"
-dev-repo: "https://github.com/mirage/charrua-core.git"
+dev-repo: "git+https://github.com/mirage/charrua-core.git"
 doc: "https://mirage.github.io/charrua-core/api"
 
-available: [ocaml-version >= "4.03" & opam-version >= "1.2"]
-
+available: opam-version >= "1.2"
 build: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ]
-  [ "ocaml" "pkg/pkg.ml" "test" ]
-]
-
 depends: [
-  "ocamlfind"     {build}
-  "ocamlbuild"    {build}
-  "topkg"         {build}
+  "ocaml" {>= "4.03"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
   "ppx_sexp_conv" {build}
-  "ppx_tools"     {build}
-  "menhir"        {build}
-  "cstruct"       {>= "1.9.0" & < "3.0.0"}
-  "ppx_cstruct"   {build}
+  "ppx_tools" {build}
+  "menhir" {build}
+  "cstruct" {>= "1.9.0" & < "3.0.0"}
+  "ppx_cstruct" {build}
   "sexplib"
-  "ipaddr"        {>= "2.5.0"}
-  "tcpip"         {>= "3.1.0" & <"3.2.0"}
+  "ipaddr" {>= "2.5.0"}
+  "tcpip" {>= "3.1.0" & < "3.2.0"}
   "rresult"
-  "io-page"       {test}
+  "io-page" {with-test}
 ]
+synopsis:
+  "DHCP core library - a DHCP server and wire frame encoder and decoder"
+description: """
+[charrua-core](http://www.github.com/mirage/charrua-core) is an
+_ISC-licensed_ DHCP library implementation in OCaml.
+
+[![docs](https://img.shields.io/badge/doc-online-blue.svg)](http://mirage.github.io/charrua-core/api)
+[![Build Status](https://travis-ci.org/mirage/charrua-core.svg)](https://travis-ci.org/mirage/charrua-core)
+
+It provides basically two modules, a `Dhcp_wire` responsible for parsing and
+constructing DHCP messages and a `Dhcp_server` module used for constructing DHCP
+servers.
+
+[charrua-unix](http://www.github.com/haesbaert/charrua-unix) is a Unix DHCP
+server based on charrua-core.
+
+[mirage](https://github.com/mirage/mirage-skeleton/tree/master/applications/dhcp)
+is a Mirage DHCP unikernel server based on charrua-core.
+
+You can browse the API for [charrua-core](http://www.github.com/mirage/charrua-core) at
+http://mirage.github.io/charrua-core/api"""
+url {
+  src:
+    "https://github.com/mirage/charrua-core/releases/download/v0.7/charrua-core-0.7.tbz"
+  checksum: "md5=8dc296dd688e9cea29bfb131774a7b41"
+}

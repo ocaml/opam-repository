@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "bear"
 version: "0.0.1"
 maintainer: "Hezekiah M. Carty <hez@0ok.org>"
@@ -6,22 +6,31 @@ authors: [ "Hezekiah M. Carty" ]
 license: "MIT"
 homepage: "https://github.com/hcarty/bear"
 bug-reports: "https://github.com/hcarty/bear/issues"
-dev-repo: "https://github.com/hcarty/bear.git"
+dev-repo: "git+https://github.com/hcarty/bear.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "bear"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml" {>= "4.02.1"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.02.1" ]
+synopsis: "Bare essential additions to the stdlib"
+description: """
+The Bear library is meant to be a very minimal extension to the OCaml
+stdlib. The feel of the library is meant to stick closely to the
+stdlib. If functionality is available from another minimal library
+(ex. Rresult, Sosa) then it should be out of scope for Bear."""
+flags: light-uninstall
+url {
+  src: "https://github.com/hcarty/bear/archive/v0.0.1.tar.gz"
+  checksum: "md5=53a74fa62642c7a209e2a162efd2869f"
+}

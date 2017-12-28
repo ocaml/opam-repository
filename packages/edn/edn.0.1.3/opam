@@ -1,21 +1,36 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Andrew Rudenko <ceo@prepor.ru>"
 authors: "Andrew Rudenko <ceo@prepor.ru>"
 homepage: "http://github.com/prepor/ocaml-edn"
 license: "MIT"
 bug-reports: "http://github.com/prepor/ocaml-edn/issues"
-dev-repo: "https://github.com/prepor/ocaml-edn.git"
+dev-repo: "git+https://github.com/prepor/ocaml-edn.git"
 doc: "https://prepor.github.io/ocaml-edn/doc"
-build:
-[[ "ocaml" "pkg/pkg.ml" "build"
-           "--pinned" "%{pinned}%" ]]
-build-test: [[
-  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"
-  "ocaml" "pkg/pkg.ml" "test" ]]
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+    "ocaml"
+    "pkg/pkg.ml"
+    "test"
+  ] {with-test}
+]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
   "menhir" {build}
   "topkg" {build}
-  "ounit" {test}
+  "ounit" {with-test}
 ]
-available: [ocaml-version >= "4.02.0"]
+synopsis: "Parsing OCaml library for EDN format"
+url {
+  src:
+    "https://github.com/prepor/ocaml-edn/releases/download/v0.1.3/edn-0.1.3.tbz"
+  checksum: "md5=0a8754c43f60efc8b29a9efeae78d96d"
+}

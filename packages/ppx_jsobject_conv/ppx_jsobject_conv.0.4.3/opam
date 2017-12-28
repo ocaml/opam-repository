@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Roma Sokolov <sokolov.r.v@gmail.com>"
 authors: [ "Roma Sokolov <sokolov.r.v@gmail.com>" ]
 license: "MIT"
@@ -8,17 +8,33 @@ dev-repo: "git://github.com/little-arhat/ppx_jsobject_conv.git"
 tags: [ "syntax" "jsoo" "javascript"]
 substs: [ "pkg/META" ]
 build: [
-  "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                         "native-dynlink=%{ocaml-native-dynlink}%"
+  "ocaml"
+  "pkg/build.ml"
+  "native=%{ocaml:native}%"
+  "native-dynlink=%{ocaml:native-dynlink}%"
 ]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "js_of_ocaml" {>= "2.8"}
   "result"
   "ppx_type_conv" {>= "v0.9.0"}
   "ppx_driver"
   "ppx_core"
   "ppx_deriving"
-  "ocamlfind"    {build}
-  "ocamlbuild"   {build}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.03.0" ]
+synopsis:
+  "Ppx plugin for Typeconv to derive conversion from ocaml types to js objects to use with js_of_ocaml."
+description: """
+For types annotated with [@@deriving jsobject], plugin will generate pair of functions: *_of_jsobject/jsobject_of_*
+to convert from/to JavaScript objects. This allows one to use clean OCaml types to describe their logic, while having ability
+to easy go down to js types. Easy conversion from js objects to OCaml types means also, one can use fast native JSON.parse to
+convert JSON to OCaml types.
+
+Plugin supports number of customizations."""
+url {
+  src:
+    "https://github.com/little-arhat/ppx_jsobject_conv/archive/v0.4.3.tar.gz"
+  checksum: "md5=d7dab76cbf87495132c0b2f429cc73f4"
+}

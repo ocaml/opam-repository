@@ -1,16 +1,17 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "dave@recoil.org"
 authors: ["David Scott"]
 license: "ISC"
 homepage: "https://github.com/mirage/ocaml-qcow"
-dev-repo: "https://github.com/mirage/ocaml-qcow.git"
+dev-repo: "git+https://github.com/mirage/ocaml-qcow.git"
 bug-reports: "https://github.com/mirage/ocaml-qcow/issues"
 tags: [
   "org:mirage"
 ]
 
 depends: [
-  "qcow" {= "0.10.0" }
+  "ocaml" {>= "4.03.0"}
+  "qcow" {= "0.10.0"}
   "cmdliner"
   "cstruct"
   "result"
@@ -30,18 +31,17 @@ depends: [
   "io-page"
   "ocamlfind" {build}
   "jbuilder" {build}
-  "ounit" {test}
-  "mirage-block-ramdisk" {test}
-  "ezjsonm" {test}
-  "nbd" {test & >= "2.0.1"}
+  "ounit" {with-test}
+  "mirage-block-ramdisk" {with-test}
+  "ezjsonm" {with-test}
+  "nbd" {with-test & >= "2.0.1"}
 ]
-
 build: [
-  [ "jbuilder" "build" ]
+  ["jbuilder" "build"]
+  [make "test"] {with-test}
 ]
-
-build-test: [
-  [ make "test" ]
-]
-
-available: [ocaml-version >= "4.03.0"]
+synopsis: "A command-line tool for manipulating qcow2-formatted data"
+url {
+  src: "https://github.com/mirage/ocaml-qcow/archive/v0.10.0.tar.gz"
+  checksum: "md5=fce49e5bdf48ee79bc334e41e562d2d1"
+}

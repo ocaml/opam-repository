@@ -1,23 +1,42 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sheets@alum.mit.edu"
 authors: ["David Sheets" "Jeremy Yallop"]
 homepage: "https://github.com/dsheets/ocaml-unix-fcntl"
 bug-reports: "https://github.com/dsheets/ocaml-unix-fcntl/issues"
 license: "ISC"
 tags: ["unix" "posix" "fcntl" "syscall" "open"]
-dev-repo: "https://github.com/dsheets/ocaml-unix-fcntl.git"
+dev-repo: "git+https://github.com/dsheets/ocaml-unix-fcntl.git"
 build: [make "build"]
 install: [make "install"]
 remove: [make "uninstall"]
 depends: [
+  "ocaml" {>= "4.02.0" & < "4.05.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "ctypes" {>= "0.4.0" & < "0.6.0"}
   "unix-errno" {>= "0.4.0"}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "unix-type-representations"
 ]
 depopts: ["lwt" "base-threads"]
 conflicts: ["lwt" {< "2.4.7"}]
-available: [ocaml-version >= "4.02.0" & ocaml-version < "4.05.0" ]
+synopsis: "Unix fcntl.h types, maps, and support"
+description: """
+unix-fcntl provides access to the features exposed in fcntl.h in a way
+that is not tied to the implementation on the host system.
 
+The Fcntl module provides functions for translating between the names
+of the flags exposed in fcntl.h and their values on particular
+systems. The Fcntl_host module exports representations of various
+hosts.
+
+The Fcntl_unix provides bindings to functions that use the flags in
+Fcntl along with a representation of the host system. The bindings
+support a more comprehensive range of flags than the corresponding
+functions in the standard OCaml Unix module. The Fcntl_unix_lwt module
+exports non-blocking versions of the functions in Fcntl_unix based on
+the Lwt cooperative threading library."""
+url {
+  src: "https://github.com/dsheets/ocaml-unix-fcntl/archive/0.3.2.tar.gz"
+  checksum: "md5=0bfd104d54153e930b588236be89db02"
+}

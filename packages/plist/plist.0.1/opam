@@ -1,24 +1,35 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 homepage: "https://github.com/fxfactorial/ocaml-plist"
 bug-reports: "https://github.com/fxfactorial/ocaml-plist/issues"
 license: "BSD-3-clause"
-dev-repo: "https://github.com/fxfactorial/ocaml-plist.git"
+dev-repo: "git+https://github.com/fxfactorial/ocaml-plist.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 remove: ["ocamlfind" "remove" "plist"]
-available: [ ocaml-version >= "4.02.0" ]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
   "yojson"
   "lambdasoup"
 ]
+synopsis: "Create Apple Plists"
+description: """
+Simple way to create Apple plists.
+
+open Plist
+
+let () = 
+  print_endline (to_string (Array [Dict [("Hey", (String "Arnold"))]]))"""
+flags: light-uninstall
+url {
+  src: "https://github.com/fxfactorial/ocaml-plist/archive/v0.1.tar.gz"
+  checksum: "md5=1c8a60e65db0fab9fd9559ecb5381b5c"
+}

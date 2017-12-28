@@ -1,11 +1,11 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "jp.deplaix@gmail.com"
 authors: [
   "whitequark <whitequark@whitequark.org>"
   "The LLVM team"
 ]
 bug-reports: "http://llvm.org/bugs/"
-dev-repo: "http://llvm.org/git/llvm.git"
+dev-repo: "git+http://llvm.org/git/llvm.git"
 homepage: "http://llvm.moe"
 patches: [
   "makefile+build.patch"
@@ -15,10 +15,17 @@ remove: [
   ["sh" "./compile.sh" "uninstall" "3.5" make prefix lib]
 ]
 depexts: [
-  [["debian"] ["llvm-3.5-dev"]]
-  [["osx" "homebrew"] ["homebrew/versions/llvm35"]]
+  ["llvm-3.5-dev"] {os-distribution = "debian"}
+  ["homebrew/versions/llvm35"] {os = "macos" & os-distribution = "homebrew"}
 ]
 depends: [
+  "ocaml"
   "ocamlbuild" {build}
 ]
 install: ["sh" "./compile.sh" "install" "3.5" make prefix lib]
+synopsis: "The official LLVM binding"
+description: "Note: LLVM should be installed first."
+url {
+  src: "http://llvm.org/releases/3.5.0/llvm-3.5.0.src.tar.xz"
+  checksum: "md5=d6987305a1a0e58e128c1374cd3b8fef"
+}

@@ -1,44 +1,55 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Markus Mottl <markus.mottl@gmail.com>"
 authors: [ "Markus Mottl <markus.mottl@gmail.com>"
            "Christian Szegedy <csdontspam@metamatix.com>" ]
 license: "LGPL-2.1+ with OCaml linking exception"
 homepage: "http://mmottl.github.io/sqlite3-ocaml"
-dev-repo: "https://github.com/mmottl/sqlite3-ocaml.git"
+dev-repo: "git+https://github.com/mmottl/sqlite3-ocaml.git"
 bug-reports: "https://github.com/mmottl/sqlite3-ocaml/issues"
 tags: [ "clib:sqlite3" "clib:pthread"  ]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
-  ["ocaml" "setup.ml" "-build"] { os != "darwin" }
-  ["env" "SQLITE3_OCAML_BREWCHECK=1"
-   "ocaml" "setup.ml" "-build"] { os = "darwin" }
+  ["ocaml" "setup.ml" "-build"] {os != "darwin"}
+  ["env" "SQLITE3_OCAML_BREWCHECK=1" "ocaml" "setup.ml" "-build"]
+    {os = "darwin"}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "sqlite3"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "3.12"}
   "ocamlbuild" {build}
   "ocamlfind" {build & >= "1.3.1"}
-  # Included from _opam file
   "conf-pkg-config" {build}
 ]
-available: [ ocaml-version >= "3.12" ]
 depexts: [
-  [["debian"] ["libsqlite3-dev"]]
-  [["freebsd"] ["database/sqlite3"]]
-  [["openbsd"] ["database/sqlite3"]]
-  [["ubuntu"] ["libsqlite3-dev"]]
-  [["centos"] ["sqlite-devel"]]
-  [["rhel"] ["sqlite-devel"]]
-  [["fedora"] ["sqlite-devel"]]
-  [["alpine"] ["sqlite-dev"]]
-  [["osx" "homebrew"] ["sqlite3"]]
-  [["osx" "macports"] ["sqlite3"]]
+  ["libsqlite3-dev"] {os-distribution = "debian"}
+  ["database/sqlite3"] {os = "freebsd"}
+  ["database/sqlite3"] {os = "openbsd"}
+  ["libsqlite3-dev"] {os-distribution = "ubuntu"}
+  ["sqlite-devel"] {os-distribution = "centos"}
+  ["sqlite-devel"] {os-distribution = "rhel"}
+  ["sqlite-devel"] {os-distribution = "fedora"}
+  ["sqlite-dev"] {os-distribution = "alpine"}
+  ["sqlite3"] {os = "macos" & os-distribution = "homebrew"}
+  ["sqlite3"] {os = "macos" & os-distribution = "macports"}
 ]
+synopsis: "sqlite3-ocaml - SQLite3 bindings"
+description: """
+sqlite3-ocaml is an OCaml library with bindings to the SQLite3 client
+API. Sqlite3 is a self-contained, serverless, zero-configuration,
+transactional SQL database engine with outstanding performance for
+many use cases. These bindings are written in a way that enables a
+friendly coexistence with the old (version 2) SQLite and its OCaml
+wrapper ocaml-sqlite."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/mmottl/sqlite3-ocaml/releases/download/v4.1.0/sqlite3-ocaml-4.1.0.tar.gz"
+  checksum: "md5=4ab3f90cfb815e4495d9b42c4fe2b684"
+}
