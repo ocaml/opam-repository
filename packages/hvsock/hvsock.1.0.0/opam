@@ -1,23 +1,20 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "dave@recoil.org"
 authors: [ "David Scott" "Rolf Neugebauer" "Anil Madhavapeddy" "Simon Ferquel"]
 license: "ISC"
 homepage: "https://github.com/mirage/ocaml-hvsock"
-dev-repo: "https://github.com/mirage/ocaml-hvsock.git"
+dev-repo: "git+https://github.com/mirage/ocaml-hvsock.git"
 bug-reports: "https://github.com/mirage/ocaml-hvsock/issues"
 doc: "https://mirage.github.io/ocaml-hvsock"
 
 build: [
-  [ "jbuilder" "subst"] {pinned}
-  [ "jbuilder" "build" "-p" name "-j" jobs ]
+  ["jbuilder" "subst"] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "subst"] {with-test & pinned}
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-
-build-test:[
-  [ "jbuilder" "subst"] {pinned}
-  [ "jbuilder" "runtest" "-p" name "-j" jobs ]
-]
-
 depends: [
+  "ocaml" {>= "4.03.0"}
   "base-bytes"
   "base-threads"
   "base-unix"
@@ -30,8 +27,24 @@ depends: [
   "cstruct" {>= "2.4.0"}
   "duration"
   "bos"
-  "jbuilder" {build & >="1.0+beta10"}
-  "alcotest" {test & >= "0.4.0"}
+  "jbuilder" {build & >= "1.0+beta10"}
+  "alcotest" {with-test & >= "0.4.0"}
 ]
+synopsis: "Bindings for Hyper-V AF_VSOCK"
+description: """
+[![Build Status (Linux)](https://travis-ci.org/mirage/ocaml-hvsock.svg)](https://travis-ci.org/mirage/ocaml-hvsock)
+[![Build status (Windows)](https://ci.appveyor.com/api/projects/status/974tsg317b4k8xra?svg=true)](https://ci.appveyor.com/project/mirage/ocaml-hvsock/branch/master)
 
-available: [ ocaml-version >= "4.03.0" ]
+These bindings allow Host <-> VM communication on Hyper-V systems on both Linux
+and Windows.
+
+*Warning*: the `AF_HYPERV` patches for Linux are not yet merged and hence the
+definition of `AF_HYPERV` is not yet stable. If other address families are merged
+before this one then the value of `AF_HYPERV` will change!
+
+Please read [the API documentation](https://djs55.github.io/ocaml-hvsock/index.html)."""
+url {
+  src:
+    "https://github.com/mirage/ocaml-hvsock/releases/download/v1.0.0/hvsock-1.0.0.tbz"
+  checksum: "md5=cd880aa60fa2e03ce6eb3a5baf56c608"
+}

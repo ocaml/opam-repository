@@ -1,35 +1,68 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Török Edwin <edwin@skylable.com>"
 authors: ["Török Edwin <edwin@skylable.com>"]
 homepage: "https://gitlab.com/edwintorok/cmdtui"
 doc: "https://edwintorok.gitlab.io/cmdtui/doc"
 license: "ISC"
-dev-repo: "https://gitlab.com/edwintorok/cmdtui.git"
+dev-repo: "git+https://gitlab.com/edwintorok/cmdtui.git"
 bug-reports: "https://gitlab.com/edwintorok/cmdtui/issues"
-tags: []
-available: [ ocaml-version >= "4.02.3"]
 depends: [
+  "ocaml" {>= "4.02.3"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
-  "astring" { >= "0.8.3" }
-  "fmt" { >= "0.8.0" }
+  "astring" {>= "0.8.3"}
+  "fmt" {>= "0.8.0"}
 ]
 depopts: [
   "lambda-term"
   "cmdliner"
   "logs"
 ]
-build: [ "ocaml" "pkg/pkg.ml" "build"
-                 "--pinned" "%{pinned}%" "--tests" "false"
-                 "--with-lambda-term" "%{lambda-term:installed}%"
-                 "--with-cmdliner" "%{cmdliner:installed}%"
-                 "--with-logs" "%{logs:installed}%"
+build: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "false"
+    "--with-lambda-term"
+    "%{lambda-term:installed}%"
+    "--with-cmdliner"
+    "%{cmdliner:installed}%"
+    "--with-logs"
+    "%{logs:installed}%"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+    "--with-lambda-term"
+    "%{lambda-term:installed}%"
+    "--with-cmdliner"
+    "%{cmdliner:installed}%"
+    "--with-logs"
+    "%{logs:installed}%"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-build-test: [
-  ["ocaml" "pkg/pkg.ml" "build"
-          "--pinned" "%{pinned}%" "--tests" "true"
-          "--with-lambda-term" "%{lambda-term:installed}%"
-          "--with-cmdliner" "%{cmdliner:installed}%"
-          "--with-logs" "%{logs:installed}%"]
-  ["ocaml" "pkg/pkg.ml" "test"]]
+synopsis: "Interactive command completion and execution for building REPLs"
+description: """
+cmdtui is a module for declaring commands with completions and actions.
+It can return a dynamically generated list of completions based on partial user
+input.
+The base module doesn't depend on a particular terminal control library,
+and support for `lambda-term` based REPLs is provided in the `cmdtui.lambda-term` subpackage.
+
+cmdtui is distributed under the ISC license."""
+url {
+  src:
+    "https://gitlab.com/edwintorok/cmdtui/uploads/d8ed8d08f98a8d3481121df4b9fc13cd/cmdtui-0.3.0.tbz"
+  checksum: "md5=00ec10a7c55ac72f7b54aa64a62a702e"
+}

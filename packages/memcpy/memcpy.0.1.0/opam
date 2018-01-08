@@ -1,19 +1,36 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "yallop@gmail.com"
-author: "yallop@gmail.com"
 homepage: "https://github.com/yallop/ocaml-memcpy"
-dev-repo: "http://github.com/yallop/ocaml-memcpy.git"
+dev-repo: "git+http://github.com/yallop/ocaml-memcpy.git"
 bug-reports: "http://github.com/yallop/ocaml-memcpy/issues"
 license: "MIT"
-build: [[make]]
+build: [
+  [make]
+  [make "test"] {with-test}
+]
 install: [[make "install"]]
-build-test: [[make "test"]]
 remove: [["ocamlfind" "remove" "memcpy"]]
 depends: [
-   "ctypes" {>= "0.4.0" & < "0.12.0"}
-   "ounit" {test}
-   "ocamlfind" {build}
-   "ocamlbuild" {build}
+  "ocaml" {>= "4.01.0"}
+  "ctypes" {>= "0.4.0" & < "0.12.0"}
+  "ounit" {with-test}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.01.0" ]
 tags: ["org:mirage"]
+synopsis: "Safe and efficient copying between blocks of memory."
+description: """
+There are several ways of storing and accessing blocks of memory in an OCaml program, including
+
+* bytes and string values for mutable and immutable strings that reside in the OCaml heap
+* bigarray values for reference-counted blocks that reside in the OCaml heaps
+* Ctypes ptr values that can be used to address arbitrary addresses using typed descriptions of the memory layout.
+* Ctypes array values that provide bounds-checked access to ptr-addressed memory.
+
+The Memcpy module provides functions for safely and efficiently copying blocks of memory between these different representations."""
+authors: "yallop@gmail.com"
+flags: light-uninstall
+url {
+  src: "https://github.com/yallop/ocaml-memcpy/archive/0.1.0.tar.gz"
+  checksum: "md5=4ba882a985d936633ec8bf0e382aa632"
+}

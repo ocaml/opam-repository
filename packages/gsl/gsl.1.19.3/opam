@@ -1,35 +1,53 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Markus Mottl <markus.mottl@gmail.com>"
 authors: [ "Olivier Andrieu <oandrieu@gmail.com>"
            "Markus Mottl <markus.mottl@gmail.com>" ]
 license: "GPL-3+"
 homepage: "http://mmottl.github.io/gsl-ocaml"
-dev-repo: "https://github.com/mmottl/gsl-ocaml.git"
+dev-repo: "git+https://github.com/mmottl/gsl-ocaml.git"
 bug-reports: "https://github.com/mmottl/gsl-ocaml/issues"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
-    "--%{camlp4:enable}%-camlp4"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{camlp4:enable}%-camlp4"
+  ]
   ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{camlp4:enable}%-camlp4"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "gsl"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"
-    "--%{camlp4:enable}%-camlp4"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "3.12"}
   "base-bigarray"
   "ocamlbuild" {build}
   "ocamlfind" {build & >= "1.3.1"}
-  # Included from _opam file
   "conf-gsl"
 ]
 depopts: [
   "camlp4"
 ]
-available: [ ocaml-version >= "3.12" ]
+synopsis: "GSL - Bindings to the GNU Scientific Library"
+description: """
+gsl-ocaml branched off from Olivier Andrieu's distribution (ocamlgsl)
+and includes bug fixes as well as numerous API improvements."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/mmottl/gsl-ocaml/releases/download/v1.19.3/gsl-ocaml-1.19.3.tar.gz"
+  checksum: "md5=1ab7be9ac5a21b3ab9400c63f2fc82d7"
+}

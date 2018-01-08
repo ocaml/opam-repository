@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "whitequark <whitequark@whitequark.org>"
 authors: "whitequark <whitequark@whitequark.org>"
 homepage: "https://github.com/whitequark/ocaml-m17n"
@@ -9,31 +9,43 @@ tags: "syntax"
 dev-repo: "git://github.com/whitequark/ocaml-m17n.git"
 substs: "pkg/META"
 build: [
-  "ocaml"
-  "pkg/build.ml"
-  "native=%{ocaml-native}%"
-  "native-dynlink=%{ocaml-native-dynlink}%"
-  "utop=%{utop:installed}%"
-]
-build-test: [
-  "ocamlbuild"
-  "-classic-display"
-  "-use-ocamlfind"
-  "src_test/test_m17n.byte"
-  "--"
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+    "utop=%{utop:installed}%"
+  ]
+  [
+    "ocamlbuild"
+    "-classic-display"
+    "-use-ocamlfind"
+    "src_test/test_m17n.byte"
+    "--"
+  ] {with-test}
 ]
 depends: [
+  "ocaml" {= "4.03.0"}
   "ocamlfind" {build}
   "sedlex"
   "uutf" {>= "0.9.4" & < "1.0.0"}
   "uunf" {>= "1.0.0" & < "2.0.0"}
   "uucp" {>= "1.1.0" & < "2.0.0"}
   "gen" {>= "0.2.3" & < "0.5"}
-  "ounit" {test}
-  "ppx_deriving" {test}
+  "ounit" {with-test}
+  "ppx_deriving" {with-test}
 ]
 depopts: "utop"
 conflicts: [
   "utop" {< "1.17"}
 ]
-available: [ocaml-version = "4.03.0"]
+synopsis: "Multilingualization for OCaml source code"
+description: """
+m17n is an OCaml package that allows to use non-English
+identifiers in the OCaml source code. It treats source
+code as UTF-8 text and performs normalization and
+case-folding according to the Unicode standard."""
+url {
+  src: "https://github.com/whitequark/ocaml-m17n/archive/v1.0.tar.gz"
+  checksum: "md5=c95d4404804208f1176b8868bbc2d365"
+}

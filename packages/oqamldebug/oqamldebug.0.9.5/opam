@@ -1,15 +1,42 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sebastien.fricker@gmail.com"
 authors: ["Sebastien Fricker"]
 homepage: "http://oqamldebug.forge.ocamlcore.org/"
 bug-reports: "https://forge.ocamlcore.org/projects/oqamldebug/"
-dev-repo: "https://forge.ocamlcore.org/anonscm/git/oqamldebug/oqamldebug.git"
+dev-repo:
+  "git+https://forge.ocamlcore.org/anonscm/git/oqamldebug/oqamldebug.git"
 build: [
   [ "qmake" "CONFIG-=app_bundle" "CONFIG+=release" "PREFIX_BIN=%{bin}%/" "CONFIG-=debug" "LIBS+=-lX11" "oqamldebug.pro" ]
   [ make ]
   [ "strip" "oqamldebug" ]
 ]
 depexts: [
-  [["debian"] ["qt4-qmake" "libqt4-dev"]]
-  [["ubuntu"] ["qt4-qmake" "libqt4-dev"]]
+  ["qt4-qmake" "libqt4-dev"] {os-distribution = "debian"}
+  ["qt4-qmake" "libqt4-dev"] {os-distribution = "ubuntu"}
 ]
+synopsis: "Graphical front-end to ocamldebug"
+description: """
+Features:
+    * Emulates only the emacs mode from OCamlDebug, does not need any hooks into ocaml core.
+    * Full Qt application: can be compiled on Windows, MacOS and Linux
+    * Save/Restore of window position, and debug parameter.
+    * Detection of the modification of the debugged application or sources. (automatically reloaded when modified)
+    * Syntax highlighting of ocamldebug command and ocaml sources.
+    * Persistent command line history
+    * Mouse support: middle click on a symbol in the code to print it, and mouse wheel to step/backstep through the code.
+    * Setting breakpoints directly into the source code.
+    * Watch window
+    * Call stack window
+    * Separated application output window
+
+OQamlDebug needs Qt4 or Qt5 to be generated. Qt4 can be downloaded from http://qt-project.org.
+On debian install simply qt4-dev package..
+
+On MacOS it is necessary to set QMAKESPEC as follow to install the package
+export QMAKESPEC=macx-g++"""
+depends: ["ocaml"]
+extra-files: ["oqamldebug.install" "md5=75c25b7029fae5e7e4acc9b87d76026b"]
+url {
+  src: "http://oqamldebug.forge.ocamlcore.org/oqamldebug-0.9.5.tar.gz"
+  checksum: "md5=fd50ab57cfd3e48d8061a1c06b411ecd"
+}

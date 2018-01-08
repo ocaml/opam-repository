@@ -1,23 +1,30 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "session"
 maintainer: "Spiros Eliopoulos <spiros@inhabitedtype.com>"
 authors: [ "Spiros Eliopoulos <spiros@inhabitedtype.com>" ]
 license: "BSD-3-clause"
 homepage: "https://github.com/inhabitedtype/ocaml-session"
-dev-repo: "https://github.com/inhabitedtype/ocaml-session.git"
+dev-repo: "git+https://github.com/inhabitedtype/ocaml-session.git"
 bug-reports: "https://github.com/inhabitedtype/ocaml-session/issues"
 
 build: [
   ["jbuilder" "subst"] {pinned}
   ["jbuilder" "build" "-p" name]
+  ["jbuilder" "runtest" "-p" name] {with-test}
 ]
-build-test: ["jbuilder" "runtest" "-p" name]
-
 depends: [
+  "ocaml" {>= "4.03.0"}
   "jbuilder" {build & >= "1.0+beta9"}
   "nocrypto"
   "result"
-  "ounit" {test & >= "1.0.2"}
+  "ounit" {with-test & >= "1.0.2"}
 ]
-
-available: [ocaml-version >= "4.03.0"]
+synopsis: "A session manager for your everyday needs"
+description: """
+ocaml-session is an session manager that handles cookie headers and backend
+storage for HTTP servers. The library supports CoHTTP and Webmachine; Async and
+Lwt; and pluggable backing stores based on a functor interface."""
+url {
+  src: "https://github.com/inhabitedtype/ocaml-session/archive/0.4.0.tar.gz"
+  checksum: "md5=a770a08805dd71276b14f5dcb2ac1dd6"
+}

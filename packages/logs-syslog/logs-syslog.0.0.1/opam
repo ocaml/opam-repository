@@ -1,14 +1,13 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Hannes Mehnert <hannes@mehnert.org>"
 authors: ["Hannes Mehnert <hannes@mehnert.org>"]
 homepage: "https://github.com/hannesm/logs-syslog"
 doc: "https://hannesm.github.io/logs-syslog/doc"
-dev-repo: "https://github.com/hannesm/logs-syslog.git"
+dev-repo: "git+https://github.com/hannesm/logs-syslog.git"
 bug-reports: "https://github.com/hannesm/logs-syslog/issues"
 license: "ISC"
-available: [ ocaml-version >= "4.02.0"]
-
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
@@ -17,7 +16,6 @@ depends: [
   "syslog-message" {>= "0.0.2"}
   "result"
 ]
-
 depopts: [
   "lwt" "x509" "tls" "mirage-types" "cstruct" "ipaddr" "io-page"
 ]
@@ -32,4 +30,23 @@ build: [
     "--with-mirage" "%{mirage-types+lwt+cstruct+ipaddr+io-page:installed}%"
     "--with-tls" "%{x509+tls+cstruct:installed}%" ]
 ]
+synopsis: "Logs output via syslog"
+description: """
+This library provides log reporters over syslog with various effectful layers:
+Unix, Lwt, MirageOS.  It integrated the
+[Logs](http://erratique.ch/software/logs) library, which provides logging
+infrastructure for OCaml, with the
+[syslog-message](http://verbosemo.de/syslog-message/) library, which provides
+encoding and decoding of syslog messages ([RFC
+3164](https://tools.ietf.org/html/rfc3164)).
 
+Six ocamlfind libraries are provided: the bare `Logs-syslog`, a minimal
+dependency Unix `Logs-syslog-unix`, a Lwt one `Logs-syslog-lwt`, another one
+with Lwt and TLS ([RFC 5425](https://tools.ietf.org/html/rfc5425)) support
+`Logs-syslog-lwt-tls`, a MirageOS one `Logs-syslog-mirage`, and a MirageOS one
+using TLS `Logs-syslog-mirage-tls`."""
+url {
+  src:
+    "https://github.com/hannesm/logs-syslog/releases/download/0.0.1/logs-syslog-0.0.1.tbz"
+  checksum: "md5=1a293d1396ab2c360cfecca5bb29c569"
+}

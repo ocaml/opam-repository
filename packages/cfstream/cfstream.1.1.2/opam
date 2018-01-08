@@ -1,8 +1,8 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "cfstream"
 version: "1.1.2"
 homepage: "https://github.com/biocaml/cfstream"
-dev-repo: "https://github.com/biocaml/cfstream.git"
+dev-repo: "git+https://github.com/biocaml/cfstream.git"
 bug-reports: "https://github.com/biocaml/cfstream/issues"
 license: "LGPL + linking exception"
 maintainer: "Ashish Agarwal <agarwal1975@gmail.com>"
@@ -14,27 +14,26 @@ authors: [
 
 build: [
   ["omake" "PREFIX=%{prefix}%" "COMPILE_TEST=false"]
+  ["omake" "doc"] {with-doc}
 ]
-
 install: [
   ["omake" "install"]
+  ["omake" "install_doc" "DOC_DIR=%{doc}%/cfstream"] {with-doc}
 ]
-
 remove: [
   ["ocamlfind" "remove" "cfstream"]
 ]
 
-build-doc: [
-  ["omake" "doc"]
-  ["omake" "install_doc" "DOC_DIR=%{doc}%/cfstream"]
-]
-
 depends: [
+  "ocaml" {>= "4.00.1"}
   "ocamlfind"
   "omake"
   "core_kernel"
 ]
-
-available: [
-  ocaml-version >= "4.00.1"
-]
+synopsis: "Stream operations in the style of Core's API."
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/biocaml/cfstream/releases/download/v1.1.2/cfstream-1.1.2.tar.gz"
+  checksum: "md5=c08b6e71b25b0d281270076e2d08f4b9"
+}

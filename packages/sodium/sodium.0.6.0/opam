@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sheets@alum.mit.edu"
 authors: [
   "David Sheets <sheets@alum.mit.edu>"
@@ -8,20 +8,20 @@ authors: [
 homepage: "https://github.com/dsheets/ocaml-sodium/"
 bug-reports: "https://github.com/dsheets/ocaml-sodium/issues/"
 tags: "org:mirage"
-dev-repo: "https://github.com/dsheets/ocaml-sodium.git"
+dev-repo: "git+https://github.com/dsheets/ocaml-sodium.git"
 build: [
-  [make] { os != "freebsd" }
-  [make "CFLAGS=-I/usr/local/include -L/usr/local/lib"] { os = "freebsd" }
+  [make] {os != "freebsd"}
+  [make "CFLAGS=-I/usr/local/include -L/usr/local/lib"] {os = "freebsd"}
+  [make "test"] {with-test & os != "freebsd"}
+  [make "CFLAGS=-I/usr/local/include -L/usr/local/lib" "test"]
+    {with-test & os = "freebsd"}
 ]
 install: [
   [make "PREFIX=%{prefix}%" "install"]
 ]
-build-test: [
-  [make "test"] {os != "freebsd"}
-  [make "CFLAGS=-I/usr/local/include -L/usr/local/lib" "test"] {os = "freebsd"}
-]
 remove: ["ocamlfind" "remove" "sodium"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "base-bigarray"
   "base-bytes"
   "ocamlfind" {build}
@@ -29,7 +29,6 @@ depends: [
   "ctypes" {>= "0.6.0"}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.01.0"]
 post-messages: [
   "This package requires installation of libsodium-dev (>= 1.0.9)" {failure & os = "debian"}
   "This package requires installation of libsodium-dev (>= 1.0.9)" {failure & os = "ubuntu"}
@@ -37,3 +36,16 @@ post-messages: [
   "This package requires installation of security/libsodium (>= 1.0.9)" {failure & os = "freebsd"}
   "This package requires installation of libsodium (>= 1.0.9)" {failure & os = "osx"}
 ]
+synopsis: "Binding to libsodium UNAUDITED"
+description: """
+Binding to libsodium 1.0.9+, a shared library wrapper for djb's NaCl.
+
+Binding uses ctypes' stub generation system. GNU/Linux, FreeBSD, and OS
+X are supported.
+
+UNAUDITED"""
+flags: light-uninstall
+url {
+  src: "https://github.com/dsheets/ocaml-sodium/archive/0.6.0.tar.gz"
+  checksum: "md5=c1e96c0f31fa12fad8b8b431eadc1601"
+}

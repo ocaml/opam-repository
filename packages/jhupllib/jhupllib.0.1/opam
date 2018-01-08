@@ -1,24 +1,23 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "JHU PL Lab <pl.cs@jhu.edu>"
 authors: "JHU PL Lab <pl.cs@jhu.edu>"
 homepage: "http://www.big-bang-lang.org/"
 bug-reports: "https://github.com/JHU-PL-Lab/jhu-pl-lib/issues"
 license: "Apache"
-dev-repo: "https://github.com/JHU-PL-Lab/jhu-pl-lib.git"
+dev-repo: "git+https://github.com/JHU-PL-Lab/jhu-pl-lib.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 remove: ["ocaml" "%{etc}%/jhupllib/_oasis_remove_.ml" "%{etc}%/jhupllib"]
 depends: [
+  "ocaml"
   "base-threads"
   "batteries"
   "monadlib"
@@ -30,3 +29,10 @@ depends: [
   "ppx_deriving"
   "yojson"
 ]
+synopsis: "A library of tools and utilities for JHU PL lab projects."
+description: "A library of tools and utilities for JHU PL lab projects."
+url {
+  src:
+    "https://github.com/JHU-PL-Lab/jhu-pl-lib/archive/da46a9e849d8d8f627e59025726d90e64268c9f1.zip"
+  checksum: "md5=e8284912f1eaadd88c5327103893370d"
+}

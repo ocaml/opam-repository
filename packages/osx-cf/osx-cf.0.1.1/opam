@@ -1,23 +1,23 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sheets@alum.mit.edu"
 authors: ["David Sheets" "Thomas Gazagnaire"]
 homepage: "https://github.com/dsheets/ocaml-osx-cf"
 bug-reports: "https://github.com/dsheets/ocaml-osx-cf/issues"
 license: "ISC"
 doc: "https://dsheets.github.io/ocaml-osx-cf/"
-dev-repo: "https://github.com/dsheets/ocaml-osx-cf.git"
+dev-repo: "git+https://github.com/dsheets/ocaml-osx-cf.git"
 build: [
-  "ocaml"
-  "pkg/pkg.ml"
-  "build"
-  "--tests"
-  "false"
-  "--pinned"
-  pinned
-  "--with-lwt"
-  lwt:installed
-]
-build-test: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--tests"
+    "false"
+    "--pinned"
+    pinned
+    "--with-lwt"
+    lwt:installed
+  ]
   [
     "ocaml"
     "pkg/pkg.ml"
@@ -28,16 +28,26 @@ build-test: [
     pinned
     "--with-lwt"
     lwt:installed
-  ]
-  ["ocaml" "pkg/pkg.ml" "test"]
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "topkg" {build & >= "0.7.4"}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "base-bytes"
   "ctypes" {>= "0.4.0"}
   "ctypes-foreign"
 ]
 depopts: ["lwt" "base-threads"]
 available: [os = "darwin"]
+synopsis: "OS X CoreFoundation bindings"
+description: """
+String, Array, Index, RunLoop (and Observer), and TimeInterval are
+bound. Additionally, an osx-cf.lwt subpackage provides lwt+RunLoop
+integration."""
+url {
+  src: "https://github.com/dsheets/ocaml-osx-cf/archive/0.1.1.tar.gz"
+  checksum: "md5=7232aa423d252281f102a30f77cf66f4"
+}

@@ -1,18 +1,19 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe.Troestler@umons.ac.be"
 authors: ["Christophe Troestler <Christophe.Troestler@umons.ac.be>"]
 homepage: "https://forge.ocamlcore.org/projects/lbfgs/"
-dev-repo: "https://github.com/Chris00/L-BFGS-ocaml.git"
+dev-repo: "git+https://github.com/Chris00/L-BFGS-ocaml.git"
 bug-reports: "https://github.com/Chris00/L-BFGS-ocaml/issues"
 license: "LGPL-3.0 with OCaml linking exception"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "lbfgs"]]
 depends: [
+  "ocaml"
   "camlp4" {build}
   "ocamlfind"
   "oasis" {>= "0.4.6"}
@@ -24,9 +25,23 @@ patches: [
   "string.patch"
 ]
 depexts: [
-  [["debian"] ["gfortran"]]
-  [["ubuntu"] ["gfortran"]]
-  [["cygwin"] ["mingw64-x86_64-gcc-fortran"]]
-  [["osx" "homebrew"] ["gcc"]]
+  ["gfortran"] {os-distribution = "debian"}
+  ["gfortran"] {os-distribution = "ubuntu"}
+  ["mingw64-x86_64-gcc-fortran"] {os = "cygwin"}
+  ["gcc"] {os = "macos" & os-distribution = "homebrew"}
 ]
 install: ["ocaml" "setup.ml" "-install"]
+synopsis:
+  "Minimization of multidimensional functions on bounded or unbounded domains."
+description: """
+This is a binding to L-BFGS-B, a library for Large-scale
+Bound-constrained Optimization."""
+flags: light-uninstall
+extra-files: [
+  ["string.patch" "md5=ec0c3a0a771567101a53f0d96ff2986d"]
+  ["setup.patch" "md5=65f2130d19ef96e4e9dbf93be19f75cd"]
+]
+url {
+  src: "https://forge.ocamlcore.org/frs/download.php/778/lbfgs-0.8.3.tar.gz"
+  checksum: "md5=98d2210538709389d55a9974e89f3b52"
+}

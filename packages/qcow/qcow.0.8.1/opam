@@ -1,15 +1,16 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "dave@recoil.org"
 authors: ["David Scott"]
 license: "ISC"
 homepage: "https://github.com/mirage/ocaml-qcow"
-dev-repo: "https://github.com/mirage/ocaml-qcow.git"
+dev-repo: "git+https://github.com/mirage/ocaml-qcow.git"
 bug-reports: "https://github.com/mirage/ocaml-qcow/issues"
 tags: [
   "org:mirage"
 ]
 
 depends: [
+  "ocaml" {>= "4.03.0"}
   "astring"
   "cmdliner"
   "cstruct"
@@ -23,7 +24,7 @@ depends: [
   "mirage-time-lwt"
   "sexplib"
   "logs"
-  "fmt" {>="0.8.2"}
+  "fmt" {>= "0.8.2"}
   "io-page"
   "ocamlfind" {build}
   "topkg" {build}
@@ -31,15 +32,22 @@ depends: [
   "ppx_deriving" {build}
   "ppx_sexp_conv" {build}
   "ppx_type_conv" {build}
-  "ounit" {test}
-  "mirage-block-ramdisk" {test}
-  "ezjsonm" {test}
-  "nbd" {test & >= "2.0.1"}
+  "ounit" {with-test}
+  "mirage-block-ramdisk" {with-test}
+  "ezjsonm" {with-test}
+  "nbd" {with-test & >= "2.0.1"}
 ]
-
-build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ]
-  [ "ocaml" "pkg/pkg.ml" "test" ]
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis: "Read and write images in Qcow2 format"
+description: """
+If you want to `create`, `read`, `write` or analyse qcow2-formatted
+data in pure OCaml then this library is for you!"""
+url {
+  src: "https://github.com/mirage/ocaml-qcow/archive/v0.8.1.tar.gz"
+  checksum: "md5=1eb6c81cd13f5e93b8d8f56ec37daa35"
+}

@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "2.0"
 maintainer: "dave@recoil.org"
 tags: [
   "org:mirage"
@@ -6,10 +6,24 @@ tags: [
 ]
 build: make
 remove: [[make "uninstall"]]
-depends: ["ocamlfind"]
+depends: ["ocaml" "ocamlfind"]
 depexts: [
-  [["debian"] ["libaio-dev"]]
-  [["ubuntu"] ["libaio-dev"]]
+  ["libaio-dev"] {os-distribution = "debian"}
+  ["libaio-dev"] {os-distribution = "ubuntu"}
 ]
 patches: ["meta.patch"]
 install: [make "install"]
+synopsis: "Linux kernel AIO access library for ocaml"
+description: """
+Use this if you want very efficient I/O on Linux. Note this is not
+an implementation of "POSIX AIO".
+
+Linux AIO allows a single thread to submit multiple I/O operations and
+perform other computations while they are in progress. To increase
+efficiency, all data is read and written in page-aligned buffers."""
+extra-files: ["meta.patch" "md5=b76689eef7b6f6fb1373ee82c79e0b54"]
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/818/libaio-ocaml_1.0.orig.tar.gz"
+  checksum: "md5=bc99ae0567d9feb4952c73da305aeb95"
+}

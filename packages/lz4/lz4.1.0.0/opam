@@ -1,16 +1,26 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "whitequark@whitequark.org"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
 remove: [["ocamlfind" "remove" "lz4"]]
-depends: ["base-bytes"
-          "ocamlfind"
-          "ctypes"     {>= "0.3.2" & < "0.4.0"}]
-depexts: [
-  [["debian"] ["liblz4-dev"]]
-  [["ubuntu"] ["liblz4-dev"]]
+depends: [
+  "ocaml"
+  "base-bytes"
+  "ocamlfind"
+  "ctypes" {>= "0.3.2" & < "0.4.0"}
 ]
+depexts: [
+  ["liblz4-dev"] {os-distribution = "debian"}
+  ["liblz4-dev"] {os-distribution = "ubuntu"}
+]
+depexts: ["liblz4-dev"] {os-distribution = "debian"}
 dev-repo: "git://github.com/whitequark/ocaml-lz4"
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "Bindings for LZ4, a very fast lossless compression algorithm"
+flags: light-uninstall
+url {
+  src: "https://github.com/whitequark/ocaml-lz4/archive/v1.0.0.zip"
+  checksum: "md5=8a7f9117004e954f59b928c3f30041d8"
+}

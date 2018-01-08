@@ -1,29 +1,28 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 homepage: "https://github.com/onlinemediagroup/ocaml-usbmux"
 bug-reports: "https://github.com/onlinemediagroup/ocaml-usbmux/issues"
 license: "BSD-3-clause"
-dev-repo: "https://github.com/onlinemediagroup/ocaml-usbmux.git"
+dev-repo: "git+https://github.com/onlinemediagroup/ocaml-usbmux.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocaml" "%{etc}%/usbmux/_oasis_remove_.ml" "%{etc}%/usbmux"]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "base-threads"
   "cmdliner" {build & >= "0.9.8"}
-  "cohttp" {>= "0.21.0" & <"0.99"}
-  "lwt" {>= "2.5.2" & <"3.0.0"}
+  "cohttp" {>= "0.21.0" & < "0.99"}
+  "lwt" {>= "2.5.2" & < "3.0.0"}
   "oasis" {build & >= "0.4"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
@@ -33,10 +32,9 @@ depends: [
   "yojson" {>= "1.3.2"}
 ]
 depexts: [
-  [["debian"] ["usbmuxd"]]
-  [["ubuntu"] ["usbmuxd"]]
+  ["usbmuxd"] {os-distribution = "debian"}
+  ["usbmuxd"] {os-distribution = "ubuntu"}
 ]
-available: [ocaml-version >= "4.02.0"]
 post-messages: [
   "
 Now you can ssh into your jailbroken iDevice using the CLI, gandalf.
@@ -68,3 +66,33 @@ https://github.com/onlinemediagroup/ocaml-usbmux/blob/master/README.md
   "
     {success}
 ]
+synopsis: "Control port remapping for iOS devices"
+description: """
+Now you can ssh into your jailbroken iDevice using the CLI, gandalf.
+Simple invocation: sudo `which gandalf` --mappings etc/mapping
+--daemonize --verbose
+
+where etc/mapping is a file which consists of an array of json objects
+with these fields, note that name can be null and is just a nickname
+for this tunnel, other fields are required.
+
+[{"udid":"9cdfac9f74c5e18a6eff3611c0927df5cf4f2eca",
+  "name":"i11",
+  "forwarding": [{"local_port":2000, "device_port":22},
+                 {"local_port":3000, "device_port":1122}]}]
+
+See uptime, tunnels and other metadata with: gandalf --status Note
+that with over 13 devices usbmuxd will start to buck because of
+threading issue with libplist. Use the custom one provided at
+https://github.com/onlinemediagroup/libplist
+
+The Linux kernel will also have trouble with many USB3.0 devices, ie
+over 15ish Fix that issue by turning off USB3.0 support in your BIOS.
+
+Check out the man page or see the README at:
+https://github.com/onlinemediagroup/ocaml-usbmux/blob/master/README.md"""
+url {
+  src:
+    "https://github.com/onlinemediagroup/ocaml-usbmux/archive/v1.3.2.tar.gz"
+  checksum: "md5=5bce6410e9da679bade89c529459320b"
+}

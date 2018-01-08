@@ -1,32 +1,60 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Etienne Millon <etienne@cryptosense.com>"
 authors: "Etienne Millon <etienne@cryptosense.com>"
 homepage: "https://github.com/cryptosense/pkcs11"
 bug-reports: "https://github.com/cryptosense/pkcs11/issues"
 license: "BSD-2"
-dev-repo: "https://github.com/cryptosense/pkcs11.git"
+dev-repo: "git+https://github.com/cryptosense/pkcs11.git"
 doc: "https://cryptosense.github.io/pkcs11/doc"
 build: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--with-cmdliner" "%{cmdliner:installed}%" ]
-]
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" "--with-cmdliner" "%{cmdliner:installed}%" ]
-  [ "ocaml" "pkg/pkg.ml" "test" ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--with-cmdliner"
+    "%{cmdliner:installed}%"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+    "--with-cmdliner"
+    "%{cmdliner:installed}%"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
 depends: [
-  "ctypes" { >= "0.6.0" }
-  "ctypes-foreign" { >= "0.4.0" }
-  "hex" { >= "1.0.0" }
-  "key-parsers" { >= "0.5.0" & != "0.6.0" }
-  "ppx_deriving" { >= "4.0" }
-  "ppx_deriving_yojson" { >= "3.0" }
+  "ocaml" {>= "4.02.0"}
+  "ctypes" {>= "0.6.0"}
+  "ctypes-foreign" {>= "0.4.0"}
+  "hex" {>= "1.0.0"}
+  "key-parsers" {>= "0.5.0" & != "0.6.0"}
+  "ppx_deriving" {>= "4.0"}
+  "ppx_deriving_yojson" {>= "3.0"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
   "topkg" {build}
-  "ounit" {test}
+  "ounit" {with-test}
 ]
 depopts: [
   "cmdliner"
 ]
 tags: ["org:cryptosense"]
-available: [ocaml-version >= "4.02.0" & os != "darwin"]
+available: os != "darwin"
+synopsis: "Bindings to the PKCS#11 cryptographic API"
+description: """
+This library contains ctypes bindings to the PKCS#11 API.
+
+This API is used by smartcards and Hardware Security Modules to perform
+cryptographic operations such as signature or encryption."""
+url {
+  src:
+    "https://github.com/cryptosense/pkcs11/releases/download/v0.7.2/pkcs11-0.7.2.tbz"
+  checksum: "md5=24d27ee98a2f369c8db1eda905cdb259"
+}

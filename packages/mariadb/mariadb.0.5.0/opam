@@ -1,10 +1,10 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Andre Nathan <andrenth@gmail.com>"
 authors: "Andre Nathan <andrenth@gmail.com>"
 homepage: "https://github.com/andrenth/ocaml-mariadb"
 bug-reports: "https://github.com/andrenth/ocaml-mariadb/issues"
 license: "MIT"
-dev-repo: "https://github.com/andrenth/ocaml-mariadb.git"
+dev-repo: "git+https://github.com/andrenth/ocaml-mariadb.git"
 build: [
   ["./configure" "--prefix=%{prefix}%"]
   [make]
@@ -12,15 +12,24 @@ build: [
 install: [make "install"]
 remove: ["ocamlfind" "remove" "mariadb"]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "ocamlfind" {build}
   "ctypes" {>= "0.7.0"}
   "ctypes-foreign" {>= "0.4.0"}
   "async"
   "lwt"
 ]
-available: [ocaml-version >= "4.03.0"]
 depexts: [
-  [["debian"] ["libmysqlclient-dev" "libmariadbclient-dev"]]
-  [["ubuntu"] ["libmysqlclient-dev" "libmariadbclient-dev"]]
-  [["osx" "homebrew"] ["mariadb"]]
+  ["libmysqlclient-dev" "libmariadbclient-dev"] {os-distribution = "debian"}
+  ["libmysqlclient-dev" "libmariadbclient-dev"] {os-distribution = "ubuntu"}
+  ["mariadb"] {os = "macos" & os-distribution = "homebrew"}
 ]
+synopsis: "OCaml bindings for MariaDB's libmysqlclient"
+description: """
+OCaml-MariaDB provides Ctypes-based bindings for MariaDB's libmysqlclient, including
+its nonblocking API."""
+flags: light-uninstall
+url {
+  src: "https://github.com/andrenth/ocaml-mariadb/archive/0.5.0.tar.gz"
+  checksum: "md5=6bf438d6e74586bc6cc61d00b11f8ed1"
+}

@@ -1,26 +1,34 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "asl"
 maintainer: "dave@recoil.org"
 version: "0.6"
 authors: [ "David Scott" ]
 license: "ISC"
 homepage: "https://github.com/mirage/ocaml-asl"
-dev-repo: "https://github.com/mirage/ocaml-asl.git"
+dev-repo: "git+https://github.com/mirage/ocaml-asl.git"
 bug-reports: "https://github.com/mirage/ocaml-asl/issues"
 
 build: [
   [make "PREFIX=%{prefix}%"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-
 install: [make "PREFIX=%{prefix}%" "install"]
 
 remove: [["ocamlfind" "remove" "asl"]]
 
 depends: [
+  "ocaml"
   "result"
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
-build-doc: ["ocaml" "setup.ml" "-doc"]
-
 available: [ os = "darwin" ]
+synopsis: "Bindings for the Apple System Log API"
+description: """
+The Apple System Log allows applications to send log messages, which can
+be recorded, filterd and searched."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-asl/archive/v0.6.tar.gz"
+  checksum: "md5=74024efaf14c56f724d8519450ec7233"
+}

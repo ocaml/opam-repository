@@ -1,16 +1,17 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors: ["Anil Madhavapeddy" "Daniel C. Bünzli" "Matthew Gray"]
 maintainer: "anil@recoil.org"
 homepage: "https://github.com/mirage/mirage-clock"
 bug-reports: "https://github.com/mirage/mirage-clock/issues"
-dev-repo: "https://github.com/mirage/mirage-clock.git"
+dev-repo: "git+https://github.com/mirage/mirage-clock.git"
 doc: "https://mirage.github.io/mirage-clock/"
 
 license: "ISC"
 tags: ["org:mirage"]
 
 depends: [
-  "jbuilder" {build & >="1.0+beta9"}
+  "ocaml"
+  "jbuilder" {build & >= "1.0+beta9"}
   "mirage-clock" {>= "1.2.0"}
   "mirage-clock-lwt" {>= "1.2.0"}
   "lwt"
@@ -20,3 +21,23 @@ build: [
   [ "jbuilder" "subst" ] {pinned}
   [ "jbuilder" "build" "-p" name "-j" jobs ]
 ]
+synopsis: "Libraries and module types for portable clocks"
+description: """
+This library implements portable support for an operating system timesource
+that is compatible with the [MirageOS](https://mirage.io) library interfaces
+found in: <https://github.com/mirage/mirage>
+
+It implements an `MCLOCK` module that represents a monotonic timesource
+since an arbitrary point, and `PCLOCK` which counts time since the Unix
+epoch.
+
+The following sources are used:
+
+* The Unix version uses `gettimeofday` or `clock_gettime`, depending on
+  which OS is in use (see [clock_stubs.c](https://github.com/mirage/mirage-clock/blob/master/unix/clock_stubs.c)).
+* The freestanding version uses the paravirtual clock source from the hypervisor."""
+url {
+  src:
+    "https://github.com/mirage/mirage-clock/releases/download/v1.3.0/mirage-clock-1.3.0.tbz"
+  checksum: "md5=eccfb4b7361bcc639744fd18d17cb582"
+}

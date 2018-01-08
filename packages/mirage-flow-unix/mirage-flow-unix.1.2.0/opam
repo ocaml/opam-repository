@@ -1,30 +1,56 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:    "thomas@gazagnaire.org"
 homepage:      "https://github.com/mirage/mirage-flow"
 bug-reports:   "https://github.com/mirage/mirage-flow/issues"
-dev-repo:      "https://github.com/mirage/mirage-flow.git"
+dev-repo: "git+https://github.com/mirage/mirage-flow.git"
 doc:           "https://mirage.github.io/mirage-flow/"
 authors:       ["Thomas Gazagnaire" "Dave Scott"]
 tags:          [ "org:mirage"]
 license:       "ISC"
 
-build: ["ocaml" "pkg/pkg.ml" "build" "--tests" "false"
-       "--pkg-name" name "--pinned" "%{pinned}%"]
-
-build-test: [
-  ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"
-       "--pkg-name" name "--pinned" "%{pinned}%"]
-  ["ocaml" "pkg/pkg.ml" "test" "--pkg-name" name]
+build: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--tests"
+    "false"
+    "--pkg-name"
+    name
+    "--pinned"
+    "%{pinned}%"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--tests"
+    "true"
+    "--pkg-name"
+    name
+    "--pinned"
+    "%{pinned}%"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test" "--pkg-name" name] {with-test}
 ]
-
 depends: [
-  "ocamlfind"  {build}
+  "ocaml"
+  "ocamlfind" {build}
   "ocamlbuild" {build}
-  "topkg"      {build & >= "0.9.0"}
-  "alcotest"   {test}
+  "topkg" {build & >= "0.9.0"}
+  "alcotest" {with-test}
   "fmt"
   "mirage-flow" {>= "1.2.0"}
   "mirage-flow-lwt" {>= "1.2.0"}
   "lwt"
   "cstruct" {>= "2.3.0"}
 ]
+synopsis: "Various implementations of the MirageOS FLOW interface"
+description: """
+- `Fflow` uses input/output functions to build a flow
+- `Lwt_io_flow` uses `Lwt_io.channel`"""
+url {
+  src:
+    "https://github.com/mirage/mirage-flow/releases/download/1.2.0/mirage-flow-unix-1.2.0.tbz"
+  checksum: "md5=c2a40c49fe2a018fe40abd54035c869b"
+}

@@ -1,26 +1,39 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "ppx_hardcaml"
 version: "1.1.0"
 maintainer: "Xavier Guérin <github@applepine.org>"
 authors: "Xavier Guérin <github@applepine.org>"
 homepage: "https://github.com/xguerin/ppx_hardcaml"
-dev-repo: "https://github.com/xguerin/ppx_hardcaml.git"
+dev-repo: "git+https://github.com/xguerin/ppx_hardcaml.git"
 bug-reports: "https://github.com/xguerin/ppx_hardcaml/issues"
 license: "ISC"
 tags: [ "syntax" ]
 substs: [ "pkg/META" ]
 build: [
-  "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                         "native-dynlink=%{ocaml-native-dynlink}%"
-]
-build-test: [
-  "ocamlbuild" "-classic-display" "-use-ocamlfind" "tests/PpxHardcamlTest.byte" "--"
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+  ]
+  [
+    "ocamlbuild"
+    "-classic-display"
+    "-use-ocamlfind"
+    "tests/PpxHardcamlTest.byte"
+    "--"
+  ] {with-test}
 ]
 depends: [
-  "ocamlbuild"     {build}
-  "ocamlfind"      {build & >= "1.3.2"}
-  "ppx_tools"      {build}
-  "ounit"          {test}
-  "hardcaml"       {>= "1.1.0"}
+  "ocaml" {>= "4.03"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build & >= "1.3.2"}
+  "ppx_tools" {build}
+  "ounit" {with-test}
+  "hardcaml" {>= "1.1.0"}
 ]
-available: ocaml-version >= "4.03"
+synopsis: "PPX extension for HardCaml"
+url {
+  src: "https://github.com/xguerin/ppx_hardcaml/archive/v1.1.0.tar.gz"
+  checksum: "md5=b8579a655eac7331f39b33e27bbfef02"
+}
