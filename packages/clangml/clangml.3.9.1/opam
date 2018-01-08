@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "francois.berenger@inria.fr"
 authors: "Pippijn van Steenhoven"
 homepage: "https://github.com/Antique-team/clangml"
 bug-reports: "https://github.com/Antique-team/clangml/issues"
-dev-repo: "https://github.com/Antique-team/clangml.git"
+dev-repo: "git+https://github.com/Antique-team/clangml.git"
 build: [
   ["sh" "-c" "test -d ${HOME}/usr/clang39 ||
               ( wget http://llvm.org/releases/3.9.0/clang+llvm-3.9.0-x86_64-apple-darwin.tar.xz &&
@@ -14,6 +14,7 @@ build: [
 install: [make "install"]
 remove: [make "uninstall"]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "dolog"
   "batteries"
   "deriving"
@@ -25,31 +26,33 @@ depends: [
   "conf-wget" {build}
 ]
 depexts: [
-  [["archlinux"]
-      ["binutils"
-       "boost"]]
-  [["gentoo"]
-      ["dev-libs/boost"
-       "sys-devel/binutils"
-       "sys-devel/binutils-libs"]]
-  [["debian"]
-      ["binutils-dev"
-       "clang-3.9"
-       "libboost-dev"
-       "libclang-3.9-dev"
-       "llvm-3.9-dev"
-       "libncurses-dev"]]
-  [["ubuntu"]
-      ["binutils-dev"
-       "clang-3.9"
-       "libboost-dev"
-       "libclang-3.9-dev"
-       "llvm-3.9-dev"
-       "libncurses-dev"]]
-  [["osx" "homebrew"]
-      ["boost160"]]
+  ["binutils" "boost"] {os-distribution = "archlinux"}
+  ["dev-libs/boost" "sys-devel/binutils" "sys-devel/binutils-libs"]
+    {os-distribution = "gentoo"}
+  [
+    "binutils-dev"
+    "clang-3.9"
+    "libboost-dev"
+    "libclang-3.9-dev"
+    "llvm-3.9-dev"
+    "libncurses-dev"
+  ] {os-distribution = "debian"}
+  [
+    "binutils-dev"
+    "clang-3.9"
+    "libboost-dev"
+    "libclang-3.9-dev"
+    "llvm-3.9-dev"
+    "libncurses-dev"
+  ] {os-distribution = "ubuntu"}
+  ["boost160"] {os = "macos" & os-distribution = "homebrew"}
 ]
-available: [ocaml-version >= "4.03.0"]
 post-messages: [
   "This package requires llvm-3.9, clang-3.9, boost and binutils" {failure}
 ]
+synopsis: "clang OCaml bindings"
+extra-files: ["clangml.install" "md5=347541519ab211a1cf2eb1049a6125f2"]
+url {
+  src: "https://github.com/Antique-team/clangml/archive/v3.9.1.tar.gz"
+  checksum: "md5=5db29afb605415bdfd2f73f3c7a0bf9f"
+}

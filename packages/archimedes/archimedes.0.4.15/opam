@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe.Troestler@umons.ac.be"
 authors: [
   "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
@@ -9,16 +9,18 @@ authors: [
   "Xavier Deschuyteneer <xavier.deschuyteneer@gmail.com>"
 ]
 homepage: "http://forge.ocamlcore.org/projects/archimedes/"
-dev-repo: "http://forge.ocamlcore.org/anonscm/git/archimedes/archimedes.git"
+dev-repo:
+  "git+http://forge.ocamlcore.org/anonscm/git/archimedes/archimedes.git"
 bug-reports: "http://forge.ocamlcore.org/projects/archimedes/"
 license: "LGPL-3.0 with OCaml linking exception"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "archimedes"]]
 depends: [
+  "ocaml" {< "4.03"}
   "graphics"
   "cairo2"
   "ocamlfind"
@@ -26,4 +28,14 @@ depends: [
   "ocamlbuild" {build}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-available: [ocaml-version < "4.03"]
+synopsis: "Extensible 2D plotting library."
+description: """
+Archimedes is a high quality, platform-independent, extensible 2D
+plotting library. It provides dynamically loaded backends such as
+Graphics and Cairo."""
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1025/archimedes-0.4.15.tar.gz"
+  checksum: "md5=a61aca722e8b3e2218edc8c7f01cd43d"
+}

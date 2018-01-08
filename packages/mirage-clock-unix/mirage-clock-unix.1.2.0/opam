@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors: ["Anil Madhavapeddy" "Daniel C. Bünzli" "Matthew Gray"]
 maintainer: "anil@recoil.org"
 homepage: "https://github.com/mirage/mirage-clock"
@@ -10,6 +10,7 @@ license: "ISC"
 tags: ["org:mirage"]
 
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build & >= "0.8.0"}
@@ -18,9 +19,33 @@ depends: [
   "lwt"
 ]
 build: [
-  "ocaml" "pkg/pkg.ml" "build" "-n" name "--pinned" "%{pinned}%" "--tests" "false"
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "-n"
+    name
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "false"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "-n"
+    name
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test" "-n" name] {with-test}
 ]
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "-n" name "--pinned" "%{pinned}%" "--tests" "true" ]
-  [ "ocaml" "pkg/pkg.ml" "test" "-n" name ]
-]
+synopsis: "A Mirage-compatible Clock library for Unix"
+url {
+  src:
+    "https://github.com/mirage/mirage-clock/releases/download/1.2.0/mirage-clock-unix-1.2.0.tbz"
+  checksum: "md5=1ca490a4572f3bf6a9034842eb092035"
+}

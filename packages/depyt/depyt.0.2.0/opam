@@ -1,8 +1,8 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "Thomas Gazagnaire <thomas@gazagnaire.org>"
 authors:      ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
 homepage:     "https://github.com/samoht/depyt"
-dev-repo:     "https://github.com/samoht/depyt.git"
+dev-repo: "git+https://github.com/samoht/depyt.git"
 bug-reports:  "https://github.com/samoht/depyt/issues"
 doc:          "https://samoht.github.io/depyt/doc"
 license:      "ISC"
@@ -11,13 +11,45 @@ tags:         ["org:mirage"]
 build: [
   ["jbuilder" "subst"]
   ["jbuilder" "build" "-j" jobs]
+  ["jbuilder" "runtest" "-j" jobs] {with-test}
 ]
-build-test: ["jbuilder" "runtest" "-j" jobs]
-
 depends: [
+  "ocaml" {>= "4.03.0"}
   "jbuilder" {build & >= "1.0+beta10"}
-  "cstruct" "fmt" "result" "jsonm"
-  "ocplib-endian" {>="0.7"}
-  "alcotest" {test}
+  "cstruct"
+  "fmt"
+  "result"
+  "jsonm"
+  "ocplib-endian" {>= "0.7"}
+  "alcotest" {with-test}
 ]
-available: [ ocaml-version >= "4.03.0"]
+synopsis: "Yet-an-other type combinator library"
+description: """
+Depyt provides type combinators to define runtime representation for
+OCaml types and generic operations to manipulate values with a runtime
+type representation.
+
+The type combinators supports all the usual type primitives but also
+compact definitions of records and variants. It also allows to define
+the runtime representation of recursive types.
+
+Depyt is a modern reboot of
+[Dyntype](https://github.com/mirage/dyntype) but using
+[GADT](https://en.wikipedia.org/wiki/Generalized_algebraic_data_type)s-based
+combinators instead of syntax-extensions. When we originally wrote
+Dyntype (in 2012) GADTs were not available in OCaml and
+[camlp4](https://github.com/ocaml/camlp4) was everywhere -- this is
+not the case anymore. Finally, Depyt avoids some of the performance
+caveats present in Dyntype by avoiding allocating and converting
+between intermediate formats.
+
+#### Variants
+
+For instance, to define variants:
+
+```ocaml"""
+url {
+  src:
+    "https://github.com/samoht/depyt/releases/download/0.2.0/depyt-0.2.0.tbz"
+  checksum: "md5=b5e53bea6298f6b255fda6b906496938"
+}

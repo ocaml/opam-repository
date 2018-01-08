@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe.Troestler@umons.ac.be"
 authors: [
   "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
@@ -9,20 +9,29 @@ license: "LGPL-3.0 with OCaml linking exception"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: [
   ["ocaml" "setup.ml" "-install"]
 ]
-build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "cairo2"]]
 depends: [
+  "ocaml"
   "lablgtk"
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "conf-cairo" {build}
 ]
-
-# The package does not build without Graphics,
-# which is not available by default on OS X.
-# Use cairo2 >= 0.5.
 available: [ os != "darwin" ]
+synopsis: "Binding to Cairo, a 2D Vector Graphics Library."
+description: """
+This is a binding to Cairo, a 2D graphics library with support for
+multiple output devices. Currently supported output targets include
+the X Window System, Quartz, Win32, image buffers, PostScript, PDF,
+and SVG file output."""
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1236/cairo2-0.4.5.tar.gz"
+  checksum: "md5=3f9999fc541319cdd897e20f0f4121ac"
+}

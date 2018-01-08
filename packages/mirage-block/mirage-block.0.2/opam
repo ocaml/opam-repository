@@ -1,35 +1,38 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "mirage-block"
 maintainer: "dave@recoil.org"
 version: "0.2"
 authors: ["David Scott"]
 license: "ISC"
 homepage: "https://github.com/mirage/mirage-block"
-dev-repo: "https://github.com/mirage/mirage-block.git"
+dev-repo: "git+https://github.com/mirage/mirage-block.git"
 bug-reports: "https://github.com/mirage/mirage-block/issues"
 tags: ["org:mirage"]
 build: [
   [make "PREFIX=%{prefix}%"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: [make "PREFIX=%{prefix}%" "install"]
 remove: [
   ["ocamlfind" "remove" "mirage-block"]
 ]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "base-bytes"
   "cstruct"
   "mirage-types-lwt" {< "3.0.0"}
   "lwt"
   "ocamlfind" {build}
   "oasis" {build}
-  "ounit" {test}
-  "mirage-block-ramdisk" {test}
+  "ounit" {with-test}
+  "mirage-block-ramdisk" {with-test}
   "ocamlbuild" {build}
 ]
-build-doc: ["ocaml" "setup.ml" "-doc"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-available: [ocaml-version >= "4.02.0"]
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/mirage-block/archive/v0.2.tar.gz"
+  checksum: "md5=2cdd9324b8563ea944d3f8054b6eb689"
+}

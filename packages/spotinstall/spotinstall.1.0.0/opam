@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 version: "1.0.0"
 authors: "Jun Furuse"
 maintainer: "jun.furuse@gmail.com"
@@ -17,10 +17,42 @@ remove: [
   [ "ocaml" "setup.ml" "-uninstall" ]
 ]
 depends: [
-  "ocamlfind" { build }
-  "spotlib" { >= "2.0.0" & < "2.2.0" }
-  "omake" { build & < "0.10.1" }
+  "ocaml" {>= "4.00.0"}
+  "ocamlfind" {build}
+  "spotlib" {>= "2.0.0" & < "2.2.0"}
+  "omake" {build & < "0.10.1"}
 ]
-available: [
-  ocaml-version >= "4.00.0"
-]
+synopsis:
+  "A tool to facilitate the installation of OCaml annotation files (.cmt, .cmti, .spot, .spit)."
+description: """
+Many existing OCaml libraries, applications and the compiler itself do
+not produce or install the annotation files (.annot, .cmt, .cmti,
+.spot, .spit) which are essential for sub-expression type queries
+(caml-types.el), definition seaches and code refactoring (TypeRex and
+OCamlSpotter). If you want to use development tools, you have to:
+
+* Rebuild all the software from the source, adding -annot/-bin-annot
+  option to compiler flags in build scripts
+  i.e. Makefile/OCamlBuild/OMakefile.
+
+* Install those annotation files together with the library objects and
+  signatures. (Require modification of the build scripts)
+
+for all the programs.
+
+SpotInstall provides a post-installation workaround, consists of two things:
+
+* A very small compiler patch which activates -annot and -bin-annot if OCAML_ANNOT environment variable is defined. (You no longder need to add -annot/-bin-annot to the build scripts.)
+* A small tool to install annotation files to the library destination directory. (You no longer need to add annotation file installation to the build scripts.)
+
+For the first workaround, you need a small patch available from::
+
+    hg clone -b annot https://bitbucket.org/camlspotter/mutated_ocaml
+
+or included in this source package, ocaml-annot-<version>.patch.
+
+For the second one, you can use SpotInstall. This tool."""
+url {
+  src: "https://bitbucket.org/camlspotter/spotinstall/get/1.0.0.tar.gz"
+  checksum: "md5=c1124aea9674cf327a75e85456b8f704"
+}

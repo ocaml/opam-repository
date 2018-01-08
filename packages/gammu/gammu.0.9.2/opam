@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe.Troestler@umons.ac.be"
 authors: [
   "Christophe Troestler"
@@ -10,15 +10,25 @@ license: "LGPL-3.0 with OCaml linking exception"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "gammu"]]
 depends: [
+  "ocaml"
   "ocamlfind"
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["ubuntu"]["libgammu-dev"]]
-  [["debian"]["libgammu-dev"]]
+  ["libgammu-dev"] {os-distribution = "ubuntu"}
+  ["libgammu-dev"] {os-distribution = "debian"}
 ]
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "Cell phone and SIM card access."
+description: """
+Gammu is a binding to libGammu which allows to manage data in your
+cell phone such as contacts, calendar or messages."""
+flags: light-uninstall
+url {
+  src: "https://forge.ocamlcore.org/frs/download.php/1153/gammu-0.9.2.tar.gz"
+  checksum: "md5=f12232e69d989f2d353117bc33ade0e4"
+}

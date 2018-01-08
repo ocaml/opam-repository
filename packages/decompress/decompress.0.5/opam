@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Romain Calascibetta <romain.calascibetta@gmail.com>"
 authors: "Romain Calascibetta <romain.calascibetta@gmail.com>"
 homepage: "https://github.com/oklm-wsh/Decompress"
@@ -6,25 +6,35 @@ bug-reports: "https://github.com/oklm-wsh/Decompress/issues"
 license: "MIT"
 dev-repo: "git+https://github.com/oklm-wsh/Decompress.git"
 build: [
-  "ocaml" "pkg/pkg.ml" "build" "--tests" "false"
-  "--with-cmdliner" "%{cmdliner:installed}%"
-]
-build-test: [
-  ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"]
-  ["ocaml" "pkg/pkg.ml" "test"]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--tests"
+    "false"
+    "--with-cmdliner"
+    "%{cmdliner:installed}%"
+  ]
+  ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
   "topkg" {build}
   "base-bytes"
-  "camlzip" {test}
-  "re" {test}
-  "alcotest" {test}
+  "camlzip" {with-test}
+  "re" {with-test}
+  "alcotest" {with-test}
 ]
-
 depopts: [
   "cmdliner"
 ]
 
-available: [ocaml-version >= "4.03.0"]
+synopsis: "Pure OCaml implementation of Zlib"
+description: "Pure OCaml implementation of Zlib"
+url {
+  src: "https://github.com/oklm-wsh/Decompress/archive/0.5.tar.gz"
+  checksum: "md5=7bc7cd1fc1090f6d15114fdfe11e557d"
+}

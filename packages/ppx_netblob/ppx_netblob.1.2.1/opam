@@ -1,22 +1,30 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "christophermcalpine@gmail.com"
 authors: ["John Whitington" "John Christopher McAlpine"]
 homepage: "https://github.com/chrismamo1/ppx_netblob"
 bug-reports: "https://github.com/chrismamo1/ppx_netblob/issues/"
-dev-repo: "https://github.com/chrismamo1/ppx_netblob.git"
+dev-repo: "git+https://github.com/chrismamo1/ppx_netblob.git"
 build: [
-  [make "native-code"] {ocaml-native}
-  [make "byte-code"] {!ocaml-native}
+  [make "native-code"] {ocaml:native}
+  [make "byte-code"] {!ocaml:native}
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "ppx_netblob"]
 depends: [
+  "ocaml" {> "4.03.0"}
   "ocamlfind" {build & >= "1.5.2"}
   "ppx_tools" {build}
-  "cohttp" {build & <"0.99"}
+  "cohttp" {build & < "0.99"}
   "lwt" {build}
   "ppx_deriving" {build}
   "ppx_deriving_yojson" {build}
   "extlib" {build}
 ]
-available: [ocaml-version > "4.03.0"]
+synopsis: "type-driven generation of HTTP calling code"
+description:
+  "ppx_netblob (may be renamed as \"schildpad\" in the future) is a library for generating RESTful API bindings from types."
+flags: light-uninstall
+url {
+  src: "https://github.com/chrismamo1/ppx_netblob/archive/v1.2.1.tar.gz"
+  checksum: "md5=322693a0a634e8077e0a3befe4313f43"
+}

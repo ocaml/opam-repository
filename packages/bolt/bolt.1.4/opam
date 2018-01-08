@@ -1,20 +1,21 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sylvain.pogodalla@inria.fr"
 build: [
-  ["./configure" "-ocamlfind" "%{bin}%/ocamlfind"] {preinstalled}
+  ["./configure" "-ocamlfind" "%{bin}%/ocamlfind"] {ocaml:preinstalled}
   [
     "./configure"
     "-ocaml-prefix"
     "%{prefix}%"
     "-ocamlfind"
     "%{bin}%/ocamlfind"
-  ] {!preinstalled}
+  ] {!ocaml:preinstalled}
   [make "all"]
 ]
 remove: [
   ["ocamlfind" "remove" "bolt"]
 ]
 depends: [
+  "ocaml"
   "ocamlfind"
   "camlp4"
   "ocamlbuild" {build}
@@ -25,3 +26,13 @@ homepage: "http://bolt.x9c.fr/"
 license: "LGPL v3"
 authors: ["Xavier Clerc"]
 install: [make "install"]
+synopsis: "Bolt is an OCaml Logging Tool"
+flags: light-uninstall
+extra-files: [
+  ["opam.patch" "md5=08ffba423dba98b5341b36b27a0009f4"]
+  ["opam.bolt.META.patch" "md5=b62fb003991b9dd09a01ade5067056d9"]
+]
+url {
+  src: "https://forge.ocamlcore.org/frs/download.php/1043/bolt-1.4.tar.gz"
+  checksum: "md5=26d10d36debfabbc6782d442d5d852d6"
+}

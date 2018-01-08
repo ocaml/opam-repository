@@ -1,19 +1,22 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sheets@alum.mit.edu"
 authors: ["David Sheets" "Jeremy Yallop"]
 homepage: "https://github.com/dsheets/ocaml-osx-xattr"
 bug-reports: "https://github.com/dsheets/ocaml-osx-xattr/issues"
 license: "ISC"
 tags: ["osx" "xattr" "extended attributes" "file system"]
-dev-repo: "https://github.com/dsheets/ocaml-osx-xattr.git"
-build: [make "build"]
+dev-repo: "git+https://github.com/dsheets/ocaml-osx-xattr.git"
+build: [
+  [make "build"]
+  [make "test"] {with-test}
+]
 install: [make "install"]
-build-test: [make "test"]
 remove: [make "uninstall"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "ctypes" {>= "0.6.2"}
   "unix-errno" {>= "0.4.0"}
   "base-unix"
@@ -21,3 +24,11 @@ depends: [
 ]
 depopts: "lwt"
 available: [os = "darwin"]
+synopsis: "OS X extended attribute system call bindings"
+description: """
+`getxattr`, `fgetxattr`, `listxattr`, `flistxattr`, `removexattr`,
+`fremovexattr`, `setxattr`, and `fsetxattr` are bound."""
+url {
+  src: "https://github.com/dsheets/ocaml-osx-xattr/archive/0.3.0.tar.gz"
+  checksum: "md5=7f1e2eb8e4c12a3b10b67c2b5309122c"
+}

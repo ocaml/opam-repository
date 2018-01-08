@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors: ["Pippijn van Steenhoven"]
 maintainer: "francois.berenger@inria.fr"
 homepage: "https://github.com/Antique-team/clangml"
 bug-reports: "https://github.com/Antique-team/clangml/issues"
-dev-repo: "https://github.com/Antique-team/clangml.git"
+dev-repo: "git+https://github.com/Antique-team/clangml.git"
 build: [
   [make]
 ]
@@ -14,6 +14,7 @@ remove: [
   [make "uninstall"]
 ]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "dolog"
   "batteries"
   "deriving"
@@ -24,17 +25,32 @@ depends: [
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["libboost-dev" "llvm-3.7-dev" "clang-3.7" "libclang-3.7-dev"
-               "binutils-dev"]]
-  [["ubuntu"] ["libboost-dev" "llvm-3.7-dev" "clang-3.7" "libclang-3.7-dev"
-               "binutils-dev"]]
-  [["gentoo"] ["dev-libs/boost" "sys-devel/binutils"
-               "sys-devel/binutils-libs"]]
-  [["archlinux"] ["boost" "binutils"]]
+  [
+    "libboost-dev"
+    "llvm-3.7-dev"
+    "clang-3.7"
+    "libclang-3.7-dev"
+    "binutils-dev"
+  ] {os-distribution = "debian"}
+  [
+    "libboost-dev"
+    "llvm-3.7-dev"
+    "clang-3.7"
+    "libclang-3.7-dev"
+    "binutils-dev"
+  ] {os-distribution = "ubuntu"}
+  ["dev-libs/boost" "sys-devel/binutils" "sys-devel/binutils-libs"]
+    {os-distribution = "gentoo"}
+  ["boost" "binutils"] {os-distribution = "archlinux"}
 ]
-available: [
-  ocaml-version >= "4.03.0" & !preinstalled & os != "darwin"
-]
+available: os != "darwin"
 post-messages: [
   "This package requires llvm-3.7, clang-3.7, boost and binutils" {failure}
 ]
+synopsis: "clang OCaml bindings"
+conflicts: ["ocaml-system"]
+extra-files: ["clangml.install" "md5=347541519ab211a1cf2eb1049a6125f2"]
+url {
+  src: "https://github.com/Antique-team/clangml/archive/v3.7.0.1.tar.gz"
+  checksum: "md5=b17df696221cdd1602143d81734c41a9"
+}

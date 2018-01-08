@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "mindstorm"
 version: "0.5.4"
 maintainer: "Christophe.Troestler@umons.ac.be"
@@ -8,17 +8,18 @@ authors: [ "Christophe Troestler"
            "Dany Maslowski" ]
 license: "LGPL-2.1 with OCaml linking exception"
 homepage: "http://forge.ocamlcore.org/projects/ocaml-mindstorm/"
-dev-repo: "https://github.com/Chris00/ocaml-mindstorm.git"
+dev-repo: "git+https://github.com/Chris00/ocaml-mindstorm.git"
 tags: [ "clib:usb" "clib:bluetooth"  ]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 remove: [
   ["ocamlfind" "remove" "mindstorm"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml"
   "base-bytes"
   "base-unix"
   "ocamlfind" {>= "1.5"}
@@ -28,7 +29,18 @@ depopts: [
   "base-threads"
 ]
 depexts: [
-  [ [ "debian"  ] [ "libbluetooth-dev" ] ]
-  [ [ "ubuntu"  ] [ "libbluetooth-dev" ] ]
+  ["libbluetooth-dev"] {os-distribution = "debian"}
+  ["libbluetooth-dev"] {os-distribution = "ubuntu"}
 ]
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "Drive Lego Mindstorms bricks from OCaml"
+description: """
+This library allows you to communicate with your Lego Mindstorms brick
+via bluetooth, enable the motors and retrieve data from various
+sensors."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/Chris00/ocaml-mindstorm/releases/download/0.5.4/mindstorm-0.5.4.tar.gz"
+  checksum: "md5=744ddda70acddb2a81fd7ed02931ada4"
+}

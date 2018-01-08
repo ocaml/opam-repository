@@ -1,22 +1,23 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Oliver Gu <gu.oliver@yahoo.com>"
 authors: [ "Oliver Gu <gu.oliver@yahoo.com>"
            "Dominik Brugger <dominikbrugger@fastmail.fm>" ]
 license: "LGPL-2.1+ with OCaml linking exception"
 homepage: "https://bitbucket.org/ogu/libsvm-ocaml"
-dev-repo: "https://bitbucket.org/ogu/libsvm-ocaml.git"
+dev-repo: "git+https://bitbucket.org/ogu/libsvm-ocaml.git"
 bug-reports: "https://bitbucket.org/ogu/libsvm-ocaml/issues"
 tags: [ "clib:svm"  ]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "libsvm"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "4.02.1" & < "4.03"}
   "base-threads"
   "core_kernel" {>= "113.24.00"}
   "lacaml" {>= "8.0.6"}
@@ -30,8 +31,20 @@ depopts: [
   "ppx_deriving" {build}
   "ppx_sexp_conv"
 ]
-available: [ ocaml-version >= "4.02.1" & ocaml-version < "4.03" & os != "darwin" ]
+available: os != "darwin"
 depexts: [
-  [["ubuntu"]["libsvm-dev"]]
-  [["debian"]["libsvm-dev"]]
+  ["libsvm-dev"] {os-distribution = "ubuntu"}
+  ["libsvm-dev"] {os-distribution = "debian"}
 ]
+synopsis: "LIBSVM bindings for OCaml"
+description: """
+LIBSVM-OCaml is an OCaml library with bindings to the LIBSVM library,
+which is a library for Support Vector Machines. Support Vector
+Machines are used to create supervised learning models for
+classification and regression problems in machine learning."""
+flags: light-uninstall
+url {
+  src:
+    "https://bitbucket.org/ogu/libsvm-ocaml/downloads/libsvm-ocaml-0.9.3.tar.gz"
+  checksum: "md5=994dd05fc51516ec56837dfffa776f50"
+}

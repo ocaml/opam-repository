@@ -1,22 +1,27 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "nbraud"
-author: "nbraud"
 homepage: "http://gmplib.org/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-dev-repo: "https://github.com/ocaml/opam-repository.git"
+dev-repo: "git+https://github.com/ocaml/opam-repository.git"
 license: "GPL"
 build: [
   ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "darwin"}
   ["sh" "-exc" "cc -c $CFLAGS -I/opt/local/include -I/usr/local/include test.c"] {os = "darwin"}
 ]
 depexts: [
-  [["debian"] ["libgmp-dev"]]
-  [["ubuntu"] ["libgmp-dev"]]
-  [["osx" "homebrew"] ["gmp"]]
-  [["centos"] ["gmp" "gmp-devel"]]
-  [["fedora"] ["gmp" "gmp-devel"]]
-  [["openbsd"] ["gmp"]]
-  [["freebsd"] ["gmp"]]
-  [["alpine"] ["gmp-dev"]]
-  [["opensuse"] ["gmp-devel"]]
+  ["libgmp-dev"] {os-distribution = "debian"}
+  ["libgmp-dev"] {os-distribution = "ubuntu"}
+  ["gmp"] {os = "macos" & os-distribution = "homebrew"}
+  ["gmp" "gmp-devel"] {os-distribution = "centos"}
+  ["gmp" "gmp-devel"] {os-distribution = "fedora"}
+  ["gmp"] {os = "openbsd"}
+  ["gmp"] {os = "freebsd"}
+  ["gmp-dev"] {os-distribution = "alpine"}
+  ["gmp-devel"] {os-distribution = "opensuse"}
 ]
+synopsis: "Virtual package relying on a GMP lib system installation."
+description:
+  "This package can only install if the GMP lib is installed on the system."
+authors: "nbraud"
+depends: ["ocaml"]
+extra-files: ["test.c" "md5=ec8cc21ab709bdd57103de36e7b0b53f"]

@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "lwt"
 version: "2.6.0"
 maintainer: "Anton Bachin <antonbachin@yahoo.com>"
@@ -7,12 +7,16 @@ authors: [
   "Jérémie Dimino"
 ]
 homepage: "https://github.com/ocsigen/lwt"
-dev-repo: "https://github.com/ocsigen/lwt.git"
+dev-repo: "git+https://github.com/ocsigen/lwt.git"
 bug-reports: "http://github.com/ocsigen/lwt/issues"
 license: "LGPL with OpenSSL linking exception"
 build: [
-  ["ocaml" "setup.ml" "-configure"
-    "--prefix" prefix
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
     "--%{conf-libev:enable}%-libev"
     "--%{camlp4:enable}%-camlp4"
     "--%{react:enable}%-react"
@@ -20,21 +24,21 @@ build: [
     "--%{base-unix:enable}%-unix"
     "--%{base-threads:enable}%-preemptive"
     "--%{lablgtk:enable}%-glib"
-    "--%{ppx_tools:enable}%-ppx"]
+    "--%{ppx_tools:enable}%-ppx"
+  ]
   [make "build"]
-]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  [make "test"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [[make "install"]]
 remove: [[ "ocamlfind" "remove" "lwt" ]]
 depends: [
+  "ocaml" {>= "4.01.0" & < "4.05.0"}
   "ocamlfind" {build & >= "1.5.0"}
   "ocamlbuild" {build}
   "base-bytes"
   "result"
-  ( "base-no-ppx" | "ppx_tools" )
+  ("base-no-ppx" | "ppx_tools")
 ]
 depopts: [
   "base-threads"
@@ -46,8 +50,19 @@ depopts: [
   "react"
 ]
 conflicts: [
+  "ocaml-variants" {= "4.02.1+BER"}
   "react" {< "1.0.0"}
   "ssl" {< "0.5.0"}
-  "ppx_tools" {< "1.0.0" }
+  "ppx_tools" {< "1.0.0"}
 ]
-available: [ocaml-version >= "4.01.0" & ocaml-version < "4.05.0" & compiler != "4.02.1+BER"]
+synopsis: "Cooperative threads and I/O in monadic style"
+description: """
+Lwt provides typed, composable cooperative threads. These make it easy to run
+normally-blocking I/O operations concurrently in a single process. Also, in many
+cases, Lwt threads can interact without the need for locks or other
+synchronization primitives."""
+flags: light-uninstall
+url {
+  src: "https://github.com/ocsigen/lwt/archive/2.6.0.tar.gz"
+  checksum: "md5=d2c6fc205220c66d6ebe148ac56b30cc"
+}
