@@ -4,10 +4,12 @@ homepage: "https://github.com/savonet/ocaml-ssl"
 dev-repo: "git+https://github.com/savonet/ocaml-ssl.git"
 bug-reports: "https://github.com/savonet/ocaml-ssl/issues"
 build: [
-  ["./configure" "--prefix" prefix] { os != "darwin" }
-  ["sh" "-exc"
-   "./configure --prefix %{prefix}% CPPFLAGS=\"$CPPFLAGS -I/opt/local/include -I/usr/local/opt/openssl/include\""
-  ] { os = "darwin" }
+  ["./configure" "--prefix" prefix] {os != "macos"}
+  [
+    "sh"
+    "-exc"
+    "./configure --prefix %{prefix}% CPPFLAGS=\"$CPPFLAGS -I/opt/local/include -I/usr/local/opt/openssl/include\""
+  ] {os = "macos"}
   [make]
 ]
 install: [[make "install"]]

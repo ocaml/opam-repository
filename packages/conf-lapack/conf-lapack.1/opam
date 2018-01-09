@@ -5,9 +5,12 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "git+https://github.com/ocaml/opam-repository.git"
 license: "GPL-2.0"
 build: [
-  ["sh" "-exc" "cc $CFLAGS test.c -llapack"] {os != "darwin" & os != "freebsd" & os != "win32"}
-  ["sh" "-exc" "${CC:-gcc} $CFLAGS test.c -llapack $LDFLAGS"] {os = "freebsd"}
-  ["sh" "-exc" "cc -framework Accelerate $CFLAGS test.c -llapack"] {os = "darwin"}
+  ["sh" "-exc" "cc $CFLAGS test.c -llapack"]
+    {os != "macos" & os != "freebsd" & os != "win32"}
+  ["sh" "-exc" "${CC:-gcc} $CFLAGS test.c -llapack $LDFLAGS"]
+    {os = "freebsd"}
+  ["sh" "-exc" "cc -framework Accelerate $CFLAGS test.c -llapack"]
+    {os = "macos"}
   ["%{build}%/test-win.sh"] {os = "win32"}
 ]
 depexts: [
