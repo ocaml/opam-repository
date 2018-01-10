@@ -5,10 +5,13 @@ homepage: "https://mariadb.org/"
 bug-reports: "https://jira.mariadb.org/projects/MDEV/issues"
 dev-repo: "git+https://github.com/MariaDB/server.git"
 license: "GPL2"
-build: [["mysql_config" "--include"]]
+build: [
+  ["mariadb_config" "--include"] {os != "alpine"}
+  ["mysql_config" "--include"] {os = "alpine"}
+]
 depexts: [
-  ["libmariadbclient-dev"] {os-distribution = "debian"}
-  ["libmariadbclient-dev"] {os-distribution = "ubuntu"}
+  ["libmariadb-dev"] {os-distribution = "debian"}
+  ["libmariadb-dev"] {os-distribution = "ubuntu"}
   ["mariadb-devel"] {os-distribution = "centos"}
   ["mariadb-connector-c"] {os = "macos" & os-distribution = "homebrew"}
   ["mariadb-dev"] {os-distribution = "alpine"}
