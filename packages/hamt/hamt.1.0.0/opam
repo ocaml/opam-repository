@@ -1,25 +1,33 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "rudi.grinberg@gmail.com"
 authors: ["Thibault Suzanne" "Gabriel Scherer" "Rudi Grinberg"]
 homepage: "https://github.com/rgrinberg/ocaml-hamt"
 bug-reports: "https://github.com/rgrinberg/ocaml-hamt/issues"
 license: "MIT"
-dev-repo: "https://github.com/rgrinberg/ocaml-hamt.git"
+dev-repo: "git+https://github.com/rgrinberg/ocaml-hamt.git"
 build: [
   [make "configure"]
   [make "build"]
+  [make "configure-test"] {with-test}
+  [make "build"] {with-test}
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
 ]
 install: [make "install"]
-build-test: [
-  [make "configure-test"]
-  [make "build"]
-  [make "test"]
-]
-build-doc: [make "doc"]
 remove: ["ocamlfind" "remove" "hamt"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "ounit" {test & >= "1.0.2"}
+  "ounit" {with-test & >= "1.0.2"}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Hash Array Mapped Tries"
+description: """
+HAMT data structure implemented in OCaml
+
+http://gallium.inria.fr/blog/implementing-hamt-for-ocaml/"""
+flags: light-uninstall
+url {
+  src: "https://github.com/rgrinberg/ocaml-hamt/archive/1.0.0.tar.gz"
+  checksum: "md5=47b2625ffcede0652d0e9b4e2ba13722"
+}

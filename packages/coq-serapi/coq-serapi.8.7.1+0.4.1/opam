@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "e@x80.org"
 authors:      "Emilio Jesús Gallego Arias"
 homepage:     "https://github.com/ejgallego/coq-serapi"
@@ -7,24 +7,26 @@ dev-repo:     "git+https://github.com/ejgallego/coq-serapi.git"
 license:      "GPL 3"
 
 name: "coq-serapi"
-available: [ ocaml-version >= "4.06.0" ]
-
-# ppx depends are so strict due to the issues with ppx_import and
-# ppx_driver integration in the past.
 depends: [
-  "coq"          { >= "8.7.1+1" & < "8.8" }
+  "ocaml" {>= "4.06.0"}
+  "coq" {>= "8.7.1+1" & < "8.8"}
   "camlp5"
-  "ocamlfind"    { build }
-  "ocamlbuild"   { build }
-  "ppx_import"   { build & >= "1.4" }
-  "ppx_deriving" { build & >= "4.2.1" }
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "ppx_import" {build & >= "1.4"}
+  "ppx_deriving" {build & >= "4.2.1"}
   "cmdliner"
   "sexplib"
-  "ppx_driver"   { build & >= "v0.10.1" }
+  "ppx_driver" {build & >= "v0.10.1"}
   "ppx_sexp_conv"
 ]
-
 build:   [ make "-j%{jobs}%" "TARGET=native" ]
 install: [ "cp" "sertop.native" "%{bin}%/sertop" ]
 remove:  [ "rm" "-f" "%{bin}%/sertop" ]
-
+synopsis:
+  "Sexp Protocol for machine-based interaction with the Coq Proof Assistant."
+flags: light-uninstall
+url {
+  src: "https://github.com/ejgallego/coq-serapi/archive/8.7.1+0.4.1.tar.gz"
+  checksum: "md5=7a1ec538a12cdfa36c8f5adc54941b37"
+}

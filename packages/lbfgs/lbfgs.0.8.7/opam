@@ -1,29 +1,39 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "lbfgs"
 version: "0.8.7"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
 authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>" ]
 license: "LGPL-3.0 with OCaml linking exception"
 homepage: "https://github.com/Chris00/L-BFGS-ocaml"
-dev-repo: "https://github.com/Chris00/L-BFGS-ocaml.git"
+dev-repo: "git+https://github.com/Chris00/L-BFGS-ocaml.git"
 bug-reports: "https://github.com/Chris00/L-BFGS-ocaml/issues"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
-    "--%{lacaml:enable}%-lacaml"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{lacaml:enable}%-lacaml"
+  ]
   ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{lacaml:enable}%-lacaml"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"
-    "--%{lacaml:enable}%-lacaml"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 remove: [
   ["ocamlfind" "remove" "lbfgs"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml"
   "base-bigarray"
   "base-bytes"
   "camlp4" {build}
@@ -34,8 +44,19 @@ depopts: [
   "lacaml"
 ]
 depexts: [
-  [["debian"] ["gfortran"]]
-  [["ubuntu"] ["gfortran"]]
-  [["cygwin"] ["mingw64-x86_64-gcc-fortran"]]
-  [["osx" "homebrew"] ["gcc"]]
+  ["gfortran"] {os-distribution = "debian"}
+  ["gfortran"] {os-distribution = "ubuntu"}
+  ["mingw64-x86_64-gcc-fortran"] {os = "cygwin"}
+  ["gcc"] {os = "macos" & os-distribution = "homebrew"}
 ]
+synopsis:
+  "Minimization of multidimensional functions on bounded or unbounded domains."
+description: """
+This is a binding to L-BFGS-B, a library for Large-scale
+Bound-constrained Optimization."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/Chris00/L-BFGS-ocaml/releases/download/0.8.7/lbfgs-0.8.7.tar.gz"
+  checksum: "md5=177ae85c0703e6a122d235259dcf04dd"
+}
