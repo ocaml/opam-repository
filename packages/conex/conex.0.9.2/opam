@@ -1,0 +1,37 @@
+opam-version: "1.2"
+name:         "conex"
+homepage:     "https://github.com/hannesm/conex"
+dev-repo:     "https://github.com/hannesm/conex.git"
+bug-reports:  "https://github.com/hannesm/conex/issues"
+doc:          "https://hannesm.github.io/conex/doc"
+author:       ["Hannes Mehnert <hannes@mehnert.org>"]
+maintainer:   ["Hannes Mehnert <hannes@mehnert.org>"]
+license:      "BSD2"
+
+build: [
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+    "--with-format" "%{opam-format:installed}%" ]
+]
+
+build-test: [
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ]
+  [ "ocaml" "pkg/pkg.ml" "test" ]
+]
+
+depends: [
+  "ocamlfind"  {build}
+  "ocamlbuild" {build}
+  "topkg"      {build}
+  "cmdliner"
+  "opam-file-format" {>= "2.0.0~beta"}
+  "cstruct"    {>= "1.6.0"}
+  "nocrypto"   {>= "0.5.3"}
+  "x509"       {>= "0.4.0"}
+  "alcotest"   {test}
+  "logs" "fmt" "rresult" "astring"
+]
+
+depopts: [
+  "opam-format"
+]
+available: [ ocaml-version >= "4.03.0" ]

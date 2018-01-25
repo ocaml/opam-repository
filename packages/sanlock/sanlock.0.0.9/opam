@@ -1,0 +1,37 @@
+opam-version: "1.2"
+maintainer:   "simon.beaumont@citrix.com"
+author:       "Si Beaumont"
+homepage:     "https://github.com/simonjbeaumont/ocaml-sanlock"
+bug-reports:  "https://github.com/simonjbeaumont/ocaml-sanlock/issues"
+dev-repo:     "https://github.com/simonjbeaumont/ocaml-sanlock.git"
+
+build: [
+  ["./configure"]
+  [make]
+]
+build-test: [
+  ["./configure" "--enable-tests"]
+  [make "test"]
+]
+install: [make "install"]
+remove: [
+  ["ocamlfind" "remove" "sanlock"]
+  ["ocamlfind" "remove" "sanlock_bindings"]
+]
+depends: [
+  "ctypes" {>= "0.4"}
+  "oasis" {build}
+  "ocamlfind" {build}
+  "ounit" {test}
+]
+available: [ocaml-version >= "4.01.0" & os = "linux"]
+depexts: [
+  [["debian"] ["libsanlock-dev"]]
+  [["ubuntu"] ["libsanlock-dev"]]
+  [["centos"] ["sanlock-devel"]]
+]
+post-messages: [
+  "This package requires libsanlock-dev to be installed on your system" {failure & (os = "debian")}
+  "This package requires libsanlock-dev to be installed on your system" {failure & (os = "ubuntu")}
+  "This package requires sanlock-devel to be installed on your system"  {failure & (os = "centos")}
+]

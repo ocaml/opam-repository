@@ -3,10 +3,15 @@ name: "sodium"
 version: "0.4.1"
 maintainer: "sheets@alum.mit.edu"
 tags: ["org:mirage"]
+authors: [
+  "David Sheets <sheets@alum.mit.edu>"
+  "Peter Zotov <whitequark@whitequark.org>"
+]
+homepage: "https://github.com/dsheets/ocaml-sodium/"
+bug-reports: "https://github.com/dsheets/ocaml-sodium/issues/"
 build: [
-  [make] { os != "freebsd" }
-  [make "CFLAGS=-I/usr/local/include -L/usr/local/lib"] { os = "freebsd" }
-  [make "PREFIX=%{prefix}%" "install"]
+  [make] {os != "freebsd"}
+  [make "CFLAGS=-I/usr/local/include -L/usr/local/lib"] {os = "freebsd"}
 ]
 build-test: [
   [make "test"] { os != "freebsd" }
@@ -17,12 +22,10 @@ depends: [
   "base-bigarray"
   "base-bytes"
   "ocamlfind"
-  "ctypes" {>= "0.4.0"}
-]
-depexts: [
-  [ ["debian"] ["libsodium-dev"] ]
-  [ ["ubuntu"] ["libsodium-dev"] ]
-  [ ["freebsd"] ["security/libsodium"] ]
-  [ ["osx" "homebrew"] ["libsodium"] ]
+  "conf-libsodium"
+  "ctypes" {>= "0.4.0" & < "0.6.0"}
+  "ocamlbuild" {build}
 ]
 available: [ocaml-version >= "4.01.0"]
+dev-repo: "git://github.com/dsheets/ocaml-sodium"
+install: [make "PREFIX=%{prefix}%" "install"]

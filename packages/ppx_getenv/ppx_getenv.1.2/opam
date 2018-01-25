@@ -1,0 +1,23 @@
+opam-version: "1.2"
+maintainer: "whitequark <whitequark@whitequark.org>"
+authors: [ "whitequark <whitequark@whitequark.org>" ]
+license: "Public domain"
+homepage: "https://github.com/whitequark/ppx_getenv"
+bug-reports: "https://github.com/whitequark/ppx_getenv/issues"
+dev-repo: "git://github.com/whitequark/ppx_getenv.git"
+tags: [ "syntax" ]
+substs: [ "pkg/META" ]
+build: [
+  "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
+                         "native-dynlink=%{ocaml-native-dynlink}%"
+]
+build-test: [
+  "ocamlbuild" "-classic-display" "-use-ocamlfind" "src_test/test_ppx_getenv.byte" "--"
+]
+depends: [
+  "cppo"         {build}
+  "cppo_ocamlbuild" {build}
+  "ppx_tools"    {>= "0.99.1"}
+  "ounit"        {test}
+]
+available: [ocaml-version >= "4.02.0"]

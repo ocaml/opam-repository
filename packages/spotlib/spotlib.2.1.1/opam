@@ -1,15 +1,24 @@
-opam-version: "1"
+opam-version: "1.2"
+version: "2.1.1"
+authors: "Jun Furuse"
 maintainer: "jun.furuse@gmail.com"
-homepage: "https://bitbucket.org/camlspotter/spotlib"
+homepage: "https://bitbucket.org/camlspotter/spotlib/"
+bug-reports: "https://bitbucket.org/camlspotter/spotlib/issues?status=new&status=open"
+dev-repo: "hg://https://bitbucket.org/camlspotter/spotlib"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
+  [ "ocaml" "setup.ml" "-configure" "--prefix" prefix ]
+  [ "ocaml" "setup.ml" "-build" ]
 ]
-remove: [["ocamlfind" "remove" "spotlib"]]
+install: [
+  [ "ocaml" "setup.ml" "-install" ]
+]
+remove: [
+  [ "ocaml" "setup.ml" "-configure" "--prefix" prefix ]
+  [ "ocaml" "setup.ml" "-uninstall" ]
+]
+available: [
+  ocaml-version >= "4.0.0" & ocaml-version < "4.03.0"
+]
 depends: [
-  "ocamlfind"
-  "omake"
+  "ocamlfind" { build } "omake" { build & < "0.10.1" }
 ]
-ocaml-version: [>= "4.0.1"]
-os: ["linux"]

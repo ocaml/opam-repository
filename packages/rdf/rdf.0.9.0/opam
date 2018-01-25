@@ -16,7 +16,6 @@ tags: [
 build: [
   ["./configure" "--prefix" prefix]
   [make "all"]
-  [make "install"]
 ]
 remove: [["ocamlfind" "remove" "rdf"]]
 depends: [
@@ -30,10 +29,11 @@ depends: [
   "pcre" {>= "7.0.2"}
   "yojson" {>= "1.1.8"}
 ]
-depopts: [
-  "mysql" {>= "1.1.1"}
-  "postgresql"
-  "cohttp" {>= "0.11.2"}
-  "lwt" {>= "2.4.5"}
+depopts: ["mysql" "postgresql" "cohttp" "lwt"]
+conflicts: [
+  "cohttp" {< "0.11.2"}
+  "lwt" {< "2.4.5"}
+  "mysql" {< "1.1.1"}
 ]
-ocaml-version: [>= "4.02.0"]
+available: [ ocaml-version >= "4.02.0" & ocaml-version < "4.03.0" ]
+install: [make "install"]

@@ -1,10 +1,7 @@
-opam-version: "1.1"
+opam-version: "1.2"
 maintainer: "andy.ray@ujamjar.com"
 homepage: "https://github.com/andrewray/iocaml"
-build: [
-  [ make "all" ]
-  [ make "install" ]
-]
+build: [make "all"]
 patches: [ "4.00.1.patch" ]
 remove: [
   [ make "uninstall" ]
@@ -20,14 +17,13 @@ depends: [
   "ctypes" {>= "0.3"}
   "ctypes-foreign"
   "lwt" {>= "2.4"}
+  "ocamlbuild" {build}
+  "conf-zmq" {build}
 ]
-depopts: [
-  "ocp-index" {>= "1.0.1"} 
+depopts: ["ocp-index"]
+conflicts: [
+  "ocp-index" {< "1.0.1"}
 ]
-depexts: [
-  [["debian"] ["libzmq3-dev"]]
-  [["ubuntu"] ["libzmq3-dev"]]
-  [["osx" "homebrew"] ["zeromq"]]
-  [["centos"] ["zeromq3-devel"]]
-]
-ocaml-version: [ >= "4.00.1" ]
+dev-repo: "git://github.com/andrewray/iocaml"
+available: ocaml-version >= "4.00.1"
+install: [make "install"]

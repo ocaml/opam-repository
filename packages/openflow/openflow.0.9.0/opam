@@ -1,12 +1,10 @@
 opam-version: "1.2"
-ocaml-version: [ >= "4.02.0" ]
 version: "0.9.0"
 name: "openflow"
 maintainer: "Arjun Guha <arjun@cs.umass.edu>"
 build: [
   ["./configure" "--%{pa_ounit:enable}%-tests"]
   [make]
-  [make "install"]
 ]
 build-test: [
   [make "test"]
@@ -16,12 +14,16 @@ remove: [
 ]
 depends: [
   "ocamlfind"
-  "core"
-  "cstruct" {>= "1.0.1"}
-  "packet"  {>= "0.3.1" }
-  "sexplib"
-  "async" {>= "112.17.00" }
+  "core" {< "112.35.00"}
+  "cstruct" {>= "1.0.1" & <"2.0.0"}
+  "packet" {>= "0.3.1"}
+  "sexplib" {< "113.01.00"}
+  "async" {>= "112.17.00"}
   "quickcheck"
   "ounit" {test}
   "pa_ounit" {test}
+  "ocamlbuild" {build}
 ]
+dev-repo: "git://github.com/frenetic-lang/ocaml-openflow"
+available: ocaml-version >= "4.02.0"
+install: [make "install"]

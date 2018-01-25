@@ -12,8 +12,9 @@ dev-repo: "http://forge.ocamlcore.org/anonscm/git/archimedes/archimedes.git"
 bug-reports: "https://forge.ocamlcore.org/tracker/?group_id=105"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix
-    "--%{ocamlfind:enable}%-graphics"
-    "--enable-cairo2" { "%{cairo2:installed}%" }]
+    "--%{graphics:enable}%-graphics"
+    "--enable-cairo2" { "%{cairo2:installed}%" }
+  ]
   ["ocaml" "setup.ml" "-build"]
 ]
 install: ["ocaml" "setup.ml" "-install"]
@@ -22,7 +23,7 @@ remove: [
 ]
 build-test: [
   ["ocaml" "setup.ml" "-configure" "--enable-tests"
-    "--%{ocamlfind:enable}%-graphics"
+    "--%{graphics:enable}%-graphics"
     "--enable-cairo2" { "%{cairo2:installed}%" }]
   ["ocaml" "setup.ml" "-build"]
   ["ocaml" "setup.ml" "-test"]
@@ -32,7 +33,10 @@ depends: [
   "base-bigarray"
   "ocamlfind" {build}
   "camlp4" {build}
+  "ocamlbuild" {build}
 ]
 depopts: [
   "cairo2"
+  "graphics"
 ]
+available: [ocaml-version < "4.03"]

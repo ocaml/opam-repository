@@ -1,15 +1,19 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "anil@recoil.org"
 tags: [
   "org:mirage"
   "org:xapi-project"
 ]
-build: [
-  [make "install-types"]
-]
 remove: ["ocamlfind" "remove" "mirage-types"]
-depends: ["ocamlfind" "sexplib"]
-depopts: [
- ("lwt" & "cstruct" & "io-page" & "ipaddr" {>= "2.0.0"})
+depends: [
+  "ocamlfind"
+  "sexplib" {< "113.01.00"}
+  "ocamlbuild" {build}
 ]
-ocaml-version: [>="4.01.0"]
+depopts: ["lwt" "cstruct" "io-page" "ipaddr"]
+conflicts: [
+  "ipaddr" {< "2.0.0"}
+]
+dev-repo: "git://github.com/mirage/mirage"
+available: ocaml-version >= "4.01.0"
+install: [make "install-types"]

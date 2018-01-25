@@ -1,16 +1,26 @@
-opam-version: "1"
+opam-version: "1.2"
+name: "deriving"
+version: "0.7"
 maintainer: "dev@ocsigen.org"
+author: "Jeremy Yallop <yallop@gmail.com>"
+homepage: "http://github.com/ocsigen/deriving/"
+bug-reports: "https://github.com/ocsigen/deriving/issues/"
+dev-repo: "https://github.com/ocsigen/deriving.git"
+license: "MIT"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{type_conv:enable}%-tc"]
   [make]
-  [make "install"]
 ]
-remove: [["ocamlfind" "remove" "deriving"]]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "deriving"]
 depends: [
   "ocamlfind"
   "base-bytes"
   "optcomp" {>= "1.6"}
   "camlp4"
+  "ocamlbuild" {build}
+  "num"
 ]
 depopts: ["type_conv"]
 conflicts: ["type_conv" {< "108.07.00"}]
+available: [ocaml-version <= "4.02.3"]

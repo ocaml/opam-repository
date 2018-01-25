@@ -1,5 +1,8 @@
-opam-version: "1"
-maintainer: "dave.scott@eu.citrix.com"
+opam-version: "1.2"
+authors: ["David Scott" "Jonathan Ludlam"]
+homepage: "https://github.com/djs55/vhd-tool"
+bug-reports: "https://github.com/djs55/vhd-tool/issues"
+maintainer: "dave@recoil.org"
 tags: [
   "org:mirage"
   "org:xapi-project"
@@ -7,24 +10,29 @@ tags: [
 build: [
   ["./configure" "--bindir=%{bin}%" "--libexecdir=%{lib}%/xapi"]
   [make]
-  [make "install"]
 ]
-remove: [[make "uninstall"]]
+remove: [
+  ["./configure" "--bindir=%{bin}%" "--libexecdir=%{lib}%/xapi"]
+  [make "uninstall"]
+]
 depends: [
   "ocamlfind"
   "lwt" {>= "2.4.3"}
   "cstruct" {>= "1.0.1"}
-  "vhd-format" {>= "0.7.0"}
+  "vhd-format" {>= "0.7.0" & < "0.8.0"}
   "uuidm"
   "cmdliner"
-  "nbd" {>= "1.0.1"}
+  "nbd" {>= "1.0.1" & < "2.0"}
   "ounit"
   "uri"
-  "tar-format" {<"0.3.0"}
+  "tar-format" {>"0.2" & < "0.3.0"}
   "sha"
-  "cohttp" {>="0.12.0"}
-  "ssl"
+  "cohttp" {>= "0.12.0" & <"0.99"}
+  "ssl" {>="0.5.3"}
+  "ocamlbuild" {build}
 ]
 conflicts: [
   "tls"
 ]
+dev-repo: "git://github.com/djs55/vhd-tool"
+install: [make "install"]

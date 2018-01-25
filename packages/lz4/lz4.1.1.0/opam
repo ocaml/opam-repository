@@ -10,7 +10,6 @@ dev-repo: "git://github.com/whitequark/ocaml-lz4.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 build-test: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests"]
@@ -19,11 +18,15 @@ build-test: [
 ]
 build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "lz4"]
-depends: ["base-bytes"
-          "ocamlfind"
-          "ctypes"     {>= "0.4.1"}
-          "ounit"]
+depends: [
+  "base-bytes"
+  "ocamlfind"
+  "ctypes" {>= "0.4.1" & < "0.6.0"}
+  "ounit"
+  "ocamlbuild" {build}
+]
 depexts: [
   [["debian"] ["liblz4-dev"]]
   [["ubuntu"] ["liblz4-dev"]]
 ]
+install: ["ocaml" "setup.ml" "-install"]

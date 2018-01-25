@@ -11,9 +11,7 @@ build: [
   ["ocaml" "setup.ml" "-build"]
 ]
 install: ["ocaml" "setup.ml" "-install"]
-remove: [
-  ["ocaml" "%{etc}%/podge/_oasis_remove_.ml" "%{etc}%/podge"]
-]
+remove: ["ocamlfind" "remove" "podge"]
 build-test: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--enable-tests"]
@@ -22,10 +20,11 @@ build-test: [
 ]
 depends: [
   "base-unix"
-  "cohttp"
+  "cohttp" {>= "0.9.7"}
   "oasis" {build & >= "0.4"}
   "ocamlfind" {build}
-  "tyxml"
+  "tyxml" {< "4.0.0"}
   "yojson"
+  "ocamlbuild" {build}
 ]
 available: [ ocaml-version >= "4.02.2" ]

@@ -1,9 +1,14 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "jonathan.ludlam@eu.citrix.com"
+authors: [ "Jonathan Ludlam" "David Scott" ]
+license: "LGPL-2 with OCaml linking exception"
+homepage: "https://github.com/xapi-project/nbd"
+dev-repo: "https://github.com/xapi-project/nbd.git"
+bug-reports: "https://github.com/xapi-project/nbd/issues"
+
 build: [
   ["./configure" "--prefix" prefix]
   [make]
-  [make "install" "BINDIR=%{bin}%"]
 ]
 remove: [
   [make "uninstall" "BINDIR=%{bin}%"]
@@ -12,9 +17,11 @@ remove: [
 depends: [
   "ocamlfind"
   "obuild"
-  "lwt"
-  "cstruct" {>="1.0.1"}
+  "lwt" {>= "2.4.5" & < "2.6.0"}
+  "cstruct" {>= "1.0.1" & <"2.0.0"}
   "cmdliner"
-  "camlp4"
+  "type_conv"  {build}
+  "ocamlbuild" {build}
 ]
 tags: [ "org:mirage" "org:xapi-project" ]
+install: [make "install" "BINDIR=%{bin}%"]

@@ -7,17 +7,19 @@ dev-repo:     "https://github.com/mirage/merge-ropes.git"
 license:      "ISC"
 
 build: [
-  ["./configure" "--prefix" prefix "--%{alcotest+irmin-unix:enable}%-tests"]
+  ["./configure" "--prefix" prefix]
   [make]
 ]
 build-test: [
+  ["./configure" "--enable-tests"]
   [make "test"]
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "merge-ropes"]
 depends: [
-  "irmin" {>= "0.9.4"}
+  "irmin" {>= "0.9.4" & < "0.10.0"}
   "comparelib"
-  "alcotest"   {test}
-  "irmin-unix" {test}
+  "alcotest" {test}
+  "irmin-unix" {test & < "0.12.0"}
+  "ocamlbuild" {build}
 ]

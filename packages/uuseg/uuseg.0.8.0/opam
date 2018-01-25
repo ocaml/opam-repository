@@ -8,17 +8,22 @@ bug-reports: "https://github.com/dbuenzli/uuseg/issues"
 tags: [ "segmentation" "text" "unicode" "org:erratique" ]
 license: "BSD3"
 available: [ ocaml-version >= "4.01.0"]
-depends: [ "ocamlfind"
-           "uucp" {>= "0.9.1" & < "1.0.0"} ]
+depends: [
+  "ocamlfind"
+  "uucp" {>= "0.9.1" & < "1.0.0"}
+  "ocamlbuild" {build}
+]
 depopts: [ "uutf"
            "cmdliner"
            "uutf" {test}
            "cmdliner" {test} ]
-build:
-[
-  [ "ocaml" "pkg/git.ml" ]
-  [ "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                           "native-dynlink=%{ocaml-native-dynlink}%"
-                           "uutf=%{uutf:installed}%"
-                           "cmdliner=%{cmdliner:installed}%" ]
+conflicts: [ "uutf"  {> "0.9.4"} ]
+build: ["ocaml" "pkg/git.ml"]
+install: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=%{ocaml-native}%"
+  "native-dynlink=%{ocaml-native-dynlink}%"
+  "uutf=%{uutf:installed}%"
+  "cmdliner=%{cmdliner:installed}%"
 ]

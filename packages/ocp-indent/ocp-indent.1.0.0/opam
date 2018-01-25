@@ -1,13 +1,17 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "contact@ocamlpro.com"
 homepage: "https://github.com/OCamlPro/ocp-indent"
 build: [
   ["./configure" "--prefix" prefix]
   [make]
-  [make "install"]
+  ]
+install: [
+  ["ocp-build" "uninstall" "-install-lib" "%{lib}%/ocp-indent" "ocp-indent" ]
 ]
 remove: [
   ["./configure" "--prefix" prefix]
-  [make "uninstall"]
+  ["ocp-build" "uninstall" "-install-lib" "%{lib}%/ocp-indent" "ocp-indent" ]
 ]
-depends: ["ocp-build" {>= "1.99.3-beta"}]
+depends: ["ocp-build" {build & >= "1.99.3-beta"}]
+available: [ocaml-version < "4.02.0" ] (* -warn-error on Bytes *)
+dev-repo: "git://github.com/OCamlPro/ocp-indent"

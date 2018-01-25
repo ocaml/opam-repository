@@ -1,15 +1,22 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "Vincent Bernardoff <vb@luminar.eu.org>"
 authors: ["Vincent Bernardoff <vb@luminar.eu.org>"]
+homepage: "https://github.com/vbmithr/ocaml-smtp"
+bug-reports: "https://github.com/vbmithr/ocaml-smtp/issues"
 license: "ISC"
 tags: [ "smtp" ]
-depends: ["ocamlfind"]
-depopts: ["lwt"]
-build:
-[
-  [ "ocaml" "pkg/build.ml" "native=true"
-                           "native-dynlink=true"
-                           "unix=%{base-unix:installed}%"
-                           "lwt=%{lwt:installed}%"
-  ]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+depopts: ["lwt" "base-unix"]
+conflicts: ["lwt" {>= "2.5.0"}]
+dev-repo: "git://github.com/vbmithr/ocaml-smtp"
+build: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=true"
+  "native-dynlink=true"
+  "unix=%{base-unix:installed}%"
+  "lwt=%{lwt:installed}%"
 ]

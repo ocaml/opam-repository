@@ -1,0 +1,49 @@
+opam-version: "1.2"
+maintainer: "simon.cruanes@inria.fr"
+authors: "Simon Cruanes"
+homepage: "https://www.rocq.inria.fr/deducteam/Zipperposition/index.html"
+bug-reports: "https://github.com/c-cube/zipperposition/issues"
+tags: ["logic" "unification" "term" "superposition" "prover"]
+dev-repo: "https://github.com/c-cube/zipperposition.git"
+build: [
+  [
+    "./configure"
+    "--bindir"
+    "%{bin}%"
+    "--disable-tests"
+    "--disable-docs"
+    "--%{menhir:enable}%-parsers"
+    "--disable-solving"
+    "--disable-qcheck"
+    "--disable-tools"
+    "--enable-meta"
+  ]
+  [make]
+]
+install: [make "install"]
+remove: [
+  ["ocamlfind" "remove" "libzipperposition"]
+  ["rm" "%{bin}%/zipperposition"]
+]
+depends: [
+  "ocamlfind" {build}
+  "base-bytes"
+  "base-unix"
+  "zarith"
+  "containers" {> "0.16" & <"1.0"}
+  "sequence" {>= "0.4" & <"0.9"}
+  "gen"
+  "oclock"
+  "oasis"
+  "msat" {>= "0.3" & < "0.4"}
+  "num"
+]
+depopts: [
+  "menhir" {build}
+  "qcheck" {test}
+]
+conflicts: [
+  "containers" { >= "1.2" }
+  "sequence" { >= "0.9" }
+]
+available: [ocaml-version >= "4.02.3"]

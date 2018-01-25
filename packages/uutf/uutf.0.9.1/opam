@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "opam-devel@lists.ocaml.org"
 authors: ["Daniel Bünzli <daniel.buenzli at erratique.ch>"]
 homepage: "http://erratique.ch/software/uutf"
@@ -6,8 +6,11 @@ license: "BSD3"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 remove: [["ocamlfind" "remove" "uutf"]]
-depends: ["ocamlfind"]
-ocaml-version: [>= "3.12.0"]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+]
+available: [ ocaml-version >= "3.12.0" & ocaml-version < "4.06.0" ]
+install: ["ocaml" "setup.ml" "-install"]

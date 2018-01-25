@@ -1,14 +1,23 @@
-opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+opam-version: "1.2"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: [ "Christophe Troestler" ]
+license: "LGPL-3.0 with OCaml linking exception"
+homepage: "https://github.com/Chris00/ANSITerminal"
+dev-repo: "https://github.com/Chris00/ANSITerminal.git"
+bug-reports: "https://github.com/Chris00/ANSITerminal/issues"
+tags: [ "terminal"  ]
 build: [
   ["rm" "setup.ml"] {ocaml-version >= "4.00.0"}
   ["oasis" "setup"] {ocaml-version >= "4.00.0"}
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
+install: ["ocaml" "setup.ml" "-install"]
 remove: [["ocamlfind" "remove" "ANSITerminal"]]
 depends: [
   "ocamlfind"
-  "oasis" {>= "0.3.0"}
+  "oasis" {build & >= "0.3.0" & < "0.4.7"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
 ]
+available: [ocaml-version < "4.05.0"]

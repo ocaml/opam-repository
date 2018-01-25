@@ -1,0 +1,33 @@
+opam-version: "1.2"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: [ "Christophe Troestler" ]
+license: "GPL-3 with OCaml linking exception"
+homepage: "https://github.com/ocaml/oasis2opam"
+dev-repo: "https://github.com/ocaml/oasis2opam.git"
+bug-reports: "https://github.com/ocaml/oasis2opam/issues"
+tags: [ "build" "install"  ]
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/oasis2opam/setup.ml" "-C" "%{etc}%/oasis2opam"
+    "-uninstall"]
+]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "base-bytes" {build}
+  "base-unix" {build}
+  "oasis" {build & >= "0.4.8"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build & >= "1.5"}
+  "ounit" {test & >= "2.0.0"}
+  ("qcheck" {test & >= "0.4"} | "qtest" {test & >= "0.4"})
+]

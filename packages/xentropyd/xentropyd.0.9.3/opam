@@ -1,16 +1,20 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "dave.scott@citrix.com"
+authors: "Dave Scott"
+homepage: "https://github.com/mirage/xentropyd"
+bug-reports: "https://github.com/mirage/xentropyd/issues"
+license: "ISC"
 build: [
-  [ "oasis" "setup" ]
-  [ "ocaml" "setup.ml" "-configure" ]
-  [ "ocaml" "setup.ml" "-build" ]
-  [ "cp" "main.native" "%{bin}%/xentropyd" ]
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure"]
+  ["ocaml" "setup.ml" "-build"]
 ]
 depends: [
   "oasis"
-  "cstruct" {>= "0.6.0"}
+  "camlp4"
+  "cstruct" {>= "0.6.0" & < "2.0.0"}
   "lwt"
-  "sexplib"
+  "sexplib" {< "113.01.00"}
   "ocamlfind"
   "io-page"
   "xen-evtchn"
@@ -19,10 +23,11 @@ depends: [
   "cmdliner"
   "cstruct"
   "mirage-clock-unix"
-  "mirage-types"
+  "mirage-types" {< "3.0.0"}
   "ipaddr"
   "uri"
   "stringext"
+  "ocamlbuild" {build}
 ]
 depexts: [
   [["debian"] ["libxen-dev" "uuid-dev"]]
@@ -30,4 +35,6 @@ depexts: [
   [["centos"] ["xen-devel"]]
   [["xenserver"] ["xen-dom0-libs-devel" "xen-libs-devel"]]
 ]
-ocaml-version: [>= "4.01.0"]
+available: [ocaml-version >= "4.01.0"]
+dev-repo: "git://github.com/mirage/xentropyd"
+install: ["cp" "main.native" "%{bin}%/xentropyd"]

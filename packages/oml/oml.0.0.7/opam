@@ -1,0 +1,46 @@
+opam-version: "1.2"
+name: "oml"
+version: "0.0.7"
+available: [ ocaml-version >= "4.03" ]
+maintainer: "Leonid Rozenberg <leonidr@gmail.com>"
+authors: "Leonid Rozenberg <leonidr@gmail.com>"
+homepage: "https://github.com/hammerlab/oml/"
+dev-repo: "https://github.com/hammerlab/oml.git"
+bug-reports: "https://github.com/hammerlab/oml/issues"
+license: "Apache2"
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "kaputt" {test}
+  "dsfo" {test}
+]
+depopts: [
+  "lacaml"
+  "lbfgs"
+  "ocephes"
+]
+conflicts: [
+  "lacaml" { < "8.0.6" }
+  "lacaml" { >= "9.2.3" }
+  "lbfgs" { < "0.8.7" }
+  "ocephes" { < "0.8" }
+]
+
+build: [[
+   "ocaml" "pkg/pkg.ml" "build"
+           "--pinned" "%{pinned}%"
+           "--with-lacaml" lacaml:installed
+           "--with-lbfgs" lbfgs:installed
+           "--with-ocephes" ocephes:installed
+]]
+build-test: [
+  [ "ocaml" "pkg/pkg.ml" "build"
+      "--pinned" "%{pinned}%"
+      "--build-dir" "_test"
+      "-n" "omltest"
+      "--tests" "true" ]
+  [ "ocaml" "pkg/pkg.ml" "test"
+      "--build-dir" "_test"
+  ]
+]

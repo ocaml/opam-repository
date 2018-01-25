@@ -1,17 +1,24 @@
 opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
 build: [
-  ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-topfind" {preinstalled}]
+  [
+    "./configure"
+    "-bindir"
+    bin
+    "-sitelib"
+    lib
+    "-mandir"
+    man
+    "-config"
+    "%{lib}%/findlib.conf"
+    "-no-topfind" {preinstalled}
+  ]
   [make "all"]
   [make "opt"]
-  [make "install"]
 ]
-ocaml-version: [< "3.12.2"]
-depexts: [
-  [ ["debian"] ["m4"] ]
-  [ ["ubuntu"] ["m4"] ] 
-  [ ["centos"] ["m4"] ]
+available: [(ocaml-version >= "3.08") & (ocaml-version < "3.12.2")]
+depends: [
+  "conf-m4" {build}
+  "num" {= "0"}
 ]
-post-messages: [
-  "Could not build ocamlfind. The most common reason for that is a missing 'm4' system package." {failure}
-]
+install: [make "install"]

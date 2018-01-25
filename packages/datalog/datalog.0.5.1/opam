@@ -1,9 +1,8 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "simon.cruanes@inria.fr"
 authors: ["Simon Cruanes <simon.cruanes@inria.fr>"]
 homepage: "https://github.com/c-cube/datalog"
 license: "BSD-2-Clause"
-ocaml-version: [ >= "4.00.1" ]
 doc: ["http://cedeela.fr/~simon/software/datalog/index.html"]
 tags: [
   "datalog"
@@ -11,10 +10,16 @@ tags: [
   "query"
   "prolog"
 ]
-build: [
-  ["./configure" "--bindir" bin "--docdir" "%{doc}/datalog/"]
+build: ["./configure" "--bindir" bin "--docdir" "%{doc}%/datalog/"]
+remove: [["ocamlfind" "remove" "datalog"]]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+  "num"
+]
+dev-repo: "git://github.com/c-cube/datalog"
+available: ocaml-version >= "4.00.1"
+install: [
   [make "all" "install_file" "doc" "man"]
   [make "install"]
 ]
-remove: [["ocamlfind" "remove" "datalog"]]
-depends: ["ocamlfind"]

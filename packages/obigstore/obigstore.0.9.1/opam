@@ -1,24 +1,25 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "mfp@acm.org"
 homepage: "https://github.com/mfp/obigstore"
 license: "LGPL + static linking exception"
 doc: ["https://github.com/mfp/obigstore/blob/master/README.md"]
-build: [
-  ["omake" "-j9"]
-  ["omake" "install" "prefix=%{prefix}%"]
-]
+build: ["omake" "-j9"]
 build-test: [["omake" "test"] {"%{ounit:installed}"}]
 remove: [
   ["ocamlfind" "remove" "obigstore"]
   ["rm" "-f" "%{bin}%/obigstore" "%{bin}%/obigstore.exe" "%{bin}%/ob_repl" "%{bin}%/ob_repl.exe" "%{bin}%/ob_load" "%{bin}%/ob_load.exe" "%{bin}%/ob_dump" "%{bin}%/ob_dump.exe" ]
 ]
 depends: [
-  "ocamlfind"
+  "ocamlfind" {build}
   "batteries"
   "cryptokit"
   "leveldb"
-  "extprot"
+  "extprot" {<"1.1.2"}
   "lwt" {< "2.4.7"}
-  "omake"
+  "omake" {build & <"0.10.0"}
+  "num"
+  "ounit"
 ]
 patches: [ "obigstore-unset-warn-error.diff" ]
+dev-repo: "git://github.com/mfp/obigstore"
+install: ["omake" "install" "prefix=%{prefix}%"]

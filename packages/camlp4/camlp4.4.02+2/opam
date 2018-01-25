@@ -1,12 +1,18 @@
 opam-version: "1.2"
+authors: ["Daniel de Rauglaudre" "Nicolas Pouillard"]
 maintainer: "jeremie@dimino.org"
 homepage: "https://github.com/ocaml/camlp4"
 license: "LGPLv2"
 build: [
   ["./configure" "--bindir=%{bin}%" "--libdir=%{lib}%/ocaml" "--pkgdir=%{lib}%"]
-  [make "all"]
+  [make "all"] {ocaml-native-dynlink}
+  [make "byte"] {!ocaml-native-dynlink}
 ]
-depends: ["ocamlfind"]
+depends: [
+  "ocamlfind"
+  "conf-which" {build}
+  "ocamlbuild" {build}
+]
 install: [
   [make "install" "install-META"]
 ]
@@ -19,9 +25,7 @@ remove: [
              "%{bin}%/camlp4o.opt" "%{bin}%/camlp4oof.opt" "%{bin}%/camlp4r.opt"
   ]
 ]
-depexts: [
-  [ ["centos"] ["which"] ]
-]
+patches: [ "f0ea53725465260556832398096cef8d3f20b49d.patch" ]
 available: [ (!preinstalled) & (ocaml-version >= "4.02") & (ocaml-version < "4.03") ]
 bug-reports: "https://github.com/ocaml/camlp4/issues"
 dev-repo: "https://github.com/ocaml/camlp4.git"

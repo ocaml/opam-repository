@@ -1,0 +1,29 @@
+opam-version: "1.2"
+maintainer: "erwan.jahier@imag.fr"
+authors: [ "Erwan Jahier" ]
+license: "GPL-3"
+homepage: "http://www-verimag.imag.fr/"
+dev-repo: "https://forge.imag.fr/anonscm/git/lutils/lutils.git"
+bug-reports: "http://www-verimag.imag.fr/"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/lutils/_oasis_remove_.ml" "%{etc}%/lutils"]
+]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "base-unix"
+  "camlp4"
+  "oasis" {build & >= "0.4"}
+  "ocamlfind" {build}
+  "num"
+]

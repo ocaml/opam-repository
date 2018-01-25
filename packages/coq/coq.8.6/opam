@@ -1,0 +1,35 @@
+opam-version: "1.2"
+name: "coq"
+version: "8.6"
+maintainer: "Maxime Dénès <mail@maximedenes.fr>"
+authors: "The Coq development team, INRIA, CNRS, University Paris Sud, University Paris 7, Ecole Polytechnique."
+homepage: "https://coq.inria.fr/"
+bug-reports: "https://coq.inria.fr/bugs/"
+dev-repo: "https://github.com/coq/coq.git"
+license: "LGPL 2"
+build: [
+  [
+    "./configure"
+    "-configdir"
+    "%{lib}%/coq/config"
+    "-mandir"
+    man
+    "-prefix"
+    prefix
+    "-usecamlp5"
+    "-camlp5dir"
+    "%{lib}%/camlp5"
+    "-coqide"
+    "no"
+    "-debug"
+  ]
+  [make "-j%{jobs}%"]
+]
+remove: ["rm" "-R" "%{lib}%/coq"]
+depends: [
+  "ocamlfind"
+  "camlp5"
+  "num"
+]
+available: [ocaml-version >= "4.01.0" & ocaml-version < "4.06.0"]
+install: [make "install"]

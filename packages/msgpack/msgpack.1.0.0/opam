@@ -1,15 +1,32 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "mzp.ppp@gmail.com"
+authors: "MIZUNO Hiroki <mzp.ppp@gmail.com>"
+homepage: "http://github.com/msgpack/msgpack-ocaml/"
+bug-reports: "https://github.com/msgpack/msgpack-ocaml/issues"
+patches: [
+  "no-camlp4.patch"
+]
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-core" "--%{meta_conv:enable}%-conv"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--enable-core"
+    "--%{meta_conv:enable}%-conv"
+  ]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 remove: [["ocamlfind" "remove" "msgpack"]]
 depends: [
-  "ocamlfind"
+  "ocamlfind" {build}
   ("extlib" | "extlib-compat")
+  "ocamlbuild" {build}
+  "num"
 ]
-ocaml-version: [>= "4.00.0"]
 depopts: ["meta_conv"]
 conflicts: ["meta_conv" {>= "1.1.1"}]
+dev-repo: "git://github.com/msgpack/msgpack-ocaml"
+available: [ocaml-version >= "4.00.0" & ocaml-version < "4.06.0"]
+install: ["ocaml" "setup.ml" "-install"]

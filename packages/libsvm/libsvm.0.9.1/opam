@@ -1,13 +1,26 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "gu.oliver@yahoo.com"
+authors: [
+  "Oliver Gu <gu.oliver@yahoo.com>"
+  "Dominik Brugger <dominikbrugger@fastmail.fm>"
+]
+homepage: "https://bitbucket.org/ogu/libsvm-ocaml"
 build: [
   ["ocaml" "setup.ml" "-configure"]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 remove: [["ocamlfind" "remove" "libsvm"]]
 depends: [
   "ocamlfind"
   "core" {>= "108.08.00"}
-  "lacaml"
+  "lacaml" {< "8.0"}
+  "ocamlbuild" {build}
 ]
+conflicts: [
+  "sexplib" {>= "113.24.00"}
+]
+depexts: [
+  [["ubuntu"]["libsvm-dev"]]
+  [["debian"]["libsvm-dev"]]
+]
+install: ["ocaml" "setup.ml" "-install"]

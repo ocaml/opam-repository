@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "anil@recoil.org"
 authors: [
   "Anil Madhavapeddy"
@@ -15,15 +15,20 @@ tags: [
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "uri"]]
 depends: [
   "ocamlfind"
   "re"
-  "sexplib" {>="109.53.00"}
+  "sexplib" {>= "109.53.00" & < "113.01.00"}
   "type_conv"
   "stringext"
+  "ocamlbuild" {build}
 ]
-depopts: ["ounit" {>= "1.0.2"}]
+depopts: ["ounit"]
+conflicts: [
+  "ounit" {< "1.0.2"}
+]
+dev-repo: "git://github.com/mirage/ocaml-uri"
+install: ["ocaml" "setup.ml" "-install"]

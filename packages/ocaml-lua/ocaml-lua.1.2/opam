@@ -1,21 +1,40 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "p.donadeo@gmail.com"
 authors: [
   "Paolo Donadeo"
   "Sylvain Le Gall"
 ]
-homepage: "http://ocaml-lua.forge.ocamlcore.org"
+homepage: "https://pdonadeo.github.io/ocaml-lua/"
+bug-reports: "https://github.com/pdonadeo/ocaml-lua/issues"
+dev-repo: "https://github.com/pdonadeo/ocaml-lua.git"
 license: "MIT"
 build: [
-  ["./configure" "--enable-docs" "--prefix" prefix "--docdir" "%{doc}%/ocaml-lua" "--libdir" "%{lib}%/ocaml-lua"]
+  [
+    "./configure"
+    "--enable-docs"
+    "--prefix"
+    prefix
+    "--docdir"
+    "%{doc}%/ocaml-lua"
+    "--libdir"
+    "%{lib}%/ocaml-lua"
+  ]
   [make]
   [make "doc"]
-  [make "install"]
 ]
-remove: [["ocamlfind" "remove" "lua"]]
-depends: ["ocamlfind"]
+remove: [
+    ["ocamlfind" "remove" "lua"]
+    ["rm" "-R" "%{doc}%/ocaml-lua"]
+]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+]
 depexts: [
   [["debian"] ["liblua5.1-0-dev"]]
   [["ubuntu"] ["liblua5.1-0-dev"]]
+  [["alpine"] ["lua-dev"]]
+  [["opensuse"] ["lua51-devel"]]
 ]
-ocaml-version: [>= "3.12.1"]
+available: [ os = "linux" & ocaml-version >= "3.12.1" & ocaml-version < "4.03" ]
+install: [make "install"]

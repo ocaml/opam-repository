@@ -1,11 +1,8 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "dev@domoco.fr"
 authors: ["Incubaid Team"]
 homepage: "http://arakoon.org/"
-build: [
-  [make]
-  [make "install" "DESTDIR=%{prefix}%"]
-]
+build: make
 remove: [
   ["rm" "-rf" "%{bin}%/arakoon"]
   [make "uninstall_client" "DESTDIR=%{prefix}%"]
@@ -16,6 +13,9 @@ depends: [
   "ounit"
   "camltc"
   "camlbz2"
+  "ocamlbuild" {build}
 ]
 patches: ["opam.patch"]
-ocaml-version: [< "4.02.0"]
+dev-repo: "git://github.com/Incubaid/arakoon"
+available: ocaml-version < "4.02.0"
+install: [make "install" "DESTDIR=%{prefix}%"]

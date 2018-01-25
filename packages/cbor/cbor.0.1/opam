@@ -1,15 +1,28 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "ygrek@autistici.org"
 homepage: "https://github.com/ygrek/ocaml-cbor"
 #doc: 
 build: [
-  ["ocaml" "setup.ml" "-configure" "--%{yojson:enable}%-tests" "--prefix" prefix]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--%{yojson:enable}%-tests"
+    "--prefix"
+    prefix
+  ]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 build-test: [["ocaml" "setup.ml" "-test"]]
 build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "cbor"]]
-depends: ["ocamlfind" "base-bytes" "ocplib-endian" {>="0.6"} "oasis" {>="0.4.0"}]
+depends: [
+  "ocamlfind"
+  "base-bytes"
+  "ocplib-endian" {>= "0.6"}
+  "oasis" {>= "0.4.0"}
+  "ocamlbuild" {build}
+]
 depopts: ["yojson"]
-ocaml-version: [>="4.00.0"]
+available: ocaml-version >= "4.00.0"
+install: ["ocaml" "setup.ml" "-install"]

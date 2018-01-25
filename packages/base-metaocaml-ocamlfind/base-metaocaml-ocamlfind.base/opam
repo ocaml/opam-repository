@@ -1,10 +1,21 @@
 opam-version: "1.2"
 maintainer: "yallop@gmail.com"
+authors: ["Jeremy Yallop"]
 depopts: ["ocamlfind"]
+homepage: "https://github.com/ocaml/opam-repository/tree/master/packages/base-metaocaml-ocamlfind/base-metaocaml-ocamlfind.base"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "https://github.com/ocaml/opam-repository.git"
 install: [
-  [ "mkdir" "-p" "%{lib}%/findlib.conf.d/"          ] {ocamlfind:installed}
-  [ "cp" "metaocaml.conf" "%{lib}%/findlib.conf.d/" ] {ocamlfind:installed}
+  [ "mkdir" "-p" "%{lib}%/findlib.conf.d/" ]
+     {ocamlfind:installed}
+
+  [ "cp" "metaocaml.native.conf" "%{lib}%/findlib.conf.d/metaocaml.conf" ]
+     {ocamlfind:installed & compiler = "4.04.0+BER"}
+
+  [ "cp" "metaocaml.conf" "%{lib}%/findlib.conf.d/metaocaml.conf" ]
+     {ocamlfind:installed & compiler != "4.04.0+BER"}
 ]
 remove: [
   [ "rm" "-f" "%{lib}%/findlib.conf.d/metaocaml.conf" ]
 ]
+available: [ compiler = "4.02.1+BER" | compiler = "4.02.1+modular-implicits-ber" | compiler = "4.04.0+BER" ]

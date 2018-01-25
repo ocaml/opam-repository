@@ -1,21 +1,31 @@
-opam-version: "1"
-maintainer: "dave.scott@eu.citrix.com"
-tags: [
-  "org:mirage"
-  "org:xapi-project"
-]
-build: [
-  [make]
-  [make "install"]
-]
-remove: [[make "uninstall"]]
+opam-version: "1.2"
+maintainer:   "dave.scott@citrix.com"
+authors:      ["Dave Scott"]
+homepage:     "https://github.com/mirage/ocaml-evtchn"
+dev-repo:     "https://github.com/mirage/ocaml-evtchn.git"
+bug-reports:  "https://github.com/mirage/ocaml-evtchn/issues"
+tags:         ["org:mirage" "org:xapi-project"]
+
+build:   [make]
+install: [make "install"]
+remove:  [make "uninstall"]
+
 depends: [
-  "ocamlfind"
+  "ocamlfind"  {build}
+  "ocamlbuild" {build}
   "lwt"
+  "camlp4"
   "cmdliner"
+  "ounit"
 ]
+depopts: ["xenctrl"]
 depexts: [
+  [["alpine"] ["xen-dev"]]
   [["debian"] ["libxen-dev"]]
   [["ubuntu"] ["libxen-dev"]]
+  [["centos"] ["xen-devel"]]
+  [["fedora"] ["xen-devel"]]
+  [["archlinux"] ["xenstore"]]
 ]
-ocaml-version: [>= "4.00.0"]
+
+available: [ocaml-version >= "4.00.0"]

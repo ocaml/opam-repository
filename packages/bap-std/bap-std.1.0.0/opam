@@ -1,0 +1,63 @@
+opam-version: "1.2"
+name: "bap-std"
+version: "1.0.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure"
+                 "--prefix=%{prefix}%"
+                 "--with-cxx=`which clang++`"
+                 "--mandir=%{man}%"
+                 "--enable-bap-std"]
+  [make]
+]
+
+install: [
+  [make "reinstall"]
+]
+
+remove: [
+  ["ocamlfind" "remove" "bap"]
+  ["ocamlfind" "remove" "bap-build"]
+  ["rm" "-f" "%{bin}%/baptop"]
+  ["rm" "-f" "%{bin}%/ppx-bap"]
+  ["rm" "-f" "%{bin}%/bapbuild"]
+  ["rm" "-f" "%{bin}%/bapbundle"]
+]
+
+depends: [
+  "base-unix"
+  "bap-future"
+  "camlzip"
+  "core_kernel" {>= "113.33.00"}
+  "fileutils"
+  "graphlib"
+  "oasis" {build & = "0.4.7"}
+  "ocamlfind" {>= "1.5.6" & < "2.0"}
+  "ppx_jane" {>= "113.33.00" & < "113.34.00"}
+  "regular"
+  "uri"
+  "utop"
+  "uuidm"
+  "zarith"
+  "cmdliner" {<= "0.9.8"}
+]
+depexts: [
+    [["ubuntu"] [
+        "libgmp-dev"
+        "libzip-dev"
+        "clang"
+     ]]
+     [["osx" "macports"] [
+        "gmp"
+        "libzip"
+     ]
+    ]
+]
+
+conflicts: ["fileutils" {= "0.5.0"}]
+available: [ocaml-version >= "4.02.3"]

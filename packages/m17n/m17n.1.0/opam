@@ -1,0 +1,39 @@
+opam-version: "1.2"
+maintainer: "whitequark <whitequark@whitequark.org>"
+authors: "whitequark <whitequark@whitequark.org>"
+homepage: "https://github.com/whitequark/ocaml-m17n"
+bug-reports: "https://github.com/whitequark/ocaml-m17n/issues"
+license: "MIT"
+doc: "http://whitequark.github.io/ocaml-m17n"
+tags: "syntax"
+dev-repo: "git://github.com/whitequark/ocaml-m17n.git"
+substs: "pkg/META"
+build: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=%{ocaml-native}%"
+  "native-dynlink=%{ocaml-native-dynlink}%"
+  "utop=%{utop:installed}%"
+]
+build-test: [
+  "ocamlbuild"
+  "-classic-display"
+  "-use-ocamlfind"
+  "src_test/test_m17n.byte"
+  "--"
+]
+depends: [
+  "ocamlfind" {build}
+  "sedlex"
+  "uutf" {>= "0.9.4" & < "1.0.0"}
+  "uunf" {>= "1.0.0" & < "2.0.0"}
+  "uucp" {>= "1.1.0" & < "2.0.0"}
+  "gen" {>= "0.2.3" & < "0.5"}
+  "ounit" {test}
+  "ppx_deriving" {test}
+]
+depopts: "utop"
+conflicts: [
+  "utop" {< "1.17"}
+]
+available: [ocaml-version = "4.03.0"]

@@ -1,0 +1,37 @@
+opam-version: "1.2"
+maintainer: "c-cube"
+authors: ["Armael" "Enjolras" "c-cube"]
+homepage: "https://github.com/c-cube/calculon"
+bug-reports: "https://github.com/c-cube/calculon/issues"
+tags: ["irc" "bot" "factoids"]
+dev-repo: "http://github.com/c-cube/calculon.git"
+build: [
+  [
+    "./configure"
+    "--bindir"
+    "%{bin}%"
+    "--%{uri+lambdasoup+cohttp+atdgen:enable}%-web"
+    "--%{re+sequence:enable}%-extras"
+  ]
+  [make "build"]
+]
+install: [make "install"]
+build-test: [make "test"]
+build-doc: [make "doc"]
+remove: ["ocamlfind" "remove" "calculon"]
+depends: [
+  "ocamlfind" {build}
+  "base-bytes"
+  "base-unix"
+  "result"
+  "lwt"
+  "irc-client" {>= "0.4.0"}
+  "tls"
+  "yojson"
+  "containers" {>= "1.0" < "2.0"}
+  "ISO8601"
+  "re"
+  "stringext"
+]
+depopts: ["uri" "cohttp" "atdgen" "lambdasoup" "sequence"]
+available: [ocaml-version >= "4.02.0"]

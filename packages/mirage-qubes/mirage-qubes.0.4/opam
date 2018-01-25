@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer:   "talex@gmail.com"
+authors:      ["Thomas Leonard"]
+license:      "BSD-2-Clause"
+homepage:     "https://github.com/talex5/mirage-qubes"
+bug-reports:  "https://github.com/talex5/mirage-qubes/issues"
+dev-repo:     "https://github.com/talex5/mirage-qubes.git"
+
+build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+        "--with-ipv4" "%{tcpip+ipaddr+mirage-protocols-lwt:installed}%"
+]
+
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "cstruct" { >= "1.9.0" }
+  "vchan" { >= "2.3.0" & < "3.0.0" }
+  "xen-evtchn"
+  "xen-gnt"
+  "mirage-xen" { >= "3.0.0" }
+  "lwt"
+  "mirage-types-lwt" { >= "3.0.0" }
+  "logs" { >= "0.5.0" }
+]
+depopts: [
+  "ipaddr"
+  "tcpip"
+  "mirage-protocols-lwt"
+]
+available: [ocaml-version >= "4.03.0"]

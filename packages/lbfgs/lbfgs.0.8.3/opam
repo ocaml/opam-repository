@@ -1,23 +1,32 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "Christophe.Troestler@umons.ac.be"
 authors: ["Christophe Troestler <Christophe.Troestler@umons.ac.be>"]
 homepage: "https://forge.ocamlcore.org/projects/lbfgs/"
+dev-repo: "https://github.com/Chris00/L-BFGS-ocaml.git"
+bug-reports: "https://github.com/Chris00/L-BFGS-ocaml/issues"
 license: "LGPL-3.0 with OCaml linking exception"
 build: [
-  ["rm" "setup.ml"] {ocaml-version >= "4.00.0"}
-  ["oasis" "setup"] {ocaml-version >= "4.00.0"}
+  ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "lbfgs"]]
 depends: [
+  "camlp4" {build}
   "ocamlfind"
-  "oasis" {>= "0.3.0"}
+  "oasis" {>= "0.4.6"}
+  "ocamlbuild" {build}
 ]
 depopts: ["lacaml"]
+patches: [
+  "setup.patch"
+  "string.patch"
+]
 depexts: [
   [["debian"] ["gfortran"]]
   [["ubuntu"] ["gfortran"]]
+  [["cygwin"] ["mingw64-x86_64-gcc-fortran"]]
+  [["osx" "homebrew"] ["gcc"]]
 ]
+install: ["ocaml" "setup.ml" "-install"]

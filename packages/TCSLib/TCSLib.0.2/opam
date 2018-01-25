@@ -1,0 +1,30 @@
+opam-version: "1.2"
+name: "TCSLib"
+version: "0.2"
+maintainer: "opam-devel@lists.ocaml.org"
+authors: [ "Oliver Friedmann"
+           "Martin Lange" ]
+license: "BSD-3-clause"
+homepage: "https://github.com/tcsprojects/tcslib"
+dev-repo: "git://github.com/tcsprojects/tcslib.git"
+bug-reports: "https://github.com/tcsprojects/tcslib/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "TCSLib"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  ("extlib" | "extlib-compat")
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "num"
+]
+available: [ ocaml-version >= "4.03.0" ]

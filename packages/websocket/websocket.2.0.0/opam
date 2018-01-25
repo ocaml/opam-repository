@@ -10,20 +10,21 @@ tags: [
   "org:xapi-project"
 ]
 
-build: [
-  ["ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                          "native-dynlink=%{ocaml-native-dynlink}%"
-                          "lwt=%{lwt:installed}%"
-  ]
-]
 depends: [
   "lwt" {>= "2.4.8"}
   "containers" {>= "0.10"}
-  "cohttp" {>= "0.17.1" & <"0.19.0"}
+  "cohttp" {>= "0.17.1" & < "0.19.0"}
   "ocplib-endian" {>= "0.8"}
   "ppx_deriving" {>= "2.0"}
   "nocrypto" {>= "0.4.0"}
   "conduit" {>= "0.8.3"}
+  "ocamlbuild" {build}
 ]
-
 available: [ ocaml-version >="4.02.0" ]
+install: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=%{ocaml-native}%"
+  "native-dynlink=%{ocaml-native-dynlink}%"
+  "lwt=%{lwt:installed}%"
+]

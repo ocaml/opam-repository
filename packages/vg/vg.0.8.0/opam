@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
 authors: ["Daniel Bünzli <daniel.buenzli i@erratique.ch>"]
 homepage: "http://erratique.ch/software/vg"
@@ -11,18 +11,25 @@ tags: [
   "declarative"
   "graphics"
 ]
-build: [
-  ["./pkg/pkg-git"]
-  ["./pkg/build" "true" "%{uutf:installed}%" "%{otfm:installed}%" "%{js_of_ocaml:installed}%"]
-]
+build: "./pkg/pkg-git"
 depends: [
   "ocamlfind"
   "gg" {< "0.9.0"}
+  "ocamlbuild" {build}
 ]
-conflicts: [ "gg" {>= "0.9.0"} ]
+conflicts: [ "gg" {>= "0.9.0"}
+             "uutf" {> "0.9.4"}
+             "js_of_ocaml" {>= "3.0"}]
 depopts: [
   "uutf"
   "otfm"
   "js_of_ocaml"
 ]
-ocaml-version: [>= "4.00.0"]
+available: ocaml-version >= "4.00.0"
+install: [
+  "./pkg/build"
+  "true"
+  "%{uutf:installed}%"
+  "%{otfm:installed}%"
+  "%{js_of_ocaml:installed}%"
+]

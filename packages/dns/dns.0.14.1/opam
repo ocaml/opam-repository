@@ -18,7 +18,7 @@ tags: [
   "org:xapi-project"
 ]
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{base-unix:enable}%-lwt" "--%{mirage-types:enable}%-mirage" "--%{async:enable}%-async"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-lwt" "--%{mirage-types:enable}%-mirage" "--%{async:enable}%-async"]
   ["ocaml" "setup.ml" "-build"]
 ]
 install: [
@@ -27,22 +27,24 @@ install: [
 remove: [["ocamlfind" "remove" "dns"]]
 depends: [
   "base-bytes"
-  "lwt" {>= "2.4.3"}
+  "lwt" {>= "2.4.3" & < "3.0.0"}
   "cstruct" {>= "1.0.1" & < "1.6.0"}
   "ocamlfind"
   "re"
   "cmdliner"
-  "ipaddr" {>= "2.2.0"}
+  "ipaddr" {>= "2.2.0" & <"2.8.0"}
   "base64" {>= "2.0.0"}
   "ounit"
   "pcap-format" {test}
+  "ocamlbuild" {build}
 ]
 depopts: [
   "tcpip"
+  "mirage-types"
   "async"
 ]
 conflicts: [
-  "mirage-types" {<"1.2.0"}
+  "mirage-types" {<"1.2.0" & >"3.0.0"}
   "async" {<"112.24.00"}
 ]
 available: [ ocaml-version >= "4.00.0"]

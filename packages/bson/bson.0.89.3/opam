@@ -1,15 +1,27 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "opam-devel@lists.ocaml.org"
 authors: ["MassD http://massd.github.io/, Marc Simon marc.simon42@gmail.com"]
 license: "GPL-3"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--%{deriving:enable}%-syntax" "--%{js_of_ocaml+deriving:enable}%-client" "--prefix" prefix]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--%{deriving:enable}%-syntax"
+    "--%{js_of_ocaml+deriving:enable}%-client"
+    "--prefix"
+    prefix
+  ]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 remove: [["ocamlfind" "remove" "bson"]]
-depends: ["ocamlfind"]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+]
 depopts: [
   "deriving"
   "js_of_ocaml"
 ]
+dev-repo: "git://github.com/MassD/bson"
+install: ["ocaml" "setup.ml" "-install"]

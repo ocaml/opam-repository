@@ -1,21 +1,33 @@
 opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
 build: [
-  ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-topfind" {preinstalled}]
+  [
+    "./configure"
+    "-bindir"
+    bin
+    "-sitelib"
+    lib
+    "-mandir"
+    man
+    "-config"
+    "%{lib}%/findlib.conf"
+    "-no-custom"
+    "-no-topfind" {preinstalled}
+  ]
   [make "all"]
   [make "opt"]
-  [make "install"]
 ]
 remove: [
   ["ocamlfind" "remove" "bytes"]
   ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-topfind" {preinstalled}]
   [make "uninstall"]
 ]
-depexts: [
-  [ ["debian"] ["m4"] ]
-  [ ["ubuntu"] ["m4"] ] 
-  [ ["centos"] ["m4"] ]
+depends: [
+  "conf-m4" {build}
+  "num" {= "0"}
 ]
-post-messages: [
-  "Could not build ocamlfind. The most common reason for that is a missing 'm4' system package." {failure}
-]
+# needs 3.10.0 for ocamldep -modules but for some reason, when using
+# 3.11 an ocamlfind test needs native dynamic linking which is only from 3.12.0
+available: [ (ocaml-version >= "3.12.0") |
+             ((ocaml-version >= "3.10.0") & (ocaml-version < "3.11.0")) ]
+install: [make "install"]

@@ -1,14 +1,10 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "contact@ocamlpro.com"
 homepage: "http://www.typerex.org/ocp-index.html"
 license: "LGPL"
 build: [
   ["./configure" "--prefix" prefix]
   [make]
-  [make "install"]
-  ["ocp-build" "install" "ocp-browser"
-      "-install-lib" lib
-      "-install-bin" bin] {curses:installed}
 ]
 remove: [
   ["./configure" "--prefix" prefix]
@@ -17,12 +13,12 @@ remove: [
   [make "uninstall"]
 ]
 depends: [
-  "ocp-build" {>= "1.99.4-beta"}
-  "ocp-indent" {>= "1.4.0"}
+  "ocp-build" {build & >= "1.99.4-beta"}
+  "ocp-indent" {>= "1.4.0" & < "1.4.1"}
   "cmdliner"
 ]
 depopts: ["curses"]
-ocaml-version: [ >= "4.00.0" & < "4.02" ]
+available: [ ocaml-version >= "4.00.0" & ocaml-version < "4.02" ]
 post-messages: [
   "OCP-INDEX installed.
 
@@ -33,4 +29,10 @@ To use it from emacs, add the following to your .emacs:
      \"/emacs/site-lisp\"))
   (require 'ocp-index)"
   {success}
+]
+dev-repo: "git://github.com/OCamlPro/ocp-index"
+install: [
+  [make "install"]
+  ["ocp-build" "install" "ocp-browser" "-install-lib" lib "-install-bin" bin]
+    {curses:installed}
 ]

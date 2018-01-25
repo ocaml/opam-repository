@@ -1,0 +1,26 @@
+From 6c11b9255e5fc116714f7ee4fd3d7f9175b262f5 Mon Sep 17 00:00:00 2001
+From: Ion Alberdi <nolaridebi@gmail.com>
+Date: Mon, 8 May 2017 21:23:37 +0200
+Subject: [PATCH] Look for ndbm.h in /usr/local/include too
+
+In macOS 10.12.4
+% brew install gdbm --with-libgdbm-compat
+
+puts ndbm.h in /usr/local/include.
+---
+ configure | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure b/configure
+index 7786275..00b763f 100755
+--- a/configure
++++ b/configure
+@@ -42,7 +42,7 @@ dbm_include="not found"
+ dbm_link="not found"
+ dbm_defines=""
+ 
+-for dir in /usr/include /usr/include/db1 /usr/include/gdbm; do
++for dir in /usr/include /usr/include/db1 /usr/include/gdbm /usr/local/include; do
+   if test -f $dir/ndbm.h; then
+     dbm_include=$dir
+     if hasgot $dir ndbm.h; then

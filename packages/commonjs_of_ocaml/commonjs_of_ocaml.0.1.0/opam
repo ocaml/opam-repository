@@ -1,0 +1,30 @@
+opam-version: "1.2"
+maintainer: "Tony Aldridge <tony@angry-lawyer.com>"
+authors: "Tony Aldridge <tony@angry-lawyer.com>"
+homepage: "https://github.com/angrylawyer/commonjs_of_ocaml"
+bug-reports: "https://github.com/angrylawyer/commonjs_of_ocaml/issues"
+dev-repo: "https://github.com/angrylawyer/commonjs_of_ocaml.git"
+license: "MIT"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: [
+  "ocaml"
+  "%{etc}%/commonjs_of_ocaml/_oasis_remove_.ml"
+  "%{etc}%/commonjs_of_ocaml"
+]
+depends: [
+  "js_of_ocaml" {>= "2.7" & <"3.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "cppo_ocamlbuild" {build}
+  "cppo" {build}
+]
+available: [ocaml-version >= "4.02"]

@@ -1,0 +1,28 @@
+opam-version: "1.2"
+maintainer: "Romain Beauxis <toots@rastageeks.org>"
+authors: "Romain Beauxis <toots@rastageeks.org>"
+homepage: "https://github.com/toots/posix-getopt"
+bug-reports: "https://github.com/toots/posix-getopt/issues"
+license: "WTFPL"
+dev-repo: "https://github.com/toots/posix-getopt.git"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "posix-getopt"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "ctypes" {>= "0.4"}
+  "ctypes-foreign"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "ounit" {test}
+  "extunix" {test}
+]

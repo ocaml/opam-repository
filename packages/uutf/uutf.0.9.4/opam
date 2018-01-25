@@ -7,15 +7,19 @@ dev-repo: "http://erratique.ch/repos/uutf.git"
 bug-reports: "https://github.com/dbuenzli/uutf/issues"
 tags: [ "unicode" "text" "utf-8" "utf-16" "codec" "org:erratique" ]
 license: "BSD3"
-available: [ ocaml-version >= "4.00.0"]
-depends: ["ocamlfind"]
+available: [ ocaml-version >= "4.00.0" & ocaml-version < "4.06.0" ]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+]
 depopts: ["cmdliner"
           "cmdliner" {test} ]
 conflicts : ["cmdliner" { < "0.9.6" } ]
-build:
-[
-  [ "ocaml" "pkg/git.ml" ]
-  [ "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                           "native-dynlink=%{ocaml-native-dynlink}%"
-                           "cmdliner=%{cmdliner:installed}%" ]
+build: ["ocaml" "pkg/git.ml"]
+install: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=%{ocaml-native}%"
+  "native-dynlink=%{ocaml-native-dynlink}%"
+  "cmdliner=%{cmdliner:installed}%"
 ]

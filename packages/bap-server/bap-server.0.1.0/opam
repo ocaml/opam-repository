@@ -1,0 +1,42 @@
+opam-version: "1.2"
+name: "bap-server"
+version: "0.1.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap-server/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap-server/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap-server/"
+license: "MIT"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+
+install: [
+  ["ocaml" "setup.ml" "-install"]
+]
+
+remove: [
+  ["rm" "-f" "%{bin}%/bap-server"]
+]
+
+depends: [
+    "core-lwt"
+    "regular"
+    "bap-std" "bap-arm"
+    "cohttp" {>= "0.20.0" & <= "0.21.0"}
+    "core_kernel" {>= "113.33.00"}
+    "ezjsonm" {>= "0.4.0" & < "0.4.4" }
+    "lwt"
+    "oasis" {build & = "0.4.7"}
+    "re"
+    "uri"
+]
+
+conflicts: [
+    "tls" {< "0.7.1"}
+    "nocrypto" {< "0.5.3"}
+]
+
+available: [ocaml-version >= "4.02.3"]

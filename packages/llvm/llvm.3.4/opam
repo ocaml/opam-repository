@@ -1,16 +1,24 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "jp.deplaix@gmail.com"
+authors: [
+  "whitequark <whitequark@whitequark.org>"
+  "The LLVM team"
+]
+bug-reports: "http://llvm.org/bugs/"
+dev-repo: "http://llvm.org/git/llvm.git"
+homepage: "http://llvm.moe"
 patches: [
   "makefile+build.patch"
   "makefile+system.patch"
 ]
-build: [
-  ["./compile.sh" "install" "3.4" make prefix lib]
-]
 remove: [
-  ["./compile.sh" "uninstall" "3.4" make prefix lib]
+  ["sh" "./compile.sh" "uninstall" "3.4" make prefix lib]
 ]
 depexts: [
   [["debian"] ["llvm-3.4-dev"]]
-  [["source" "linux"] ["https://gist.github.com/jpdeplaix/11352552/raw"]]
+  [["osx" "homebrew"] ["homebrew/versions/llvm34"]]
 ]
+depends: [
+  "ocamlbuild" {build}
+]
+install: ["sh" "./compile.sh" "install" "3.4" make prefix lib]

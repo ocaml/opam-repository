@@ -1,0 +1,61 @@
+opam-version: "1.2"
+name: "session"
+maintainer: "Spiros Eliopoulos <spiros@inhabitedtype.com>"
+authors: [ "Spiros Eliopoulos <spiros@inhabitedtype.com>" ]
+license: "BSD-3-clause"
+homepage: "https://github.com/inhabitedtype/ocaml-session"
+dev-repo: "https://github.com/inhabitedtype/ocaml-session.git"
+bug-reports: "https://github.com/inhabitedtype/ocaml-session/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+    "--%{webmachine:enable}%-webmachine"
+    "--%{postgresql:enable}%-postgresql"
+    "--%{redis-lwt:enable}%-redis"
+    "--%{lwt:enable}%-lwt"
+    "--%{cohttp:enable}%-cohttp"
+    "--%{async:enable}%-async"]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "session"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"
+    "--%{webmachine:enable}%-webmachine"
+    "--%{postgresql:enable}%-postgresql"
+    "--%{redis-lwt:enable}%-redis"
+    "--%{lwt:enable}%-lwt"
+    "--%{cohttp:enable}%-cohttp"
+    "--%{async:enable}%-async"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "nocrypto"
+  "ocamlfind" {build}
+  "ounit" {test & >= "1.0.2"}
+  "result"
+]
+depopts: [
+  "async"
+  "base-threads"
+  "cohttp"
+  "postgresql"
+  # If session ever switches to jbuilder, then this constraint should turn into
+  # something along the lines of the following constraint in
+  # session-redis-lwt.opam:
+  #
+  #   depends: [
+  #     ...
+  #     ("redis-lwt" | ("redis" & "lwt"))
+  #     ...
+  #   ]
+  "lwt"
+  "redis-lwt"
+  "webmachine"
+]
+conflicts: [
+  "cohttp" {>= "0.99.0"}
+]

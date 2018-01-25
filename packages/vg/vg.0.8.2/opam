@@ -8,15 +8,22 @@ bug-reports: "https://github.com/dbuenzli/vg/issues"
 tags: [ "pdf" "svg" "html-canvas" "declarative" "graphics" "org:erratique" ]
 license: "BSD-3-Clause"
 available: [ ocaml-version >= "4.02.0"]
-depends: [ "ocamlfind" "gg" {>= "0.9.0"} ]
+depends: [
+  "ocamlfind"
+  "gg" {>= "0.9.0"}
+  "ocamlbuild" {build}
+]
 depopts: [ "uutf" "otfm" "js_of_ocaml" "cairo2" ]
-build:
-[
-  [ "ocaml" "pkg/git.ml" ]
-  [ "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                           "native-dynlink=%{ocaml-native-dynlink}%"
-                           "uutf=%{uutf:installed}%"
-                           "otfm=%{otfm:installed}%"
-                           "cairo2=%{cairo2:installed}%"
-                           "jsoo=%{js_of_ocaml:installed}%" ]
+conflicts: [ "uutf" {> "0.9.4"}
+             "js_of_ocaml" {>= "3.0"} ]
+build: ["ocaml" "pkg/git.ml"]
+install: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=%{ocaml-native}%"
+  "native-dynlink=%{ocaml-native-dynlink}%"
+  "uutf=%{uutf:installed}%"
+  "otfm=%{otfm:installed}%"
+  "cairo2=%{cairo2:installed}%"
+  "jsoo=%{js_of_ocaml:installed}%"
 ]

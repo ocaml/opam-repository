@@ -1,0 +1,26 @@
+opam-version: "1.2"
+maintainer: "Hannes Mehnert <hannes@mehnert.org>"
+authors: "Hannes Mehnert <hannes@mehnert.org>"
+homepage: "https://github.com/hannesm/ocaml-hkdf"
+bug-reports: "https://github.com/hannesm/ocaml-hkdf/issues"
+license: "BSD2"
+dev-repo: "https://github.com/hannesm/ocaml-hkdf.git"
+build: [
+  ["./configure" "--prefix" prefix]
+  [make]
+]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "hkdf"]
+depends: [
+  "ocamlfind"
+  "cstruct" {>= "1.6.0"}
+  "nocrypto" {>= "0.5.0"}
+  "alcotest" {test}
+  "ocamlbuild" {build}
+]
+available: [ocaml-version >= "4.01.0"]
+
+build-test: [
+  [ "./configure" "--%{alcotest:enable}%-tests" ]
+  [ make "test" ]
+]

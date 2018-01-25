@@ -7,26 +7,37 @@ tags: [
   "org:xapi-project"
 ]
 build: [
-  ["ocaml" "setup.ml" "-configure" "--%{base-unix:enable}%-unix" "--%{js_of_ocaml:enable}%-js" "--prefix" prefix]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--%{base-unix:enable}%-unix"
+    "--%{js_of_ocaml:enable}%-js"
+    "--prefix"
+    prefix
+  ]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 remove: [["ocamlfind" "remove" "github"]]
 depends: [
   "ocamlfind"
   "ssl"
   "uri" {>= "1.5.0"}
-  "cohttp" {>= "0.14.0" & <"0.18.0"}
+  "cohttp" {>= "0.14.0" & < "0.18.0"}
   "lwt" {>= "2.4.3"}
   "atdgen" {>= "1.2.3"}
   "yojson" {>= "1.1.6"}
   "stringext"
   "lambda-term"
   "cmdliner"
+  "ocamlbuild" {build}
+  "camlp4" {build}
 ]
 depopts: [
   "js_of_ocaml"
 ]
 conflicts: [
   "js_of_ocaml" {<"2.4.0"}
+  "js_of_ocaml" {>= "3.0"}
 ]
+install: ["ocaml" "setup.ml" "-install"]

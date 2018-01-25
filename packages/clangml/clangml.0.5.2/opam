@@ -18,16 +18,23 @@ depends: [
   "deriving"
   "ANSITerminal"
   "base-unix"
-  "camlp4"
-  "ocamlfind"
+  "camlp4" {build}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["libboost-dev" "llvm-3.4-dev" "clang-3.4" "libclang-3.4-dev" "binutils-dev"]]
-  [["ubuntu"] ["libboost-dev" "llvm-3.4-dev" "clang-3.4" "libclang-3.4-dev" "binutils-dev"]]
-  [["gentoo"] ["dev-libs/boost" "sys-devel/llvm-3.4.1-r2" "sys-devel/clang-3.4.0-r100" "sys-devel/binutils"]]
+  [["debian"] ["libboost-dev" "llvm-3.4-dev" "clang-3.4" "libclang-3.4-dev"
+               "binutils-dev"]]
+  [["ubuntu"] ["libboost-dev" "llvm-3.4-dev" "clang-3.4" "libclang-3.4-dev"
+               "binutils-dev"]]
+  [["gentoo"] ["dev-libs/boost" "sys-devel/llvm-3.4.1-r2"
+               "sys-devel/clang-3.4.0-r100" "sys-devel/binutils"]]
   # archlinux has no package providing llvm and clang 3.4.1
   [["archlinux"] ["boost" "binutils"]]
 ]
 available: [
-  ocaml-version >= "4.02.3" & !preinstalled
+  ocaml-version >= "4.02.3" & !preinstalled & os != "darwin"
+]
+post-messages: [
+  "This package requires llvm-3.4, clang-3.4, boost and binutils" {failure}
 ]

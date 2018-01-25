@@ -1,0 +1,39 @@
+opam-version: "1.2"
+maintainer: "sheets@alum.mit.edu"
+authors: [
+  "David Sheets <sheets@alum.mit.edu>"
+  "Peter Zotov <whitequark@whitequark.org>"
+  "Benjamin Canou <benjamin@ocamlpro.com>"
+]
+homepage: "https://github.com/dsheets/ocaml-sodium/"
+bug-reports: "https://github.com/dsheets/ocaml-sodium/issues/"
+tags: "org:mirage"
+dev-repo: "https://github.com/dsheets/ocaml-sodium.git"
+build: [
+  [make] { os != "freebsd" }
+  [make "CFLAGS=-I/usr/local/include -L/usr/local/lib"] { os = "freebsd" }
+]
+install: [
+  [make "PREFIX=%{prefix}%" "install"]
+]
+build-test: [
+  [make "test"] {os != "freebsd"}
+  [make "CFLAGS=-I/usr/local/include -L/usr/local/lib" "test"] {os = "freebsd"}
+]
+remove: ["ocamlfind" "remove" "sodium"]
+depends: [
+  "base-bigarray"
+  "base-bytes"
+  "ocamlfind" {build}
+  "conf-libsodium"
+  "ctypes" {>= "0.6.0"}
+  "ocamlbuild" {build}
+]
+available: [ocaml-version >= "4.01.0"]
+post-messages: [
+  "This package requires installation of libsodium-dev (>= 1.0.9)" {failure & os = "debian"}
+  "This package requires installation of libsodium-dev (>= 1.0.9)" {failure & os = "ubuntu"}
+  "This package requires installation of libsodium-dev (>= 1.0.9)" {failure & os = "alpine"}
+  "This package requires installation of security/libsodium (>= 1.0.9)" {failure & os = "freebsd"}
+  "This package requires installation of libsodium (>= 1.0.9)" {failure & os = "osx"}
+]

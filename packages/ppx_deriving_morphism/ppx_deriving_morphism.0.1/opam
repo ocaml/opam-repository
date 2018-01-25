@@ -1,0 +1,29 @@
+opam-version: "1.2"
+maintainer: "Christoph Höger <christoph.hoeger@tu-berlin.de>"
+authors: "Christoph Höger <christoph.hoeger@tu-berlin.de>"
+homepage: "https://github.com/choeger/ppx_deriving_morphism"
+bug-reports: "https://github.com/choeger/ppx_deriving_morphism/issues"
+license: "BSD"
+tags: "syntax"
+dev-repo: "git://github.com/choeger/ppx_deriving_morphism.git"
+substs: "pkg/META"
+build: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=%{ocaml-native}%"
+  "native-dynlink=%{ocaml-native-dynlink}%"
+]
+build-test: [
+  "ocamlbuild"
+  "-classic-display"
+  "-use-ocamlfind"
+  "src_test/test_ppx_morphism.byte"
+  "--"
+]
+depends: [
+  "ppx_deriving" {>= "3.0" & < "4.0"}
+  "ocamlfind" {build}
+  "ounit" {test}
+  "ppx_import" {test}
+  "ocamlbuild" {build}
+]

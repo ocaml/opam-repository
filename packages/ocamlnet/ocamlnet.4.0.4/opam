@@ -3,10 +3,19 @@ maintainer: "vb@luminar.eu.org"
 homepage: "http://projects.camlcity.org/projects/ocamlnet.html"
 doc: ["http://projects.camlcity.org/projects/dl/ocamlnet-4.0.4/doc/html-main/index.html"]
 build: [
-  ["./configure" "-bindir" bin "-%{conf-gssapi:enable}%-gssapi" "-%{conf-gnutls:enable}%-gnutls" "-%{pcre:enable}%-pcre" "-%{lablgtk:enable}%-gtk2" "-%{camlzip:enable}%-zip" "-with-nethttpd"]
+  [
+    "./configure"
+    "-bindir"
+    bin
+    "-%{conf-gssapi:enable}%-gssapi"
+    "-%{conf-gnutls:enable}%-gnutls"
+    "-%{pcre:enable}%-pcre"
+    "-%{lablgtk:enable}%-gtk2"
+    "-%{camlzip:enable}%-zip"
+    "-with-nethttpd"
+  ]
   [make "all"]
   [make "opt"]
-  [make "install"]
 ]
 authors: ["Gerd Stolpmann"]
 remove: [
@@ -35,7 +44,10 @@ remove: [
   ["ocamlfind" "remove" "smtp"]
 
 ]
-depends: ["ocamlfind" {build}]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+]
 depopts: [
   "conf-gnutls"
   "conf-gssapi"
@@ -43,4 +55,5 @@ depopts: [
   "pcre"
   "camlzip"
 ]
-available: [ ocaml-version >= "4.00.0"]
+available: [ ocaml-version < "4.03.0" & ocaml-version >= "4.00.0"]
+install: [make "install"]

@@ -1,8 +1,16 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "simon.cruanes@inria.fr"
 build: [
-    ["./configure" "--prefix" prefix "--disable-thread" "--disable-bench" "--disable-tests" "--disable-cgi" "--disable-lwt" "--enable-docs" "--enable-misc"]
-    [make "build" "install"]
+  "./configure"
+  "--prefix"
+  prefix
+  "--disable-thread"
+  "--disable-bench"
+  "--disable-tests"
+  "--disable-cgi"
+  "--disable-lwt"
+  "--enable-docs"
+  "--enable-misc"
 ]
 build-doc: [ make "doc" ]
 build-test: [ make "test" ]
@@ -10,8 +18,13 @@ remove: [
     ["ocamlfind" "remove" "containers"]
 ]
 post-messages: [ "in containers, modules start with 'CC' (stands for 'core containers')" ]
-depends: ["ocamlfind"]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+]
 tags: [ "stdlib" "containers" "iterators" "list" "heap" "queue" ]
 homepage: "https://github.com/c-cube/ocaml-containers/"
 doc: "http://cedeela.fr/~simon/software/containers/"
-ocaml-version: [>= "4.00.0"]
+dev-repo: "git://github.com/c-cube/ocaml-containers"
+available: [ocaml-version >= "4.00.0" & ocaml-version < "4.06.0"]
+install: [make "build" "install"]

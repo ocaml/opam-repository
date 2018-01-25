@@ -1,0 +1,34 @@
+opam-version: "1.2"
+maintainer: "erwan.jahier@imag.fr"
+authors: [ "Erwan Jahier" ]
+license: "GPL-3"
+homepage: "http://rdbg.forge.imag.fr/"
+dev-repo: "https://forge.imag.fr/anonscm/git/rdbg/rdbg.git"
+bug-reports: "http://rdbg.forge.imag.fr/"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/rdbg/_oasis_remove_.ml" "%{etc}%/rdbg"]
+]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "base-unix" {build}
+  "camlp4" {build}
+  "lutils" {>= "1.9"}
+  "oasis" {build & >= "0.4"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {build & >= "2.0.0"}
+  "num"
+]
+available: [ ocaml-version >= "4.01" ]

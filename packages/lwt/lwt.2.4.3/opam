@@ -1,13 +1,26 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "jeremie@dimino.org"
 build: [
   ["patch" "-p1" "-i" "4.01cloexec.diff"] {ocaml-version >= "4.01.0"}
-  ["./configure" "--%{conf-libev:enable}%-libev" "--%{react:enable}%-react" "--%{ssl:enable}%-ssl" "--%{base-unix:enable}%-unix" "--%{base-unix:enable}%-extra" "--%{base-threads:enable}%-preemptive" "--%{lablgtk:enable}%-glib" "--%{text:enable}%-text" {"%{react:installed}%"}]
+  [
+    "./configure"
+    "--%{conf-libev:enable}%-libev"
+    "--%{react:enable}%-react"
+    "--%{ssl:enable}%-ssl"
+    "--%{base-unix:enable}%-unix"
+    "--%{base-unix+base-threads:enable}%-extra"
+    "--%{base-threads:enable}%-preemptive"
+    "--%{lablgtk:enable}%-glib"
+    "--%{text:enable}%-text" {"%{react:installed}%"}
+  ]
   [make "build"]
-  [make "install"]
 ]
 remove: [["ocamlfind" "remove" "lwt"]]
-depends: ["ocamlfind" "camlp4"]
+depends: [
+  "ocamlfind"
+  "camlp4"
+  "ocamlbuild" {build}
+]
 depopts: [
   "base-threads"
   "base-unix"
@@ -21,4 +34,5 @@ conflicts: [
   "react" {>="1.0.0"}
   "ssl" {>="0.5.0"}
 ]
-ocaml-version: [<"4.02.0"]
+available: ocaml-version < "4.02.0"
+install: [make "install"]

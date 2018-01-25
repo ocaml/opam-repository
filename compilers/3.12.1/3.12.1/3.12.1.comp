@@ -1,9 +1,15 @@
 opam-version: "1"
 version: "3.12.1"
 src: "http://caml.inria.fr/pub/distrib/ocaml-3.12/ocaml-3.12.1.tar.gz"
-patches: ["https://github.com/hhugo/ocaml/compare/3.12.1...fix-3.12.1.diff"]
 build: [
-  ["./configure" "-prefix" prefix]
+  ["./configure"
+    "-prefix" prefix
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" prefix
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world"]
   [make "world.opt"]
   [make "install"]
@@ -14,5 +20,6 @@ packages: [
   "base-unix"
   "base-bigarray"
   "base-threads"
+  "base-ocamlbuild"
 ]
 env: [[CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"]]

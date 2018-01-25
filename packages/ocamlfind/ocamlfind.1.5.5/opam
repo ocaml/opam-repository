@@ -6,7 +6,7 @@ bug-reports:  "mailto:gerd@gerd-stolpmann.de"
 dev-repo:     "https://github.com/whitequark/ocaml-findlib.git"
 
 build: [
-  ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-topfind" {preinstalled}]
+  ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-custom" "-no-topfind" {preinstalled}]
   [make "all"]
   [make "opt"] { ocaml-native }
 ]
@@ -16,10 +16,8 @@ remove: [
   ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-topfind" {preinstalled}]
   [make "uninstall"]
 ]
-depexts: [
-  [["debian"] ["m4" "ncurses-dev"]]
-  [["ubuntu"] ["m4" "ncurses-dev"]]
+depends: [
+  "conf-m4" {build}
+  "num" {= "0"}
 ]
-post-messages: [
-  "Could not build ocamlfind. The most common reason for that is a missing 'm4' system package." {failure}
-]
+available: [ocaml-version >= "3.12.0"] # ocamlfind refers to cmxs

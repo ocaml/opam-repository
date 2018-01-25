@@ -1,13 +1,24 @@
-opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+opam-version: "1.2"
+maintainer: "garrigue@math.nagoya-u.ac.jp"
+authors: ["Jacques Garrigue et al., Nagoya University"]
+homepage: "http://labltk.forge.ocamlcore.org/"
+bug-reports: "https://forge.ocamlcore.org/tracker/?group_id=291"
+dev-repo: "https://forge.ocamlcore.org/anonscm/git/lablgl/lablgl.git"
+license: "BSD"
 build: [
   ["cp" "Makefile.config.ex" "Makefile.config"]
   ["cp" "Makefile.config.osx" "Makefile.config"] {os = "darwin"}
   ["mkdir" "-p" bin]
-  [make "glut"]
+  [make "INSTALLDIR=%{lib}%/lablgl" "glut"]
   [make "glutopt"]
+]
+install: [
   [make "install" "-C" "src" "BINDIR=%{bin}%" "INSTALLDIR=%{lib}%/lablgl" "DLLDIR=%{lib}%/stublibs"]
   [make "install" "-C" "LablGlut/src" "BINDIR=%{bin}%" "INSTALLDIR=%{lib}%/lablgl" "DLLDIR=%{lib}%/stublibs"]
+]
+remove: [
+  ["rm" "-rf" "%{lib}%/lablgl"]
+  ["rm" "-f" "%{bin}%/lablglut"]
 ]
 depends: [
   "camlp4"

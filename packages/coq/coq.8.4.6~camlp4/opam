@@ -4,22 +4,33 @@ homepage: "https://coq.inria.fr/"
 dev-repo: "git://scm.gforge.inria.fr/coq/coq.git"
 bug-reports: "https://coq.inria.fr/bugs/"
 build: [
-  ["./configure"
-    "-makecmd" "%{make}%"
-    "-configdir" "%{lib}%/coq/config"
-    "-mandir" man
-    "-docdir" doc
-    "--prefix" prefix
+  [
+    "./configure"
+    "-makecmd"
+    "%{make}%"
+    "-configdir"
+    "%{lib}%/coq/config"
+    "-mandir"
+    man
+    "-docdir"
+    doc
+    "--prefix"
+    prefix
     "--usecamlp4"
-    "--coqide" "no"]
+    "--coqide"
+    "no"
+  ]
   ["%{make}%" "-j%{jobs}%" "world"]
   ["%{make}%" "-j%{jobs}%" "states"]
-  ["%{make}%" "install"]
 ]
 remove: ["rm" "-R" "%{lib}%/coq"]
 depends: [
   "camlp4"
+  "ocamlbuild" {build}
+  "num"
 ]
 conflicts: [
   "camlp5"
 ]
+available: [ ocaml-version >= "3.11.2" & ocaml-version < "4.03.0" ] # fatal warning-as-error after this version
+install: ["%{make}%" "install"]

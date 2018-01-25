@@ -1,0 +1,24 @@
+opam-version: "1.2"
+maintainer: "aluuu@husa.su"
+authors: ["Mike Wells" "David Höppner" "Alexander Dinu"]
+homepage: "https://github.com/0xffea/ocaml-redis"
+bug-reports: "https://github.com/0xffea/ocaml-redis/issues"
+doc: "http://0xffea.github.io/ocaml-redis/"
+license: "BSD3"
+dev-repo: "https://github.com/0xffea/ocaml-redis.git"
+build: [
+  ["./configure" "--prefix" prefix "--%{lwt:enable}%-lwt"]
+  [make]
+]
+install: [make "PREFIX=%{prefix}%" "install"]
+build-doc: ["ocaml" "setup.ml" "-doc"]
+remove: ["ocamlfind" "remove" "redis"]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "base-bytes"
+  "uuidm"
+  "re"
+]
+depopts: "lwt"
+available: [ocaml-version >= "4.01.0" & ocaml-version < "4.06.0"]

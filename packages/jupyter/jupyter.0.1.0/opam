@@ -1,0 +1,60 @@
+opam-version: "1.2"
+name: "jupyter"
+maintainer: [
+  "Akinori ABE <aabe.65535@gmail.com>"
+]
+authors: [
+  "Akinori ABE"
+]
+license: "MIT"
+homepage: "https://akabe.github.io/ocaml-jupyter/"
+bug-reports: "https://github.com/akabe/ocaml-jupyter/issues"
+dev-repo: "https://github.com/akabe/ocaml-jupyter.git"
+
+available: [ ocaml-version >= "4.02.0" ]
+build: [
+  [ "ocaml" "setup.ml" "-configure"
+            "--prefix" prefix
+            "--enable-archimedes" {cairo2:installed & archimedes:installed} ]
+  [ "ocaml" "setup.ml" "-build" ]
+]
+install: [
+  [ "ocaml" "setup.ml" "-install" ]
+]
+remove: [
+  [ "sh" "-c" "cd %{share}%/ocaml-jupyter ; ocaml setup.ml -uninstall" ]
+  [ "rm" "-rf" "%{share}%/ocaml-jupyter" ]
+]
+depends: [
+  "base-threads"
+  "base-unix"
+  "uuidm"
+  "base64"
+  "lwt" {< "4.0.0"}
+  "zmq" {>= "4.0-8"}
+  "lwt-zmq" {>= "2.1.0"}
+  "yojson"
+  "ppx_deriving_yojson"
+  "nocrypto"
+  "ocamlfind" {build & >= "1.5.0"}
+  "ocamlbuild" {build}
+  "cppo" {build}
+  "cppo_ocamlbuild" {build}
+]
+depopts: [
+  "merlin"
+  "cairo2"
+  "archimedes"
+]
+conflicts: [
+  "merlin" {< "3.0.0"}
+]
+
+post-messages: [
+  "If Jupyter is installed, ocaml-jupyter kernel is already available."
+  "Otherwise you setup Jupyter and the OCaml kernel as follows:"
+  ""
+  "$ pip install jupyter"
+  "$ jupyter kernelspec install --name ocaml-jupyter-%{switch}% \\
+    %{share}%/ocaml-jupyter"
+]

@@ -6,17 +6,22 @@ bug-reports: "https://github.com/mirage/mirage-flow/issues/"
 license: "ISC"
 dev-repo: "https://github.com/mirage/mirage-flow.git"
 build: [
-  ["./configure" "--prefix=%{prefix}%" "--%{alcotest+ounit:enable}%-tests"]
+  ["./configure" "--prefix=%{prefix}%"]
   [make]
 ]
-build-test: [make "test"]
+build-test: [
+  ["./configure" "--prefix=%{prefix}%" "--enable-tests"]
+  [make "test"]
+]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "mirage-flow"]
 depends: [
   "ocamlfind" {build}
-  "mirage-types-lwt"
+  "mirage-types-lwt" {< "3.0.0"}
   "cstruct"
   "lwt" {>= "2.5.0"}
   "alcotest" {test}
-  "ounit"    {test}
+  "ounit" {test}
+  "ocamlbuild" {build}
 ]
+available: [ ocaml-version < "4.06.0" ]

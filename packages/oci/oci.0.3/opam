@@ -1,0 +1,35 @@
+opam-version: "1.2"
+name: "oci"
+version: "0.3"
+maintainer: "francois.bobot@cea.fr"
+authors: ["François Bobot"]
+homepage: "https://github.com/bobot/oci"
+dev-repo: "https://github.com/bobot/oci.git"
+bug-reports: "https://github.com/bobot/oci/issues"
+license: "LGPL-2+ with OCaml linking exception"
+
+build: [
+  ["./.configure_or_autoconf" "--prefix=%{prefix}%"]
+  [make]
+]
+install: [
+  [make "install"]
+]
+remove: [
+  ["./.configure_or_autoconf" "--prefix=%{prefix}%"]
+  [make "uninstall"]
+]
+
+depends: [
+   "ocamlfind"
+   "cmdliner"
+   "async_shell" {= "113.33.00"}
+   "core" {= "113.33.00"}
+   "core_extended"
+   "extunix" {>= "0.1.3"}
+   "fileutils" "textutils" "ocamlbuild"
+  "ppx_deriving" {build}
+   "ppx_sexp_conv" "ppx_bin_prot" "ppx_here" "ppx_fields_conv" "ppx_compare"
+]
+
+available: [ ( ocaml-version = "4.02.1" | ocaml-version >= "4.02.3" ) & os = "linux" ]

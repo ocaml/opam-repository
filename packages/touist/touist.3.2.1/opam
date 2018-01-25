@@ -1,0 +1,77 @@
+opam-version: "1.2"
+maintainer: "Maël Valais <mael.valais@gmail.com>"
+authors: ["Maël Valais <mael.valais@gmail.com>" "Olivier Lezaud"]
+homepage: "https://www.irit.fr/touist"
+bug-reports: "https://github.com/touist/touist/issues"
+license: "MIT"
+dev-repo: "https://github.com/touist/touist.git"
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{yices2:enable}%-yices2"
+    "--%{qbf:enable}%-qbf"
+  ]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{yices2:enable}%-yices2"
+    "--%{qbf:enable}%-qbf"
+  ]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: ["ocaml" "setup.ml" "-doc"]
+remove: [
+  "ocaml" "%{etc}%/touist/setup.ml" "-C" "%{etc}%/touist" "-uninstall"
+]
+depends: [
+  "cppo" {build & >= "0.9.4"}
+  "cppo_ocamlbuild" {build}
+  "fileutils" {build & >= "0.4.0"}
+  "menhir" {build & >= "20151023"}
+  "minisat" {build}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {test}
+]
+depopts: ["qbf" "yices2"]
+conflicts: [
+  "qbf" {< "0.1"}
+  "yices2" {< "0.0.2"}
+]
+available: [ocaml-version >= "4.01.0"]
+post-messages: [
+  "
+Touist built without yices2. If you also wanted to use the SMT solver, do:
+    opam install yices2
+    opam reinstall touist
+  "
+    {success & !yices2:installed}
+  "
+Touist built without quantor. If you also wanted to use the QBF solver, do
+    opam install qbf
+    opam reinstall touist
+  "
+    {success & !qbf:installed}
+  "
+Touist has been built with the yices2 solver. Yices2 is free [only] for
+non-commercial use. License terms:
+    http://yices.csl.sri.com/yices-newnewlicense.html
+  "
+    {success & yices2:installed}
+  "
+Touist has been built with the solver 'quantor'. Quantor is under BSD
+license.
+  "
+    {success & qbf:installed}
+]

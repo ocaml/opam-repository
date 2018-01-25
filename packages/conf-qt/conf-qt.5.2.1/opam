@@ -1,14 +1,30 @@
-opam-version: "1"
-maintainer: "kakadu.hafanana@gmail.com"
+opam-version: "1.2"
+authors:      "kakadu.hafanana@gmail.com"
+maintainer:   "kakadu.hafanana@gmail.com"
+homepage:     "http://kakadu.github.io/lablqml/"
+bug-reports:  "https://github.com/kakadu/lablqml/issues"
+dev-repo:     "https://github.com/Kakadu/lablqml.git"
+
+# There we adjust PATH variable only because we want to make CI on Alpine and Fedora happy.
+# Other GNU/Linux distributions won't need this but we can't adjust paths separately (yet).
+# We need opam 2.0 improvements (particulary https://github.com/ocaml/opam/issues/2919 )
 
 build: [
-    ["bash" "-c" "echo \"Your Qt version is `qmake -query QT_VERSION`\"" ]
-    ["bash" "-c" "min=\"5.2.1\"; cur=`qmake -query QT_VERSION`; res=`echo -e \"$min\\n$cur\" | sort | head -n 1`; [ \"$res\" = \"$min\" ]"
+    ["sh" "-exc" "echo \"Your Qt version is `PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH qmake -query QT_VERSION`\"" ] 
+    ["sh" "-exc" "min=\"5.2.1\" cur=`PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH qmake -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`; [ \"$res\" = \"$min\" ]"
     ]
 ]
 
-depexts: [
-  [ ["source" "linux"] ["https://gist.githubusercontent.com/Kakadu/7dc6f7c9f8760f7fbace/raw/295dd3528cf9cf2be7a67a9752e530353bb6211b/get_qt.sh" ] ]
+post-messages: [
+  "It's recommended to set PKG_CONFIG_PATH to /usr/local/opt/qt/lib/pkgconfig to enable pkg-config" { os = "darwin" }
 ]
 
+depexts: [
+  [ ["osx" "homebrew"] ["qt5"] ]
+  [ ["ubuntu"] ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"] ]
+  [ ["debian"] ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"] ]
+  [ ["alpine"] ["qt5-qtbase-dev" "qt5-qtdeclarative-dev"] ]
+  [ ["centos"] ["qt5-qtbase-devel" "qt5-qtdeclarative-devel"] ]
+  [ ["fedora"] ["qt5-qtbase-devel" "qt5-qtdeclarative-devel"] ]
+]
 

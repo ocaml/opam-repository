@@ -3,7 +3,6 @@ maintainer: "zoggy@bat8.org"
 build: [
   ["./configure" "--prefix" prefix]
   [make "all"]
-  [make "install"]
 ]
 remove: [
   ["./configure" "--prefix" prefix]
@@ -11,11 +10,13 @@ remove: [
 ]
 depends: [
   "ocamlfind"
+  "camlp4"
   "xmlm" {>= "1.1.1"}
   "ocamlnet" {>= "3.6"}
 ]
-depopts: [
-  "mysql" {>= "1.1.1"}
-  "postgresql"
+depopts: ["mysql" "postgresql"]
+conflicts: [
+  "mysql" {< "1.1.1"}
 ]
-ocaml-version: [>= "4.00.0"]
+available: ocaml-version >= "4.00.0"
+install: [make "install"]

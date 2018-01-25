@@ -1,13 +1,18 @@
-opam-version: "1"
-ocaml-version: [ >= "4.00.1" ]
+opam-version: "1.2"
 maintainer: "seliopou@gmail.com"
 build: [
   ["ocaml" "setup.ml" "-configure" "--%{quickcheck:enable}%-quickcheck"]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 remove: [
   ["ocamlfind" "remove" "packet"]
 ]
-depends: ["ocamlfind" "cstruct" {>= "1.0.1"}]
+depends: [
+  "ocamlfind"
+  "cstruct" {>= "1.0.1" & <"2.0.0"}
+  "ocamlbuild" {build}
+]
 depopts: ["quickcheck"]
+dev-repo: "git://github.com/frenetic-lang/ocaml-packet"
+available: ocaml-version >= "4.00.1"
+install: ["ocaml" "setup.ml" "-install"]

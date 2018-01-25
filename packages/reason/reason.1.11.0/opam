@@ -1,0 +1,45 @@
+opam-version: "1.2"
+maintainer: "Jordan Walke <jordojw@gmail.com>"
+authors: "Jordan Walke <jordojw@gmail.com>"
+homepage: "https://github.com/facebook/reason"
+bug-reports: "https://github.com/facebook/reason/issues"
+license: "BSD"
+doc: "http://facebook.github.io/reason"
+tags: "syntax"
+dev-repo: "git://github.com/facebook/reason.git"
+substs: "pkg/META"
+build: [
+  [make "compile_error"]
+  ["ocamlbuild" "-package" "topkg" "pkg/build.native"]
+  [
+    "./build.native"
+    "build"
+    "--native"
+    "%{ocaml-native}%"
+    "--native-dynlink"
+    "%{ocaml-native-dynlink}%"
+    "--utop"
+    "%{utop:installed}%"
+  ]
+]
+build-test: [
+  "ocamlbuild"
+  "-classic-display"
+  "-use-ocamlfind"
+  "src_test/test_reason.byte"
+  "--"
+]
+depends: [
+  "ocamlfind" {build}
+  "utop" {>= "1.17" & < "2.0"}
+  "menhir" {>= "20160303" & <= "20170101"}
+  "merlin-extend" {>= "0.3"}
+  "result" {= "1.2"}
+  "topkg" {= "0.8.1"}
+  "ocaml-migrate-parsetree"
+  "ppx_tools_versioned" {= "5.0alpha"}
+]
+conflicts: [
+  "utop" {< "1.17"}
+]
+available: [ocaml-version >= "4.02" & ocaml-version < "4.05"]

@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "Claude.Marche@inria.fr"
 authors: [
   "Jean-Christophe Filliâtre"
@@ -7,8 +7,10 @@ authors: [
   "Romain Bardou"
 ]
 homepage: "http://krakatoa.lri.fr/"
-license: "GNU Lesser General Public License version 2.1"
-doc: ["http://krakatoa.lri.fr/#jessie"]
+doc: ["http://krakatoa.lri.fr/"]
+# dev-repo: "https://guest:guest@www.lri.fr/svn/demons/why2/trunk/"
+bug-reports: "https://gforge.inria.fr/tracker/?atid=4012&group_id=999&func=browse"
+license: "LGPL-2.1"
 tags: [
   "deductive"
   "program verification"
@@ -23,19 +25,34 @@ tags: [
 substs: ["opam.patch"]
 build: [
   ["autoconf"]
-  ["./configure" "--enable-verbosemake" "OCAMLGRAPHLIB=%{lib}%/ocamlgraph" "--prefix" prefix "--sbindir=%{lib}%/why/sbin" "--libexecdir=%{lib}%/why/libexec" "--sysconfdir=%{lib}%/why/etc" "--sharedstatedir=%{lib}%/why/com" "--localstatedir=%{lib}%/why/var" "--libdir=%{lib}%/why/lib" "--includedir=%{lib}%/why/include" "--datarootdir=%{lib}%/why/share"]
+  [
+    "./configure"
+    "--enable-verbosemake"
+    "OCAMLGRAPHLIB=%{lib}%/ocamlgraph"
+    "--prefix"
+    prefix
+    "--sbindir=%{lib}%/why/sbin"
+    "--libexecdir=%{lib}%/why/libexec"
+    "--sysconfdir=%{lib}%/why/etc"
+    "--sharedstatedir=%{lib}%/why/com"
+    "--localstatedir=%{lib}%/why/var"
+    "--libdir=%{lib}%/why/lib"
+    "--includedir=%{lib}%/why/include"
+    "--datarootdir=%{lib}%/why/share"
+  ]
   [make]
-  [make "install"]
 ]
 depends: [
-  "lablgtk"
+  "lablgtk" {<= "2.16.0"}
   "ocamlgraph" {= "1.8.2"}
   "why3" {= "0.81"}
   "coq" {>= "8.4pl1"}
   "frama-c" {= "20120901"}
   "alt-ergo" {>= "0.95"}
+  "conf-autoconf"
 ]
 patches: [
   "opam.patch"
   "warn-error.patch"
 ]
+install: [make "install"]

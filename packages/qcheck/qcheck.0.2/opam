@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "simon.cruanes@inria.fr"
 authors: [
   "Simon Cruanes <simon.cruanes@inria.fr>"
@@ -11,11 +11,14 @@ tags: [
   "property"
   "quickcheck"
 ]
-build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+build: ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+remove: [["ocamlfind" "remove" "qcheck"]]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+]
+available: ocaml-version >= "4.00.0"
+install: [
   [make "all" "install_file"]
   [make "install"]
 ]
-remove: [["ocamlfind" "remove" "qcheck"]]
-depends: ["ocamlfind"]
-ocaml-version: [>= "4.00.0"]

@@ -1,0 +1,35 @@
+opam-version: "1.2"
+maintainer: "Alessandro Strada <alessandro.strada@gmail.com>"
+authors: [ "Alessandro Strada" ]
+license: "MIT"
+homepage: "http://gapi-ocaml.forge.ocamlcore.org"
+dev-repo: "https://github.com/astrada/gapi-ocaml.git"
+bug-reports: "https://github.com/astrada/gapi-ocaml/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "gapi-ocaml"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "cryptokit"
+  ("extlib" | "extlib-compat")
+  "ocamlfind" {build}
+  "ocamlnet"
+  "ocurl"
+  "xmlm"
+  "yojson"
+]
+depopts: [
+  "ounit" {build & test}
+  "pa_monad_custom" {build}
+]
+available: [ ocaml-version >= "3.12.0" ]

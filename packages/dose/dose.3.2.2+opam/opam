@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "roberto@dicosmo.org"
 authors: [
   "Roberto Di Cosmo"
@@ -13,9 +13,8 @@ authors: [
 homepage: "http://www.mancoosi.org/software/"
 license: "LGPL-v3+ with OCaml linking exception"
 build: [
- ["./configure" "--with-ocamlgraph" "--bindir=%{bin}%"]
- [make "TARGETS="]
- [make "install"]
+  ["./configure" "--with-ocamlgraph" "--bindir=%{bin}%"]
+  [make "TARGETS="]
 ]
 remove: [
   ["ocamlfind" "remove" "dose3"]
@@ -28,12 +27,18 @@ remove: [
 depends: [
   "ocamlgraph" {= "1.8.5"}
   "cudf" {>= "0.7"}
+  "camlp4"
   ("extlib" | "extlib-compat")
   "re" {>= "1.2.0"}
+  "ocamlbuild" {build}
 ]
 patches: [
   "0003-Removed-hard-failure-cases-in-favor-of-finer-diagnos.patch"
   "0004-Remove-broken-assert.patch"
   "0005-Add-a-check_request-function-allowing-more-control-o.patch"
   "0002-ocamlgraph-1.8.6.diff" {ocamlgraph:version >= "1.8.6"}
+]
+install: [make "install"]
+depexts: [
+ [["fedora"] ["perl-Pod-Html"]]
 ]

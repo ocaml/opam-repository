@@ -1,0 +1,53 @@
+opam-version: "1.2"
+maintainer: "seb@mondet.org"
+authors: [
+  "Sebastien Mondet <seb@mondet.org>"
+  "Leonid Rozenberg <leonidr@gmail.com>"
+  "Arun Ahuja <aahuja11@gmail.com>"
+  "Jeff Hammerbacher <jeff.hammerbacher@gmail.com>"
+  "Isaac Hodes <isaachodes@gmail.com>"
+]
+homepage: "http://www.hammerlab.org/docs/ketrew/master/index.html"
+bug-reports: "https://github.com/hammerlab/ketrew/issues"
+dev-repo: "https://github.com/hammerlab/ketrew.git"
+install: [
+  ["omake" "WITH_POSTGRESQL=%{postgresql:installed}%"]
+  [
+    "omake"
+    "install"
+    "BINDIR=%{bin}%"
+    "WITH_POSTGRESQL=%{postgresql:installed}%"
+  ]
+]
+remove: [
+  ["ocamlfind" "remove" "ketrew"]
+  ["ocamlfind" "remove" "ketrew_pure"]
+  ["rm" "-f" "%{bin}%/ketrew"]
+]
+depends: [
+  "omake" {>= "0.9.8.6-0.rc1"}
+  "ocamlfind"
+  "ocamlify"
+  "sosa"
+  "nonstd"
+  "docout"
+  "pvem"
+  "pvem_lwt_unix"
+  "cmdliner" {>= "1.0.0"}
+  "yojson"
+  "uri"
+  "ppx_deriving"
+  "ppx_deriving_yojson" {>= "3.0"}
+  "cohttp" {>= "0.21.0" & <"0.99"}
+  "lwt" {< "3.0.0"}
+  "conduit"
+  "js_of_ocaml" {>= "2.6" & <"3.0"}
+  "tyxml" {>= "4.0.0"}
+  "reactiveData" {>= "0.2"}
+]
+depopts: "postgresql"
+conflicts: [
+  "ppx_inline_test" {>= "v0.9.0"}
+  "ppx_sexp_conv" {>= "v0.9.0"}
+]
+available: [ocaml-version >= "4.03.0"]

@@ -1,0 +1,21 @@
+opam-version: "1.2"
+maintainer: "Liang Wang (ryanrhymes@gmail.com)"
+author: "Liang Wang (ryanrhymes@gmail.com)"
+homepage: "https://github.com/xianyi/OpenBLAS"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "https://github.com/ocaml/opam-repository.git"
+license: "BSD"
+build: [
+  ["sh" "-exc" "%{build}%/centos_install.sh"] {os = "centos"}
+  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os = "alpine"}
+  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os = "debian"}
+  ["sh" "-exc" "cc $CFLAGS -I/usr/local/opt/openblas/include test.c -L/usr/local/opt/openblas/lib -lopenblas"] {os = "darwin"}
+  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os != "darwin" & os != "debian" & os != "centos" & os != "alpine"}
+]
+depexts: [
+  [["centos"] [""]]
+  [["alpine"] ["libc-dev openblas-dev"]]
+  [["ubuntu"] ["libopenblas-dev liblapacke-dev"]]
+  [["debian"] ["libopenblas-dev liblapacke-dev"]]
+  [["osx" "homebrew"] ["homebrew/science/openblas"]]
+]

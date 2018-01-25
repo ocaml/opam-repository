@@ -1,19 +1,33 @@
-opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+opam-version: "1.2"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
 build: [
-  ["./configure" "-configdir" "%{lib}%/coq/config" "-mandir" man "-docdir" doc "--prefix" prefix "--usecamlp5" "--camlp5dir" "%{lib}%/camlp5"]
+  [
+    "./configure"
+    "-configdir"
+    "%{lib}%/coq/config"
+    "-mandir"
+    man
+    "-docdir"
+    doc
+    "--prefix"
+    prefix
+    "--usecamlp5"
+    "--camlp5dir"
+    "%{lib}%/camlp5"
+  ]
   [make "-j%{jobs}%" "parsing/tok.cmo"]
   [make "-j%{jobs}%" "parsing/tok.cmx"]
   [make "-j%{jobs}%" "parsing/tok.cmi"]
   [make "-j%{jobs}%" "coqide-files"]
   [make "-j%{jobs}%" "coqide-binaries"]
-  [make "install-coqide"]
 ]
 depends: [
   "camlp5"
   "coq" {= "8.4pl4"}
-  "lablgtk"
+  "lablgtk" {>= "2.12.0"}
+  "ocamlbuild" {build}
 ]
 patches: [
   "MAKEFILE_remove_useless_for_coqide.patch"
 ]
+install: [make "install-coqide"]

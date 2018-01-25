@@ -1,9 +1,6 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "opensource@janestreet.com"
-build: [
-  [make]
-  [make "install"]
-]
+build: make
 remove: [["ocamlfind" "remove" "core"]]
 depends: [
   "camlp4"
@@ -17,10 +14,12 @@ depends: [
   "res"
   "ounit"
   "comparelib" {= "109.07.00"}
+  "ocamlbuild" {build}
 ]
 patches: [
   "fix_META.patch"
   "disable_warn_error.patch"
 ]
-ocaml-version: [>= "4.00.1" & < "4.01.0"]
-os: ["linux"]
+available:
+  os = "linux" & ocaml-version >= "4.00.1" & ocaml-version < "4.01.0"
+install: [make "install"]

@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "jeremie@dimino.org"
 authors: ["Jérémie Dimino"]
 homepage: "https://github.com/diml/lambda-term"
@@ -6,15 +6,17 @@ license: "BSD3"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "lambda-term"]]
 patches: ["openbsd.diff" {os = "openbsd"}]
 depends: [
   "ocamlfind"
-  "lwt" {>= "2.4.0"}
+  "lwt" {>= "2.4.0" & < "3.0.0"}
   "zed" {>= "1.2"}
   "react" {< "1.0.0"}
+  "ocamlbuild" {build}
 ]
-ocaml-version: [>= "3.12"]
+dev-repo: "git://github.com/diml/lambda-term"
+available: ocaml-version >= "3.12"
+install: ["ocaml" "setup.ml" "-install"]

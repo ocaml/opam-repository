@@ -1,0 +1,23 @@
+opam-version: "1.2"
+maintainer: "simon@aestheticintegration.com"
+authors: "MSR"
+homepage: "https://github.com/Z3prover/z3"
+bug-reports: "https://github.com/Z3prover/z3/issues"
+license: "MIT"
+dev-repo: "https://github.com/Z3prover/z3.git"
+build: [
+  [ "python2.7" "scripts/mk_make.py" "--ml" ]
+  [ make "-C" "build"]
+  [ "sh" "-c" "cp build/libz3* build/api/ml/" ]
+]
+install: [
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/META -nodll build/api/ml/*" ]
+]
+remove: ["ocamlfind" "remove" "z3"]
+depends: [
+  "ocamlfind" {build}
+  "num"
+  "conf-gmp"
+  "conf-python-2-7" {build}
+]
+

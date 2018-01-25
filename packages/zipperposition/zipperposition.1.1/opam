@@ -1,0 +1,50 @@
+opam-version: "1.2"
+maintainer: "simon.cruanes@inria.fr"
+authors: "Simon Cruanes"
+homepage: "https://github.com/c-cube/zipperposition"
+bug-reports: "https://github.com/c-cube/zipperposition/issues"
+tags: ["logic" "unification" "term" "superposition" "prover"]
+dev-repo: "https://github.com/c-cube/zipperposition.git"
+build: [
+  [
+    "./configure"
+    "--bindir"
+    "%{bin}%"
+    "--disable-tests"
+    "--disable-docs"
+    "--%{menhir+tip-parser:enable}%-parsers"
+    "--disable-hornet-prover"
+    "--enable-zipperposition-prover"
+    "--disable-solving"
+    "--disable-qcheck"
+    "--disable-tools"
+  ]
+  [make]
+]
+install: [make "install"]
+remove: [
+  ["ocamlfind" "remove" "logtk"]
+  ["ocamlfind" "remove" "libzipperposition"]
+  ["rm" "-f" "%{bin}%/zipperposition"]
+  ["rm" "-f" "%{bin}%/hornet"]
+]
+depends: [
+  "ocamlfind" {build}
+  "base-bytes"
+  "base-unix"
+  "zarith"
+  "containers" {>= "1.0" < "2.0"}
+  "sequence" {>= "0.4" < "1.0"}
+  "oclock"
+  "msat" {>= "0.5"}
+  "menhir" {build}
+  "tip-parser"
+  "num"
+]
+depopts: [
+  "qcheck" {test}
+]
+conflicts: [
+  "containers" { >= "1.2" }
+]
+available: [ocaml-version >= "4.02.1"]

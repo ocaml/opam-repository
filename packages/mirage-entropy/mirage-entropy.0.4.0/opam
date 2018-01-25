@@ -1,0 +1,35 @@
+opam-version: "1.2"
+name:         "mirage-entropy"
+homepage:     "https://github.com/mirage/mirage-entropy"
+dev-repo:     "https://github.com/mirage/mirage-entropy.git"
+bug-reports:  "https://github.com/mirage/mirage-entropy/issues"
+author:       ["Hannes Mehnert" "David Kaloper" "Anil Madhavapeddy" "Dave Scott"]
+maintainer:   "david@numm.org"
+license:      "BSD2"
+
+build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+          "--with-mirage-xen" "%{mirage-xen:installed}%"
+          "--with-mirage-solo5" "%{mirage-solo5:installed}%"
+          "--with-ocaml-freestanding" "%{ocaml-freestanding:installed}%"
+]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "ocb-stubblr" {build}
+  "cstruct"
+  "mirage-os-shim"
+  "lwt"
+]
+depopts: [
+  "mirage-solo5"
+  "ocaml-freestanding"
+  "mirage-xen"
+]
+conflicts: [
+  "ocb-stubblr" {<"0.1.0"}
+  "cstruct" {<"1.4.0"}
+  "mirage-xen" {<"2.2.0"}
+]
+tags: [ "org:mirage"]
+available: [ ocaml-version >= "4.03.0" ]

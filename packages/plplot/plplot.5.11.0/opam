@@ -1,0 +1,33 @@
+opam-version: "1.2"
+name: "plplot"
+version: "5.11.0"
+maintainer: "Hezekiah M. Carty <hez@0ok.org>"
+authors: [ "Hezekiah M. Carty <hez@0ok.org>" ]
+license: "LGPL-2.1 with OCaml linking exception"
+homepage: "https://github.com/hcarty/ocaml-plplot/"
+dev-repo: "https://github.com/hcarty/ocaml-plplot.git"
+bug-reports: "https://github.com/hcarty/ocaml-plplot/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "plplot"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+]
+depexts: [
+  [["debian"] ["libplplot-dev" "libshp-dev"]]
+  [["ubuntu"] ["libplplot-dev" "libshp-dev"]]
+  [[ "osx" "homebrew" ] [ "plplot" ]]
+]
+
+available: [ocaml-version >= "4.02.0"]

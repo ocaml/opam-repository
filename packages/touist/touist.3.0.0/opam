@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer: "Maël Valais <mael.valais@gmail.com>"
+authors: [ "Maël Valais <mael.valais@gmail.com>"
+           "Olivier Lezaud" ]
+license: "MIT"
+homepage: "http://touist.github.io"
+dev-repo: "https://github.com/touist/touist.git"
+bug-reports: "https://github.com/touist/touist/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/touist/setup.ml" "-C" "%{etc}%/touist" "-uninstall"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "fileutils" {build & >= "0.4.0"}
+  "menhir" {build & >= "20150118"}
+  "minisat" {build}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {test}
+]
+available: [ ocaml-version >= "4.01.0" ]

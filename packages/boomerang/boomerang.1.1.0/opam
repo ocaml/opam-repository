@@ -1,0 +1,31 @@
+opam-version: "1.2"
+name: "boomerang"
+version: "1.1.0"
+maintainer: "Solomon Aduol Maina <smaina@seas.upenn.edu>"
+authors: [ "https://github.com/SolomonAduolMaina/boomerang/graphs/contributors" ]
+license: "LGPL"
+homepage: "http://www.seas.upenn.edu/~harmony"
+dev-repo: "https://github.com/SolomonAduolMaina/boomerang.git"
+bug-reports: "https://github.com/SolomonAduolMaina/boomerang"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/boomerang/setup.ml" "-C" "%{etc}%/boomerang" "-uninstall"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "base-unix"
+  "core"
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ppx_deriving"
+  "ppx_hash"
+]
+available: [ ocaml-version >= "4.02.0" ]

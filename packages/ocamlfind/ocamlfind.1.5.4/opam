@@ -1,22 +1,30 @@
 opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
 patches: [ "1.5.4-sed-bsd-compat.patch" ]
 build: [
-  ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-topfind" {preinstalled}]
+  [
+    "./configure"
+    "-bindir"
+    bin
+    "-sitelib"
+    lib
+    "-mandir"
+    man
+    "-config"
+    "%{lib}%/findlib.conf"
+    "-no-topfind" {preinstalled}
+  ]
   [make "all"]
   [make "opt"]
-  [make "install"]
 ]
 remove: [
   ["ocamlfind" "remove" "bytes"]
-  ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-topfind" {preinstalled}]
+  ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-custom" "-no-topfind" {preinstalled}]
   [make "uninstall"]
 ]
-depexts: [
-  [["debian"] ["m4"]]
-  [["ubuntu"] ["m4"]]
-  [["centos"] ["m4"]]
+depends: [
+  "conf-m4" {build}
+  "num" {= "0"}
 ]
-post-messages: [
-  "Could not build ocamlfind. The most common reason for that is a missing 'm4' system package." {failure}
-]
+available: [ocaml-version >= "3.12.0"] # ocamlfind refers to cmxs
+install: [make "install"]

@@ -7,11 +7,20 @@ build: [
    "s/typedef greg_t context_reg;/#include <ucontext.h>\\ntypedef greg_t context_reg;/"
    "asmrun/signals_osdep.h"
   ]
-  ["./configure" "-prefix" prefix "-with-debug-runtime"
+  ["./configure"
+    "-prefix" prefix "-with-debug-runtime"
     "-cc" "/opt/lsb/bin/lsbcc"
     "-aspp" "/opt/lsb/bin/lsbcc -c"
     "-no-shared-libs"
-  ]
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" prefix "-with-debug-runtime"
+    "-cc" "/opt/lsb/bin/lsbcc"
+    "-aspp" "/opt/lsb/bin/lsbcc -c"
+    "-no-shared-libs"
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world.opt"]
   [make "install"]
 ]
@@ -19,6 +28,7 @@ packages: [
   "base-unix"
   "base-bigarray"
   "base-threads"
+  "base-ocamlbuild"
 ]
 env: [
     [LSBCC_LSBVERSION = "4.0"]

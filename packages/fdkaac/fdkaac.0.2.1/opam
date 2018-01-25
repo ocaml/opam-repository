@@ -1,0 +1,22 @@
+opam-version: "1.2"
+maintainer: "The Savonet Team <savonet-users@lists.sourceforge.net>"
+authors: "The Savonet Team <savonet-users@lists.sourceforge.net>"
+homepage: "https://github.com/savonet/ocaml-fdkaac"
+bug-reports: "https://github.com/savonet/ocaml-fdkaac/issues"
+license: "GPL-2.0"
+dev-repo: "https://github.com/savonet/ocaml-fdkaac.git"
+build: [
+  ["./configure" "--prefix=%{prefix}%"] { os != "darwin" }
+  ["./configure" "OCAMLFLAGS=-cclib -L/usr/local/lib" "--prefix=%{prefix}%"] { os = "darwin" }
+  [make]
+]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "fdkaac"]
+depends: [
+  "ocamlfind" {build}
+]
+depexts: [
+  [["debian"] ["libfdk-aac-dev"]]
+  [["ubuntu"] ["libfdk-aac-dev"]]
+  [["osx" "homebrew"] ["fdk-aac"]]
+]

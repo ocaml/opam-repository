@@ -4,6 +4,16 @@ PING_LOOP_PID=$!
 # generated during the install step
 source .travis-ocaml.env
 
+# display info about OS distribution and version
+case $TRAVIS_OS_NAME in
+osx) sw_vers ;;
+*) cat /etc/*-release
+   lsb_release -a
+   uname -a
+   cat /proc/version
+   ;;
+esac
+
 echo OCAML_VERSION=$OCAML_VERSION
 echo OPAM_SWITCH=$OPAM_SWITCH
 
@@ -50,6 +60,7 @@ function opam_version_compat {
   OPAM_MINOR=${OPAM_VERSION#*.}
   OPAM_MINOR=${OPAM_MINOR%%.*}
   if [ $OPAM_MAJOR -eq 1 ] && [ $OPAM_MINOR -lt 2 ]; then
+      opam_version_11=1
       ocamlv=$(ocamlrun -vnum)
       bytev=${ocamlv%.*}
       curl -L https://opam.ocaml.org/repo_compat_1_1.byte$bytev -o compat.byte
@@ -58,12 +69,27 @@ function opam_version_compat {
 }
 opam_version_compat
 
+function build_switch {
+  rm -rf ~/.opam
+  echo "build switch: $OPAM_SWITCH"
+  if [ -n "${opam_version_11}" ]; then
+      # Hide OCaml build log
+      if opam init . --comp=$OPAM_SWITCH > build.log 2>&1 ; then
+          echo -n
+      else
+          rc=$?
+          cat build.log
+          exit $rc
+      fi
+  else
+      opam init . --comp=$OPAM_SWITCH
+  fi
+  eval `opam config env`
+}
+
 function build_one {
   pkg=$1
-  echo "build one: $pkg ($OPAM_SWITCH)"
-  rm -rf ~/.opam
-  opam init . --comp=$OPAM_SWITCH
-  eval `opam config env`
+  echo "build one: $pkg"
   # test for installability
   echo "Checking for availability..."
   if ! opam install $pkg --dry-run; then
@@ -78,26 +104,11 @@ function build_one {
       fi
   else
     echo "... package available."
-    case $TRAVIS_OS_NAME in
-        linux)
-            # we need fresh gcc and binutils, maybe...
-            # this can soon be removed, once travis upgraded their infrastructure
-            if [ `opam install --dry-run $pkg | grep -c mirage-entropy-xen` -gt 0 ] ; then
-                echo "installing a recent gcc and binutils (mainly to get mirage-entropy-xen working\!)"
-                sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-                sudo apt-get -qq update
-                sudo apt-get install -y gcc-4.8
-                sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
-                wget http://mirrors.kernel.org/ubuntu/pool/main/b/binutils/binutils_2.24-5ubuntu3.1_amd64.deb
-                sudo dpkg -i binutils_2.24-5ubuntu3.1_amd64.deb
-            fi
-    esac
     echo
     echo "====== External dependency handling ======"
     opam install depext
     depext=$(opam depext -ls $pkg --no-sources)
     opam depext $pkg
-    opam remove depext -a
     echo
     echo "====== Installing package ======"
     opam install $pkg
@@ -115,6 +126,8 @@ function build_one {
     fi
   fi
 }
+
+build_switch
 
 for i in `cat tobuild.txt`; do
   build_one $i

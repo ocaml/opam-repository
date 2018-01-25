@@ -1,32 +1,40 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "zoggy@bat8.org"
 authors: ["Maxence Guesdon"]
 homepage: "http://zoggy.github.io/stog/"
 license: "GNU General Public License version 3"
 doc: ["http://zoggy.github.io/stog/doc.html"]
-tags: ["publication" "web" "blog"]
+dev-repo: "https://github.com/zoggy/stog.git"
+bug-reports: "https://github.com/zoggy/stog/issues"
+
+tags: ["publication" "web" "blog" "website" "documentation"]
 build: [
   ["./configure" "--prefix" prefix]
   [make "stog_filter_parser.mli"]
   [make "all"]
+]
+install: [
   [make "install-lib" "install-share"]
 ]
 remove: [["ocamlfind" "remove" "stog"]]
 depends: [
   "ocamlfind"
   "xmlm" {>= "1.1"}
-  "xtmpl" {>= "0.10"}
+  "xtmpl" {>= "0.10" & < "0.13.0"}
   "config-file" {>= "1.2"}
   "ocamlnet" {>= "3.6"}
   "higlo" { >= "0.4" }
 ]
-depopts: [
-  "js_of_ocaml" { >= "2.5"}
-  "xmldiff" { >= "0.3.0" }
-  "lwt" { >= "2.4.5" }
-  "websocket" { >= "0.8.1" }
-  "cstruct" { >= "0.3.1" }
-  "crunch" { >= "1.1.0" }
+available: [ ocaml-version >= "4.02.0"]
+
+depopts: ["js_of_ocaml" "xmldiff" "lwt" "websocket" "cstruct" "crunch"]
+
+conflicts: [
+  "crunch" {< "1.1.0"}
+  "cstruct" {< "0.3.1"}
+  "js_of_ocaml" {< "2.5"}
+  "lwt" {< "2.4.5"}
+  "websocket" {< "0.8.1"}
+  "xmldiff" {< "0.3.0"}
 ]
 
-ocaml-version: [>= "4.02.0"]

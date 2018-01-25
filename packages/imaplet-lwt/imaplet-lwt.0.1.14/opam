@@ -3,7 +3,11 @@ name: "imaplet-lwt"
 version: "0.1.14"
 maintainer: "Gregory Tsipenyuk <gregtsip@gmail.com>"
 authors: "Gregory Tsipenyuk <gregtsip@gmail.com>"
+homepage: "https://github.com/gregtatcam/imaplet-lwt"
+bug-reports: "https://github.com/gregtatcam/imaplet-lwt/issues"
+dev-repo: "https://github.com/gregtatcam/imaplet-lwt.git"
 license: "MIT"
+
 build: [
   ["./configure" "--prefix=%{prefix}%"]
   [make]
@@ -11,7 +15,7 @@ build: [
 install: [make "install"]
 remove: [
   ["ocamlfind" "remove" "imaplet"]
-  ["rm" "-f" 
+  ["rm" "-f"
     "%{bin}%/imaplet"
     "%{bin}%/imaplet_configure"
     "%{bin}%/imaplet_create_account"
@@ -25,13 +29,16 @@ remove: [
 depends: [
   "ocamlfind" {build}
   "lwt"
+  "fieldslib" {<= "113.00.00"}
   "cohttp" {>= "0.18.2"}
   "git" {>= "1.5.1"}
-  "irmin" {>= "0.9.5"}
+  "irmin" {>= "0.9.5" & < "0.10.0"}
+  "irmin-unix" {< "0.12.0"}
   "re"
   "tls" {>= "0.6.0"}
-  "nocrypto" {>= "0.5.0"}
+  "nocrypto" {>= "0.5.0" & < "0.5.3"}
   "dns" {>= "0.15.2"}
   "menhir"
+  "ocamlbuild" {build}
 ]
-ocaml-version: [ >= "4.01.0" ]
+available: [ocaml-version >= "4.01.0" ]

@@ -1,0 +1,28 @@
+opam-version: "1.2"
+maintainer: "essdotteedot <essdotteedot@gmail.com>"
+authors: "essdotteedot <essdotteedot@gmail.com>"
+homepage: "https://github.com/essdotteedot/distributed"
+bug-reports: "https://github.com/essdotteedot/distributed/issues"
+license: "MIT"
+dev-repo: "https://github.com/essdotteedot/distributed.git"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{lwt:enable}%-lwt"]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--%{lwt:enable}%-lwt"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: ["ocaml" "setup.ml" "-doc"]
+remove: ["ocamlfind" "remove" "distributed"]
+depends: [
+  "base-threads"
+  "base-unix"
+  "batteries"
+  "lwt"
+  "ocamlfind" {build}
+  "ounit" {test & >= "2.0"}
+]
+available: [os = "linux" & ocaml-version >= "4.02.3"]

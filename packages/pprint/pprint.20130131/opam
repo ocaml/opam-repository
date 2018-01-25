@@ -1,8 +1,10 @@
 opam-version: "1"
 maintainer: "jonathan.protzenko@gmail.com"
-build: [
-  ["sh" "-c" "cd src && %{make}%"]
-  ["sh" "-c" "cd src && %{make}% install"]
-]
+build: ["sh" "-exc" "cd src && %{make}%"]
 remove: [["ocamlfind" "remove" "pprint"]]
-depends: ["ocamlfind"]
+depends: [
+         "ocamlfind" {build}
+         "ocamlbuild" {build}
+]
+install: ["sh" "-exc" "cd src && %{make}% install"]
+available: [ ocaml-version < "4.06" ]

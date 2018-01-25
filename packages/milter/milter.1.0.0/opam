@@ -1,17 +1,20 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "andrenth@gmail.com"
 authors: ["Andre Nathan"]
 license: "BSD3"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "milter"]]
-depends: ["ocamlfind"]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+]
 depexts: [
   [["debian"] ["libmilter-dev"]]
   [["ubuntu"] ["libmilter-dev"]]
 ]
-ocaml-version: [< "4.02.0"]
+available: ocaml-version < "4.02.0"
+install: ["ocaml" "setup.ml" "-install"]

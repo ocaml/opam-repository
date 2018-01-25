@@ -19,15 +19,21 @@ depends: [
   "deriving"
   "ANSITerminal"
   "base-unix"
-  "camlp4"
-  "ocamlfind"
+  "camlp4" {build}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["libboost-dev" "llvm-3.6-dev" "clang-3.6" "libclang-3.6-dev" "binutils-dev"]]
-  [["ubuntu"] ["libboost-dev" "llvm-3.6-dev" "clang-3.6" "libclang-3.6-dev" "binutils-dev"]]
+  [["debian"] ["libboost-dev" "llvm-3.6-dev" "clang-3.6" "libclang-3.6-dev"
+               "binutils-dev"]]
+  [["ubuntu"] ["libboost-dev" "llvm-3.6-dev" "clang-3.6" "libclang-3.6-dev"
+               "binutils-dev"]]
   [["gentoo"] ["dev-libs/boost" "sys-devel/binutils"]]
   [["archlinux"] ["boost" "binutils"]]
 ]
 available: [
-  ocaml-version >= "4.02.3" & !preinstalled
+  ocaml-version >= "4.02.3" & !preinstalled & os != "darwin"
+]
+post-messages: [
+  "This package requires llvm-3.6, clang-3.6, boost and binutils" {failure}
 ]

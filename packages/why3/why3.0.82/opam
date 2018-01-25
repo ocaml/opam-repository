@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "Francois.Bobot@cea.fr"
 authors: [
   "François Bobot"
@@ -18,9 +18,21 @@ tags: [
   "interactive theorem prover"
 ]
 build: [
-  ["./configure" "--prefix" prefix "--sbindir=%{lib}%/why3/sbin" "--libexecdir=%{lib}%/why3/libexec" "--sysconfdir=%{lib}%/why3/etc" "--sharedstatedir=%{lib}%/why3/com" "--localstatedir=%{lib}%/why3/var" "--libdir=%{lib}%/why3/lib" "--includedir=%{lib}%/why3/include" "--datarootdir=%{lib}%/why3/share" "--disable-bench"]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--sbindir=%{lib}%/why3/sbin"
+    "--libexecdir=%{lib}%/why3/libexec"
+    "--sysconfdir=%{lib}%/why3/etc"
+    "--sharedstatedir=%{lib}%/why3/com"
+    "--localstatedir=%{lib}%/why3/var"
+    "--libdir=%{lib}%/why3/lib"
+    "--includedir=%{lib}%/why3/include"
+    "--datarootdir=%{lib}%/why3/share"
+    "--disable-bench"
+  ]
   [make "opt" "byte"]
-  [make "install" "install-lib"]
 ]
 build-doc: [
   [make "stdlibdoc" "apidoc"]
@@ -28,13 +40,17 @@ build-doc: [
 ]
 depends: [
   "alt-ergo"
-  "lablgtk"
+  "lablgtk" {< "2.18" }
   "conf-gtksourceview"
 ]
-depopts: [
-  "ocamlgraph" {>= "1.8.2"}
-  "coq" {>= "8.3"}
-]
+depopts: ["ocamlgraph" "coq"]
 patches: [
   "Makefile.patch"
 ]
+conflicts: [
+  "coq" {< "8.3"}
+  "coq" {>= "8.5"}
+  "ocamlgraph" {< "1.8.2"}
+]
+install: [make "install" "install-lib"]
+available: [ ocaml-version < "4.06.0" ]

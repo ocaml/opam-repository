@@ -1,0 +1,24 @@
+opam-version: "1.2"
+maintainer: "mmottl"
+author: "mmottl"
+homepage: "http://www.netlib.org/blas"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "https://github.com/ocaml/opam-repository.git"
+license: "GPL-2.0"
+build: [
+  ["sh" "-exc" "cc $CFLAGS test.c -lblas"] {os != "darwin" & os != "freebsd" & os != "win32"}
+  ["sh" "-exc" "${CC:-gcc} $CFLAGS test.c -lblas $LDFLAGS"] {os = "freebsd"}
+  ["sh" "-exc" "cc -framework Accelerate $CFLAGS test.c -lblas"] {os = "darwin"}
+  ["%{build}%/test-win.sh"] {os = "win32"}
+]
+depexts: [
+  [["debian"] ["libblas-dev"]]
+  [["mageia"] ["libblas-devel"]]
+  [["ubuntu"] ["libblas-dev"]]
+  [["centos"] ["blas-devel"]]
+  [["fedora"] ["blas-devel"]]
+  [["rhel"] ["blas-devel"]]
+  [["alpine"] ["lapack-dev"]]
+  [["opensuse"] ["blas-devel"]]
+  [["freebsd"] ["blas" "gcc"]]
+]

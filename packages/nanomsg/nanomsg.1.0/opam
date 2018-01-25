@@ -9,26 +9,30 @@ authors: [
   "Rudi Grinberg <rgrinberg@gmail.com>"
 ]
 
-homepage: "http://github.com/rgringberg/onanomsg"
+homepage: "http://github.com/rgrinberg/onanomsg"
 bug-reports: "http://github.com/rgrinberg/onanomsg/issues"
 dev-repo: "git://github.com/rgrinberg/onanomsg"
 license: "WTFPL"
-
-build: [
-  ["ocaml" "pkg/build.ml" "native=true" "native-dynlink=true"
-   "lwt=%{lwt:installed}%" "ounit=%{ounit:installed}%"]
-]
 
 depends: [
   "conf-nanomsg"
   "ocamlfind" {build}
   "ctypes" {>= "0.2"}
   "ctypes-foreign"
-  "containers"
-  "ipaddr"
-  "ppx_deriving"
+  "containers" {>= "0.7"}
+  "ipaddr" {>= "2.2.0"}
+  "ppx_deriving" {>= "1.0" & < "3.0"}
+  "ocamlbuild" {build}
+  "lwt" {test}
 ]
-
 depopts: [ "lwt" "ounit" ]
 
 available: [ocaml-version >= "4.02.0"]
+install: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=true"
+  "native-dynlink=true"
+  "lwt=%{lwt:installed}%"
+  "ounit=%{ounit:installed}%"
+]

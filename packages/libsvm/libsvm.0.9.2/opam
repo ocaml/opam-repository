@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "gu.oliver@yahoo.com"
 authors: [
   "Oliver Gu <gu.oliver@yahoo.com>"
@@ -9,18 +9,22 @@ license: "LGPL-2.1+ with OCaml linking exception"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 build-doc: [["ocaml" "setup.ml" "-doc"]]
-remove: [["ocamlfind" "remove" "svm"]]
+remove: [["ocamlfind" "remove" "libsvm"]]
 depends: [
   "core"
-  "lacaml"
+  "lacaml" {< "8.0"}
   "ocamlfind"
+  "ocamlbuild" {build}
 ]
 depopts: ["sexplib"]
-ocaml-version: [>= "3.12"]
+conflicts: [
+  "sexplib" {>= "113.24.00"}
+]
 depexts: [
   [["ubuntu"]["libsvm-dev"]]
   [["debian"]["libsvm-dev"]]
 ]
+available: ocaml-version >= "3.12"
+install: ["ocaml" "setup.ml" "-install"]

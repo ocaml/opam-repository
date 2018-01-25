@@ -1,17 +1,20 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "contact@ocamlpro.com"
 homepage: "http://www.typerex.org/ocp-indent.html"
 license: "GPL"
 build: [
   ["./configure" "--prefix" prefix]
   [make]
-  [make "install"]
 ]
 remove: [
   ["./configure" "--prefix" prefix]
-  [make "uninstall"]
+  ["ocp-build" "uninstall" "-install-lib" "%{lib}%/ocp-indent" "ocp-indent" ]
 ]
 depends: [
-  "ocp-build" {= "1.99.6-beta"}
+  "ocp-build" {build & >= "1.99.6-beta"}
   "cmdliner" {<= "0.9.7"}
 ]
+available: [ocaml-version >= "4.00.0"  (* Lazy.from_val *)
+           & ocaml-version < "4.02.0"]
+dev-repo: "git://github.com/OCamlPro/ocp-indent"
+install: [make "install"]

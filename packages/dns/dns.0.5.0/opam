@@ -1,13 +1,21 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "anil@recoil.org"
 tags: [
   "org:mirage"
   "org:xapi-project"
 ]
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{lwt:enable}%-lwt" "--%{mirage-net:enable}%-mirage" "--%{async:enable}%-async"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{lwt:enable}%-lwt"
+    "--%{mirage-net:enable}%-mirage"
+    "--%{async:enable}%-async"
+  ]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 remove: [["ocamlfind" "remove" "dns"]]
 depends: [
@@ -16,9 +24,12 @@ depends: [
   "cryptokit"
   "re"
   "uri"
+  "ocamlbuild" {build}
 ]
-depopts: [
-  "lwt" {>= "2.4.1"}
-  "mirage-net"
+depopts: ["lwt" "mirage-net"]
+conflicts: [
+  "lwt" {< "2.4.1"}
+  "lwt" {>= "3.0.0"}
 ]
-ocaml-version: [>= "4.0.0"]
+available: ocaml-version >= "4.0.0"
+install: ["ocaml" "setup.ml" "-install"]

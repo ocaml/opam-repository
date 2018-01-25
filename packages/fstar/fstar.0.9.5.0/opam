@@ -1,0 +1,38 @@
+opam-version: "1.2"
+version: "0.9.5.0"
+maintainer: "taramana@microsoft.com"
+authors: "Nik Swamy <nswamy@microsoft.com>,Jonathan Protzenko <protz@microsoft.com>,Tahina Ramananandro <taramana@microsoft.com>"
+homepage: "http://fstar-lang.org"
+license: "Apache"
+depends: [
+  "ocamlfind"
+  "batteries"
+  "zarith"
+  "stdint"
+  "yojson"
+  "ocamlbuild" {build}
+  "fileutils"
+  "menhir" { >= "20161115" }
+  "pprint"
+]
+depexts: [
+  [ ["osx" "homebrew"] ["coreutils"] ]
+]
+build: [
+  [make "PREFIX=%{prefix}%" "-C" "src/ocaml-output"]
+  [make "PREFIX=%{prefix}%" "-C" "ulib/ml"]
+]
+install: [
+  [make "PREFIX=%{prefix}%" "-C" "src/ocaml-output" "install"]
+]
+remove: [
+  [ "rm" "-rf"
+      "%{prefix}%/lib/fstar"
+      "%{prefix}%/doc/fstar"
+      "%{prefix}%/etc/fstar"
+      "%{prefix}%/bin/fstar"
+      "%{prefix}%/share/fstar" ]
+]
+available: [ ocaml-version >= "4.02.3" & (ocaml-version < "4.03.0" | ocaml-version >= "4.04.0") ]
+dev-repo: "git://github.com/FStarLang/FStar"
+bug-reports: "https://github.com/FStarLang/FStar/issues"

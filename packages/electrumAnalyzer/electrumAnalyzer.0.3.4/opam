@@ -1,0 +1,36 @@
+opam-version: "1.2"
+maintainer: "david.chemouil+electrum@onera.fr"
+authors: [ "David Chemouil"
+           "Julien Brunel"
+           "Denis Kuperberg" ]
+license: "GPL-3+"
+homepage: "https://forge.onera.fr/projects/electrum"
+dev-repo: "https://github.com/grayswandyr/electrumAnalyzer.git"
+bug-reports: "https://forge.onera.fr/projects/electrum"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/electrumAnalyzer/_oasis_remove_.ml"
+    "%{etc}%/electrumAnalyzer"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "batteries" {build}
+  ("cmdliner" {build & = "0.9.7"} | "cmdliner" {build & = "0.9.6"} |
+   "cmdliner" {build & = "0.9.5"} |
+   "cmdliner" {build & = "0.9.4"} |
+   "cmdliner" {build & = "0.9.3"} |
+   "cmdliner" {build & = "0.9.2"})
+  "menhir" {build & >= "20150720"}
+  "ocamlfind" {build & >= "1.5"}
+  "pprint" {build}
+  "ocamlbuild" {build}
+]
+available: [ ocaml-version >= "4.02" ]

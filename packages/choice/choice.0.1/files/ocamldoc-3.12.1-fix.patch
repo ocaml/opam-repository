@@ -1,0 +1,48 @@
+commit d883bc9d8488e1d9ba090f14bcd2b3299cfaf868
+Author: Gabriel Scherer <gabriel.scherer@gmail.com>
+Date:   Fri Aug 12 16:53:34 2016 +0200
+
+    minor document change to fix an ocamldoc failure under OCaml 3.12.1
+    
+    ```
+    + /home/gasche/.opam/3.12.1/bin/ocamlfind ocamldoc -dump choice.odoc choice.mli
+    /tmp/choice/_build/choice.mli : Syntax error in text:
+    Call the function to get alternative choices.
+          Example:
+          {[let r = ref 0 in Choice.run_n 10
+            (Choice.filter
+              (Choice.from_fun (fun () -> incr r; Some !r)) (fun x -> x mod 3 = 0));;
+          - : int list = [30; 27; 24; 21; 18; 15; 12; 9; 6; 3] ]}
+    line 5, character 8:
+          - : int list = [30; 27; 24; 21; 18; 15; 12; 9; 6; 3] ]}
+            ^
+    /tmp/choice/_build/choice.mli : Syntax error in text:
+    Call the function to get alternative choices.
+          Example:
+          {[let r = ref 0 in Choice.run_n 10
+            (Choice.filter
+              (Choice.from_fun (fun () -> incr r; Some !r)) (fun x -> x mod 3 = 0));;
+          - : int list = [30; 27; 24; 21; 18; 15; 12; 9; 6; 3] ]}
+    line 5, character 8:
+          - : int list = [30; 27; 24; 21; 18; 15; 12; 9; 6; 3] ]}
+            ^
+    2 error(s) encountered
+    Command exited with code 1.
+    ```
+
+diff --git a/choice.mli b/choice.mli
+index 06e804a..463b0c0 100644
+--- a/choice.mli
++++ b/choice.mli
+@@ -85,8 +85,9 @@ val from_fun : (unit -> 'a option) -> 'a t
+       Example:
+       {[let r = ref 0 in Choice.run_n 10
+         (Choice.filter
+-          (Choice.from_fun (fun () -> incr r; Some !r)) (fun x -> x mod 3 = 0));;
+-      - : int list = [30; 27; 24; 21; 18; 15; 12; 9; 6; 3] ]} *)
++          (Choice.from_fun (fun () -> incr r; Some !r)) (fun x -> x mod 3 = 0));;]}
++      yields
++      {[- : int list = [30; 27; 24; 21; 18; 15; 12; 9; 6; 3] ]} *)
+ 
+ val delay : (unit -> 'a t) -> 'a t
+   (** Delay the computation (the closure will be called in each branch

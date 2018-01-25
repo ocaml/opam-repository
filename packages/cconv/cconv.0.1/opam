@@ -1,14 +1,27 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "simon.cruanes@inria.fr"
 homepage: "https://github.com/c-cube/cconv"
 license: "BSD2"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{bencode:enable}%-bencode" "--%{yojson:enable}%-yojson" "--%{sexplib:enable}%-sexp"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{bencode:enable}%-bencode"
+    "--%{yojson:enable}%-yojson"
+    "--%{sexplib:enable}%-sexp"
+  ]
   [make "all"]
-  [make "install"]
 ]
 tags: ["conversion" "gadt" "serialization"]
 remove: [["ocamlfind" "remove" "cconv"]]
-depends: ["ocamlfind"]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+]
 depopts: ["bencode" "sexplib" "yojson"]
-ocaml-version: [>= "4.00.0"]
+dev-repo: "git://github.com/c-cube/cconv"
+available: ocaml-version >= "4.00.0"
+install: [make "install"]

@@ -1,0 +1,18 @@
+--- a/postconf
++++ b/postconf
+@@ -13,7 +13,7 @@ echo "XEN_CFLAGS=\"${XEN_CFLAGS}\"" >> setup.data
+ # * unsupported by the current toolchain; or
+ # * disabled via NOCRYPTO_NO_ACCEL env var.
+ #
+-function test_platform {
++test_platform () {
+   CPUDETECT=$(mktemp -t nocrypto.XXXXXX)
+   (cc src/native/cpudetect_static.c -o ${CPUDETECT} > /dev/null 2>&1 && ${CPUDETECT})
+   ok=$?
+@@ -21,5 +21,5 @@ function test_platform {
+   return $ok
+ }
+ if grep -q '^modernity="true"' setup.data; then
+-  [[ -z $NOCRYPTO_NO_ACCEL ]] && test_platform || echo "modernity=\"false\"" >> setup.data
++  [ -z $NOCRYPTO_NO_ACCEL ] && test_platform || echo "modernity=\"false\"" >> setup.data
+ fi

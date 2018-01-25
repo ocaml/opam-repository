@@ -20,13 +20,16 @@ tags: [
 
 # Jessie3 (frama-c plugin) is *disabled* because it is not ready
 build: [
-  ["./configure" "--prefix" prefix "--disable-bench" "--disable-frama-c"
-                 "--disable-ide" { !conf-gtksourceview:installed }
-]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--disable-bench"
+    "--disable-frama-c"
+    "--disable-ide" {!conf-gtksourceview:installed}
+  ]
   [make "opt" "byte"]
-  [make "install" "install-lib"]
 ]
-
 build-doc: [
   [make "doc" "stdlibdoc" "apidoc"]
   [make "DOCDIR=%{doc}%/why3" "install-doc"]
@@ -34,6 +37,7 @@ build-doc: [
 
 depends: [
   "ocamlfind"
+  "num"
 ]
 
 depopts: [
@@ -49,4 +53,7 @@ conflicts: [
   "lablgtk" {< "2.14.2"}
   "ocamlgraph" {< "1.8.2"}
   "coq" {< "8.4"}
+  "coq" {>= "8.5"}
 ]
+install: [make "install" "install-lib"]
+available: [ocaml-version < "4.06.0"]

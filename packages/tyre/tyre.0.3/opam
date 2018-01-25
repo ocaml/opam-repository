@@ -1,0 +1,28 @@
+opam-version: "1.2"
+maintainer: "Gabriel Radanne <drupyog@zoho.com>"
+authors: "Gabriel Radanne <drupyog@zoho.com>"
+homepage: "https://github.com/Drup/tyre"
+bug-reports: "https://github.com/Drup/tyre/issues"
+license: "ISC"
+doc: "https://drup.github.io/tyre/0.3/Tyre.html"
+tags: "regex"
+dev-repo: "https://github.com/Drup/tyre.git"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: ["ocaml" "setup.ml" "-doc"]
+remove: ["ocamlfind" "remove" "tyre"]
+depends: [
+  "ocamlfind" {build}
+  "re" {>= "1.7.0"}
+  "alcotest" {test & >= "0.6.0" & < "0.8.0"}
+  "result"
+]
+available: [ocaml-version >= "4.02.0"]

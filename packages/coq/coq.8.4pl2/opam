@@ -1,11 +1,31 @@
-opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+opam-version: "1.2"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
 build: [
-  ["./configure" "-configdir" "%{lib}%/coq/config" "-mandir" man "-docdir" doc "--prefix" prefix "--usecamlp5" "--camlp5dir" "%{lib}%/camlp5" "--coqide" "no"]
+  [
+    "./configure"
+    "-configdir"
+    "%{lib}%/coq/config"
+    "-mandir"
+    man
+    "-docdir"
+    doc
+    "--prefix"
+    prefix
+    "--usecamlp5"
+    "--camlp5dir"
+    "%{lib}%/camlp5"
+    "--coqide"
+    "no"
+  ]
   [make "-j%{jobs}%" "world"]
   [make "-j%{jobs}%" "states"]
-  [make "install"]
 ]
-depends: ["camlp5"]
+depends: [
+  "camlp5"
+  "ocamlbuild" {build}
+  "num"
+]
 patches: ["CAML_LD_LIBRARY_PATH.patch" "configure.patch"]
-ocaml-version: [< "4.02.0"]
+available: [ (ocaml-version >= "3.11.2") # According to INSTALL file
+           & (ocaml-version < "4.02.0") ]
+install: [make "install"]

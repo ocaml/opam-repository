@@ -1,20 +1,33 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "xavier.allamigeon (at) inria.fr"
+authors: ["Xavier ALLAMIGEON"]
+homepage: "https://gforge.inria.fr/projects/tplib/"
+bug-reports: "https://gforge.inria.fr/tracker/?group_id=3286"
+dev-repo: "https://scm.gforge.inria.fr/anonscm/git/tplib/tplib.git"
 build: [
   ["./configure" "--prefix" prefix]
   [make]
+]
+install: [
   [make "install"]
 ]
 remove: [
   ["./configure" "--prefix" prefix]
   [make "uninstall"]
 ]
-depends: ["ocamlfind"]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+  "num"
+]
 depopts: [
   "zarith"
   "mlgmp"
 ]
-ocaml-version: [>= "3.12.0"]
+conflicts: [
+  "mlgmpidl"
+]
+available: [ocaml-version >= "3.12.0"]
 patches: [
   "fix-makefile.diff"
 ]

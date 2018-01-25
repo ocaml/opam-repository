@@ -1,30 +1,38 @@
-opam-version: "1"
-ocaml-version: [ >= "4.01.0" ]
+opam-version: "1.2"
 maintainer: "seliopou@gmail.com"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{async+cmdliner:enable}%-async" "--%{quickcheck:enable}%-quickcheck" ]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{async+cmdliner:enable}%-async"
+    "--%{quickcheck:enable}%-quickcheck"
+  ]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 remove: [
   ["ocamlfind" "remove" "netkat"]
 ]
 depends: [
   "ocamlfind"
-  "core"        {< "112.06.00"}
-  "fieldslib"
-  "ocamlgraph"  {>= "1.8.0"}
-  "openflow"    {>= "0.5.0"}
+  "core" {< "112.06.00"}
+  "fieldslib" {< "113.01.00"}
+  "ocamlgraph" {>= "1.8.0"}
+  "openflow" {>= "0.5.0"}
   "ounit"
-  "sexplib"
-  "topology"    {>= "0.1.0" & < "0.4.0"}
+  "sexplib" {< "113.01.00"}
+  "topology" {>= "0.1.0" & < "0.4.0"}
+  "ocamlbuild" {build}
 ]
-depopts: [
-  ( "async"
-  & "cmdliner"  {>= "0.9.5"}
-  & "cstruct"   {>= "1.0.1"}
-  & "packet"    {>= "0.2.1"}
-  & "topology"  {>= "0.1.0"}
-  )
-  "quickcheck"
+depopts: ["async" "cmdliner" "cstruct" "packet" "topology" "quickcheck"]
+conflicts: [
+  "cmdliner" {< "0.9.5"}
+  "cstruct" {< "1.0.1"}
+  "packet" {< "0.2.1"}
+  "topology" {< "0.1.0"}
 ]
+dev-repo: "git://github.com/frenetic-lang/frenetic"
+available: ocaml-version >= "4.01.0"
+install: ["ocaml" "setup.ml" "-install"]

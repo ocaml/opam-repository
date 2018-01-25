@@ -1,0 +1,63 @@
+From ac8c748268091d98d341ad38a5a8a83832f53a46 Mon Sep 17 00:00:00 2001
+From: Etienne Millon <etienne@cryptosense.com>
+Date: Mon, 21 Nov 2016 15:32:32 +0100
+Subject: [PATCH] Align key_schedule on a 16 byte boundary
+
+Memory access to/from XMM registers require the memory operand to be
+aligned in order to have good performance (using the `MOVDQA`
+operation). To ensure that, the compiler is supposed to align stack
+variables, but it can not always do that. In particular, old GCC
+versions (4.4.7, present in Centos 6) fail to do that. It is thus
+necessary to align it manually using extra space.
+---
+ src/aesni.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/src/aesni.c b/src/aesni.c
+index f2ff483..fde8669 100644
+--- a/src/aesni.c
++++ b/src/aesni.c
+@@ -19,6 +19,7 @@
+ #ifdef __AES__
+ #include <wmmintrin.h>
+ #include <cpuid.h>
++#include <stdint.h>
+ 
+ int aesni_available = -1;
+ 
+@@ -216,11 +217,21 @@ static int aesni_key_expansion(const unsigned char * userkey,
+   }
+ }
+ 
++static __m128i *align16(__m128i *p)
++{
++  uintptr_t n = (uintptr_t) p;
++  if (n & 0xf) {
++    n = n + 16 - (n & 0xf);
++  }
++  return (__m128i *) n;
++}
++
+ int aesniKeySetupEnc(unsigned char * ckey,
+                      const unsigned char * key,
+                      int keylength)
+ {
+-  __m128i key_schedule[15];
++  __m128i unaligned_key_schedule[15 + 15];
++  __m128i *key_schedule = align16(unaligned_key_schedule);
+   int nrounds, i;
+ 
+   nrounds = aesni_key_expansion(key, keylength, key_schedule);
+@@ -234,7 +245,8 @@ int aesniKeySetupDec(unsigned char * ckey,
+                      const unsigned char * key,
+                      int keylength)
+ {
+-  __m128i key_schedule[15];
++  __m128i unaligned_key_schedule[15 + 15];
++  __m128i *key_schedule = align16(unaligned_key_schedule);
+   int nrounds, i;
+ 
+   nrounds = aesni_key_expansion(key, keylength, key_schedule);
+-- 
+2.10.2
+

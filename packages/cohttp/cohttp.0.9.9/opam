@@ -1,23 +1,26 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "anil@recoil.org"
 tags: [
   "org:mirage"
   "org:xapi-project"
 ]
-build: [
-  [make "PREFIX=%{prefix}%"]
-  [make "PREFIX=%{prefix}%" "install"]
-]
+build: [make "PREFIX=%{prefix}%"]
 remove: [["ocamlfind" "remove" "cohttp"]]
 depends: [
   "ocamlfind"
   "re"
-  "uri" {>= "1.3.8" & <"1.5.0"}
+  "uri" {>= "1.3.8" & < "1.5.0"}
   "ounit"
   "cstruct"
+  "ocamlbuild" {build}
 ]
-depopts: [
-  "async" {>= "109.15.00" & <= "109.53.02"}
-  "lwt" {>= "2.4.3" & <"2.4.7"}
-  "mirage-net" {>= "0.5.0"}
+depopts: ["async" "lwt" "mirage-net"]
+conflicts: [
+  "async" {> "109.53.02"}
+  "async" {< "109.15.00"}
+  "lwt" {>= "2.4.7"}
+  "lwt" {< "2.4.3"}
+  "mirage-net" {< "0.5.0"}
 ]
+dev-repo: "git://github.com/mirage/ocaml-cohttp"
+install: [make "PREFIX=%{prefix}%" "install"]

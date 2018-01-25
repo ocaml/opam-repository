@@ -6,17 +6,26 @@ bug-reports: "https://github.com/darioteixeira/ocaml-bitcoin/issues"
 dev-repo: "https://github.com/darioteixeira/ocaml-bitcoin.git"
 license: "GPL-2.0"
 build: [
-    ["./configure" "--prefix" prefix "--docdir" "%{doc}%/bitcoin" "--%{ocsigenserver:enable}%-ocsigen" "--%{ocamlnet:enable}%-ocamlnet"]
-    [make]
-    [make "doc"]
-    [make "install"]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--docdir"
+    "%{doc}%/bitcoin"
+    "--%{ocsigenserver:enable}%-ocsigen"
+    "--%{ocamlnet:enable}%-ocamlnet"
+  ]
+  [make]
+  [make "doc"]
 ]
 remove: [["ocamlfind" "remove" "bitcoin"]]
 depends: [
-    "yojson"
-    "ocamlnet" {< "4"}
+  "yojson"
+  "ocamlnet" {< "4"}
+  "ocamlbuild" {build}
 ]
 depopts: [
     "lwt"
     "ocsigenserver"
 ]
+install: [make "install"]

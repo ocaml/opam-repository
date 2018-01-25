@@ -3,7 +3,8 @@ maintainer: "Romain Beauxis <toots@rastageeks.org>"
 authors: "The Savonet Team <savonet-users@lists.sourceforge.net>"
 homepage: "https://github.com/savonet/ocaml-opus"
 build: [
-  ["./configure" "--prefix" prefix]
+  ["./configure" "--prefix" prefix] { os != "darwin" }
+  ["./configure" "CFLAGS=-I/usr/local/include" "LDFLAGS=-L/usr/local/lib" "OCAMLFLAGS=-ccopt -I/usr/local/include -cclib -L/usr/local/lib" "--prefix" prefix] { os = "darwin" }
   [make]
 ]
 install: [
@@ -17,6 +18,7 @@ depends: [
 depexts: [
   [["debian"] ["libavutil-dev" "libopus-dev"]]
   [["ubuntu"] ["libavutil-dev" "libopus-dev"]]
+  [["osx" "homebrew"] ["opus"]]
 ]
 bug-reports: "https://github.com/savonet/ocaml-opus/issues"
 dev-repo: "https://github.com/savonet/ocaml-opus.git"

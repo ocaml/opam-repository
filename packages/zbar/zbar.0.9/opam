@@ -1,16 +1,18 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "vb@luminar.eu.org"
-build: [
-  [make "PREFIX=%{prefix}%"]
-  [make "PREFIX=%{prefix}%" "install"]
-]
+build: [make "PREFIX=%{prefix}%"]
 remove: [
   ["ocamlfind" "remove" "zbar"]
   ["ocamlfind" "remove" "zbar_ctypes"]
 ]
-depends: ["lwt"]
-depopts: [("ctypes" & "ctypes-foreign")]
+depends: [
+  "lwt"
+  "ocamlbuild" {build}
+]
+depopts: ["ctypes" "ctypes-foreign"]
 depexts: [
 [ ["ubuntu"] ["libzbar-dev"] ]
 [ ["debian"] ["libzbar-dev"] ]
 ]
+dev-repo: "git://github.com/vbmithr/ocaml-zbar"
+install: [make "PREFIX=%{prefix}%" "install"]

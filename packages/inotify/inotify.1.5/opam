@@ -1,10 +1,14 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "seanmcl@gmail.com"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 remove: [["ocamlfind" "remove" "inotify"]]
-depends: ["ocamlfind"]
-os: ["linux" | "darwin"]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+]
+dev-repo: "git://github.com/whitequark/ocaml-inotify"
+available: [(os = "linux" | os = "darwin") & ocaml-version < "4.06.0"]
+install: ["ocaml" "setup.ml" "-install"]

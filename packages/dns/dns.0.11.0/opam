@@ -1,5 +1,8 @@
-opam-version: "1"
-maintainer: "mirageos-devel@lists.xenproject.org"
+opam-version: "1.2"
+maintainer:   "mirageos-devel@lists.xenproject.org"
+homepage:     "https://github.com/mirage/ocaml-dns"
+dev-repo:     "https://github.com/mirage/ocaml-dns.git"
+bug-reports:  "https://github.com/mirage/ocaml-dns/issues"
 authors: [
   "Anil Madhavapeddy"
   "Tim Deegan"
@@ -8,34 +11,39 @@ authors: [
   "David Sheets"
   "Thomas Gazagnaire"
 ]
-homepage: "https://github.com/mirage/ocaml-dns"
 license: "LGPL-2.0 &\n   LGPL-2.1 with OCaml linking exception &\n   ISC"
 tags: [
   "org:mirage"
   "org:xapi-project"
 ]
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{base-unix:enable}%-lwt" "--%{mirage-types:enable}%-mirage"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--enable-lwt"
+    "--%{mirage-types:enable}%-mirage"
+  ]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 remove: [["ocamlfind" "remove" "dns"]]
 depends: [
-  "lwt" {>= "2.4.3"}
+  "lwt" {>= "2.4.3" & < "3.0.0"}
   "cstruct" {>= "1.0.1" & < "1.6.0"}
   "ocamlfind"
   "re"
   "cmdliner"
-  "ipaddr" {>= "2.2.0"}
+  "ipaddr" {>= "2.2.0" & <"2.8.0"}
   "base64" {< "2.0.0"}
+  "ocamlbuild" {build}
 ]
-depopts: [
-  ("mirage-types" & "tcpip")
-  "async"
-]
+depopts: ["mirage-types" "tcpip" "async"]
 conflicts: [
-  "mirage-types" {<"1.2.0"}
+  "mirage-types" {<"1.2.0" & >"3.0.0"}
   "async" {<"109.21.00"}
   "io-page" {>="1.3.0"}
 ]
-ocaml-version: [>= "4.00.0"]
+available: ocaml-version >= "4.00.0"
+install: ["ocaml" "setup.ml" "-install"]

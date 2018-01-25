@@ -6,13 +6,17 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "https://github.com/ocaml/opam-repository.git"
 license: "GPL"
 build: [
-  ["sh" "-c" "cc -c $CFLAGS -I/usr/local/include test.c"]
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "darwin"}
+  ["sh" "-exc" "cc -c $CFLAGS -I/opt/local/include -I/usr/local/include test.c"] {os = "darwin"}
 ]
 depexts: [
   [["debian"] ["libgmp-dev"]]
   [["ubuntu"] ["libgmp-dev"]]
   [["osx" "homebrew"] ["gmp"]]
   [["centos"] ["gmp" "gmp-devel"]]
+  [["fedora"] ["gmp" "gmp-devel"]]
   [["openbsd"] ["gmp"]]
   [["freebsd"] ["gmp"]]
+  [["alpine"] ["gmp-dev"]]
+  [["opensuse"] ["gmp-devel"]]
 ]

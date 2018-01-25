@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "filliatr@lri.fr"
 authors: [
   "Romain Bardou"
@@ -7,13 +7,18 @@ authors: [
   "Johannes Kanig"
   "Stephane Lescuyer"
 ]
-license: "GNU Library General Public License version 2.1"
+homepage: "http://mlpost.lri.fr/index.fr.html"
+dev-repo: "git://github.com/backtracking/mlpost"
+bug-reports: "https://github.com/backtracking/mlpost/issues"
+license: "LGPL-2.1"
 substs: ["opam.patch"]
 build: [
   ["./configure" "--prefix" prefix "--mandir" man]
   [make]
-  [make "install"]
   [make "contrib"]
+]
+install: [
+  [make "install"]
   [make "install-contrib"]
 ]
 remove: [
@@ -25,9 +30,8 @@ depends: [
   "ocamlfind"
   "bitstring"
   "cairo" {= "1.2.0"}
+  "ocamlbuild" {build}
+  "conf-autoconf" {build}
 ]
 patches: ["opam.patch"]
-depexts: [
-  [["debian"] ["autoconf"]]
-  [["ubuntu"] ["autoconf"]]
-]
+available: [ ocaml-version < "4.03.0" ]

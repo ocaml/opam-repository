@@ -1,0 +1,33 @@
+opam-version: "1.2"
+maintainer: "john.else@citrix.com"
+authors: ["Anil Madhavapeddy" "John Else" "Thomas Leonard" "Andrew Cooper" "David Scott"]
+homepage:      "https://github.com/mirage/ocaml-gnt"
+bug-reports:   "https://github.com/mirage/ocaml-gnt/issues"
+dev-repo:      "https://github.com/mirage/ocaml-gnt.git"
+build: [
+  [make "TESTS_FLAG=--disable-tests"]
+]
+build-test: [
+  [make "TESTS_FLAG=--enable-tests"]
+]
+install: [
+  [make "PREFIX=%{prefix}%" "install"]
+]
+remove: [
+  [make "PREFIX=%{prefix}%" "uninstall"]
+]
+depends: [
+  "ocamlfind"      {build}
+  "ocamlbuild"     {build}
+  "ounit"          {test}
+  "cstruct" {>= "1.0.1"}
+  "io-page" {< "1.3.0"}
+  "lwt" {>="2.4.3"}
+  "cmdliner"
+  "mirage-profile" {>="0.3"}
+]
+depexts: [
+  [["debian"] ["libxen-dev"]]
+  [["ubuntu"] ["libxen-dev"]]
+]
+available: [ ocaml-version >= "4.00.0" ]

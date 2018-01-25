@@ -1,0 +1,47 @@
+opam-version: "1.2"
+maintainer: "Hannes Mehnert <hannes@mehnert.org>"
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+homepage: "https://github.com/hannesm/arp"
+doc: "https://hannesm.github.io/arp/doc"
+dev-repo: "https://github.com/hannesm/arp.git"
+bug-reports: "https://github.com/hannesm/arp/issues"
+license: "ISC"
+available: [ ocaml-version >= "4.02.0"]
+
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "ppx_tools" {build}
+  "result"
+  "cstruct" {>= "2.2.0"}
+  "ppx_cstruct" {build}
+  "ipaddr" {>= "2.2.0"}
+  "logs"
+  "alcotest" {test}
+  "nocrypto" {test}
+  "mirage-types" {test & < "3.0.0"}
+  "tcpip" {test}
+]
+
+depopts: [
+  "mirage-types"
+  "tcpip"
+  "lwt"
+]
+
+conflicts: [
+  "tcpip" {< "3.0.0"}
+  "mirage-types-lwt" {>= "3.0.0"}
+]
+
+build: [
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"
+    "--with-mirage" "%{mirage-types+tcpip+lwt:installed}%" ]
+]
+
+build-test: [
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"
+    "--with-mirage" "%{mirage-types+tcpip+lwt:installed}%" ]
+  [ "ocaml" "pkg/pkg.ml" "test" ]
+]

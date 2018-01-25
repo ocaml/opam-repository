@@ -1,16 +1,25 @@
-opam-version: "1"
-ocaml-version: [ >= "4.01.0" ]
+opam-version: "1.2"
 maintainer: "arjun@cs.umass.edu"
 homepage: "https://github.com/frenetic-lang/ocaml-openflow"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--%{lwt:enable}%-lwt" "--%{quickcheck:enable}%-quickcheck" ]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--%{lwt:enable}%-lwt"
+    "--%{quickcheck:enable}%-quickcheck"
+  ]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-install"]
 ]
 remove: [["ocamlfind" "remove" "openflow"]]
 depends: [
   "ocamlfind"
-  "cstruct"
+  "cstruct" {<"2.0.0"}
   "packet"
+  "camlp4"
+  "ocamlbuild" {build}
 ]
 depopts: [ "lwt" "quickcheck" ]
+dev-repo: "git://github.com/frenetic-lang/ocaml-openflow"
+available: ocaml-version >= "4.01.0"
+install: ["ocaml" "setup.ml" "-install"]

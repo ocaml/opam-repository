@@ -2,9 +2,23 @@ opam-version: "1"
 maintainer: "smimram@gmail.com"
 build: [
   ["./bootstrap"]
-  ["./configure" "--prefix" prefix "--sbindir=%{lib}%/liquidsoap/sbin" "--libexecdir=%{lib}%/liquidsoap/libexec" "--sysconfdir=%{lib}%/liquidsoap/etc" "--sharedstatedir=%{lib}%/liquidsoap/com" "--localstatedir=%{lib}%/liquidsoap/var" "--libdir=%{lib}%/liquidsoap/lib" "--includedir=%{lib}%/liquidsoap/include" "--datarootdir=%{lib}%/liquidsoap/share" "--disable-graphics" "--with-user=dummy" "--with-group=dummy"]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--sbindir=%{lib}%/liquidsoap/sbin"
+    "--libexecdir=%{lib}%/liquidsoap/libexec"
+    "--sysconfdir=%{lib}%/liquidsoap/etc"
+    "--sharedstatedir=%{lib}%/liquidsoap/com"
+    "--localstatedir=%{lib}%/liquidsoap/var"
+    "--libdir=%{lib}%/liquidsoap/lib"
+    "--includedir=%{lib}%/liquidsoap/include"
+    "--datarootdir=%{lib}%/liquidsoap/share"
+    "--disable-graphics"
+    "--with-user=dummy"
+    "--with-group=dummy"
+  ]
   [make]
-  [make "install"]
 ]
 depends: [
   "ocamlfind"
@@ -22,7 +36,7 @@ depopts: [
   "alsa"
   "pulseaudio"
   "bjack"
-  "taglib" {>= "0.3.0"}
+  "taglib"
   "lame"
   "aacplus"
   "ogg"
@@ -46,9 +60,13 @@ depopts: [
   "lo"
   "inotify"
 ]
-conflicts: ["inotify" {>= "2.0"}]
+conflicts: [
+  "inotify" {>= "2.0"}
+  "taglib" {< "0.3.0"}
+]
 depexts: [
   [["debian"] ["libao-dev" "libfaad-dev" "libflac-dev" "libgavl-dev" "libgstreamer-plugins-base0.10-dev" "libgstreamer0.10-dev" "libgstreamer1.0-dev" "liblo-dev" "libmp3lame-dev" "libogg-dev" "libsamplerate-dev" "libschroedinger-dev" "libsoundtouch-dev" "libspeex-dev" "libtheora-dev" "libvo-aacenc-dev" "libvorbis-dev" "portaudio19-dev"]]
   [["ubuntu"] ["libao-dev" "libfaad-dev" "libflac-dev" "libgavl-dev" "libgstreamer-plugins-base0.10-dev" "libgstreamer0.10-dev" "libgstreamer1.0-dev" "liblo-dev" "libmp3lame-dev" "libogg-dev" "libsamplerate-dev" "libschroedinger-dev" "libsoundtouch-dev" "libspeex-dev" "libtheora-dev" "libvo-aacenc-dev" "libvorbis-dev" "portaudio19-dev"]]
 ]
-ocaml-version: [>= "3.11"]
+available: ocaml-version >= "3.11"
+install: [make "install"]

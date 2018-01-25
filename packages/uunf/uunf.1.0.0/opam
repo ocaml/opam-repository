@@ -7,14 +7,21 @@ dev-repo: "http://erratique.ch/repos/uunf.git"
 bug-reports: "https://github.com/dbuenzli/uunf/issues"
 tags: [ "unicode" "text" "normalization" "org:erratique" ]
 license: "BSD3"
-available: [ ocaml-version >= "4.01.0" ]
-depends: [ "ocamlfind" ]
+available: [ ocaml-version >= "4.01.0" & ocaml-version < "4.06.0" ]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
 depopts: [ "uutf" "cmdliner" ]
-build: 
-[
-  [ "ocaml" "pkg/git.ml" ]
-  [ "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                           "native-dynlink=%{ocaml-native-dynlink}%"
-                           "uutf=%{uutf:installed}%"
-                           "cmdliner=%{cmdliner:installed}%" ]
+conflicts: [
+  "uutf" {!= "0.9.4"}
+]
+build: ["ocaml" "pkg/git.ml"]
+install: [
+  "ocaml"
+  "pkg/build.ml"
+  "native=%{ocaml-native}%"
+  "native-dynlink=%{ocaml-native-dynlink}%"
+  "uutf=%{uutf:installed}%"
+  "cmdliner=%{cmdliner:installed}%"
 ]

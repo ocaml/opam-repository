@@ -12,19 +12,21 @@ build: [
   [make "-e"]
   [make "ocaml-libs"]
   [make "coq-libs"] {"%{coq:installed}%"}
-  ["./generate_install_manifest.sh"]
+  ["sh" "-ex" "./generate_install_manifest.sh"]
 ]
 install: [
-  ["./ocamlfind_install.sh"]
+  ["sh" "-ex" "./ocamlfind_install.sh"]
 ]
 remove: [
   ["rm" "-r" "%{sibylfs-lem:lib}%"]
 ]
 conflicts: [
   "lem"
+  "coq" {>= "8.5.0"}
 ]
 depends: [
   "ocamlfind"
+  "ocamlbuild" {build}
 ]
 depopts: [
   "coq"

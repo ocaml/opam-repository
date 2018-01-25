@@ -17,16 +17,18 @@ tags: [
   "automated theorem prover"
   "interactive theorem prover"
 ]
-available: [ ocaml-version >= "4.01.0" ]
+available: [ ocaml-version >= "4.01.0" & ocaml-version < "4.06.0" ]
 # Jessie3 (frama-c plugin) is *disabled* because it is not ready
 build: [
-  ["./configure" "--prefix" prefix "--disable-frama-c"
-                 "--disable-ide" { !conf-gtksourceview:installed }
-]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--disable-frama-c"
+    "--disable-ide" {!conf-gtksourceview:installed}
+  ]
   [make "opt" "byte"]
-  [make "install" "install-lib"]
 ]
-
 build-doc: [
   [make "doc" "stdlibdoc" "apidoc"]
   [make "DOCDIR=%{doc}%/why3" "install-doc"]
@@ -34,7 +36,8 @@ build-doc: [
 
 depends: [
   "ocamlfind"
-  "menhir"
+  "menhir"  { <= "20141215" }
+  "num"
 ]
 
 depopts: [
@@ -50,4 +53,6 @@ conflicts: [
   "lablgtk" {< "2.14.2"}
   "ocamlgraph" {< "1.8.2"}
   "coq" {< "8.4"}
+  "coq" {>= "8.5"}
 ]
+install: [make "install" "install-lib"]

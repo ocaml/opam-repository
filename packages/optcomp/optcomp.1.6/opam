@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "jeremie@dimino.org"
 authors: ["Jérémie Dimino"]
 homepage: "https://github.com/diml/optcomp"
@@ -6,7 +6,6 @@ license: "BSD3"
 build: [
   ["./configure" "--prefix" prefix]
   [make]
-  [make "install"]
 ]
 build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [
@@ -14,5 +13,11 @@ remove: [
   ["rm" "%{bin}%/optcomp-o"]
   ["rm" "%{bin}%/optcomp-r"]
 ]
-depends: ["ocamlfind" "camlp4"]
-ocaml-version: [>= "3.12"]
+depends: [
+  "ocamlfind"
+  "camlp4"
+  "ocamlbuild" {build}
+]
+dev-repo: "git://github.com/diml/optcomp"
+available: [ocaml-version >= "3.12" & ocaml-version < "4.06.0"]
+install: [make "install"]

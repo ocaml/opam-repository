@@ -1,8 +1,23 @@
 opam-version: "1"
 version: "4.03.0"
-src: "https://github.com/ocaml/ocaml/archive/trunk.tar.gz"
+src: "https://github.com/ocaml/ocaml/archive/4.03.0.tar.gz"
 build: [
-  ["./configure" "-prefix" prefix "-with-debug-runtime" "-with-frame-pointers"]
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-with-frame-pointers"
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-with-frame-pointers"
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world"]
   [make "world.opt"]
   [make "install"]

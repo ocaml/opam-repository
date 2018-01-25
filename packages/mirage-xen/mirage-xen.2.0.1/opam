@@ -1,9 +1,6 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "anil@recoil.org"
-build: [
-  [make "xen-build"]
-  [make "xen-install" "PREFIX=%{prefix}%"]
-]
+build: [make "xen-build"]
 remove: [[make "xen-uninstall" "PREFIX=%{prefix}%"]]
 depends: [
   "cstruct" {>= "1.0.1" & < "1.6.0"}
@@ -11,12 +8,15 @@ depends: [
   "io-page" {>= "1.0.1" & <= "1.4.0"}
   "mirage-clock-xen" {>= "1.0.0"}
   "lwt" {>= "2.4.3"}
-  "shared-memory-ring" {>= "1.0.0"}
+  "shared-memory-ring" {>= "1.0.0" & < "2.0.0"}
   "xenstore" {>= "1.2.5"}
-  "xen-evtchn" {>="0.9.9"}
-  "xen-gnt" {>="2.0.0"}
-  "mirage-xen-minios" {>="0.4.1"}
+  "xen-evtchn" {>= "0.9.9"}
+  "xen-gnt" {>= "2.0.0"}
+  "mirage-xen-minios" {>= "0.4.1"}
   "conf-pkg-config"
+  "ocamlbuild" {build}
 ]
-ocaml-version: [>= "4.01.0" & < "4.02.0"]
-os: ["linux"]
+dev-repo: "git://github.com/mirage/mirage-platform"
+available:
+  os = "linux" & ocaml-version >= "4.01.0" & ocaml-version < "4.02.0"
+install: [make "xen-install" "PREFIX=%{prefix}%"]

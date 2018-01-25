@@ -1,13 +1,17 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "gabriel@kerneis.info"
 build: [
   ["env" "FORCE_PERL_PREFIX=1" "./configure" "--prefix" prefix]
   [make]
-  [make "install"]
 ]
 remove: [
   ["env" "FORCE_PERL_PREFIX=1" "./configure" "--prefix" prefix]
   [make "uninstall"]
 ]
-depends: ["ocamlfind"]
-ocaml-version: [ <"4.02.0" ]
+depends: [
+  "ocamlfind"
+  "ocamlbuild" {build}
+  "num"
+]
+available: ocaml-version < "4.02.0"
+install: [make "install"]

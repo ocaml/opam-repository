@@ -1,0 +1,48 @@
+opam-version: "1.2"
+maintainer: "simon.cruanes@inria.fr"
+authors: "Simon Cruanes"
+homepage: "https://github.com/c-cube/ocaml-containers/"
+bug-reports: "https://github.com/c-cube/ocaml-containers/issues/"
+doc: "http://cedeela.fr/~simon/software/containers/"
+tags: ["stdlib" "containers" "iterators" "list" "heap" "queue"]
+dev-repo: "https://github.com/c-cube/ocaml-containers.git"
+build: [
+    ["./configure"
+        "--prefix" prefix
+        "--disable-bench"
+        "--disable-tests"
+        "--%{base-unix:enable}%-unix"
+        "--enable-docs"
+    ]
+    [make "build"]
+]
+install: [make "install"]
+build-test: [make "test"]
+build-doc: [make "doc"]
+remove: ["ocamlfind" "remove" "containers"]
+depends: [
+  "ocamlfind" {build}
+  "base-bytes"
+  "result"
+  "cppo" {build}
+  "ocamlbuild" {build}
+]
+depopts: [
+  "base-unix"
+  "base-threads"
+  "qtest" {test}
+]
+conflicts: [
+  "sequence" {< "0.5"}
+]
+available: [ocaml-version >= "4.01.0"]
+post-messages: [
+"Major release, with breaking changes. The APIs are more focused,
+more consistent, and some sub-libraries were removed or merged into the core
+ones.
+
+A summary of the changes can be found at
+https://github.com/c-cube/ocaml-containers/issues/84
+and in the changelog
+https://github.com/c-cube/ocaml-containers/blob/1.0/CHANGELOG.adoc"
+]
