@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sheets@alum.mit.edu"
 authors: [
   "Anil Madhavapeddy"
@@ -14,22 +14,37 @@ tags: [
   "org:mirage"
   "org:xapi-project"
 ]
-dev-repo: "https://github.com/mirage/ocaml-uri.git"
+dev-repo: "git+https://github.com/mirage/ocaml-uri.git"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{ounit:enable}%-tests"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{ounit:enable}%-tests"
+  ]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: ["ocaml" "setup.ml" "-test"]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "uri"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "re"
   "sexplib" {>= "109.53.00" & < "113.01.00"}
   "base-bytes"
   "type_conv"
   "stringext"
-  "ounit" {test & >= "1.0.2"}
+  "ounit" {with-test & >= "1.0.2"}
   "ocamlbuild" {build}
 ]
+synopsis: "RFC3986 URI/URL parsing library"
+description: "RFC3986 URI/URL parsing library"
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-uri/archive/v1.9.0.tar.gz"
+  checksum: "md5=147c62e3a15e495bb3ad0a4a94a9426d"
+}

@@ -1,17 +1,13 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "simon.beaumont@citrix.com"
-author:       "Si Beaumont"
 homepage:     "https://github.com/simonjbeaumont/ocaml-sanlock"
 bug-reports:  "https://github.com/simonjbeaumont/ocaml-sanlock/issues"
-dev-repo:     "https://github.com/simonjbeaumont/ocaml-sanlock.git"
-
+dev-repo: "git+https://github.com/simonjbeaumont/ocaml-sanlock.git"
 build: [
   ["./configure"]
   [make]
-]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: [
@@ -19,19 +15,28 @@ remove: [
   ["ocamlfind" "remove" "sanlock_bindings"]
 ]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ctypes" {>= "0.4"}
   "oasis" {build}
   "ocamlfind" {build}
-  "ounit" {test}
+  "ounit" {with-test}
 ]
-available: [ocaml-version >= "4.01.0" & os = "linux"]
+available: os = "linux"
 depexts: [
-  [["debian"] ["libsanlock-dev"]]
-  [["ubuntu"] ["libsanlock-dev"]]
-  [["centos"] ["sanlock-devel"]]
+  ["libsanlock-dev"] {os-distribution = "debian"}
+  ["libsanlock-dev"] {os-distribution = "ubuntu"}
+  ["sanlock-devel"] {os-distribution = "centos"}
 ]
 post-messages: [
   "This package requires libsanlock-dev to be installed on your system" {failure & (os = "debian")}
   "This package requires libsanlock-dev to be installed on your system" {failure & (os = "ubuntu")}
   "This package requires sanlock-devel to be installed on your system"  {failure & (os = "centos")}
 ]
+synopsis: "Ctypes bindings to libsanlock for OCaml"
+authors: "Si Beaumont"
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/simonjbeaumont/ocaml-sanlock/archive/v0.0.9/ocaml-sanlock-v0.0.9.tar.gz"
+  checksum: "md5=712d5707256ac339bb2abb9f5b5f6eaf"
+}

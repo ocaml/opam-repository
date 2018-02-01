@@ -1,23 +1,22 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
 authors: [ "Christophe Troestler" ]
 license: "GPL-3 with OCaml linking exception"
 homepage: "https://github.com/ocaml/oasis2opam"
-dev-repo: "https://github.com/ocaml/oasis2opam.git"
+dev-repo: "git+https://github.com/ocaml/oasis2opam.git"
 bug-reports: "https://github.com/ocaml/oasis2opam/issues"
 tags: [ "build" "install"  ]
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 depends: [
+  "ocaml"
   "base-unix" {build}
   "oasis" {build & >= "0.4.4"}
   "ocamlfind" {build}
@@ -25,3 +24,13 @@ depends: [
   "qcheck" {build & >= "0.4"}
   "ocamlbuild" {build}
 ]
+synopsis: "Tool to convert OASIS metadata to OPAM package descriptions"
+description: """
+Generate OPAM files from _oasis. Most of the metadata supported by
+oasis is translated to OPAM. A simple .install file is written to
+handle executables (until oasis supports the functionality itself)."""
+extra-files: ["oasis2opam.install" "md5=49d03f71d09c8a1aca979aa0c82e1932"]
+url {
+  src: "https://github.com/ocaml/oasis2opam/archive/0.6.tar.gz"
+  checksum: "md5=6ed521ea259313b076c2758aad3429d3"
+}

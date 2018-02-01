@@ -1,5 +1,4 @@
-opam-version: "1.2"
-
+opam-version: "2.0"
 maintainer: "vb@luminar.eu.org"
 authors: [ "Vincent Bernardoff <vb@luminar.eu.org>"
 	   "Anil Madhavapeddy <anil@recoil.org>"
@@ -7,7 +6,7 @@ authors: [ "Vincent Bernardoff <vb@luminar.eu.org>"
 
 license: "ISC"
 homepage: "https://github.com/mirage/ocaml-tuntap"
-dev-repo: "https://github.com/mirage/ocaml-tuntap.git"
+dev-repo: "git+https://github.com/mirage/ocaml-tuntap.git"
 bug-reports: "https://github.com/mirage/ocaml-tuntap/issues"
 
 tags: [
@@ -26,13 +25,30 @@ install: [
 remove: [["ocamlfind" "remove" "tuntap"]]
 
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ipaddr" {>= "2.4.0"}
   "ocamlfind" {build}
-  "cmdliner" {test}
-  "lwt" {test}
+  "cmdliner" {with-test}
+  "lwt" {with-test}
   "ocamlbuild" {build}
 ]
-depexts: [
- [ ["alpine"] ["linux-headers"] ]
-]
-available: [ ocaml-version >="4.01.0" ]
+depexts: ["linux-headers"] {os-distribution = "alpine"}
+synopsis: "TUN/TAP bindings"
+description: """
+This is an OCaml library for handling TUN/TAP devices.  TUN refers to layer 3
+virtual interfaces whereas TAP refers to layer 2 Ethernet ones.
+
+See <http://en.wikipedia.org/wiki/TUN/TAP> for more information.
+
+Linux, FreeBSD, OpenBSD and MacOS X should all be supported.  You will need
+to install the third-party <http://tuntaposx.sourceforge.net/> on OSX before
+using this library.
+
+WWW:    <https://github.com/mirage/ocaml-tuntap>
+Issues: <https://github.com/mirage/mirage/issues>
+E-mail: <mirageos-devel@lists.openmirage.org>"""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-tuntap/archive/v1.3.0.tar.gz"
+  checksum: "md5=1c48f4c72b33b0b9726240e8a0e1fa54"
+}

@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Alessandro Strada <alessandro.strada@gmail.com>"
 authors: [ "Vincenzo Ciancia" ]
 license: "GPL"
 homepage: "http://sourceforge.net/apps/mediawiki/ocamlfuse"
-dev-repo: "https://github.com/astrada/ocamlfuse.git"
+dev-repo: "git+https://github.com/astrada/ocamlfuse.git"
 bug-reports: "https://github.com/astrada/ocamlfuse/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
@@ -14,6 +14,7 @@ remove: [
   ["ocamlfind" "remove" "Fuse"]
 ]
 depends: [
+  "ocaml" {>= "3.08.0"}
   "base-bigarray"
   "base-threads"
   "base-unix"
@@ -21,12 +22,25 @@ depends: [
   "ocamlfind" {build}
 ]
 depexts: [
-  [["debian"] ["libfuse-dev"]]
-  [["ubuntu"] ["libfuse-dev"]]
-  [["alpine"] ["fuse-dev"]]
-  [["centos"] ["fuse-devel"]]
-  [["fedora"] ["fuse-devel"]]
-  [["opensuse"] ["fuse-devel"]]
-  [["osx" "homebrew"] ["Caskroom/cask/osxfuse"]]
+  ["libfuse-dev"] {os-distribution = "debian"}
+  ["libfuse-dev"] {os-distribution = "ubuntu"}
+  ["fuse-dev"] {os-distribution = "alpine"}
+  ["fuse-devel"] {os-distribution = "centos"}
+  ["fuse-devel"] {os-distribution = "fedora"}
+  ["fuse-devel"] {os-distribution = "opensuse"}
+  ["Caskroom/cask/osxfuse"] {os = "macos" & os-distribution = "homebrew"}
 ]
-available: [ ocaml-version >= "3.08.0" ]
+synopsis: "OCaml bindings for FUSE (Filesystem in UserSpacE)"
+description: """
+This is a binding to FUSE for the OCaml programming language, enabling
+you to write multithreaded filesystems in the OCaml language. It has
+been designed with simplicity as a goal, as you can see by looking at
+example/fusexmp.ml. Efficiency has also been a separate goal. The
+Bigarray library is used for read and writes, allowing the library to
+do zero-copy in OCaml land."""
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1663/ocamlfuse-2.7.1-cvs4.tar.gz"
+  checksum: "md5=bc8e70d6886fd6a45387c3a7992a31cb"
+}

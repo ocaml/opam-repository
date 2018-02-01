@@ -1,37 +1,44 @@
-opam-version: "1.2"
-
+opam-version: "2.0"
 maintainer: "dev@ocsigen.org"
-author: "The ocsigen team"
 homepage: "https://ocsigen.org/tyxml/"
 bug-reports: "https://github.com/ocsigen/tyxml/issues"
 doc: "https://ocsigen.org/tyxml/manual/"
-dev-repo: "https://github.com/ocsigen/tyxml.git"
+dev-repo: "git+https://github.com/ocsigen/tyxml.git"
 build: [
-  ["ocaml" "setup.ml" "-configure"
-      "--%{camlp4:enable}%-syntax"
-      "--%{markup+ppx_tools:enable}%-ppx"
-      "--prefix" prefix]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--%{camlp4:enable}%-syntax"
+    "--%{markup+ppx_tools:enable}%-ppx"
+    "--prefix"
+    prefix
+  ]
   ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--%{camlp4:enable}%-syntax"
+    "--%{markup+ppx_tools:enable}%-ppx"
+    "--enable-tests"
+    "--prefix"
+    prefix
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure"
-      "--%{camlp4:enable}%-syntax"
-      "--%{markup+ppx_tools:enable}%-ppx"
-      "--enable-tests"
-      "--prefix" prefix]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 install: ["ocaml" "setup.ml" "-install"]
 remove: ["ocamlfind" "remove" "tyxml"]
 depends: [
+  "ocaml" {>= "4.02"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "uutf" {<= "0.9.4"}
   "base-bytes"
   "re" {>= "1.5.0"}
-  "alcotest" {test}
+  "alcotest" {with-test}
 ]
 depopts: [
   "camlp4"
@@ -41,8 +48,21 @@ depopts: [
 conflicts: [
   "ppx_tools" { < "5.0" }
 ]
-available: [ocaml-version >= "4.02"]
 messages: [
   "For tyxml's ppx, please install tyxml-ppx."
   {!markup:installed | !ppx_tools:installed}
 ]
+synopsis:
+  "TyXML is a library for building statically correct HTML5 and SVG documents"
+description: """
+TyXML allows you to build HTML5 and SVG trees whose validity is ensured by the typechecker.
+It provides a printer for said XML trees, along with a ppx syntax extension.
+Finally it also provides a functorial interface to choose your XML datastructure.
+It's part of the ocsigen project and is used in js_of_ocaml and eliom."""
+authors: "The ocsigen team"
+flags: light-uninstall
+extra-files: ["tyxml.install" "md5=c5877ac0f3060afc7dbbb9ac65f76e0a"]
+url {
+  src: "https://github.com/ocsigen/tyxml/archive/4.0.1.tar.gz"
+  checksum: "md5=7e80bfe81bd9fb1063ee12e35198211a"
+}

@@ -1,24 +1,44 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "mfp@acm.org"
 homepage: "https://github.com/mfp/ocaml-leveldb"
 license: "LGPL+static"
 doc: ["https://github.com/mfp/ocaml-leveldb/blob/master/README.md"]
-build: ["omake" "-j9"]
-build-test: [["omake" "test"] {"%{ounit:installed}"}]
+build: [
+  ["omake" "-j9"]
+  ["omake" "test"] {with-test & "%{ounit:installed}"}
+]
 remove: [
   ["ocamlfind" "remove" "leveldb"]
 ]
-depends: [
-  "ocamlfind"
-  "omake"
-  "conf-leveldb"
-  "ounit"
-]
+depends: ["ocaml" "ocamlfind" "omake" "conf-leveldb" "ounit"]
 depexts: [
-  [["debian"] ["libsnappy-dev"]]
-  [["ubuntu"] ["libsnappy-dev"]]
+  ["libsnappy-dev"] {os-distribution = "debian"}
+  ["libsnappy-dev"] {os-distribution = "ubuntu"}
 ]
 patches: [ "fix_snappy_link_issue.patch"
            "warn_error.patch" ]
 dev-repo: "git://github.com/mfp/ocaml-leveldb"
 install: ["omake" "install" "prefix=%{prefix}%"]
+synopsis: "OCaml bindings for Google's LevelDB library."
+description: """
+These bindings expose nearly the full LevelDB C++ API, including:
+
+* iterators
+* snapshots
+* batch updates
+* support for custom comparators
+
+Blocking functions release the OCaml runtime system, allowing to:
+
+* run them in parallel with other OCaml code
+* perform multiple LevelDB operations in parallel"""
+flags: light-uninstall
+extra-files: [
+  ["warn_error.patch" "md5=5a2200494127c1b098226d512f2aa208"]
+  ["fix_snappy_link_issue.patch" "md5=0d5a234630982d95c1d8adadc537e810"]
+]
+url {
+  src:
+    "https://github.com/mfp/ocaml-leveldb/archive/ocaml-leveldb-1.0.3.tar.gz"
+  checksum: "md5=68ce7bda83d28cd14bf817355e9781af"
+}

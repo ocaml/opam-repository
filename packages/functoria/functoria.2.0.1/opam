@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "mirageos-devel@lists.xenproject.org"
 authors:      [ "Thomas Gazagnaire"
                 "Anil Madhavapeddy"
@@ -7,20 +7,41 @@ authors:      [ "Thomas Gazagnaire"
                 "Gabriel Radanne" ]
 homepage:     "https://github.com/mirage/functoria"
 bug-reports:  "https://github.com/mirage/functoria/issues"
-dev-repo:     "https://github.com/mirage/functoria.git"
+dev-repo: "git+https://github.com/mirage/functoria.git"
 doc:          "https://mirage.github.io/functoria/"
 license:      "ISC"
 tags:         ["org:mirage"]
 
-build: ["ocaml" "pkg/pkg.ml" "build" "--pkg-name" name "--pinned" "%{pinned}%" "--tests" "false" ]
-build-test: [
-  ["ocaml" "pkg/pkg.ml" "build" "--pkg-name" name "--pinned" "%{pinned}%" "--tests" "true"]
-  ["ocaml" "pkg/pkg.ml" "test"]
+build: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pkg-name"
+    name
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "false"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pkg-name"
+    name
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
 depends: [
+  "ocaml" {>= "4.03"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "topkg"     {build & >= "0.7.3"}
+  "topkg" {build & >= "0.7.3"}
   "base-unix"
   "cmdliner" {>= "0.9.8"}
   "rresult"
@@ -30,6 +51,12 @@ depends: [
   "logs"
   "bos"
   "fpath"
-  "ounit" {test & >="2.0.0"}
+  "ounit" {with-test & >= "2.0.0"}
 ]
-available: [ocaml-version >= "4.03"]
+synopsis:
+  "A bundle of useful runtime functions for applications built with Functoria."
+url {
+  src:
+    "https://github.com/mirage/functoria/releases/download/2.0.1/functoria-2.0.1.tbz"
+  checksum: "md5=46ff45d9cebf0f1d6dec6a3c2c728285"
+}

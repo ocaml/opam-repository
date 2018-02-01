@@ -1,6 +1,6 @@
 name: "bisect_ppx"
 version: "1.2.0"
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Anton Bachin <antonbachin@yahoo.com>"
 authors: [
   "Xavier Clerc <bisect@x9c.fr>"
@@ -10,20 +10,47 @@ authors: [
 license: "GPL3"
 homepage: "https://github.com/aantron/bisect_ppx"
 bug-reports: "https://github.com/aantron/bisect_ppx/issues"
-dev-repo: "https://github.com/aantron/bisect_ppx.git"
-build: [make "build"]
-build-test: [make "dev" "tests"]
+dev-repo: "git+https://github.com/aantron/bisect_ppx.git"
+build: [
+  [make "build"]
+  [make "dev" "tests"] {with-test}
+]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "bisect_ppx"]
 depends: [
+  "ocaml" {>= "4.02.0" & < "4.06.0"}
   "ocamlfind" {build}
   "ppx_tools" {build & >= "4.02.3"}
   "ocamlbuild" {build}
   "cppo" {build}
   "cppo_ocamlbuild" {build}
-  "ounit" {test}
+  "ounit" {with-test}
 ]
 conflicts: [
   "ocveralls" {<= "0.3.2"}
 ]
-available: [ocaml-version >= "4.02.0" & ocaml-version < "4.06.0"]
+synopsis: "Code coverage for OCaml"
+description: """
+Bisect_ppx helps you test thoroughly. It is a small preprocessor that inserts
+instrumentation at places in your code, such as if-then-else and match
+expressions. After you run tests, Bisect_ppx gives a nice HTML report showing
+which places were visited and which were missed.
+
+Usage is simple - add package bisect_ppx when building tests, then run the
+report tool on the generated visitation files.
+
+This is an advanced fork of the original Bisect coverage tool. It has many
+improvements and updates.
+
+- Much more thorough code instrumentation, so you can find more gaps in your
+  testing.
+- Fast operation by default.
+- More legible and appealing HTML reports.
+- Various bugfixes.
+- No camlp4 dependency."""
+flags: light-uninstall
+extra-files: ["bisect_ppx.install" "md5=887f32c5449bb9014b750064e39670b3"]
+url {
+  src: "https://github.com/aantron/bisect_ppx/archive/1.2.0.tar.gz"
+  checksum: "md5=e9dd15cb3d1e1e5ec7013bb960f3bdc3"
+}
