@@ -8,16 +8,21 @@ build: [
   ["sh" "-exc" "%{build}%/centos_install.sh"] {os = "centos"}
   ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os = "alpine"}
   ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os = "debian"}
+  ["sh" "-exc" "cc $CFLAGS -I/usr/include/openblas test.c -lopenblas"]
+    {os = "fedora"}
+
   [
     "sh"
     "-exc"
     "cc $CFLAGS -I/usr/local/opt/openblas/include test.c -L/usr/local/opt/openblas/lib -lopenblas"
   ] {os = "macos"}
   ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"]
-    {os != "macos" & os != "debian" & os != "centos" & os != "alpine"}
+    {os != "macos" & os != "debian" & os != "centos" & os != "fedora" &
+     os != "alpine"}
 ]
 depexts: [
   [""] {os-distribution = "centos"}
+  ["openblas-devel"] {os-distribution = "fedora"}
   ["libc-dev openblas-dev"] {os-distribution = "alpine"}
   ["libopenblas-dev liblapacke-dev"] {os-distribution = "ubuntu"}
   ["libopenblas-dev liblapacke-dev"] {os-distribution = "debian"}
@@ -29,6 +34,6 @@ description:
 authors: "Liang Wang (ryanrhymes@gmail.com)"
 depends: ["ocaml"]
 extra-files: [
-  ["test.c" "md5=dcf8ee02542457dde43e1e4917897416"]
   ["centos_install.sh" "md5=46ee889588a424b2d5b25b3de906ed6c"]
+  ["test.c" "md5=dcf8ee02542457dde43e1e4917897416"]
 ]
