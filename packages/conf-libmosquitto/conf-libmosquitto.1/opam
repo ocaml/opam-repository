@@ -1,8 +1,8 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Markus W. Weissmann <markus.weissmann@in.tum.de>"
 authors: [ "Markus W. Weissmann <markus.weissmann@in.tum.de>" ]
 homepage: "https://mosquitto.org/"
-dev-repo: "https://github.com/ocaml/opam-repository.git"
+dev-repo: "git+https://github.com/ocaml/opam-repository.git"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: [ "Eclipse Public License v1.0" "Eclipse Distribution License 1.0" ]
 build: [
@@ -10,8 +10,12 @@ build: [
   ["brew" "ls" "--versions" "mosquitto"] {os = "darwin"}
 ]
 depexts: [
-  [["debian"] ["libmosquitto-dev" ]]
-  [["ubuntu"] ["libmosquitto-dev"]]
-  [["alpine"] ["mosquitto-dev"]]
-  [["osx" "homebrew"] ["mosquitto"]]
+  ["libmosquitto-dev"] {os-distribution = "debian"}
+  ["libmosquitto-dev"] {os-distribution = "ubuntu"}
+  ["mosquitto-dev"] {os-distribution = "alpine"}
+  ["mosquitto"] {os = "macos" & os-distribution = "homebrew"}
 ]
+synopsis: "Virtual package relying on a libmosquitto system installation."
+description:
+  "This package can only install if the libmosquitto is installed on the system."
+depends: ["ocaml"]
