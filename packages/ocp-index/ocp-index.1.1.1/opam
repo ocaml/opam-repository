@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "louis.gesbert@ocamlpro.com"
 authors: [
   "Louis Gesbert"
@@ -11,12 +11,13 @@ tags: [
   "org:ocamlpro"
   "org:typerex"
 ]
-dev-repo: "https://github.com/OCamlPro/ocp-index.git"
+dev-repo: "git+https://github.com/OCamlPro/ocp-index.git"
 build: [
   ["./configure" "--prefix" prefix]
   [make]
 ]
 depends: [
+  "ocaml" {>= "4.00.0" & < "4.03"}
   "ocp-build" {build & >= "1.99.6-beta"}
   "ocp-indent" {>= "1.4.2"}
   "re"
@@ -24,9 +25,20 @@ depends: [
 ]
 depopts: "lambda-term"
 conflicts: "lambda-term" {< "1.7"}
-available: [ocaml-version >= "4.00.0" & ocaml-version < "4.03"]
 messages: "To install ocp-browser, please install lambda-term" {! lambda-term:installed}
 post-messages: "To use ocp-index from emacs, add the following to your .emacs:
   (add-to-list 'load-path \"%{share}%/emacs/site-lisp\")
   (require 'ocp-index)" {success & !user-setup:installed}
-patches: [ "ocaml.4.02.patch" { ocaml-version >= "4.02" } ]
+patches: "ocaml.4.02.patch" {ocaml:version >= "4.02"}
+synopsis: "Lightweight documentation extractor for installed OCaml libraries"
+description: """
+This package includes
+* The `ocp-index` library and command-line tool
+* bindings for emacs and vim (sublime text also [available](https://github.com/whitequark/sublime-ocp-index/))
+* `ocp-browser`, an interface browser for installed and in-project modules. This requires lambda-term installed
+* `ocp-grep`, a tool that finds uses of a given (qualified) identifier in a source tree"""
+extra-files: ["ocaml.4.02.patch" "md5=f44c122637a7ee9f7951d615738ec419"]
+url {
+  src: "https://github.com/OCamlPro/ocp-index/archive/1.1.1.tar.gz"
+  checksum: "md5=b0292b2bb49959d84b17d3718331e658"
+}

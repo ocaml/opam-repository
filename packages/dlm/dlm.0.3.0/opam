@@ -1,17 +1,17 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "xen-api@list.xensource.com"
 authors: ["Edwin Török"]
 homepage: "https://github.com/xapi-project/ocaml-dlm/"
 bug-reports: "https://github.com/xapi-project/ocaml-dlm/issues"
-dev-repo: "https://github.com/xapi-project/ocaml-dlm.git"
+dev-repo: "git+https://github.com/xapi-project/ocaml-dlm.git"
 doc: "https://xapi-project.github.io/ocaml-dlm/doc"
 license: "LGPL-2.1 with OCaml linking exception"
 build: [
   ["jbuilder" "build" "--only" name "--root" "." "-j" jobs "@install"]
+  ["jbuilder" "runtest" "-p" name] {with-test}
 ]
-build-test: ["jbuilder" "runtest" "-p" name]
-
 depends: [
+  "ocaml"
   "jbuilder" {build & >= "1.0+beta10"}
   "ctypes" {>= "0.11.1"}
   "lwt"
@@ -19,16 +19,26 @@ depends: [
   "ounit"
   "uuidm"
 ]
-
 depexts: [
-  [["debian"] ["libdlm-dev"]]
-  [["ubuntu"] ["libdlm-dev"]]
-  [["rhel"] ["dlm-devel"]]
-  [["centos"] ["dlm-devel"]]
-  [["fedora"] ["dlm-devel"]]
-  [["oraclelinux"] ["dlm-devel"]]
-  [["archlinux"] ["dlm-git"]]
-  [["opensuse"] ["libdlm-devel"]]
+  ["libdlm-dev"] {os-distribution = "debian"}
+  ["libdlm-dev"] {os-distribution = "ubuntu"}
+  ["dlm-devel"] {os-distribution = "rhel"}
+  ["dlm-devel"] {os-distribution = "centos"}
+  ["dlm-devel"] {os-distribution = "fedora"}
+  ["dlm-devel"] {os-distribution = "oraclelinux"}
+  ["dlm-git"] {os-distribution = "archlinux"}
+  ["libdlm-devel"] {os-distribution = "opensuse"}
 ]
-
 available: [ os = "linux" & os != "alpine" ]
+synopsis: "Libdlm bindings"
+description: """
+[![Build Status](https://travis-ci.org/xapi-project/ocaml-dlm.svg?branch=master)](https://travis-ci.org/xapi-project/ocaml-dlm)
+
+Bindings to the Linux Distributed Lock Manager `libdlm(3)`.
+
+Documentation can be found [online](https://xapi-project.github.io/ocaml-dlm/doc/dlm/Dlm/index.html)."""
+url {
+  src:
+    "https://github.com/xapi-project/ocaml-dlm/releases/download/v0.3.0/dlm-0.3.0.tbz"
+  checksum: "md5=dac7206c4f86fc1a1492cbdc3862e013"
+}

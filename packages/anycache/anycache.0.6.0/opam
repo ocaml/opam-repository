@@ -1,18 +1,17 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Török Edwin <edwin@skylable.com>"
 authors: ["Török Edwin <edwin@skylable.com>"]
 homepage: "https://gitlab.com/edwintorok/ocaml-anycache"
 doc: "https://edwintorok.gitlab.io/ocaml-anycache/doc"
 license: "ISC"
-dev-repo: "https://gitlab.com/edwintorok/ocaml-anycache.git"
+dev-repo: "git+https://gitlab.com/edwintorok/ocaml-anycache.git"
 bug-reports: "https://gitlab.com/edwintorok/ocaml-anycache/issues"
-tags: []
-available: [ ocaml-version >= "4.01.0"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
-  "alcotest" { test & >= "0.7.2" & < "0.8.0"}
+  "alcotest" {with-test & >= "0.7.2" & < "0.8.0"}
   "base-bytes"
   "result"
 ]
@@ -20,17 +19,45 @@ depopts: [
     "lwt"
     "async"
 ]
-build: [ "ocaml" "pkg/pkg.ml" "build"
-       "--pinned" "%{pinned}%"
-       "--with-lwt" "%{lwt:installed}%"
-       "--with-async" "%{async:installed}%"
-       "--tests" "false"
-       ]
-build-test: [
-  ["ocaml" "pkg/pkg.ml" "build"
-       "--pinned" "%{pinned}%"
-       "--with-lwt" "%{lwt:installed}%"
-       "--with-async" "%{async:installed}%"
-       "--tests" "true"
+build: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--with-lwt"
+    "%{lwt:installed}%"
+    "--with-async"
+    "%{async:installed}%"
+    "--tests"
+    "false"
   ]
-  ["ocaml" "pkg/pkg.ml" "test"]]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--with-lwt"
+    "%{lwt:installed}%"
+    "--with-async"
+    "%{async:installed}%"
+    "--tests"
+    "true"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+]
+synopsis: "Scan-resistant LRU/2Q cache"
+description: """
+anycache is a scan-resistant LRU/2Q cache.
+See the [documentation][basics] for details on the algorithm used.
+
+[basics]: https://edwintorok.gitlab.io/ocaml-anycache/doc/Anycache.html#basics
+
+anycache is distributed under the ISC license."""
+url {
+  src:
+    "https://gitlab.com/edwintorok/ocaml-anycache/uploads/78722628e5af42b59da2abe17939ff89/anycache-0.6.0.tbz"
+  checksum: "md5=5edf38601cee4aefec6b7d6e922f208f"
+}

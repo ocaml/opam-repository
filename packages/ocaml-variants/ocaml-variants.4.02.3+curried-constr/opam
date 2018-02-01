@@ -1,0 +1,101 @@
+opam-version: "2.0"
+synopsis: "4.02.3+curried-constr"
+description: """
+Variant constructors as functions
+==================================
+
+Suppose we have:
+
+```ocaml
+type t = Foo of int * float
+```
+
+Then
+
+```ocaml
+Foo
+```
+
+is equal to `fun (x,y) -> Foo (x,y)`. And,
+
+```ocaml
+(Foo ..)        (* This is not valid in the vanilla OCaml *)
+```
+
+and
+```
+!Foo            (* If you keep the vanilla syntax *)
+```
+
+are equal to `fun x y -> Foo (x,y)`.
+
+It works for list cons constructor too:
+
+```ocaml
+(::)    : ('a * 'a list) -> 'a list
+(:: ..) : 'a -> 'a list -> 'a list
+!(::)   : 'a -> 'a list -> 'a list
+```
+
+Polymorphic variants as functions
+---------------------------------------------
+
+```ocaml
+(`Foo ..)         (* This is not valid in the vanilla OCaml *)
+!`Foo
+```
+
+are equivalent to 
+
+```ocaml
+fun x -> `Foo x
+```
+
+Note that ``(`Foo ..)`` always take only one argument:
+the arity of the polymorphic variant constructors is at most one
+and  it is determined purely syntactically. 
+
+
+```ocaml
+(`Foo..) (1,2,3)  (* `Foo (1,2,3) *)
+(`Foo..) 1 2 3    (* (`Foo 1) 2 3  which ends in a type error *)
+```
+
+Code ``(`Foo)`` has no special meaning. It is just equivalent to `` `Foo``.
+
+Samples
+---------------------------------------------
+
+You can try examples at `testsuite/curried_constr/test.ml`."""
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.02.3" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix "-with-debug-runtime"]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-cc"
+    "cc"
+    "-aspp"
+    "cc -c"
+  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src:
+    "https://github.com/camlspotter/ocaml/archive/4.02.3+curried-constr.tar.gz"
+  checksum: "md5=754cb6ef120d90273610ab5f860b99e7"
+}

@@ -1,0 +1,35 @@
+opam-version: "2.0"
+synopsis: "Switch for 4.02.2 improved-errors branch by Arthur Charguéraud"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.02.2" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix "-with-debug-runtime"]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-cc"
+    "cc"
+    "-aspp"
+    "cc -c"
+  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src:
+    "https://github.com/charguer/ocaml/archive/4.02.2+improved-errors.tar.gz"
+  checksum: "md5=93eba0d8e6df7152952040fc1f5d736f"
+}

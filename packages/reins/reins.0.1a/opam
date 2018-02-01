@@ -1,16 +1,35 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "ygrek@autistici.org"
 authors: "Mike Furr"
 homepage: "http://ocaml-reins.sourceforge.net/"
 doc: "http://ocaml-reins.sourceforge.net/api/index.html"
 
-build: "omake"
-build-doc: ["omake" "doc"]
-build-test: ["omake" "test"] {ounit:installed}
+build: [
+  ["omake"]
+  ["omake" "test"] {with-test & ounit:installed}
+  ["omake" "doc"] {with-doc}
+]
 remove: ["ocamlfind" "remove" "reins"]
 
 patches: ["fix_build.patch" ]
-depends: ["ocamlfind" "omake"]
+depends: [
+  "ocaml" {< "4.03.0"}
+  "ocamlfind"
+  "omake"
+]
 install: ["omake" "install"]
 
-available: [ocaml-version < "4.03.0"]
+synopsis:
+  "Persistent data structure library from OCaml Summer Project 2007 sponsored by Jane St. Capital."
+description: """
+It provides: single linked lists, O(1) catenable lists, acyclic double linked lists, random access lists, double ended queues,
+binomial and skew binomial heap, AVL, red/black, splay and Patricia Maps and Sets with
+zipper style (persistent and bi-directional) cursor interfaces, along with functor combinators
+to minimize boilerplate."""
+flags: light-uninstall
+extra-files: ["fix_build.patch" "md5=57d84c5a7822d9584416bfba619cbc93"]
+url {
+  src:
+    "http://downloads.sourceforge.net/project/ocaml-reins/ocaml-reins/ocaml-reins-0.1a/ocaml-reins-0.1a.tar.gz"
+  checksum: "md5=696fa73fcce636f8710b7a83be613383"
+}

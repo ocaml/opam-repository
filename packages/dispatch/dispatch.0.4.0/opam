@@ -1,17 +1,29 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Spiros Eliopoulos <spiros@inhabitedtype.com>"
 authors: [ "Spiros Eliopoulos <spiros@inhabitedtype.com>" ]
 license: "BSD-3-clause"
 homepage: "https://github.com/inhabitedtype/ocaml-dispatch"
-dev-repo: "https://github.com/inhabitedtype/ocaml-dispatch.git"
+dev-repo: "git+https://github.com/inhabitedtype/ocaml-dispatch.git"
 bug-reports: "https://github.com/inhabitedtype/ocaml-dispatch/issues"
 build: [
-  [ "jbuilder" "subst" ] {pinned}
-  [ "jbuilder" "build" "-p" name "-j" jobs ]
+  ["jbuilder" "subst"] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-build-test: [ [ "jbuilder" "runtest" "-p" name "-j" jobs ] ]
 depends: [
-  "ounit" {test & >= "1.0.2"}
-  "jbuilder" {build & >="1.0+beta10"}
+  "ocaml"
+  "ounit" {with-test & >= "1.0.2"}
+  "jbuilder" {build & >= "1.0+beta10"}
   "result"
 ]
+synopsis: "Path-based dispatching for client- and server-side applications."
+description: """
+Dispatch provides a basic mechanism for dispatching a request to a
+handler based on hierarchical path names conventionally found in URIs.
+It can be used both for dispatching requests in a server, as well as
+handing changes to hierarchical fragments in a client-side
+application."""
+url {
+  src: "https://github.com/inhabitedtype/ocaml-dispatch/archive/0.4.0.tar.gz"
+  checksum: "md5=b41da081833337c86c4eda7a2e0b8d26"
+}

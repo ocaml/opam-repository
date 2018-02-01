@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "frama-c-base"
 version: "20150201"
 maintainer: "francois.bobot@cea.fr"
@@ -23,7 +23,7 @@ authors: [
 ]
 homepage: "http://frama-c.com/"
 license: "GNU Lesser General Public License version 2.1"
-dev-repo: "https://github.com/Frama-C/Frama-C-snapshot.git"
+dev-repo: "git+https://github.com/Frama-C/Frama-C-snapshot.git"
 doc: ["http://frama-c.com/download/user-manual-Sodium-20150201.pdf"]
 bug-reports: "https://bts.frama-c.com/"
 tags: [
@@ -42,16 +42,21 @@ tags: [
 ]
 
 build: [
-  ["./configure" "--prefix" prefix
-                 "--disable-gui" { !conf-gtksourceview:installed | !conf-gnomecanvas:installed }
-]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--disable-gui"
+      {!conf-gtksourceview:installed | !conf-gnomecanvas:installed}
+  ]
   [make]
+  [make "PTESTS_OPTS=-error-code" "tests"] {with-test}
+  [make "-C" "doc" "download"] {with-doc}
 ]
-
 install: [
   [make "install"]
+  [make "-C" "doc" "FRAMAC_DOCDIR=%{frama-c:doc}%" "install"] {with-doc}
 ]
-
 remove: [
   ["./configure" "--prefix" prefix "--disable-local-ocamlgraph"
                  "--disable-gui" { !conf-gtksourceview:installed | !conf-gnomecanvas:installed }
@@ -60,21 +65,12 @@ remove: [
   ["rm" "-rf" frama-c:doc]
 ]
 
-build-doc: [
-   [make "-C" "doc" "download"]
-   [make "-C" "doc" "FRAMAC_DOCDIR=%{frama-c:doc}%" "install"]
-]
-
-build-test: [
-  [make "PTESTS_OPTS=-error-code" "tests"]
-]
-
 depends: [
-  "ocamlgraph" { = "1.8.5" | = "1.8.6" }
+  "ocaml" {>= "4.0" & != "4.02.0" & < "4.04.0"}
+  "ocamlgraph" {= "1.8.5" | = "1.8.6"}
   "ocamlfind"
   "num"
 ]
-
 depopts: [
   "zarith"
   "lablgtk"
@@ -89,8 +85,21 @@ conflicts: [
   "lablgtk" { < "2.18.2" } #for ocaml >= 4.02.1
 ]
 
-available: [
-  ocaml-version >= "4.0"
-  & ocaml-version != "4.02.0"
-  & ocaml-version < "4.04.0"
-]
+synopsis:
+  "Platform dedicated to the static analysis of source code written in C"
+description: """
+Frama-C is a suite of tools dedicated to the analysis of the source
+code of software written in C. Sodium version.
+
+Frama-C gathers several static analysis techniques in a single
+collaborative framework. The collaborative approach of Frama-C allows
+static analyzers to build upon the results already computed by other
+analyzers in the framework. Thanks to this approach, Frama-C provides
+sophisticated tools, such as a slicer and dependency analysis.
+
+This package depends on the minimal number of dependencies (look for
+frama-c for a more complete set of dependencies)."""
+url {
+  src: "http://frama-c.com/download/frama-c-Sodium-20150201.tar.gz"
+  checksum: "md5=7719bccdd319523da508e818e8e34fee"
+}

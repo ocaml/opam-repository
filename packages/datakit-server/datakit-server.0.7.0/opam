@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "thomas@gazagnaire.org"
 authors: [
   "Thomas Leonard" "Magnus Skjegstad" "David Scott" "Thomas Gazagnaire"
@@ -6,12 +6,13 @@ authors: [
 license: "Apache"
 homepage: "https://github.com/docker/datakit"
 bug-reports: "https://github.com/docker/datakit/issues"
-dev-repo: "https://github.com/docker/datakit.git"
+dev-repo: "git+https://github.com/docker/datakit.git"
 doc: "https://docker.github.io/datakit/"
 build: [
   "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "-n" "datakit-server"
 ]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
@@ -21,8 +22,19 @@ depends: [
   "uri"
   "rresult"
   "cstruct"
-  "fmt" {>="0.8.2"}
-  "protocol-9p" {>= "0.7.4" & <"0.9.0"}
+  "fmt" {>= "0.8.2"}
+  "protocol-9p" {>= "0.7.4" & < "0.9.0"}
   "sexplib"
-  "mirage-types-lwt" {>="2.6.0" & < "3.0.0"}
+  "mirage-types-lwt" {>= "2.6.0" & < "3.0.0"}
 ]
+synopsis: "A library to write Datakit servers"
+description: """
+The library exposes a VFS interface, that servers can use to write
+introspection libraries -- for instance to expose runtime parameters
+over 9p. The library does not depend on Irmin so is relatively
+lightweight to embed in any application."""
+url {
+  src:
+    "https://github.com/docker/datakit/releases/download/0.7.0/datakit-0.7.0.tbz"
+  checksum: "md5=0576d33105586cf656d73d431ba4045f"
+}

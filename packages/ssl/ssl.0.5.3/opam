@@ -1,22 +1,31 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christopher Zimmermann <christopher@gmerlin.de>"
-author: "Samuel Mimram <samuel.mimram@ens-lyon.org>"
 homepage: "https://github.com/savonet/ocaml-ssl"
-dev-repo: "https://github.com/savonet/ocaml-ssl.git"
+dev-repo: "git+https://github.com/savonet/ocaml-ssl.git"
 bug-reports: "https://github.com/savonet/ocaml-ssl/issues"
 
 build: [
-  ["./configure" "--prefix" prefix] { os != "darwin" }
-  ["sh" "-exc"
-   "./configure --prefix %{prefix}% CPPFLAGS=\"$CPPFLAGS -I/opt/local/include -I/usr/local/opt/openssl/include\""
-  ] { os = "darwin" }
+  ["./configure" "--prefix" prefix] {os != "macos"}
+  [
+    "sh"
+    "-exc"
+    "./configure --prefix %{prefix}% CPPFLAGS=\"$CPPFLAGS -I/opt/local/include -I/usr/local/opt/openssl/include\""
+  ] {os = "macos"}
   [make]
 ]
 install: [[make "install"]]
 remove: [["ocamlfind" "remove" name]]
 depends: [
+  "ocaml" {< "4.06.0"}
   "ocamlfind" {build}
   "conf-which" {build}
   "conf-openssl"
 ]
-available: [ ocaml-version < "4.06.0" ]
+synopsis: "Bindings for OpenSSL"
+authors: "Samuel Mimram <samuel.mimram@ens-lyon.org>"
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/savonet/ocaml-ssl/releases/download/0.5.3/ocaml-ssl-0.5.3.tar.gz"
+  checksum: "md5=9fd48066d1cd4db52b40e2f59a7d4d83"
+}

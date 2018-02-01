@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Markus Mottl <markus.mottl@gmail.com>"
 authors: [
   "Markus Mottl <markus.mottl@gmail.com>"
@@ -7,7 +7,7 @@ authors: [
 license: "Expat"
 homepage: "http://mmottl.github.io/sqlite3-ocaml"
 doc: "https://mmottl.github.io/sqlite3-ocaml/api"
-dev-repo: "https://github.com/mmottl/sqlite3-ocaml.git"
+dev-repo: "git+https://github.com/mmottl/sqlite3-ocaml.git"
 bug-reports: "https://github.com/mmottl/sqlite3-ocaml/issues"
 tags: [ "clib:sqlite3" "clib:pthread"  ]
 
@@ -17,25 +17,33 @@ build: [
 ]
 
 depends: [
+  "ocaml" {>= "4.04"}
   "conf-pkg-config" {build}
   "base" {build}
   "stdio" {build}
   "configurator" {build}
   "jbuilder" {build & >= "1.0+beta10"}
 ]
-
 depexts: [
-  [["debian"] ["libsqlite3-dev"]]
-  [["freebsd"] ["database/sqlite3"]]
-  [["openbsd"] ["database/sqlite3"]]
-  [["ubuntu"] ["libsqlite3-dev"]]
-  [["centos"] ["sqlite-devel"]]
-  [["rhel"] ["sqlite-devel"]]
-  [["fedora"] ["sqlite-devel"]]
-  [["alpine"] ["sqlite-dev"]]
-  [["opensuse"] ["sqlite3-devel"]]
-  [["osx" "homebrew"] ["sqlite3"]]
-  [["osx" "macports"] ["sqlite3"]]
+  ["libsqlite3-dev"] {os-distribution = "debian"}
+  ["database/sqlite3"] {os = "freebsd"}
+  ["database/sqlite3"] {os = "openbsd"}
+  ["libsqlite3-dev"] {os-distribution = "ubuntu"}
+  ["sqlite-devel"] {os-distribution = "centos"}
+  ["sqlite-devel"] {os-distribution = "rhel"}
+  ["sqlite-devel"] {os-distribution = "fedora"}
+  ["sqlite-dev"] {os-distribution = "alpine"}
+  ["sqlite3-devel"] {os-distribution = "opensuse"}
+  ["sqlite3"] {os = "macos" & os-distribution = "homebrew"}
+  ["sqlite3"] {os = "macos" & os-distribution = "macports"}
 ]
-
-available: [ ocaml-version >= "4.04" ]
+synopsis: "sqlite3-ocaml - SQLite3 bindings for OCaml"
+description: """
+sqlite3-ocaml is an OCaml library with bindings to the SQLite3 client API.
+Sqlite3 is a self-contained, serverless, zero-configuration, transactional SQL
+database engine with outstanding performance for many use cases."""
+url {
+  src:
+    "https://github.com/mmottl/sqlite3-ocaml/releases/download/4.3.0/sqlite3-4.3.0.tbz"
+  checksum: "md5=b4509bd65c6c8b82e26e781ec61dc38e"
+}

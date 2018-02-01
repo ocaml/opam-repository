@@ -1,5 +1,5 @@
 version: "1.3.0"
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: [
   "Anton Bachin <antonbachin@yahoo.com>"
   "Leonid Rozenberg <leonidr@gmail.com>"
@@ -12,17 +12,14 @@ authors: [
 license: "MPL2"
 homepage: "https://github.com/aantron/bisect_ppx"
 bug-reports: "https://github.com/aantron/bisect_ppx/issues"
-dev-repo: "https://github.com/aantron/bisect_ppx.git"
-
+dev-repo: "git+https://github.com/aantron/bisect_ppx.git"
 depends: [
+  "ocaml" {>= "4.02.0" & < "4.06.0"}
   "base-unix"
   "jbuilder" {build & >= "1.0+beta10"}
-  # This will be removed when bisect_ppx-ocamlbuild is fully factored
-  # out. It is not a build dependency because Ocamlbuild must be present
-  # each time the plugin is used, even after it is built and installed.
   "ocamlbuild"
   "ocaml-migrate-parsetree" {>= "1.0.3"}
-  "ounit" {test}
+  "ounit" {with-test}
   "ppx_tools_versioned"
 ]
 conflicts: [
@@ -30,8 +27,6 @@ conflicts: [
 ]
 # Note that Bisect_ppx effectively requires 4.02.3, because Jbuilder requires
 # it. 4.02.0 is the natural constraint of Bisect_ppx.
-available: [ocaml-version >= "4.02.0" & ocaml-version < "4.06.0"]
-
 messages: [
   "For the Ocamlbuild plugin, please install package bisect_ppx-ocamlbuild"
   {ocamlbuild:installed & !bisect_ppx-ocamlbuild:installed}
@@ -43,7 +38,28 @@ post-messages: [
 
 build: [
   ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name] {with-test}
 ]
-build-test: [
-  ["jbuilder" "runtest" "-p" name]
-]
+synopsis: "Code coverage for OCaml"
+description: """
+Bisect_ppx helps you test thoroughly. It is a small preprocessor that inserts
+instrumentation at places in your code, such as if-then-else and match
+expressions. After you run tests, Bisect_ppx gives a nice HTML report showing
+which places were visited and which were missed.
+
+Usage is simple - add package bisect_ppx when building tests, then run the
+report tool on the generated visitation files.
+
+This is an advanced fork of the original Bisect coverage tool. It has many
+improvements and updates.
+
+- Much more thorough code instrumentation, so you can find more gaps in your
+  testing.
+- Fast operation by default.
+- More legible and appealing HTML reports.
+- Various bugfixes.
+- No camlp4 dependency."""
+url {
+  src: "https://github.com/aantron/bisect_ppx/archive/1.3.0.tar.gz"
+  checksum: "md5=d247c2203a0d141078e40fadcfcf8258"
+}

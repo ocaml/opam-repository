@@ -1,25 +1,35 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "win-eventlog"
 maintainer: "dave@recoil.org"
 version: "0.1"
 authors: [ "David Scott" ]
 license: "ISC"
 homepage: "https://github.com/djs55/ocaml-win-eventlog"
-dev-repo: "https://github.com/djs55/ocaml-win-eventlog.git"
+dev-repo: "git+https://github.com/djs55/ocaml-win-eventlog.git"
 bug-reports: "https://github.com/djs55/ocaml-win-eventlog/issues"
 
 build: [
   [make "PREFIX=%{prefix}%"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-
 install: [make "PREFIX=%{prefix}%" "install"]
 
 remove: [["ocamlfind" "remove" "win-eventlog"]]
 
 depends: [
+  "ocaml"
   "result"
   "logs"
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
-build-doc: ["ocaml" "setup.ml" "-doc"]
+synopsis: "Write to the Windows event log"
+description: """
+This library contains functions to write low-level events to the Windows
+event log, and to create a Log reporter which writes log messages to
+the event log."""
+flags: light-uninstall
+url {
+  src: "https://github.com/djs55/ocaml-win-eventlog/archive/v0.1.tar.gz"
+  checksum: "md5=d3fb7d584327a5abacfd86eeea24c177"
+}
