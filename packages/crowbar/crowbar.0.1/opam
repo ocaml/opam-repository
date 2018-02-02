@@ -1,0 +1,53 @@
+opam-version: "2.0"
+maintainer: "stephen.dolan@cl.cam.ac.uk"
+authors: ["Stephen Dolan"]
+homepage: "https://github.com/stedolan/crowbar"
+bug-reports: "https://github.com/stedolan/crowbar/issues"
+dev-repo: "git+https://github.com/stedolan/crowbar.git"
+license: "MIT"
+build: [
+  [
+    "jbuilder"
+    "build"
+    "--only-packages"
+    name
+    "--root"
+    "."
+    "-j"
+    jobs
+    "@install"
+  ]
+  [
+    "jbuilder"
+    "build"
+    "--only-packages"
+    name
+    "--root"
+    "."
+    "-j"
+    jobs
+    "@runtest"
+  ] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.03"}
+  "jbuilder" {build}
+  "ocplib-endian"
+  "cmdliner"
+  "afl-persistent" {>= "1.1"}
+  "calendar" {with-test}
+  "xmldiff" {with-test}
+  "fpath" {with-test}
+  "uucp" {with-test}
+  "uunf" {with-test}
+  "uutf" {with-test}
+]
+synopsis: "write tests, let a fuzzer find failing cases"
+description: """
+Crowbar is a library for testing code, combining QuickCheck-style
+property-based testing and the magical bug-finding powers of
+[afl-fuzz](http://lcamtuf.coredump.cx/afl/)."""
+url {
+  src: "https://github.com/stedolan/crowbar/archive/v0.1.tar.gz"
+  checksum: "md5=cb7379d5182b56a18aba11aa40ed279a"
+}
