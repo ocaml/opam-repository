@@ -1,23 +1,70 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "anil@recoil.org"
 authors:      ["Anil Madhavapeddy" "Thomas Gazagnaire"]
 homepage:     "https://github.com/mirage/ocaml-crunch"
 bug-reports:  "https://github.com/mirage/ocaml-crunch/issues"
 license:      "ISC"
-dev-repo:     "https://github.com/mirage/ocaml-crunch.git"
+dev-repo: "git+https://github.com/mirage/ocaml-crunch.git"
 tags:         ["org:mirage" "org:xapi-project"]
-available:     [ ocaml-version >= "4.03.0" ]
-
 depends: [
+  "ocaml" {>= "4.03.0"}
   "cmdliner"
   "jbuilder" {build & >= "1.0+beta10"}
-  "cstruct" {test}
-  "lwt" {test}
-  "mirage-kv-lwt" {test & >= "1.0.0"}
-  "io-page-unix" {test}
+  "cstruct" {with-test}
+  "lwt" {with-test}
+  "mirage-kv-lwt" {with-test & >= "1.0.0"}
+  "io-page-unix" {with-test}
 ]
 build: [
   ["jbuilder" "subst" "-n" name] {pinned}
   ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
+synopsis: "Convert a filesystem into a static OCaml module"
+description: """
+`ocaml-crunch` takes a directory of files and compiles them into a standalone
+OCaml module which serves the contents directly from memory.  This can be
+convenient for libraries that need a few embedded files (such as a web server)
+and do not want to deal with all the trouble of file configuration.
+
+Run `man ocaml-crunch` or `ocaml-crunch --help` for more information:
+
+```
+NAME
+       ocaml-crunch - Convert a directory structure into a standalone OCaml
+       module that can serve the file contents without requiring an external
+       filesystem to be present.
+
+SYNOPSIS
+       ocaml-crunch [OPTION]... DIRECTORIES...
+
+ARGUMENTS
+       DIRECTORIES
+           Directories to recursively walk and crunch.
+
+OPTIONS
+       -e VALID EXTENSION, --ext=VALID EXTENSION
+           If specified, only these extensions will be included in the
+           crunched output. If not specified, then all files will be crunched
+           into the output module.
+
+       --help[=FMT] (default=pager)
+           Show this help in format FMT (pager, plain or groff).
+
+       -m MODE, --mode=MODE (absent=lwt)
+           Interface access mode: 'lwt' or 'plain'. 'lwt' is the default.
+
+       -o OUTPUT, --output=OUTPUT
+           Output file for the OCaml module.
+
+       --version
+           Show version information.
+
+BUGS
+       Email bug reports to <mirage-devel@lists.xenproject.org>.
+```"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-crunch/releases/download/v2.1.0/crunch-2.1.0.tbz"
+  checksum: "md5=c93bb28306eb29faa3c36796e1c661eb"
+}

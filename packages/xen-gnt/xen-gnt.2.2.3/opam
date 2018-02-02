@@ -1,14 +1,12 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "john.else@citrix.com"
 authors: ["Anil Madhavapeddy" "John Else" "Thomas Leonard" "Andrew Cooper" "David Scott"]
 homepage:      "https://github.com/mirage/ocaml-gnt"
 bug-reports:   "https://github.com/mirage/ocaml-gnt/issues"
-dev-repo:      "https://github.com/mirage/ocaml-gnt.git"
+dev-repo: "git+https://github.com/mirage/ocaml-gnt.git"
 build: [
   [make "TESTS_FLAG=--disable-tests"]
-]
-build-test: [
-  [make "TESTS_FLAG=--enable-tests"]
+  [make "TESTS_FLAG=--enable-tests"] {with-test}
 ]
 install: [
   [make "PREFIX=%{prefix}%" "install"]
@@ -17,17 +15,26 @@ remove: [
   [make "PREFIX=%{prefix}%" "uninstall"]
 ]
 depends: [
-  "ocamlfind"      {build}
-  "ocamlbuild"     {build}
-  "ounit"          {test}
+  "ocaml" {>= "4.00.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "ounit" {with-test}
   "cstruct" {>= "1.0.1"}
   "io-page" {< "1.3.0"}
-  "lwt" {>="2.4.3"}
+  "lwt" {>= "2.4.3"}
   "cmdliner"
-  "mirage-profile" {>="0.3"}
+  "mirage-profile" {>= "0.3"}
 ]
 depexts: [
-  [["debian"] ["libxen-dev"]]
-  [["ubuntu"] ["libxen-dev"]]
+  ["libxen-dev"] {os-distribution = "debian"}
+  ["libxen-dev"] {os-distribution = "ubuntu"}
 ]
-available: [ ocaml-version >= "4.00.0" ]
+synopsis: "Xen grant table bindings"
+description: """
+These allow your program (running either in userspace or in kernelspace
+via MirageOS) to read and write memory exported by other VMs on the same host.
+These APIs are the foundation of all inter-VM communication on Xen."""
+url {
+  src: "https://github.com/mirage/ocaml-gnt/archive/v2.2.3.tar.gz"
+  checksum: "md5=eb0252c3b57c56b1ff813c6eaf358f38"
+}

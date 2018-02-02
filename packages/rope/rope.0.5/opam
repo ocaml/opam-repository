@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe.Troestler@umons.ac.be"
 authors: ["Christophe Troestler"]
 homepage: "http://rope.forge.ocamlcore.org/"
@@ -7,14 +7,27 @@ tags: ["datastructure"]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "rope"]]
 depends: [
+  "ocaml" {< "4.06"}
   "ocamlfind"
   "ocamlbuild" {build}
   "oasis" {build}
 ]
 depopts: ["benchmark"]
 install: ["ocaml" "setup.ml" "-install"]
-available: [ ocaml-version < "4.06" ]
+synopsis: "Ropes (\"heavyweight strings\")"
+description: """
+Ropes ("heavyweight strings") are a scalable string implementation:
+they are designed for efficient operation that involve the string as a
+whole. Operations such as concatenation, and substring take time that
+is nearly independent of the length of the string. Unlike strings,
+ropes are a reasonable representation for very long strings such as
+edit buffers or mail messages."""
+flags: light-uninstall
+url {
+  src: "https://github.com/Chris00/ocaml-rope/archive/0.5.tar.gz"
+  checksum: "md5=4c4539d3324b8df494e0889f2c0f96d0"
+}

@@ -1,19 +1,29 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "ygrek@autistici.org"
 homepage: "http://gperftools.forge.ocamlcore.org"
 doc: ["http://gperftools.forge.ocamlcore.org/api/index.html"]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "gperftools"]]
 depends: [
+  "ocaml"
   "ocamlfind"
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["libgoogle-perftools-dev"]]
-  [["ubuntu"] ["libgoogle-perftools-dev"]]
+  ["libgoogle-perftools-dev"] {os-distribution = "debian"}
+  ["libgoogle-perftools-dev"] {os-distribution = "ubuntu"}
 ]
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "Bindings to gperftools"
+description:
+  "gperftools library provides fast, multi-threaded malloc() and some nifty performance analysis tools"
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1132/ocaml-gperftools-0.2.tar.gz"
+  checksum: "md5=e75a8aea7407037bcd26597d49e995a1"
+}

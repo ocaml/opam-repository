@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "simon.cruanes@inria.fr"
 authors: ["Simon Cruanes" "Jasmin Blanchette"]
 homepage: "https://github.com/nunchaku-inria/nunchaku/"
 bug-reports: "https://github.com/nunchaku-inria/nunchaku/issues"
-dev-repo: "https://github.com/nunchaku-inria/nunchaku.git"
+dev-repo: "git+https://github.com/nunchaku-inria/nunchaku.git"
 build: [
   [
     "./configure"
@@ -14,12 +14,13 @@ build: [
     "--enable-docs"
   ]
   [make "build"]
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
 ]
 install: [make "install"]
-build-test: [make "test"]
-build-doc: [make "doc"]
 remove: ["ocamlfind" "remove" "nunchaku"]
 depends: [
+  "ocaml" {>= "4.01.0" & < "4.04.0"}
   "ocamlfind" {build}
   "containers" {>= "0.16" & < "1.0"}
   "menhir" {build}
@@ -30,6 +31,16 @@ depends: [
   "num"
 ]
 depopts: [
-  "qtest" {test}
+  "qtest" {with-test}
 ]
-available: [ocaml-version >= "4.01.0" & ocaml-version < "4.04.0" ]
+synopsis: "A counter-example finder for higher-order logic."
+description: """
+Nunchaku is a counter-example finder for higher-order logic, designed to be
+used from various proof assistants, and a spiritual successor to Nitpick. It
+relies encodings and external solvers (CVC4, kodkod, paradox) to find
+models, thanks to its modular architecture."""
+flags: light-uninstall
+url {
+  src: "https://github.com/nunchaku-inria/nunchaku/archive/0.3.tar.gz"
+  checksum: "md5=9303c94ba09772b272e0263fd0e7f27b"
+}

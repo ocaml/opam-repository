@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
 authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
            "Pierre Hauweele <pierre@hauweele.net>"
@@ -8,28 +8,38 @@ authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
            "Xavier Deschuyteneer <xavier.deschuyteneer@gmail.com>" ]
 license: "LGPL-3.0 with OCaml linking exception"
 homepage: "http://forge.ocamlcore.org/projects/archimedes/"
-dev-repo: "http://forge.ocamlcore.org/anonscm/git/archimedes/archimedes.git"
+dev-repo:
+  "git+http://forge.ocamlcore.org/anonscm/git/archimedes/archimedes.git"
 bug-reports: "https://forge.ocamlcore.org/tracker/?group_id=105"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
     "--%{graphics:enable}%-graphics"
-    "--enable-cairo2" { "%{cairo2:installed}%" }
+    "--enable-cairo2" {"%{cairo2:installed}%"}
   ]
   ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{graphics:enable}%-graphics"
+    "--enable-cairo2" {"%{cairo2:installed}%"}
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "archimedes"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"
-    "--%{graphics:enable}%-graphics"
-    "--enable-cairo2" { "%{cairo2:installed}%" }]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {< "4.03"}
   "base-bigarray"
   "ocamlfind" {build}
   "camlp4" {build}
@@ -39,4 +49,15 @@ depopts: [
   "cairo2"
   "graphics"
 ]
-available: [ocaml-version < "4.03"]
+synopsis: "Extensible 2D plotting library."
+description: """
+Archimedes is a high quality, platform-independent, extensible 2D
+plotting library. It provides dynamically loaded backends such as
+Graphics and Cairo."""
+flags: light-uninstall
+extra-files: ["archimedes.install" "md5=77a877e7628a37723cfe5460c4090831"]
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1270/archimedes-0.4.17.tar.gz"
+  checksum: "md5=14b6cf3d52326af03952c2b5038d1d29"
+}

@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "dave@recoil.org"
 authors:      [
   "Vincent Hanquez"
@@ -9,22 +9,26 @@ authors:      [
 ]
 homepage:     "https://github.com/mirage/ocaml-xenstore"
 bug-reports:  "https://github.com/mirage/ocaml-xenstore/issues"
-dev-repo:     "https://github.com/mirage/ocaml-xenstore.git"
+dev-repo: "git+https://github.com/mirage/ocaml-xenstore.git"
 doc:          "https://mirage.github.io/ocaml-xenstore"
 
 build: [
   ["jbuilder" "subst" "-p" name "--name" name] {pinned}
   ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name] {with-test}
 ]
-
-build-test: ["jbuilder" "runtest" "-p" name]
-
 depends: [
-  "jbuilder"  {build & >="1.0+beta9"}
+  "ocaml" {>= "4.04.0"}
+  "jbuilder" {build & >= "1.0+beta9"}
   "cstruct" {>= "3.2.0"}
   "ppx_cstruct" {build}
   "ppx_tools" {build}
   "lwt"
-  "ounit" {test}
+  "ounit" {with-test}
 ]
-available: [ ocaml-version >= "4.04.0" ]
+synopsis: "Xenstore protocol clients and server"
+url {
+  src:
+    "https://github.com/mirage/ocaml-xenstore/releases/download/2.0.0/xenstore-2.0.0.tbz"
+  checksum: "md5=c1b3234c5468d37253fab2fe23a719b5"
+}
