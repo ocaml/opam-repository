@@ -1,0 +1,32 @@
+opam-version: "1.2"
+version: "0.7.6"
+
+maintainer: "Anton Bachin <antonbachin@yahoo.com>"
+authors: "Anton Bachin <antonbachin@yahoo.com>"
+homepage: "https://github.com/aantron/markup.ml"
+doc: "http://aantron.github.io/markup.ml"
+bug-reports: "https://github.com/aantron/markup.ml/issues"
+dev-repo: "https://github.com/aantron/markup.ml.git"
+license: "BSD"
+
+depends: [
+  "jbuilder" {build & >= "1.0+beta17"}
+  "ounit" {test}
+  "uchar"
+  "uutf" {>= "1.0.0"}
+]
+depopts: [
+  "lwt"
+]
+# Markup.ml implicitly requires OCaml 4.02.3, as this is a contraint of
+# Jbuilder. Without that, Markup.ml implicitly requires OCaml 4.01.0, as this is
+# a constraint of Uutf. Without *that*, Markup.ml works on OCaml 3.11 or
+# earlier.
+
+build: [
+  ["ocaml" "src/configure.ml"]
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+build-test: [
+  ["jbuilder" "runtest" "-p" name]
+]
