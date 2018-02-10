@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "andreashauptmann@t-online.de"
+authors: [ "andreashauptmann@t-online.de" ]
+license: "LGPL-2.1 with OCaml linking exception"
+homepage: "https://github.com/fdopen/uwt"
+dev-repo: "git+https://github.com/fdopen/uwt.git"
+bug-reports: "https://github.com/fdopen/uwt/issues"
+tags: ["clib:libuv"]
+build: [
+  ["omake" "-j%{jobs}%" "lib" "BUILD_LIBUV=true" "UWT_BUILD_JOBS=%{jobs}%"]
+  ["omake" "test"] {with-test}
+]
+install: [
+  ["omake" "opam-install" "PREFIX=%{prefix}%"]
+]
+remove: [
+  ["ocamlfind" "remove" "uwt"]
+  ["rm" "-rf" "%{prefix}%/doc/uwt"]
+]
+depends: [
+  "ocaml" {>= "4.02.1"}
+  "base-unix"
+  "base-bigarray"
+  "base-threads"
+  "base-bytes"
+  "conf-pkg-config" {build}
+  "ocamlfind" {build}
+  "cppo" {build & >= "1.3"}
+  "omake" {build}
+  "result"
+  "lwt" {>= "2.6.0" & < "4.0"}
+  "ounit" {with-test & >= "2.0"}
+  "ppx_deriving" {with-test & >= "2.0"}
+  "ppx_import" {with-test & >= "1.0"}
+]
+synopsis: "libuv bindings"
+description: """
+uwt provides OCaml bindings for libuv.
+The main loop of libuv is integrated into lwt,
+the light-weight cooperative threads library."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/fdopen/uwt/releases/download/0.2.4/uwt-0.2.4.tar.gz"
+  checksum: "md5=26b99812f4a40a3d17c2633dcfd9b609"
+}
