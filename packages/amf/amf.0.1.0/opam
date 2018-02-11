@@ -1,0 +1,40 @@
+opam-version: "1.2"
+maintainer: "Brian Caine <brian.d.caine@gmail.com>"
+authors: "Brian Caine <brian.d.caine@gmail.com>"
+dev-repo: "https://github.com/briancaine/ocaml-amf.git"
+homepage: "https://github.com/briancaine/ocaml-amf"
+bug-reports: "https://github.com/briancaine/ocaml-amf/issues"
+license: "LGPL with OCaml linking exception"
+build: [
+  ["oasis" "setup"]
+  ["./configure" "--prefix=%{prefix}%"]
+  [make]
+]
+build-test: [
+  ["oasis" "setup"]
+  ["./configure" "--enable-tests"]
+  [make "test"]
+]
+build-doc: [
+  ["oasis" "setup"]
+  [make "doc"]
+]
+install: [
+  ["oasis" "setup"]
+  [make "install"]
+]
+remove: ["ocamlfind" "remove" "amf"]
+depends: [
+  ("oasis" {build} | "oasis-mirage" {build})
+
+  "ppx_deriving" {build}
+  "ppx_sexp_conv" {build}
+  "base-threads"
+  ("core" {>= "v0.9.1"})
+  "stdint"
+  "sexplib"
+  "bisect_ppx" {build}
+  "bisect_ppx-ocamlbuild" {build}
+  "ounit" {build}
+]
+available: [ ocaml-version >= "4.01" ]
