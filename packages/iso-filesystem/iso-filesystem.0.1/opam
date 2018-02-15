@@ -1,24 +1,22 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "jonathan.ludlam@citrix.com"
 homepage: "https://github.com/jonludlam/ocaml-iso-filesystem"
 bug-reports: "https://github.com/jonludlam/ocaml-iso-filesystem/issues"
 dev-repo: "git://github.com/jonludlam/ocaml-iso-filesystem"
 authors: "Jon Ludlam"
 license: "ISC"
-available: [ocaml-version >= "4.01.0"]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["lib_test/mkiso.sh"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["lib_test/mkiso.sh"]
-  ["ocaml" "setup.ml" "-test"]
-]
 remove: ["ocamlfind" "remove" "iso-filesystem"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "cstruct" {>= "1.0.1" & < "2.0.0"}
   "camlp4"
   "io-page" {build}
@@ -31,3 +29,12 @@ depends: [
   "stringext"
   "ocamlbuild" {build}
 ]
+synopsis: "ISO9660 filesystem library"
+description: """
+A MirageOS compatible library for providing read-only access to
+ISO9660 filsystems."""
+flags: light-uninstall
+url {
+  src: "https://github.com/jonludlam/ocaml-iso9660/archive/v0.1.tar.gz"
+  checksum: "md5=aa3afc0f7f858f352c07425d4b779dcc"
+}

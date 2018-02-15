@@ -8,9 +8,17 @@ build: [
   ["sh" "-exc" "%{build}%/centos_install.sh"] {os = "centos"}
   ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os = "alpine"}
   ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os = "debian"}
-  ["sh" "-exc" "cc $CFLAGS -I/usr/include/openblas test.c -lopenblas"] {os = "fedora"}
-  ["sh" "-exc" "cc $CFLAGS -I/usr/local/opt/openblas/include test.c -L/usr/local/opt/openblas/lib -lopenblas"] {os = "darwin"}
-  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os != "darwin" & os != "debian" & os != "centos" & os != "fedora" & os != "alpine"}
+  ["sh" "-exc" "cc $CFLAGS -I/usr/include/openblas test.c -lopenblas"]
+    {os = "fedora"}
+
+  [
+    "sh"
+    "-exc"
+    "cc $CFLAGS -I/usr/local/opt/openblas/include test.c -L/usr/local/opt/openblas/lib -lopenblas"
+  ] {os = "macos"}
+  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"]
+    {os != "macos" & os != "debian" & os != "centos" & os != "fedora" &
+     os != "alpine"}
 ]
 depexts: [
   ["openblas-devel"] {os-distribution = "fedora"}

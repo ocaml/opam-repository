@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis:
+  "OCaml 4.02.3 compiled in 32-bit mode for 64-bit Linux and OS X hosts"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.02.3" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-cc"
+    "gcc -m32"
+    "-as"
+    "as --32"
+    "-aspp"
+    "gcc -m32 -c"
+    "-host"
+    "i386-linux"
+    "-partialld"
+    "ld -r -melf_i386"
+  ] {os = "linux"}
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-cc"
+    "gcc -Wl,-read_only_relocs,suppress -arch i386 -m32"
+    "-as"
+    "as -arch i386"
+    "-aspp"
+    "gcc -arch i386 -m32 -c"
+    "-host"
+    "i386-apple-darwin13.2.0"
+  ] {os = "macos"}
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.3.tar.gz"
+  checksum: "md5=ef1a324608c97031cbd92a442d685ab7"
+}

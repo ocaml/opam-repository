@@ -1,24 +1,23 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 authors: [ "Edgar Aroutiounian <edgar.factorial@gmail.com>" ]
 license: "GPL-3.0"
 homepage: "http://hyegar.com"
 bug-reports: "https://github.com/fxfactorial/podge/issues"
-dev-repo: "http://github.com/fxfactorial/podge.git"
+dev-repo: "git+http://github.com/fxfactorial/podge.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: ["ocamlfind" "remove" "podge"]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml" {>= "4.02.2"}
   "base-unix"
   "cohttp" {>= "0.9.7"}
   "oasis" {build & >= "0.4"}
@@ -27,4 +26,14 @@ depends: [
   "yojson"
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.02.2" ]
+synopsis: "Shortcuts and helpers for common tasks in OCaml ecosystem"
+description: """
+If you're doing any modern OCaml then you're doubtlessly annoyed by
+the state of libraries and committing to one of the big ones can be
+restricting. Podge is a single module containing specialized modules
+for their respectives usages for seemingly common tasks."""
+flags: light-uninstall
+url {
+  src: "https://github.com/fxfactorial/podge/archive/v0.0.2.tar.gz"
+  checksum: "md5=29cbcc1d3f025b840a9ef3254b6d8ff2"
+}

@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "andrenth@gmail.com"
 authors: ["Andre Nathan"]
 homepage: "https://github.com/andrenth/ocaml-milter"
@@ -6,16 +6,23 @@ license: "BSD3"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "milter"]]
 depends: [
+  "ocaml" {< "4.04.0"}
   "ocamlfind"
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["libmilter-dev"]]
-  [["ubuntu"] ["libmilter-dev"]]
+  ["libmilter-dev"] {os-distribution = "debian"}
+  ["libmilter-dev"] {os-distribution = "ubuntu"}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-available: [ocaml-version < "4.04.0"]
+synopsis: "OCaml libmilter bindings"
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1474/ocaml-milter-1.0.1.tar.gz"
+  checksum: "md5=9416907d3b6c05dd3f85e7bff70fa8f4"
+}

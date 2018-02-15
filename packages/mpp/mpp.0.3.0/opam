@@ -1,24 +1,39 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Philippe Wang <philippe.wang@gmail.com>"
 authors: [ "Philippe Wang <philippe.wang@gmail.com>" ]
 license: "ISC"
 homepage: "https://github.com/ocaml/MPP-language-blender"
-dev-repo: "https://github.com/ocaml/MPP-language-blender.git"
+dev-repo: "git+https://github.com/ocaml/MPP-language-blender.git"
 bug-reports: "https://github.com/ocaml/MPP-language-blender/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocaml" "%{etc}%/mpp/_oasis_remove_.ml" "%{etc}%/mpp"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
+synopsis: "A preprocessor meant to blend languages."
+description: """
+MPP is a meta processor that is meant to bring any programming
+language to the preprocessing level. You can easily use OCaml as a
+preprocessor language for any text-based document. If you want to use
+another language, you just need to tell MPP how to use it. MPP also
+works as a simple preprocessor, as it provides its own (tiny)
+language."""
+extra-files: [
+  ["mpp.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src: "http://pw374.github.io/distrib/mpp/mpp-0.3.0.tar.gz"
+  checksum: "md5=9cb4676472e19780149dde5b243b5b65"
+}

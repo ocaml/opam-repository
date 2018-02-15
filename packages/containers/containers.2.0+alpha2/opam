@@ -1,30 +1,32 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "simon.cruanes.2007@m4x.org"
 authors: "Simon Cruanes"
 homepage: "https://github.com/c-cube/ocaml-containers/"
 bug-reports: "https://github.com/c-cube/ocaml-containers/issues/"
 doc: "https://c-cube.github.io/ocaml-containers"
 tags: ["stdlib" "containers" "iterators" "list" "heap" "queue"]
-dev-repo: "https://github.com/c-cube/ocaml-containers.git"
-build: ["jbuilder" "build" "-p" name "-j" jobs]
-build-test: ["jbuilder" "runtest"]
-build-doc: ["jbuilder" "build" "@doc"]
+dev-repo: "git+https://github.com/c-cube/ocaml-containers.git"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest"] {with-test}
+  ["jbuilder" "build" "@doc"] {with-doc}
+]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "jbuilder" {build}
   "result"
 ]
 depopts: [
   "base-unix"
   "base-threads"
-  "qtest" {test}
-  "qcheck" {test}
-  "oUnit" {test}
-  "odoc" {doc}
+  "qtest" {with-test}
+  "qcheck" {with-test}
+  "oUnit" {with-test}
+  "odoc" {with-doc}
 ]
 conflicts: [
   "sequence" {< "0.5"}
 ]
-available: [ocaml-version >= "4.02.0"]
 post-messages:
   "
 Major release with some breaking changes in the API.
@@ -36,3 +38,20 @@ These changes belong to 3 categories:
 
 changelog: https://github.com/c-cube/ocaml-containers/blob/2.0+alpha2/CHANGELOG.adoc
   "
+synopsis:
+  "A modular, clean and powerful extension of the OCaml standard library."
+description: """
+Containers is an extension of OCaml's standard library (under BSD license)
+focused on data structures, combinators and iterators, without dependencies on
+unix, str or num. Every module is independent and is prefixed with 'CC' in the
+global namespace. Some modules extend the stdlib (e.g. CCList provides safe
+map/fold_right/append, and additional functions on lists).
+Alternatively, `open Containers` will bring enhanced versions of the standard
+modules into scope.
+
+It also features sub-libraries for dealing with threads, S-expressions,
+and the intricacies of unix."""
+url {
+  src: "https://github.com/c-cube/ocaml-containers/archive/2.0+alpha2.tar.gz"
+  checksum: "md5=f289c9387a3764a5277375c579c25a89"
+}

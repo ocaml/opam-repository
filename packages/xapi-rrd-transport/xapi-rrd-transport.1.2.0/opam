@@ -1,23 +1,22 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "xen-api@lists.xen.org"
 authors: [ "Jon Ludlam" ]
 homepage: "https://github.com/xapi-project/rrd-transport"
 bug-reports: "https://github.com/xapi-project/rrd-transport/issues"
-dev-repo: "https://github.com/xapi-project/rrd-transport.git"
+dev-repo: "git+https://github.com/xapi-project/rrd-transport.git"
 tags: [
   "org:xapi-project"
 ]
 build: [
   [make]
-]
-build-test: [
-  [make "test"]
+  [make "test"] {with-test}
 ]
 install: [
   [make "PREFIX=%{prefix}%" "install"]
 ]
 remove: [make "PREFIX=%{prefix}%" "uninstall"]
 depends: [
+  "ocaml"
   "cmdliner"
   "cstruct" {< "3.0.0"}
   "crc"
@@ -26,3 +25,14 @@ depends: [
   "xen-gnt-unix"
 ]
 patches: [ "use-xen-gnt-unix.patch" ]
+synopsis: "Shared-memory protocols for exposing performance counters"
+description: """
+VMs running on a Xen host can use this library to expose performance
+counters which can be sampled by the xapi performance monitoring daemon."""
+extra-files: [
+  "use-xen-gnt-unix.patch" "md5=72eee13be2709148b98a634700321b4b"
+]
+url {
+  src: "https://github.com/xapi-project/rrd-transport/archive/v1.2.0.tar.gz"
+  checksum: "md5=11baeb615cbe93b8449ae5889b32e1a6"
+}

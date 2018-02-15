@@ -1,26 +1,25 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "boomerang"
 version: "1.1.0"
 maintainer: "Solomon Aduol Maina <smaina@seas.upenn.edu>"
 authors: [ "https://github.com/SolomonAduolMaina/boomerang/graphs/contributors" ]
 license: "LGPL"
 homepage: "http://www.seas.upenn.edu/~harmony"
-dev-repo: "https://github.com/SolomonAduolMaina/boomerang.git"
+dev-repo: "git+https://github.com/SolomonAduolMaina/boomerang.git"
 bug-reports: "https://github.com/SolomonAduolMaina/boomerang"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocaml" "%{etc}%/boomerang/setup.ml" "-C" "%{etc}%/boomerang" "-uninstall"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "base-unix"
   "core"
   "ocamlbuild" {build}
@@ -28,4 +27,13 @@ depends: [
   "ppx_deriving"
   "ppx_hash"
 ]
-available: [ ocaml-version >= "4.02.0" ]
+synopsis: "The Boomerang Language"
+description: """
+Boomerang is a programming language for writing lenses—well-behaved
+bidirectional transformations—that operate on ad-hoc, textual data
+formats."""
+extra-files: ["boomerang.install" "md5=ecc97c692bb2f70fe50124a88d705fde"]
+url {
+  src: "https://github.com/SolomonAduolMaina/boomerang/archive/v1.1.0.tar.gz"
+  checksum: "md5=cda48f8df35913e9793cf9e8ff8e2750"
+}

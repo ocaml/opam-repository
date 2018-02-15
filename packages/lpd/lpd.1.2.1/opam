@@ -1,27 +1,39 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
 authors: [ "Christophe Troestler" ]
 license: "LGPL-3.0 with OCaml linking exception"
 homepage: "http://lpd.forge.ocamlcore.org/"
-dev-repo: "https://github.com/Chris00/lpd.git"
+dev-repo: "git+https://github.com/Chris00/lpd.git"
 bug-reports: "https://github.com/Chris00/lpd/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "lpd"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml"
   "base-threads" {build}
   "base-unix"
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
+synopsis:
+  "A Line Printer Daemon (LPD) server library written entirely in OCaml."
+description: """
+Lpd is a Line Printer Daemon compliant with RFC 1179 written entirely
+in OCaml. It allows to define your own actions for LPD events. An
+example of a spooler that prints jobs on win32 machines (through
+GSPRINT) is provided."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/Chris00/lpd/releases/download/1.2.1/lpd-1.2.1.tar.gz"
+  checksum: "md5=8df6d08d7420155869d416184fef8a10"
+}

@@ -1,0 +1,35 @@
+opam-version: "2.0"
+name: "TCSLib"
+version: "0.3"
+maintainer: "opam-devel@lists.ocaml.org"
+authors: [ "Oliver Friedmann"
+           "Martin Lange" ]
+license: "BSD-3-clause"
+homepage: "https://github.com/tcsprojects/tcslib"
+dev-repo: "git://github.com/tcsprojects/tcslib.git"
+bug-reports: "https://github.com/tcsprojects/tcslib/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "TCSLib"]
+]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  ("extlib" | "extlib-compat")
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "num"
+]
+synopsis: "A multi-purpose library for OCaml."
+description: "A multi-purpose library for OCaml."
+flags: light-uninstall
+url {
+  src: "https://github.com/tcsprojects/tcslib/archive/v0.3.tar.gz"
+  checksum: "md5=b55c4bb13f694fc149c38ee91738d937"
+}

@@ -1,27 +1,45 @@
-opam-version: "1.2"
+opam-version: "2.0"
 homepage:     "https://github.com/hannesm/ocaml-hkdf"
-dev-repo:     "https://github.com/hannesm/ocaml-hkdf.git"
+dev-repo: "git+https://github.com/hannesm/ocaml-hkdf.git"
 bug-reports:  "https://github.com/hannesm/ocaml-hkdf/issues"
 authors:      ["Hannes Mehnert <hannes@mehnert.org>"]
 maintainer:   ["Hannes Mehnert <hannes@mehnert.org>"]
 license:      "BSD2"
 
 build: [
-  ["ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                          "native-dynlink=%{ocaml-native-dynlink}%"
-                          "alcotest=false"]
-]
-build-test: [
-  ["ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                          "native-dynlink=%{ocaml-native-dynlink}%"
-                          "alcotest=true"]
-  ["sh" "-exc" "if test -f ./rfctests.native; then ./rfctests.native; else ./rfctests.byte; fi"]
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+    "alcotest=false"
+  ]
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+    "alcotest=true"
+  ] {with-test}
+  [
+    "sh"
+    "-exc"
+    "if test -f ./rfctests.native; then ./rfctests.native; else ./rfctests.byte; fi"
+  ] {with-test}
 ]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "cstruct" {>= "1.6.0"}
   "nocrypto" {>= "0.5.0"}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.01.0" ]
+synopsis:
+  "HMAC-based Extract-and-Expand Key Derivation Function (HKDF), RFC5869"
+description:
+  "An implementation of HKDF, including test cases from RFC 5869, in OCaml.  This is used in various protocols, including IKEv2, PANA, EAP-AKA."
+url {
+  src: "https://github.com/hannesm/ocaml-hkdf/archive/1.0.1.tar.gz"
+  checksum: "md5=7974bdf65c1e0897fd0485f34bcc80ec"
+}

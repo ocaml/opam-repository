@@ -1,24 +1,23 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 homepage: "https://github.com/fxfactorial/ocaml-radare2"
 bug-reports: "https://github.com/fxfactorial/ocaml-radare2/issues"
 license: "BSD-3-clause"
-dev-repo: "https://github.com/fxfactorial/ocaml-radare2.git"
+dev-repo: "git+https://github.com/fxfactorial/ocaml-radare2.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 remove: ["ocamlfind" "remove" "radare2"]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "base-unix"
   "oasis" {build & >= "0.4"}
   "ocamlbuild" {build}
@@ -26,11 +25,10 @@ depends: [
   ("yojson" {>= "1.3.2"} | "yojson-android" {>= "1.3.2"})
 ]
 depexts: [
-  [["debian"] ["radare2"]]
-  [["homebrew" "osx"] ["radare2"]]
-  [["ubuntu"] ["radare2"]]
+  ["radare2"] {os-distribution = "debian"}
+  ["radare2"] {os-distribution = "homebrew" & os = "macos"}
+  ["radare2"] {os-distribution = "ubuntu"}
 ]
-available: [ocaml-version >= "4.03.0"]
 messages: [
   "You need to have r2 (radare2) installed and in your path"
   "Use `opam depext radare2` to get it installed with your system package manager"
@@ -50,3 +48,20 @@ val result : Yojson.Basic.json =
   "
     {success}
 ]
+synopsis: "OCaml interface to r2"
+description: """
+Interact with radare2,
+See the mli for documentation, example usage in utop:
+
+#require "radare2";;
+let result = R2.with_command_j ~cmd:"/j chown" "/bin/ls";;
+val result : Yojson.Basic.json =
+`List 
+  [`Assoc
+    [("offset", `Int 4294987375); ("id:", `Int 0);
+     ("data", `String "ywritesecuritychownfile_inheritdi")]]\""""
+flags: light-uninstall
+url {
+  src: "https://github.com/fxfactorial/ocaml-radare2/archive/v0.0.1.tar.gz"
+  checksum: "md5=bcd91f5a13dec7b4420b403ab3557b59"
+}

@@ -1,0 +1,33 @@
+opam-version: "2.0"
+name: "deriving"
+version: "0.8.1"
+maintainer: "dev@ocsigen.org"
+authors: "Jeremy Yallop <yallop@gmail.com>"
+homepage: "http://github.com/ocsigen/deriving/"
+bug-reports: "https://github.com/ocsigen/deriving/issues/"
+license: "MIT"
+dev-repo: "git+https://github.com/ocsigen/deriving.git"
+build: [
+  [make "setup.exe"]
+  ["./setup.exe" "-configure" "--prefix" prefix "--%{type_conv:enable}%-tc"]
+  [make]
+]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "deriving"]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "ocamlfind"
+  "camlp4"
+  "num"
+  "oasis" {build & >= "0.4.4"}
+]
+depopts: "type_conv"
+conflicts: [
+  "type_conv" {< "108.07.00"}
+]
+synopsis: "Extension to OCaml for deriving functions from type declarations"
+flags: light-uninstall
+url {
+  src: "https://github.com/ocsigen/deriving/archive/0.8.1.tar.gz"
+  checksum: "md5=59558a23583fbc0c7c139f6ed22fbb54"
+}
