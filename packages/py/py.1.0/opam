@@ -1,0 +1,39 @@
+opam-version: "2.0"
+version: "1.0"
+maintainer: "Zach Shipko <zachshipko@gmail.com>"
+authors: ["Zach Shipko <zachshipko@gmail.com>"]
+homepage: "https://github.com/zshipko/ocaml-py"
+doc: "https://github.com/zshipko/ocaml-py/doc"
+license: "ISC"
+dev-repo: "git+https://github.com/zshipko/ocaml-py.git"
+bug-reports: "https://github.com/zshipko/ocaml-py/issues"
+tags: ["python"]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "0.9.1"}
+  "ctypes" {>= "0.13.0"}
+  "ctypes-foreign" {>= "0.4.0"}
+]
+depexts: [
+  ["python3-dev"] {os-distribution = "debian"}
+  ["python3-dev"] {os-distribution = "ubuntu"}
+  ["python3-devel"] {os-distribution = "fedora"}
+  ["python3-dev"] {os-distribution = "alpine"}
+]
+build: [
+  ["ocaml" "pkg/pkg.ml" "build"]
+  ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+]
+post-messages: [
+    "Py requires Python 3.5 or greater"
+]
+synopsis: "Python 3.5+ bindings for OCaml"
+description:
+  "Py provides a nice interface for interacting with Python libraries in OCaml"
+url {
+  src: "https://github.com/zshipko/ocaml-py/archive/v1.0.tar.gz"
+  checksum: "md5=e924b70d6cfcec304a7416d5bee0500d"
+}
