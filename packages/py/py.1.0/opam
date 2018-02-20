@@ -1,0 +1,37 @@
+opam-version: "1.2"
+version: "1.0"
+maintainer: "Zach Shipko <zachshipko@gmail.com>"
+authors: ["Zach Shipko <zachshipko@gmail.com>"]
+homepage: "https://github.com/zshipko/ocaml-py"
+doc: "https://github.com/zshipko/ocaml-py/doc"
+license: "ISC"
+dev-repo: "https://github.com/zshipko/ocaml-py.git"
+bug-reports: "https://github.com/zshipko/ocaml-py/issues"
+tags: ["python"]
+available: [ ocaml-version >= "4.03.0"]
+depends:
+[
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "0.9.1"}
+  "ctypes" {>= "0.13.0"}
+  "ctypes-foreign" {>= "0.4.0"}
+]
+depexts: [
+	[["debian"] ["python3-dev"]]
+	[["ubuntu"] ["python3-dev"]]
+	[["fedora"] ["python3-devel"]]
+	[["alpine"] ["python3-dev"]]
+]
+build:
+[[
+    "ocaml" "pkg/pkg.ml" "build"
+]]
+build-test:
+[
+    ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"]
+    ["ocaml" "pkg/pkg.ml" "test"]
+]
+post-messages: [
+    "Py requires Python 3.5 or greater"
+]
