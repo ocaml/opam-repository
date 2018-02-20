@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer:   "e@x80.org"
+authors:      "Emilio Jesús Gallego Arias"
+homepage:     "https://github.com/ejgallego/coq-serapi"
+bug-reports:  "https://github.com/ejgallego/coq-serapi/issues"
+dev-repo:     "git+https://github.com/ejgallego/coq-serapi.git"
+license:      "GPL 3"
+
+name: "coq-serapi"
+available: [ ocaml-version >= "4.06.0" ]
+
+# ppx depends are so strict due to the issues with ppx_import and
+# ppx_driver integration in the past.
+depends: [
+  "coq"           { >= "8.7.2" & < "8.8" }
+  "camlp5"
+  "cmdliner"
+  "sexplib"
+  "ocamlfind"     { build }
+  "ocamlbuild"    { build }
+  "ppx_import"    { build & >= "1.4" }
+  "ppx_deriving"  { build & >= "4.2.1" }
+  "ppx_driver"    { build & >= "v0.10.1" }
+  "ppx_sexp_conv" { build }
+]
+
+build:    [ make "-j%{jobs}%" "TARGET=native" ]
+install: [[ "cp" "sertop.native"  "%{bin}%/sertop" ]
+          [ "cp" "sercomp.native" "%{bin}%/sercomp"]]
+remove:  [[ "rm" "-f" "%{bin}%/sertop" ]
+          [ "rm" "-f" "%{bin}%/sercomp"]]
