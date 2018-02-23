@@ -9,13 +9,18 @@ build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+install: ["ocaml" "setup.ml" "-install"]
 remove: [["ocamlfind" "remove" "ucorelib"]]
 depends: [
-  "ocamlfind"
-  "ounit"
+  "ocamlfind" {build}
+  "ounit" {test}
   "ocamlbuild" {build}
   "batteries" {>= "2.1"}
   "bitv" {>= "1.1"}
 ]
 available: [ ocaml-version >= "4.00.0" & ocaml-version < "4.06.0" ]
-install: ["ocaml" "setup.ml" "-install"]
