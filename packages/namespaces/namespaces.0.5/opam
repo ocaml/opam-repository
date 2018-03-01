@@ -1,19 +1,57 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "namespaces"
 version: "0.5"
 maintainer: "Anton Bachin <antonbachin@yahoo.com>"
 authors: "Anton Bachin <antonbachin@yahoo.com>"
 homepage: "https://github.com/aantron/namespaces"
 bug-reports: "https://github.com/aantron/namespaces/issues"
-dev-repo: "https://github.com/aantron/namespaces.git"
+dev-repo: "git+https://github.com/aantron/namespaces.git"
 license: "BSD"
 build: [make "build"]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "namespaces"]
 depends: [
-    "ocamlfind" {build}
-    "ocamlbuild" {build}
+  "ocaml" {>= "4.02"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
 ]
-available: [
-    ocaml-version >= "4.02"
-]
+synopsis: "Turn directories into OCaml modules"
+description: """
+An Ocamlbuild plugin that turns directories tagged with "namespace" into a
+module hierarchy. File names become scoped, so you can have the same filename in
+multiple directories. So, if you have
+
+    server
+    |-- foo.ml
+    +-- bar.ml
+    client
+    |-- foo.ml
+    |-- bar.ml
+    |-- ui
+    |   +-- reactive.ml
+    +-- client.ml
+
+It is as if you had written
+
+    module Server =
+    struct
+        module Foo = (* server/foo.ml *)
+        module Bar = (* server/bar.ml *)
+    end
+
+    module Client =
+    struct
+        module Foo = (* client/foo.ml *)
+        module Bar = (* client/bar.ml *)
+        module Ui =
+        struct
+            module Reactive = (* client/ui/reactive.ml *)
+        end
+
+        include (* client/client.ml *)
+    end"""
+flags: light-uninstall
+url {
+  src: "https://github.com/aantron/namespaces/archive/0.5.tar.gz"
+  checksum: "md5=75f2052cef90f22617e29d4e22928f4f"
+}

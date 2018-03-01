@@ -1,43 +1,44 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 homepage: "https://github.com/fxfactorial/ocaml-plist"
 bug-reports: "https://github.com/fxfactorial/ocaml-plist/issues"
 license: "BSD-3-clause"
 tags: ["clib:objc" "clib:gnustep"]
-dev-repo: "https://github.com/fxfactorial/ocaml-plist.git"
+dev-repo: "git+https://github.com/fxfactorial/ocaml-plist.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "plist"]
 depends: [
+  "ocaml" {>= "4.04.0"}
   "oasis" {build & >= "0.4.7"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
   "yojson" {>= "1.3.3"}
 ]
 depexts: [
-  [
-    ["debian"]
-    ["gnustep" "gnustep-devel" "gobjc" "gobjc++" "libgnustep-base-dev"]
-  ]
-  [
-    ["ubuntu"]
-    ["gnustep" "gnustep-devel" "gobjc" "gobjc++" "libgnustep-base-dev"]
-  ]
+  ["gnustep" "gnustep-devel" "gobjc" "gobjc++" "libgnustep-base-dev"]
+    {os-distribution = "debian"}
+  ["gnustep" "gnustep-devel" "gobjc" "gobjc++" "libgnustep-base-dev"]
+    {os-distribution = "ubuntu"}
 ]
-available: [ocaml-version >= "4.04.0"]
 post-messages: [
   "You need to have gnustep installed, opam depexts can install it for you."
     {failure & os = "linux"}
 ]
+synopsis: "Native OCaml Plist manipulation"
+description: "Plist"
+flags: light-uninstall
+url {
+  src: "https://github.com/fxfactorial/ocaml-plist/archive/v1.0.0.tar.gz"
+  checksum: "md5=9558303cbc1a106d55e46694f713369f"
+}

@@ -1,17 +1,31 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "ygrek@autistici.org"
 authors: [ "Dmitry Grebeniuk <gdsfh1@gmail.com>" "ygrek@autistici.org" ]
 homepage: "https://bitbucket.org/gds/objsize"
 bug-reports: "Dmitry Grebeniuk <gdsfh1@gmail.com>"
 dev-repo: "hg://https://bitbucket.org/gds/objsize"
-build: [[make]]
+build: [
+  [make]
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
+]
 install: [[make "install"]]
-build-test: [[make "test"]]
-build-doc: [[make "doc"]]
 remove: [["ocamlfind" "remove" "objsize"]]
 depends: [
+  "ocaml" {>= "4.03"}
   "ocamlfind"
   "camlp4"
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.03"]
+synopsis: "Small library to compute sizes of OCaml heap values."
+description: """
+This library computes number of words occupied by heap value, size
+of values' headers and maximal depth of values, by recursively scanning
+heap blocks constituting the value in question.
+It is also possible to calculate the total amount of 
+heap memory used by live values reachable from GC roots."""
+flags: light-uninstall
+url {
+  src: "https://bitbucket.org/gds/objsize/get/0.18.tar.bz2"
+  checksum: "md5=dc02c207bb6ff90ee5f21fd2b44c7438"
+}

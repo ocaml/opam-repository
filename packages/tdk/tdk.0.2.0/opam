@@ -1,8 +1,8 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "tdk"
 version: "0.2.0"
 homepage: "http://frenetic-lang.org"
-dev-repo: "https://github.com/frenetic-lang/ocaml-tdk.git"
+dev-repo: "git+https://github.com/frenetic-lang/ocaml-tdk.git"
 bug-reports: "https://github.com/frenetic-lang/ocaml-tdk/issues"
 maintainer: "Spiros Eliopoulos <seliopou@gmail.com>"
 authors: [ "Spiros Eliopoulos <seliopou@gmail.com>" ]
@@ -10,20 +10,29 @@ license: "BSD-3-clause"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "tdk"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "4.00.1"}
   "ocamlfind" {build}
-  "ounit" {test & >= "1.0.2"}
+  "ounit" {with-test & >= "1.0.2"}
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.00.1" ]
+synopsis:
+  "The Decision Kit is a collection of data structures that are useful"
+description: """
+for representing functions, relations, and other combinatorial
+objects. These data structures are based on various generalizations of
+reduced ordered binary decision diagrams."""
+flags: light-uninstall
+url {
+  src: "https://codeload.github.com/frenetic-lang/ocaml-tdk/tar.gz/0.2.0"
+  checksum: "md5=38668a5eafcdf966ac1adaedfdfc59e5"
+}

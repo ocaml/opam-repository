@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "ygrek@autistici.org"
 homepage: "https://github.com/ygrek/ocaml-zstd"
 license: "BSD3"
@@ -9,30 +9,38 @@ bug-reports: "https://github.com/ygrek/ocaml-zstd/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--disable-tests" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--prefix" prefix]
+    {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: [
   ["ocaml" "setup.ml" "-install"]
-]
-build-doc: [
-  ["ocaml" "setup.ml" "-doc"]
-]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--prefix" prefix]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
 ]
 remove: [
   ["ocamlfind" "remove" "zstd"]
 ]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "oasis" {build}
   "ocamlbuild" {build}
   "ctypes"
-  ("extlib" {test} |"extlib-compat" {test})
-  "base-unix" {test}
+  ("extlib" {with-test} | "extlib-compat" {with-test})
+  "base-unix" {with-test}
 ]
 depexts: [
-  [["debian"] ["libzstd-dev"]]
-  [["ubuntu"] ["libzstd-dev"]]
+  ["libzstd-dev"] {os-distribution = "debian"}
+  ["libzstd-dev"] {os-distribution = "ubuntu"}
 ]
+synopsis: "Bindings to zstd compression library"
+description: """
+Zstd, short for Zstandard, is a fast lossless compression algorithm,
+targeting real-time compression scenarios at zlib-level compression ratio.
+See http://zstd.net/ for more info."""
+flags: light-uninstall
+url {
+  src: "http://ygrek.org.ua/p/release/ocaml-zstd/ocaml-zstd-0.2.tar.gz"
+  checksum: "md5=6edef3e3fc8de3e608c9c57f171de7a6"
+}

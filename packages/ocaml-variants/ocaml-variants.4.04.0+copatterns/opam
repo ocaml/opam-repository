@@ -1,0 +1,33 @@
+opam-version: "2.0"
+synopsis: "An extension of OCaml with copatterns"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.04.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix "-with-debug-runtime"]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-cc"
+    "cc"
+    "-aspp"
+    "cc -c"
+  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/yurug/ocaml4.04.0-copatterns/archive/V0.5.tar.gz"
+  checksum: "md5=5d581256d7258234edcddab0ac5211b5"
+}

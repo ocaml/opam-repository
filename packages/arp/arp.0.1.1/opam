@@ -1,14 +1,13 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Hannes Mehnert <hannes@mehnert.org>"
 authors: ["Hannes Mehnert <hannes@mehnert.org>"]
 homepage: "https://github.com/hannesm/arp"
 doc: "https://hannesm.github.io/arp/doc"
-dev-repo: "https://github.com/hannesm/arp.git"
+dev-repo: "git+https://github.com/hannesm/arp.git"
 bug-reports: "https://github.com/hannesm/arp/issues"
 license: "ISC"
-available: [ ocaml-version >= "4.02.0"]
-
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
@@ -18,12 +17,11 @@ depends: [
   "ppx_cstruct" {build}
   "ipaddr" {>= "2.2.0"}
   "logs"
-  "alcotest" {test}
-  "nocrypto" {test}
-  "mirage-types" {test & < "3.0.0"}
-  "tcpip" {test}
+  "alcotest" {with-test}
+  "nocrypto" {with-test}
+  "mirage-types" {with-test & < "3.0.0"}
+  "tcpip" {with-test}
 ]
-
 depopts: [
   "mirage-types"
   "tcpip"
@@ -36,12 +34,37 @@ conflicts: [
 ]
 
 build: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"
-    "--with-mirage" "%{mirage-types+tcpip+lwt:installed}%" ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--with-mirage"
+    "%{mirage-types+tcpip+lwt:installed}%"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+    "--with-mirage"
+    "%{mirage-types+tcpip+lwt:installed}%"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
+synopsis: "Address Resolution Protocol purely in OCaml"
+description: """
+ARP is an implementation of the address resolution protocol purely in OCaml.  It
+handles IPv4 protocol addresses and Ethernet hardware addresses only.
 
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"
-    "--with-mirage" "%{mirage-types+tcpip+lwt:installed}%" ]
-  [ "ocaml" "pkg/pkg.ml" "test" ]
-]
+A MirageOS [V1_LWT.ARP](https://github.com/mirage/mirage/blob/v2.9.0/types/V1.mli#L471) implementation is in the mirage subdirectory.
+
+Motivation for this implementation is [written up](https://hannes.nqsb.io/Posts/ARP)."""
+url {
+  src: "https://github.com/hannesm/arp/releases/download/0.1.1/arp-0.1.1.tbz"
+  checksum: "md5=44ae38c452ff02c9e1424650c68e6361"
+}

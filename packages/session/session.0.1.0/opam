@@ -1,38 +1,48 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Spiros Eliopoulos <spiros@inhabitedtype.com>"
 authors: [ "Spiros Eliopoulos <spiros@inhabitedtype.com>" ]
 license: "BSD-3-clause"
 homepage: "https://github.com/inhabitedtype/ocaml-session"
-dev-repo: "https://github.com/inhabitedtype/ocaml-session.git"
+dev-repo: "git+https://github.com/inhabitedtype/ocaml-session.git"
 bug-reports: "https://github.com/inhabitedtype/ocaml-session/issues"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
     "--%{webmachine:enable}%-webmachine"
     "--%{postgresql:enable}%-postgresql"
     "--%{lwt:enable}%-lwt"
     "--%{cohttp:enable}%-cohttp"
-    "--%{async:enable}%-async"]
+    "--%{async:enable}%-async"
+  ]
   ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{webmachine:enable}%-webmachine"
+    "--%{postgresql:enable}%-postgresql"
+    "--%{lwt:enable}%-lwt"
+    "--%{cohttp:enable}%-cohttp"
+    "--%{async:enable}%-async"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "session"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"
-    "--%{webmachine:enable}%-webmachine"
-    "--%{postgresql:enable}%-postgresql"
-    "--%{lwt:enable}%-lwt"
-    "--%{cohttp:enable}%-cohttp"
-    "--%{async:enable}%-async"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml"
   "nocrypto"
   "ocamlfind" {build}
-  "ounit" {test & >= "1.0.2"}
+  "ounit" {with-test & >= "1.0.2"}
   "result"
 ]
 depopts: [
@@ -46,3 +56,14 @@ depopts: [
 conflicts: [
   "cohttp" {>= "0.99.0"}
 ]
+synopsis: "A session manager for your everyday needs"
+description: """
+ocaml-session is an session manager that handles cookie headers and
+backend storage for HTTP servers. The library supports CoHTTP and
+Webmachine; Async and Lwt; and pluggable backing stores based on a
+functor interface."""
+flags: light-uninstall
+url {
+  src: "https://github.com/inhabitedtype/ocaml-session/archive/0.1.0.tar.gz"
+  checksum: "md5=835c434ee5aeb590da735cde310e3e05"
+}

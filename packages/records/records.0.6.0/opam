@@ -1,24 +1,33 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Etienne Millon <etienne@cryptosense.com>"
 authors: "Etienne Millon <etienne@cryptosense.com>"
 homepage: "https://github.com/cryptosense/records"
 bug-reports: "https://github.com/cryptosense/records/issues"
 license: "BSD-2"
-dev-repo: "https://github.com/cryptosense/records.git"
+dev-repo: "git+https://github.com/cryptosense/records.git"
 build: [
-    [make] {ocaml-native}
-    [make "byte"] {!ocaml-native}
+  [make] {ocaml:native}
+  [make "byte"] {!ocaml:native}
+  [make "check"] {with-test}
 ]
 install: [make "install"]
-build-test: [make "check"]
 remove: ["ocamlfind" "remove" "records"]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
-  "ounit" {test}
+  "ounit" {with-test}
   "yojson"
   "result"
 ]
 depopts: [
-  "bisect_ppx" {test}
+  "bisect_ppx" {with-test}
 ]
-available: [ocaml-version >= "4.02.0"]
+synopsis: "Dynamic records"
+description: """
+This library makes it possible to create first-class record types and fields.
+These can be defined at runtime and provide efficient access."""
+flags: light-uninstall
+url {
+  src: "https://github.com/cryptosense/records/archive/v0.6.0.tar.gz"
+  checksum: "md5=3d59a568ab0af54f3f00a9c8997a918b"
+}

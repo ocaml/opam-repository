@@ -1,24 +1,26 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "francois.berenger@inria.fr"
 homepage: "http://www.mpfr.org/"
 authors: "http://www.mpfr.org/credit.html"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-dev-repo: "https://github.com/ocaml/opam-repository.git"
+dev-repo: "git+https://github.com/ocaml/opam-repository.git"
 license: "LGPL"
 build: [
   ["cc" "test.c" "-I/usr/local/include" "-L/usr/local/lib" "-lgmp" "-lmpfr"]
 ]
 depexts: [
-  [["debian"] ["libmpfr-dev"]]
-  [["ubuntu"] ["libmpfr-dev"]]
-  [["fedora"] ["mpfr-devel"]]
-  [["osx" "homebrew"] ["mpfr"]]
-  [["freebsd"] ["mpfr"]]
-  [["openbsd"] ["mpfr"]]
-  [["alpine"] ["mpfr-dev"]]
-  [["centos"] ["mpfr-devel"]]
-  [["opensuse"] ["mpfr-devel"]]
+  ["libmpfr-dev"] {os-distribution = "debian"}
+  ["libmpfr-dev"] {os-distribution = "ubuntu"}
+  ["mpfr-devel"] {os-distribution = "fedora"}
+  ["mpfr"] {os = "macos" & os-distribution = "homebrew"}
+  ["mpfr"] {os = "freebsd"}
+  ["mpfr"] {os = "openbsd"}
+  ["mpfr-dev"] {os-distribution = "alpine"}
+  ["mpfr-devel"] {os-distribution = "centos"}
+  ["mpfr-devel"] {os-distribution = "opensuse"}
 ]
-depends: [
-  "conf-gmp"
-]
+depends: ["ocaml" "conf-gmp"]
+synopsis: "Virtual package relying on library MPFR installation."
+description:
+  "This package can only install if the MPFR library is installed on the system."
+extra-files: ["test.c" "md5=ac7e04b5e22a41cb3c028180d1b811d6"]
