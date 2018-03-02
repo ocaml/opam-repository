@@ -1,0 +1,31 @@
+opam-version: "1.2"
+name: "bap-callsites"
+version: "1.4.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure"
+                 "--prefix=%{prefix}%"
+                 "--mandir=%{man}%"
+                 "--enable-callsites"]
+  [make]
+]
+
+install: [
+  [make "install"]
+]
+
+remove: [
+        [ "ocamlfind" "remove" "bap-plugin-callsites"]
+        [ "bapbundle" "remove" "callsites.plugin"]
+        ]
+
+depends: [
+    "oasis"             {build & = "0.4.7"}
+    "bap-std"
+    "cmdliner"
+]

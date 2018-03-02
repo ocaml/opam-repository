@@ -1,0 +1,43 @@
+opam-version: "1.2"
+name: "bap-frames"
+version: "1.4.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["oasis" "setup"]
+  ["./configure" "--prefix=%{prefix}%"]
+  [make]
+]
+
+install: [
+  [make "install"]
+]
+
+remove: [
+        [ "ocamlfind" "remove" "bap-plugin-frames"]
+        [ "ocamlfind" "remove" "bap-frames"]
+        [ "ocamlfind" "remove" "bfd"]
+        [ "bapbundle" "remove" "frames.plugin"]
+        [ "rm" "-f" "%{prefix}%/share/bap-frames/*.piqi"]
+        [ "rm" "-f" "%{prefix}%/share/bap-frames/exceptionframe.piqi"]
+        [ "rm" "-f" "%{prefix}%/share/bap-frames/frame.piqi"]
+        [ "rm" "-f" "%{prefix}%/share/bap-frames/keyframe.piqi"]
+        [ "rm" "-f" "%{prefix}%/share/bap-frames/metaframe.piqi"]
+        [ "rm" "-f" "%{prefix}%/share/bap-frames/modloadframe.piqi"]
+        [ "rm" "-f" "%{prefix}%/share/bap-frames/stdframe.piqi"]
+        [ "rm" "-f" "%{prefix}%/share/bap-frames/syscallframe.piqi"]
+        [ "rm" "-f" "%{prefix}%/share/bap-frames/taintintroframe.piqi"]
+        [ "rm" "-f" "%{prefix}%/share/bap-frames/types.piqi"]
+        ]
+
+depends: [
+    "oasis"             {build & = "0.4.7"}
+    "bap-std"
+    "bap-traces"
+    "cmdliner"
+    "piqi" {>= "0.7.4"}
+]
