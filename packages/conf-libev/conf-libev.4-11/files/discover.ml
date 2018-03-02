@@ -20,9 +20,9 @@
  * 02111-1307, USA.
  *)
 
-(* Discover available features *)
+open Printf
 
-let cut_tail l = List.rev (List.tl (List.rev l))
+(* Discover available features *)
 
 let string_split sep source =
   let copy_part index offset =
@@ -40,33 +40,63 @@ let string_split sep source =
       | _ -> loop prev (current + 1) acc
   in loop 0 0 []
 
-let uniq lst =
-  let unique_set = Hashtbl.create (List.length lst) in
-  List.iter (fun x -> Hashtbl.replace unique_set x ()) lst;
-  Hashtbl.fold (fun x () xs -> x :: xs) unique_set []
+let get_paths var =
+  let value = try Sys.getenv var with Not_found -> "" in
+  string_split ':' value
 
-let get_paths env_name =
-  try
-    let paths = Sys.getenv env_name in
-    let dirs = string_split ':' paths in
-    List.map (fun dir ->
-      let components = string_split '/' dir in
-      "/" ^ (String.concat "/" (cut_tail components))
-    ) dirs
-  with Not_found -> []
+let library_paths = get_paths "LIBRARY_PATH"
+let c_include_paths = get_paths "C_INCLUDE_PATH"
 
-let env_paths = List.append (get_paths "LIBRARY_PATH") (get_paths "C_INCLUDE_PATH")
-
-(* Keep that in sync with the list in myocamlbuild.ml *)
-let search_paths = uniq (List.append [
+let myocamlbuild_paths = [
   "/usr";
   "/usr/local";
   "/opt";
   "/opt/local";
   "/sw";
-  "/mingw";] env_paths)
+  "/mingw";
+]
 
-open Printf
+let myocamlbuild_lib_paths = List.map (fun d -> Filename.concat d "lib") myocamlbuild_paths
+let myocamlbuild_include_paths = List.map (fun d -> Filename.concat d "include") myocamlbuild_paths
+
+let searching_library_paths = library_paths @ myocamlbuild_lib_paths
+let searching_include_paths = c_include_paths @ myocamlbuild_include_paths
+
+(* Search for a file in directories. *)
+let search_file file =
+  let rec loop = function
+    | [] ->
+      None
+    | dir :: dirs ->
+      if Sys.file_exists (Filename.concat dir file) then
+        Some dir
+      else
+        loop dirs
+  in
+  loop searching_include_paths
+
+let print_missing missing =
+  printf "
+      The following recquired C libraries are missing: %s.
+Please install them and retry. If they are installed in a non-standard location, set the environment variables C_INCLUDE_PATH and LIBRARY_PATH accordingly and retry.
+
+For example, if they are installed in /opt/local, you can type:
+
+export C_INCLUDE_PATH=/opt/local/include
+export LIBRARY_PATH=/opt/local/lib
+
+To compile without libev support, use ./configure --disable-libev ...
+" (String.concat ", " missing)
+
+let libev_include_dir =
+  match search_file "ev.h" with
+  | None -> print_missing ["libev"]; exit 1
+  | Some d -> d
+
+let libev_lib_dir =
+  (* if None, it may be at system specific locations like /usr/lib/x86_64-linux-gnu
+     or whatever automatically included. *)
+  search_file "libev.a"
 
 (* +-----------------------------------------------------------------+
    | Test codes                                                      |
@@ -99,24 +129,12 @@ let exec_name = ref "a.out"
 let log_file = ref ""
 let caml_file = ref ""
 
-(* Search for a header file in standard directories. *)
-let search_header header =
-  let rec loop = function
-    | [] ->
-        None
-    | dir :: dirs ->
-        if Sys.file_exists (dir ^ "/include/" ^ header) then
-          Some dir
-        else
-          loop dirs
-  in
-  loop search_paths
-
 let c_args =
-  let flags path = Printf.sprintf "-ccopt -I%s/include -ccopt -L%s/lib" path path in
-  match search_header "ev.h" with
-    | None -> ""
-    | Some path -> flags path
+  let cc_opts = match libev_lib_dir with
+    | None -> []
+    | Some d -> [Printf.sprintf "-ccopt -L%s" d] in
+  let cc_opts = Printf.sprintf "-ccopt -I%s" libev_include_dir :: cc_opts in
+  String.concat " " cc_opts
 
 let compile args stub_file =
   let cmd = sprintf "%s -custom %s %s %s %s > %s 2>&1"
@@ -210,18 +228,8 @@ let () =
   let missing = if test_feature "libev" "HAVE_LIBEV" ~args:"-cclib -lev" libev_code then missing else "libev" :: missing in
 
   if missing <> [] then begin
-    printf "
-      The following recquired C libraries are missing: %s.
-Please install them and retry. If they are installed in a non-standard location, set the environment variables C_INCLUDE_PATH and LIBRARY_PATH accordingly and retry.
-
-For example, if they are installed in /opt/local, you can type:
-
-export C_INCLUDE_PATH=/opt/local/include
-export LIBRARY_PATH=/opt/local/lib
-
-To compile without libev support, use ./configure --disable-libev ...
-" (String.concat ", " missing);
-    exit 1
+   print_missing missing;
+   exit 1
   end;
 
 (*
