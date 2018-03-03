@@ -1,0 +1,42 @@
+opam-version: "1.2"
+name: "bap-llvm"
+version: "1.4.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure"
+  "--prefix=%{prefix}%"
+  "--with-cxx=`which clang++`"
+  "--with-llvm-version=%{conf-bap-llvm:package-version}%"
+  "--with-llvm-config=%{conf-bap-llvm:config}%"
+  "--enable-llvm"]
+  [make]
+  ]
+
+install: [
+  [make "install"]
+]
+
+remove: [
+  ["ocamlfind" "remove" "bap-plugin-llvm"]
+  ["ocamlfind" "remove" "bap-llvm"]
+  ["bapbundle" "remove" "llvm.plugin"]
+]
+
+depends: [
+    "bap-std"
+    "cmdliner"
+    "conf-env-travis"
+    "conf-bap-llvm" {>= "1.1"}
+    "ogre"
+    "monads"
+]
+
+depexts: [
+    [["ubuntu"] ["clang"]]
+    [["debian"] ["clang"]]
+]
