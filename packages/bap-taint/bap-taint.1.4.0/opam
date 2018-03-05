@@ -1,0 +1,24 @@
+opam-version: "1.2"
+name: "bap-taint"
+version: "1.4.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure" "--prefix=%{prefix}%" "--enable-taint"]
+  [make]
+]
+install: [[make "install"]]
+remove: [["ocamlfind" "remove" "bap-taint"]
+  ["ocamlfind" "remove" "bap-plugin-taint"]
+  ["ocamlfind" "remove" "bap-plugin-primus_propagate_taint"]
+  ["ocamlfind" "remove" "bap-plugin-primus_taint"]
+  ["bapbundle" "remove" "taint.plugin"]
+  ["bapbundle" "remove" "primus_propagate_taint.plugin"]
+  ["bapbundle" "remove" "primus_taint.plugin"]
+]
+
+depends: ["bap-std" "bap-primus" "cmdliner"]
