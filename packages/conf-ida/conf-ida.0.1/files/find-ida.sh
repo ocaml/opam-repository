@@ -81,14 +81,13 @@ case $1 in
         [ $IDA_PATH ] || locate_macos
         ;;
     *)
-        echo "unsupported OS"
-        exit 1
+        echo "warning: we don't know how to find programs on $1"
     ;;
 esac
 
 if [ -z $IDA_PATH ]; then
-    echo "failed to locate IDA Pro"
-    exit 1
+    echo "warning: failed to locate IDA Pro"
+    IDA_PATH="undefined"
 fi
 
 cat > conf-ida.config <<EOF
