@@ -1,0 +1,70 @@
+opam-version: "2.0"
+maintainer: "ygrek@autistici.org"
+homepage: "http://ygrek.org.ua/p/extunix"
+dev-repo: "git://github.com/ygrek/extunix.git"
+bug-reports: "https://github.com/ygrek/extunix/issues"
+doc: "http://ygrek.org.ua/p/ocaml-extunix/api/index.html"
+license: "LGPL-2.1 with OCaml linking exception"
+authors: [ "ygrek"
+           "Sylvain Le Gall"
+           "Stéphane Glondu"
+           "Kaustuv Chaudhuri"
+           "Joshua Smith"
+           "Niki Yoshiuchi"
+           "Gerd Stolpmann"
+           "Goswin von Brederlow"
+           "Andre Nathan"
+           "Zhenya Lykhovyd"
+           "Mehdi Dogguy"
+           "Roman Vorobets"
+           "Pierre Chambart"
+           "Dmitry Grebeniuk"
+           "François Bobot"
+           "Markus W. Weissmann"
+         ]
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--%{ounit:enable}%-tests"
+    "--prefix"
+    prefix
+  ] {ocaml:version >= "4.02.0"}
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+    {ocaml:version < "4.02.0"}
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: [
+  ["ocaml" "setup.ml" "-install"]
+]
+remove: [
+  ["ocamlfind" "remove" "extunix"]
+]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "camlp4" {build}
+  "ounit" {with-test & >= "1.0.3"}
+  "base-bytes"
+  "base-bigarray"
+  "base-unix"
+  "ocamlbuild" {build}
+]
+synopsis: "Collection of thin bindings to various low-level system API"
+description: """
+Motto: "Be to Unix, what extlib is to stdlib"
+
+ * Implement thin C bindings that directly map to underlying system API.
+ * Provide common consistent ocaml interface: naming convention, exceptions.
+ * Simple to build - no extra dependencies."""
+flags: light-uninstall
+url {
+  src:
+    "http://ygrek.org.ua/p/release/ocaml-extunix/ocaml-extunix-0.1.6.tar.gz"
+  checksum: "md5=bd14caccd1ef481b177090e0328e9ba7"
+  mirrors:
+    "https://github.com/ygrek/extunix/releases/download/v0.1.6/ocaml-extunix-0.1.6.tar.gz"
+}
