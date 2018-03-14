@@ -1,47 +1,53 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "Romain Calascibetta <romain.calascibetta@gmail.com>"
 authors:      "Romain Calascibetta <romain.calascibetta@gmail.com>"
 homepage:     "https://github.com/oklm-wsh/Decompress"
 bug-reports:  "https://github.com/oklm-wsh/Decompress/issues"
-dev-repo:     "https://github.com/oklm-wsh/Decompress.git"
+dev-repo: "git+https://github.com/oklm-wsh/Decompress.git"
 license:      "MIT"
 
 build: [
-  ["./configure"
+  [
+    "./configure"
     "--%{base-unix:enable}%-unix"
     "--prefix=%{prefix}%"
-    "--%{cmdliner:enable}%-cmdliner"]
+    "--%{cmdliner:enable}%-cmdliner"
+  ]
   [make]
-]
-
-build-test: [
-  ["./configure"
+  [
+    "./configure"
     "--enable-tests"
     "--%{base-unix:enable}%-unix"
     "--%{cmdliner:enable}%-cmdliner"
     "--%{camlzip:enable}%-camlzip"
     "--enable-istub"
-    "--prefix=%{prefix}%"]
-  [make "test"]
+    "--prefix=%{prefix}%"
+  ] {with-test}
+  [make "test"] {with-test}
 ]
-
 install: [make "install"]
 remove: ["ocamlfind" "remove" "decompress"]
 
 depends: [
-  "oasis"          {build}
-  "ocamlfind"      {build}
+  "ocaml" {>= "4.02.0"}
+  "oasis" {build}
+  "ocamlfind" {build}
   "base-bytes"
-  "alcotest"       {test}
-  "re"             {test}
-  "camlzip"        {test}
-  "cmdliner"       {test}
-  "ctypes"         {test}
-  "ctypes-foreign" {test}
+  "alcotest" {with-test}
+  "re" {with-test}
+  "camlzip" {with-test}
+  "cmdliner" {with-test}
+  "ctypes" {with-test}
+  "ctypes-foreign" {with-test}
 ]
-
 depopts: [
   "base-unix"
 ]
 
-available: [ocaml-version >= "4.02.0"]
+synopsis: "Pure OCaml implementation of Zlib"
+description: "Pure OCaml implementation of Zlib"
+flags: light-uninstall
+url {
+  src: "https://github.com/oklm-wsh/Decompress/archive/0.4.tar.gz"
+  checksum: "md5=32f4db760f033d1fcd139eb327d70a64"
+}

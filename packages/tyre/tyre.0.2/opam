@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Gabriel Radanne <drupyog@zoho.com>"
 authors: "Gabriel Radanne <drupyog@zoho.com>"
 homepage: "https://github.com/Drup/tyre"
@@ -6,23 +6,31 @@ doc: "https://drup.github.io/tyre/0.2/Tyre.html"
 bug-reports: "https://github.com/Drup/tyre/issues"
 license: "ISC"
 tags: "regex"
-dev-repo: "https://github.com/Drup/tyre.git"
+dev-repo: "git+https://github.com/Drup/tyre.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests"]
+    {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "tyre"]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
   "re" {>= "1.7.0"}
-  "alcotest" {test & >= "0.6.0" & < "0.8.0"}
+  "alcotest" {with-test & >= "0.6.0" & < "0.8.0"}
   "result"
 ]
-available: [ ocaml-version >= "4.02.0" ]
+synopsis: "Typed Regular Expressions"
+description: """
+Tyre is a set of combinators to build type-safe regular expressions, allowing automatic extraction and modification of matched groups.
+Tyre is bi-directional: a typed regular expressions can be used for parsing and unparsing. It also allows routing, by providing a list of regexs/routes and their handlers."""
+flags: light-uninstall
+url {
+  src: "https://github.com/Drup/tyre/archive/0.2.tar.gz"
+  checksum: "md5=b6720777ea250641eefd3c6f8ce89443"
+}

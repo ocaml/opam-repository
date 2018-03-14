@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "thomas@gazagnaire.org"
 authors: "Thomas Gazagnaire"
 homepage: "https://github.com/mirage/ezjsonm"
@@ -8,7 +8,7 @@ tags: [
   "org:mirage"
   "org:ocamllabs"
 ]
-dev-repo: "https://github.com/mirage/ezjsonm.git"
+dev-repo: "git+https://github.com/mirage/ezjsonm.git"
 build: [
   ["./configure" "--prefix" prefix "--%{lwt:enable}%-lwt"]
   [make]
@@ -16,6 +16,7 @@ build: [
 install: [make "install"]
 remove: ["ocamlfind" "remove" "ezjsonm"]
 depends: [
+  "ocaml" {< "4.03.0"}
   "ocamlfind" {build}
   "jsonm" {>= "0.9.1"}
   "sexplib"
@@ -23,4 +24,17 @@ depends: [
   "ocamlbuild" {build}
 ]
 depopts: "lwt"
-available: [ ocaml-version < "4.03.0" ]
+synopsis: "An easy interface on top of the Jsonm library"
+description: """
+This version provides more convenient (but far less flexible)
+input and output functions that go to and from [string] values.
+This avoids the need to write signal code, which is useful for
+quick scripts that manipulate JSON.
+
+More advanced users should go straight to the Jsonm library and
+use it directly, rather than be saddled with the Ezjsonm interface."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ezjsonm/archive//0.4.0.tar.gz"
+  checksum: "md5=048d4776d0e056f5b3ba220e81e55997"
+}

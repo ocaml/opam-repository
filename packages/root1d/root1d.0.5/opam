@@ -1,23 +1,54 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
 authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
            "Edgar Friendly <thelema314@gmail.com>" ]
 tags: ["scientfic" "root finding"]
 license: "ISC"
 homepage: "https://github.com/Chris00/root1d"
-dev-repo: "https://github.com/Chris00/root1d.git"
+dev-repo: "git+https://github.com/Chris00/root1d.git"
 bug-reports: "https://github.com/Chris00/root1d/issues"
 doc: "https://Chris00.github.io/root1d/doc"
 build: [
-  [ "jbuilder" "subst" ] {pinned}
-  [ "jbuilder" "build" "-p" name "-j" jobs ]
+  ["jbuilder" "subst"] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-build-test: [[ "jbuilder" "runtest" "-p" name "-j" jobs ]]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
-  "jbuilder"  {build & >="1.0+beta9"}
+  "jbuilder" {build & >= "1.0+beta9"}
 ]
 depopts: [
   "benchmark"
 ]
-available: [ ocaml-version >= "4.02.0" ]
+synopsis: "Find roots of 1D functions"
+description: """
+The module `Root1D` provides a collection of functions to seek roots
+of functions `float → float`.
+
+
+Installation
+------------
+
+The easier way of installing this package is by using [opam][]:
+
+```shell
+opam install root1d
+```
+
+To compile bu hand, install [jbuilder][] and do `jbuilder build`.
+
+
+[opam]: https://opam.ocaml.org/
+[jbuilder]: https://github.com/janestreet/jbuilder
+
+Documentation
+-------------
+
+See the [signature of `Root1D`](src/Root1D.mli).  It can also be
+consulted rendered to [HTML](http://math.umons.ac.be/an/software/doc/Root1D/)."""
+url {
+  src:
+    "https://github.com/Chris00/root1d/releases/download/0.5/root1d-0.5.tbz"
+  checksum: "md5=3cf56f6370eb6e425dd9aa2439092582"
+}

@@ -1,16 +1,17 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "john.else@citrix.com"
 homepage:      "https://github.com/mirage/ocaml-gnt"
 bug-reports:   "https://github.com/mirage/ocaml-gnt/issues"
-dev-repo:      "https://github.com/mirage/ocaml-gnt.git"
+dev-repo: "git+https://github.com/mirage/ocaml-gnt.git"
 build: make
 remove: [
   [make "PREFIX=%{prefix}%" "uninstall"]
 ]
 depends: [
+  "ocaml" {>= "4.00.0"}
   "ocamlbuild" {build}
-  "camlp4"     {build}
-  "ounit"      {test}
+  "camlp4" {build}
+  "ounit" {with-test}
   "cstruct" {>= "1.0.1"}
   "io-page" {< "1.3.0"}
   "lwt" {>= "2.4.3"}
@@ -18,8 +19,16 @@ depends: [
   "mirage-profile" {>= "0.3"}
 ]
 depexts: [
-  [["debian"] ["libxen-dev"]]
-  [["ubuntu"] ["libxen-dev"]]
+  ["libxen-dev"] {os-distribution = "debian"}
+  ["libxen-dev"] {os-distribution = "ubuntu"}
 ]
-available: ocaml-version >= "4.00.0"
 install: [make "PREFIX=%{prefix}%" "install"]
+synopsis: "Xen grant table bindings"
+description: """
+These allow your program (running either in userspace or in kernelspace
+via MirageOS) to read and write memory exported by other VMs on the same host.
+These APIs are the foundation of all inter-VM communication on Xen."""
+url {
+  src: "https://github.com/mirage/ocaml-gnt/archive/v2.1.0.tar.gz"
+  checksum: "md5=43a329be84825764b0d0a8f9020c60c7"
+}

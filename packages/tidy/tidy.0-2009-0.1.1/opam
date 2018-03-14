@@ -1,6 +1,4 @@
-opam-version: "1.2"
-# See https://github.com/ocaml/opam/issues/2320#issuecomment-154657852
-#version: "0:2009-0.1.1"
+opam-version: "2.0"
 maintainer: "zandoye@gmail.com"
 authors: [ "ZAN DoYe" ]
 homepage: "https://bitbucket.org/zandoye/ocaml-tidy/"
@@ -12,22 +10,30 @@ tags: [
   "tidy"
 ]
 dev-repo: "hg://https://bitbucket.org/zandoye/ocaml-tidy"
-available: [ ocaml-version >= "4.01.0" & opam-version >= "1.2.1" ]
+available: opam-version >= "1.2.1"
 build: [
   [make]
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "tidy"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "core_kernel"
 ]
 depexts: [
-    [["debian"] ["libtidy-dev"]]
-    [["ubuntu"] ["libtidy-dev"]]
-    [["arch"] ["tidyhtml"]]
+  ["libtidy-dev"] {os-distribution = "debian"}
+  ["libtidy-dev"] {os-distribution = "ubuntu"}
+  ["tidyhtml"] {os-distribution = "archlinux"}
 ]
 post-messages: [
   "This package requires installation of libtidy (>= 20090501)" {failure & (os = "ubuntu" | os = "debian")}
   "This package requires installation of tidyhtml (>= 1.46)" {failure & os = "arch"}
 ]
+synopsis: "bindings for tidy - HTML Tidy Library"
+description: "HTML parser, syntax checker and reformatter"
+flags: light-uninstall
+url {
+  src: "https://bitbucket.org/zandoye/ocaml-tidy/get/ver.2009-0.1.1.tar.gz"
+  checksum: "md5=b2528479f6acd0b00c5185b124311614"
+}

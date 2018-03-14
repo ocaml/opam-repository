@@ -1,25 +1,84 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "KC Sivaramakrishnan <sk826@cl.cam.ac.uk>"
 authors:      ["KC Sivaramakrishnan" "Thomas Gazagnaire" "Benjamin Farinier"]
 homepage:     "https://github.com/kayceesrk/ezirmin"
 doc:          "https://kayceesrk.github.io/ezirmin/"
 license:      "ISC"
-dev-repo:     "https://github.com/kayceesrk/ezirmin.git"
+dev-repo: "git+https://github.com/kayceesrk/ezirmin.git"
 bug-reports:  "https://github.com/kayceesrk/ezirmin/issues"
-tags: []
-available: [ ocaml-version >= "4.01.0"]
 depends: [
-  "ocamlfind"   {build}
-  "ocamlbuild"  {build}
-  "topkg"       {build}
+  "ocaml" {>= "4.01.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
   "lwt"
   "git-unix" {< "1.10.0"}
-  "irmin"    {= "0.12.0"}
+  "irmin" {= "0.12.0"}
   "irmin-watcher"
   "ptime"
   "ppx_jane"
 ]
-depopts: []
 build: [
   "ocaml" "pkg/pkg.ml" "build"
           "--pinned" "%{pinned}%" ]
+synopsis: "An easy interface on top of the Irmin library."
+description: """
+Ezirmin is an easy interface on top of the
+[Irmin](https://github.com/mirage/irmin) library. It comes with set of mergeable
+datatypes, instantiated to specific backends to quickly get going. For
+example,
+
+```ocaml
+$ utop
+utop # #require "ezirmin";;
+utop # module M = Ezirmin.FS_queue(Tc.String);; (* Mergeable queue of strings *)
+utop # open M;;
+utop # open Lwt.Infix;;
+utop # let m = Lwt_main.run (init ~root:"/tmp/ezirminq" ~bare:true () >>= master);;
+val m : branch = <abstr>
+utop # push m ["home"; "todo"] "buy milk";;
+- : unit = ()
+utop # push m ["work"; "todo"] "publish ezirmin";;
+- : unit = ()
+```
+
+This mergeable queue is saved in the git repository at `/tmp/ezirminq`. In
+another terminal,
+
+```ocaml
+$ utop
+utop # #require "ezirmin";;
+utop # module M = Ezirmin.FS_queue(Tc.String);; (* Mergeable queue of strings *)
+utop # open M;;
+utop # open Lwt.Infix;;
+utop # let m = Lwt_main.run (init ~root:"/tmp/ezirminq" ~bare:true () >>= master);;
+val m : branch = <abstr>
+utop # pop m ["home"; "todo"];;
+- : string option = Some "buy milk"
+```
+
+For concurrency control, use branches. In the first terminal,
+
+```ocaml
+utop # let wip_t1 = Lwt_main.run @@ clone_force m "wip_t1";;
+utop # push wip_t1 ["home"; "todo"] "walk dog";;
+- : unit = ()
+utop # push wip_t1 ["home"; "todo"] "take out trash";;
+- : unit = ()
+```
+
+The changes are not visible until the branches are merged.
+
+```ocaml
+utop # to_list m ["home"; "todo"];;
+- : string list = []
+utop # merge wip_t1 ~into:m;;
+- : unit = ()
+utop # to_list m ["home"; "todo"];;
+- : string list = ["walk dog"; "take out trash"]
+```"""
+url {
+  src:
+    "https://github.com/kayceesrk/ezirmin/releases/download/0.2.0/ezirmin-0.2.0.tbz"
+  checksum: "md5=05107c52d136602611024c71f03c343d"
+}

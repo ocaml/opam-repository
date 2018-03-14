@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "2.0"
 maintainer: "vb@luminar.eu.org"
 homepage: "http://projects.camlcity.org/projects/ocamlnet.html"
 doc: ["http://projects.camlcity.org/projects/dl/ocamlnet-3.6.5/doc/html-main/index.html"]
@@ -44,7 +44,11 @@ remove: [
   ["ocamlfind" "remove" "shell"]
   ["ocamlfind" "remove" "smtp"]
 ]
-depends: ["ocamlfind" "camlp4" ]
+depends: [
+  "ocaml" {< "4.02.0"}
+  "ocamlfind"
+  "camlp4"
+]
 depopts: [
   "lablgtk"
   "pcre"
@@ -55,8 +59,29 @@ depopts: [
 patches: [
   "netpop.patch"
   "nethttpd_types.patch"
-  "cloexec.patch" {ocaml-version >= "4.01.0"}
-  "fix-ocaml-4.02.patch" {ocaml-version >= "4.02.0"}
+  "cloexec.patch" {ocaml:version >= "4.01.0"}
+  "fix-ocaml-4.02.patch" {ocaml:version >= "4.02.0"}
 ]
-available: ocaml-version < "4.02.0"
 install: [make "install"]
+synopsis:
+  "Internet protocols (http, cgi, email etc.) and helper data structures (mail messages, character sets, etc.)"
+description: """
+Ocamlnet is an enhanced system platform library for Ocaml. As the name
+suggests, large parts of it have to do with network programming, but
+it is actually not restricted to this. Other parts deal with the
+management of multiple worker processes, and the interaction with
+other programs running on the same machine. You can also view Ocamlnet
+as an extension of the system interface as provided by the Unix module
+of the standard library."""
+flags: light-uninstall
+extra-files: [
+  ["ocamlnet.install" "md5=ed54a9f3d6382ccc01ea1cf1af8f2c38"]
+  ["netpop.patch" "md5=4fec3114768d6157a5a86c35d86968f7"]
+  ["nethttpd_types.patch" "md5=4fdb257660768ca3bd94416a53e6e5f9"]
+  ["fix-ocaml-4.02.patch" "md5=5f017d099ce253c0973ab24c9fea5e0c"]
+  ["cloexec.patch" "md5=e0b67130dd297fc5d85a78ede67fd8f1"]
+]
+url {
+  src: "http://download.camlcity.org/download/ocamlnet-3.6.5.tar.gz"
+  checksum: "md5=54a81d892103c60932ea7e270f2cf32a"
+}

@@ -1,21 +1,21 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "dave@recoil.org"
 authors: ["David Scott" "David Sheets" "Thomas Leonard"]
 license: "ISC"
 homepage: "https://github.com/mirage/ocaml-9p"
-dev-repo: "https://github.com/mirage/ocaml-9p.git"
+dev-repo: "git+https://github.com/mirage/ocaml-9p.git"
 bug-reports: "https://github.com/mirage/ocaml-9p/issues"
 doc: "https://mirage.github.io/ocaml-9p/"
 build: [
-  "ocaml"
-  "pkg/pkg.ml"
-  "build"
-  "--pinned"
-  pinned
-  "--with-lambda-term"
-  lambda-term:installed
-]
-build-test: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    pinned
+    "--with-lambda-term"
+    lambda-term:installed
+  ]
   [
     "ocaml"
     "pkg/pkg.ml"
@@ -24,12 +24,13 @@ build-test: [
     "true"
     "--with-lambda-term"
     lambda-term:installed
-  ]
-  ["ocaml" "pkg/pkg.ml" "test"]
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "base-bytes"
-  "cstruct" {>= "1.9.0" & < "3.0.0" }
+  "cstruct" {>= "1.9.0" & < "3.0.0"}
   "cstruct-lwt"
   "sexplib" {> "113.00.00"}
   "result"
@@ -50,8 +51,38 @@ depends: [
   "ocamlbuild" {build}
   "ppx_tools" {build}
   "topkg" {build & >= "0.7.3"}
-  "alcotest" {test & >= "0.4.0"}
+  "alcotest" {with-test & >= "0.4.0"}
   "ppx_cstruct"
 ]
 depopts: ["lambda-term"]
-available: [ocaml-version >= "4.02.0"]
+synopsis: "An implementation of the 9p protocol in pure OCaml"
+description: """
+[![Build Status](https://travis-ci.org/mirage/ocaml-9p.png?branch=master)](https://travis-ci.org/mirage/ocaml-9p) [![Coverage Status](https://coveralls.io/repos/mirage/ocaml-9p/badge.png?branch=master)](https://coveralls.io/r/mirage/ocaml-9p?branch=master)
+
+ocaml-9p is an implementation of the 9P protocol, written in
+a Mirage-friendly style.
+
+Please read the [API documentation](https://mirage.github.io/ocaml-9p).
+
+Example of the CLI example program:
+```
+o9p ls --username vagrant   /var
+drwxr-xr-x ? root root 4096 Feb 2  2015 lib
+drwxr-xr-x ? root root 4096 Mar 15 2015 cache
+-rwxrwxrwx ? root root 9    May 10 2014 lock
+drwxrwxrwx ? root root 4096 Jul 6  2015 tmp
+drwxr-xr-x ? root root 4096 May 11 2014 spool
+drwxrwxr-x ? root sshd 4096 Sep 28 2015 log
+drwxr-xr-x ? root root 4096 Sep 21 2015 backups
+drwxrwxr-x ? root mail 4096 Apr 16 2014 mail
+drwxr-xr-x ? root root 4096 Apr 16 2014 opt
+drwxrwxr-x ? root 50   4096 Apr 10 2014 local
+-rwxrwxrwx ? root root 4    May 10 2014 run
+```
+
+This library supports the [9P2000.u extension](http://ericvh.github.io/9p-rfc/rfc9p2000.u.html)"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-9p/releases/download/v0.7.2/protocol-9p-0.7.2.tbz"
+  checksum: "md5=c8a73115d6da47d9a759fbd4f1c451c9"
+}

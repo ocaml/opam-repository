@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "mirageos-devel@lists.xenproject.org"
 authors: [ "Thomas Gazagnaire"
            "Anil Madhavapeddy"
@@ -7,18 +7,35 @@ license: "ISC"
 homepage: "https://github.com/mirage/ocaml-base64"
 doc: "http://mirage.github.io/ocaml-base64/"
 bug-reports: "https://github.com/mirage/ocaml-base64/issues"
-dev-repo: "https://github.com/mirage/ocaml-base64.git"
+dev-repo: "git+https://github.com/mirage/ocaml-base64.git"
 depends: [
+  "ocaml"
   "base-bytes"
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
-  "bos" {test}
-  "rresult" {test}
-  "alcotest" {test}
+  "bos" {with-test}
+  "rresult" {with-test}
+  "alcotest" {with-test}
 ]
-build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ]
-  [ "ocaml" "pkg/pkg.ml" "test" ]
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
+synopsis: "For OCaml"
+description: """
+Base64 is a group of similar binary-to-text encoding schemes that represent
+binary data in an ASCII string format by translating it into a radix-64
+representation.  It is specified in [RFC 4648][rfc4648].
+
+See also [documentation][docs].
+
+[rfc4648]: https://tools.ietf.org/html/rfc4648
+[docs]: http://mirage.github.io/ocaml-base64"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-base64/releases/download/v2.1.2/base64-2.1.2.tbz"
+  checksum: "md5=acef73296915b4f8052868f182862dc8"
+}

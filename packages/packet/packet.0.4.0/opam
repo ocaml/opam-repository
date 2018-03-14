@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 version: "0.4.0"
 name: "packet"
 maintainer: "Arjun Guha <arjun@cs.umass.edu>"
@@ -6,23 +6,30 @@ homepage: "https://github.com/frenetic-lang/ocaml-packet"
 build: [
   ["./configure" "--%{pa_ounit:enable}%-tests"]
   [make]
-]
-build-test: [
-  [make "test"]
+  [make "test"] {with-test}
 ]
 remove: [
   ["ocamlfind" "remove" "packet"]
 ]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind"
-  "cstruct" {>= "1.0.1" & <"2.0.0"}
+  "cstruct" {>= "1.0.1" & < "2.0.0"}
   "sexplib" {>= "110.01.00" & < "113.01.00"}
   "tcpip" {>= "2.0.3"}
   "quickcheck"
-  "ounit" {test}
-  "pa_ounit" {test}
+  "ounit" {with-test}
+  "pa_ounit" {with-test}
   "ocamlbuild" {build}
 ]
 dev-repo: "git://github.com/frenetic-lang/ocaml-packet"
-available: ocaml-version >= "4.02.0"
 install: [make "install"]
+synopsis: "A serialization library for several common packet formats"
+description: """
+This library includes serializers for ethernet, TCP, IP, ARP, ICMP, and
+others."""
+flags: light-uninstall
+url {
+  src: "https://github.com/frenetic-lang/ocaml-packet/archive/v0.4.0.tar.gz"
+  checksum: "md5=4f6f97ad5e1156b0d30bd91d03ce7b1a"
+}

@@ -1,19 +1,18 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "rudi.grinberg@gmail.com"
 authors: ["Rudi Grinberg"]
 license: "MIT"
 
 homepage: "https://github.com/rgrinberg/opium"
 bug-reports: "https://github.com/rgrinberg/opium/issues"
-dev-repo: "https://github.com/rgrinberg/opium.git"
-
+dev-repo: "git+https://github.com/rgrinberg/opium.git"
 build: [
   ["jbuilder" "subst" "-n" name] {pinned}
   ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
-
 depends: [
+  "ocaml" {>= "4.02.3"}
   "jbuilder" {build}
   "opium_kernel"
   "cohttp-lwt-unix" {>= "0.99.0"}
@@ -24,8 +23,21 @@ depends: [
   "ppx_sexp_conv" {>= "v0.9.0"}
   "re" {>= "1.3.0"}
   "magic-mime"
-  "alcotest" {test}
-  "cow" {test & >= "0.10.0"}
+  "alcotest" {with-test}
+  "cow" {with-test & >= "0.10.0"}
 ]
+synopsis: "Sinatra like web toolkit based on Lwt + Cohttp"
+description: """
+Opium is a minimalistic library for quickly binding functions
+to http routes. Its features include (but not limited to):
 
-available: [ocaml-version >= "4.02.3"]
+* Middleware system for app independent components
+* A simple router for matching urls and parsing parameters
+* Request/Response pretty printing for easier debugging
+
+Note: This library is still at an early stage so expect breakages
+until 1.0"""
+url {
+  src: "https://github.com/rgrinberg/opium/archive/v0.16.0.tar.gz"
+  checksum: "md5=4905ce17175c91e47458fccfd6a8885f"
+}

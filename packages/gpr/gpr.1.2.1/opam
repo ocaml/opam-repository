@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "gpr"
 version: "1.2.1"
 maintainer: "Markus Mottl <markus.mottl@gmail.com>"
@@ -6,17 +6,18 @@ authors: [ "Markus Mottl <markus.mottl@gmail.com>" ]
 license: "LGPL-2.1+ with OCaml linking exception"
 homepage: "http://mmottl.github.io/gpr"
 bug-reports: "https://github.com/mmottl/gpr/issues"
-dev-repo: "https://github.com/mmottl/gpr.git"
+dev-repo: "git+https://github.com/mmottl/gpr.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "gpr"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "4.00.1"}
   "base-threads"
   "core" {>= "109.31.00"}
   "gsl"
@@ -24,4 +25,14 @@ depends: [
   "ocamlfind" {>= "1.3.1"}
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.00.1" ]
+synopsis: "GPR - Library and Application for Gaussian Process Regression"
+description: """
+Gaussian process regression is a modern Bayesian approach to machine
+learning, and GPR implements some of the latest advances in this field"""
+flags: light-uninstall
+extra-files: ["gpr.install" "md5=e0a9e3307e78784e3ee9b23f3fee1897"]
+url {
+  src:
+    "https://github.com/mmottl/gpr/releases/download/v1.2.1/gpr-1.2.1.tar.gz"
+  checksum: "md5=c9b69dbaaa69e3efa7be4e473bb78ee8"
+}

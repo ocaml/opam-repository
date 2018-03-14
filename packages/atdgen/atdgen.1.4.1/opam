@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "2.0"
 maintainer: "https://github.com/ocaml/opam-repository/issues"
 homepage: "https://github.com/mjambon/atdgen"
 build: make
@@ -6,14 +6,30 @@ remove: [
     ["ocamlfind" "remove" "atdgen"]
 ]
 depends: [
+  "ocaml" {< "4.03"}
   "ocamlfind"
   "atd" {>= "1.1.0"}
   "biniou" {>= "1.0.6"}
   "yojson"
 ]
-
-# Cautiously disable atdgen on 4.03, it seems to be segfaulting
-# https://github.com/mjambon/atdgen/issues/45
-# https://github.com/OCamlPro/opam-publish/issues/40
-available: [ocaml-version < "4.03"]
 install: [make "install" "BINDIR=%{bin}%"]
+synopsis:
+  "Generates efficient JSON serializers, deserializers and validators"
+description: """
+Atdgen is a command-line program that takes as input type definitions in the
+ATD syntax and produces OCaml code suitable for data serialization and
+deserialization.
+
+Two data formats are currently supported, these are biniou and JSON.
+Atdgen-biniou and Atdgen-json will refer to Atdgen used in one context or the
+other.
+
+Atdgen was designed with efficiency and durability in mind. Software authors
+are encouraged to use Atdgen directly and to write tools that may reuse part of
+Atdgen’s source code."""
+flags: light-uninstall
+extra-files: ["atdgen.install" "md5=8747b34b3b125cc7cdb5ead04902795d"]
+url {
+  src: "https://github.com/mjambon/atdgen/archive/v1.4.1.tar.gz"
+  checksum: "md5=a373cdb4c002aba5a481fc333f380d74"
+}

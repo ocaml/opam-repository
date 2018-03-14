@@ -1,27 +1,26 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      "Thomas Gazagnaire"
 license:      "ISC"
 homepage:     "https://github.com/mirage/ocaml-git"
 bug-reports:  "https://github.com/mirage/ocaml-git/issues"
-dev-repo:     "https://github.com/mirage/ocaml-git.git"
-
+dev-repo: "git+https://github.com/mirage/ocaml-git.git"
 build: [
-  ["./configure"
-     "--prefix" prefix
-     "--%{mirage-http+mirage-flow+mirage-types-lwt:enable}%-mirage"
-     "--%{conduit+cohttp+base-unix:enable}%-unix"
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--%{mirage-http+mirage-flow+mirage-types-lwt:enable}%-mirage"
+    "--%{conduit+cohttp+base-unix:enable}%-unix"
   ]
   [make]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test"]
-]
-
 install: [make "install"]
 remove: ["ocamlfind" "remove" "git"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "cmdliner"
   "mstruct" {>= "1.3.1"}
   "dolog" {>= "1.0"}
@@ -31,11 +30,11 @@ depends: [
   "uri" {>= "1.3.12"}
   "lwt" {>= "2.4.7"}
   "hex"
-  "alcotest" {test & <= "0.3.3"}
-  "mirage-fs-unix" {test & = "1.1.4"}
-  "mirage-types-lwt" {test}
-  "cohttp" {test}
-  "conduit" {test}
+  "alcotest" {with-test & <= "0.3.3"}
+  "mirage-fs-unix" {with-test & = "1.1.4"}
+  "mirage-types-lwt" {with-test}
+  "cohttp" {with-test}
+  "conduit" {with-test}
   "ocamlbuild" {build}
 ]
 depopts: [
@@ -53,4 +52,25 @@ conflicts: [
  "conduit"  {>= "0.99"}
  "mirage-flow" {> "1.1.0"}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Git format and protocol in pure OCaml"
+description: """
+Support for on-disk and in-memory Git stores. Can read and write all
+the Git objects: the usual blobs, trees, commits and tags but also the
+pack files, pack indexes and the index file (where the staging area
+lives).
+
+All the objects share a consistent API, and convenience functions are
+provided to manipulate the different objects. For instance, it is
+possible to make a pack file position independant (as the Zlib
+compression might change the relative offsets between the packed
+objects), to generate pack indexes from pack files, or to expand
+the filesystem of a given commit.
+
+The library comes with a command-line tool called `ogit` which shares
+a similar interface with `git`, but where all operations are mapped to
+the API exposed `ocaml-git` (and hence using only OCaml code)."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-git/archive/1.5.1.tar.gz"
+  checksum: "md5=edfe297fdcf473edca3668d26dc76edc"
+}

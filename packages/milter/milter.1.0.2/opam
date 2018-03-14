@@ -1,22 +1,32 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Andre Nathan <andrenth@gmail.com>"
 authors: "Andre Nathan <andrenth@gmail.com>"
 homepage: "https://github.com/andrenth/ocaml-milter"
 bug-reports: "https://github.com/andrenth/ocaml-milter/issues"
 license: "MIT"
-dev-repo: "https://github.com/andrenth/ocaml-milter.git"
+dev-repo: "git+https://github.com/andrenth/ocaml-milter.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "milter"]
 depends: [
+  "ocaml"
   "ocamlfind"
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["libmilter-dev"]]
-  [["ubuntu"] ["libmilter-dev"]]
+  ["libmilter-dev"] {os-distribution = "debian"}
+  ["libmilter-dev"] {os-distribution = "ubuntu"}
 ]
+synopsis: "OCaml libmilter bindings"
+description: """
+This package provides OCaml bindings for sendmail's libmilter, allowing
+integration of OCaml programs with compatible MTAs."""
+flags: light-uninstall
+url {
+  src: "https://github.com/andrenth/ocaml-milter/archive/1.0.2.tar.gz"
+  checksum: "md5=ab907129dbd1dd8b9d27e355d285cda0"
+}

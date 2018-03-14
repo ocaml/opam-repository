@@ -1,21 +1,20 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "dave@recoil.org"
 authors: ["David Scott" "Rolf Neugebauer"]
 license: "ISC"
 homepage: "https://github.com/djs55/ocaml-hvsock"
-dev-repo: "https://github.com/djs55/ocaml-hvsock.git"
+dev-repo: "git+https://github.com/djs55/ocaml-hvsock.git"
 bug-reports: "https://github.com/djs55/ocaml-hvsock/issues"
 build: [
   ["ocaml" "setup.ml" "-configure"]
   [make]
-]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  [make "test"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "hvsock"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "base-bytes"
   "base-threads"
   "lwt" {>= "2.4.7"}
@@ -28,6 +27,15 @@ depends: [
   "cstruct"
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "alcotest" {test & >= "0.4.0"}
+  "alcotest" {with-test & >= "0.4.0"}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Bindings to Hyper-V AF_HVSOCK"
+description: """
+AF_HVSOCK sockets allow host <-> VM communication on Hyper-V hosts. A typical
+use is to run some kind of agent in a VM, and connect to it from software
+running on the host. AF_HVSOCK is similar to AF_VSOCK as used by virtio-vsock."""
+flags: light-uninstall
+url {
+  src: "https://github.com/djs55/ocaml-hvsock/archive/v0.10.0.tar.gz"
+  checksum: "md5=936d43f968b1888658488373107e457b"
+}

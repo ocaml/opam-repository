@@ -1,10 +1,10 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Daniil Baturin <daniil@baturin.org>"
 authors: "Daniil Baturin <daniil@baturin.org>"
 homepage: "https://github.com/dmbaturin/cfgen"
 bug-reports: "https://github.com/dmbaturin/cfgen/issues"
 license: "MIT"
-dev-repo: "https://github.com/dmbaturin/cfgen.git"
+dev-repo: "git+https://github.com/dmbaturin/cfgen.git"
 build: [
   ["./configure" "--prefix=%{prefix}%"]
   [make]
@@ -12,6 +12,20 @@ build: [
 install: [make "install"]
 remove: ["ocamlfind" "remove" "cfgen"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "menhir" {build}
 ]
+synopsis: "Context-free grammar based random text generator"
+description: """
+cfgen generated random text based on context-free grammars
+defined in BNF-like syntax. It's primarily meant for parser
+fuzzing. If a rule has multiple alternative, they are selected
+randomly. To influence the choice, you can specify weight for
+each alternative, as in
+<start> ::= 10 "aaa" <start> | 5 "bbb" <start> | "ccc";"""
+flags: light-uninstall
+url {
+  src: "https://github.com/dmbaturin/cfgen/archive/1.0.zip"
+  checksum: "md5=8036d9283ae8c83a710872a9455f4435"
+}

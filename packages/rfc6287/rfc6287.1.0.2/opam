@@ -1,26 +1,32 @@
-opam-version: "1.2"
+opam-version: "2.0"
 version:      "1.0.2"
 name:         "rfc6287"
 homepage:     "https://github.com/sg2342/ocaml-rfc6287"
-dev-repo:     "https://github.com/sg2342/ocaml-rfc6287.git"
+dev-repo: "git+https://github.com/sg2342/ocaml-rfc6287.git"
 bug-reports:  "https://github.com/sg2342/ocaml-rfc6287/issues"
-author:       ["Stefan Grundmann <sg2342@googlemail.com>"]
 maintainer:   ["Stefan Grundmann <sg2342@googlemail.com>"]
 license:      "ICS"
 
 
 
 build: [
-    [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+    "--with-coverage"
+    "true"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+  ["sh" "-x" "bisect-ppx-report.sh"] {with-test}
 ]
-
-build-test: [
-    [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" "--with-coverage" "true" ]
-    [ "ocaml" "pkg/pkg.ml" "test" ]
-    [ "sh" "-x" "bisect-ppx-report.sh" ]
-]
-
 depends: [
+  "ocaml" {>= "4.03.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
@@ -29,8 +35,12 @@ depends: [
   "astring"
   "hex"
   "rresult"
-  "ounit" {test}
-  "bisect_ppx" {test}
+  "ounit" {with-test}
+  "bisect_ppx" {with-test}
 ]
-
-available: [ocaml-version >= "4.03.0"]
+synopsis: "RFC6287 OCRA (OATH Challenge-Response Algorithm)"
+authors: "Stefan Grundmann <sg2342@googlemail.com>"
+url {
+  src: "https://github.com/sg2342/ocaml-rfc6287/archive/1.0.2.tar.gz"
+  checksum: "md5=a33300b321a68a5589d65efccaaf91e8"
+}

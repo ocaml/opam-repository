@@ -1,23 +1,43 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Anil Madhavapeddy <anil@recoil.org>"
 authors: "Anil Madhavapeddy <anil@recoil.org>"
 homepage: "https://github.com/avsm/opam-mirror"
 bug-reports: "https://github.com/avsm/opam-mirror/issues"
 license: "ISC"
-tags: ["org:ocamllabs" "org:mirage" "flags:plugin"]
-dev-repo: "https://github.com/avsm/opam-mirror.git"
+tags: ["org:ocamllabs" "org:mirage"]
+dev-repo: "git+https://github.com/avsm/opam-mirror.git"
 build: [
   ["./configure" "--prefix=%{prefix}%"]
   [make]
 ]
 install: [make "install"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "cmdliner"
-  "cohttp" {>= "0.15.2" & <"0.99"}
+  "cohttp" {>= "0.15.2" & < "0.99"}
   "lwt" {>= "2.4.3"}
   "opam-lib" {>= "1.2.0" & < "1.3"}
   "tls"
   "lambda-term"
   "ocamlbuild" {build}
 ]
+synopsis: "Mirror upstream OPAM package distribution files"
+description: """
+This is a tool that mirrors original upstream distribution files in OPAM
+packages. It places them into a `distfiles/` directory that follows a similar
+structure to the existing `archives/` directory.
+
+Assuming that you have an OPAM checkout in `~/git/opam-repository`, do:
+
+    opam mirror-show-urls ~/git/opam-repository > package-list
+    opam mirror-fetch-urls package-list
+
+or
+
+    opam mirror-fetch-urls - | opam mirror-show-urls ~git/opam-repository"""
+flags: plugin
+url {
+  src: "https://github.com/avsm/opam-mirror/archive/v0.0.1.tar.gz"
+  checksum: "md5=cffb46c09512369c5f13f9ee2012ce40"
+}

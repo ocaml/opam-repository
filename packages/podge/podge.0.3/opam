@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "podge"
 version: "0.3"
 maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
@@ -10,16 +10,15 @@ build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: ["ocamlfind" "remove" "podge"]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml" {>= "4.02.1"}
   "base-unix"
   "cohttp" {>= "0.9.7"}
   "oasis" {build & >= "0.4"}
@@ -29,5 +28,18 @@ depends: [
   "yojson"
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.02.1" ]
 dev-repo: "git://github.com/fxfactorial/podge"
+synopsis: "Shortcuts and helpers for common tasks in OCaml ecosystem"
+description: """
+If you're doing any modern OCaml then you're doubtlessly annoyed by
+the state of libraries and committing to one of the big ones can be
+restricting. Podge is a single module containing specialized modules
+for their respectives usages for seemingly common tasks.
+
+Podge is especially useful for Hackathons or data exploration in utop
+i.e. you just want to do a simple HTTP get/put request or manipulate JSON."""
+flags: light-uninstall
+url {
+  src: "https://github.com/fxfactorial/podge/archive/v0.0.3.tar.gz"
+  checksum: "md5=4e91f8cbb770d74b10b3bd6f7d48c528"
+}

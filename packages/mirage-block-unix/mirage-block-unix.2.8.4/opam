@@ -1,23 +1,20 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors:      "Dave Scott <dave@recoil.org>"
 maintainer:   "dave@recoil.org"
 homepage:     "https://github.com/mirage/mirage-block-unix"
-dev-repo:     "https://github.com/mirage/mirage-block-unix.git"
+dev-repo: "git+https://github.com/mirage/mirage-block-unix.git"
 bug-reports:  "https://github.com/mirage/mirage-block-unix/issues"
 tags:         "org:mirage"
 license:      "ISC"
 
 build: [
-  [ "jbuilder" "subst" ] {pinned}
-  [ "jbuilder" "build" "-p" name "-j" jobs ]
+  ["jbuilder" "subst"] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-
-build-test: [
-  [ "jbuilder" "runtest" "-p" name "-j" jobs ]
-]
-
 depends: [
-  "jbuilder" {build & >="1.0+beta10"}
+  "ocaml" {>= "4.03.0"}
+  "jbuilder" {build & >= "1.0+beta10"}
   "cstruct" {>= "3.0.0"}
   "cstruct-lwt"
   "mirage-block-lwt" {>= "1.0.0"}
@@ -25,15 +22,29 @@ depends: [
   "io-page-unix" {>= "2.0.0"}
   "uri" {>= "1.9.0"}
   "logs"
-  "ounit" {test}
-  "fmt" {test}
+  "ounit" {with-test}
+  "fmt" {with-test}
 ]
-available: [ ocaml-version >= "4.03.0" ]
 depexts: [
- [["debian"] ["linux-libc-dev" ]]
- [["ubuntu"] ["linux-libc-dev"]]
- [["opensuse"] ["linux-glibc-devel"]]
- [["rhel"] ["kernel-headers"]]
- [["centos"] ["kernel-headers"]]
- [["alpine"] ["linux-headers"]]
+  ["linux-libc-dev"] {os-distribution = "debian"}
+  ["linux-libc-dev"] {os-distribution = "ubuntu"}
+  ["linux-glibc-devel"] {os-distribution = "opensuse"}
+  ["kernel-headers"] {os-distribution = "rhel"}
+  ["kernel-headers"] {os-distribution = "centos"}
+  ["linux-headers"] {os-distribution = "alpine"}
 ]
+synopsis: "MirageOS disk block driver for Unix"
+description: """
+[![Build Status](https://travis-ci.org/mirage/mirage-block-unix.png?branch=master)](https://travis-ci.org/mirage/mirage-block-unix) [![Coverage Status](https://coveralls.io/repos/mirage/mirage-block-unix/badge.png?branch=master)](https://coveralls.io/r/mirage/mirage-block-unix?branch=master)
+
+Unix implementation of the Mirage `BLOCK_DEVICE` interface.
+
+This module provides raw I/O to files and block devices with as little
+caching as possible.
+
+E-mail: <mirageos-devel@lists.xenproject.org>"""
+url {
+  src:
+    "https://github.com/mirage/mirage-block-unix/releases/download/v2.8.4/mirage-block-unix-2.8.4.tbz"
+  checksum: "md5=e3ed39593bf4742bc2656b5d8b6ea02e"
+}

@@ -1,8 +1,8 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:    "anil@recoil.org"
 homepage:      "https://github.com/mirage/mirage-console"
 bug-reports:   "https://github.com/mirage/mirage-console/issues"
-dev-repo:      "https://github.com/mirage/mirage-console.git"
+dev-repo: "git+https://github.com/mirage/mirage-console.git"
 doc:           "https://mirage.github.io/mirage-console/"
 authors:       [ "Anil Madhavapeddy" "David Scott"]
 tags:          [ "org:mirage" "org:xapi-project"]
@@ -14,11 +14,58 @@ build: [
 ]
 
 depends: [
+  "ocaml" {>= "4.03.0"}
   "ocamlfind" {build}
-  "jbuilder"  {build & >="1.0+beta9"}
+  "jbuilder" {build & >= "1.0+beta9"}
   "mirage-console-lwt" {>= "2.2.0"}
   "mirage-console-xen-proto"
   "lwt"
-  "xenstore" "xen-evtchn" "xen-gnt" "shared-memory-ring-lwt"
+  "xenstore"
+  "xen-evtchn"
+  "xen-gnt"
+  "shared-memory-ring-lwt"
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis: "Implementations of Mirage consoles, for Unix and Xen"
+description: """
+The Unix version of the console currently uses standard output. The code is in
+
+  unix/console.{ml,mli}
+
+The Xen kernel version of the console uses the primary PV console ring. The
+code is in
+
+  xen/console.{ml,mli}
+
+There is also a Unix userspace utility which creates and services Xen consoles
+("console backends"):
+
+Connect a console to a VM like this:
+
+```
+[root@st30 ~]# ./mirage-console connect trusty
+Operating on VM domain id: 19
+Creating device 1 (linux device /dev/tty1)
+{ ref = 128; event_channel = 13 }
+```
+
+Then inside the guest:
+
+```
+[root@trusty ~]# cat > /dev/hvc1
+hello
+there
+```
+
+And observe in dom0:
+
+```
+hello
+there
+```
+
+Then hit Control+C and it all cleans up."""
+url {
+  src:
+    "https://github.com/mirage/mirage-console/releases/download/v2.3.3/mirage-console-2.3.3.tbz"
+  checksum: "md5=5333550e819614a59547a3ee98cf33ef"
+}

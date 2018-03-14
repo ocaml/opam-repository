@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Andi McClure <andi.m.mcclure@gmail.com>"
 authors: "Andi McClure <andi.m.mcclure@gmail.com>"
 homepage: "https://github.com/mcclure/ppx_const"
@@ -7,12 +7,37 @@ license: "Creative Commons Zero"
 tags: "syntax"
 dev-repo: "git://github.com/mcclure/ppx_const.git"
 substs: "pkg/META"
-build: ["ocaml" "pkg/build.ml" "native=%{ocaml-native}%" "native-dynlink=%{ocaml-native-dynlink}%"]
-build-test: ["ocamlbuild" "-classic-display" "-use-ocamlfind" "src_test/test_ppx_const.byte" "--"]
+build: [
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+  ]
+  [
+    "ocamlbuild"
+    "-classic-display"
+    "-use-ocamlfind"
+    "src_test/test_ppx_const.byte"
+    "--"
+  ] {with-test}
+]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ppx_tools" {>= "0.99.1"}
-  "ounit" {test}
-  "ocamlfind" {test}
+  "ounit" {with-test}
+  "ocamlfind" {with-test}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.02.0" & opam-version >= "1.2"]
+available: opam-version >= "1.2"
+synopsis: "Compile-time \"if\" statement for conditional inclusion of code."
+description: """
+This is a ppx extension which adds `if#const` and `match#const` constructs to
+OCaml. They behave like normal `if` and `const`, but conditions are evaluated
+at compile time and AST sections not selected are excluded from the program
+completely. In conjunction with ppx_getenv, this can be used for conditional
+compilation of code."""
+url {
+  src: "https://github.com/mcclure/ppx_const/archive/ppx_const-1.1.tar.gz"
+  checksum: "md5=53f811ffb931d9b8242ee1ddf9bf4e47"
+}

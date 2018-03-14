@@ -1,32 +1,50 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      ["Thomas Gazagnaire" "Thomas Leonard"]
 license:      "ISC"
 homepage:     "https://github.com/mirage/irmin"
 bug-reports:  "https://github.com/mirage/irmin/issues"
-dev-repo:     "https://github.com/mirage/irmin.git"
+dev-repo: "git+https://github.com/mirage/irmin.git"
 doc:          "https://mirage.github.io/irmin/"
 
 build: [
-  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"
-      "--with-http"   "%{cohttp:installed}%"
-      "--with-git"    "%{git:installed}%"
-      "--with-unix"   "%{irmin-watcher+git-unix:installed}%"
-      "--with-mirage" "%{mirage-git:installed}%"
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--with-http"
+    "%{cohttp:installed}%"
+    "--with-git"
+    "%{git:installed}%"
+    "--with-unix"
+    "%{irmin-watcher+git-unix:installed}%"
+    "--with-mirage"
+    "%{mirage-git:installed}%"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--tests"
+    "true"
+    "--with-http"
+    "%{cohttp:installed}%"
+    "--with-git"
+    "%{git:installed}%"
+    "--with-unix"
+    "%{irmin-watcher+git-unix:installed}%"
+    "--with-mirage"
+    "%{mirage-git:installed}%"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-build-test: [
-  ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"
-      "--with-http"   "%{cohttp:installed}%"
-      "--with-git"    "%{git:installed}%"
-      "--with-unix"   "%{irmin-watcher+git-unix:installed}%"
-      "--with-mirage" "%{mirage-git:installed}%"]
-  ["ocaml" "pkg/pkg.ml" "test"]
-]
-
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlbuild" {build}
-  "ocamlfind"  {build}
-  "topkg"      {build & >= "0.7.8"}
+  "ocamlfind" {build}
+  "topkg" {build & >= "0.7.8"}
   "ezjsonm" {>= "0.4.2" & < "0.5.0"}
   "fmt"
   "ocamlgraph"
@@ -42,11 +60,11 @@ depends: [
   "re"
   "cmdliner"
   "crunch"
-  "mtime"         {test}
-  "git-unix"      {test}
-  "cohttp"        {test}
-  "alcotest"      {test & >="0.4.1"}
-  "irmin-watcher" {test & >= "0.2.0"}
+  "mtime" {with-test}
+  "git-unix" {with-test}
+  "cohttp" {with-test}
+  "alcotest" {with-test & >= "0.4.1"}
+  "irmin-watcher" {with-test & >= "0.2.0"}
 ]
 depopts: [
   "git"
@@ -65,4 +83,19 @@ conflicts: [
   "mirage-types"  {>="3.0.0"}
   "irmin-watcher" {<"0.2.0"}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis:
+  "A distributed database that follows the same design principles as Git"
+description: """
+Irmin is a library for persistent stores with built-in snapshot,
+branching and reverting mechanisms. It is designed to use a large
+variety of backends. Irmin is written in pure OCaml and does not
+depend on external C stubs; it aims to run everywhere, from Linux,
+to browsers and Xen unikernels.
+
+[![Build Status](https://travis-ci.org/mirage/irmin.svg)](https://travis-ci.org/mirage/irmin)
+[![docs](https://img.shields.io/badge/doc-online-blue.svg)](https://mirage.github.io/irmin/)"""
+url {
+  src:
+    "https://github.com/mirage/irmin/releases/download/0.12.0/irmin-0.12.0.tbz"
+  checksum: "md5=04158d3e093add7b556323aeb117219c"
+}

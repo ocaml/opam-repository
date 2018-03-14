@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "ygrek@autistici.org"
 authors: [
   "Christian Lindig <lindig@eecs.harvard.edu>"
@@ -10,17 +10,25 @@ doc: "http://ocaml-mysql.forge.ocamlcore.org/doc/index.html"
 build: [
   ["./configure" "--prefix" "%{prefix}%"]
   [make]
-]
-build-doc: [
-  [make "htdoc"]
+  [make "htdoc"] {with-doc}
 ]
 remove: [
   ["ocamlfind" "remove" "mysql"]
 ]
-depends: ["ocamlfind" "camlp4"]
+depends: [
+  "ocaml" {< "4.03"}
+  "ocamlfind"
+  "camlp4"
+]
 depexts: [
-  [ [ "debian" ] [ "libmysqlclient-dev" ] ]
-  [ [ "ubuntu" ] [ "libmysqlclient-dev" ] ]
+  ["libmysqlclient-dev"] {os-distribution = "debian"}
+  ["libmysqlclient-dev"] {os-distribution = "ubuntu"}
 ]
 install: [make "install"]
-available: [ ocaml-version < "4.03" ]
+synopsis: "Bindings to libmysqlclient for interacting with mysql databases"
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1308/ocaml-mysql-1.1.2.tar.gz"
+  checksum: "md5=1a5842c82110a65cc37f6fce460ada07"
+}

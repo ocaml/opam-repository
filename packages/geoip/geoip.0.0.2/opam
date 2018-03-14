@@ -1,19 +1,29 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "ygrek@autistici.org"
 homepage: "http://geoip.forge.ocamlcore.org"
 doc: ["http://geoip.forge.ocamlcore.org/api/index.html"]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "geoip"]]
 depends: [
+  "ocaml"
   "ocamlfind"
   "ocamlbuild" {build}
 ]
 depexts: [
- [["ubuntu"]["libgeoip-dev"]]
- [["debian"]["libgeoip-dev"]]
+  ["libgeoip-dev"] {os-distribution = "ubuntu"}
+  ["libgeoip-dev"] {os-distribution = "debian"}
 ]
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "Bindings to GeoIP database library."
+description:
+  "GeoIP lets you discover information about a specific IP address."
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1247/ocaml-geoip-0.0.2.tar.gz"
+  checksum: "md5=baae04937a9d0fd02cc531b600a080b2"
+}

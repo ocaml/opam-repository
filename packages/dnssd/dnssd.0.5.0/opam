@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "dave@recoil.org"
 authors: ["David Scott" "Thomas Gazagnaire"]
 license: "ISC"
 homepage: "https://github.com/mirage/ocaml-osx-dnssd"
-dev-repo: "https://github.com/mirage/ocaml-osx-dnssd.git"
+dev-repo: "git+https://github.com/mirage/ocaml-osx-dnssd.git"
 bug-reports: "https://github.com/mirage/ocaml-osx-dnssd/issues"
 doc: "https://mirage.github.io/ocaml-osx-dnssd/"
 tags: [
@@ -13,20 +13,39 @@ tags: [
 build: [
   ["jbuilder" "subst"] {pinned}
   ["jbuilder" "build" "-j" jobs]
+  ["jbuilder" "runtest"] {with-test}
 ]
-
-build-test: [
-  [ "jbuilder" "runtest" ]
-]
-
 depends: [
+  "ocaml" {>= "4.03.0"}
   "dns"
   "lwt"
   "logs"
   "fmt"
   "cstruct" {>= "2.3.0"}
   "jbuilder" {build & >= "1.0+beta10"}
-  "alcotest" {test}
+  "alcotest" {with-test}
 ]
+synopsis: "DNS Service Discovery for macOS"
+description: """
+This library contains bindings to the functions in `dns_sd.h`, which
+are used to perform generic DNS queries using the macOS resolver.
+This is the best way to ensure that the query results match the
+results obtained by other apps on OSX.
 
-available: [ocaml-version >= "4.03.0"]
+## Usage example
+
+In a toplevel:
+
+```ocaml
+Dnssd.query "dave.recoil.org" Dns.Packet.Q_A;;
+- : (Dns.Packet.rr list, Dnssd.error) result =
+Ok
+  [{Dns.Packet.name = <abstr>; cls = Dns.Packet.RR_IN; flush = false; ttl = 187l; rdata = Dns.Packet.A <abstr>};
+   {Dns.Packet.name = <abstr>; cls = Dns.Packet.RR_IN; flush = false; ttl = 187l; rdata = Dns.Packet.CNAME <abstr>};
+   {Dns.Packet.name = <abstr>; cls = Dns.Packet.RR_IN; flush = false; ttl = 187l; rdata = Dns.Packet.CNAME <abstr>}]
+```"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-osx-dnssd/releases/download/v0.5.0/dnssd-0.5.0.tbz"
+  checksum: "md5=8208d2ee22d572ea42da2a1e258c5d5a"
+}

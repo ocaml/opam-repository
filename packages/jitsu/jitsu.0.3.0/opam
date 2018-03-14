@@ -1,38 +1,54 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "jitsu"
 maintainer: "Magnus Skjegstad <magnus@skjegstad.com>"
 authors: "Magnus Skjegstad <magnus@skjegstad.com>"
 homepage: "https://github.com/mirage/jitsu"
 bug-reports: "https://github.com/mirage/jitsu/issues/"
-dev-repo: "https://github.com/mirage/jitsu.git"
+dev-repo: "git+https://github.com/mirage/jitsu.git"
 license: "ISC"
 
 build: [
   [make]
+  [make "test"] {with-test}
 ]
-
-build-test: [
-  [make "test"]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "camlp4" {build}
+  "lwt"
+  "dns" {>= "0.15.3" & < "1.0.0"}
+  "mirage-time"
+  "mirage-stack-lwt"
+  "mirage-kv-lwt"
+  "duration"
+  "mirage-profile"
+  "xenstore" {<= "1.3.0"}
+  "xenstore_transport" {<= "0.9.2"}
+  "cmdliner"
+  "ipaddr"
+  "ezxmlm"
+  "conduit" {< "0.16.0"}
+  "vchan"
+  "uuidm"
+  "irmin-unix" {<= "0.12.0"}
+  "irmin" {>= "0.10.0" & <= "0.12.0"}
+  "git" {< "2.0.0"}
+  "xenctrl" {>= "0.9.29"}
+  "xen-api-client" {= "0.9.10"}
+  "libvirt"
+  "alcotest"
 ]
+synopsis:
+  "A forwarding DNS server that automatically starts unikernels on demand"
+description: """
+Jitsu - or Just-in-Time Summoning of Unikernels - is a prototype DNS server that can boot unikernels on demand. When Jitsu receives a DNS query, a unikernel is booted automatically before the query response is sent back to the client. To the client it will look like it was on the whole time.
 
-depends: [  "ocamlfind" {build}
-            "camlp4" {build}
-            "lwt"
-            "dns"  { >= "0.15.3" & <"1.0.0"}
-            "mirage-time" "mirage-stack-lwt" "mirage-kv-lwt" "duration" "mirage-profile"
-            # above are needed for dns.lwt
-            "xenstore" {<="1.3.0"}
-            "xenstore_transport" {<="0.9.2"}
-            "cmdliner"
-            "ipaddr"
-            "ezxmlm"
-            "conduit" {<"0.16.0"}
-            "vchan"
-            "uuidm"
-            "irmin-unix" {<= "0.12.0"}
-            "irmin" { >= "0.10.0" & <= "0.12.0" }
-            "git" { < "2.0.0"}
-            "xenctrl" {>="0.9.29"}
-            "xen-api-client" {="0.9.10"}
-            "libvirt"
-            "alcotest" ]
+This version supports MirageOS and Rumprun unikernels and new backends to manage the unikernel VMs (libvirt, Xapi, libxl). Metadata and internal state is stored in Irmin and the DNS server is implemented on top of ocaml-dns. 
+
+Backends have to be installed separately. Currently supported libraries are xenctrl, xen-api-client and libvirt.
+
+Jitsu is experimental software. Please report bugs in the bug tracker."""
+url {
+  src: "https://github.com/mirage/jitsu/archive/0.3.0.tar.gz"
+  checksum: "md5=60f971b294bbb6609d18e794d99e5802"
+}

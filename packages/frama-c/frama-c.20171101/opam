@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "frama-c"
 version: "20171101"
 maintainer: "francois.bobot@cea.fr"
@@ -37,7 +37,7 @@ authors: [
 ]
 homepage: "http://frama-c.com/"
 license: "GNU Lesser General Public License version 2.1"
-dev-repo: "https://github.com/Frama-C/Frama-C-snapshot.git"
+dev-repo: "git+https://github.com/Frama-C/Frama-C-snapshot.git"
 doc: ["http://frama-c.com/download/user-manual-Sulfur-20171101.pdf"]
 bug-reports: "https://bts.frama-c.com/"
 tags: [
@@ -57,20 +57,22 @@ tags: [
 ]
 
 build: [
-  ["sh" "-eux" "./run_autoconf_if_needed.sh"] # when used in pinned mode,
-                                              # the configure *cannot* yet be
-                                              # generated
-  ["./configure" "--prefix" prefix
-                 "--disable-gui" { !conf-gtksourceview:installed |
-                                   !conf-gnomecanvas:installed }
-]
+  ["sh" "-eux" "./run_autoconf_if_needed.sh"]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--disable-gui"
+      {!conf-gtksourceview:installed | !conf-gnomecanvas:installed}
+  ]
   [make "-j%{jobs}%"]
+  [make "-j%{jobs}%" "PTESTS_OPTS=-error-code" "tests"] {with-test}
+  [make "-C" "doc" "download"] {with-doc}
 ]
-
 install: [
   [make "install"]
+  [make "-C" "doc" "install"] {with-doc}
 ]
-
 remove: [
   ["sh" "-eux" "./run_autoconf_if_needed.sh"] # when used in pinned mode,
                                               # the configure *cannot* yet be
@@ -83,26 +85,17 @@ remove: [
   ["rm" "-rf" doc]
 ]
 
-build-doc: [
-   [make "-C" "doc" "download"]
-   [make "-C" "doc" "install"]
-]
-
-build-test: [
-  [make "-j%{jobs}%" "PTESTS_OPTS=-error-code" "tests"]
-]
-
 depends: [
-  "ocamlgraph" { >= "1.8.8" & < "1.9~" }
+  "ocaml" {>= "4.02.3"}
+  "ocamlgraph" {>= "1.8.8" & < "1.9~"}
   "ocamlfind"
   "zarith"
   "conf-autoconf"
-  "lablgtk" { >= "2.18.2" } #for ocaml >= 4.02.1
+  "lablgtk" {>= "2.18.2"}
   "conf-gtksourceview"
   "conf-gnomecanvas"
   "alt-ergo"
 ]
-
 depopts: [
   "coq" { build }
   "why3" { build }
@@ -118,7 +111,6 @@ messages: [
 conflicts: [
   "why3-base" { < "0.86" } #for WP plug-in
   "coq"      { < "8.4.6" } #for WP plug-in
-  "coq"      { >= "8.7"  } #for WP plug-in
   "lablgtk" { < "2.18.2" } #for ocaml >= 4.02.1
   "frama-c-e-acsl" #avoid mixing old releases of E-ACSL, it is already
                    #distributed with this version of Frama-C
@@ -126,4 +118,25 @@ conflicts: [
                    #'frama-c' package exists
 ]
 
-available: [ ocaml-version >= "4.02.3" ]
+synopsis: "Platform dedicated to the analysis of source code written in C."
+description: """
+Frama-C gathers several analysis techniques in a single collaborative
+framework, based on analyzers (called "plug-ins") that can build upon the
+results computed by other analyzers in the framework.
+Thanks to this approach, Frama-C provides sophisticated tools, including:
+- an analyzer based on abstract interpretation (EVA plug-in);
+- a program proof framework based on weakest precondition calculus (WP plug-in);
+- a program slicer (Slicing plug-in);
+- a tool for verification of temporal (LTL) properties (Aoraï plug-in);
+- a runtime verification tool (E-ACSL plug-in);
+- several tools for code base exploration and dependency analysis
+  (plug-ins From, Impact, Metrics, Occurrence, Scope, etc.).
+These plug-ins communicate between each other via the Frama-C API
+and via ACSL (ANSI/ISO C Specification Language) properties."""
+extra-files: [
+  "run_autoconf_if_needed.sh" "md5=8896537e4468e4228e7b0112f1cfd0ed"
+]
+url {
+  src: "http://frama-c.com/download/frama-c-Sulfur-20171101.tar.gz"
+  checksum: "md5=6b3135bb8e4771f1daf6d5d4b06ec326"
+}

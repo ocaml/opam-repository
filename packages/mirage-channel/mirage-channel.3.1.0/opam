@@ -1,22 +1,55 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "Anil Madhavapeddy <anil@recoil.org>"
 authors:      ["Anil Madhavapeddy" "Mindy Preston" "Thomas Gazagnaire"]
 homepage:     "https://github.com/mirage/mirage-channel"
 doc:          "http://mirage.github.io/mirage-channel/"
 license:      "ISC"
-dev-repo:     "https://github.com/mirage/mirage-channel.git"
+dev-repo: "git+https://github.com/mirage/mirage-channel.git"
 bug-reports:  "https://github.com/mirage/mirage-channel/issues"
 tags:         ["org:mirage"]
-available: [ ocaml-version >= "4.02.3"]
-
 build: [
   [ "jbuilder" "subst" ] {pinned}
   [ "jbuilder" "build" "-p" name "-j" jobs ]
 ]
 depends: [
-  "jbuilder" {build & >="1.0+beta10"}
+  "ocaml" {>= "4.02.3"}
+  "jbuilder" {build & >= "1.0+beta10"}
   "mirage-flow" {>= "1.2.0"}
 ]
 conflicts: [
   "tcpip" {< "3.0.0"}
 ]
+synopsis: "Buffered channels for MirageOS FLOW types"
+description: """
+Channels are buffered reader/writers built on top of unbuffered `FLOW`
+implementations.
+
+Example:
+
+```ocaml
+module Channel = Channel.Make(Flow)
+...
+Channel.read_exactly ~len:16 t
+>>= fun bufs -> (* read header of message *)
+let payload_length = Cstruct.(LE.get_uint16 (concat bufs) 0) in
+Channel.read_exactly ~len:payload_length t
+>>= fun bufs -> (* payload of message *)
+
+(* process message *)
+
+Channel.write_buffer t header;
+Channel.write_buffer t payload;
+Channel.flush t
+>>= fun () ->
+```
+
+mirage-channel is distributed under the ISC license.
+
+* Homepage: https://github.com/mirage/mirage-channel  
+* Issue: <https://github.com/mirage/mirage-channel/issues>
+* Contact: `<mirageos-devel@lists.xenproject.org>`"""
+url {
+  src:
+    "https://github.com/mirage/mirage-channel/releases/download/v3.1.0/mirage-channel-3.1.0.tbz"
+  checksum: "md5=942d02ee627c0bae75ce5e7e16c1153e"
+}

@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
 authors: [ "Christophe Troestler"
            "Julie De Pril"
@@ -6,33 +6,42 @@ authors: [ "Christophe Troestler"
            "Dany Maslowski" ]
 license: "LGPL-2.1 with OCaml linking exception"
 homepage: "http://forge.ocamlcore.org/projects/ocaml-mindstorm/"
-dev-repo: "https://github.com/Chris00/ocaml-mindstorm.git"
+dev-repo: "git+https://github.com/Chris00/ocaml-mindstorm.git"
 bug-reports: "https://github.com/Chris00/ocaml-mindstorm/issues"
 tags: [ "clib:usb" "clib:bluetooth"  ]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "mindstorm"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "3.12"}
   "base-bytes"
-  "base-threads" {test}
+  "base-threads" {with-test}
   "base-unix"
   "cppo" {build}
   "ocamlbuild" {build}
   "ocamlfind" {build & >= "1.5"}
 ]
-available: [ ocaml-version >= "3.12" ]
 depexts: [
-  [ [ "debian"  ] [ "libbluetooth-dev" ] ]
-  [ [ "ubuntu"  ] [ "libbluetooth-dev" ] ]
+  ["libbluetooth-dev"] {os-distribution = "debian"}
+  ["libbluetooth-dev"] {os-distribution = "ubuntu"}
 ]
+synopsis: "Drive Lego Mindstorms bricks from OCaml"
+description: """
+This library allows you to communicate with your Lego Mindstorms brick
+via bluetooth, enable the motors and retrieve data from various
+sensors."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/Chris00/ocaml-mindstorm/releases/download/0.6.1/mindstorm-0.6.1.tar.gz"
+  checksum: "md5=330bbf2a7d0de59e0bb6cd0be0b7ff35"
+}

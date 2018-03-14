@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christoph Höger <christoph.hoeger@tu-berlin.de>"
 authors: "Christoph Höger <christoph.hoeger@tu-berlin.de>"
 homepage: "https://github.com/choeger/ppx_deriving_morphism"
@@ -8,21 +8,33 @@ tags: "syntax"
 dev-repo: "git://github.com/choeger/ppx_deriving_morphism.git"
 substs: "pkg/META"
 build: [
-  "ocaml"
-  "pkg/build.ml"
-  "native=%{ocaml-native}%"
-  "native-dynlink=%{ocaml-native-dynlink}%"
-]
-build-test: [
-  "ocamlbuild"
-  "-classic-display"
-  "-use-ocamlfind"
-  "src_test/test_ppx_morphism.byte"
-  "--"
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+  ]
+  [
+    "ocamlbuild"
+    "-classic-display"
+    "-use-ocamlfind"
+    "src_test/test_ppx_morphism.byte"
+    "--"
+  ] {with-test}
 ]
 depends: [
+  "ocaml"
   "ppx_deriving" {>= "3.0" & < "4.0"}
   "ocamlfind" {build}
-  "ounit" {test}
-  "ppx_import" {test}
+  "ounit" {with-test}
+  "ppx_import" {with-test}
 ]
+synopsis: "Morphism generator for OCaml >=4.02"
+description: """
+ppx_deriving_morphism is a ppx_deriving plugin that provides
+a generator for records implementing openly recursive map and fold routines
+for arbitrary data structures."""
+url {
+  src: "https://github.com/choeger/ppx_deriving_morphism/archive/v0.2.tar.gz"
+  checksum: "md5=8ea76b4f1bbb212f95670136039b2cf1"
+}

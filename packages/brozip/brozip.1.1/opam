@@ -1,24 +1,23 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 homepage: "http://hyegar.com"
 bug-reports: "https://github.com/fxfactorial/brozip/issues"
 license: "BSD-3-clause"
-dev-repo: "https://github.com/fxfactorial/brozip.git"
+dev-repo: "git+https://github.com/fxfactorial/brozip.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 remove: ["ocaml" "%{etc}%/brozip/_oasis_remove_.ml" "%{etc}%/brozip"]
 depends: [
+  "ocaml" {>= "4.02.3"}
   "brotli" {build}
   "cmdliner" {build}
   "lwt" {build}
@@ -26,4 +25,18 @@ depends: [
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.02.3"]
+synopsis:
+  "CLI to concurrently compress, decompress files using the Brotli algorithm"
+description: """
+brozip is a command line tool to compress and decompress files using
+the Brotli algorithm, it uses OCaml bindings to the Google Brotli
+library. Ideally this should be used for compressing JSON over HTTP
+requests."""
+extra-files: [
+  ["brozip.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src: "https://github.com/fxfactorial/brozip/archive/v1.1.tar.gz"
+  checksum: "md5=c83005540b9fc4973374db391c125af4"
+}

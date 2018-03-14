@@ -1,17 +1,16 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Török Edwin <edwin@etorok.net>"
 authors: ["Török Edwin <edwin@etorok.net>"]
 homepage: "https://gitlab.com/edwintorok/cmdtui"
 doc: "https://edwintorok.gitlab.io/cmdtui/doc"
 license: "ISC"
-dev-repo: "https://gitlab.com/edwintorok/cmdtui.git"
+dev-repo: "git+https://gitlab.com/edwintorok/cmdtui.git"
 bug-reports: "https://gitlab.com/edwintorok/cmdtui/issues"
-tags: []
-available: [ ocaml-version >= "4.02.3"]
 depends: [
+  "ocaml" {>= "4.02.3"}
   "jbuilder" {build}
-  "astring" { >= "0.8.3" }
-  "fmt" { >= "0.8.0" }
+  "astring" {>= "0.8.3"}
+  "fmt" {>= "0.8.0"}
   "lambda-term"
   "cmdliner"
   "logs"
@@ -19,7 +18,21 @@ depends: [
   "cmdtui"
 ]
 build: [
-  [ "jbuilder" "subst"] {pinned}
-  [ "jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "subst"] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-build-test: [[ "jbuilder" "runtest" "-p" name "-j" jobs]]
+synopsis: "Interactive command completion and execution for building REPLs"
+description: """
+cmdtui is a module for declaring commands with completions and actions.
+It can return a dynamically generated list of completions based on partial user
+input.
+The base module doesn't depend on a particular terminal control library,
+and support for `lambda-term` based REPLs is provided in the `cmdtui.lambda-term` subpackage.
+
+cmdtui is distributed under the ISC license."""
+url {
+  src:
+    "https://gitlab.com/edwintorok/cmdtui/uploads/6b3cad4a29a2b1f1a019e1a1ded0e429/cmdtui-0.4.3.tbz"
+  checksum: "md5=8a792d806efab956df37f2d9316f569f"
+}

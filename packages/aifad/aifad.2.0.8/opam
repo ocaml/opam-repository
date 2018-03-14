@@ -1,24 +1,23 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Markus Mottl <markus.mottl@gmail.com>"
 authors: [ "Markus Mottl <markus.mottl@gmail.com>" ]
 license: "LGPL-2.1+ with OCaml linking exception"
 homepage: "http://mmottl.github.io/aifad"
-dev-repo: "https://github.com/mmottl/aifad.git"
+dev-repo: "git+https://github.com/mmottl/aifad.git"
 bug-reports: "https://github.com/mmottl/aifad/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocaml" "%{etc}%/aifad/_oasis_remove_.ml" "%{etc}%/aifad"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml" {>= "4.00"}
   "base-threads" {build}
   "cfg" {build}
   "ocamlfind" {build & >= "1.3.1"}
@@ -26,4 +25,16 @@ depends: [
   "pcre" {build}
   "res" {build}
 ]
-available: [ ocaml-version >= "4.00" ]
+synopsis: "AIFAD - Automated Induction of Functions over Algebraic Datatypes"
+description: """
+AIFAD is a machine learning tool that generalizes decision tree
+learning to algebraic datatypes."""
+extra-files: [
+  ["aifad.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src:
+    "https://github.com/mmottl/aifad/releases/download/v2.0.8/aifad-2.0.8.tar.gz"
+  checksum: "md5=d4d4d11f08b3f0d719580b643510de75"
+}

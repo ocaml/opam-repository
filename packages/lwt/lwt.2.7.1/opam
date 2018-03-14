@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "lwt"
 version: "2.7.1"
 maintainer: [
@@ -14,11 +14,15 @@ homepage: "https://github.com/ocsigen/lwt"
 doc: "https://ocsigen.org/lwt/manual/"
 bug-reports: "https://github.com/ocsigen/lwt/issues"
 license: "LGPL with OpenSSL linking exception"
-dev-repo: "https://github.com/ocsigen/lwt.git"
+dev-repo: "git+https://github.com/ocsigen/lwt.git"
 build: [
   [make "setup"]
-  ["ocaml" "setup.ml" "-configure"
-    "--prefix" prefix
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
     "--%{conf-libev:enable}%-libev"
     "--%{camlp4:enable}%-camlp4"
     "--%{react:enable}%-react"
@@ -26,23 +30,22 @@ build: [
     "--%{base-unix:enable}%-unix"
     "--%{base-threads:enable}%-preemptive"
     "--%{lablgtk:enable}%-glib"
-    "--%{ppx_tools:enable}%-ppx"]
+    "--%{ppx_tools:enable}%-ppx"
+  ]
   [make "build"]
-]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  [make "test"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [[make "install"]]
 remove: [[ "ocamlfind" "remove" "lwt" ]]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build & >= "1.5.0"}
   "ocamlbuild" {build}
   "result"
   "cppo" {build & >= "1.1.0"}
   "cppo_ocamlbuild" {build}
-  # See https://github.com/ocsigen/lwt/issues/266
-  ( "base-no-ppx" | "ppx_tools" {build} )
+  ("base-no-ppx" | "ppx_tools" {build})
 ]
 depopts: [
   "base-threads"
@@ -54,11 +57,11 @@ depopts: [
   "react"
 ]
 conflicts: [
+  "ocaml-variants" {= "4.02.1+BER"}
   "react" {< "1.0.0"}
   "ssl" {< "0.5.0"}
-  "ppx_tools" {< "1.0.0" }
+  "ppx_tools" {< "1.0.0"}
 ]
-available: [ocaml-version >= "4.02.0" & compiler != "4.02.1+BER"]
 messages: [
   "For module Lwt_ssl, please install package lwt_ssl"
   {ssl:installed & !lwt_ssl:installed}
@@ -67,3 +70,19 @@ messages: [
   "For module Lwt_react, please install package lwt_react"
   {react:installed & !lwt_react:installed}
 ]
+synopsis: "Monadic promises and concurrent I/O"
+description: """
+A promise is a value that may become determined in the future.
+
+Lwt provides typed, composable promises. Promises that are resolved by I/O are
+resolved by Lwt in parallel.
+
+Meanwhile, OCaml code, including code creating and waiting on promises, runs in
+a single thread by default. This reduces the need for locks or other
+synchronization primitives. Code can be run in parallel on an opt-in basis."""
+flags: light-uninstall
+extra-files: ["lwt.install" "md5=90924eaaac1c904723a63a3b15bc835c"]
+url {
+  src: "https://github.com/ocsigen/lwt/archive/2.7.1.tar.gz"
+  checksum: "md5=fb478fbdb6fda0d1fa64a8a2f9ac1bbb"
+}

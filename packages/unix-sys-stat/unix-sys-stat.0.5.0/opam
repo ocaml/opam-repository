@@ -1,19 +1,22 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sheets@alum.mit.edu"
 authors: ["David Sheets" "Jeremy Yallop"]
 homepage: "https://github.com/dsheets/ocaml-unix-sys-stat"
 bug-reports: "https://github.com/dsheets/ocaml-unix-sys-stat/issues"
 license: "ISC"
 tags: ["unix" "posix" "sys/stat.h" "syscall" "stat"]
-dev-repo: "https://github.com/dsheets/ocaml-unix-sys-stat.git"
-build: [make "build"]
+dev-repo: "git+https://github.com/dsheets/ocaml-unix-sys-stat.git"
+build: [
+  [make "build"]
+  [make "test"] {with-test}
+]
 install: [make "install"]
-build-test: [make "test"]
 remove: [make "uninstall"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "base-bytes"
   "unix-errno" {>= "0.4.0"}
   "ctypes" {>= "0.6.0"}
@@ -22,3 +25,13 @@ depends: [
 ]
 depopts: ["base-unix" "lwt"]
 conflicts: ["lwt" {< "2.4.7"}]
+synopsis:
+  "ocaml-unix-sys-stat provides access to the features exposed in sys/stat.h in a way that is not tied to the implementation on the host system."
+description: """
+The Sys_stat module provides functions for translating between the file types and mode bits accessible through sys/stat.h and their values on particular systems. The Sys_stat_host module exports representations of various hosts.
+
+The Sys_stat_unix provides bindings to functions that use the types in Sys_stat along with a representation of the host system. The bindings support a more comprehensive range of flags than the corresponding functions in the standard OCaml Unix module."""
+url {
+  src: "https://github.com/dsheets/ocaml-unix-sys-stat/archive/0.5.0.tar.gz"
+  checksum: "md5=23220a65aa78c3c51451d21379d899ea"
+}

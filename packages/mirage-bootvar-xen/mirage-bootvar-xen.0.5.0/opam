@@ -1,10 +1,10 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "mirage-bootvar-xen"
 maintainer: "Magnus Skjegstad <magnus@skjegstad.com>"
 authors: "Magnus Skjegstad <magnus@skjegstad.com>"
 homepage: "https://github.com/mirage/mirage-bootvar-xen"
 bug-reports: "https://github.com/mirage/mirage-bootvar-xen/issues/"
-dev-repo: "https://github.com/mirage/mirage-bootvar-xen.git"
+dev-repo: "git+https://github.com/mirage/mirage-bootvar-xen.git"
 license: "ISC"
 
 build: [
@@ -13,9 +13,34 @@ build: [
 ]
 
 depends: [
-  "jbuilder" {build & >="1.0+beta10"}
-  "mirage-xen" { >= "2.2.0" }
-  "lwt" {>="2.4.3"}
+  "ocaml"
+  "jbuilder" {build & >= "1.0+beta10"}
+  "mirage-xen" {>= "2.2.0"}
+  "lwt" {>= "2.4.3"}
   "astring"
   "parse-argv"
 ]
+synopsis: "Library for reading MirageOS unikernel boot parameters in Xen"
+description: """
+[![Build Status](https://travis-ci.org/mirage/mirage-bootvar-xen.svg)](https://travis-ci.org/mirage/mirage-bootvar-xen)
+
+Simple library for reading MirageOS unikernel boot parameters from Xen.
+
+To send boot parameters to the unikernel you can either add them as options in the "extra=" field in the .xl-file, like this:
+
+```
+extra="key1=val1 key2=val2"
+```
+
+.. or add them when starting the unikernel from the command line:
+
+```
+sudo xl create unikernel.xl 'extra="key1=val1 key2=val2"'
+```
+
+Bootvar was originally a part of [mirage-mimic](http://github.com/MagnusS/mirage-mimic), but is now released as a separate library."""
+url {
+  src:
+    "https://github.com/mirage/mirage-bootvar-xen/releases/download/v0.5.0/mirage-bootvar-xen-0.5.0.tbz"
+  checksum: "md5=5982e82284f03a0ef44e1b020241c340"
+}

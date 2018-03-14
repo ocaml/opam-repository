@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "gammu"
 version: "0.9.3"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
@@ -7,18 +7,19 @@ authors: [ "Christophe Troestler"
            "Pierre Hauweele" ]
 license: "LGPL-3.0 with OCaml linking exception"
 homepage: "https://github.com/Chris00/ocaml-gammu"
-dev-repo: "https://github.com/Chris00/ocaml-gammu.git"
+dev-repo: "git+https://github.com/Chris00/ocaml-gammu.git"
 bug-reports: "https://github.com/Chris00/ocaml-gammu/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "gammu"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml"
   "ocamlfind"
   "ocamlbuild" {build}
 ]
@@ -26,7 +27,17 @@ depopts: [
   "base-unix"
 ]
 depexts: [
-  [["ubuntu"]["libgammu-dev"]]
-  [["debian"]["libgammu-dev"]]
-  [["centos"]["gammu-devel"]]
+  ["libgammu-dev"] {os-distribution = "ubuntu"}
+  ["libgammu-dev"] {os-distribution = "debian"}
+  ["gammu-devel"] {os-distribution = "centos"}
 ]
+synopsis: "Cell phone and SIM card access."
+description: """
+Gammu is a binding to libGammu which allows to manage data in your
+cell phone such as contacts, calendar or messages."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/Chris00/ocaml-gammu/releases/download/0.9.3/gammu-0.9.3.tar.gz"
+  checksum: "md5=c75282188ec8a0a8f4fe3b2c1a30410a"
+}

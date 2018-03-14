@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "lebotlan@users.forge.ocamlcore.org"
 authors: [ "D. Le Botlan" ]
 license: "GPL-3"
@@ -6,12 +6,13 @@ homepage: "http://cryptodbm.forge.ocamlcore.org/"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 remove: [
   ["ocamlfind" "remove" "cryptodbm"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "cryptokit"
   "ocamlfind"
   "exenum"
@@ -19,5 +20,21 @@ depends: [
   "fileutils"
   "ocamlbuild" {build}
 ]
-available: ocaml-version >= "4.01.0"
 install: ["ocaml" "setup.ml" "-install"]
+synopsis:
+  "Encrypted layer over the dbm library: access to serverless, key-value databases with symmetric encryption."
+description: """
+This library provides an encrypted layer on top of the Dbm and Cryptokit packages. The improvements over Dbm are:
+  - A single database file may contain several independent subtables, identified by a name (a string).
+  - Each subtable can be signed and encrypted individually, or encrypted using a common password.
+  - The whole file can be signed.
+  - Obfuscating data is -optionally- appended to keys, data, and to the whole table, so that two databases with
+    the same content look significantly different, once encrypted.
+  - Encryption is symmetric: encryption and decryption both use the same password.
+  - Signature is symmetric: signing and verifying the signature both use the same signword."""
+flags: light-uninstall
+url {
+  src:
+    "http://forge.ocamlcore.org/frs/download.php/1349/cryptodbm-source-0.8.tgz"
+  checksum: "md5=a0940f2dd89aa0de601133b749176927"
+}

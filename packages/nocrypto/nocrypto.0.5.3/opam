@@ -1,33 +1,38 @@
-opam-version: "1.2"
+opam-version: "2.0"
 homepage:     "https://github.com/mirleft/ocaml-nocrypto"
-dev-repo:     "https://github.com/mirleft/ocaml-nocrypto.git"
+dev-repo: "git+https://github.com/mirleft/ocaml-nocrypto.git"
 bug-reports:  "https://github.com/mirleft/ocaml-nocrypto/issues"
-author:       "David Kaloper <david@numm.org>"
 maintainer:   "David Kaloper <david@numm.org>"
 license:      "BSD2"
 
 build: [
-  [ "./configure" "--prefix" prefix
-     "--%{lwt:enable}%-lwt"
-     "--%{mirage-xen+mirage-entropy-xen:enable}%-xen" ]
-  [ make ]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--%{lwt:enable}%-lwt"
+    "--%{mirage-xen+mirage-entropy-xen:enable}%-xen"
+  ]
+  [make]
+  ["./configure" "--%{ounit:enable}%-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [ make "install" ]
 remove:  [ "ocamlfind" "remove" "nocrypto" ]
 
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
   "oasis" {build & >= "0.4.2"}
   "ocamlbuild" {build}
-  "cstruct" {>= "1.6.0" & <"3.0.0"}
+  "cstruct" {>= "1.6.0" & < "3.0.0"}
   "zarith"
   "sexplib"
   "ppx_deriving" {build}
   "ppx_sexp_conv" {build}
-  ("mirage-no-xen" | ("mirage-xen" & "mirage-entropy-xen" & "zarith-xen"))
-  "ounit" {test}
+  ("mirage-no-xen" | ("mirage-xen" "mirage-entropy-xen" "zarith-xen"))
+  "ounit" {with-test}
 ]
-
 depopts: [
   "lwt"
 ]
@@ -38,10 +43,16 @@ conflicts: [
   "sexplib" {="v0.9.0"}
 ]
 
-build-test: [
-  [ "./configure" "--%{ounit:enable}%-tests" ]
-  [ make "test" ]
-]
-
 tags: [ "org:mirage" ]
-available: [ ocaml-version >= "4.02.0" ]
+synopsis: "Small functional-style crypto library."
+description: """
+Ciphers: AES, 3DES, RC4.
+Hashes: MD5, SHA1, SHA2.
+Pubkey: RSA, DH, DSA.
+Rng: Fortuna."""
+authors: "David Kaloper <david@numm.org>"
+flags: light-uninstall
+url {
+  src: "https://github.com/mirleft/ocaml-nocrypto/archive/v0.5.3.tar.gz"
+  checksum: "md5=1b771555139c23da4fdf02244fc7b4a9"
+}

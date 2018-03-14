@@ -1,32 +1,39 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Alessandro Strada <alessandro.strada@gmail.com>"
 authors: [ "Alessandro Strada" ]
 license: "MIT"
 homepage: "http://gdfuse.forge.ocamlcore.org/"
-dev-repo: "https://github.com/astrada/google-drive-ocamlfuse.git"
+dev-repo: "git+https://github.com/astrada/google-drive-ocamlfuse.git"
 bug-reports: "https://github.com/astrada/google-drive-ocamlfuse/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocaml" "%{etc}%/google-drive-ocamlfuse/_oasis_remove_.ml"
     "%{etc}%/google-drive-ocamlfuse"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml" {>= "3.12.0"}
   "base-threads" {build}
   "camlidl" {build}
   "gapi-ocaml" {build & >= "0.2.14"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
   "ocamlfuse" {build}
-  "ounit" {test}
+  "ounit" {with-test}
   "sqlite3" {build}
 ]
-available: [ ocaml-version >= "3.12.0" ]
+synopsis: "A FUSE filesystem over Google Drive"
+description: """
+google-drive-ocamlfuse is a FUSE-based file system backed by Google
+Drive, written in OCaml."""
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1671/google-drive-ocamlfuse-0.6.4.tar.gz"
+  checksum: "md5=2d34c6e1a747d56fdbad3fcdd157e4f7"
+}

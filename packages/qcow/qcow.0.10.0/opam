@@ -1,15 +1,16 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "dave@recoil.org"
 authors: ["David Scott"]
 license: "ISC"
 homepage: "https://github.com/mirage/ocaml-qcow"
-dev-repo: "https://github.com/mirage/ocaml-qcow.git"
+dev-repo: "git+https://github.com/mirage/ocaml-qcow.git"
 bug-reports: "https://github.com/mirage/ocaml-qcow/issues"
 tags: [
   "org:mirage"
 ]
 
 depends: [
+  "ocaml" {>= "4.03.0"}
   "astring"
   "cstruct"
   "result"
@@ -31,18 +32,35 @@ depends: [
   "ppx_tools" {build}
   "ppx_sexp_conv" {build}
   "ppx_type_conv" {build}
-  "ounit" {test}
-  "mirage-block-ramdisk" {test}
-  "ezjsonm" {test}
-  "nbd" {test & >= "2.0.1"}
+  "ounit" {with-test}
+  "mirage-block-ramdisk" {with-test}
+  "ezjsonm" {with-test}
+  "nbd" {with-test & >= "2.0.1"}
 ]
-
 build: [
-  [ "jbuilder" "build" "--only-packages=qcow" ]
+  ["jbuilder" "build" "--only-packages=qcow"]
+  [make "test"] {with-test}
 ]
+synopsis: "Support for Qcow2 images"
+description: """
+[![Build Status](https://travis-ci.org/mirage/ocaml-qcow.png?branch=master)](https://travis-ci.org/mirage/ocaml-qcow) [![Coverage Status](https://coveralls.io/repos/mirage/ocaml-qcow/badge.png?branch=master)](https://coveralls.io/r/mirage/ocaml-qcow?branch=master)
 
-build-test: [
-  [ make "test" ]
-]
+Please read [the API documentation](https://mirage.github.io/ocaml-qcow/).
 
-available: [ocaml-version >= "4.03.0"]
+Features
+--------
+
+- supports `resize`
+- exposes sparseness information
+- produces files which can be understood by qemu (although not in
+  reverse since we don't support many features)
+
+Example
+-------
+
+In a top-level like utop:
+```ocaml"""
+url {
+  src: "https://github.com/mirage/ocaml-qcow/archive/v0.10.0.tar.gz"
+  checksum: "md5=fce49e5bdf48ee79bc334e41e562d2d1"
+}

@@ -1,7 +1,7 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "anil@recoil.org"
 homepage:     "https://github.com/mirage/mirage-tcpip"
-dev-repo:     "https://github.com/mirage/mirage-tcpip.git"
+dev-repo: "git+https://github.com/mirage/mirage-tcpip.git"
 bug-reports:  "https://github.com/mirage/mirage-tcpip/issues"
 authors: [
   "Anil Madhavapeddy"
@@ -28,20 +28,21 @@ license: "ISC"
 tags: ["org:mirage"]
 
 build: [
-  ["./configure" "--prefix" prefix
+  [
+    "./configure"
+    "--prefix"
+    prefix
     "--%{mirage-xen:enable}%-xen"
     "--%{mirage-net-unix:enable}%-unix"
   ]
   [make]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test" "TESTFLAGS=-v"] {with-test}
 ]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test" "TESTFLAGS=-v"]
-]
-
 install: [make "install"]
 remove: ["ocamlfind" "remove" "tcpip"]
 depends: [
+  "ocaml" {>= "4.02.3"}
   "ocamlfind" {build}
   "ppx_tools" {build}
   "result"
@@ -50,15 +51,15 @@ depends: [
   "mirage-types" {>= "2.8.0" & < "3.0"}
   "mirage-unix" {>= "1.1.0" & <= "2.6.0"}
   "mirage-console" {< "2.2.0"}
-  "mirage-clock-unix" {test & >= "1.0.0" & < "1.2.0"}
+  "mirage-clock-unix" {with-test & >= "1.0.0" & < "1.2.0"}
   "ipaddr" {>= "2.2.0"}
-  "mirage-profile" {>= "0.5" & <"0.8.0"}
+  "mirage-profile" {>= "0.5" & < "0.8.0"}
   "lwt" {>= "2.4.7" & < "3.0.0"}
   "cstruct-lwt"
-  "mirage-flow" {test}
-  "mirage-vnetif" {test & < "0.3.0"}
-  "alcotest" {test}
-  "pcap-format" {test}
+  "mirage-flow" {with-test}
+  "mirage-vnetif" {with-test & < "0.3.0"}
+  "alcotest" {with-test}
+  "pcap-format" {with-test}
 ]
 depopts: [
   "mirage-xen"
@@ -68,4 +69,13 @@ conflicts: [
   "mirage-net-unix" { < "1.1.0" }
   "mirage-net-unix" { >= "2.3.0" }
 ]
-available: [ocaml-version >= "4.02.3"]
+synopsis: "Userlevel TCP/IP stack"
+description: """
+The library provides a networking stack for the MirageOS
+library operating system that supports IPv4, IPv6, ARPv4,
+DHCPv4 and TCP/IP."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/mirage-tcpip/archive/v2.8.0.tar.gz"
+  checksum: "md5=b384d0ec817e0501c0d5651311d38df2"
+}

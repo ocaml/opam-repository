@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "simon.cruanes.2007@m4x.org"
 authors: "Simon Cruanes"
 homepage: "https://github.com/c-cube/sequence/"
@@ -6,7 +6,7 @@ bug-reports: "https://github.com/c-cube/sequence/issues"
 license: "BSD-2-clauses"
 doc: "http://cedeela.fr/~simon/software/sequence/Sequence.html"
 tags: ["sequence" "iterator" "iter" "fold"]
-dev-repo: "https://github.com/c-cube/sequence.git"
+dev-repo: "git+https://github.com/c-cube/sequence.git"
 build: [
   [
     "./configure"
@@ -17,20 +17,26 @@ build: [
     "%{prefix}%"
   ]
   [make "build"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
+  ["./configure" "--enable-docs"] {with-doc}
+  [make "doc"] {with-doc}
 ]
 install: [make "install"]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test"]
-]
-build-doc: [
-  ["./configure" "--enable-docs"]
-  [make "doc"]
-]
 remove: ["ocamlfind" "remove" "sequence"]
 depends: [
+  "ocaml"
   "ocamlfind"
   "base-bytes"
   "ocamlbuild" {build}
 ]
 depopts: ["delimcc" "base-bigarray"]
+synopsis: "Simple and lightweight sequence abstract data type."
+description: """
+Simple sequence abstract datatype, intended to iterate efficiently
+on collections while performing some transformations."""
+flags: light-uninstall
+url {
+  src: "https://github.com/c-cube/sequence/archive/0.11.tar.gz"
+  checksum: "md5=b7edb3a8570964ed2bc3cb5036cfb18f"
+}
