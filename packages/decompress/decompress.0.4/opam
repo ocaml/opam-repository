@@ -14,34 +14,17 @@ build: [
   [make]
 ]
 
-build-test: [
-  ["./configure"
-    "--enable-tests"
-    "--%{base-unix:enable}%-unix"
-    "--%{cmdliner:enable}%-cmdliner"
-    "--%{camlzip:enable}%-camlzip"
-    "--enable-istub"
-    "--prefix=%{prefix}%"]
-  [make "test"]
-]
-
 install: [make "install"]
 remove: ["ocamlfind" "remove" "decompress"]
 
 depends: [
-  "oasis"          {build}
-  "ocamlfind"      {build}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
   "base-bytes"
-  "alcotest"       {test}
-  "re"             {test & = "1.7.1"}
-  "camlzip"        {test}
-  "cmdliner"       {test}
-  "ctypes"         {test}
-  "ctypes-foreign" {test}
 ]
 
 depopts: [
   "base-unix"
 ]
 
-available: [ocaml-version >= "4.02.0" & ocaml-version < "4.03.0"]
+available: [ocaml-version >= "4.02.0"]
