@@ -11,8 +11,10 @@ available: [ ocaml-version >= "4.06.0" ]
 
 # ppx depends are so strict due to the issues with ppx_import and
 # ppx_driver integration in the past.
+# ppx_sexp_conv includes a runtime library now, thus it is not a build
+# dep anymore.
 depends: [
-  "coq"           { >= "8.7.1+1" & < "8.8" }
+  "coq"           { >= "8.7.2" & < "8.8" }
   "camlp5"
   "cmdliner"
   "sexplib"
@@ -20,10 +22,11 @@ depends: [
   "ocamlbuild"    { build }
   "ppx_import"    { build & >= "1.4" }
   "ppx_deriving"  { build & >= "4.2.1" }
-  "ppx_driver"    { build & >= "v0.10.1" }
-  "ppx_sexp_conv" { build & <  "v0.11.0" }
+  "ppx_sexp_conv" { >= "v0.11.0" }
 ]
 
-build:   [ make "-j%{jobs}%" "TARGET=native" ]
-install: [ "cp" "sertop.native" "%{bin}%/sertop" ]
-remove:  [ "rm" "-f" "%{bin}%/sertop" ]
+build:    [ make "-j%{jobs}%" "TARGET=native" ]
+install: [[ "cp" "sertop.native"  "%{bin}%/sertop" ]
+          [ "cp" "sercomp.native" "%{bin}%/sercomp"]]
+remove:  [[ "rm" "-f" "%{bin}%/sertop" ]
+          [ "rm" "-f" "%{bin}%/sercomp"]]
