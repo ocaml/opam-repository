@@ -7,38 +7,21 @@ dev-repo: "git+https://github.com/oklm-wsh/Decompress.git"
 license:      "MIT"
 
 build: [
-  [
-    "./configure"
+  ["./configure"
     "--%{base-unix:enable}%-unix"
     "--prefix=%{prefix}%"
-    "--%{cmdliner:enable}%-cmdliner"
-  ]
+    "--%{cmdliner:enable}%-cmdliner"]
   [make]
-  [
-    "./configure"
-    "--enable-tests"
-    "--%{base-unix:enable}%-unix"
-    "--%{cmdliner:enable}%-cmdliner"
-    "--%{camlzip:enable}%-camlzip"
-    "--enable-istub"
-    "--prefix=%{prefix}%"
-  ] {with-test}
-  [make "test"] {with-test}
 ]
+
 install: [make "install"]
 remove: ["ocamlfind" "remove" "decompress"]
 
 depends: [
-  "ocaml" {>= "4.02.0" & < "4.03.0"}
-  "oasis" {build}
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
+  "ocamlbuild" {build}
   "base-bytes"
-  "alcotest" {with-test}
-  "re" {with-test & = "1.7.1"}
-  "camlzip" {with-test}
-  "cmdliner" {with-test}
-  "ctypes" {with-test}
-  "ctypes-foreign" {with-test}
 ]
 depopts: [
   "base-unix"
