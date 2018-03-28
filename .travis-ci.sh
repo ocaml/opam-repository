@@ -1,6 +1,9 @@
 bash -c "while true; do echo \$(date) - building ...; sleep 360; done" &
 PING_LOOP_PID=$!
 
+# Variable value from .travis.yml - probably overridden during install step
+BUILD_OCAML_VERSION=$OCAML_VERSION
+
 # generated during the install step
 source .travis-ocaml.env
 
@@ -131,6 +134,34 @@ function build_one {
 }
 
 build_switch
+
+INSTALL_CAMLP4=0
+if [[ $OPAM_SWITCH = "system" ]] ; then
+  for i in $(cat tobuild.txt) ; do
+    if opam install $i --deps-only --show | grep "\<camlp4\>" > /dev/null 2>&1 ; then
+      INSTALL_CAMLP4=1
+      break
+    fi
+  done
+fi
+
+if [[ $INSTALL_CAMLP4 -eq 1 ]] ; then
+  case $BUILD_OCAML_VERSION in
+    4.02)
+      CAMLP4_RELEASE=7
+      ;;
+    *)
+      CAMLP4_RELEASE=1
+      ;;
+  esac
+  opam install ocamlbuild
+  opam source camlp4.$BUILD_OCAML_VERSION+$CAMLP4_RELEASE
+  cd camlp4*
+  ./configure --bindir=/usr/local/bin --libdir=/usr/local/lib/ocaml
+  make all
+  sudo make install
+  cd ..
+fi
 
 for i in `cat tobuild.txt`; do
   build_one $i
