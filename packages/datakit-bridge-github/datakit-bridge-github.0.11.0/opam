@@ -1,34 +1,53 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      ["Thomas Leonard" "Magnus Skjegstad"
                "David Scott" "Thomas Gazagnaire"]
 license:      "Apache"
 homepage:     "https://github.com/moby/datakit"
 bug-reports:  "https://github.com/moby/datakit/issues"
-dev-repo:     "https://github.com/moby/datakit.git"
+dev-repo: "git+https://github.com/moby/datakit.git"
 doc:          "https://docker.github.io/datakit/"
 
-build: ["jbuilder" "build" "-p" name "-j" jobs]
-build-test: ["jbuilder" "runtest" "tests/%{name}%"]
-
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "tests/%{name}%"] {with-test}
+]
 depends: [
+  "ocaml"
   "jbuilder" {build & < "1.0+beta12"}
   "cmdliner"
   "lwt" {>= "3.0.0"}
-  "datakit-github"    {>= "0.11.0"}
+  "datakit-github" {>= "0.11.0"}
   "datakit-client-9p" {>= "0.11.0"}
   "datakit-client-git"
-  "logs" "fmt"
+  "logs"
+  "fmt"
   "mtime" {>= "1.0.0"}
-  "asl" "win-eventlog"
+  "asl"
+  "win-eventlog"
   "uri" {>= "1.8.0"}
   "hvsock" {>= "0.8.1"}
-  "hex" "nocrypto" "conduit"
+  "hex"
+  "nocrypto"
+  "conduit"
   "prometheus-app"
   "protocol-9p-unix" {>= "0.11.0"}
   "datakit-client" {>= "0.11.0"}
   "github-hooks" {>= "0.1.1" & < "0.2.0"}
   "github" {>= "2.2.0"}
-  "alcotest" {test & < "0.8.0"}
-  "datakit"  {test & >= "0.11.0"}
+  "alcotest" {with-test & < "0.8.0"}
+  "datakit" {with-test & >= "0.11.0"}
 ]
+synopsis: "A bi-directional bridge between the GitHub API and Datakit"
+description: """
+The package provides a bi-directional bridge between the GitHub API
+and Datakit, so you can talk to the GitHub API using filesystem and
+Git-like commands only. The `datakit-github` programs can start a
+webhook server to listen for GitHub events in real time, and project
+it into a Git repository. It also monitors that Git repository for
+user-provided changes, and translate them into GitHub API calls."""
+url {
+  src:
+    "https://github.com/moby/datakit/releases/download/0.11.0/datakit-0.11.0.tbz"
+  checksum: "md5=b1b7bb4d727d5c7e61f34045be96f178"
+}

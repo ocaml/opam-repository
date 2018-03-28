@@ -1,25 +1,37 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "D. Le Botlan <lebotlan@users.forge.ocamlcore.org>"
 authors: [ "D. Le Botlan <lebotlan@users.forge.ocamlcore.org>" ]
 license: "GPL-3"
 homepage: "http://exenum.forge.ocamlcore.org/"
-dev-repo: "https://forge.ocamlcore.org/anonscm/git/exenum/exenum.git"
+dev-repo: "git+https://forge.ocamlcore.org/anonscm/git/exenum/exenum.git"
 bug-reports: "http://exenum.forge.ocamlcore.org/"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{lwt+camlp4:enable}%-lwt"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{lwt+camlp4:enable}%-lwt"
+  ]
   ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{lwt+camlp4:enable}%-lwt"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "exenum"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--%{lwt+camlp4:enable}%-lwt"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "num"
@@ -28,3 +40,29 @@ depopts: [
   "lwt"
   "camlp4"
 ]
+synopsis:
+  "Build efficient enumerations for datatypes. Inspired by Feat for Haskell."
+description: """
+The exenum library offers constructors to build enumerations for
+datatypes, that is, functions from (arbitrarily large) integers to
+values. Such enumerations are typically used for unit testing. The
+library is efficient: the n-th element of an enumeration is returned
+without having computed the (n-1) previous elements. Complexity is in
+log(n), except for some pathological datatypes. See the homepage for
+details: http://exenum.forge.ocamlcore.org/
+Inspired by Feat: Functional Enumeration of Algebraic Types, by
+Duregard, Jansson, Wang, Chalmers University.
+As an example, consider the following datatype: type term = Var of
+string | App of term * term | Lambda of string * term
+Using exenum, one may easily generate zillions of different
+lambda-terms. In our specific example, term number 2000000000000
+happens to be ((((x v) (fun u -> y)) ((fun u -> y) (fun y -> y))) (((x
+v) (fun u -> v)) (fun u -> y)))
+Efficiency: computing lambda-term number 1E200 is instantaneous (on an
+antique Intel Centrino)."""
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1583/exenum-source-0.7.tgz"
+  checksum: "md5=31ec3baafaff2fbd49eb420728fbf6db"
+}

@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "ppx_monoid"
 version: "0.1"
 maintainer: "Robert Atkey <bob.atkey@gmail.com>"
@@ -6,15 +6,30 @@ authors: "Robert Atkey <bob.atkey@gmail.com>"
 homepage: "https://github.com/bobatkey/ppx-monoid"
 bug-reports: "https://github.com/bobatkey/ppx-monoid"
 license: "MIT"
-dev-repo: "https://github.com/bobatkey/ppx-monoid.git"
+dev-repo: "git+https://github.com/bobatkey/ppx-monoid.git"
 build: [
   [make]
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "ppx_monoid"]
 depends: [
+  "ocaml" {>= "4.02.1"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "ppx_tools" {build & >= "0.99.2"}
 ]
-available: [ ocaml-version >= "4.02.1" ]
+synopsis: "A syntax extension for easier building of values of monoids."
+description: """
+Assumes the existence of two operations in scope for some type `t`:
+
+    empty : t
+    (^^)  : t -> t -> t
+
+`ppx-monoid`, triggered by the PPX extension `monoid`, reinterprets
+the semicolon `;` to mean the monoid operation `^^` and the unit
+expression `()` to mean `empty`."""
+flags: light-uninstall
+url {
+  src: "https://github.com/bobatkey/ppx-monoid/archive/0.1.zip"
+  checksum: "md5=010f9d8ea76a5272b7fd34800e6cd1c3"
+}

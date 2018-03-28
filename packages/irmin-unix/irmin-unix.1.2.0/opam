@@ -1,25 +1,36 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      ["Thomas Gazagnaire" "Thomas Leonard"]
 license:      "ISC"
 homepage:     "https://github.com/mirage/irmin"
 bug-reports:  "https://github.com/mirage/irmin/issues"
-dev-repo:     "https://github.com/mirage/irmin.git"
+dev-repo: "git+https://github.com/mirage/irmin.git"
 doc:          "https://mirage.github.io/irmin/"
 
-build: ["jbuilder" "build" "-p" name "-j" jobs]
-build-test: ["jbuilder" "runtest" "test/irmin-unix"]
-
-depends: [
-  "jbuilder"   {build}
-  "irmin"      {>= "1.2.0"}
-  "irmin-git"  {>= "1.2.0"}
-  "irmin-http" {>= "1.2.0"}
-  "irmin-fs"   {>= "1.2.0"}
-  "git-unix"   {>= "1.11.0"}
-  "irmin-watcher" {>= "0.2.0"}
-  "irmin-mirage" {test & >= "1.2.0"}
-  "alcotest"     {test}
-  "mtime"        {test & >= "1.0.0"}
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "test/irmin-unix"] {with-test}
 ]
-available: [ocaml-version >= "4.01.0"]
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "jbuilder" {build}
+  "irmin" {>= "1.2.0"}
+  "irmin-git" {>= "1.2.0"}
+  "irmin-http" {>= "1.2.0"}
+  "irmin-fs" {>= "1.2.0"}
+  "git-unix" {>= "1.11.0"}
+  "irmin-watcher" {>= "0.2.0"}
+  "irmin-mirage" {with-test & >= "1.2.0"}
+  "alcotest" {with-test}
+  "mtime" {with-test & >= "1.0.0"}
+]
+synopsis: "Unix backends for Irmin"
+description: """
+`Irmin_unix` defines Unix backends (including Git and HTTP) for Irmin, as well
+as a very simple CLI tool (called `irmin`) to manipulate and inspect Irmin
+stores."""
+url {
+  src:
+    "https://github.com/mirage/irmin/releases/download/1.2.0/irmin-1.2.0.tbz"
+  checksum: "md5=0c75e0e73ea4ceda7e35e9379f21fe81"
+}

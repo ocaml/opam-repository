@@ -1,25 +1,29 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "rudi.grinberg@gmail.com"
 authors: ["Rudi Grinberg" "Armaël Guéneau"]
 license: "MIT"
 
 homepage: "https://github.com/rgrinberg/ocaml-mustache"
 bug-reports: "https://github.com/rgrinberg/ocaml-mustache/issues"
-dev-repo: "https://github.com/rgrinberg/ocaml-mustache.git"
+dev-repo: "git+https://github.com/rgrinberg/ocaml-mustache.git"
 doc: "http://mustache.github.io/mustache.5.html"
 
 build: [
   ["jbuilder" "subst" "-n" name] {pinned}
   ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-
-build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
-
 depends: [
+  "ocaml" {>= "4.02.3"}
   "jbuilder" {build}
   "menhir"
-  "ounit" {test}
-  "ezjsonm" {test}
+  "ounit" {with-test}
+  "ezjsonm" {with-test}
 ]
-
-available: [ocaml-version >= "4.02.3"]
+synopsis: "Mustache logic-less templates in OCaml"
+description:
+  "Read and write mustache templates, and render them by providing a json object."
+url {
+  src: "https://github.com/rgrinberg/ocaml-mustache/archive/v3.0.2.zip"
+  checksum: "md5=36d6e8962432dc42c0691e27a7ec08f1"
+}

@@ -1,21 +1,33 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      ["Thomas Gazagnaire"]
 homepage:    "https://github.com/mirage/mirage-net-flow"
 bug-reports: "https://github.com/mirage/mirage-net-flow/issues"
-dev-repo:    "https://github.com/mirage/mirage-net-flow.git"
+dev-repo: "git+https://github.com/mirage/mirage-net-flow.git"
 license:     "ISC"
 doc:         "https://mirage.github.io/mirage-net-flow/"
 
-build:   ["jbuilder" "build" "-p" name "-j" jobs]
-build-test: ["jbuilder" "runtest" "-p" name]
-
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name] {with-test}
+]
 depends: [
+  "ocaml" {>= "4.02.3"}
   "jbuilder" {build}
   "mirage-net-lwt" {>= "1.0.0"}
   "mirage-flow-lwt" {>= "1.2.0"}
   "cstruct-lwt" {>= "3.0.0"}
   "logs"
-  "alcotest" {test & < "0.8.0"}
+  "alcotest" {with-test & < "0.8.0"}
 ]
-available: [ ocaml-version >= "4.02.3"]
+synopsis: "Build MirageOS network interfaces on top of MirageOS flows"
+description: """
+[![docs](https://img.shields.io/badge/doc-online-blue.svg)](https://mirage.github.io/mirage-net-flow/mirage-net=flow)
+
+Allow to create a MirageOS network interface on top of an existing MirageOS
+flow."""
+url {
+  src:
+    "https://github.com/mirage/mirage-net-flow/releases/download/1.0.0/mirage-net-flow-1.0.0.tbz"
+  checksum: "md5=8504c8bfec68f2837d7b136cfeb3997e"
+}

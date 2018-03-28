@@ -1,11 +1,36 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Anil Madhavapeddy <anil@recoil.org>"
 authors: "Anil Madhavapeddy <anil@recoil.org>"
 homepage: "https://github.com/ocaml/opam-installext"
-dev-repo: "https://github.com/ocaml/opam-installext.git"
+dev-repo: "git+https://github.com/ocaml/opam-installext.git"
 bug-reports: "https://github.com/ocaml/opam-installext/issues"
 license: "ISC"
 build: [make]
 install: [make "install" "PREFIX=%{prefix}%"]
 remove: ["rm" "-f" "%{prefix}%/bin/opam-installext"]
 post-messages: [ "installext is deprecated. Please `opam install depext` instead." ]
+synopsis: "OPAM plugin to install external system dependencies"
+description: """
+This plugin will use the `depexts` metadata in the OPAM database to install any
+prerequisite system libraries before installing the OPAM package.  It detects
+your operating system distribution and uses the relevant package manager.
+
+Supported ones include:
+
+- Linux
+  - Debian (`apt-get`)
+  - Ubuntu (`apt-get`)
+  - CentOS (`yum`)
+- BSD
+  - OpenBSD (`pkg_add`)
+  - FreeBSD (`pkg install`)
+  - NetBSD (`pkg_add`)
+- Mac OS X
+  - Homebrew (`brew`)
+  - MacPorts (`port`)"""
+depends: ["ocaml"]
+flags: light-uninstall
+url {
+  src: "https://github.com/avsm/opam-installext/archive/v1.0.1.tar.gz"
+  checksum: "md5=3b9eb3001acf59c21278a022180835ac"
+}

@@ -1,20 +1,49 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "stephen.dolan@cl.cam.ac.uk"
 authors: ["Stephen Dolan"]
 homepage: "https://github.com/stedolan/malfunction"
 bug-reports: "https://github.com/stedolan/malfunction/issues"
-dev-repo: "https://github.com/stedolan/malfunction.git"
+dev-repo: "git+https://github.com/stedolan/malfunction.git"
 license: "LGPL"
-build:
-[[ "jbuilder" "build" "--only-packages" "%{name}%" "--root" "." "-j" jobs "@install" ]]
-build-test:
-[[ "jbuilder" "build" "--only-packages" "%{name}%" "--root" "." "-j" jobs "@runtest" ]]
-available: [ ocaml-version >= "4.03" ]
+build: [
+  [
+    "jbuilder"
+    "build"
+    "--only-packages"
+    "%{name}%"
+    "--root"
+    "."
+    "-j"
+    jobs
+    "@install"
+  ]
+  [
+    "jbuilder"
+    "build"
+    "--only-packages"
+    "%{name}%"
+    "--root"
+    "."
+    "-j"
+    jobs
+    "@runtest"
+  ] {with-test}
+]
 depends: [
+  "ocaml" {>= "4.03"}
   "ocamlfind"
   "base-flambda"
   "jbuilder" {build}
   "cppo" {build}
-  "omd" {test}
+  "omd" {with-test}
   "zarith"
 ]
+synopsis: "Compiler back-end for functional languages, based on OCaml."
+description: """
+Malfunction is a high-performance, low-level untyped program
+representation, designed as a target for compilers of functional
+programming languages."""
+url {
+  src: "https://github.com/stedolan/malfunction/archive/v0.2.1.tar.gz"
+  checksum: "md5=afe6a5143d70a35a61762b213a066f05"
+}

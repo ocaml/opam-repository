@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:    "jonathan.ludlam@eu.citrix.com"
 authors: [
   "Vincent Bernardoff"
@@ -6,14 +6,18 @@ authors: [
 ]
 homepage:    "http://github.com/mirage/ocaml-vchan"
 bug-reports: "http://github.com/mirage/ocaml-vchan/issues"
-dev-repo:    "http://github.com/mirage/ocaml-vchan.git"
+dev-repo: "git+http://github.com/mirage/ocaml-vchan.git"
 license:     "ISC"
 
 build: [
-  ["./configure" "--%{xen-evtchn+xen-gnt:enable}%-xenctrl" "--%{mirage-xen:enable}%-xen"]
+  [
+    "./configure"
+    "--%{xen-evtchn+xen-gnt:enable}%-xenctrl"
+    "--%{mirage-xen:enable}%-xen"
+  ]
   [make "build"]
+  [make "test"] {with-test}
 ]
-build-test: [make "test"]
 install: [
   [make "install"]
   [make "js-install"]
@@ -24,6 +28,7 @@ remove: [
 ]
 
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
   "lwt" {>= "2.5.0"}
   "cstruct" {>= "1.9.0"}
@@ -37,7 +42,7 @@ depends: [
   "sexplib"
   "cmdliner"
   "result"
-  "ounit" {test}
+  "ounit" {with-test}
 ]
 depopts: [
   "xen-evtchn"
@@ -49,9 +54,17 @@ conflicts: [
  "xen-evtchn" {>= "2.0.0"}
  "xen-gnt"    {>= "2.0.0"}
  ]
-available: [ocaml-version >= "4.02.0"]
 depexts: [
- [["debian"] ["libxen-dev" "uuid-dev"]]
- [["ubuntu"] ["libxen-dev" "uuid-dev"]]
+  ["libxen-dev" "uuid-dev"] {os-distribution = "debian"}
+  ["libxen-dev" "uuid-dev"] {os-distribution = "ubuntu"}
 ]
 tags: "org:mirage"
+synopsis: "Xen Vchan implementation"
+description: """
+Vchan is a high performance inter-domain communications protocol using
+shared memory. This implementation runs in both userspace and
+kernelspace using Mirage."""
+url {
+  src: "https://github.com/mirage/ocaml-vchan/archive/v2.3.0.tar.gz"
+  checksum: "md5=7e1e41d119780ebc5dfc3171b2f2e8af"
+}

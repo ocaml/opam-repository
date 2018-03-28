@@ -1,7 +1,7 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name:         "otr"
 homepage:     "https://github.com/hannesm/ocaml-otr"
-dev-repo:     "https://github.com/hannesm/ocaml-otr.git"
+dev-repo: "git+https://github.com/hannesm/ocaml-otr.git"
 bug-reports:  "https://github.com/hannesm/ocaml-otr/issues"
 doc:          "https://hannesm.github.io/ocaml-otr/doc"
 authors:      ["Hannes Mehnert <hannes@mehnert.org>"]
@@ -10,13 +10,12 @@ license:      "BSD2"
 
 build: [
   ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
-]
-build-test: [
   ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
-  ["ocaml" "pkg/pkg.ml" "test"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-
 depends: [
+  "ocaml" {>= "4.02.2"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
@@ -32,4 +31,16 @@ depends: [
 conflicts: [
   "sexplib" {= "v0.9.0"}
 ]
-available: [ ocaml-version >= "4.02.2" ]
+synopsis: "Off the record implementation purely in OCaml"
+description: """
+This is an implementation of version 2 and 3 of the Off-the-record
+protocol (https://otr.cypherpunks.ca/Protocol-v3-4.0.0.html) in OCaml.
+
+Including the socialist millionairs protocol to authenticate a
+communication partner over an encrypted channel providing a shared
+secret."""
+url {
+  src:
+    "https://github.com/hannesm/ocaml-otr/releases/download/0.3.3/otr-0.3.3.tbz"
+  checksum: "md5=3b48d802759d2a9e1cce1440ad044eec"
+}

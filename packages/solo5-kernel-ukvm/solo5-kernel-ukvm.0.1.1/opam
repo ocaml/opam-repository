@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "martin@lucina.net"
 authors: [
   "Dan Williams <djwillia@us.ibm.com>"
@@ -8,17 +8,27 @@ authors: [
 homepage: "https://github.com/solo5/solo5"
 bug-reports: "https://github.com/solo5/solo5/issues"
 license: "ISC"
-dev-repo: "https://github.com/solo5/solo5.git"
+dev-repo: "git+https://github.com/solo5/solo5.git"
 build: [make "ukvm"]
 install: [make "opam-ukvm-install" "PREFIX=%{prefix}%"]
 remove: [make "opam-ukvm-uninstall" "PREFIX=%{prefix}%"]
-depends: "conf-pkg-config"
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "conf-pkg-config"
+]
 depexts: [
-  [["alpine"] ["linux-headers"]]
-  [["debian"] ["linux-libc-dev"]]
-  [["fedora"] ["kernel-headers"]]
-  [["rhel"] ["kernel-headers"]]
-  [["ubuntu"] ["linux-libc-dev"]]
+  ["linux-headers"] {os-distribution = "alpine"}
+  ["linux-libc-dev"] {os-distribution = "debian"}
+  ["kernel-headers"] {os-distribution = "fedora"}
+  ["kernel-headers"] {os-distribution = "rhel"}
+  ["linux-libc-dev"] {os-distribution = "ubuntu"}
 ]
 conflicts: "solo5-kernel-virtio"
-available: [ocaml-version >= "4.02.3" & arch = "x86_64" & os = "linux"]
+available: arch = "x86_64" & os = "linux"
+synopsis: "Solo5 unikernel base (ukvm target)"
+description:
+  "Solo5 as a unikernel base layer provides the lowest layer for Mirage/Solo5. This package includes Solo5 built for the \"ukvm\" target, to run on the experimental \"ukvm\" unikernel monitor."
+url {
+  src: "https://github.com/Solo5/solo5/archive/v0.1.1.tar.gz"
+  checksum: "md5=72bf81d2dfcf25815169cef842c2e2dc"
+}

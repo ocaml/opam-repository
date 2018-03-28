@@ -1,17 +1,19 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "datakit@docker.com"
 authors:      ["Thomas© Leonard" "Anil Madhavapeddy"
                "Dave Tucker" "Thomas Gazagnaire" ]
 license:      "Apache"
 homepage:     "https://github.com/moby/datakit"
 bug-reports:  "https://github.com/moby/datakit/issues"
-dev-repo:     "https://github.com/moby/datakit.git"
+dev-repo: "git+https://github.com/moby/datakit.git"
 doc:          "https://docker.github.io/datakit/"
 
-build: ["jbuilder" "build" "-p" name "-j" jobs]
-build-test: ["jbuilder" "runtest" "ci/tests"]
-
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "ci/tests"] {with-test}
+]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "jbuilder" {build & < "1.0+beta12"}
   "multipart-form-data"
   "datakit-client" {>= "0.10.0" & < "0.11.0"}
@@ -28,15 +30,26 @@ depends: [
   "pbkdf"
   "webmachine" {>= "0.4.0"}
   "session" {< "0.3.2"}
-  "redis" {>="0.3.0" & <"0.3.4"}
+  "redis" {>= "0.3.0" & < "0.3.4"}
   "asetmap"
   "github-unix"
   "prometheus-app"
   "lwt" {>= "2.7.1"}
   "ppx_sexp_conv" {build}
   "crunch" {build}
-  "datakit" {test & >= "0.10.0" & < "0.11.0"}
-  "irmin-unix" {test & >= "1.1.0"}
-  "alcotest" {test}
+  "datakit" {with-test & >= "0.10.0" & < "0.11.0"}
+  "irmin-unix" {with-test & >= "1.1.0"}
+  "alcotest" {with-test}
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis: "Continuous Integration service using DataKit"
+description: """
+DataKitCI is a continuous integration service that monitors your
+GitHub project and tests each branch, tag and pull request. It
+displays the test results as status indicators in the GitHub UI. It
+keeps all of its state and logs in DataKit, rather than a traditional
+relational database, allowing review with the usual Git tools."""
+url {
+  src:
+    "https://github.com/moby/datakit/releases/download/0.10.0/datakit-0.10.0.tbz"
+  checksum: "md5=1236f6e070f845ad077b748d84026132"
+}

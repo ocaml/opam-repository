@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Jonathan Chan <jyc@fastmail.fm>"
 authors: "Jonathan Chan <jyc@fastmail.fm>"
 homepage: "https://bitbucket.org/jyc/ppx_sexp"
@@ -10,6 +10,40 @@ build: ["./build"]
 install: ["./install"]
 remove: ["./uninstall"]
 depends: [
+  "ocaml" {>= "4.02.0" & < "4.03.0"}
   "ocamlfind" {build}
 ]
-available: [ (ocaml-version >= "4.02.0") & (ocaml-version < "4.03.0") ]
+synopsis:
+  "ppx_sexp is a ppx preprocessor for embedding S-expressions in OCaml programs."
+description: """
+For example, this:
+
+    [%sexp (define a "hi there!")]
+
+is translated into:
+
+    `List [`Symbol "define"; `Symbol "a"; `String "hi there"]
+
+You can unquote, or insert regular OCaml expressions inside of the S-expression that will be evaluated instead of converted to atoms (e.g. `List`, `Symbol`) using the `[%in ...]` syntax:
+
+    let a = [%sexp (title "Hello, world!")] in
+    [%sexp (html
+              (head
+                 [%in a])
+              (body
+                 (p "Hi there!")))]
+
+When inserting values, you must make sure to contain them in the appropriate polymorphic variant (the names correspond directly to OCaml's AST constant types, with the exception of Bool):
+
+     [%sexp (print [%in `String "S-expressions: abbreviated sexp"])]
+
+The `%in` syntax is intended to be used for embedding other S-expressions. 
+If you are embedding atoms, there is a streamlined syntax:
+
+     [%sexp (print [%string "S-expressions: sexp"])]
+
+Unquote-splicing is also supported."""
+url {
+  src: "https://bitbucket.org/jyc/ppx_sexp/get/0.3.0.tar.gz"
+  checksum: "md5=afbfb6e6c9eca9032234464703b83588"
+}

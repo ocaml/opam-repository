@@ -1,30 +1,40 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Markus Mottl <markus.mottl@gmail.com>"
 authors: [ "Alain Frisch <alain.frisch@lexifi.com>"
            "Markus Mottl <markus.mottl@gmail.com>"
            "Petter Urkedal <paurkedal@gmail.com>" ]
 license: "LGPL-2.1+ with OCaml linking exception"
 homepage: "http://mmottl.github.io/postgresql-ocaml"
-dev-repo: "https://github.com/mmottl/postgresql-ocaml.git"
+dev-repo: "git+https://github.com/mmottl/postgresql-ocaml.git"
 bug-reports: "https://github.com/mmottl/postgresql-ocaml/issues"
 tags: [ "clib:pq"  ]
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
-    "--%{lablgtk:enable}%-lablgtk2"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{lablgtk:enable}%-lablgtk2"
+  ]
   ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{lablgtk:enable}%-lablgtk2"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "postgresql"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"
-    "--%{lablgtk:enable}%-lablgtk2"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "3.12"}
   "base-bigarray"
   "base-bytes"
   "base-threads"
@@ -34,14 +44,23 @@ depends: [
 depopts: [
   "lablgtk"
 ]
-available: [ ocaml-version >= "3.12" ]
 depexts: [
-  [["debian"] ["libpq-dev"]]
-  [["ubuntu"] ["libpq-dev"]]
-  [["fedora"] ["postgresql-devel"]]
-  [["archlinux"] ["postgresql-libs"]]
-  [["alpine"] ["postgresql-dev"]]
-  [["centos"] ["postgresql-devel"]]
-  [["gentoo"] ["postgresql"]]
-  [["opensuse"] ["postgresql-devel"]]
+  ["libpq-dev"] {os-distribution = "debian"}
+  ["libpq-dev"] {os-distribution = "ubuntu"}
+  ["postgresql-devel"] {os-distribution = "fedora"}
+  ["postgresql-libs"] {os-distribution = "archlinux"}
+  ["postgresql-dev"] {os-distribution = "alpine"}
+  ["postgresql-devel"] {os-distribution = "centos"}
+  ["postgresql"] {os-distribution = "gentoo"}
+  ["postgresql-devel"] {os-distribution = "opensuse"}
 ]
+synopsis: "postgresql-ocaml - bindings to the PostgreSQL library"
+description: """
+postgresql-ocaml offers library functions for accessing PostgreSQL
+databases"""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/mmottl/postgresql-ocaml/releases/download/v3.2.1/postgresql-ocaml-3.2.1.tar.gz"
+  checksum: "md5=89f7c6b7dc8a877b6a3cb2f23191aac3"
+}

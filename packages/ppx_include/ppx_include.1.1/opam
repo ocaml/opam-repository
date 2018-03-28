@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "whitequark <whitequark@whitequark.org>"
 authors: "whitequark <whitequark@whitequark.org>"
 homepage: "https://github.com/whitequark/ppx_include"
@@ -8,21 +8,31 @@ tags: "syntax"
 dev-repo: "git://github.com/whitequark/ppx_include.git"
 substs: "pkg/META"
 build: [
-  "ocaml"
-  "pkg/build.ml"
-  "native=%{ocaml-native}%"
-  "native-dynlink=%{ocaml-native-dynlink}%"
-]
-build-test: [
-  "ocamlbuild"
-  "-classic-display"
-  "-use-ocamlfind"
-  "src_test/test_ppx_include.byte"
-  "--"
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+  ]
+  [
+    "ocamlbuild"
+    "-classic-display"
+    "-use-ocamlfind"
+    "src_test/test_ppx_include.byte"
+    "--"
+  ] {with-test}
 ]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
   "cppo" {build}
   "cppo_ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.02.0"]
+synopsis: "Include OCaml source files in each other"
+description: """
+ppx_include is a syntax extension that allows to include
+an OCaml source file inside another one."""
+url {
+  src: "https://github.com/whitequark/ppx_include/archive/v1.1.tar.gz"
+  checksum: "md5=83f647db794cad43fad29bc95a23233b"
+}

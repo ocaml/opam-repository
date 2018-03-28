@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "lacaml"
 version: "7.2.1"
 maintainer: "Markus Mottl <markus.mottl@gmail.com>"
@@ -13,27 +13,38 @@ authors: [ "Egbert Ammicht <eammicht@lucent.com>"
            "Martin Willensdorfer <ma.wi@gmx.at>" ]
 license: "LGPL-2.1+ with OCaml linking exception"
 homepage: "http://mmottl.github.io/lacaml"
-dev-repo: "https://github.com/mmottl/lacaml.git"
+dev-repo: "git+https://github.com/mmottl/lacaml.git"
 bug-reports: "https://github.com/mmottl/lacaml/issues"
 tags: [ "clib:lapack" "clib:blas"  ]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "lacaml"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "3.12"}
   "base-bigarray"
   "base-bytes"
   "ocamlfind" {>= "1.5"}
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "3.12" ]
 depexts: [
-  [["debian"] ["libblas-dev" "liblapack-dev"]]
-  [["ubuntu"] ["libblas-dev" "liblapack-dev"]]
-  [["centos"] ["blas-devel" "lapack-devel"]]
+  ["libblas-dev" "liblapack-dev"] {os-distribution = "debian"}
+  ["libblas-dev" "liblapack-dev"] {os-distribution = "ubuntu"}
+  ["blas-devel" "lapack-devel"] {os-distribution = "centos"}
 ]
+synopsis: "OCaml-bindings to BLAS and LAPACK."
+description: """
+This library interfaces the BLAS-library (Basic Linear Algebra
+Subroutines) and LAPACK-library (Linear Algebra routines), which are
+written in FORTRAN."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/mmottl/lacaml/releases/download/v7.2.1/lacaml-7.2.1.tar.gz"
+  checksum: "md5=d3acbbf3fa44c12b9f77a7344db4f122"
+}

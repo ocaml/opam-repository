@@ -1,34 +1,66 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Thomas Gazagnaire <thomas@gazagnaire.org>"
 authors: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
 homepage: "https://github.com/mirage/irmin-watcher"
 doc: "https://mirage.github.io/irmin-watcher/"
 license: "ISC"
-dev-repo: "https://github.com/mirage/irmin-watcher.git"
+dev-repo: "git+https://github.com/mirage/irmin-watcher.git"
 bug-reports: "https://github.com/mirage/irmin-watcher/issues"
-available: [ ocaml-version >= "4.02.0" ]
 depends: [
-  "ocamlfind"  {build}
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind" {build}
   "ocamlbuild" {build}
-  "topkg"      {build}
-  "cppo"       {build}
-  "alcotest"   {test}
-  "mtime"      {test & < "1.0.0"}
+  "topkg" {build}
+  "cppo" {build}
+  "alcotest" {with-test}
+  "mtime" {with-test & < "1.0.0"}
   "ocb-stubblr"
-  "lwt" "logs" "fmt" "astring"
+  "lwt"
+  "logs"
+  "fmt"
+  "astring"
 ]
 depopts: ["inotify" "osx-fsevents"]
 conflicts: [ "osx-fsevents" {< "0.2.0"} ]
 build: [
-  "ocaml" "pkg/pkg.ml" "build" "--tests" "false"
-    "--pinned" "%{pinned}%"
-    "--with-fsevents" "%{osx-fsevents:installed}%"
-    "--with-inotify" "%{inotify:installed}%"
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--tests"
+    "false"
+    "--pinned"
+    "%{pinned}%"
+    "--with-fsevents"
+    "%{osx-fsevents:installed}%"
+    "--with-inotify"
+    "%{inotify:installed}%"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--tests"
+    "true"
+    "--pinned"
+    "%{pinned}%"
+    "--with-fsevents"
+    "%{osx-fsevents:installed}%"
+    "--with-inotify"
+    "%{inotify:installed}%"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-build-test: [
-  ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"
-     "--pinned" "%{pinned}%"
-     "--with-fsevents" "%{osx-fsevents:installed}%"
-     "--with-inotify" "%{inotify:installed}%"]
-  ["ocaml" "pkg/pkg.ml" "test"]
-]
+synopsis: "Portable Irmin watch backends using FSevents or Inotify"
+description: """
+irmin-watcher implements [Irmin's watch hooks][watch] for various OS,
+using FSevents in OSX and Inotify on Linux.
+
+irmin-watcher is distributed under the ISC license.
+
+[watch]: http://mirage.github.io/irmin/Irmin.Private.Watch.html"""
+url {
+  src:
+    "https://github.com/mirage/irmin-watcher/releases/download/0.2.0/irmin-watcher-0.2.0.tbz"
+  checksum: "md5=2f0c8acc45f96f71d93c8e639654e7b0"
+}

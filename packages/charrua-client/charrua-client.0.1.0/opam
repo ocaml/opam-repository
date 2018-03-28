@@ -1,26 +1,34 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name:         "charrua-client"
 maintainer:   ["Mindy Preston <mindy.preston@docker.com>"]
 authors   :   ["Mindy Preston <mindy.preston@docker.com>"]
 homepage:     "https://github.com/yomimono/charrua-client"
 bug-reports:  "https://github.com/yomimono/charrua-client/issues"
-dev-repo:     "https://github.com/yomimono/charrua-client.git"
+dev-repo: "git+https://github.com/yomimono/charrua-client.git"
 tags:         [ "org:mirage"]
 doc:          "https://docs.mirage.io"
 
-build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"
-  "--tests" "false" "--with-mirage" "%{mirage-types-lwt:installed}%"
+build: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "false"
+    "--with-mirage"
+    "%{mirage-types-lwt:installed}%"
+  ]
+  ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--tests" "true" ]
-  [ "ocaml" "pkg/pkg.ml" "test" ]
-]
-
 depends: [
+  "ocaml" {>= "4.03"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
-  "topkg"     {build}
-  "alcotest"     {test}
+  "topkg" {build}
+  "alcotest" {with-test}
   "charrua-core" {>= "0.4" & < "0.5"}
   "cstruct"
   "ipaddr"
@@ -38,4 +46,10 @@ conflicts: [
   "mirage-types-lwt" {<"3.0.0"}
   "mirage-types" {<"3.0.0"}
 ]
-available: [ocaml-version >= "4.03"]
+synopsis:
+  "Library using charrua-core to provide a DHCP-configured IPv4 implementation."
+url {
+  src:
+    "https://github.com/yomimono/charrua-client/releases/download/0.1.0/charrua-client-0.1.0.tbz"
+  checksum: "md5=40932786184f5f8822ec9343a7775531"
+}

@@ -1,29 +1,44 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "erwan.jahier@imag.fr"
 authors: [ "Erwan Jahier" ]
 license: "GPL-3"
 homepage: "http://www-verimag.imag.fr/"
-dev-repo: "https://forge.imag.fr/anonscm/git/lutils/lutils.git"
+dev-repo: "git+https://forge.imag.fr/anonscm/git/lutils/lutils.git"
 bug-reports: "http://www-verimag.imag.fr/"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocaml" "%{etc}%/lutils/_oasis_remove_.ml" "%{etc}%/lutils"]
 ]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml"
   "base-unix"
   "camlp4"
   "oasis" {build & >= "0.4"}
   "ocamlfind" {build}
   "num"
 ]
+synopsis:
+  "Tools and libs shared by Verimag/synchronous tools (lustre, lutin, rdbg)."
+description: """
+The gnuplot-rif tool vizualise RIF files using gnuplot. The lutils
+library contains various modules shared between tools developped at
+Verimag in the synchronous group. Those modules deal with:
+- generate and parse RIF files
+- generate dro files (to call luciole)"""
+extra-files: [
+  ["lutils.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src: "http://www-verimag.imag.fr/DIST-TOOLS/SYNCHRONE/pool/lutils.1.8.tgz"
+  checksum: "md5=aea4c9cc79134da46ea3ef95d2bb444d"
+}

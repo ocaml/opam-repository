@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "biocaml@googlegroups.com"
 authors: [
   "Sebastien Mondet"
@@ -13,20 +13,18 @@ authors: [
 homepage: "http://biocaml.org"
 bug-reports: "https://github.com/biocaml/biocaml/issues"
 license: "LGPL + linking exception"
-dev-repo: "https://github.com/biocaml/biocaml.git"
+dev-repo: "git+https://github.com/biocaml/biocaml.git"
 build: [
   [make "byte"]
   [make "native"]
   [make "META"]
   [make "%{name}%.install"]
-]
-build-doc: [
-  ["omake" "-j%{jobs}%" "doc"]
-  ["omake" "install_doc" "DOCDIR=%{doc}%/biocaml"]
+  ["omake" "-j%{jobs}%" "doc"] {with-doc}
 ]
 depends: [
+  "ocaml" {>= "4.03.0" & < "4.04.0"}
   "ocamlfind" {build}
-  "solvuu-build" {build & <="0.1.0"}
+  "solvuu-build" {build & <= "0.1.0"}
   "core_kernel" {>= "111.13.00" & <= "113.33.03"}
   "sexplib"
   "camlzip" {>= "1.05"}
@@ -43,4 +41,15 @@ depopts: ["async" "core" "lwt" "ounit"]
 conflicts: [
   "core" {< "111.13.00"}
 ]
-available: [ocaml-version >= "4.03.0" & ocaml-version < "4.04.0" ]
+synopsis: "The OCaml Bioinformatics Library"
+description: """
+Biocaml aims to be a high-performance user-friendly library for
+Bioinformatics. See the [website](http://biocaml.org) for detailed API
+documentation. We welcome contributors and feedback from users. Please
+contact us with any comments and suggestions for features you would
+like added."""
+install: ["omake" "install_doc" "DOCDIR=%{doc}%/biocaml"] {with-doc}
+url {
+  src: "https://github.com/biocaml/biocaml/archive/v0.5.0.tar.gz"
+  checksum: "md5=38d46f29c8722e07a885227ee319b220"
+}

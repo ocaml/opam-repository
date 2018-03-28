@@ -1,26 +1,34 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "Dave Scott <dave@recoil.org>"
 authors:      [ "Anil Madhavapeddy" "Dave Scott" "Richard Mortier" ]
 license:      "ISC"
 homepage:     "https://github.com/mirage/ocaml-pcap"
-dev-repo:     "https://github.com/mirage/ocaml-pcap.git"
+dev-repo: "git+https://github.com/mirage/ocaml-pcap.git"
 bug-reports:  "https://github.com/mirage/ocaml-pcap/issues"
 doc:          "https://mirage.github.io/ocaml-pcap/"
 tags:         [ "org:mirage" "org:xapi-project" ]
 
 build: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ]
-  [ "ocaml" "pkg/pkg.ml" "test" ]
-]
-
 depends: [
-  "ocamlfind"  {build}
+  "ocaml"
+  "ocamlfind" {build}
   "ocamlbuild" {build}
-  "topkg"      {build & >= "0.8.0"}
-  "cstruct"    {>= "1.9.0"}
+  "topkg" {build & >= "0.8.0"}
+  "cstruct" {>= "1.9.0"}
   "ppx_cstruct" {build}
-  "ounit"      {test}
+  "ounit" {with-test}
 ]
+synopsis: "Decode and encode PCAP (packet capture) files"
+description: """
+pcap-format provides an interface to encode and decode pcap files, dealing with
+both endianess, including endianess detection."""
+url {
+  src:
+    "https://github.com/mirage/ocaml-pcap/releases/download/0.5.0/pcap-format-0.5.0.tbz"
+  checksum: "md5=8044256e21080e6dcf3fbdc9144f1328"
+}

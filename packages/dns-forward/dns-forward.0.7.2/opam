@@ -1,38 +1,51 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "dave@recoil.org"
 authors:      ["David Scott"]
 license:      "ISC"
 homepage:     "https://github.com/djs55/ocaml-dns-forward"
 bug-reports:  "https://github.com/djs55/ocaml-dns-forward/issues"
-dev-repo:     "https://github.com/djs55/ocaml-dns-forward.git"
+dev-repo: "git+https://github.com/djs55/ocaml-dns-forward.git"
 doc:          "https://djs55.github.io/ocaml-dns-forward/"
 
-build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
-build-test: [
-  ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"]
-  ["ocaml" "pkg/pkg.ml" "test"]
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
+  ["ocaml" "pkg/pkg.ml" "build" "--tests" "true"] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-
 depends: [
-  "ocamlfind"  {build}
+  "ocaml" {>= "4.03.0"}
+  "ocamlfind" {build}
   "ocamlbuild" {build}
-  "topkg"      {build}
-  "ppx_tools"  {build}
+  "topkg" {build}
+  "ppx_tools" {build}
   "ppx_cstruct" {build}
   "ppx_sexp_conv" {build}
   "cmdliner"
   "mirage-flow" {= "1.1.0"}
   "channel"
   "dns"
-  "rresult" "astring" "fmt"
-  "cstruct"     {>= "2.4" & <"3.0"}
+  "rresult"
+  "astring"
+  "fmt"
+  "cstruct" {>= "2.4" & < "3.0"}
   "cstruct-lwt"
   "result"
-  "lwt"         {>= "2.6.0" & <"3.0.0"}
-  "logs"        {>= "0.5.0"}
-  "mtime"       {< "1.0.0"}
+  "lwt" {>= "2.6.0" & < "3.0.0"}
+  "logs" {>= "0.5.0"}
+  "mtime" {< "1.0.0"}
   "sexplib"
   "ipaddr"
-  "alcotest"   {test}
+  "alcotest" {with-test}
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis: "Library and tools for creating forwarding DNS servers"
+description: """
+This package contains functions for creating caching DNS forwarders
+with support for
+
+- UDP and TCP
+- sending queries to specific servers based on domains
+- extra records (e.g. from `/etc/hosts`)"""
+url {
+  src: "https://github.com/djs55/ocaml-dns-forward/archive/v0.7.2.tar.gz"
+  checksum: "md5=460cb45b014c90f3a54a7b3a3e2dcee9"
+}

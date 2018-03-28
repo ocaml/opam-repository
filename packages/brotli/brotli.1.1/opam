@@ -1,28 +1,44 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 homepage: "http://hyegar.com"
 bug-reports: "https://github.com/fxfactorial/ocaml-brotli/issues"
 license: "BSD-3-clause"
 tags: ["clib:stdc" "clib:brotli"]
-dev-repo: "https://github.com/fxfactorial/ocaml-brotli.git"
+dev-repo: "git+https://github.com/fxfactorial/ocaml-brotli.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "brotli"]
 depends: [
+  "ocaml" {>= "4.02.3"}
   "oasis"
   "lwt" {>= "2.4.6"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.02.3"]
+synopsis: "Bindings to Google's Brotli compresion algorithm"
+description: """
+High level and easy to use OCaml bindings to brotli, a compression
+algorithm from Google. Uses Bigarrays for memory efficiency and
+ready for Lwt concurrency.
+
+Brotli source: https://github.com/google/brotli/ 
+
+RFC: http://www.ietf.org/id/draft-alakuijala-brotli"""
+flags: light-uninstall
+extra-files: [
+  ["brotli.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src: "https://github.com/fxfactorial/ocaml-brotli/archive/v1.1.tar.gz"
+  checksum: "md5=f87ae9b9f4c3e616f7ee03631025075d"
+}

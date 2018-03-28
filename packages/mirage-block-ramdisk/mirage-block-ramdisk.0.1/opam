@@ -1,21 +1,23 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "mirage-block-ramdisk"
 maintainer: "dave@recoil.org"
 version: "0.1"
 authors: ["David Scott"]
 license: "ISC"
 homepage: "https://github.com/mirage/mirage-block-ramdisk"
-dev-repo: "https://github.com/mirage/mirage-block-ramdisk.git"
+dev-repo: "git+https://github.com/mirage/mirage-block-ramdisk.git"
 bug-reports: "https://github.com/mirage/mirage-block-ramdisk/issues"
 tags: ["org:mirage"]
 build: [
   [make "PREFIX=%{prefix}%"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: [make "PREFIX=%{prefix}%" "install"]
 remove: [
   ["ocamlfind" "remove" "mirage-block-ramdisk"]
 ]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "base-bytes"
   "cstruct"
   "mirage-types-lwt" {< "3.0.0"}
@@ -24,5 +26,16 @@ depends: [
   "oasis" {build}
   "ocamlbuild" {build}
 ]
-build-doc: ["ocaml" "setup.ml" "-doc"]
-available: [ocaml-version >= "4.02.0"]
+synopsis: "In-memory block device (\"Ramdisk\") for Mirage"
+description: """
+This is an implementation of the Mirage `V1_LWT.BLOCK` signature
+backed by an in-heap Map. This library supports
+
+- `read`/`write`
+- dynamic `resize` (i.e. device truncation and extension)
+- sparseness querying"""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/mirage-block-ramdisk/archive/v0.1.tar.gz"
+  checksum: "md5=7c9df2e0cba7f1c0c1d9d5f24fd059bc"
+}

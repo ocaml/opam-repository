@@ -1,10 +1,10 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Davide Gessa <gessadavide@gmail.com>"
 authors: "Davide Gessa <gessadavide@gmail.com>"
 homepage: "https://github.com/dakk/secp256k1-ml"
 bug-reports: "https://github.com/dakk/secp256k1-ml/issues"
 license: "MIT"
-dev-repo: "https://github.com/dakk/secp256k1-ml.git"
+dev-repo: "git+https://github.com/dakk/secp256k1-ml.git"
 build: [
   ["./configure" "--prefix=%{prefix}%"]
   [make]
@@ -12,12 +12,30 @@ build: [
 install: [make "install"]
 remove: ["ocamlfind" "remove" "secp256k1"]
 depends: [
+  "ocaml"
   "oasis" {build & >= "0.4"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
 ]
 depexts: [
-  [["debian"] ["libsecp256k1" "libsecp256k1-dev"]]
-  [["gentoo"] ["libsecp256k1"]]
-  [["ubuntu"] ["libsecp256k1" "libsecp256k1-dev"]]
+  ["libsecp256k1" "libsecp256k1-dev"] {os-distribution = "debian"}
+  ["libsecp256k1"] {os-distribution = "gentoo"}
+  ["libsecp256k1" "libsecp256k1-dev"] {os-distribution = "ubuntu"}
 ]
+synopsis: "Elliptic curve library secp256k1 wrapper for Ocaml"
+description: """
+This library wrap the secp256k1 EC(DSA) library into an OCaml library. At 
+the moment only a subset of functionalities are available:
+
+- Context: create, clone, destroy, randomize
+- Elliptic curve: public key creation
+- ECDSA: verify, sign
+
+
+All exchanged data (pubkey, signature, seckey) are represented as hex 
+strings."""
+flags: light-uninstall
+url {
+  src: "https://github.com/dakk/secp256k1-ml/archive/0.1.5.zip"
+  checksum: "md5=ede774161e7dc90b97e9978736d73fc6"
+}

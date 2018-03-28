@@ -1,19 +1,28 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "christophermcalpine@gmail.com"
 authors: ["John Whitington" "John Christopher McAlpine"]
 homepage: "https://github.com/chrismamo1/ppx_netblob"
 bug-reports: "https://github.com/chrismamo1/ppx_netblob/issues/"
-dev-repo: "https://github.com/chrismamo1/ppx_netblob.git"
+dev-repo: "git+https://github.com/chrismamo1/ppx_netblob.git"
 build: [
-  [make "native-code"] {ocaml-native}
-  [make "byte-code"] {!ocaml-native}
+  [make "native-code"] {ocaml:native}
+  [make "byte-code"] {!ocaml:native}
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "ppx_netblob"]
 depends: [
+  "ocaml" {> "4.03.0"}
   "ocamlfind" {build & >= "1.5.2"}
   "ppx_tools" {build}
-  "cohttp" {build & <"0.99"}
+  "cohttp" {build & < "0.99"}
   "lwt" {build}
 ]
-available: [ocaml-version > "4.03.0"]
+synopsis: "fill strings with data collected from the internet"
+description: """
+this package is based on ppx_blob, except it uses cohttp to fetch blobs from
+the internet rather than from the local file system"""
+flags: light-uninstall
+url {
+  src: "https://github.com/chrismamo1/ppx_netblob/archive/v1.1.tar.gz"
+  checksum: "md5=f721ec08b3adb22e4058aaa353c86164"
+}

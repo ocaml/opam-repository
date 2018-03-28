@@ -1,29 +1,42 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Benoit Bataille <benoit.bataille@gmail.com>"
 authors: [ "Benoit Bataille <benoit.bataille@gmail.com>" ]
 license: "BSD-3-clause"
 homepage: "https://github.com/bataille/ocaml-transmission-rpc"
 bug-reports: "https://github.com/bataille/ocaml-transmission-rpc/issues"
-dev-repo: "https://github.com/bataille/ocaml-transmission-rpc.git"
+dev-repo: "git+https://github.com/bataille/ocaml-transmission-rpc.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "transmission-rpc"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml"
   "cohttp" {>= "0.13.0"}
   "lwt"
   "ocamlfind" {build}
   "ppx_deriving"
-  "ppx_deriving_yojson" {>= "2.0" & <"3.0"}
+  "ppx_deriving_yojson" {>= "2.0" & < "3.0"}
   "rresult"
   "yojson"
 ]
+synopsis: "A client library for the Transmission Bittorrent client RPC"
+description: """
+An OCaml client library for the Transmission Bittorrent client RPC
+supporting all the available methods while remaining voluntarily close
+to the interface specification. To each specified method corresponds a
+function which take advantages of some OCaml niceties: labelled
+arguments, optional arguments for optional parameters and variant
+types."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/bataille/ocaml-transmission-rpc/archive/1.0.tar.gz"
+  checksum: "md5=a1fd3f45728686185203c09d5d6c50f2"
+}

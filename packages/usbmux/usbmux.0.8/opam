@@ -1,29 +1,48 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 homepage: "https://github.com/onlinemediagroup/ocaml-usbmux"
 bug-reports: "https://github.com/onlinemediagroup/ocaml-usbmux/issues"
 license: "BSD-3"
-dev-repo: "https://github.com/onlinemediagroup/ocaml-usbmux.git"
+dev-repo: "git+https://github.com/onlinemediagroup/ocaml-usbmux.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 remove: ["ocaml" "%{etc}%/usbmux/_oasis_remove_.ml" "%{etc}%/usbmux"]
 depends: [
+  "ocaml" {>= "4.02.0" & < "4.04.0"}
   "ANSITerminal"
   "cmdliner" {build}
-  "cohttp" {<"0.99"}
-  "lwt" {>= "2.5.1" & <"3.0.0"}
+  "cohttp" {< "0.99"}
+  "lwt" {>= "2.5.1" & < "3.0.0"}
   "ocamlfind" {build}
   "plist"
   "stringext"
   "yojson"
 ]
-available: [ocaml-version >= "4.02.0" & ocaml-version < "4.04.0"]
+synopsis: "Control port remapping for iOS devices"
+description: """
+Talk to jailbroken iDevices over USB with the CLI, gandalf.
+
+Basically this lets you do:
+
+ssh -p <some_port> root@localhost
+
+for an iPhone/iPod/iDevice.
+
+Example usage:
+
+sudo `which gandalf` --mappings etc/mapping --daemonize --verbose"""
+extra-files: [
+  ["usbmux.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src: "https://github.com/onlinemediagroup/ocaml-usbmux/archive/v0.8.tar.gz"
+  checksum: "md5=372f861335d84e46354ae51d41f2d599"
+}

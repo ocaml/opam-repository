@@ -1,28 +1,38 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Spiros Eliopoulos <spiros@inhabitedtype.com>"
 authors: [ "Spiros Eliopoulos <spiros@inhabitedtype.com>" ]
 license: "BSD-3-clause"
 homepage: "https://github.com/inhabitedtype/ocaml-dispatch"
-dev-repo: "https://github.com/inhabitedtype/ocaml-dispatch.git"
+dev-repo: "git+https://github.com/inhabitedtype/ocaml-dispatch.git"
 bug-reports: "https://github.com/inhabitedtype/ocaml-dispatch/issues"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
-    "--%{js_of_ocaml:enable}%-js-of-ocaml"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{js_of_ocaml:enable}%-js-of-ocaml"
+  ]
   ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{js_of_ocaml:enable}%-js-of-ocaml"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "dispatch"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"
-    "--%{js_of_ocaml:enable}%-js-of-ocaml"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
-  "ounit" {test & >= "1.0.2"}
+  "ounit" {with-test & >= "1.0.2"}
   "result"
   "ocamlbuild" {build}
 ]
@@ -32,3 +42,15 @@ depopts: [
 conflicts: [
   "js_of_ocaml" {>= "3.0"}
 ]
+synopsis: "Path-based dispatching for client- and server-side applications."
+description: """
+Dispatch provides a basic mechanism for dispatching a request to a
+handler based on hierarchical path names conventionally found in URIs.
+It can be used both for dispatching requests in a server, as well as
+handing changes to hierarchical fragments in a client-side
+application."""
+flags: light-uninstall
+url {
+  src: "https://github.com/inhabitedtype/ocaml-dispatch/archive/0.2.0.tar.gz"
+  checksum: "md5=7739fedc765a26cdc67c2714a7789f18"
+}

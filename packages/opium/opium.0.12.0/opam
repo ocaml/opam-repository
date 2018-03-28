@@ -1,18 +1,21 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "rudi.grinberg@gmail.com"
 authors: ["Rudi Grinberg"]
 license: "MIT"
 
 homepage: "https://github.com/rgrinberg/opium"
 bug-reports: "https://github.com/rgrinberg/opium/issues"
-dev-repo: "https://github.com/rgrinberg/opium.git"
-
+dev-repo: "git+https://github.com/rgrinberg/opium.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure"]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-
 install: ["ocaml" "setup.ml" "-install"]
 
 remove: [
@@ -20,18 +23,11 @@ remove: [
   ["ocamlfind" "remove" "opium"]
 ]
 
-build-doc: ["ocaml" "setup.ml" "-doc"]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "oasis" {build}
-  "cohttp" {>= "0.15.0" & <"0.99"}
+  "cohttp" {>= "0.15.0" & < "0.99"}
   "ezjsonm" {>= "0.4.0"}
   "base64" {>= "2.0.0"}
   "lwt"
@@ -40,8 +36,23 @@ depends: [
   "fieldslib" {< "113.01.00"}
   "sexplib" {< "113.01.00"}
   "humane-re"
-  "ounit" {test}
-  "cow" {test}
+  "ounit" {with-test}
+  "cow" {with-test}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Sinatra like web toolkit based on Lwt + Cohttp"
+description: """
+Opium is a minimalistic library for quickly binding functions
+to http routes. Its features include (but not limited to):
+
+* Middleware system for app independent components
+* A simple router for matching urls and parsing parameters
+* Request/Response pretty printing for easier debugging
+
+Note: This library is still at an early stage so expect breakages
+until 1.0"""
+flags: light-uninstall
+url {
+  src: "https://github.com/rgrinberg/opium/archive/v0.12.0.tar.gz"
+  checksum: "md5=dc6500c727af18ff3ba98fd11b5fdae9"
+}

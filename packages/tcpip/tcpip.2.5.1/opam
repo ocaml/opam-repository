@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "anil@recoil.org"
 authors: [
   "Anil Madhavapeddy"
@@ -14,18 +14,17 @@ authors: [
 homepage: "https://github.com/mirage/mirage-tcpip"
 bug-reports: "https://github.com/mirage/mirage-tcpip/issues"
 tags: "org:mirage"
-dev-repo: "https://github.com/mirage/mirage-tcpip.git"
+dev-repo: "git+https://github.com/mirage/mirage-tcpip.git"
 build: [
   ["./configure" "--prefix" prefix "--%{mirage-xen:enable}%-xen"]
   [make]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test" "TESTFLAGS=-v"] {with-test}
 ]
 install: [make "install"]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test" "TESTFLAGS=-v"]
-]
 remove: ["ocamlfind" "remove" "tcpip"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "cstruct" {>= "1.0.1" & <= "1.9.0"}
@@ -33,16 +32,25 @@ depends: [
   "channel"
   "mirage-types-lwt" {>= "2.3.0" & < "2.6.0"}
   "mirage-unix" {>= "1.1.0" & <= "2.6.0"}
-  "mirage-console" {<"2.2.0"}
-  "mirage-clock-unix" {>= "1.0.0" & <"1.2.0"}
-  "mirage-net-unix" {>= "1.1.0" & <"2.3.0"}
+  "mirage-console" {< "2.2.0"}
+  "mirage-clock-unix" {>= "1.0.0" & < "1.2.0"}
+  "mirage-net-unix" {>= "1.1.0" & < "2.3.0"}
   "ipaddr" {>= "2.2.0"}
-  "mirage-profile" {>= "0.5" & <"0.8.0"}
+  "mirage-profile" {>= "0.5" & < "0.8.0"}
   "lwt" {>= "2.4.7" & < "3.0.0"}
-  "mirage-flow" {test & < "1.2.0"}
-  "mirage-vnetif" {test & < "0.3.0"}
-  "alcotest" {test}
-  "pcap-format" {test}
+  "mirage-flow" {with-test & < "1.2.0"}
+  "mirage-vnetif" {with-test & < "0.3.0"}
+  "alcotest" {with-test}
+  "pcap-format" {with-test}
 ]
 depopts: "mirage-xen"
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Userlevel TCP/IP stack"
+description: """
+The library provides a networking stack for the MirageOS
+library operating system that supports IPv4, IPv6, ARPv4,
+DHCPv4 and TCP/IP."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/mirage-tcpip/archive/v2.5.1.tar.gz"
+  checksum: "md5=58ebf095c4563956ceac67ae16ca937c"
+}

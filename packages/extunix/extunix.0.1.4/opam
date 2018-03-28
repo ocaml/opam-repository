@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "ygrek@autistici.org"
 homepage: "http://extunix.forge.ocamlcore.org/"
 dev-repo: "git://github.com/ygrek/extunix.git"
@@ -21,27 +21,47 @@ authors: [ "ygrek"
            "Dmitry Grebeniuk"
            "François Bobot" ]
 build: [
-  ["ocaml" "setup.ml" "-configure" "--%{ounit:enable}%-tests" "--prefix" prefix] {ocaml-version >= "4.02.0"}
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix] {ocaml-version < "4.02.0"}
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--%{ounit:enable}%-tests"
+    "--prefix"
+    prefix
+  ] {ocaml:version >= "4.02.0"}
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+    {ocaml:version < "4.02.0"}
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: [
   ["ocaml" "setup.ml" "-install"]
-]
-build-doc: [
-  ["ocaml" "setup.ml" "-doc"]
-]
-build-test: [
-  ["ocaml" "setup.ml" "-test"]
 ]
 remove: [
   ["ocamlfind" "remove" "extunix"]
 ]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "camlp4" {build}
-  "ounit" {test & >= "1.0.3"}
+  "ounit" {with-test & >= "1.0.3"}
   "base-bigarray"
   "base-unix"
   "ocamlbuild" {build}
 ]
+synopsis: "Collection of thin bindings to various low-level system API"
+description: """
+Motto: "Be to Unix, what extlib is to stdlib"
+
+ * Implement thin C bindings that directly map to underlying system API.
+ * Provide common consistent ocaml interface: naming convention, exceptions.
+ * Simple to build - no extra dependencies."""
+flags: light-uninstall
+url {
+  src:
+    "http://ygrek.org.ua/p/release/ocaml-extunix/ocaml-extunix-0.1.4.tar.gz"
+  checksum: "md5=d4ac544b276fb8717d5c75e032b33577"
+  mirrors:
+    "https://github.com/ygrek/extunix/releases/download/v0.1.4/ocaml-extunix-0.1.4.tar.gz"
+}

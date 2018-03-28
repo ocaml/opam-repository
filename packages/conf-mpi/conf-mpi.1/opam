@@ -1,25 +1,21 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "gabriel.scherer@gmail.com"
 build: [["sh" "-x" "configure" os]]
-depends: ["conf-pkg-config"]
+depends: ["ocaml" "conf-pkg-config"]
 depexts: [
-   # these depexts mention openmpi, but mpich is also supported
-   # by the configure script
-
-   [["debian"] ["mpi-default-dev"]]
-   [["ubuntu"] ["mpi-default-dev"]]
-   [["centos"] ["openmpi-devel"]]
-   [["fedora"] ["openmpi-devel"]]
-
-   [["opensuse"] ["openmpi"]]
-   [["archlinux"] ["openmpi"]]
-
-   # Alpine: openmpi-dev exists on "edge", not "3.6",
-   # so this will fail at CI time
-   [["alpine"] ["openmpi-dev"]]
-
-   [["freebsd"] ["openmpi"]]
-   [["openbsd"] ["devel/openmpi"]]
-   [["osx" "macports"] ["openmpi-devel-default"]]
-   [["osx" "homebrew"] ["open-mpi"]]
+  ["mpi-default-dev"] {os-distribution = "debian"}
+  ["mpi-default-dev"] {os-distribution = "ubuntu"}
+  ["openmpi-devel"] {os-distribution = "centos"}
+  ["openmpi-devel"] {os-distribution = "fedora"}
+  ["openmpi"] {os-distribution = "opensuse"}
+  ["openmpi"] {os-distribution = "archlinux"}
+  ["openmpi-dev"] {os-distribution = "alpine"}
+  ["openmpi"] {os = "freebsd"}
+  ["devel/openmpi"] {os = "openbsd"}
+  ["openmpi-devel-default"] {os = "macos" & os-distribution = "macports"}
+  ["open-mpi"] {os = "macos" & os-distribution = "homebrew"}
 ]
+synopsis: "Virtual package relying on a mpi system installation."
+description:
+  "This package can only install if the (open)mpi development files are installed on the system."
+extra-files: ["configure" "md5=7dd8f5a530ff6f2c493cf5bff96c92e2"]

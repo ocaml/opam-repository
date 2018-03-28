@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "ygrek@autistici.org"
 homepage: "http://ocurl.forge.ocamlcore.org"
 license: "MIT"
@@ -9,19 +9,28 @@ bug-reports: "https://github.com/ygrek/ocurl/issues"
 build: [
   ["./configure"]
   [make]
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
 ]
 install: [
   [make "install"]
 ]
-build-test: [
-  [make "test"]
-]
-build-doc: [[make "doc"]]
 remove: [["ocamlfind" "remove" "curl"]]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "base-unix"
   "conf-libcurl"
 ]
 depopts: ["lwt"]
 patches: ["fix_depend.diff"]
+synopsis: "Bindings to libcurl"
+description: """
+Client-side URL transfer library, supporting HTTP and a multitude of
+other network protocols (FTP/SMTP/RTSP/etc)."""
+flags: light-uninstall
+extra-files: ["fix_depend.diff" "md5=1d54dded0a672a992906c5d4c5216e87"]
+url {
+  src: "http://ygrek.org.ua/p/release/ocurl/ocurl-0.7.7.tar.gz"
+  checksum: "md5=077f42f5b35adae5f2b881ce411171cd"
+}

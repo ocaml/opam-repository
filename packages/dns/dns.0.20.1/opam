@@ -1,7 +1,7 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "anil@recoil.org"
 homepage:     "https://github.com/mirage/ocaml-dns"
-dev-repo:     "https://github.com/mirage/ocaml-dns.git"
+dev-repo: "git+https://github.com/mirage/ocaml-dns.git"
 bug-reports:  "https://github.com/mirage/ocaml-dns/issues"
 doc:          "https://mirage.github.io/ocaml-dns/"
 
@@ -22,40 +22,50 @@ tags: [
 ]
 
 build: [
-  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
-    "--with-lwt" "%{lwt+mirage-profile+cmdliner:installed}%"
-    "--with-mirage" "%{mirage-time-lwt+mirage-stack-lwt+mirage-kv-lwt+lwt+duration+mirage-profile:installed}%"
-    "--with-async" "%{async:installed}%" ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "false"
+    "--with-lwt"
+    "%{lwt+mirage-profile+cmdliner:installed}%"
+    "--with-mirage"
+    "%{mirage-time-lwt+mirage-stack-lwt+mirage-kv-lwt+lwt+duration+mirage-profile:installed}%"
+    "--with-async"
+    "%{async:installed}%"
+  ]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-build-test: [
-  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ]
-  ["ocaml" "pkg/pkg.ml" "test" ]
-]
-
 depends: [
-  "ocamlfind"        {build}
-  "ocamlbuild"       {build}
-  "topkg"            {build & >= "0.8.0"}
-  "ppx_tools"        {build}
+  "ocaml" {>= "4.03.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "0.8.0"}
+  "ppx_tools" {build}
   "base-bytes"
-  "cstruct"          {>= "2.0.0"}
-  "ppx_cstruct"      {build}
+  "cstruct" {>= "2.0.0"}
+  "ppx_cstruct" {build}
   "re"
-  "ipaddr"           {>= "2.6.0" & <"2.8.0"}
-  "uri"              {>= "1.7.0" & <"1.9.4"}
-  "base64"           {>= "2.0.0"}
+  "ipaddr" {>= "2.6.0" & < "2.8.0"}
+  "uri" {>= "1.7.0" & < "1.9.4"}
+  "base64" {>= "2.0.0"}
   "hashcons"
   "result"
-  "lwt"              {test}
-  "ounit"            {test}
-  "pcap-format"      {test}
-  "mirage-protocols" {test & >="1.1.0"}
-  "mirage-stack-lwt" {test}
-  "mirage-time-lwt"  {test}
-  "mirage-kv"        {test}
-  "mirage-kv-lwt"    {test}
-  "mirage-profile"   {test}
-  "duration"         {test}
+  "lwt" {with-test}
+  "ounit" {with-test}
+  "pcap-format" {with-test}
+  "mirage-protocols" {with-test & >= "1.1.0"}
+  "mirage-stack-lwt" {with-test}
+  "mirage-time-lwt" {with-test}
+  "mirage-kv" {with-test}
+  "mirage-kv-lwt" {with-test}
+  "mirage-profile" {with-test}
+  "duration" {with-test}
 ]
 depopts: [
   "async"
@@ -74,4 +84,37 @@ conflicts: [
   "async" {<"112.24.00"}
   "lwt" {< "3.0.0"}
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis: "DNS client and server implementation in pure OCaml"
+description: """
+This is a pure OCaml implementation of the DNS protocol.  It is intended to be
+a reasonably high-performance implementation, but clarity is preferred rather
+than low-level performance hacks.
+
+[![Build Status](https://travis-ci.org/mirage/ocaml-dns.svg?branch=master)](https://travis-ci.org/mirage/ocaml-dns)
+
+To build it, please use the [OPAM](https://opam.ocaml.org) package manager (1.2+):
+
+    opam pin add dns .
+
+This will install the dependencies needed and give you a working development
+version of the library.
+
+Packages:
+
+* `lib/` contains the core DNS protocol, which is packed into the `Dns` module.
+* `lib_test/` contains unit tests and sample uses of the library.
+  In particular, `time_server` is a simple dynamic responder.
+
+Areas that need work:
+
+* We need an Lwt-based client iterative resolver
+  Patches for this are highly welcome!
+* EDNS0 extensions
+* DNSSEC extensions (using [nocrypto](https://github.com/mirleft/ocaml-nocrypto/))
+* TC bit and TCP fallback
+* mDNS resolver"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-dns/releases/download/0.20.1/dns-0.20.1.tbz"
+  checksum: "md5=16f38546fb454480cb063ef83c4eb37c"
+}

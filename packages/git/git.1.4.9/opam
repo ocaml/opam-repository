@@ -1,11 +1,10 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "thomas@gazagnaire.org"
 authors: "Thomas Gazagnaire"
 homepage: "https://github.com/mirage/ocaml-git"
 bug-reports: "https://github.com/mirage/ocaml-git/issues"
 license: "ISC"
-dev-repo: "https://github.com/mirage/ocaml-git.git"
-
+dev-repo: "git+https://github.com/mirage/ocaml-git.git"
 build: [
   ["./configure" "--prefix" prefix
      "--%{mirage-types-lwt:enable}%-mirage"
@@ -19,6 +18,7 @@ remove: [
 ]
 
 depends: [
+  "ocaml" {>= "4.01.0"}
   "mstruct" {>= "1.3.1"}
   "dolog" {>= "1.0"}
   "ocamlgraph"
@@ -42,5 +42,29 @@ conflicts: [
   "conduit" {< "0.6.0"}
   "conduit"  {>= "0.99"}
 ]
-available: [ocaml-version >= "4.01.0"]
 patches: ["remove-warn-error.diff"]
+synopsis: "Git format and protocol in pure OCaml"
+description: """
+Support for on-disk and in-memory Git stores. Can read and write all
+the Git objects: the usual blobs, trees, commits and tags but also the
+pack files, pack indexes and the index file (where the staging area
+lives).
+
+All the objects share a consistent API, and convenience functions are
+provided to manipulate the different objects. For instance, it is
+possible to make a pack file position independant (as the Zlib
+compression might change the relative offsets between the packed
+objects), to generate pack indexes from pack files, or to expand
+the filesystem of a given commit.
+
+The library comes with a command-line tool called `ogit` which shares
+a similar interface with `git`, but where all operations are mapped to
+the API exposed `ocaml-git` (and hence using only OCaml code)."""
+flags: light-uninstall
+extra-files: [
+  "remove-warn-error.diff" "md5=ce2beb6b8ddfa399d78741adb9d5962d"
+]
+url {
+  src: "https://github.com/mirage/ocaml-git/archive/1.4.9.tar.gz"
+  checksum: "md5=e22c6340b9af0a626a90ab03972f282a"
+}
