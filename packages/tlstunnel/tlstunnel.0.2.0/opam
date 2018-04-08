@@ -1,0 +1,37 @@
+opam-version: "2.0"
+name:         "tlstunnel"
+homepage:     "https://github.com/hannesm/tlstunnel"
+dev-repo: "git+https://github.com/hannesm/tlstunnel.git"
+bug-reports:  "https://github.com/hannesm/tlstunnel/issues"
+maintainer:   ["Hannes Mehnert <hannes@mehnert.org>"]
+license:      "BSD2"
+
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
+]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "tls" {>= "0.9.0"}
+  "x509" {>= "0.6.1"}
+  "nocrypto" {>= "0.4.0"}
+  "lwt" {>= "3.0.0"}
+  "sexplib"
+  "cmdliner"
+]
+synopsis: "Tunnel -- a TLS reverse proxy"
+description: """
+Who needs a stunnel if you have a tls tunnel?
+
+`tlstunnel` is picky; it won't accept connections:
+- which do not contain the [secure renegotiation](https://tools.ietf.org/html/rfc5746) extension
+- which speak SSL version 3
+- if the given certificate chain is not valid (or contains an X.509 version 1 certificate, or less than 1024 bits RSA public key"""
+authors: "Hannes Mehnert <hannes@mehnert.org>"
+url {
+  src:
+    "https://github.com/hannesm/tlstunnel/releases/download/0.2.0/tlstunnel-0.2.0.tbz"
+  checksum: "md5=3702a4a7fcac59fb83dc9f9c6607f11c"
+}
