@@ -11,12 +11,6 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
-  ["mkdir" "-p" "%{lib}%/ocaml/"]
-  [
-    "sh"
-    "-exc"
-    "echo \"* : g = 1\" > %{lib}%/ocaml/ocaml_compiler_internal_params"
-  ]
   ["./configure" "-prefix" prefix]
     {os != "openbsd" & os != "freebsd" & os != "macos"}
   ["./configure" "-prefix" prefix "-cc" "cc" "-aspp" "cc -c"]
@@ -24,7 +18,15 @@ build: [
   [make "world"]
   [make "world.opt"]
 ]
-install: [make "install"]
+install: [
+  ["mkdir" "-p" "%{lib}%/ocaml/"]
+  [
+    "sh"
+    "-exc"
+    "echo \"* : g = 1\" > %{lib}%/ocaml/ocaml_compiler_internal_params"
+  ]
+  [make "install"]
+]
 url {
   src: "https://github.com/stedolan/ocaml/archive/afl-backport.tar.gz"
   checksum: "md5=2ac30a9a3f014c2dab4ef1a1d365b72c"
