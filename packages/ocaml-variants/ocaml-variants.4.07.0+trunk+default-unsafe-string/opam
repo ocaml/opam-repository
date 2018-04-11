@@ -1,8 +1,9 @@
 opam-version: "2.0"
-synopsis: "4.06 release branch with -safe-string enabled."
+synopsis:
+  "Latest trunk with -unsafe-string enabled (-safe-string is now the default)."
 maintainer: "platform@lists.ocaml.org"
 depends: [
-  "ocaml" {= "4.06.1" & post}
+  "ocaml" {= "4.07.0" & post}
   "base-unix" {post}
   "base-bigarray" {post}
   "base-threads" {post}
@@ -11,14 +12,21 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
-  ["./configure" "-prefix" prefix "-with-debug-runtime" "-safe-string"]
-    {os != "openbsd" & os != "freebsd" & os != "macos"}
   [
     "./configure"
     "-prefix"
     prefix
     "-with-debug-runtime"
-    "-safe-string"
+    "-no-force-safe-string"
+    "-default-unsafe-string"
+  ] {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-no-force-safe-string"
+    "-default-unsafe-string"
     "-cc"
     "cc"
     "-aspp"
@@ -29,5 +37,5 @@ build: [
 ]
 install: [make "install"]
 url {
-  src: "https://github.com/ocaml/ocaml/archive/4.06.tar.gz"
+  src: "https://github.com/ocaml/ocaml/archive/4.07.tar.gz"
 }
