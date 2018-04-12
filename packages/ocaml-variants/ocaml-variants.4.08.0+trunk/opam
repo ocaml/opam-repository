@@ -1,8 +1,8 @@
 opam-version: "2.0"
-synopsis: "latest 4.07 development with frame-pointers"
+synopsis: "latest trunk snapshot"
 maintainer: "platform@lists.ocaml.org"
 depends: [
-  "ocaml" {= "4.07.0" & post}
+  "ocaml" {= "4.08.0" & post}
   "base-unix" {post}
   "base-bigarray" {post}
   "base-threads" {post}
@@ -11,19 +11,13 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
+  ["./configure" "-prefix" prefix "-with-debug-runtime"]
+    {os != "openbsd" & os != "freebsd" & os != "darwin"}
   [
     "./configure"
     "-prefix"
     prefix
     "-with-debug-runtime"
-    "-with-frame-pointers"
-  ] {os != "openbsd" & os != "freebsd" & os != "darwin"}
-  [
-    "./configure"
-    "-prefix"
-    prefix
-    "-with-debug-runtime"
-    "-with-frame-pointers"
     "-cc"
     "cc"
     "-aspp"
@@ -34,6 +28,6 @@ build: [
 ]
 install: [make "install"]
 url {
-  src: "https://github.com/ocaml/ocaml/archive/4.07.tar.gz"
-  checksum: "md5=23e97673d30fcb2815a69d20bd39636a"
+  src: "https://github.com/ocaml/ocaml/archive/trunk.tar.gz"
+  checksum: "md5=3257475f890cc37c9d205be0ff901568"
 }
