@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
-yes | yum update
-yes | yum install git
-yes | yum install gcc gcc-c++ gcc-gfortran make kernel-devel
+yum update -y
+yum install -y git gcc gcc-c++ gcc-gfortran make kernel-devel
 
-git clone https://github.com/xianyi/OpenBLAS.git
+git clone --depth 1 https://github.com/xianyi/OpenBLAS.git --branch v0.2.20
 cd OpenBLAS
-make && make install
+make && sudo make install
 cd ..
 rm -rf OpenBLAS
