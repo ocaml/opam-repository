@@ -6,17 +6,14 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "https://github.com/ocaml/opam-repository.git"
 license: "BSD"
 build: [
-  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os = "alpine"}
-  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os = "debian"}
-  ["sh" "-exc" "cc $CFLAGS -I/usr/include/openblas test.c -lopenblas"] {os = "fedora" | os = "centos"}
+  ["sh" "-exc" "cc $CFLAGS -I/usr/include/openblas test.c -lopenblas"] {os = "fedora" | os = "centos" | os = "opensuse"}
   ["sh" "-exc" "cc $CFLAGS -I/usr/local/opt/openblas/include test.c -L/usr/local/opt/openblas/lib -lopenblas"] {os = "darwin"}
-  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os != "darwin" & os != "debian" & os != "centos" & os != "fedora" & os != "alpine"}
+  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"] {os != "fedora" & os != "centos" & os != "opensuse" & os != "darwin"}
 ]
 depexts: [
-  [["fedora"] ["openblas-devel"]]
-  [["centos"] ["epel-release" "openblas-devel"]]
   [["alpine"] ["libc-dev" "openblas-dev"]]
-  [["ubuntu"] ["libopenblas-dev" "liblapacke-dev"]]
-  [["debian"] ["libopenblas-dev" "liblapacke-dev"]]
+  [["centos"] ["epel-release" "openblas-devel"]]
+  [["debian" "debian"] ["libopenblas-dev" "liblapacke-dev"]]
+  [["fedora" "opensuse"] ["openblas-devel"]]
   [["osx" "homebrew"] ["openblas"]]
 ]
