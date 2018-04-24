@@ -1,0 +1,45 @@
+opam-version: "2.0"
+name: "kinetic-client"
+version: "0.0.9"
+maintainer: "Romain Slootmaekers <romain.slootmaekers@openvstorage.com>"
+authors: "Romain Slootmaekers <romain.slootmaekers@openvstorage.com>"
+homepage: "https://github.com/openvstorage/kinetic-ocaml-client"
+bug-reports: "https://github.com/openvstorage/kinetic-ocaml-client"
+dev-repo: "git+https://github.com/openvstorage/kinetic-ocaml-client.git"
+license: "LGPL"
+build: [
+  [make]
+]
+install: [make "install-lib"]
+remove: ["ocamlfind" "remove" "kinetic-client"]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind" {build}
+  "piqi" {build & >= "0.7.1"}
+  "ocamlbuild" {build}
+  "lwt" {> "3.2.0"}
+  "lwt_log"
+  "lwt_ssl"
+  "cryptokit"
+  "ppx_deriving"
+  "cmdliner"
+]
+depexts: [
+  ["protobuf-compiler"] {os-distribution = "debian"}
+  ["protobuf-compiler"] {os-distribution = "ubuntu"}
+  ["protobuf-compiler"] {os-distribution = "centos"}
+  ["protobuf"] {os = "macos" & os-distribution = "homebrew"}
+]
+synopsis: "Client for Seagate's kinetic drives."
+description: """
+Kinetic drives are HDDs that also run a little socket server exposing a network protocol, making the component act like a
+key value store. This library allows you to talk to use the drives.
+
+NOTE: Although there is a simulator, the drives themselves have a different behaviour.
+      This client lib is tested against the drives (not the simulator)"""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/CloudFounders/kinetic-ocaml-client/archive/0.0.9.tar.gz"
+  checksum: "md5=c86b6bd396668d6267ff7ef982b2d68c"
+}
