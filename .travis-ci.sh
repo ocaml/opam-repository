@@ -138,7 +138,7 @@ build_switch
 INSTALL_CAMLP4=0
 if [[ $OPAM_SWITCH = "system" ]] ; then
   for i in $(cat tobuild.txt) ; do
-    if opam install $i --deps-only --show | grep "\<camlp4\>" > /dev/null 2>&1 ; then
+    if opam install $i --build-test --deps-only --show | grep "\<camlp4\>" > /dev/null 2>&1 ; then
       INSTALL_CAMLP4=1
       break
     fi
