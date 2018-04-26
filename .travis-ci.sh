@@ -110,8 +110,9 @@ function build_one {
     echo
     echo "====== External dependency handling ======"
     opam install depext
-    depext=$(opam depext -ls $pkg --no-sources)
-    opam depext $pkg
+    # No --build-tests option on opam depext, workaround from https://github.com/ocaml/opam-depext/issues/10#issuecomment-93882764
+    depext=$(OPAMBUILDTEST=1 opam depext -ls $pkg --no-sources)
+    OPAMBUILDTEST=1 opam depext $pkg
     echo
     echo "====== Installing dependencies ======"
     opam install --deps-only $pkg
