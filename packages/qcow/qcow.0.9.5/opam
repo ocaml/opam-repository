@@ -10,7 +10,7 @@ tags: [
 ]
 
 depends: [
-  "ocaml" {>= "4.03.0"}
+  "ocaml" {>= "4.03.0" & < "4.06.0"}
   "astring"
   "cmdliner"
   "cstruct"
@@ -23,7 +23,7 @@ depends: [
   "mirage-time"
   "mirage-time-lwt"
   "cmdliner"
-  "sha"
+  "sha" {= "1.9"}
   "sexplib"
   "logs"
   "fmt"
@@ -32,6 +32,7 @@ depends: [
   "ocamlfind" {build}
   "topkg" {build}
   "ppx_tools" {build}
+  "ppx_deriving" {build}
   "ppx_sexp_conv" {build}
   "ppx_type_conv" {build}
   "ounit" {with-test}
@@ -40,11 +41,8 @@ depends: [
   "nbd" {with-test & >= "2.0.1"}
 ]
 build: [
-  ["ocaml" "detect_word_size.ml"]
-  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"]
-  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
-    {with-test}
-  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+  [ "ocaml" "detect_word_size.ml" ]
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
 ]
 synopsis: "Support for Qcow2 images"
 description: """
