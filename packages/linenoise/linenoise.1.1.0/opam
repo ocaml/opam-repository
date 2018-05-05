@@ -1,0 +1,63 @@
+opam-version: "2.0"
+maintainer: "Simon Cruanes"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "https://github.com/fxfactorial/ocaml-linenoise"
+bug-reports: "https://github.com/fxfactorial/ocaml-linenoise/issues"
+license: "BSD-3-clause"
+dev-repo: "git+https://github.com/fxfactorial/ocaml-linenoise.git"
+build: [
+  ["jbuilder" "build" "@install" "-p" name]
+  ["jbuilder" "runtest" "-p" name] {with-test}
+]
+depends: [
+  "ocaml"
+  "jbuilder" {build}
+  "result"
+]
+synopsis: "Simple readline like functionality with nice hints feature."
+description: """
+These are self contained OCaml bindings to linenoise,
+no system libraries needed at all.
+
+Here's a simple program:
+
+let rec user_input prompt cb =
+  match LNoise.linenoise prompt with
+  | None -> ()
+  | Some v ->
+    cb v;
+    user_input prompt cb
+
+let () =
+  LNoise.set_hints_callback (fun line ->
+      if line <> "git remote add " then None
+      else Some (" <this is the remote name> <this is the remote URL>",
+                 LNoise.Yellow,
+                 true)
+    );
+  LNoise.history_load ~filename:"history.txt" |> ignore;
+  LNoise.history_set ~max_length:100 |> ignore;
+  LNoise.set_completion_callback begin fun line_so_far ln_completions ->
+    if line_so_far <> "" && line_so_far.[0] = 'h' then
+      ["Hey"; "Howard"; "Hughes";"Hocus"]
+      |> List.iter (LNoise.add_completion ln_completions);
+  end;
+  ["These are OCaml bindings to linenoise";
+   "get tab completion with <TAB>, type h then hit <TAB>";
+   "type quit to exit gracefully";
+   "By Edgar Aroutiounian\\n"]
+  |> List.iter print_endline;
+  (fun from_user ->
+     if from_user = "quit" then exit 0;
+     LNoise.history_add from_user |> ignore;
+     LNoise.history_save ~filename:"history.txt" |> ignore;
+     Printf.sprintf "Got: %s" from_user |> print_endline
+  )
+  |> user_input "test_program> "
+
+and compile with:
+$ ocamlfind ocamlopt ex.ml -package linenoise -linkpkg -o T"""
+url {
+  src: "https://github.com/fxfactorial/ocaml-linenoise/archive/v1.1.0.tar.gz"
+  checksum: "md5=0d47ce859602ce719fd4372b79255d58"
+}
