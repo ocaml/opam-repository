@@ -1,5 +1,13 @@
 let () =
-  let ocamlc = Sys.executable_name ^ "c" in
+  let exe = ".exe" in
+  let ocamlc =
+    let (base, suffix) =
+      let s = Sys.executable_name in
+      if Filename.check_suffix s exe then
+        (Filename.chop_suffix s exe, exe)
+      else
+        (s, "") in
+    base ^ "c" ^ suffix in
   if Sys.ocaml_version <> "%{_:version}%" then
     (Printf.eprintf
        "ERROR: The compiler found at %%s has version %%s,\n\
