@@ -1,0 +1,32 @@
+opam-version: "1.2"
+maintainer: "Yoichi Hirai <i@yoichihirai.com>"
+authors: "Yoichi Hirai <i@yoichihirai.com>"
+homepage: "https://github.com/pirapira/bamboo"
+bug-reports: "https://github.com/pirapira/bamboo/issues"
+license: "Apache-2.0"
+dev-repo: "https://github.com/pirapira/bamboo.git"
+build: [
+  [
+    "rm"
+    "-f"
+    "src/parse/parser.ml"
+    "src/parse/parser.mli"
+    "src/parse/lexer.ml"
+  ]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "batteries" {build}
+  "cryptokit" {build & >= "1.12"}
+  "hex" {build & >= "0.1.0" & <= "1.0.0"}
+  "menhir" {build & >= "20120123" & <= "20151005"}
+  "ocamlbuild" {build & (>= "0.9.3" | = "0")}
+  "ocamlfind" {build}
+  "rope" {build}
+]
