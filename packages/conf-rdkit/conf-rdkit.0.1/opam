@@ -6,14 +6,8 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "git+https://github.com/ocaml/opam-repository.git"
 license: "BSD-3"
 build: [
-  ["sh" "-c" "brew tap rdkit/rdkit && brew install rdkit"] {os = "macos"}
-  [
-    "sh"
-    "-c"
-    """
-c++ test.cpp -o test -I/usr/local/include -L/usr/local/lib -lRDGeneral || \\
-              c++ test.cpp -o test -I/usr/local/include -L/usr/local/lib -lRDKitRDGeneral"""
-  ]
+  ["sh" "-c" "c++ test.cpp -o test -I/usr/local/include -L/usr/local/lib -lRDGeneral || \\
+              c++ test.cpp -o test -I/usr/local/include -L/usr/local/lib -lRDKitRDGeneral"]
 ]
 install: ["./test"]
 depexts: [
@@ -21,6 +15,9 @@ depexts: [
   ["librdkit-dev" "python-rdkit"] {os-distribution = "ubuntu"}
   ["rdkit-devel" "python2-rdkit"] {os-distribution = "centos"}
 ]
+post-messages:
+  "This package requires rdkit to be installed. If you are using homebrew, you might want to try: 'brew tap rdkit/rdkit && brew install rdkit'"
+    {failure & os = "macos"}
 synopsis: "Virtual package relying on rdkit library installation."
 description: """
 This package can only install if the rdkit devel library is installed
