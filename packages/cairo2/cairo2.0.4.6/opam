@@ -6,6 +6,8 @@ authors: [
 ]
 homepage: "http://forge.ocamlcore.org/projects/cairo/"
 license: "LGPL-3.0 with OCaml linking exception"
+dev-repo: "https://github.com/Chris00/ocaml-cairo.git"
+bug-reports: "https://github.com/Chris00/ocaml-cairo/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{lablgtk:enable}%-lablgtk2"]
   ["ocaml" "setup.ml" "-build"]
@@ -19,10 +21,11 @@ depends: [
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "conf-cairo" {build}
+  "graphics" {build}
 ]
 depopts: ["lablgtk"]
 
 # The package does not build without Graphics,
 # which is not available by default on OS X.
 # Use cairo2 >= 0.5.
-available: [ os != "darwin" ]
+available: [ os != "darwin" & ocaml-version < "4.06" ]
