@@ -1,11 +1,16 @@
 opam-version: "1.2"
 maintainer: "berenger@bioreg.kyushu-u.ac.jp"
-homepage: "https://www.gnu.org.ua/software/gdbm/"
+homepage: "https://www.gnu.org.ua/software/gdbm"
+authors: "Philip A. Nelson, Jason Downs and Sergey Poznyakoff"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "https://github.com/ocaml/opam-repository.git"
 license: "GPL-3"
 build: [
-  "cc" "test.c" "-I/usr/include" "-I/usr/include/db1" "-I/usr/include/gdbm" "-lndbm" "-ldb1" "-lgdbm_compat" "-lgdbm"
+  "sh" "-c" "cc test.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm ||
+             cc test.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -lndbm ||
+             cc test.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -ldb1 ||
+             cc test.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -lgdbm ||
+             cc test.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -lgdbm_compat -lgdbm"
 ]
 depends: ["ocaml"]
 depexts: [
