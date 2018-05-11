@@ -1,6 +1,7 @@
-#include <ndbm.h>
+#include <gdbm.h>
 
 int main() {
-  (void) dbm_open ("foo", 0, 0);
+  GDBM_FILE db = gdbm_open("conf-dbm-testdb", 512, GDBM_WRCREAT, 0600, 0);
+  gdbm_close (db);
   return 0;
 }
