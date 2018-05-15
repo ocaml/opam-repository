@@ -1,0 +1,42 @@
+opam-version: "1.2"
+maintainer: "erwan.jahier@univ-grenoble-alpes.fr"
+authors: [ "Erwan Jahier"
+           "Pascal Raymond"
+           "Bertrand Jeannnet (polka)"
+           "Yvan Roux" ]
+license: "CeCILL"
+homepage: "http://www-verimag.imag.fr/Lutin.html"
+dev-repo: "https://gricad-gitlab.univ-grenoble-alpes.fr/verimag/synchrone/lutin.git"
+bug-reports: "http://www-verimag.imag.fr/Lutin.html"
+tags: [ "clib:stdc" "clib:camlidl"  ]
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["make" "build"]
+]
+install:  ["make" "install"]
+remove: [
+  ["ocaml" "%{etc}%/Lutin/setup.ml" "-C" "%{etc}%/Lutin" "-uninstall"]
+]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "base-unix" {build}
+  "camlidl"
+  "camlp4"
+  ("extlib" {build} | "extlib-compat" {build})
+  "lustre-v6" {build}
+  "lutils" {>= "1.9"}
+  ("mlgmp" | "mlgmpidl")
+  ("oasis" {build & >= "0.4.7"} | "oasis-mirage" {build & >= "0.4.7"})
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "rdbg" {build & >= "1.170"}
+]
+available: [ ocaml-version >= "4.02" ]
+post-messages: ["A more up-to-date version can be obtained from (opam repo add) http://www-verimag.imag.fr/DIST-TOOLS/SYNCHRONE/opam-repository/ "]
