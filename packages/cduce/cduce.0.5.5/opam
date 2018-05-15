@@ -1,12 +1,17 @@
 opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
 authors: ["Alain Frisch"]
 homepage: "http://www.cduce.org/"
 license: "MIT"
 build: [
-  ["./configure" "--prefix=%{prefix}%" "--mandir=%{doc}%/cduce" "--mliface=%{lib}%/ocaml-src" {"%{ocaml-src:installed}%" & (ocaml-version = "3.12.1")}]
+  [
+    "./configure"
+    "--prefix=%{prefix}%"
+    "--mandir=%{doc}%/cduce"
+    "--mliface=%{lib}%/ocaml-src"
+      {"%{ocaml-src:installed}%" & ocaml-version = "3.12.1"}
+  ]
   [make "all"]
-  [make "install"]
 ]
 remove: [["ocamlfind" "remove" "cduce"]]
 depends: [
@@ -17,4 +22,5 @@ depends: [
   "pxp"
 ]
 depopts: ["ocaml-src"]
-ocaml-version: [<"4.02.0"]
+available: ocaml-version < "4.02.0"
+install: [make "install"]

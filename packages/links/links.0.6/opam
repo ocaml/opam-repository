@@ -1,0 +1,28 @@
+opam-version: "1.2"
+maintainer: "Jan Stolarek <jan.stolarek@ed.ac.uk>"
+authors: "The Links Team <links-dev@inf.ed.ac.uk>"
+homepage: "http://www.links-lang.org"
+bug-reports: "https://github.com/links-lang/links/issues"
+license: "GPL-2"
+dev-repo: "https://github.com/links-lang/links.git"
+available: [ ocaml-version >= "4.04" ]
+build: [make "nc"]
+install: [
+  ["cp" "links" "%{links:bin}%"]
+  ["mkdir" "-p" "%{links:lib}%"]
+  ["cp" "prelude.links" "%{links:lib}%"]
+  ["./links" "%{links:lib}%/prelude.links"]
+]
+remove: [
+  ["rm" "-f" "%{links:bin}%/links"]
+  ["rm" "-rf" "%{links:lib}%"]
+]
+depends: [
+  "ocamlfind" {build}
+  "deriving" {build}
+  "lwt"
+  "cgi"
+  "base64"
+  "cohttp" {<"0.99.0"}
+]
+depopts: ["mysql" "postgresql" "sqlite3"]

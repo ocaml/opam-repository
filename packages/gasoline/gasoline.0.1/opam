@@ -1,9 +1,11 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "michipili@gmail.com"
 authors: "Michael Grünewald"
 license: "CeCILL-B"
 homepage: "https://github.com/michipili/gasoline"
-ocaml-version: [< "4.02.0" & >= "4.01.0"]
+bug-reports: "https://github.com/michipili/gasoline/issues"
+dev-repo: "https://github.com/michipili/gasoline.git"
+available: [ ocaml-version >= "4.01.0" & ocaml-version < "4.02.0" ]
 tags: [
   "application"
 ]
@@ -11,8 +13,16 @@ depends: [
   "bsdowl"
   "ocamlfind"
   "camomile"
+  "conf-bmake"
 ]
 build: [
   ["./configure" "--prefix" prefix]
-  ["bmake" "-I%{bsdowl:share}%" "all"]
+  [conf-bmake:path "-I%{bsdowl:share}%" "all"]
+]
+install: [
+  [conf-bmake:path "-I%{bsdowl:share}%" "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "gasoline"]
+  ["rm" "-rf" "%{share}%/doc/gasoline"]
 ]

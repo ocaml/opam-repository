@@ -11,12 +11,10 @@ tags: [
 ]
 build: [
   ["./configure" "--prefix" prefix]
-  ["bmake" "-I%{bsdowl:share}%" "all"] {os != "freebsd"}
-  ["make"  "-I%{bsdowl:share}%" "all"] {os  = "freebsd"}
+  [conf-bmake:path "-I%{bsdowl:share}%" "all"]
 ]
 install: [
-  ["bmake" "-I%{bsdowl:share}%" "install"] {os != "freebsd"}
-  ["make"  "-I%{bsdowl:share}%" "install"] {os  = "freebsd"}
+  [conf-bmake:path "-I%{bsdowl:share}%" "install"]
 ]
 remove: [
   ["ocamlfind" "remove" "rashell"]
@@ -27,10 +25,6 @@ depends: [
   "atdgen" {>= "1.7.1"}
   "broken" {>= "0.4.2"}
   "bsdowl" {>= "3.0.0"}
+  "conf-bmake"
   "lwt"    {>= "2.5.0"}
-]
-depexts: [
-  [["debian"] ["bmake"]]
-  [["ubuntu"] ["bmake"]]
-  [["osx" "macports"] ["bmake"]]
 ]

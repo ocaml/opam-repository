@@ -1,0 +1,36 @@
+opam-version: "1.2"
+version:      "1.0.2"
+name:         "rfc6287"
+homepage:     "https://github.com/sg2342/ocaml-rfc6287"
+dev-repo:     "https://github.com/sg2342/ocaml-rfc6287.git"
+bug-reports:  "https://github.com/sg2342/ocaml-rfc6287/issues"
+author:       ["Stefan Grundmann <sg2342@googlemail.com>"]
+maintainer:   ["Stefan Grundmann <sg2342@googlemail.com>"]
+license:      "ICS"
+
+
+
+build: [
+    [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
+]
+
+build-test: [
+    [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" "--with-coverage" "true" ]
+    [ "ocaml" "pkg/pkg.ml" "test" ]
+    [ "sh" "-x" "bisect-ppx-report.sh" ]
+]
+
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "nocrypto" {>= "0.5.1"}
+  "cstruct" {>= "1.7.0"}
+  "astring"
+  "hex"
+  "rresult"
+  "ounit" {test}
+  "bisect_ppx" {test}
+]
+
+available: [ocaml-version >= "4.03.0"]

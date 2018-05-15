@@ -12,27 +12,21 @@ tags: [
 ]
 build: [
   ["./configure" "--prefix" prefix]
-  ["bmake" "-I%{bsdowl:share}%" "all"] {os != "freebsd"}
-  ["make"  "-I%{bsdowl:share}%" "all"] {os  = "freebsd"}
+  [conf-bmake:path "-I%{bsdowl:share}%" "all"]
 ]
 install: [
-  ["bmake" "-I%{bsdowl:share}%" "install"] {os != "freebsd"}
-  ["make"  "-I%{bsdowl:share}%" "install"] {os  = "freebsd"}
+  [conf-bmake:path "-I%{bsdowl:share}%" "install"]
 ]
 remove: [
   ["ocamlfind" "remove" "configuration"]
   ["rm" "-rf" "%{share}%/doc/configuration"]
 ]
 available: [
-  ocaml-version >= "4.01.0"
+  ocaml-version >= "4.02"
 ]
 depends: [
   "broken" {>= "0.4.1"}
   "bsdowl" {>= "3.0.0"}
+  "conf-bmake"
   "ocamlfind"
-]
-depexts: [
-  [["debian"] ["bmake"]]
-  [["ubuntu"] ["bmake"]]
-  [["osx" "macports"] ["bmake"]]
 ]

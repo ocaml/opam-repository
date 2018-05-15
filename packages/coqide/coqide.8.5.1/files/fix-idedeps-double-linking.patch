@@ -1,0 +1,54 @@
+commit 1cc70be070e1df522b1539892958496a77710331
+Author: Gabriel Scherer <gabriel.scherer@gmail.com>
+Date:   Tue Jun 28 14:45:37 2016 -0400
+
+    fix coqide double module linking (error on OCaml 4.03)
+    
+    Linking the same module twice in OCaml can have problematic unintended
+    consequences and lead to hard-to-understand bugs, see
+      http://caml.inria.fr/mantis/view.php?id=4231
+      http://caml.inria.fr/mantis/view.php?id=5461
+    
+    OCaml has long warned when double-linking happens
+    
+      Warning 31: files FOO and BAR both define a module named Baz
+    
+    In 4.03 this error was turned into a warning by default.
+    
+    Coqide does double-linking by passing both
+    xml_{lexer,parser,printer}.cmo and lib/clib.cma that already contains
+    these compilation units to bin/coqide.byte. To fix compilation of
+    Coqide under 4.03, the present patch removes the .cmo from the
+    command-line arguments.
+    
+    P.S.: I checked that this patch applies cleanly to the current trunk
+    (b161ad97fdc01ac8816341a089365657cebc6d2b). It should also be possible
+    to add it as a patch on top of the 8.5 archives (for example those
+    distributed through OPAM) to make them compile under 4.03.
+
+diff --git a/Makefile.build b/Makefile.build
+index 0f85608..b5c933a 100644
+--- a/Makefile.build
++++ b/Makefile.build
+@@ -653,7 +653,7 @@ $(COQWORKMGR): $(addsuffix $(BESTOBJ), stm/coqworkmgrApi tools/coqworkmgr) \
+ # fake_ide : for debugging or test-suite purpose, a fake ide simulating
+ # a connection to coqtop -ideslave
+ 
+-$(FAKEIDE): lib/clib$(BESTLIB) lib/xml_lexer$(BESTOBJ) lib/xml_parser$(BESTOBJ) lib/xml_printer$(BESTOBJ) lib/errors$(BESTOBJ) lib/spawn$(BESTOBJ) ide/document$(BESTOBJ) ide/xmlprotocol$(BESTOBJ) tools/fake_ide$(BESTOBJ) | $(IDETOPLOOPCMA:.cma=$(BESTDYN))
++$(FAKEIDE): lib/clib$(BESTLIB) lib/errors$(BESTOBJ) lib/spawn$(BESTOBJ) ide/document$(BESTOBJ) ide/xmlprotocol$(BESTOBJ) tools/fake_ide$(BESTOBJ) | $(IDETOPLOOPCMA:.cma=$(BESTDYN))
+ 	$(SHOW)'OCAMLBEST -o $@'
+ 	$(HIDE)$(call bestocaml,-I ide,str unix threads)
+ 
+diff --git a/Makefile.common b/Makefile.common
+index 1a90353..0dfd5de 100644
+--- a/Makefile.common
++++ b/Makefile.common
+@@ -231,7 +231,7 @@ endif
+ LINKCMO:=$(CORECMA) $(STATICPLUGINS)
+ LINKCMX:=$(CORECMA:.cma=.cmxa) $(STATICPLUGINS:.cma=.cmxa)
+ 
+-IDEDEPS:=lib/clib.cma lib/xml_lexer.cmo lib/xml_parser.cmo lib/xml_printer.cmo lib/errors.cmo lib/spawn.cmo
++IDEDEPS:=lib/clib.cma lib/errors.cmo lib/spawn.cmo
+ IDECMA:=ide/ide.cma
+ IDETOPLOOPCMA=ide/coqidetop.cma
+ 

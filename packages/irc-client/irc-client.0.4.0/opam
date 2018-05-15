@@ -1,0 +1,49 @@
+opam-version: "1.2"
+authors: ["John Else" "Simon Cruanes"]
+homepage: "https://github.com/johnelse/ocaml-irc-client"
+bug-reports: "https://github.com/johnelse/ocaml-irc-client/issues"
+dev-repo: "git://github.com/johnelse/ocaml-irc-client"
+maintainer: "john.else@gmail.com"
+build: [
+  [
+    "./configure"
+    "--prefix" prefix
+    "--%{lwt:enable}%-lwt"
+    "--%{tls:enable}%-tls"
+    "--%{base-unix:enable}%-unix"
+    "--enable-docs"
+    "--enable-examples"
+  ]
+  [make "build"]
+]
+build-doc: [
+  [make "doc"]
+]
+build-test: [
+  [
+    "./configure"
+    "--enable-tests"
+  ]
+  [make "test"]
+]
+install: [
+  [make "PREFIX=%{prefix}%" "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "irc-client"]
+]
+depends: [
+  "oasis" {build}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "result"
+  "ounit" {test}
+]
+depopts: [
+  "base-unix"
+  "lwt"
+  "tls"
+]
+available: [
+  ocaml-version >= "4.00.1"
+]

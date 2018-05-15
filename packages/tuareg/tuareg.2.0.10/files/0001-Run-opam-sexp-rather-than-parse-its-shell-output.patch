@@ -1,0 +1,42 @@
+From 8796772964865d2055f07df51ddae8278b7b0f72 Mon Sep 17 00:00:00 2001
+From: Louis Gesbert <louis.gesbert@ocamlpro.com>
+Date: Wed, 14 Sep 2016 12:35:27 +0200
+Subject: [PATCH] Run opam --sexp rather than parse its shell output!
+
+cd https://github.com/ocaml/tuareg/issues/94 ; this code should probably be removed instead (it just proved leading to difficult to track issues) ; but that's not my call, and not in a hot-patch.
+---
+ tuareg.el | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/tuareg.el b/tuareg.el
+index 97e6107..ed0ce7a 100644
+--- a/tuareg.el
++++ b/tuareg.el
+@@ -2383,19 +2383,17 @@ otherwise return non-nil."
+         (concat tuareg-opam " config exec -- ocaml"))
+ 
+   (defun tuareg-opam-config-env()
+-    (let* ((get-env (concat tuareg-opam " config env"))
++    (let* ((get-env (concat tuareg-opam " config env --sexp"))
+            (opam-env (shell-command-to-string get-env)))
+-      (replace-regexp-in-string "; *export.*$" "" opam-env)))
++      (car (read-from-string opam-env))))
+ 
+   ;; OPAM compilation — one must update to the current compiler
+   ;; before launching the compilation.
+   (defadvice compile (before tuareg-compile-opam activate)
+       "Run opam to update environment variables."
+-      (let* ((env (tuareg-opam-config-env)))
+-	(set (make-local-variable 'compilation-environment)
+-	     ;; Quotes MUST be removed.
+-	     (split-string (replace-regexp-in-string "\"" "" env)
+-                           "[\f\n\r]+" t))))
++      (set (make-local-variable 'compilation-environment)
++           (mapcar (lambda (b) (concat (car b) "=" (cadr b)))
++                   (tuareg-opam-config-env))))
+ 
+   (defvar merlin-command)
+   (defun merlin-command ()
+-- 
+2.1.4
+

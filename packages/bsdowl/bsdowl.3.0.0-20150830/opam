@@ -12,19 +12,15 @@ tags: [
 ]
 build: [
   ["./configure" "--prefix" prefix]
-  ["bmake" "-r" "build"] {os != "freebsd"}
-  ["make" "-r" "build"]  {os  = "freebsd"}
+  [conf-bmake:path "-r" "build"]
 ]
 install: [
-  ["bmake" "install"] {os != "freebsd"}
-  ["make" "install"]  {os  = "freebsd"}
+  [conf-bmake:path "install"]
 ]
 remove: [
   ["sh" "%{build}%/opam/files/remove.sh" prefix]
 ]
-depends: ["ocamlfind"]
-depexts: [
-  [["debian"] ["bmake"]]
-  [["ubuntu"] ["bmake"]]
-  [["osx" "macports"] ["bmake"]]
+depends: [
+  "conf-bmake"
+  "ocamlfind"
 ]

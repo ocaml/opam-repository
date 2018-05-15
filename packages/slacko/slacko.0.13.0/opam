@@ -1,0 +1,33 @@
+opam-version: "1.2"
+maintainer: "marek@xivilization.net"
+author: "Marek Kubica <marek@xivilization.net>"
+homepage: "https://github.com/Leonidas-from-XIV/slacko"
+license: "LGPL-3 with OCaml linking exception"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+build-test: [make "test"]
+install: [
+  ["ocaml" "setup.ml" "-install"]
+]
+remove: [
+  ["ocamlfind" "remove" "slacko"]
+]
+depends: [
+  "ocamlfind"
+  "cmdliner"
+  "yojson"
+  "lwt" {>= "2.4.7"}
+  "tls" | "ssl"
+  "cohttp" {>= "0.21.1" & <"0.99"}
+  "ppx_deriving_yojson" {>= "3.0"}
+  "ounit" {test}
+]
+conflicts: [
+  # broken release: https://github.com/mirage/ocaml-conduit/issues/189
+  "conduit" {= "0.14.1"}
+]
+dev-repo: "git://github.com/Leonidas-from-XIV/slacko"
+bug-reports: "https://github.com/Leonidas-from-XIV/slacko/issues"
+available: [ ocaml-version >= "4.02.0" ]

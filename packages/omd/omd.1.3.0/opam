@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer: "Philippe Wang <philippe.wang@gmail.com>"
+authors: [ "Philippe Wang <philippe.wang@gmail.com>" ]
+license: "ISC"
+homepage: "https://github.com/ocaml/omd"
+dev-repo: "https://github.com/ocaml/omd.git"
+bug-reports: "https://github.com/ocaml/omd/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/omd/_oasis_remove_.ml" "%{etc}%/omd"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "base-bigarray"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+tags: [
+  "org:ocamllabs"
+  "org:mirage"
+]
+available: [ ocaml-version < "4.06.0" ]
+

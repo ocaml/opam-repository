@@ -1,0 +1,36 @@
+diff --git a/Makefile b/Makefile
+index fab8118..2b659d6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -35,7 +35,7 @@ java:
+ 	(cd japron; $(MAKE))
+ 
+ ml:
+-	(cd mlapronidl; $(MAKE) all)
++	(cd mlapronidl; $(MAKE) INCLUDE_DEPEND=no depend; $(MAKE) all)
+ 	(cd newpolka; $(MAKE) ml)
+ 	(cd box; $(MAKE) ml)
+ 	(cd octagons; $(MAKE) mlMPQ mlD)
+diff --git a/mlapronidl/Makefile b/mlapronidl/Makefile
+index f1a049a..926338f 100644
+--- a/mlapronidl/Makefile
++++ b/mlapronidl/Makefile
+@@ -222,10 +222,13 @@ rebuild:
+ # Dependencies
+ #---------------------------------------
+ 
+-depend: $(MLMODULES:%=%.ml) $(MLMODULES:%=%.mli)
++INCLUDE_DEPEND ?= yes
++ifneq ($(INCLUDE_DEPEND),yes)
++  depend: $(MLMODULES:%=%.ml) $(MLMODULES:%=%.mli)
+ 	$(OCAMLDEP) $^ > $@
+-
+-# Hack to avoid rebuilding depends on cleanup
+-ifeq ($(filter %clean,$(MAKECMDGOALS)),)
+-  -include depend
++else
++  # Hack to avoid rebuilding depends on cleanup
++  ifeq ($(filter %clean,$(MAKECMDGOALS)),)
++    -include depend
++  endif
+ endif

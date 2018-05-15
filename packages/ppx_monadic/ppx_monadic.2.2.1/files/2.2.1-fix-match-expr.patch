@@ -1,0 +1,124 @@
+changeset:   145:2bc1901bb986
+branch:      2.2.1-fix-match-expr
+parent:      140:968bb9e6a0b3
+user:        Christoph H?ger <christoph.hoeger@celeraone.com>
+date:        Wed Sep 13 12:37:06 2017 +0200
+summary:     Do not mess up annotated match expressions
+
+diff -r 968bb9e6a0b3 -r 2bc1901bb986 ppx/do_.ml
+--- a/ppx/do_.ml	Tue Aug 22 14:52:22 2017 +0900
++++ b/ppx/do_.ml	Wed Sep 13 12:37:06 2017 +0200
+@@ -20,7 +20,7 @@
+   | Pexp_ident {txt=Lident "do_"} -> Some None
+   | Pexp_ident {txt=Ldot (lid, "do_"); loc} -> Some (Some {txt=lid; loc})
+   | _ -> None
+-  
++
+ let is_ext_do s =
+   match Longident.parse s with
+   | Lident "do" -> Some None
+@@ -35,7 +35,7 @@
+       | Some None -> Some (None, e)
+       | Some (Some lid) -> Some (Some {txt=lid; loc}, e)
+       end
+-  | Pexp_sequence (e1, e2) -> 
++  | Pexp_sequence (e1, e2) ->
+       (* e1; e2; e3   is  e1; (e2; e3) *)
+       begin match is_do e1 with
+       | None -> None
+@@ -52,7 +52,7 @@
+       | Some _ ->
+           raise_errorf ~loc:e.pexp_loc "ppx_monadic: do_ must be followed by ;"
+ 
+-let desugar_do e = 
++let desugar_do e =
+   let open Monadic in
+   let rec f = function
+     | End e -> e
+@@ -76,8 +76,8 @@
+   in
+   f & parse None e
+ 
+-let extend super = 
+-  let expr self e = 
++let extend super =
++  let expr self e =
+     match is_do_clause e with
+     | Some (None, e) ->
+         (* Format.eprintf "do_ clause: %a@." Pprintast.expression e; *)
+@@ -93,10 +93,10 @@
+          (* the following is to surpress Warning 26 *)
+          let _ = bind in
+          let _ = return in
+-         (* I believe having fail is not a good idea... *)  
++         (* I believe having fail is not a good idea... *)
+          [%e self.expr self & desugar_do e]
+         ]
+-               
++
+     | None ->
+         match e.pexp_desc with
+         | Pexp_extension ({txt=x; loc}, PStr [{ pstr_desc= Pstr_eval ({ pexp_desc = Pexp_let(rec_flag, vbs, e')}, _attr) }]) ->
+@@ -117,30 +117,30 @@
+                     [%expr
+                         [%e bind] [%e vb.pvb_expr] (fun [%p vb.pvb_pat] -> [%e e'])
+                     ]
+-                | _ -> 
++                | _ ->
+                     (*
+                         (* Code A *)
+                         let%m p1 = e1
+-                        and   p2 = e2 
++                        and   p2 = e2
+                         in e
+-    
+-                      is not equal to 
+-    
++
++                      is not equal to
++
+                         (* Code B *)
+                         let%m p1 = e1 in
+                         let%m p2 = e2 in
+                         e
+-    
++
+                       which is equivalent with the following:
+-    
+-                        bind e1 (fun p1 -> 
+-                          bind e2 (fun p2 -> 
++
++                        bind e1 (fun p1 ->
++                          bind e2 (fun p2 ->
+                             e))
+-    
++
+                       Code A should be translated to the following:
+-    
+-                        let ppx_monadic_v1 = e1 
+-                        and ppx_monadic_v2 = e2 
++
++                        let ppx_monadic_v1 = e1
++                        and ppx_monadic_v2 = e2
+                         in
+                         bind ppx_monadic_v1 (fun p1 ->
+                           bind ppx_monadic_v2 (fun p2 ->
+@@ -162,7 +162,7 @@
+                           [%e bind] [%e e] (fun [%p vb.pvb_pat] -> [%e st])
+                       ]) pevbs e'
+             end
+-        | Pexp_extension ({txt=x; loc}, PStr [{ pstr_desc= Pstr_eval (({ pexp_desc = Pexp_match(e, cases)} as e0), _attr) }]) ->
++        | Pexp_extension ({txt=x; loc}, PStr [{ pstr_desc= Pstr_eval (({ pexp_desc = Pexp_match(e', cases)} as e0), _attr) }]) ->
+             (* match%m e with cases  =>  bind e (function cases) *)
+             begin match is_m x with
+             | None -> super.expr self e
+@@ -175,7 +175,7 @@
+                 self.expr self &
+                   with_loc e0.pexp_loc & fun () ->
+                   [%expr
+-                      [%e bind] [%e e] [%e e0']
++                      [%e bind] [%e e'] [%e e0']
+                   ]
+             end
+         | _ -> super.expr self e
+

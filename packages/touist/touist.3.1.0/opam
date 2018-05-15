@@ -1,0 +1,63 @@
+opam-version: "1.2"
+maintainer: "Maël Valais <mael.valais@gmail.com>"
+authors: ["Maël Valais <mael.valais@gmail.com>" "Olivier Lezaud"]
+homepage: "http://touist.github.io"
+bug-reports: "https://github.com/touist/touist/issues"
+license: "MIT"
+dev-repo: "https://github.com/touist/touist.git"
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{yices2:enable}%-yices2"
+  ]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{yices2:enable}%-yices2"
+  ]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: ["ocaml" "setup.ml" "-doc"]
+remove: [
+  "ocaml" "%{etc}%/touist/setup.ml" "-C" "%{etc}%/touist" "-uninstall"
+]
+depends: [
+  "cppo" {build}
+  "cppo_ocamlbuild" {build}
+  "fileutils" {build & >= "0.4.0"}
+  "menhir" {build & >= "20151023"}
+  "minisat" {build}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {test}
+]
+depopts: "yices2"
+conflicts: [
+  "yices2" {< "0.0.2"}
+]
+available: [ocaml-version >= "4.01.0"]
+post-messages: [
+  "
+Touist built without yices2 support.
+To enable the SMT solver (yices2), please install yices2 with the command:
+    opam install yices2
+  "
+    {success & !yices2:installed}
+  "
+Touist built with yices2 support.
+**Yices2 is free [only] for non-commercial use**
+License terms: http://yices.csl.sri.com/yices-newnewlicense.html
+  "
+    {success & yices2:installed}
+]

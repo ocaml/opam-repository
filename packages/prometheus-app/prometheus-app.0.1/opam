@@ -1,0 +1,27 @@
+opam-version: "1.2"
+maintainer:   "datakit@docker.com"
+authors:      ["Thomas Leonard"]
+license:      "Apache"
+homepage:     "https://github.com/mirage/prometheus"
+bug-reports:  "https://github.com/mirage/prometheus/issues"
+dev-repo:     "https://github.com/mirage/prometheus.git"
+doc:          "https://mirage.github.io/prometheus/"
+
+build: [
+  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+  "-n" "prometheus-app"
+]
+build-test: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" "-n" "prometheus-app"]
+  ["ocaml" "pkg/pkg.ml" "test" "_build/tests/test.native"]
+]
+
+depends: [
+  "ocamlfind" {build}
+  "prometheus" {<"0.2"}
+  "fmt"
+  "cohttp" {>="0.20.0" & <"0.99"}
+  "lwt" {>="2.5.0"}
+  "alcotest" {test}
+]
+available: [ocaml-version >= "4.02.3"]

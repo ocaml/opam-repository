@@ -1,5 +1,5 @@
 opam-version: "1.2"
-maintainer: "contact@ocamlpro.com"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
 authors: ["Richard W.M. Jones"]
 homepage: "http://code.google.com/p/bitstring"
 dev-repo: "https://code.google.com/p/bitstring.git"
@@ -8,14 +8,17 @@ doc: ["http://et.redhat.com/~rjones/bitstring/html/Bitstring.html"]
 build: [
   ["./configure" "--prefix" prefix]
   [make "srcdir=./"]
-  [make "install"]
 ]
 build-test: [[make "check"]]
-patches: ["fix_402.patch" {ocaml-version >= "4.02"}]
-remove: [["ocamlfind" "remove" "bitstring"]]
-depends: ["ocamlfind" {build} "camlp4" {build}]
-depexts: [
-  [["debian"] ["time"]]
-  [["ubuntu"] ["time"]]
+patches: [
+  "fix_402.patch" {ocaml-version >= "4.02"}
+  "fix_404.patch"
 ]
-available: [ ocaml-version >= "3.10" ]
+remove: [["ocamlfind" "remove" "bitstring"]]
+depends: [
+  "ocamlfind" {build}
+  "camlp4" {build}
+  "conf-time"
+]
+available: [ ocaml-version >= "3.10" & ocaml-version < "4.06.0" ]
+install: [make "install"]

@@ -1,0 +1,57 @@
+opam-version: "1.2"
+maintainer: "Jan Stolarek <jan.stolarek@ed.ac.uk>"
+authors: "The Links Team <links-dev@inf.ed.ac.uk>"
+homepage: "http://www.links-lang.org"
+bug-reports: "https://github.com/links-lang/links/issues"
+license: "GPL-2"
+dev-repo: "https://github.com/links-lang/links.git"
+build: [make "nc"]
+install: [
+  ["cp" "links" "%{links:bin}%/linx"]
+  ["mkdir" "-p" "%{links:lib}%"]
+  ["cp" "prelude.links" "%{links:lib}%"]
+  ["./links" "%{links:lib}%/prelude.links"]
+  ["cp" "-r" "lib/js" "%{links:lib}%"]
+  ["cp" "-r" "stdlib" "%{links:lib}%"]
+  ["mkdir" "-p" "%{links:doc}%"]
+  ["cp" "INSTALL" "%{links:doc}%/README"]
+  ["mkdir" "-p" "%{links:share}%/examples"]
+  ["sh" "-c" "cp -r examples/dbsetup %{links:share}%/examples/dbsetup/"]
+  ["sh" "-c" "cp examples/*.links %{links:share}%/examples"]
+  ["sh" "-c" "cp examples/*.jpg %{links:share}%/examples"]
+  ["sh" "-c" "cp examples/*.sql %{links:share}%/examples"]
+  ["sh" "-c" "cp examples/*.html %{links:share}%/examples"]
+  ["sh" "-c" "cp examples/*.css %{links:share}%/examples"]
+  ["sh" "-c" "cp examples/*.js %{links:share}%/examples"]
+  ["sh" "-c" "cp -r examples/dictionary %{links:share}%/examples/"]
+  ["sh" "-c" "cp -r examples/games %{links:share}%/examples/"]
+  ["sh" "-c" "cp -r examples/sessions %{links:share}%/examples/"]
+  ["sh" "-c" "cp -r examples/webserver %{links:share}%/examples/"]
+  ["touch" "config"]
+  ["sh" "-c" "echo jsliburl=/lib/ > config"]
+  ["sh" "-c" "echo jslibdir=%{links:lib}%/js >> config"]
+  ["sh" "-c" "echo #database_driver=postgresql >> config"]
+  ["sh" "-c" "echo #database_args=localhost:5432:user:pass >> config"]
+  ["mkdir" "%{links:etc}%"]
+  ["cp" "config" "%{links:etc}%"]
+]
+remove: [
+  ["rm" "-f" "%{links:bin}%/linx"]
+  ["rm" "-rf" "%{links:lib}%"]
+  ["rm" "-rf" "%{links:share}%/examples"]
+  ["rm" "-rf" "%{links:etc}%/config"]
+  ["rm" "-rf" "%{links:doc}%/README"]
+]
+depends: [
+  "ocamlfind" {build}
+  "deriving" {build}
+  "cgi"
+  "base64"
+  "linenoise"
+  "ANSITerminal"
+  "lwt"
+  "cohttp"
+  "websocket-lwt"
+]
+depopts: ["mysql" "postgresql" "sqlite3"]
+available: [ocaml-version >= "4.04.0"]

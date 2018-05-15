@@ -1,13 +1,19 @@
-opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+opam-version: "1.2"
+maintainer: "Nicolas Berthier <m@nberth.space>"
 authors: ["Xavier Leroy"]
 homepage: "http://caml.inria.fr/pub/old_caml_site/camlidl/"
+# dev-repo: "svn://scm.ocamlcore.org/svn/camlidl/trunk"
+bug-reports: "http://forge.ocamlcore.org/tracker/?group_id=132"
 license: "QPL-1.0 and LGPL-2 with exceptions"
 build: [
-  ["mv" "config/Makefile.unix" "config/Makefile"] {(os = "darwin") | ((os = "linux") | ((os = "freebsd") | ((os = "bsd") | ((os = "unix") | (os = "cygwin")))))}
+  ["mv" "config/Makefile.unix" "config/Makefile"]
+    {os = "darwin" |
+     os = "linux" | os = "freebsd" | os = "bsd" | os = "unix" | os = "cygwin"}
   ["mv" "config/Makefile.win32" "config/Makefile"] {os = "win32"}
-  ["mkdir" "-p" bin "%{lib}%/camlidl" "%{lib}%/camlidl/caml"]
   [make "all"]
-  [make "install" "BINDIR=%{bin}%" "OCAMLLIB=%{lib}%/camlidl"]
 ]
-patches: ["cpp-location.diff"]
+patches: [
+  "cpp-location.diff"
+  "disable-fatal-warn-31.diff" { ocaml-version >= "4.03" }
+  "build-dll.diff"
+]

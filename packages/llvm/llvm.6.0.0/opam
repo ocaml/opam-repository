@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer: "Jacques-Pascal Deplaix <jp.deplaix@gmail.com>"
+authors: [
+  "whitequark <whitequark@whitequark.org>"
+  "The LLVM team"
+]
+license: "MIT"
+doc: "http://llvm.moe/ocaml-6.0"
+bug-reports: "http://llvm.org/bugs/"
+dev-repo: "http://llvm.org/git/llvm.git"
+homepage: "http://llvm.moe"
+install: [
+  ["bash" "-ex" "install.sh" "%{conf-llvm:config}%" lib "%{conf-cmake:cmd}%" make]
+]
+remove: [
+  ["rm" "-rf" "%{lib}%/llvm"]
+  ["sh" "-c" "rm -f %{lib}%/META.llvm*"]
+  ["sh" "-c" "rm -f %{stublibs}%/dllllvm*.so"]
+]
+depends: [
+  "ctypes" {>= "0.4"}
+  "ounit" {test}
+  "ocamlfind" {build}
+  "conf-llvm" {build & = "6.0.0"}
+  "conf-python-2-7" {build}
+  "conf-cmake" {build}
+]
+patches: [
+  "fix-shared.patch"
+]
+available: [ocaml-version >= "4.00.0"]

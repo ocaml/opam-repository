@@ -1,0 +1,33 @@
+opam-version: "1.2"
+maintainer: "mzp <mzp.ppp@gmail.com>"
+authors: "mzp <mzp.ppp@gmail.com>"
+homepage: "http://github.com/msgpack/msgpack-ocaml/"
+bug-reports: "https://github.com/msgpack/msgpack-ocaml/issues"
+dev-repo: "https://github.com/msgpack/msgpack-ocaml.git"
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{ppx_meta_conv:enable}%-conv"
+  ]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: ["ocamlfind" "remove" "msgpack"]
+available: [ ocaml-version >= "4.01.0" ]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "num"
+  "base-bytes"
+  "ounit" {test}
+]
+depopts: "ppx_meta_conv"

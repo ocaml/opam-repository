@@ -1,0 +1,35 @@
+opam-version: "1.2"
+maintainer: "gabe@fb.com"
+authors: [
+  "Avik Chaudhuri"
+  "Basil Hosmer"
+  "Gabe Levi"
+  "Jeff Morrison"
+  "Marshall Roch"
+  "Sam Goldman"
+]
+homepage: "https://github.com/facebook/flow/tree/master/src/parser"
+bug-reports: "https://github.com/facebook/flow/issues"
+license: "BSD3"
+
+# This is pretty hacky, but v0.35.0 has already been release. We'll
+# add a real META file and a Makefile rule for v0.36.0
+build: [
+  ["sh" "-c" "cd src/parser && ocamlbuild parser_flow.cma parser_flow.cmxa"]
+  ["sh" "-c" "echo 'name=\"parser_flow\"' > src/parser/META"]
+  ["sh" "-c" "echo 'version=\"0.35.0\"' >> src/parser/META"]
+  ["sh" "-c" "echo 'description=\"flow parser ocamlfind package\"' >> src/parser/META"]
+  ["sh" "-c" "echo 'archive(byte)=\"parser_flow.cma\"' >> src/parser/META"]
+  ["sh" "-c" "echo 'archive(native)=\"parser_flow.cmxa\"' >> src/parser/META"]
+]
+
+install: [
+  ["sh" "-c" "cd src/parser/ && ocamlfind install flow_parser META _build/parser_flow.a _build/parser_flow.cma _build/parser_flow.cmxa _build/*.cmi"]
+]
+remove: ["ocamlfind" "remove" "flow_parser"]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+available: [ocaml-version >= "4.01.0"]
+dev-repo: "https://github.com/facebook/flow.git"

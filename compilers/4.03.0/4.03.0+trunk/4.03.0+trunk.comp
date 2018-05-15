@@ -2,7 +2,14 @@ opam-version: "1"
 version: "4.03.0"
 src: "https://github.com/ocaml/ocaml/tarball/4.03"
 build: [
-  ["./configure" "-prefix" prefix "-with-debug-runtime"]
+  ["./configure"
+    "-prefix" prefix "-with-debug-runtime"
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" prefix "-with-debug-runtime"
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world"]
   [make "world.opt"]
   [make "install"]

@@ -1,0 +1,41 @@
+opam-version: "1.2"
+name:         "charrua-client"
+maintainer:   ["Mindy Preston <mindy.preston@docker.com>"]
+authors   :   ["Mindy Preston <mindy.preston@docker.com>"]
+homepage:     "https://github.com/yomimono/charrua-client"
+bug-reports:  "https://github.com/yomimono/charrua-client/issues"
+dev-repo:     "https://github.com/yomimono/charrua-client.git"
+tags:         [ "org:mirage"]
+doc:          "https://docs.mirage.io"
+
+build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"
+  "--tests" "false" "--with-mirage" "%{mirage-types-lwt:installed}%"
+]
+build-test: [
+  [ "ocaml" "pkg/pkg.ml" "build" "--tests" "true" ]
+  [ "ocaml" "pkg/pkg.ml" "test" ]
+]
+
+depends: [
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "topkg"     {build}
+  "alcotest"     {test}
+  "charrua-core" {>= "0.4" & < "0.5"}
+  "cstruct"
+  "ipaddr"
+  "rresult"
+  "mirage-random" {>= "1.0.0"}
+  "duration"
+  "logs"
+  "tcpip" {>= "3.0.0"}
+  "fmt"
+]
+depopts: [
+  "mirage-types-lwt"
+]
+conflicts: [
+  "mirage-types-lwt" {<"3.0.0"}
+  "mirage-types" {<"3.0.0"}
+]
+available: [ocaml-version >= "4.03"]

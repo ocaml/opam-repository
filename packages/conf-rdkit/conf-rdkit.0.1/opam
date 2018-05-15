@@ -1,0 +1,21 @@
+opam-version: "1.2"
+authors: "https://github.com/rdkit/rdkit/graphs/contributors"
+homepage: "http://www.rdkit.org/"
+maintainer: "unixjunkie@sdf.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "https://github.com/ocaml/opam-repository.git"
+license: "BSD-3"
+build: [
+  ["sh" "-c" "c++ test.cpp -o test -I/usr/local/include -L/usr/local/lib -lRDGeneral || \\
+              c++ test.cpp -o test -I/usr/local/include -L/usr/local/lib -lRDKitRDGeneral"]
+]
+install: ["./test"]
+remove: []
+depexts: [
+  [["debian"] ["librdkit-dev" "python-rdkit"]]
+  [["ubuntu"] ["librdkit-dev" "python-rdkit"]]
+  [["centos"] ["rdkit-devel" "python2-rdkit"]]
+]
+post-messages: [
+  "This package requires rdkit to be installed. If you are using homebrew, you might want to try: 'brew tap rdkit/rdkit && brew install rdkit'" {failure & os = "darwin"}
+]

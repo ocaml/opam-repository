@@ -1,12 +1,23 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "ygrek@autistici.org"
+authors: [
+  "Christian Lindig <lindig@eecs.harvard.edu>"
+  "Shawn Wagner <shawnw@speakeasy.org>"
+  "ygrek <ygrek@autistici.org>"
+]
 homepage: "http://ocaml-mysql.forge.ocamlcore.org"
 doc: "http://ocaml-mysql.forge.ocamlcore.org/doc/index.html"
 build: [
-  ["./configure" "--prefix" "%{prefix}%"] { os != "freebsd" }
-  ["env" "CPPFLAGS=-I/usr/local/include/mysql" "LDFLAGS=-L/usr/local/lib/mysql" "./configure" "--prefix" "%{prefix}%"] { os = "freebsd" }
+  ["./configure" "--prefix" "%{prefix}%"] {os != "freebsd"}
+  [
+    "env"
+    "CPPFLAGS=-I/usr/local/include/mysql"
+    "LDFLAGS=-L/usr/local/lib/mysql"
+    "./configure"
+    "--prefix"
+    "%{prefix}%"
+  ] {os = "freebsd"}
   [make]
-  [make "install"]
 ]
 build-doc: [
   [make "htdoc"]
@@ -19,3 +30,5 @@ depexts: [
   [ [ "debian" ] [ "libmysqlclient-dev" ] ]
   [ [ "ubuntu" ] [ "libmysqlclient-dev" ] ]
 ]
+install: [make "install"]
+available: [ ocaml-version < "4.03" ]

@@ -1,0 +1,162 @@
+From 282370281cb8c720620851e339664cc07fd8e4b2 Mon Sep 17 00:00:00 2001
+From: Virgile Prevosto <virgile.prevosto@m4x.org>
+Date: Mon, 27 Feb 2017 08:50:26 +0100
+Subject: [PATCH] 4.05 compatibility
+
+---
+ src/kernel_services/analysis/dataflow.ml  |  2 +-
+ src/kernel_services/analysis/dataflow2.ml |  2 +-
+ src/libraries/project/state_builder.ml    | 17 ++++++++++++++-
+ src/libraries/utils/hook.ml               |  5 +++--
+ src/plugins/wp/qed/src/idxset.ml          | 36 +++++++++++++++----------------
+ 5 files changed, 39 insertions(+), 23 deletions(-)
+
+diff --git a/src/kernel_services/analysis/dataflow.ml b/src/kernel_services/analysis/dataflow.ml
+index 0f32f24..952d113 100644
+--- a/src/kernel_services/analysis/dataflow.ml
++++ b/src/kernel_services/analysis/dataflow.ml
+@@ -83,7 +83,7 @@ end
+ module StartData(X: sig type t val size: int end) = struct
+   type data = X.t
+   open Cil_datatype.Stmt.Hashtbl
+-  let stmtStartData = create X.size
++  let stmtStartData: data Cil_datatype.Stmt.Hashtbl.t = create X.size
+   let clear () = clear stmtStartData
+   let mem = mem stmtStartData
+   let find = find stmtStartData
+diff --git a/src/kernel_services/analysis/dataflow2.ml b/src/kernel_services/analysis/dataflow2.ml
+index 0d6eb24..813ef7b 100644
+--- a/src/kernel_services/analysis/dataflow2.ml
++++ b/src/kernel_services/analysis/dataflow2.ml
+@@ -60,7 +60,7 @@ end
+ module StartData(X: sig type t val size: int end) = struct
+   type data = X.t
+   open Cil_datatype.Stmt.Hashtbl
+-  let stmtStartData = create X.size
++  let stmtStartData: data Cil_datatype.Stmt.Hashtbl.t = create X.size
+   let clear () = clear stmtStartData
+   let mem = mem stmtStartData
+   let find = find stmtStartData
+diff --git a/src/libraries/project/state_builder.ml b/src/libraries/project/state_builder.ml
+index 8d07c0d..781e5ff 100644
+--- a/src/libraries/project/state_builder.ml
++++ b/src/libraries/project/state_builder.ml
+@@ -585,8 +585,23 @@ module type Weak_hashtbl = sig
+   val remove: data -> unit
+ end
+ 
++module type Sub_caml_weak_hashtbl =
++sig
++  include Datatype.Sub_caml_weak_hashtbl
++  val clear: t -> unit
++  val merge: t -> data -> data
++  val add: t -> data -> unit
++  val count: t -> int
++  val iter: (data->unit) -> t -> unit
++  val fold: (data->'a->'a) -> t -> 'a -> 'a
++  val find: t -> data -> data
++  val find_all: t -> data -> data list
++  val mem: t -> data -> bool
++  val remove: t -> data -> unit
++end
++
+ module Weak_hashtbl
+-  (W: Weak.S)
++  (W: Sub_caml_weak_hashtbl)
+   (Data: Datatype.S with type t = W.data)
+   (Info: Info_with_size) =
+ struct
+diff --git a/src/libraries/utils/hook.ml b/src/libraries/utils/hook.ml
+index 7c4e762..53021dd 100644
+--- a/src/libraries/utils/hook.ml
++++ b/src/libraries/utils/hook.ml
+@@ -54,7 +54,7 @@ let add_once v queue =
+   let already = Queue.fold (fun b v' -> b || v' == v) false queue in
+   if not already then Queue.add v queue
+ 
+-module Build(P:sig type t end) = struct
++module Build(P:sig type t end): Iter_hook with type param = P.t = struct
+   type param = P.t
+   type result = unit
+   let hooks = Queue.create ()
+@@ -74,7 +74,8 @@ module Build(P:sig type t end) = struct
+   let length () = Queue.length hooks
+ end
+ 
+-module Fold(P:sig type t end) = struct
++module Fold(P:sig type t end): S with type param=P.t and type result = P.t =
++struct
+   type param = P.t
+   type result = P.t
+   let hooks = Queue.create ()
+diff --git a/src/plugins/wp/qed/src/idxset.ml b/src/plugins/wp/qed/src/idxset.ml
+index 941384b..54d0b3e 100644
+--- a/src/plugins/wp/qed/src/idxset.ml
++++ b/src/plugins/wp/qed/src/idxset.ml
+@@ -69,48 +69,48 @@ struct
+   (* good sharing *)
+   let remove x = Intmap.remove (E.id x)
+   let is_empty = Intmap.is_empty
+-  let mem x = Intmap.mem (E.id x)
+-  let find x = Intmap.find (E.id x)
++  let mem x m = Intmap.mem (E.id x) m
++  let find x m = Intmap.find (E.id x) m
+   let cardinal = Intmap.size
+-  let compare = Intmap.compare (fun _ _ -> 0)
+-  let equal = Intmap.equal (fun _ _ -> true)
++  let compare m1 m2 = Intmap.compare (fun _ _ -> 0) m1 m2
++  let equal m1 m2 = Intmap.equal (fun _ _ -> true) m1 m2
+ 
+   let _keep _ x _ = x
+   let _keepq _ x _ = Some x
+   let _same _ _ _ = true
+ 
+   (* good sharing *)
+-  let union = Intmap.union _keep
++  let union m1 m2 = Intmap.union _keep m1 m2
+ 
+   (* good sharing *)
+-  let inter = Intmap.interq _keepq
++  let inter m1 m2 = Intmap.interq _keepq m1 m2
+ 
+   (* good sharing *)
+-  let diff = Intmap.diffq _keepq
+-  let subset = Intmap.subset _same
+-  let intersect = Intmap.intersectf _same
++  let diff m1 m2 = Intmap.diffq _keepq m1 m2
++  let subset m1 m2 = Intmap.subset _same m1 m2
++  let intersect m1 m2 = Intmap.intersectf _same m1 m2
+ 
+   (* increasing order on id *)
+-  let iter f = Intmap.iteri (fun _i x -> f x)
++  let iter f m = Intmap.iteri (fun _i x -> f x) m
+ 
+   (* increasing order on id *)
+-  let fold f = Intmap.foldi (fun _i x e -> f x e)
++  let fold f m i = Intmap.foldi (fun _i x e -> f x e) m i
+ 
+   (* good sharing *)
+-  let filter f = Intmap.filter (fun _i x -> f x)
++  let filter f m = Intmap.filter (fun _i x -> f x) m
+ 
+   (* good sharing *)
+-  let partition f = Intmap.partition (fun _i x -> f x)
++  let partition f m = Intmap.partition (fun _i x -> f x) m
+ 
+-  let for_all f = Intmap.for_all (fun _i x -> f x)
+-  let exists f = Intmap.exists (fun _i x -> f x)
++  let for_all f m = Intmap.for_all (fun _i x -> f x) m
++  let exists f m = Intmap.exists (fun _i x -> f x) m
+ 
+   (* increasing order on id *)
+-  let elements = Intmap.mapl (fun _i x -> x)
++  let elements m = Intmap.mapl (fun _i x -> x) m
+ 
+   (* good sharing *)
+-  let mapf f= Intmap.mapq (fun _i x -> f x)
++  let mapf f m = Intmap.mapq (fun _i x -> f x) m
+ 
+   (* good sharing *)
+-  let map f = Intmap.mapq (fun _i x -> Some (f x))
++  let map f m = Intmap.mapq (fun _i x -> Some (f x)) m
+ end

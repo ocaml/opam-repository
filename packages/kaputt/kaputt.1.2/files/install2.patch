@@ -1,0 +1,53 @@
+diff --git a/configure b/configure
+index 464daee..8bc0de0 100755
+--- a/configure
++++ b/configure
+@@ -23,6 +23,7 @@ ocamlbuild=`which ocamlbuild || echo '/usr/local/bin/ocamlbuild'`
+ bin_path=`dirname $ocamlbuild`
+ ocaml_prefix=`dirname $bin_path`
+ ocamlfind=`which ocamlfind 2> /dev/null || echo ''`
++ocamlopt=`which ocamlopt 2> /dev/null || echo ''`
+ native_dynlink='TRUE'
+ devel='FALSE'
+ 
+@@ -34,12 +35,14 @@ do
+             ocaml_prefix="$2"; shift;;
+         -ocamlfind)
+             ocamlfind="$2"; shift;;
++        -ocamlopt)
++            ocamlopt="$2"; shift;;
+         -no-native-dynlink)
+             native_dynlink='FALSE';;
+         -devel)
+             devel='TRUE';;
+         *)
+-            echo "usage: $0 [-ocaml-prefix <path>] [-ocamlfind <path>] [-no-native-dynlink] [-devel]";
++            echo "usage: $0 [-ocaml-prefix <path>] [-ocamlfind <path>] [-ocamlopt <path>] [-no-native-dynlink] [-devel]";
+             exit 1;;
+         esac
+         shift
+@@ -56,6 +59,7 @@ EOF`
+ echo "# timestamp: `date`" > Makefile.config
+ echo "PATH_OCAML_PREFIX=$ocaml_prefix" >> Makefile.config
+ echo "PATH_OCAMLFIND=$ocamlfind" >> Makefile.config
++echo "PATH_OCAMLOPT=$ocamlopt" >> Makefile.config
+ echo "NATIVE_DYNLINK=$native_dynlink" >> Makefile.config
+ echo "WARNINGS=$devel" >> Makefile.config
+ echo "MAKE_QUIET=$make_quiet" >> Makefile.config
+diff --git a/Makefile b/Makefile
+index 332ae23..02cc2ec 100644
+--- a/Makefile
++++ b/Makefile
+@@ -106,7 +106,11 @@ install: FORCE
+ 
+ generate: FORCE
+ 	echo '$(PROJECT_NAME).cma' > $(PROJECT_NAME).itarget
+-	(test -x $(PATH_OCAML_PREFIX)/bin/ocamlopt && echo '$(PROJECT_NAME).cmxa' >> $(PROJECT_NAME).itarget) || true
++	if [ -x "$(PATH_OCAMLOPT)" ]; then \
++		echo '$(PROJECT_NAME).cmxa' >> $(PROJECT_NAME).itarget; \
++	else \
++		(test -x $(PATH_OCAML_PREFIX)/bin/ocamlopt && echo '$(PROJECT_NAME).cmxa' >> $(PROJECT_NAME).itarget) || true; \
++	fi
+ 	(test -x $(PATH_OCAML_PREFIX)/bin/ocamljava && echo '$(PROJECT_NAME).cmja' >> $(PROJECT_NAME).itarget) || true
+ 
+ FORCE:

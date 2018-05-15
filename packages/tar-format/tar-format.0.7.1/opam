@@ -1,0 +1,39 @@
+opam-version: "1.2"
+maintainer:   "dave@recoil.org"
+authors:      [ "Dave Scott" "Thomas Gazagnaire" "David Allsopp" ]
+tags:         ["org:xapi-project" "org:mirage"]
+homepage:     "https://github.com/mirage/ocaml-tar"
+bug-reports:  "https://github.com/mirage/ocaml-tar/issues"
+dev-repo:     "https://github.com/mirage/ocaml-tar.git"
+doc:          "https://mirage.github.io/ocaml-tar/"
+
+build: [
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+    "--with-mirage" "%{mirage-types-lwt+mirage-block+mirage-block-lwt+io-page:installed}%"
+    "--with-lwt" "%{lwt:installed}%" ]
+]
+
+build-test: [
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" "--with-lwt" "true" ]
+  [ "ocaml" "pkg/pkg.ml" "test" ]
+]
+
+depends: [
+  "ocamlbuild"        {build}
+  "ocamlfind"         {build}
+  "topkg"             {build & >= "0.8.0"}
+  "cstruct"           {>= "1.9.0" & <"3.0.0"}
+  "ppx_cstruct"       {build}
+  "cstruct-lwt"       {build}
+  "re"
+  "result"
+  "mirage-block-unix" {test & >= "2.5.0"}
+  "mirage-types-lwt"  {test & >= "3.0.0"}
+  "ounit"             {test}
+  "lwt"               {test}
+]
+depopts: ["lwt" "mirage-types-lwt" "mirage-block" "mirage-block-lwt" "io-page"]
+conflicts: [
+  "mirage-types-lwt" {< "3.0.0"}
+]
+available: [ ocaml-version >= "4.01.0" & ocaml-version < "4.06.0" ]

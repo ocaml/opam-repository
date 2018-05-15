@@ -1,0 +1,32 @@
+opam-version: "1.2"
+maintainer: "David Kaloper Meršinjak <david@numm.org>"
+authors: ["David Kaloper Meršinjak <david@numm.org>"]
+homepage: "https://github.com/pqwy/mirage-os-shim"
+doc: "https://pqwy.github.io/mirage-os-shim/doc"
+license: "ISC"
+dev-repo: "https://github.com/pqwy/mirage-os-shim.git"
+bug-reports: "https://github.com/pqwy/mirage-os-shim/issues"
+tags: []
+build: [
+  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+          "--with-mirage-unix" "%{mirage-unix:installed}%"
+          "--with-mirage-xen" "%{mirage-xen:installed}%"
+          "--with-mirage-solo5" "%{mirage-solo5:installed}%"
+]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "lwt"
+]
+depopts: [
+  "mirage-solo5"
+  "mirage-xen"
+  "mirage-unix"
+]
+conflicts: [
+  "mirage-unix" {<"3.0.0"}
+  "mirage-xen" {<"3.0.0"}
+  "mirage-solo5" {<"0.2.0"}
+]
+available: [ ocaml-version >= "4.01.0"]

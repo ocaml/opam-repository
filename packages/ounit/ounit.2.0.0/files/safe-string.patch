@@ -1,0 +1,103 @@
+diff --git a/setup.ml b/setup.ml
+index d611c02..13787aa 100644
+--- a/setup.ml
++++ b/setup.ml
+@@ -208,7 +208,7 @@ module OASISString = struct
+       raise Not_found
+ 
+   let replace_chars f s =
+-    let buf = String.make (String.length s) 'X' in
++    let buf = Bytes.make (String.length s) 'X' in
+       for i = 0 to String.length s - 1 do
+         buf.[i] <- f s.[i]
+       done;
+@@ -280,9 +280,9 @@ module OASISUtils = struct
+         let buf =
+           (* Start with a _ if digit *)
+           if '0' <= s.[0] && s.[0] <= '9' then
+-            "_"^buf
++            "_"^Bytes.to_string buf
+           else
+-            buf
++            Bytes.to_string buf
+         in
+           String.lowercase buf
+       end
+diff --git a/src/oUnitAssert.ml b/src/oUnitAssert.ml
+index d0c7d2e..8c7b533 100644
+--- a/src/oUnitAssert.ml
++++ b/src/oUnitAssert.ml
+@@ -236,7 +236,7 @@ let assert_command
+          in
+          let () =
+            (* Dump sinput into the process stdin *)
+-           let buff = " " in
++           let buff = Bytes.of_string " " in
+              Stream.iter
+                (fun c ->
+                   let _i : int =
+@@ -259,12 +259,12 @@ let assert_command
+            (* Dump process output to stderr *)
+            begin
+              let chn = open_in fn_out in
+-             let buff = String.make 4096 'X' in
++             let buff = Bytes.make 4096 'X' in
+              let len = ref (-1) in
+                while !len <> 0 do
+-                 len := input chn buff 0 (String.length buff);
++                 len := input chn buff 0 (Bytes.length buff);
+                  OUnitLogger.Test.raw_printf
+-                   ctxt.test_logger "%s" (String.sub buff 0 !len);
++                   ctxt.test_logger "%s" (Bytes.to_string (Bytes.sub buff 0 !len));
+                done;
+                close_in chn
+            end;
+diff --git a/src/oUnitConf.ml b/src/oUnitConf.ml
+index 79d8f32..7a3e157 100644
+--- a/src/oUnitConf.ml
++++ b/src/oUnitConf.ml
+@@ -71,13 +71,13 @@ let check_variable_name str =
+       str
+ 
+ let cli_name name =
+-  let cli_name = "-" ^ name in
++  let cli_name = Bytes.of_string ("-" ^ name) in
+   for i = 1 to String.length name do
+-     match cli_name.[i] with
++     match Bytes.get cli_name i with
+        | '_' -> cli_name.[i] <- '-'
+        | _ -> ()
+   done;
+-  cli_name
++  Bytes.to_string cli_name
+ 
+ let subst conf extra_subst str =
+   let substitutions = Hashtbl.create (Hashtbl.length metaconf) in
+diff --git a/src/oUnitRunnerProcesses.ml b/src/oUnitRunnerProcesses.ml
+index 5a1466d..5b57a58 100644
+--- a/src/oUnitRunnerProcesses.ml
++++ b/src/oUnitRunnerProcesses.ml
+@@ -64,10 +64,10 @@ let make_channel
+   let really_read fd str =
+     let off = ref 0 in
+     let read = ref 0 in
+-      while !read < String.length str do
++      while !read < Bytes.length str do
+         try
+           let one_read =
+-            Unix.read fd str !off (String.length str - !off)
++            Unix.read fd str !off (Bytes.length str - !off)
+           in
+             read := !read + one_read;
+             off := !off + one_read
+@@ -87,8 +87,8 @@ let make_channel
+   let receive_data () =
+     try 
+       let data_size = Marshal.data_size (really_read fd_read header_str) 0 in
+-      let data_str = really_read fd_read (String.create data_size) in
+-      let msg = Marshal.from_string (header_str ^ data_str) 0 in
++      let data_str = Bytes.to_string (really_read fd_read (Bytes.create data_size)) in
++      let msg = Marshal.from_string (Bytes.to_string header_str ^ data_str) 0 in
+         msg
+     with Failure(msg) ->
+       OUnitUtils.failwithf "Communication error with worker processes: %s" msg

@@ -1,0 +1,30 @@
+opam-version: "1.2"
+maintainer: "Liang Wang <ryanrhymes@gmail.com>"
+authors: [ "Liang Wang" ]
+license: "MIT"
+homepage: "https://github.com/owlbarn/eigen"
+dev-repo: "https://github.com/owlbarn/eigen.git"
+bug-reports: "https://github.com/owlbarn/eigen/issues"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/eigen/_oasis_remove_.ml" "%{etc}%/eigen"]
+]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "ctypes" {>= "0.14.0"}
+  "oasis" {build & >= "0.4"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+]
+available: [ ocaml-version >= "4.02" ]

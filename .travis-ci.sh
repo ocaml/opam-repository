@@ -1,6 +1,9 @@
 bash -c "while true; do echo \$(date) - building ...; sleep 360; done" &
 PING_LOOP_PID=$!
 
+# Variable value from .travis.yml - probably overridden during install step
+BUILD_OCAML_VERSION=$OCAML_VERSION
+
 # generated during the install step
 source .travis-ocaml.env
 
@@ -69,10 +72,9 @@ function opam_version_compat {
 }
 opam_version_compat
 
-function build_one {
-  pkg=$1
-  echo "build one: $pkg ($OPAM_SWITCH)"
+function build_switch {
   rm -rf ~/.opam
+  echo "build switch: $OPAM_SWITCH"
   if [ -n "${opam_version_11}" ]; then
       # Hide OCaml build log
       if opam init . --comp=$OPAM_SWITCH > build.log 2>&1 ; then
@@ -86,6 +88,11 @@ function build_one {
       opam init . --comp=$OPAM_SWITCH
   fi
   eval `opam config env`
+}
+
+function build_one {
+  pkg=$1
+  echo "build one: $pkg"
   # test for installability
   echo "Checking for availability..."
   if ! opam install $pkg --dry-run; then
@@ -100,29 +107,18 @@ function build_one {
       fi
   else
     echo "... package available."
-    case $TRAVIS_OS_NAME in
-        linux)
-            # we need fresh gcc and binutils, maybe...
-            # this can soon be removed, once travis upgraded their infrastructure
-            if [ `opam install --dry-run $pkg | grep -c mirage-entropy-xen` -gt 0 ] ; then
-                echo "installing a recent gcc and binutils (mainly to get mirage-entropy-xen working\!)"
-                sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-                sudo apt-get -qq update
-                sudo apt-get install -y gcc-4.8
-                sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
-                wget http://mirrors.kernel.org/ubuntu/pool/main/b/binutils/binutils_2.24-5ubuntu3.1_amd64.deb
-                sudo dpkg -i binutils_2.24-5ubuntu3.1_amd64.deb
-            fi
-    esac
     echo
     echo "====== External dependency handling ======"
     opam install depext
-    depext=$(opam depext -ls $pkg --no-sources)
-    opam depext $pkg
-    opam remove depext -a
+    # No --build-tests option on opam depext, workaround from https://github.com/ocaml/opam-depext/issues/10#issuecomment-93882764
+    depext=$(OPAMBUILDTEST=1 opam depext -ls $pkg --no-sources)
+    OPAMBUILDTEST=1 opam depext $pkg
+    echo
+    echo "====== Installing dependencies ======"
+    opam install --deps-only $pkg
     echo
     echo "====== Installing package ======"
-    opam install $pkg
+    opam install -t -v $pkg
     opam remove -a ${pkg%%.*}
     if [ "$depext" != "" ]; then
       case $TRAVIS_OS_NAME in
@@ -137,6 +133,36 @@ function build_one {
     fi
   fi
 }
+
+build_switch
+
+INSTALL_CAMLP4=0
+if [[ $OPAM_SWITCH = "system" ]] ; then
+  for i in $(cat tobuild.txt) ; do
+    if opam install $i --build-test --deps-only --show | grep "\<camlp4\>" > /dev/null 2>&1 ; then
+      INSTALL_CAMLP4=1
+      break
+    fi
+  done
+fi
+
+if [[ $INSTALL_CAMLP4 -eq 1 ]] ; then
+  case $BUILD_OCAML_VERSION in
+    4.02)
+      CAMLP4_RELEASE=7
+      ;;
+    *)
+      CAMLP4_RELEASE=1
+      ;;
+  esac
+  opam install ocamlbuild
+  opam source camlp4.$BUILD_OCAML_VERSION+$CAMLP4_RELEASE
+  cd camlp4*
+  ./configure --bindir=/usr/local/bin --libdir=/usr/local/lib/ocaml
+  make all
+  sudo make install
+  cd ..
+fi
 
 for i in `cat tobuild.txt`; do
   build_one $i

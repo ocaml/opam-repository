@@ -1,0 +1,31 @@
+opam-version: "1.2"
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: [
+  "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+  "David Kaloper Meršinjak <david@numm.org>"
+]
+homepage: "http://erratique.ch/software/uucp"
+doc: "http://erratique.ch/software/uucp/doc/Uucp"
+dev-repo: "http://erratique.ch/repos/uucp.git"
+bug-reports: "https://github.com/dbuenzli/uucp/issues"
+tags: [ "unicode" "text" "character" "org:erratique" ]
+license: "ISC"
+depends: [
+ "ocamlfind" {build}
+ "ocamlbuild" {build}
+ "topkg" {build}
+ "uchar"
+ "uucd" {test} # dev really
+ "uunf" {test}
+ "uutf" {test}
+ ]
+depopts: [ "uutf" "cmdliner" ]
+conflicts: [ "uutf" {< "1.0.1"}
+             "cmdliner" {< "1.0.0"} ]
+available: [ ocaml-version >= "4.01.0" ]
+build: [[
+  "ocaml" "pkg/pkg.ml" "build"
+          "--dev-pkg" "%{pinned}%"
+          "--with-uutf" "%{uutf:installed}%"
+          "--with-cmdliner" "%{cmdliner:installed}%"
+]]

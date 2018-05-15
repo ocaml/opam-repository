@@ -6,17 +6,25 @@ bug-reports: "https://coq.inria.fr/bugs/"
 dev-repo: "https://github.com/coq/coq.git" 
 license: "LGPL 2"
 build: [
-  ["./configure"
-    "-configdir" "%{lib}%/coq/config"
-    "-mandir" man
-    "-prefix" prefix
+  [
+    "./configure"
+    "-configdir"
+    "%{lib}%/coq/config"
+    "-mandir"
+    man
+    "-prefix"
+    prefix
     "-usecamlp4"
-    "-coqide" "no"
-    "-debug"]
+    "-coqide"
+    "no"
+    "-debug"
+  ]
   [make "-j%{jobs}%"]
-  [make "install"]
 ]
 depends: [
   "camlp4"
+  "num"
 ]
-available: [ (ocaml-version >= "4.02.0") ]
+patches: ["ephemeron-rename.patch"]
+available: [ (ocaml-version >= "4.02.0") & ocaml-version < "4.06.0" ]
+install: [make "install"]

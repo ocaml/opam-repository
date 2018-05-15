@@ -2,7 +2,14 @@ opam-version: "1"
 version: "4.02.3"
 src: "http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.3.tar.gz"
 build: [
-  ["./configure" "-prefix" prefix "-with-debug-runtime" "-with-frame-pointers"]
+  ["./configure"
+    "-prefix" prefix "-with-debug-runtime" "-with-frame-pointers"
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" prefix "-with-debug-runtime" "-with-frame-pointers"
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world"]
   [make "world.opt"]
   [make "install"]

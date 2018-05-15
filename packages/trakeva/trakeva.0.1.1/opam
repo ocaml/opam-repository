@@ -1,0 +1,33 @@
+opam-version: "1.2"
+maintainer: "Sebastien Mondet <seb@mondet.org>"
+authors: "Sebastien Mondet <seb@mondet.org>"
+homepage: "http://www.hammerlab.org/docs/trakeva/master/index.html"
+bug-reports: "https://github.com/smondet/trakeva/issues"
+license: "Apache-2.0"
+dev-repo: "https://github.com/smondet/trakeva.git"
+build: [
+  [
+    "./configure"
+    "--%{sqlite3:enable}%-sqlite"
+    "--%{postgresql:enable}%-postgresql"
+    "--disable-test"
+    prefix
+  ]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "trakeva"]
+  ["ocamlfind" "remove" "trakeva_sqlite"]
+  ["ocamlfind" "remove" "trakeva_postgresql"]
+  ["ocamlfind" "remove" "trakeva_of_uri"]
+]
+depends: [
+  "base-threads"
+  "nonstd"
+  "oasis" {build & >= "0.4"}
+  "ocamlfind" {build}
+  "pvem_lwt_unix"
+  "uri"
+]
+depopts: ["postgresql" "sqlite3"]

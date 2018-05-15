@@ -1,0 +1,35 @@
+opam-version: "1.2"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>" ]
+license: "LGPL-3.0 with OCaml linking exception"
+homepage: "http://forge.ocamlcore.org/projects/odepack/"
+dev-repo: "https://forge.ocamlcore.org/anonscm/git/odepack/odepack.git"
+bug-reports: "http://forge.ocamlcore.org/projects/odepack/"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "odepack"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "base-bigarray"
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+]
+available: [ ocaml-version >= "3.12.1" ]
+depexts: [
+  [ [ "debian"  ] [ "gfortran" ] ]
+  [ [ "ubuntu"  ] [ "gfortran" ] ]
+  [ [ "freebsd" ] [ "lang/f77" ] ]
+  [ [ "openbsd" ] [ "lang/f77" ] ]
+  [ [ "osx" "homebrew" ] [ "gcc" ] ] # provides gfortran
+  [ [ "osx" "macports" ] [ "gcc" ] ]
+]

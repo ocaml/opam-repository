@@ -1,0 +1,36 @@
+opam-version: "1.2"
+maintainer: "simon.cruanes@inria.fr"
+authors: ["Simon Cruanes" "Jasmin Blanchette"]
+homepage: "https://github.com/nunchaku-inria/nunchaku/"
+bug-reports: "https://github.com/nunchaku-inria/nunchaku/issues"
+dev-repo: "https://github.com/nunchaku-inria/nunchaku.git"
+build: [
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--disable-random"
+    "--disable-tests"
+    "--enable-docs"
+  ]
+  [make "build"]
+  ["strip" "nunchaku.native"]
+]
+install: [make "install"]
+build-test: [make "test"]
+build-doc: [make "doc"]
+remove: ["ocamlfind" "remove" "nunchaku"]
+depends: [
+  "ocamlfind" {build}
+  "containers" {>= "1.0"}
+  "menhir" {build}
+  "sequence"
+  "base-unix"
+  "base-threads"
+  "ocamlbuild" {build}
+  "num"
+]
+depopts: [
+  "qtest" {test}
+]
+available: [ocaml-version >= "4.01.0"]

@@ -1,0 +1,36 @@
+opam-version: "1.2"
+version: "0.1.0"
+maintainer: "michipili@gmail.com"
+authors: "Michael Grünewald"
+license: "CeCILL-B"
+homepage: "https://github.com/michipili/lemonade-sqlite"
+bug-reports: "https://github.com/michipili/lemonade-sqlite/issues"
+dev-repo: "https://github.com/michipili/lemonade-sqlite.git"
+tags: [
+  "sql"
+  "sqlite"
+  "monad"
+]
+build: [
+  ["./configure" "--prefix" prefix]
+  [conf-bmake:path "-I%{bsdowl:share}%" "all"]
+]
+install: [
+  [conf-bmake:path "-I%{bsdowl:share}%" "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "lemonade-sqlite"]
+  ["rm" "-rf" "%{share}%/doc/lemonade-sqlite"]
+]
+depends: [
+  "broken" {>= "0.4.2"}
+  "bsdowl" {>= "3.0.0"}
+  "conf-bmake"
+  "lemonade" {>= "0.5.0"}
+  "ocamlfind"
+  "sqlite3" {>= "2.0.9"}
+]
+depexts: [
+  [["osx"] ["sqlite3"]]
+  [["ubuntu"] ["sqlite3"]]
+]

@@ -1,0 +1,30 @@
+opam-version: "1.2"
+name: "mpp"
+version: "0.3.2"
+maintainer: "Philippe Wang <philippe.wang@gmail.com>"
+authors: [ "Philippe Wang <philippe.wang@gmail.com>" ]
+license: "ISC"
+homepage: "https://github.com/ocaml/MPP-language-blender"
+dev-repo: "https://github.com/ocaml/MPP-language-blender.git"
+bug-reports: "https://github.com/ocaml/MPP-language-blender/issues"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/mpp/setup.ml" "-C" "%{etc}%/mpp" "-uninstall"]
+]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "oasis" {build & >= "0.4.7"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+]
+available: ocaml-version >= "4.02"

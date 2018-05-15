@@ -13,12 +13,10 @@ tags: [
 ]
 build: [
   ["./configure" "--prefix" prefix]
-  ["bmake" "-I%{bsdowl:share}%" "all"] {os != "freebsd"}
-  ["make"  "-I%{bsdowl:share}%" "all"] {os  = "freebsd"}
+  [conf-bmake:path "-I%{bsdowl:share}%" "all"]
 ]
 install: [
-  ["bmake" "-I%{bsdowl:share}%" "install"] {os != "freebsd"}
-  ["make"  "-I%{bsdowl:share}%" "install"] {os  = "freebsd"}
+  [conf-bmake:path "-I%{bsdowl:share}%" "install"]
 ]
 remove: [
   ["ocamlfind" "remove" "broken"]
@@ -31,9 +29,5 @@ depends: [
   "ocamlfind"
   "base-unix"
   "bsdowl" {>= "3.0.0"}
-]
-depexts: [
-  [["debian"] ["bmake"]]
-  [["ubuntu"] ["bmake"]]
-  [["osx" "macports"] ["bmake"]]
+  "conf-bmake"
 ]

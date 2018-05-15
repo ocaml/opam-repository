@@ -1,14 +1,29 @@
-opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+opam-version: "1.2"
+maintainer: "Gerd Stolpmann <gerd@gerd-stolpmann.de>"
+authors: [
+  "Aleksey Nogin"
+  "Jason Hickey"
+  "Gerd Stolpmann"
+]
+license: "GPL2"
+dev-repo: "https://github.com/ocaml-omake/omake.git"
+homepage: "http://projects.camlcity.org/projects/omake.html"
+bug-reports: "https://github.com/ocaml-omake/issues"
+depends: ["ocamlfind"]
 build: [
   [make "bootstrap" "PREFIX=%{prefix}%"]
   [make "all" "PREFIX=%{prefix}%"]
-  [make "install" "PREFIX=%{prefix}%"]
 ]
-depends: ["ocamlfind"]
+remove: [
+  [ "rm" "-f" "%{prefix}%/bin/omake" ]
+  [ "rm" "-f" "%{prefix}%/bin/osh" ]
+  [ "rm" "-rf" "%{prefix}%/lib/omake" ]
+]
+install: [make "install" "PREFIX=%{prefix}%"]
 patches: [
   "opam.patch"
   "fam.patch"
   "readline.patch"
   "netbsd_fam.patch"
 ]
+available: [ ocaml-version < "4.06.0"]

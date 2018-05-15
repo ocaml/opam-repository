@@ -5,7 +5,14 @@ patches:
   # S. Glondu's patch for binutils >= 2.21 (see bug report #5237)
   ["http://caml.inria.fr/mantis/file_download.php?file_id=418&type=bug"]
 build: [
-  ["./configure" "-prefix" prefix]
+  ["./configure"
+    "-prefix" prefix
+  ] { os != "openbsd" & os  != "freebsd" & os  != "darwin" }
+  ["./configure"
+    "-prefix" prefix
+    "-cc" "cc"
+    "-aspp" "cc -c"
+  ] { os  = "openbsd" | os  = "freebsd" | os  = "darwin" }
   [make "world"]
   [make "world.opt"]
   [make "install"]

@@ -1,0 +1,29 @@
+opam-version: "1.2"
+maintainer: "Vladimir Brankov <vbrankov@janestreet.com>"
+authors: "Vladimir Brankov <vbrankov@janestreet.com>"
+homepage: "https://github.com/vbrankov/hdf5-ocaml"
+bug-reports: "https://github.com/vbrankov/hdf5-ocaml/issues"
+license: "MIT"
+dev-repo: "git@github.com:vbrankov/hdf5-ocaml.git"
+build: [
+  ["./configure" "--prefix=%{prefix}%"]
+  [make]
+]
+install: [make "install"]
+remove: [
+  ["ocamlfind" "remove" "hdf5_caml"]
+  ["ocamlfind" "remove" "hdf5_raw"]
+]
+depends: [
+  "ocamlfind" {build}
+  "cppo" {build}
+  "cppo_ocamlbuild" {build}
+]
+depexts: [
+  [["alpine"] ["hdf5"]]
+  [["centos"] ["epel-release" "hdf5-devel"]]
+  [["debian"] ["libhdf5-serial-dev"]]
+  [["homebrew" "osx"] ["homebrew/science/hdf5"]]
+  [["ubuntu"] ["libhdf5-serial-dev"]]
+]
+available: [ocaml-version >= "4.02"]

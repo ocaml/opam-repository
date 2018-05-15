@@ -1,0 +1,43 @@
+opam-version: "1.2"
+maintainer: "xen-api@lists.xen.org"
+authors: [ "Jon Ludlam" ]
+homepage: "https://github.com/xapi-project/xcp-rrdd"
+bug-reports: "https://github.com/xapi-project/xcp-rrdd/issues"
+dev-repo: "https://github.com/xapi-project/xcp-rrdd.git"
+tags: [
+  "org:xapi-project"
+]
+build: [
+  ["oasis" "setup"]
+  [make]
+]
+install: [
+  ["ocaml" "setup.ml" "-install"]
+]
+build-test: [
+  [make "test"]
+]
+remove: [
+    [make "uninstall"]
+    ["ocamlfind" "remove" "rrdd-libs"]
+]
+depends: [
+  "ocamlfind" {build}
+  "xapi-backtrace" {= "0.4"}
+  "xapi-idl" {= "1.14.0"}
+  "xapi-libs-transitional" {= "1.0.1"}
+  "xapi-inventory" {= "1.0.2"}
+  "xapi-stdext" {= "2.1.0"}
+  "xapi-forkexecd" {= "1.4.0"}
+  "xenctrl"
+  "xenstore_transport"
+  "xapi-xenops" {= "1.0.1"}
+  "io-page"
+  "inotify"
+  "xen-gnt-unix"
+  "xapi-rrd-transport" {= "1.2.0"}
+  "oclock"
+  "ounit"
+  "ocaml-systemd" {>= "1.2"}
+]
+patches: [ "use-xen-gnt-unix.patch" ]

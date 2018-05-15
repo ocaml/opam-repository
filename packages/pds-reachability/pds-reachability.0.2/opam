@@ -1,0 +1,36 @@
+opam-version: "1.2"
+maintainer: "JHU PL Lab <pl.cs@jhu.edu>"
+authors: "JHU PL Lab <pl.cs@jhu.edu>"
+homepage: "https://github.com/JHU-PL-Lab/pds-reachability"
+bug-reports: "https://github.com/JHU-PL-Lab/pds-reachability/issues"
+license: "Apache"
+dev-repo: "https://github.com/JHU-PL-Lab/pds-reachability.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+remove: [
+  "ocaml"
+  "%{etc}%/pds-reachability/_oasis_remove_.ml"
+  "%{etc}%/pds-reachability"
+]
+depends: [
+  "base-threads"
+  "batteries"
+  "jhupllib"
+  "oasis" {build & >= "0.4"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {build}
+  "ppx_deriving" {>= "3.2"}
+  "ppx_deriving_yojson"
+  "yojson"
+]

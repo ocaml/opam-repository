@@ -1,0 +1,36 @@
+opam-version: "1.2"
+name:         "vmnet"
+maintainer:   "Anil Madhavapeddy <anil@recoil.org>"
+authors:      "Anil Madhavapeddy <anil@recoil.org>"
+homepage:     "https://github.com/mirage/ocaml-vmnet"
+bug-reports:  "https://github.com/mirage/ocaml-vmnet/issues"
+dev-repo:     "https://github.com/mirage/ocaml-vmnet.git"
+doc:          "https://mirage.github.io/ocaml-vmnet/"
+license:      "ISC"
+
+build: [
+  [ "jbuilder" "subst"] {pinned}
+  [ "jbuilder" "build" "-p" name "-j" jobs ]
+]
+
+build-test: [
+  [ "jbuilder" "subst"] {pinned}
+  [ "jbuilder" "build" "-p" name "-j" jobs ]
+  [ "jbuilder" "runtest" ]
+]
+
+depends: [
+  "jbuilder"   {build & >="1.0+beta9"}
+  "ppx_tools" {build}
+  "ppx_sexp_conv" {build}
+  "ocaml-migrate-parsetree" {build}
+  "sexplib" {>= "113.24.00"}
+  "ipaddr" {>="1.4.0"}
+  "lwt" {>="2.4.3"}
+  "cstruct" {>="1.9.0"}
+  "cstruct-unix"
+]
+available: [ os = "darwin" ]
+post-messages: [
+  "This package requires the vmnet.framework plus development headers which are present in Yosemite (10.10.*) and later." {failure}
+]

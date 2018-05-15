@@ -1,0 +1,35 @@
+opam-version: "1.2"
+maintainer: "Jacques-Pascal Deplaix <jp.deplaix@gmail.com>"
+authors: [
+  "whitequark <whitequark@whitequark.org>"
+  "The LLVM team"
+]
+license: "MIT"
+doc: "http://llvm.moe/ocaml-3.9"
+bug-reports: "http://llvm.org/bugs/"
+dev-repo: "http://llvm.org/git/llvm.git"
+homepage: "http://llvm.moe"
+patches: [
+  "D24354.diff"
+  "cmake.patch"
+]
+build: [
+  ["bash" "-ex" "build.sh" "%{conf-llvm:config}%" lib "%{conf-cmake:cmd}%"]
+  [make "-C" "build" "ocaml_all"]
+]
+install: [
+  [make "-C" "build/bindings/ocaml" "install/fast"]
+]
+remove: [
+  ["ocamlfind" "remove" "llvm"]
+  ["sh" "-c" "rm -f %{lib}%/META.llvm*"]
+]
+depends: [
+  "ctypes" {>= "0.4"}
+  "ounit" {test}
+  "ocamlfind" {build}
+  "conf-llvm" {build & = "3.9"}
+  "conf-python-2-7" {build}
+  "conf-cmake" {build}
+]
+available: [ocaml-version >= "4.00.0"]

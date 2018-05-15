@@ -1,0 +1,35 @@
+opam-version: "1.2"
+maintainer: "filliatr@lri.fr"
+authors: [
+  "Romain Bardou"
+  "Francois Bobot"
+  "Jean-Christophe Filliâtre"
+  "Johannes Kanig"
+  "Stephane Lescuyer"
+]
+homepage: "http://mlpost.lri.fr/index.fr.html"
+dev-repo: "git://github.com/backtracking/mlpost"
+bug-reports: "https://github.com/backtracking/mlpost/issues"
+license: "LGPL-2.1"
+build: [
+  ["./configure" "--prefix" prefix "--mandir" man]
+  [make]
+  [make "contrib"]
+]
+install: [
+  [make "install"]
+  [make "install-contrib"]
+]
+remove: [
+  ["ocamlfind" "remove" "mlpost_dot"]
+  ["ocamlfind" "remove" "mlpost"]
+  ["ocamlfind" "remove" "mlpost_lablgtk"] {"%{cairo:installed}%"}
+]
+depends: [
+  "ocamlfind"
+  "bitstring"
+  "cairo" {= "1.2.0"}
+  "ocamlbuild" {build}
+  "conf-autoconf" {build}
+]
+available: [ ocaml-version >= "4.04.0" ]
