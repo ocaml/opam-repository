@@ -26,19 +26,27 @@ build-test: [
 ]
 build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "conf-gmp"
+  "conf-perl" {build}
   "base-unix" {build}
+  "num"
   "camlidl"
   "camlp4"
-  "num"
   ("extlib" {build} | "extlib-compat" {build})
-  "lustre-v6" {build}
+  "lustre-v6"
   "lutils" {>= "1.9"}
-  ("mlgmp" | "mlgmpidl")
+  "mlgmpidl"
   ("oasis" {build & >= "0.4.7"} | "oasis-mirage" {build & >= "0.4.7"})
   "ocamlbuild" {build}
-  "ocamlfind" {build}
-  "rdbg" {build & >= "1.170"}
+  "ocamlfind"
+  "rdbg" {>= "1.170"}
 ]
-depexts: [ "libgmp-dev" "libmpfr-dev" "m4"]
 available: [ ocaml-version >= "4.02" ]
-post-messages: ["A more up-to-date version can be obtained from (opam repo add) http://www-verimag.imag.fr/DIST-TOOLS/SYNCHRONE/opam-repository/ "]
+depexts: [
+  [ ["alpine" ]  ["perl" "gmp-dev" "mpfr-dev" "m4"] ]
+  [ ["centos" ]  ["perl" "gmp-devel" "mpfr-devel" "m4"] ]
+  [ ["debian" ]  ["perl" "libgmp-dev" "libmpfr-dev" "m4"] ]
+  [ ["ubuntu" ]  ["perl" "libgmp-dev" "libmpfr-dev" "m4"] ]
+    
+]
+post-messages: ["The last version can be obtained via (opam repo add) http://www-verimag.imag.fr/DIST-TOOLS/SYNCHRONE/opam-repository/ "]
