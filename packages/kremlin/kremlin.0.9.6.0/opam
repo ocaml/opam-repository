@@ -1,0 +1,49 @@
+opam-version: "2.0"
+version: "0.9.6.0"
+maintainer: "protz@microsoft.com"
+authors: "Jonathan Protzenko <jonathan.protzenko@gmail.com>"
+homepage: "https://github.com/fstarlang/kremlin"
+license: "Apache"
+depends: [
+  "ocaml" {>= "4.04.0" & < "4.07.0"}
+  "ocamlfind" {build}
+  "batteries"
+  "zarith"
+  "stdint"
+  "yojson"
+  "ocamlbuild" {build}
+  "fileutils"
+  "menhir" {>= "20161115"}
+  "pprint"
+  "ulex"
+  "process"
+  "fix"
+  "visitors"
+  "wasm"
+  "ppx_deriving"
+  "ppx_deriving_yojson"
+  "fstar" {>= "0.9.6.0"}
+]
+depexts: ["coreutils"] {os = "macos" & os-distribution = "homebrew"}
+build: [
+  [make "PREFIX=%{prefix}%"]
+]
+install: [
+  [make "PREFIX=%{prefix}%" "install"]
+]
+remove: [
+  [ "rm" "-rf"
+      "%{prefix}%/lib/kremlin"
+      "%{prefix}%/include/kremlin"
+      "%{prefix}%/doc/kremlin"
+      "%{prefix}%/bin/krml"
+      "%{prefix}%/share/kremlin" ]
+]
+dev-repo: "git://github.com/FStarLang/kremlin"
+bug-reports: "https://github.com/FStarLang/kremlin/issues"
+synopsis: "A compiler from Low*, a low-level subset of F*, to C."
+flags: light-uninstall
+url {
+  src: "https://github.com/FStarLang/kremlin/archive/v0.9.6.0.zip"
+  checksum: "md5=6a580d0b470484db5637d593a06811be"
+}
