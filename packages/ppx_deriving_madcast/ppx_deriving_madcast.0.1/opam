@@ -1,0 +1,34 @@
+opam-version: "2.0"
+maintainer: "Niols <niols@niols.fr>"
+authors: ["Niols <niols@niols.fr>" "Kerl <kerl@wkerl.me>"]
+homepage: "https://github.com/Niols/ppx_deriving_madcast"
+bug-reports: "https://github.com/Niols/ppx_deriving_madcast/issues"
+license: "LGPL3"
+tags: "syntax"
+dev-repo: "git://github.com/Niols/ppx_deriving_madcast.git"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  [make "test"] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.04.0"}
+  "ppx_deriving"
+  "ppx_tools"
+  "ppxfind" {build}
+  "jbuilder" {build}
+  "ocamlfind" {with-test}
+]
+synopsis: "Library deriving cast functions based on their types."
+description: """
+This package provides a PPX that allows to derive cast functions based
+on their types. For instance, [%madcast: ('a * string) -> ('a * int)]
+would be replaced by:
+
+    fun (x, y) ->
+      (x,
+       try int_of_string y
+       with Failure _ -> failwith "madcast: string -> int")"""
+url {
+  src: "https://github.com/Niols/ppx_deriving_madcast/archive/v0.1.tar.gz"
+  checksum: "md5=312d4fcb58029810900c50c7cb9cfe69"
+}
