@@ -1,0 +1,48 @@
+opam-version: "1.2"
+homepage:     "https://github.com/mirleft/ocaml-nocrypto"
+dev-repo:     "https://github.com/mirleft/ocaml-nocrypto.git"
+bug-reports:  "https://github.com/mirleft/ocaml-nocrypto/issues"
+doc:          "https://mirleft.github.io/ocaml-nocrypto/doc"
+authors:      ["David Kaloper <david@numm.org>"]
+maintainer:   "David Kaloper <david@numm.org>"
+license:      "ISC"
+tags:          [ "org:mirage" ]
+available:     [ ocaml-version >= "4.02.0" ]
+
+build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+                "--jobs" "1"
+                "--with-lwt" "%{lwt:installed}%"
+                "--xen" "%{mirage-xen:installed}%"
+                "--freestanding" "%{mirage-solo5:installed}%"]
+
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "cpuid" {build}
+  "ocb-stubblr" {build}
+  "ppx_deriving" {build}
+  "ppx_sexp_conv" {>= "113.33.01" & != "v0.11.0"}
+  "ounit" {test}
+  "cstruct" {>="2.4.0"}
+  "cstruct-lwt"
+  "zarith"
+  "lwt"
+  "sexplib"
+  ("mirage-no-xen" | ("mirage-xen" & "mirage-entropy" & "zarith-xen"))
+  ("mirage-no-solo5" | ("mirage-solo5" & "mirage-entropy" & "zarith-freestanding"))
+]
+
+conflicts: [
+  "topkg" {<"0.9.1"}
+  "ocb-stubblr" {<"0.1.0"}
+  "mirage-xen" {<"2.2.0"}
+  "sexplib" {="v0.9.0"}
+]
+
+patches: [
+    "0002-add-missing-runtime-dependencies-in-_tags.patch"
+    "0004-add-ppx_sexp_conv-as-a-runtime-dependency-in-the-pac.patch"
+    "0005-Auto-detect-ppx_sexp_conv-runtime-library.patch"
+    "0006-pack-package-workaround-ocamlbuild-272.patch"
+]
