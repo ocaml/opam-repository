@@ -1,23 +1,23 @@
 opam-version: "2.0"
 maintainer: "martin@mjambon.com"
-homepage: "https://github.com/mjambon/atdgen"
-build: make
-remove: [
-    ["ocamlfind" "remove" "atdgen"]
+authors: ["Martin Jambon"]
+
+homepage: "https://github.com/mjambon/atd"
+bug-reports: "https://github.com/mjambon/atd/issues"
+dev-repo: "git+https://github.com/mjambon/atd.git"
+build: [
+  ["jbuilder" "subst" "-n" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name] {with-test}
 ]
 depends: [
-  "ocaml" {< "4.03"}
-  "ocamlfind"
-  "atd" {>= "1.1.0" & < "1.13.0"}
+  "ocaml" {>= "4.02.3"}
+  "jbuilder" {build}
+  "atd" {>= "1.13.0"}
+  "atdgen-runtime"
   "biniou" {>= "1.0.6"}
   "yojson" {>= "1.2.1"}
 ]
-dev-repo: "git://github.com/mjambon/atdgen"
-
-# Cautiously disable atdgen on 4.03, it seems to be segfaulting
-# https://github.com/mjambon/atdgen/issues/45
-# https://github.com/OCamlPro/opam-publish/issues/40
-install: [make "install" "BINDIR=%{bin}%"]
 synopsis:
   "Generates efficient JSON serializers, deserializers and validators"
 description: """
@@ -32,9 +32,7 @@ other.
 Atdgen was designed with efficiency and durability in mind. Software authors
 are encouraged to use Atdgen directly and to write tools that may reuse part of
 Atdgen’s source code."""
-flags: light-uninstall
-extra-files: ["atdgen.install" "md5=6e684dadfbf1d36392792f2f0a67f868"]
 url {
-  src: "https://github.com/mjambon/atdgen/archive/v1.6.1.tar.gz"
-  checksum: "md5=a0201fa2cadddbaeaeb26b6efb7b391e"
+  src: "https://github.com/mjambon/atd/archive/1.13.0.tar.gz"
+  checksum: "md5=da11b6157d5674e2d27cfd401eb8003a"
 }
