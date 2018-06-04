@@ -6,12 +6,14 @@ bug-reports: "https://github.com/ocaml/dbm/issues"
 dev-repo: "git+https://github.com/ocaml/dbm.git"
 license: "LGPL-v2 with OCaml linking exception"
 build: [
-  ["mkdir" "-p" "%{lib}%/dbm"]
   ["./configure"]
   [make "all"]
-  [make "test"]
+  [make "test"] {with-test}
 ]
-depends: ["ocaml" "ocamlfind"]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+]
 depexts: [
   ["libgdbm-dev"] {os-distribution = "debian"}
   ["libgdbm-dev"] {os-distribution = "ubuntu"}
@@ -27,6 +29,7 @@ patches: [
   "include_local_fix.patch"
 ]
 install: [
+  ["mkdir" "-p" "%{lib}%/dbm"]
   [make "install" "STUBLIBDIR=%{lib}%/stublibs" "LIBDIR=%{lib}%/dbm"]
   ["cp" "META" "%{lib}%/dbm"]
 ]
