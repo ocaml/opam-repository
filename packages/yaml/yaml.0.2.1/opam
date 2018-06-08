@@ -7,22 +7,24 @@ license: "ISC"
 dev-repo: "https://github.com/avsm/ocaml-yaml.git"
 bug-reports: "https://github.com/avsm/ocaml-yaml/issues"
 tags: ["org:mirage" "org:ocamllabs"]
-available: [ ocaml-version >= "4.03.0" & arch != "ppc64" ]
+available: [ ocaml-version >= "4.06.0"]
 depends: [
-  "jbuilder" {build & >="1.0+beta10"}
+  "jbuilder" {build & >="1.0+beta17"}
+  "configurator"
   "ctypes" {>="0.12.0"}
-  "ppx_sexp_conv" { >="v0.9.0" & < "v0.11.0"}
+  "ppx_sexp_conv" {>="v0.9.0"}
+  "sexplib"
   "rresult"
   "fmt"
   "logs"
+  "bos"
   "alcotest" {test}
   "ezjsonm" {test}
-  "bos" {test}
 ]
 build: [
-  ["jbuilder" "subst" "-p" name "--name" name] {pinned}
+  ["jbuilder" "subst"] {pinned}
   ["jbuilder" "build" "-p" name "-j" jobs]
 ]
 build-test: [
-  ["jbuilder" "runtest"]
+  ["jbuilder" "runtest" "-p" name]
 ]
