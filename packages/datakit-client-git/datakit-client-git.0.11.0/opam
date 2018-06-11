@@ -8,20 +8,20 @@ bug-reports:  "https://github.com/moby/datakit/issues"
 dev-repo: "git+https://github.com/moby/datakit.git"
 doc:          "https://docker.github.io/datakit/"
 
-build: [
-  ["jbuilder" "build" "-p" name "-j" jobs]
-  ["jbuilder" "runtest" "tests/datakit-git"] {with-test}
-]
+build: ["jbuilder" "build" "-p" name "-j" jobs]
+
 depends: [
   "ocaml"
   "jbuilder" {build & < "1.0+beta12"}
   "datakit-client" {>= "0.11.0"}
   "irmin-git" {>= "1.2.0"}
+  "irmin" {< "1.4.0"}
   "irmin-watcher" {>= "0.3.0"}
   "git-unix"
   "alcotest" {with-test & < "0.8.0"}
   "irmin-mem" {with-test}
   "irmin-git" {with-test}
+  "mirage-flow" {with-test & >= "1.2.0"}
 ]
 synopsis: "Orchestrate applications using a Git-like dataflow"
 description: """
