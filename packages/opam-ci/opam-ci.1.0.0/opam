@@ -1,0 +1,67 @@
+opam-version: "2.0"
+maintainer: "Anil Madhavapeddy <anil@recoil.org>"
+authors: ["Anil Madhavapeddy <anil@recoil.org>"]
+homepage: "https://github.com/ocaml/obi"
+doc: "https://ocaml.github.io/obi/"
+license: "ISC"
+dev-repo: "git+https://github.com/ocaml/obi.git"
+bug-reports: "https://github.com/ocaml/obi/issues"
+tags: "org:ocamllabs"
+depends: [
+  "ocaml" {>= "4.05.0"}
+  "jbuilder" {build & >= "1.0+beta17"}
+  "obi"
+  "bos"
+  "cmdliner"
+  "fmt"
+  "logs"
+  "rresult"
+  "textwrap"
+]
+build: [
+  ["jbuilder" "subst" "-p" name "--name" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+synopsis: "query the opam package build status"
+description: """
+The opam-ci tool provides an interface to the opam 2.0 continuous
+integration cluster, which regularly rebuilds the package repository
+across a variety of OCaml compiler versions, operating system
+distributions and CPU architectures. These builds are done regularly in
+remote infrastructure and the results are pushed to a metadata
+repository where they are fetched by this command to give you a summary
+of the status of your own packages.
+
+The `opam ci status` command shows a dashboard of the build results
+across this matrix. Packages can be filtered by maintainer substrings
+or tag names in the opam package description, so you see only those
+relevant to you.
+
+The `opam ci logs` command will show you the build errors so you can fix
+them. It also generates a Dockerfile of the precise build to reproduce
+the environment locally for you.
+
+To get started, try these commands with the maintainer argument
+replaced with your own information or tags:
+
+```
+# show all the failing MirageOS packages
+opam ci status -m org:mirage | less -R
+
+# show all the packages maintained by anil@recoil.org
+opam ci status -m anil@recoil.org --filter=all | less -R
+
+# show all the packages failing on the latest RC of the OCaml compiler
+opam ci status --filter=variants:rc | less -R
+
+# display all failure logs for the mirage-xen package
+opam ci logs mirage-xen
+```
+
+See the `--help` pages for the subcommands below for more detailed
+information."""
+flags: plugin
+url {
+  src: "https://github.com/ocaml/obi/releases/download/v1.0.0/obi-1.0.0.tbz"
+  checksum: "md5=ec811f2e406f9bea44549bb2a331a70b"
+}
