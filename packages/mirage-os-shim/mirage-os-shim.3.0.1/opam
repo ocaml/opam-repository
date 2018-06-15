@@ -1,34 +1,33 @@
 opam-version: "2.0"
-maintainer: "David Kaloper Meršinjak <david@numm.org>"
+maintainer: "mirageos-devel"
 authors: ["David Kaloper Meršinjak <david@numm.org>"]
-homepage: "https://github.com/pqwy/mirage-os-shim"
-doc: "https://pqwy.github.io/mirage-os-shim/doc"
+homepage: "https://github.com/mirage/mirage-os-shim"
+doc: "https://mirage.github.io/mirage-os-shim/doc"
 license: "ISC"
-dev-repo: "git+https://github.com/pqwy/mirage-os-shim.git"
-bug-reports: "https://github.com/pqwy/mirage-os-shim/issues"
+dev-repo: "git+https://github.com/mirage/mirage-os-shim.git"
+bug-reports: "https://github.com/mirage/mirage-os-shim/issues"
 build: [
-  "ocaml" "pkg/pkg.ml" "build"
-          "--pinned" "%{pinned}%"
+  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
           "--with-mirage-unix" "%{mirage-unix:installed}%"
           "--with-mirage-xen" "%{mirage-xen:installed}%"
           "--with-mirage-solo5" "%{mirage-solo5:installed}%"
 ]
 depends: [
-  "ocaml" {>= "4.02.0" & < "4.06.0"}
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
-  "mirage-unix" {>= "2.4.0"}
+  "lwt"
 ]
 depopts: [
   "mirage-solo5"
   "mirage-xen"
+  "mirage-unix"
 ]
 conflicts: [
-  "mirage-types" {>= "3.0.0"}
-  "mirage-solo5" {>= "0.2.0"}
-  "mirage-xen" {>= "3.0.0"}
-  "mirage-unix" {>= "3.0.0"}
+  "mirage-unix" {< "3.0.0"}
+  "mirage-xen" {< "3.0.0"}
+  "mirage-solo5" {< "0.2.0"}
 ]
 synopsis: "Portable shim for MirageOS APIs"
 description: """
@@ -40,7 +39,7 @@ respective backends.
 Clients need to be compiled against the common `mirage_OS.cmi`, and use the
 module `Mirage_OS`. Final applications need to be linked using `ocamlfind`, and
 have to define one of the `ocamlfind` predicates corresponding to the actual
-`OS` implementations: `unix`, `xen`, or `solo5`.
+`OS` implementations: `mirage_unix`, `mirage_xen`, or `mirage_solo5`.
 
 When using `ocamlbuild`, this is
 `ocamlfind -use-ocamlfind -tag 'predicate(unix)'` or similar.
@@ -49,9 +48,11 @@ When using `ocamlbuild`, this is
 interface is pretty volatile. It is highly likely that you, in fact, do not need
 this package at all.
 
-mirage-os-shim is distributed under the ISC license."""
+mirage-os-shim is distributed under the ISC license.
+
+[![Build Status](https://travis-ci.org/mirage/mirage-os-shim.svg?branch=master)](https://travis-ci.org/mirage/mirage-os-shim)"""
 url {
   src:
-    "https://github.com/pqwy/mirage-os-shim/releases/download/v0.0.1/mirage-os-shim-0.0.1.tbz"
-  checksum: "md5=e9fe8b2703a664aa854c82b0a47dd82d"
+    "https://github.com/mirage/mirage-os-shim/releases/download/v3.0.1/mirage-os-shim-3.0.1.tbz"
+  checksum: "md5=1c091d5e4265b27bbc60f48dc1085ffb"
 }
