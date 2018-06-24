@@ -6,11 +6,14 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "git+https://github.com/ocaml/opam-repository.git"
 license: "GPL-3"
 build: [
-  "sh" "-c" "cc test.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm ||
-             cc test.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -lndbm ||
-             cc test.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -ldb1 ||
-             cc test.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -lgdbm ||
-             cc test.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -lgdbm_compat -lgdbm"
+  "sh" "-c" "cc test_gdbm.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm ||
+             cc test_gdbm.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -lndbm ||
+             cc test_gdbm.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -ldb1 ||
+             cc test_gdbm.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -lgdbm ||
+             cc test_gdbm.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -lgdbm_compat -lgdbm ||
+             cc test_ndbm.c -v -I/usr/include -I/usr/local/include ||
+             cc test_ndbm.c -v -I/usr/include -I/usr/local/include -ldb ||
+             cc test_ndbm.c -v -I/usr/include -I/usr/local/include -lndbm"
 ]
 depexts: [
   ["libgdbm-dev"] {os-distribution = "debian"}
@@ -28,4 +31,7 @@ synopsis: "Virtual package relying on gdbm"
 description:
   "This package can only install if the gdbm library is installed on the system."
 depends: ["ocaml"]
-extra-files: ["test.c" "md5=bb6869c63ffe5f767d859fb364fcecc8"]
+extra-files: [
+  ["test_gdbm.c" "md5=bb6869c63ffe5f767d859fb364fcecc8"]
+  ["test_ndbm.c" "md5=f5f74ae297a6a7ced42843372156af85"]
+]
