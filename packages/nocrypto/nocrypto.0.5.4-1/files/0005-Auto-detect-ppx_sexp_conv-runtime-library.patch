@@ -1,0 +1,61 @@
+From 25e1206eb1b173acdfc7312d072e0583327c4ac0 Mon Sep 17 00:00:00 2001
+From: Jeremie Dimino <jeremie@dimino.org>
+Date: Fri, 11 May 2018 15:44:47 +0200
+Subject: [PATCH 5/6] Auto-detect ppx_sexp_conv runtime library
+
+---
+ myocamlbuild.ml       | 25 ++++++++++++++++++++++---
+ pkg/{META => META.in} |  2 +-
+ 2 files changed, 23 insertions(+), 4 deletions(-)
+ rename pkg/{META => META.in} (95%)
+
+diff --git a/myocamlbuild.ml b/myocamlbuild.ml
+index 2752315..7b29635 100644
+--- a/myocamlbuild.ml
++++ b/myocamlbuild.ml
+@@ -1,5 +1,24 @@
+ open Ocamlbuild_plugin
+ 
+-let () = dispatch Ocb_stubblr.(
+-  init & ccopt ~tags:["accelerate"] "-DACCELERATE -msse2 -maes"
+-)
++let runtime_deps_of_ppx ppx =
++  (Findlib.query "ppx_sexp_conv").dependencies
++  |> List.filter_opt (fun { Findlib.name; _ } ->
++      if name = ppx || name = "ppx_deriving" then
++        None
++      else
++        Some name)
++
++let () = dispatch (fun hook ->
++    Ocb_stubblr.(
++      init & ccopt ~tags:["accelerate"] "-DACCELERATE -msse2 -maes"
++    ) hook;
++    match hook with
++    | After_rules ->
++      let meta = "pkg/META" in
++      let meta_in = meta ^ ".in" in
++      rule meta ~dep:meta_in ~prod:meta (fun _ _ ->
++          let deps = String.concat " " (runtime_deps_of_ppx "ppx_sexp_conv") in
++          Echo([String.subst "PPX_SEXP_CONV_RUNTIME" deps
++                  (Pathname.read meta_in)],
++               meta))
++    | _ -> ())
+diff --git a/pkg/META b/pkg/META.in
+similarity index 95%
+rename from pkg/META
+rename to pkg/META.in
+index a7929c7..0b263d7 100644
+--- a/pkg/META
++++ b/pkg/META.in
+@@ -1,6 +1,6 @@
+ version = "%%VERSION_NUM%%"
+ description = "Simple crypto for the modern age"
+-requires = "cstruct zarith sexplib ppx_sexp_conv"
++requires = "cstruct zarith sexplib PPX_SEXP_CONV_RUNTIME"
+ archive(byte) = "nocrypto.cma"
+ archive(native) = "nocrypto.cmxa"
+ plugin(byte) = "nocrypto.cma"
+-- 
+2.17.0
+
