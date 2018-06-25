@@ -1,0 +1,54 @@
+opam-version: "1.2"
+maintainer: "guillaume.melquiond@inria.fr"
+authors: [
+  "François Bobot"
+  "Jean-Christophe Filliâtre"
+  "Claude Marché"
+  "Guillaume Melquiond"
+  "Andrei Paskevich"
+]
+
+homepage: "http://why3.lri.fr/"
+license: "GNU Lesser General Public License version 2.1"
+doc: "http://why3.lri.fr/doc/"
+bug-reports: "https://gitlab.inria.fr/why3/why3/issues"
+dev-repo: "https://gitlab.inria.fr/why3/why3.git"
+
+tags: [
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "interactive theorem prover"
+]
+available: [ ocaml-version >= "4.02.3" ]
+
+build: [
+  ["./configure"
+   "--prefix" prefix
+   "--disable-why3-lib"
+   "--disable-frama-c"
+   "--disable-coq-libs"
+   "--disable-js-of-ocaml"]
+  [make "-j%{jobs}%" "ide"]
+]
+
+install: [make "install-ide"]
+
+remove: [
+  ["rm" "-f" "%{lib}%/why3/commands/why3ide"]
+  ["rm" "-rf" "%{share}%/why3/images"]
+]
+
+flags: [ light-uninstall ]
+
+depends: [
+  "ocamlfind" {build}
+  "why3" {= "1.0.0"}
+  "lablgtk"
+  "conf-gtksourceview"
+]
+
+conflicts: [
+  "lablgtk" {< "2.14.2"}
+]
