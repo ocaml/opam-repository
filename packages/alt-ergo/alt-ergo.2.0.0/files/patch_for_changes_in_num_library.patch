@@ -1,0 +1,62 @@
+diff --git a/Makefile.configurable.in b/Makefile.configurable.in
+index bcf1dfc..5f15ee5 100644
+--- a/Makefile.configurable.in
++++ b/Makefile.configurable.in
+@@ -39,6 +39,7 @@ OCAMLWIN32 = @OCAMLWIN32@
+ EXE = @EXE@
+ ENABLEGUI = @ENABLEGUI@
+ ZARITHLIB=@ZARITHLIB@
++NUMLIB=@NUMLIB@
+ CAMLZIPLIB=@CAMLZIPLIB@
+ #OCAMLGRAPHLIB=@OCAMLGRAPHLIB@
+ LABLGTK2LIB=@LABLGTK2LIB@
+diff --git a/Makefile.users b/Makefile.users
+index 63e7bf2..94cd733 100644
+--- a/Makefile.users
++++ b/Makefile.users
+@@ -8,7 +8,7 @@ LOCAL_INC = -I lib/util -I lib/structures -I lib/reasoners \
+     -I plugins/common -I plugins/satML \
+     -I plugins/fm-simplex
+ 
+-INCLUDES = $(ZARITHLIB) $(LABLGTK2LIB)  $(CAMLZIPLIB) $(OCPLIBSIMPLEXLIB) $(LOCAL_INC)
++INCLUDES = $(NUMLIB) $(ZARITHLIB) $(LABLGTK2LIB)  $(CAMLZIPLIB) $(OCPLIBSIMPLEXLIB) $(LOCAL_INC)
+ #for coverage # -I /usr/local/lib/ocaml/3.12.1/bisect -pp "camlp4o str.cma /usr/local/lib/ocaml/3.12.1/bisect/bisect_pp.cmo"
+ 
+ BFLAGS = -annot -absname -bin-annot -short-paths -strict-sequence -g $(INCLUDES)
+diff --git a/configure.in b/configure.in
+index f7ba81a..938d5b7 100644
+--- a/configure.in
++++ b/configure.in
+@@ -116,6 +116,24 @@ else
+   fi
+ fi
+ 
++#looking for num library
++
++if test "$USEOCAMLFIND" = yes; then
++  NUMLIB=$(ocamlfind query -i-format num)
++fi
++
++if test -n "$NUMLIB";then
++  echo "ocamlfind found num in $NUMLIB"
++  NUM=yes
++else
++  AC_CHECK_FILE($OCAMLLIB/nums.cma,NUM=yes,NUM=no)
++  if test "$NUM" = no ; then
++      AC_MSG_ERROR(Cannot find num library.)
++  else
++     NUMLIB=""
++  fi
++fi
++
+ #looking for camlzip library
+ 
+ if test "$USEOCAMLFIND" = yes; then
+@@ -283,6 +301,7 @@ AC_SUBST(OCAMLVERSION)
+ AC_SUBST(OCAMLLIB)
+ #AC_SUBST(OCAMLGRAPHLIB)
+ AC_SUBST(ZARITHLIB)
++AC_SUBST(NUMLIB)
+ AC_SUBST(CAMLZIPLIB)
+ AC_SUBST(OCAMLWEB)
+ AC_SUBST(LABLGTK2LIB)

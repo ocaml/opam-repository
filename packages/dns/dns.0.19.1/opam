@@ -26,7 +26,10 @@ build: [
     "--with-async" "%{async:installed}%" ]
 ]
 build-test: [
-  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"
+    "--with-lwt" "%{lwt+mirage-profile+cmdliner:installed}%"
+    "--with-mirage" "%{mirage-time-lwt+mirage-stack-lwt+mirage-kv-lwt+lwt+duration+io-page+mirage-profile:installed}%"
+    "--with-async" "%{async:installed}%" ]
   ["ocaml" "pkg/pkg.ml" "test" ]
 ]
 
@@ -34,8 +37,8 @@ depends: [
   "ocamlfind"        {build}
   "ocamlbuild"       {build}
   "topkg"            {build & >= "0.8.0"}
-  "ppx_cstruct"      {build}
-  "ppx_deriving"     {build}
+  "ppx_cstruct"
+  "ppx_deriving"
   "base-bytes"
   "cstruct"          {>= "2.0.0" & < "3.0.0"}
   "re"

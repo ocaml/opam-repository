@@ -1,6 +1,9 @@
 bash -c "while true; do echo \$(date) - building ...; sleep 360; done" &
 PING_LOOP_PID=$!
 
+# Variable value from .travis.yml - probably overridden during install step
+BUILD_OCAML_VERSION=$OCAML_VERSION
+
 # generated during the install step
 source .travis-ocaml.env
 
@@ -107,11 +110,15 @@ function build_one {
     echo
     echo "====== External dependency handling ======"
     opam install depext
-    depext=$(opam depext -ls $pkg --no-sources)
-    opam depext $pkg
+    # No --build-tests option on opam depext, workaround from https://github.com/ocaml/opam-depext/issues/10#issuecomment-93882764
+    depext=$(OPAMBUILDTEST=1 opam depext -ls $pkg --no-sources)
+    OPAMBUILDTEST=1 opam depext $pkg
+    echo
+    echo "====== Installing dependencies ======"
+    opam install --deps-only $pkg
     echo
     echo "====== Installing package ======"
-    opam install $pkg
+    opam install -t -v $pkg
     opam remove -a ${pkg%%.*}
     if [ "$depext" != "" ]; then
       case $TRAVIS_OS_NAME in
@@ -128,6 +135,34 @@ function build_one {
 }
 
 build_switch
+
+INSTALL_CAMLP4=0
+if [[ $OPAM_SWITCH = "system" ]] ; then
+  for i in $(cat tobuild.txt) ; do
+    if opam install $i --build-test --deps-only --show | grep "\<camlp4\>" > /dev/null 2>&1 ; then
+      INSTALL_CAMLP4=1
+      break
+    fi
+  done
+fi
+
+if [[ $INSTALL_CAMLP4 -eq 1 ]] ; then
+  case $BUILD_OCAML_VERSION in
+    4.02)
+      CAMLP4_RELEASE=7
+      ;;
+    *)
+      CAMLP4_RELEASE=1
+      ;;
+  esac
+  opam install ocamlbuild
+  opam source camlp4.$BUILD_OCAML_VERSION+$CAMLP4_RELEASE
+  cd camlp4*
+  ./configure --bindir=/usr/local/bin --libdir=/usr/local/lib/ocaml
+  make all
+  sudo make install
+  cd ..
+fi
 
 for i in `cat tobuild.txt`; do
   build_one $i

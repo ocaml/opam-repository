@@ -1,0 +1,39 @@
+query the opam package build status
+
+The opam-ci tool provides an interface to the opam 2.0 continuous
+integration cluster, which regularly rebuilds the package repository
+across a variety of OCaml compiler versions, operating system
+distributions and CPU architectures. These builds are done regularly in
+remote infrastructure and the results are pushed to a metadata
+repository where they are fetched by this command to give you a summary
+of the status of your own packages.
+
+The `opam ci status` command shows a dashboard of the build results
+across this matrix. Packages can be filtered by maintainer substrings
+or tag names in the opam package description, so you see only those
+relevant to you.
+
+The `opam ci logs` command will show you the build errors so you can fix
+them. It also generates a Dockerfile of the precise build to reproduce
+the environment locally for you.
+
+To get started, try these commands with the maintainer argument
+replaced with your own information or tags:
+
+```
+# show all the failing MirageOS packages
+opam ci status -m org:mirage | less -R
+
+# show all the packages maintained by anil@recoil.org
+opam ci status -m anil@recoil.org --filter=all | less -R
+
+# show all the packages failing on the latest RC of the OCaml compiler
+opam ci status --filter=variants:rc | less -R
+
+# display all failure logs for the mirage-xen package
+opam ci logs mirage-xen
+```
+
+See the `--help` pages for the subcommands below for more detailed
+information.
+

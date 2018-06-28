@@ -17,9 +17,9 @@ dev-repo: "https://github.com/mirage/ocaml-cohttp.git"
 build: [make "PREFIX=%{prefix}%"]
 install: [make "PREFIX=%{prefix}%" "install"]
 build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {ocaml-version < "4.06.0"}
+  ["ocaml" "setup.ml" "-build"]                      {ocaml-version < "4.06.0"}
+  ["ocaml" "setup.ml" "-test"]                       {ocaml-version < "4.06.0"}
 ]
 build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "cohttp"]
@@ -34,7 +34,7 @@ depends: [
   "sexplib"
   "conduit" {>= "0.11.0" & <"0.16.0"}
   "ppx_fields_conv"
-  "ppx_deriving" {build}
+  "ppx_deriving"
   "ppx_sexp_conv"
   "stringext"
   "base64" {>= "2.0.0"}
@@ -46,6 +46,7 @@ depopts: ["async" "lwt" "js_of_ocaml"]
 conflicts: [
   "async" {< "113.24.00"}
   "lwt" {< "2.5.0"}
+  "lwt" {>= "4.0.0"}
   "js_of_ocaml" {< "2.6"}
   "js_of_ocaml" {>="3.0"}
 ]

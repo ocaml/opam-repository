@@ -1,0 +1,20 @@
+MacOS X `vmnet` NAT networking
+
+MacOS X 10.10 (Yosemite) introduced the somewhat undocumented `vmnet`
+framework.  This exposes virtual network interfaces to userland applications.
+There are a number of advantages of this over previous implementations:
+
+- Unlike [tuntaposx](http://tuntaposx.sourceforge.net/), this is builtin
+  to MacOS X now and so is easier to package up and distribute for end users.
+- `vmnet` uses the XPC sandboxing interfaces and should make it easier to
+  drop a hard dependency on running networking applications as `root`.
+- Most significantly, `vmnet` optionally supports NATing network traffic to the
+  outside world, which was previously unsupported.
+
+These OCaml bindings are constructed against the documentation contained
+in the `<vmnet.h>` header file in Yosemite, and may not be correct due to
+the lack of any other example code.  However, they do suffice to run
+[MirageOS](http://openmirage.org) applications that can connect to the
+outside world.
+
+Note the application must be configured to use DHCP: static IPs are not supported.

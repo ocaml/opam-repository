@@ -1,16 +1,24 @@
 opam-version: "1.2"
 maintainer: "https://github.com/ocaml/opam-repository/issues"
+authors: [ "Yoriyuki Yamagata" ]
+license: "LGPL-3.0 with OCaml linking exception"
 homepage: "https://github.com/yoriyuki/ucorelib"
+bug-reports: "https://github.com/yoriyuki/ucorelib/issues"
+dev-repo: "https://github.com/yoriyuki/ucorelib.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+install: ["ocaml" "setup.ml" "-install"]
 remove: [["ocamlfind" "remove" "ucorelib"]]
 depends: [
   "ocamlfind"
   "ounit"
-  "ocamlbuild" {build}
+  "ocamlbuild" {build & test}
 ]
-available: [ ocaml-version >= "4.00.0" ]
-dev-repo: "git://github.com/yoriyuki/ucorelib"
-install: ["ocaml" "setup.ml" "-install"]
+available: [ ocaml-version >= "4.00.0" & ocaml-version < "4.06.0" ]
