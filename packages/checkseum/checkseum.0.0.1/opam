@@ -1,0 +1,40 @@
+opam-version: "2.0"
+name:         "checkseum"
+maintainer:   [ "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+authors:      [ "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+homepage:     "https://github.com/dinosaure/checkseum"
+bug-reports:  "https://github.com/dinosaure/checkseum/issues"
+dev-repo: "git+https://github.com/dinosaure/checkseum.git"
+doc:          "https://dinosaure.github.io/checkseum/"
+license:      "MIT"
+
+build: [ "jbuilder" "build" "-p" name "-j" jobs ]
+
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "jbuilder" {build}
+  "optint"
+  "base-bytes"
+]
+synopsis: "Checkseum"
+description: """
+=========
+
+Chekseum is a library which implements ADLER-32 and CRC32C Cyclic Redundancy
+Check. It provides 2 implementation, the first in C and the second in OCaml. The
+library is on top of [`optint`](https://github.com/dinosaure/optint.git) to get
+the best representation of the CRC in the OCaml world.
+
+Then, as [`digestif`](https://github.com/mirage/digestif.git), `checkseum` uses
+the linking trick. So if you want to use `checkseum` in a library, you can link
+with the `checkseum` package which _does not_ provide an implementation. Then,
+end-user can choose between the C implementation or the OCaml implementation
+(both work on Mirage).
+
+Of course, you can link directly to `checkseum.c` or `checkseum.ocaml` if you
+want directly to make an executable."""
+url {
+  src:
+    "https://github.com/dinosaure/checkseum/releases/download/v0.0.1/checkseum-0.0.1.tbz"
+  checksum: "md5=e4f52dccb0b65d199bd4fe1b19f03ca9"
+}
