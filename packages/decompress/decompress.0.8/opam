@@ -1,0 +1,114 @@
+opam-version: "2.0"
+name:         "decompress"
+maintainer:   "Romain Calascibetta <romain.calascibetta@gmail.com>"
+authors:      "Romain Calascibetta <romain.calascibetta@gmail.com>"
+homepage:     "https://github.com/mirage/decompress"
+bug-reports:  "https://github.com/mirage/decompress/issues"
+dev-repo: "git+https://github.com/mirage/decompress.git"
+doc:          "https://mirage.github.io/decompress/"
+license:      "MIT"
+
+build: [
+  [
+    "jbuilder"
+    "build"
+    "--only-packages"
+    name
+    "--root"
+    "."
+    "-j"
+    jobs
+    "@install"
+  ]
+  [
+    "jbuilder"
+    "build"
+    "--only-packages"
+    name
+    "--root"
+    "."
+    "-j"
+    jobs
+    "@runtest"
+  ] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "jbuilder" {build}
+  "base-bytes"
+  "optint"
+  "checkseum"
+  "camlzip" {with-test & >= "1.07"}
+  "re" {with-test & >= "1.7.2"}
+  "alcotest" {with-test}
+  "cmdliner"
+]
+synopsis: "Pure OCaml implementation of Zlib"
+description: """
+[![Build Status](https://travis-ci.org/mirage/decompress.svg?branch=master)](https://travis-ci.org/mirage/decompress)
+![MirageOS](https://img.shields.io/badge/MirageOS-%F0%9F%90%AB-red.svg)
+
+Decompress is a pure implementation of `zlib`. The goal is to create an
+available package for Mirage OS for `zlib` in OCaml (instead a C code).
+
+We respect the interface of `zlib` and all flush mode is available
+(experimental):
+
+- `SYNC_FLUSH`
+- `PARTIAL_FLUSH`
+- `FULL_FLUSH`
+
+The interface proposed is a non-blocking interface.
+
+
+Documentation: https://mirage.github.io/decompress/api.docdir/
+
+
+## Installation
+
+Decompress can be installed with `opam`:
+
+    opam install decompress
+
+## Sample programs
+
+Sample program are located in the `bin` directory of the distribution. It can be
+built with (dependancy with Unix module, the `cmdliner` package and a C code):
+
+    ocamlbuild -use-ocamlfind bin/dpipe.native
+
+Another good example is provided in `bin/easy.ml` with the signature:
+
+```ocaml
+val compress   : ?level:int -> string -> string
+val uncompress : string -> string
+```
+
+And you can compile this program with:
+
+    ocamlbuild -use-ocamlfind bin/easy.native
+
+But keep in your mind, it's an easy example and it's not optimized for a
+productive environment - so, don't copy/paste and think.
+
+The documentation is
+available [online](https://mirage.github.io/decompress/api.docdir/) to
+understand how to use Decompress.
+
+## Build Requirements
+
+ * OCaml >= 4.03.0
+ * `base-bytes` meta-package
+ * Bigarray module (provided by the standard library of OCaml)
+ * `topkg`, `ocamlfind` and `ocamlbuild` to build the project
+
+If you want to compile the test program, you need:
+
+ * `camlzip` to compare `decompress` with `zlib`
+ * `re.1.7.1`
+ * `alcotest`"""
+url {
+  src:
+    "https://github.com/mirage/decompress/releases/download/v0.8/decompress-0.8.tbz"
+  checksum: "md5=547eaf0803af3ed01ff7801facfe27e6"
+}
