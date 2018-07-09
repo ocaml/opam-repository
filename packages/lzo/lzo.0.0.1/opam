@@ -1,18 +1,35 @@
 opam-version: "1.2"
 maintainer: "ygrek@autistici.org"
-homepage: "http://lzo.forge.ocamlcore.org/"
-doc: ["http://lzo.forge.ocamlcore.org/api/index.html"]
+authors: "ygrek"
+homepage: "http://ygrek.org.ua/p/ocaml-lzo/"
+doc: ["http://ygrek.org.ua/p/ocaml-lzo/api/index.html"]
+bug-reports: "https://github.com/ygrek/ocaml-lzo/issues"
+dev-repo: "git://github.com/ygrek/ocaml-lzo.git"
+tags: ["org:ygrek"]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
+install: [
+  ["ocaml" "setup.ml" "-install"]
+]
+build-doc: [
+  ["ocaml" "setup.ml" "-doc"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-test"]
+]
 remove: [["ocamlfind" "remove" "lzo"]]
 depends: [
-  "ocamlfind"
+  "ocamlfind" {build}
   "ocamlbuild" {build}
+  "base-bytes"
 ]
 depexts: [
   [["debian"] ["liblzo2-dev"]]
   [["ubuntu"] ["liblzo2-dev"]]
+  [["homebrew"] ["lzo"]]
+  [["alpine"] ["lzo-dev"]]
+  [["centos"] ["lzo-devel"]]
 ]
-install: ["ocaml" "setup.ml" "-install"]
+available: [ ocaml-version < "4.06.0" ]
