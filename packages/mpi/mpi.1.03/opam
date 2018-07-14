@@ -1,0 +1,24 @@
+opam-version: "1.2"
+version: "1.03"
+maintainer: "Timothy Bourke <tim@tbrk.org>"
+authors: ["Xavier Leroy"]
+homepage: "https://github.com/xavierleroy/ocamlmpi"
+bug-reports: "https://github.com/xavierleroy/ocamlmpi/issues"
+dev-repo: "git://github.com/xavierleroy/ocamlmpi"
+license: "LGPL-2 with OCaml linking exception"
+build: [
+  [make "all" "opt"
+    "MPIINCDIR=%{conf-mpi:includedir}%"
+    "MPILIBDIR=%{conf-mpi:libdir}%"
+    "MPICC=%{conf-mpi:binpath}%mpicc"
+    "MPIRUN=%{conf-mpi:binpath}%mpirun"
+  ]
+]
+patches: ["post103.patch"]
+install: [[make "install"]]
+remove: [[make "uninstall"]]
+depends: [
+    "conf-mpi"
+    "ocamlfind" {build}
+]
+available: [ ocaml-version >= "4.02.3" ]
