@@ -1,0 +1,25 @@
+opam-version: "1.2"
+maintainer: "kakadu.hafanana@gmail.com"
+homepage: "https://github.com/Kakadu/QOcamlBrowser_quick/"
+bug-reports: "https://github.com/Kakadu/QOcamlBrowser_quick/issues"
+authors: "Kakadu"
+dev-repo: "git://github.com/Kakadu/QOcamlBrowser_quick"
+
+build: [
+  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH ./configure"] {os != "darwin" }
+  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make"]        {os != "darwin" }
+
+  ["sh" "-exc" "PATH=/usr/local/opt/qt/bin:$PATH ./configure"]               {os  = "darwin" }
+  ["sh" "-exc" "PATH=/usr/local/opt/qt/bin:$PATH make"]                      {os  = "darwin" }
+]
+install: [make "install" "PREFIX=%{prefix}%"]
+remove: [
+  [make "uninstall"]
+]
+depends: [
+  "lablqml" {>= "0.5.1"}
+  "conf-qt" {>= "5.2.1"}
+  "ocamlbuild" {build}
+]
+available: (ocaml-version >= "4.07.0")
+
