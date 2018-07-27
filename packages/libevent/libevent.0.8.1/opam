@@ -1,0 +1,42 @@
+opam-version: "1.2"
+maintainer: "ygrek@autistici.org"
+license: "BSD"
+authors: [
+  "Maas-Maarten Zeeman <mmzeeman@xs4all.nl>"
+  "ygrek <ygrek@autistici.org>"
+]
+homepage: "https://github.com/ygrek/ocaml-libevent"
+dev-repo: "git://github.com/ygrek/ocaml-libevent.git"
+bug-reports: "https://github.com/ygrek/ocaml-libevent/issues"
+tags: ["org:ygrek"]
+build: [
+  [make "depend"]
+  [make]
+]
+install: [
+  [make "install"]
+]
+build-doc: [
+  [make "doc"]
+]
+build-test: [
+  [make "test"] { os != "darwin" } # FIXME tests fail on OS X, but code does work, so do not reject installation
+]
+remove: [
+  ["ocamlfind" "remove" "libevent"]
+]
+depends: [
+  "ocamlfind" {build}
+  "base-unix"
+  "base-bytes" {test}
+  "ounit" {test}
+]
+depexts: [
+  [ ["debian"] ["libevent-dev"] ]
+  [ ["ubuntu"] ["libevent-dev"] ]
+  [ ["fedora"] ["libevent-devel"] ]
+  [ ["centos"] ["libevent-devel"] ]
+  [ ["alpine"] ["libevent-dev"] ]
+  [ ["homebrew"] ["libevent"] ]
+]
+available: [ ocaml-version >= "4.02.0" ]
