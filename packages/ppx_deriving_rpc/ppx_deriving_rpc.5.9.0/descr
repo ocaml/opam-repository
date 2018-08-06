@@ -1,0 +1,22 @@
+ppx extension for rpclib
+
+The library provides the `[@@deriving rpc]` ppx directly
+generates the conversion functions.
+
+```ocaml
+type t = ... [@@deriving rpc]
+```
+
+will give two functions:
+
+* A function to convert values of type `t` to values of type `Rpc.t` :
+  `val rpc_of_t : t -> Rpc.t`
+
+* A function to convert values of type `Rpc.t` to values of type `t` :
+  `val t_of_rpc : Rpc.t -> (t,string) Result.result`
+
+It also supports the `@key` annotations for having different field names:
+
+```ocaml
+type t = { foo: int [@key "type"]; bar: int [@key "let"]; } [@@deriving rpc]
+```
