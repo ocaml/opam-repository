@@ -32,6 +32,21 @@ else
   fi
 fi
 
+if [ "$TRAVIS_BRANCH" = "2.0.0" ]; then
+  echo Building opam 2.0.0
+  cd $TRAVIS_BUILD_DIR
+  git clone --depth=1 -b 2.0.0-rc https://github.com/ocaml/opam.git
+  cd opam
+  ./configure --prefix=/usr/local
+  make lib-ext
+  make
+  sudo make install
+  cd ..
+  NO_SOURCES_ARG=
+else
+  NO_SOURCES_ARG=--no-sources
+fi
+
 echo OCaml version
 ocaml -version
 echo OPAM versions
@@ -107,7 +122,7 @@ function build_one {
     echo
     echo "====== External dependency handling ======"
     opam install depext
-    depext=$(opam depext -ls $pkg --no-sources)
+    depext=$(opam depext -ls $pkg $NO_SOURCES_ARG)
     opam depext $pkg
     echo
     echo "====== Installing dependencies ======"
