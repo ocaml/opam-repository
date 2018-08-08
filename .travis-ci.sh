@@ -105,7 +105,11 @@ opam --version
 opam --git-version
 
 for i in `cat tobuild.txt`; do
-  build_one $i
+    name=$(echo $i | cut -f1 -d".")
+    case $name in
+        ocaml|ocaml-base-compiler) ;;
+        *) build_one $i
+    esac
 done
 
 kill $PING_LOOP_PID
