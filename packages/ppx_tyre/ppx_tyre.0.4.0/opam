@@ -1,0 +1,53 @@
+opam-version: "2.0"
+maintainer: "Petter A. Urkedal <paurkedal@gmail.com>"
+authors: [
+  "Gabriel Radanne <drupyog@zoho.com>"
+  "Petter A. Urkedal <paurkedal@gmail.com>"
+]
+homepage: "https://github.com/paurkedal/ppx_regexp"
+bug-reports: "https://github.com/paurkedal/ppx_regexp/issues"
+dev-repo: "git+https://github.com/paurkedal/ppx_regexp.git"
+license: "LGPL-3 with OCaml linking exception"
+build: ["dune" "build" "-p" name "-j" jobs]
+depends: [
+  "ocaml" {>= "4.06.0"}
+  "dune" {build}
+  "ocaml-migrate-parsetree"
+  "re" {>= "1.7.1"}
+  "ppx_tools_versioned"
+  "tyre" {>= "0.4.1"}
+  "qcheck" {with-test}
+]
+synopsis: "PPX syntax for tyre regular expressions and routes"
+description: """
+This PPX compiles
+
+    [%tyre {|re|}]
+
+into `'a Tyre.t` and
+
+    function%tyre
+    | {|re1|} as x1 -> e1
+    ...
+    | {|reN|} as x2 -> eN
+
+into `'a Type.route`, where `re`, `re1`, ... are regular expressions
+expressed in a slightly extended subset of PCRE.  The interpretations are:
+
+- `re?` extracts an option of what `re` extracts.
+- `re+`, `re*`, `re{n,m}` extracts a list of what `re` extracts.
+- `(?@qname)` refers to any identifier bound to a typed regular expression
+  of type `'a Tyre.t`.
+- One or more `(?<v>re)` at the top level can be used to bind variables
+  instead of `as ...`.
+- One or more `(?<v>re)` in a sequence extracts an object where each method
+  `v` is bound to what `re` extracts.
+- An alternative with one `(?<v>re)` per branch extracts a polymorphic
+  variant where each constructor `` `v`` receives what `re` extracts as its
+  argument.
+- `(?&v:qname)` is a shortcut for `(?<v>(?&qname))`."""
+url {
+  src:
+    "https://github.com/paurkedal/ppx_regexp/releases/download/v0.4.0/ppx_regexp-0.4.0.tbz"
+  checksum: "md5=44691d6e1c6c02300329a4eb769922ab"
+}
