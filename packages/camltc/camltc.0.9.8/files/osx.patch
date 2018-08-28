@@ -1,0 +1,31 @@
+diff --git a/src/dune b/src/dune
+index be85e03..05d61a4 100644
+--- a/src/dune
++++ b/src/dune
+@@ -9,6 +9,7 @@
+  (flags -w -27)
+  (c_names otc_wrapper)
+  (c_flags -O2 -I 3rd-party/tokyocabinet)
++ (modes native)
+ )
+ 
+ (library
+@@ -16,15 +17,15 @@
+  (public_name camltc.tc)
+  (self_build_stubs_archive (tc))
+  (modules)
++ (modes native)
+ )
+ 
+ (rule
+- (targets libtc_stubs.a dlltc_stubs.so)
++ (targets libtc_stubs.a)
+  (action
+   (bash "
+    (../../../src/3rd-party/tokyocabinet/configure --disable-bzip --disable-zlib
+-   make libtokyocabinet.so libtokyocabinet.a -j $(nproc)) > /dev/null 2>&1
+-   cp libtokyocabinet.so dlltc_stubs.so
++   make libtokyocabinet.a) > /dev/null 2>&1
+    cp libtokyocabinet.a libtc_stubs.a ")
+  )
+ )
