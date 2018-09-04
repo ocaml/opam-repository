@@ -1,0 +1,23 @@
+opam-version: "1.2"
+authors: ["Christophe Troestler <Christophe.Troestler@umons.ac.be>"]
+maintainer: "Christophe.Troestler@umons.ac.be"
+license: "LGPL-2.1 with OCaml linking exception"
+homepage: "https://github.com/Chris00/fftw-ocaml"
+dev-repo: "https://github.com/Chris00/fftw-ocaml.git"
+bug-reports: "https://github.com/Chris00/fftw-ocaml/issues"
+doc: "https://Chris00.github.io/fftw-ocaml/doc"
+tags: ["FFT"]
+build: [
+  [ "dune" "subst" ] {pinned}
+  [ "dune" "build" "-p" name "-j" jobs ] { os != "darwin" }
+  [ "env" "FFTW3_CFLAGS=-I /usr/local/include -L /usr/local/lib -I /usr/local/include -L /usr/local/lib"
+    "dune" "build" "-p" name "-j" jobs ] { os = "darwin" }
+]
+build-test: [[ "dune" "runtest" "-p" name "-j" jobs ]]
+depends: [
+  "dune" {build}
+  "cppo"     {build}
+  "lacaml" {test}
+  "conf-fftw3"
+]
+available: [ ocaml-version >= "4.03.0" ]
