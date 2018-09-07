@@ -1,29 +1,38 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Markus Mottl <markus.mottl@gmail.com>"
 authors: [ "Markus Mottl <markus.mottl@gmail.com>" ]
 license: "LGPL-2.1+ with OCaml linking exception"
 homepage: "http://mmottl.github.io/pcre-ocaml"
-dev-repo: "https://github.com/mmottl/pcre-ocaml.git"
+dev-repo: "git+https://github.com/mmottl/pcre-ocaml.git"
 bug-reports: "https://github.com/mmottl/pcre-ocaml/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "pcre"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "3.12"}
   "base-bytes"
   "ocamlfind" {build & >= "1.5"}
   "ocamlbuild" {build & != "0.9.0"}
-  # Included from _opam file
   "conf-libpcre"
 ]
-available: [ ocaml-version >= "3.12" ]
+synopsis:
+  "pcre-ocaml - bindings to the Perl Compatibility Regular Expressions library"
+description: """
+pcre-ocaml offers library functions for string pattern matching and
+substitution, similar to the functionality offered by the Perl
+language."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/mmottl/pcre-ocaml/releases/download/v7.2.2/pcre-ocaml-7.2.2.tar.gz"
+  checksum: "md5=16893ec8ade0cbfe400e367f4b33691d"
+}

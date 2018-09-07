@@ -1,31 +1,39 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 homepage: "http://hyegar.com"
 bug-reports: "https://github.com/fxfactorial/ocaml-brotli/issues"
 license: "BSD-3-clause"
 tags: ["clib:stdc" "clib:brotli"]
-dev-repo: "https://github.com/fxfactorial/ocaml-brotli.git"
+dev-repo: "git+https://github.com/fxfactorial/ocaml-brotli.git"
 build: [
   ["oasis" "setup" "-setup-update" "dynamic"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "brotli"]
 depends: [
+  "ocaml" {>= "4.04.0"}
   "oasis" {build}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "conf-brotli"
 ]
-available: [ocaml-version >= "4.04.0"]
 post-messages: [
   "Be sure to have libbrotli installed on your machine" {failure}
 ]
+synopsis: "Bindings to Google's Brotli compresion algorithm"
+description: """
+OCaml Bindings to brotli, Google's compression algorithm for the web
+Source: https://github.com/google/brotli/ RFC:
+http://www.ietf.org/id/draft-alakuijala-brotli"""
+flags: light-uninstall
+url {
+  src: "https://github.com/fxfactorial/ocaml-brotli/archive/v2.0.0.tar.gz"
+  checksum: "md5=cbb3f3a3c0e70c818233f014a7902ce9"
+}

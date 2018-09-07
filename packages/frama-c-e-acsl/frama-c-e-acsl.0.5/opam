@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "frama-c-e-acsl"
 version: "0.5"
 maintainer: "julien.signoles@cea.fr"
@@ -23,11 +23,11 @@ tags: [
 ]
 
 build: [
-  ["ocaml" "run_autoconf_if_needed.ml"] #when used in pinned mode the configure *can* not yet be generated
+  ["ocaml" "run_autoconf_if_needed.ml"]
   ["./configure" "--prefix" prefix]
   [make]
+  ["cp" "doc/manuals/*.pdf" "%{frama-c:doc}%/e-acsl/"] {with-doc}
 ]
-
 install: [
   [make "install"]
 ]
@@ -39,13 +39,25 @@ remove: [
   ["rm" "-rf" "%{frama-c:doc}%/e-acsl"]
 ]
 
-build-doc: [
-   ["cp" "doc/manuals/*.pdf" "%{frama-c:doc}%/e-acsl/"]
-]
-
 depends: [
-  "frama-c-base" { >= "20150201" }
+  "ocaml" {>= "3.12" & != "4.02.0"}
+  "frama-c-base" {>= "20150201"}
   "conf-autoconf"
 ]
+synopsis: "This package contains the Frama-C's E-ACSL plug-in."
+description: """
+It takes as input an annotated C program and returns the same program
+in which annotations have been converted into C code dedicated to
+runtime assertion checking: this code fails at runtime if the
+annotation is violated at runtime.
 
-available: [ ocaml-version >= "3.12" & ocaml-version != "4.02.0" ]
+Annotations must be written in a subset of ACSL (ANSI/ISO C Specification
+Language), namely E-ACSL (Executable ANSI/ISO C Specification Language). E-ACSL
+is fully described at http://frama-c.com/download/e-acsl/e-acsl.pdf"""
+extra-files: [
+  "run_autoconf_if_needed.ml" "md5=6192daae7005ccd617892e2eec1f14c9"
+]
+url {
+  src: "http://frama-c.com/download/e-acsl/e-acsl-0.5.tar.gz"
+  checksum: "md5=73842963dfa22548a571c5ccca757bc9"
+}

@@ -1,26 +1,34 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Thomas Gazagnaire <thomas@gazagnaire.org>"
 authors: "Thomas Gazagnaire <thomas@gazagnaire.org>"
 homepage: "https://github.com/mirage/mirage-flow"
 bug-reports: "https://github.com/mirage/mirage-flow/issues/"
 license: "ISC"
-dev-repo: "https://github.com/mirage/mirage-flow.git"
+dev-repo: "git+https://github.com/mirage/mirage-flow.git"
 build: [
   ["./configure" "--prefix=%{prefix}%"]
   [make]
-]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "mirage-flow"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "mirage-types-lwt" {< "3.0.0"}
   "cstruct"
   "lwt" {< "2.5.0"}
-  "alcotest" {test & <= "0.3.3"}
-  "ounit" {test}
+  "alcotest" {with-test & <= "0.3.3"}
+  "ounit" {with-test}
   "ocamlbuild" {build}
 ]
+synopsis: "Various implementations of the MirageOS FLOW interface"
+description: """
+- `Fflow` uses input/output functions to build a flow
+- `Lwt_io_flow` uses `Lwt_io.channel`"""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/mirage-flow/archive/1.0.1.tar.gz"
+  checksum: "md5=24c64a03663b29bb29e7fe97ebd905a1"
+}

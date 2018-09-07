@@ -1,26 +1,28 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors: "Simon Cruanes"
 maintainer: "simon.cruanes.2007@m4x.org"
 build: [
-    ["./configure"
-      "--%{yojson:enable}%-yojson"
-      "--%{bencode:enable}%-bencode"
-      "--%{sexplib:enable}%-sexp"
-      "--%{ppx_deriving:enable}%-ppx"
-      "--disable-tests"
-      "--%{doc:enable}%-docs"
-    ]
-    [make "build"]
+  [
+    "./configure"
+    "--%{yojson:enable}%-yojson"
+    "--%{bencode:enable}%-bencode"
+    "--%{sexplib:enable}%-sexp"
+    "--%{ppx_deriving:enable}%-ppx"
+    "--disable-tests"
+    "--%{doc:enable}%-docs"
+  ]
+  [make "build"]
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
 ]
 install: [
     [make "install"]
 ]
-build-doc: [ make "doc" ]
-build-test: [ make "test" ]
 remove: [
     ["ocamlfind" "remove" "cconv"]
 ]
 depends: [
+  "ocaml" {>= "3.12"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
@@ -33,12 +35,24 @@ depopts: [
 tags: ["conversion" "gadt" "serialization"]
 homepage: "https://github.com/c-cube/cconv/"
 doc: "http://cedeela.fr/~simon/software/cconv/"
-available: [
-    ocaml-version >= "3.12"
-]
 conflicts: [
   "ppx_deriving" { < "2.0" }
   "ppx_deriving" { >= "3.3" }
 ]
-dev-repo: "https://github.com/c-cube/cconv.git"
+dev-repo: "git+https://github.com/c-cube/cconv.git"
 bug-reports: "https://github.com/c-cube/cconv/issues/"
+synopsis:
+  "Combinators for Type Conversion in OCaml, and ppx_deriving plugin."
+description: """
+CConv provides type-safe combinators for describing how to read/build OCaml
+values of a given type. Those combinators can be used for serializing and
+deserializing the values into several formats. The library ships with
+conversion to Json (yojson), S-expressions (sexplib) and B-encode.
+
+The library cconv.ppx contains a ppx_deriving plugin for automatically derive
+encoders and decoders."""
+flags: light-uninstall
+url {
+  src: "https://github.com/c-cube/cconv/archive/0.3.tar.gz"
+  checksum: "md5=c910c8752abe6f12b5755c5fd814b055"
+}

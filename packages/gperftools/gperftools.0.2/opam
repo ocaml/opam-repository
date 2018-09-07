@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "ygrek@autistici.org"
 authors: "ygrek"
 homepage: "http://ygrek.org.ua/p/ocaml-gperftools/"
@@ -9,18 +9,27 @@ tags: ["org:ygrek"]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "gperftools"]]
 depends: [
+  "ocaml" {< "4.06.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["libgoogle-perftools-dev"]]
-  [["ubuntu"] ["libgoogle-perftools-dev"]]
-  [["homebrew"] ["gperftools"]]
-  [["centos"] ["gperftools-devel"]]
+  ["libgoogle-perftools-dev"] {os-distribution = "debian"}
+  ["libgoogle-perftools-dev"] {os-distribution = "ubuntu"}
+  ["gperftools"] {os-distribution = "homebrew"}
+  ["gperftools-devel"] {os-distribution = "centos"}
 ]
-available: [ ocaml-version < "4.06.0" ]
+synopsis: "Bindings to gperftools"
+description:
+  "gperftools library provides fast, multi-threaded malloc() and some nifty performance analysis tools"
+flags: light-uninstall
+url {
+  src:
+    "http://ygrek.org.ua/p/release/ocaml-gperftools/ocaml-gperftools-0.2.tar.gz"
+  checksum: "md5=e75a8aea7407037bcd26597d49e995a1"
+}

@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors: [ "David Scott" "John Else" ]
 homepage: "https://github.com/xapi-project/ocaml-crc"
 bug-reports: "https://github.com/xapi-project/ocaml-crc/issues"
@@ -7,10 +7,8 @@ maintainer: "john.else@citrix.com"
 build: [
   ["ocaml" "setup.ml" "-configure" "--%{mirage-xen:enable}%-xen"]
   [make]
-]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--%{ounit:enable}%-tests"]
-  [make "test"]
+  ["ocaml" "setup.ml" "-configure" "--%{ounit:enable}%-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [
   [make "PREFIX=%{prefix}%" "install"]
@@ -19,8 +17,9 @@ remove: [
   [make "PREFIX=%{prefix}%" "uninstall"]
 ]
 depends: [
+  "ocaml" {>= "4.00.1"}
   "cstruct" {>= "1.0.1"}
-  "ounit" {test}
+  "ounit" {with-test}
   "oasis" {build}
   "ocamlbuild" {build}
   "ocamlfind" {build}
@@ -28,4 +27,8 @@ depends: [
 depopts: [
   "mirage-xen"
 ]
-available: [ ocaml-version >= "4.00.1"]
+synopsis: "CRC implementation supporting strings and cstructs"
+url {
+  src: "https://github.com/xapi-project/ocaml-crc/archive/1.0.0.tar.gz"
+  checksum: "md5=09051d7cd0a4dd935d379a1584777e07"
+}

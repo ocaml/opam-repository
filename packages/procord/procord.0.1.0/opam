@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "romain.bardou@inria.fr"
 authors: ["Romain Bardou <romain.bardou@inria.fr>"]
 
@@ -9,7 +9,20 @@ bug-reports: "https://github.com/cryptosense/procord/issues"
 build: make
 remove: [["ocamlfind" "remove" "procord"]]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
 install: [make "install"]
+synopsis: "Procord: a portable library to delegate tasks to other processes."
+description: """
+Procord can spawn local worker processes or communicate using sockets to a remote worker server. Workers will receive an input, execute a function on this input, and send back the result. Meanwhile, the main program can continue to run while waiting for the results.
+
+Not relying on threads, Procord is robust - a segmentation fault in the worker will not kill the main program. Not relying on fork, Procord is portable - it has been tested on Linux and Windows.
+
+Procord provides an easy way to have the same executable act as a worker - local or remote - or as the main program. The actual behavior can be specified on the command-line. The default is to run as the main program, which delegates tasks by running itself."""
+flags: light-uninstall
+url {
+  src: "https://github.com/cryptosense/procord/archive/v0.1.0.tar.gz"
+  checksum: "md5=0bac84fcde156b894d9929632ebddec0"
+}

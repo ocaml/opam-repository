@@ -1,17 +1,26 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Ralf Vogler <ralf.vogler@gmail.com>"
 authors: "Ralf Vogler <ralf.vogler@gmail.com>"
 homepage: "https://github.com/vogler/ppx_distr_guards"
 bug-reports: "https://github.com/vogler/ppx_distr_guards/issues"
 license: "MIT"
-dev-repo: "https://github.com/vogler/ppx_distr_guards.git"
+dev-repo: "git+https://github.com/vogler/ppx_distr_guards.git"
 substs: "META"
 build: [make]
 install: ["ocamlfind" "install" name "META" "ppx_distr_guards.native"]
 remove: ["ocamlfind" "remove" name]
 depends: [
+  "ocaml" {>= "4.02.1"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "ppx_tools" {test}
+  "ppx_tools" {with-test}
 ]
-available: [ocaml-version >= "4.02.1" & opam-version >= "1.2"]
+available: opam-version >= "1.2"
+synopsis: "Extension to distribute guards over or-patterns."
+description:
+  "`function%distr A x, _ | _, A x when p x -> e` will result in `function A x, _ when p x -> e | _, A x when p x -> e`"
+flags: light-uninstall
+url {
+  src: "https://github.com/vogler/ppx_distr_guards/archive/v0.1.tar.gz"
+  checksum: "md5=0c4ce5c0fdc7977ebedc0cd837678ec2"
+}

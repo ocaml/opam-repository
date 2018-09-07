@@ -1,0 +1,35 @@
+opam-version: "2.0"
+synopsis: "Official 3.12.0 release"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "3.12.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  ["./configure" "-prefix" prefix "-cc" "cc" "-aspp" "cc -c"]
+    {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world"]
+  [make "world.opt"]
+]
+install: [
+  [make "install"]
+  ["mkdir" "-p" "%{prefix}%/lib/ocaml/compiler-libs"]
+  ["cp" "-r" "typing" "parsing" "utils" "%{prefix}%/lib/ocaml/compiler-libs/"]
+]
+patches: "file_download.php?file_id=418&type=bug"
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-3.12/ocaml-3.12.0.tar.gz"
+  checksum: "md5=3ba7cc65123c3579f14e7c726d3ee782"
+}
+extra-source "file_download.php?file_id=418&type=bug" {
+  src: "http://caml.inria.fr/mantis/file_download.php?file_id=418&type=bug"
+  checksum: "md5=8c664a0a346424ea2ec6fc6f713170c6"
+}

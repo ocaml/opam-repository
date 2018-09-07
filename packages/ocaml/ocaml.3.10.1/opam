@@ -1,0 +1,19 @@
+opam-version: "2.0"
+synopsis: "The OCaml compiler (virtual package)"
+description: """
+This package requires a matching implementation of OCaml,
+and polls it to initialise specific variables like `ocaml:native-dynlink`"""
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml-base-compiler" {= "3.10.1"} |
+  "ocaml-variants" {>= "3.10.1" & < "3.10.2~"} |
+  "ocaml-system" {= "3.10.1"}
+]
+setenv: [
+  [CAML_LD_LIBRARY_PATH = "%{_:stubsdir}%"]
+  [CAML_LD_LIBRARY_PATH += "%{lib}%/stublibs"]
+  [OCAML_TOPLEVEL_PATH = "%{toplevel}%"]
+]
+build: ["ocaml" "unix.cma" "gen_ocaml_config.ml"]
+substs: "gen_ocaml_config.ml"
+build-env: CAML_LD_LIBRARY_PATH = ""

@@ -1,27 +1,32 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Jochen Bartl <jochenbartl@mailbox.org>"
 authors: [ "Jochen Bartl <jochenbartl@mailbox.org>" ]
 license: "BSD2"
 homepage: "https://github.com/verbosemode/syslog-message"
-dev-repo: "https://github.com/verbosemode/syslog-message.git"
+dev-repo: "git+https://github.com/verbosemode/syslog-message.git"
 bug-reports: "https://github.com/verbosemode/syslog-message/issues"
 doc: "https://verbosemode.github.io/syslog-message/doc"
 
 build: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" ]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ]
-  [ "ocaml" "pkg/pkg.ml" "test" ]
-]
-
 depends: [
+  "ocaml" {>= "4.02.3"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
   "astring"
   "ptime"
-  "qcheck" {test}
+  "qcheck" {with-test}
 ]
-available: [ ocaml-version >= "4.02.3" ]
+synopsis: "Syslog message parser"
+description:
+  "This is a library for parsing and generating RFC 3164 compatible Syslog messages."
+url {
+  src:
+    "https://github.com/verbosemode/syslog-message/releases/download/0.0.2/syslog-message-0.0.2.tbz"
+  checksum: "md5=0894adad6e936975d5aaf7ed32ec2908"
+}

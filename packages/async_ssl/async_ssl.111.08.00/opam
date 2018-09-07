@@ -1,8 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "opensource@janestreet.com"
 build: make
 remove: [["ocamlfind" "remove" "async_ssl"]]
 depends: [
+  "ocaml" {>= "4.00.0"}
   "camlp4"
   "async" {>= "111.03.00" & <= "111.17.00"}
   "herelib" {>= "109.35.00" & <= "109.35.02"}
@@ -14,9 +15,18 @@ depends: [
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["libssl-dev"]]
-  [["ubuntu"] ["libssl-dev"]]
-  [["centos"] ["openssl-devel"]]
+  ["libssl-dev"] {os-distribution = "debian"}
+  ["libssl-dev"] {os-distribution = "ubuntu"}
+  ["openssl-devel"] {os-distribution = "centos"}
 ]
-available: ocaml-version >= "4.00.0"
 install: [make "install"]
+synopsis: "An Async-pipe-based interface with OpenSSL."
+description: """
+This library allows you to create an SSL client and server, with
+encrypted communication between both."""
+flags: light-uninstall
+url {
+  src:
+    "https://ocaml.janestreet.com/ocaml-core/111.08.00/individual/async_ssl-111.08.00.tar.gz"
+  checksum: "md5=0a4b7aff9237d8aeaf6dd5b470b695f2"
+}

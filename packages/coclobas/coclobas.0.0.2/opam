@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Seb Mondet <seb@mondet.org>"
 authors: "Seb Mondet <seb@mondet.org>"
 homepage: "https://github.com/hammerlab/coclobas"
 bug-reports: "https://github.com/hammerlab/coclobas/issues"
-dev-repo: "https://github.com/hammerlab/coclobas.git"
+dev-repo: "git+https://github.com/hammerlab/coclobas.git"
 license: "Apache 2.0"
 
 build: [
@@ -15,17 +15,18 @@ build: [
 
 
 depends: [
+  "ocaml" {>= "4.03.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "solvuu-build" {build & >= "0.3.0"}
   "nonstd"
   "sosa"
   "pvem_lwt_unix"
-  "cohttp" {>= "0.21.1" & <"0.99"}
+  "cohttp" {>= "0.21.1" & < "0.99"}
   "lwt"
   "trakeva"
   "cmdliner"
-  "ppx_deriving" {<"4.2"}
+  "ppx_deriving" {< "4.2"}
   "ppx_deriving_yojson" {>= "3.0"}
   "uuidm"
   "base64"
@@ -35,6 +36,20 @@ depopts: [
   "ketrew"
 ]
 
-available: [
-  ocaml-version >= "4.03.0"
-]
+synopsis: "Coclobas is a scheduler for HPC-like jobs accessible through HTTP"
+description: """
+It can be setup with three configurations:
+
+- Using Kubernetes and the *Google Container Engine*,
+  i.e. using a Kubernetes “eleastic” cluster setup with `gcloud` and submitting
+  jobs as Kubernetes “pods”.
+- Using the server's machine as a one-node cluster and submitting jobs as docker
+  containers given a maximal number of jobs.
+- Using AWS-Batch, submitting jobs with aws-cli and optionally using
+  S3 bucket to share data (new in 0.0.2, and a bit experimental).
+
+Coclobas is mostly used as a Ketrew plugin, but can be driven separately."""
+url {
+  src: "https://github.com/hammerlab/coclobas/archive/coclobas.0.0.2.tar.gz"
+  checksum: "md5=46ce8c59a482eb4cdf7b3325ce9840a3"
+}

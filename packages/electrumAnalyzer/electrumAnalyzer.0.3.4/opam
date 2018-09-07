@@ -1,27 +1,26 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "david.chemouil+electrum@onera.fr"
 authors: [ "David Chemouil"
            "Julien Brunel"
            "Denis Kuperberg" ]
 license: "GPL-3+"
 homepage: "https://forge.onera.fr/projects/electrum"
-dev-repo: "https://github.com/grayswandyr/electrumAnalyzer.git"
+dev-repo: "git+https://github.com/grayswandyr/electrumAnalyzer.git"
 bug-reports: "https://forge.onera.fr/projects/electrum"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocaml" "%{etc}%/electrumAnalyzer/_oasis_remove_.ml"
     "%{etc}%/electrumAnalyzer"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml" {>= "4.02"}
   "batteries" {build}
   ("cmdliner" {build & = "0.9.7"} | "cmdliner" {build & = "0.9.6"} |
    "cmdliner" {build & = "0.9.5"} |
@@ -33,4 +32,18 @@ depends: [
   "pprint" {build}
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.02" ]
+synopsis: "A tool for the analysis of Electrum formal specifications."
+description: """
+Electrum is a formal specification language based upon relational
+first-order logic (RFOL) and linear temporal logic (LTL), mainly
+inspired by Alloy and TLA+.  Electrum Analyzer is a free-software
+prototype for the analysis of Electrum models: as of now, it proceeds
+by translation into SMV models processable by NuSMV and nuXmv."""
+extra-files: [
+  ["electrumAnalyzer.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src: "https://github.com/grayswandyr/electrumAnalyzer/archive/0.3.4.tar.gz"
+  checksum: "md5=c9b6781a609b198d9d399a41a2b340b3"
+}

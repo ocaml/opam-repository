@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "seb@mondet.org"
 authors: [
   "Ashish Agarwal"
@@ -11,17 +11,21 @@ homepage: "http://biocaml.org"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{flow:enable}%-app"]
   [make "all"]
-]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--%{flow:enable}%-app" "--enable-tests"]
-  [make "test"]
-]
-build-doc: [
-  [make "doc"]
-  [make "install-doc" "DOCDIR=%{doc}%"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{flow:enable}%-app"
+    "--enable-tests"
+  ] {with-test}
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
 ]
 remove: [["ocamlfind" "remove" "biocaml"]]
 depends: [
+  "ocaml"
   "ocamlfind"
   "core" {<= "109.17.00"}
   "sexplib"
@@ -31,4 +35,19 @@ depends: [
   "ocamlbuild" {build}
 ]
 depopts: ["flow"]
-install: [make "install"]
+install: [
+  [make "install"]
+  [make "install-doc" "DOCDIR=%{doc}%"] {with-doc}
+]
+synopsis: "The OCaml Bioinformatics Library"
+description: """
+Biocaml aims to be a high-performance user-friendly library for
+Bioinformatics. See the [website](http://biocaml.org) for detailed API
+documentation. We welcome contributors and feedback from users. Please
+contact us with any comments and suggestions for features you would
+like added."""
+flags: light-uninstall
+url {
+  src: "http://biocaml.org/downloads/biocaml-0.2.0.tgz"
+  checksum: "md5=18d8fe2ff1b843dbb64f28a0c01f2e7c"
+}

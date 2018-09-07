@@ -1,0 +1,30 @@
+opam-version: "2.0"
+synopsis: "BER-N104 MetaOCaml"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.04.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-metaocaml-ocamlfind" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" "%{prefix}%"]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  ["./configure" "-prefix" "%{prefix}%" "-cc" "cc" "-aspp" "cc -c"]
+    {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world"]
+  [make "bootstrap"]
+  [make "world.opt"]
+]
+install: [
+  [make "-i" "install"]
+  [make "-C" "metalib" "all" "install" "install.opt"]
+]
+url {
+  src: "https://github.com/metaocaml/ber-metaocaml/archive/ber-n104.tar.gz"
+  checksum: "md5=e6b1da1b34a207c4995ce7123475a3b6"
+}

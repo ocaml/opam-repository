@@ -1,0 +1,34 @@
+opam-version: "2.0"
+synopsis: "Second release candidate for 4.07.0 with flambda activated"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.07.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix "-with-debug-runtime" "-flambda"]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-flambda"
+    "-cc"
+    "cc"
+    "-aspp"
+    "cc -c"
+  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.07.0+rc2.tar.gz"
+  checksum: "md5=98d3b4cd504ab77c6e0a2dc98e69f3a1"
+}

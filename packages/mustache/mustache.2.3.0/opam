@@ -1,35 +1,38 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "rudi.grinberg@gmail.com"
 authors: ["Rudi Grinberg"]
 license: "MIT"
 
 homepage: "https://github.com/rgrinberg/ocaml-mustache"
 bug-reports: "https://github.com/rgrinberg/ocaml-mustache/issues"
-dev-repo: "https://github.com/rgrinberg/ocaml-mustache.git"
+dev-repo: "git+https://github.com/rgrinberg/ocaml-mustache.git"
 doc: "http://mustache.github.io/mustache.5.html"
 
 build: [
   ["ocaml" "setup.ml" "-configure" "--disable-cli"]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-
 install: ["ocaml" "setup.ml" "-install"]
 
 remove: [
   ["ocamlfind" "remove" "mustache"]
 ]
 
-build-doc: ["ocaml" "setup.ml" "-doc"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "ounit" {test}
+  "ounit" {with-test}
 ]
-
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Mustache logic-less templates in OCaml"
+description:
+  "Read and write mustache templates and render them by providing a json object"
+flags: light-uninstall
+url {
+  src: "https://github.com/rgrinberg/ocaml-mustache/archive/v2.3.0.tar.gz"
+  checksum: "md5=3b79337e0eef9c1325f003c9efb4d568"
+}

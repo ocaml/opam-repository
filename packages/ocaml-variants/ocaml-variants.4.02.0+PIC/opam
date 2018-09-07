@@ -1,0 +1,32 @@
+opam-version: "2.0"
+synopsis: "OCaml 4.02, with -fPIC runtime libs."
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.02.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "-cc"
+    "cc -fPIC"
+    "-aspp"
+    "cc -c -fPIC"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+  ]
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.0.tar.gz"
+  checksum: "md5=8bba7e7d872083af1723dd450e07a5f4"
+}

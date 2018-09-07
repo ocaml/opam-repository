@@ -1,25 +1,33 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      ["Benjamin Farinier" "Thomas Gazagnaire"]
 homepage:     "https://github.com/mirage/merge-ropes"
 bug-reports:  "https://github.com/mirage/merge-ropes/issues"
-dev-repo:     "https://github.com/mirage/merge-ropes.git"
+dev-repo: "git+https://github.com/mirage/merge-ropes.git"
 license:      "ISC"
 
 build: [
   ["./configure" "--prefix" prefix]
   [make]
-]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "merge-ropes"]
 depends: [
+  "ocaml"
   "irmin" {>= "0.9.4" & < "0.10.0"}
   "comparelib"
-  "alcotest" {test}
-  "irmin-unix" {test & < "0.12.0"}
+  "alcotest" {with-test}
+  "irmin-unix" {with-test & < "0.12.0"}
   "ocamlbuild" {build}
 ]
+synopsis: "Mergeable ropes"
+description: """
+The package implements "mergeable" ropes, ie. persistent ropes with a
+fast merge operation."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/merge-ropes/archive/0.2.0.tar.gz"
+  checksum: "md5=5b988734ddb2b22c53318e03a23bced5"
+}

@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "gu.oliver@yahoo.com"
 authors: [ "Oliver Gu <gu.oliver@yahoo.com>" ]
 license: "LGPL-2.1+ with OCaml linking exception"
@@ -6,12 +6,13 @@ homepage: "https://bitbucket.org/ogu/ibx"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 remove: [
   ["ocamlfind" "remove" "ibx"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "4.00"}
   "async" {>= "111.17.00"}
   "base-threads"
   "core" {>= "111.17.00" & < "112.17.00"}
@@ -21,5 +22,14 @@ depends: [
   "textutils"
   "ocamlbuild" {build}
 ]
-available: ocaml-version >= "4.00"
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "OCaml implementation of the Interactive Brokers TWS API"
+description: """
+IBX is a pure OCaml implementation of the Interactive Brokers Trader
+Workstation API (TWS API) built on top of Jane Street's Core and Async
+library."""
+flags: light-uninstall
+url {
+  src: "https://bitbucket.org/ogu/ibx/downloads/ibx-0.7.4.tar.gz"
+  checksum: "md5=4ff949c2e9d9aedba69c1106a38981fb"
+}

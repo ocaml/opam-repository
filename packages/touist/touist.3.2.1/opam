@@ -1,10 +1,10 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Maël Valais <mael.valais@gmail.com>"
 authors: ["Maël Valais <mael.valais@gmail.com>" "Olivier Lezaud"]
 homepage: "https://www.irit.fr/touist"
 bug-reports: "https://github.com/touist/touist/issues"
 license: "MIT"
-dev-repo: "https://github.com/touist/touist.git"
+dev-repo: "git+https://github.com/touist/touist.git"
 build: [
   [
     "ocaml"
@@ -16,9 +16,6 @@ build: [
     "--%{qbf:enable}%-qbf"
   ]
   ["ocaml" "setup.ml" "-build"]
-]
-install: ["ocaml" "setup.ml" "-install"]
-build-test: [
   [
     "ocaml"
     "setup.ml"
@@ -26,15 +23,17 @@ build-test: [
     "--enable-tests"
     "--%{yices2:enable}%-yices2"
     "--%{qbf:enable}%-qbf"
-  ]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-build-doc: ["ocaml" "setup.ml" "-doc"]
+install: ["ocaml" "setup.ml" "-install"]
 remove: [
   "ocaml" "%{etc}%/touist/setup.ml" "-C" "%{etc}%/touist" "-uninstall"
 ]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "cppo" {build & >= "0.9.4"}
   "cppo_ocamlbuild" {build}
   "fileutils" {build & >= "0.4.0"}
@@ -42,14 +41,13 @@ depends: [
   "minisat" {build}
   "ocamlbuild" {build}
   "ocamlfind" {build}
-  "ounit" {test}
+  "ounit" {with-test}
 ]
 depopts: ["qbf" "yices2"]
 conflicts: [
   "qbf" {< "0.1"}
   "yices2" {< "0.0.2"}
 ]
-available: [ocaml-version >= "4.01.0"]
 post-messages: [
   "
 Touist built without yices2. If you also wanted to use the SMT solver, do:
@@ -75,3 +73,22 @@ license.
   "
     {success & qbf:installed}
 ]
+synopsis: "The solver for the Touist language"
+description: """
+The Touist language is a friendly language for writing propositional
+logic (SAT), logic on real and integers (SMT) and quantified boolean
+formulas (QBF). This language aims to formalize real-life problems
+(e.g., the sudoku can be solved in a few lines). Touist embeds a SAT
+solver (minisat) and can be built with optionnal SMT and QBF solvers.
+Touist is also able to generate the latex, DIMACS, SMT-LIB and QDIMACS
+formats from a touist file.
+
+Optionnal solvers:
+- for using the embeded SMT solver, run `opam install yices2` and then do
+  `opam reinstall touist`
+- for using the embeded QBF solver, run `opam install qbf` and then do
+  `opam reinstall touist`"""
+url {
+  src: "https://github.com/touist/touist/archive/v3.2.1.tar.gz"
+  checksum: "md5=b37b3aaefba542930f0e2b94cd0d79c1"
+}

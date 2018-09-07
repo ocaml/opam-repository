@@ -1,11 +1,11 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "simon.cruanes@inria.fr"
 authors: "Simon Cruanes"
 homepage: "https://github.com/c-cube/ocaml-containers/"
 bug-reports: "https://github.com/c-cube/ocaml-containers/issues/"
 doc: "http://cedeela.fr/~simon/software/containers/"
 tags: ["stdlib" "containers" "iterators" "list" "heap" "queue"]
-dev-repo: "https://github.com/c-cube/ocaml-containers.git"
+dev-repo: "git+https://github.com/c-cube/ocaml-containers.git"
 build: [
   [
     "./configure"
@@ -20,12 +20,13 @@ build: [
     "--enable-docs"
   ]
   [make "build"]
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
 ]
 install: [make "install"]
-build-test: [make "test"]
-build-doc: [make "doc"]
 remove: ["ocamlfind" "remove" "containers"]
 depends: [
+  "ocaml" {>= "4.00.0"}
   "ocamlfind" {build}
   "base-bytes"
   "result"
@@ -35,4 +36,19 @@ depends: [
 ]
 depopts: ["sequence" "base-bigarray" "base-unix" "base-threads"]
 conflicts: [ "sequence" {>="0.6"} ]
-available: [ocaml-version >= "4.00.0"]
+synopsis:
+  "A modular extension of the OCaml standard library with a focus on data structures."
+description: """
+Containers is an extension of OCaml's standard library (under BSD license)
+focused on data structures, combinators and iterators, without dependencies on
+unix, str or num. Every module is independent and is prefixed with 'CC' in the
+global namespace. Some modules extend the stdlib (e.g. CCList provides safe
+map/fold_right/append, and additional functions on lists).
+
+It also features sub-libraries for dealing with strings, helpers for unix,
+threads, and S-expressions."""
+flags: light-uninstall
+url {
+  src: "https://github.com//c-cube/ocaml-containers/archive/0.16.tar.gz"
+  checksum: "md5=e73eb09af5c9b792f3e2fb8ccb66bec3"
+}
