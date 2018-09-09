@@ -1,0 +1,43 @@
+opam-version: "2.0"
+name: "ppx_import"
+version: "1.5"
+maintainer: "whitequark <whitequark@whitequark.org>"
+authors: [ "whitequark <whitequark@whitequark.org>" ]
+license: "MIT"
+homepage: "https://github.com/ocaml-ppx/ppx_import"
+bug-reports: "https://github.com/ocaml-ppx/ppx_import/issues"
+dev-repo: "git://github.com/ocaml-ppx/ppx_import.git"
+tags: [ "syntax" ]
+substs: [ "pkg/META" ]
+build: [
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+  ]
+  [
+    "ocamlbuild"
+    "-classic-display"
+    "-use-ocamlfind"
+    "src_test/test_ppx_import.byte"
+    "--"
+  ] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.0" & < "4.08.0"}
+  "ppx_tools" {>= "0.99.1"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "cppo" {build}
+  "cppo_ocamlbuild" {build}
+  "ounit" {with-test}
+  "ppx_deriving" {with-test & >= "2.0"}
+]
+available: opam-version >= "1.2.2"
+synopsis:
+  "A syntax extension for importing declarations from interface files"
+url {
+  src: "https://github.com/ocaml-ppx/ppx_import/archive/v1.5.tar.gz"
+  checksum: "md5=54921e077b9de4155f7fa61db725ec6f"
+}
