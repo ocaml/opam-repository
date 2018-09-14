@@ -1,0 +1,68 @@
+opam-version: "1.2"
+maintainer: "Simon Fowler <simon.fowler@ed.ac.uk>"
+authors: "The Links Team <links-dev@inf.ed.ac.uk>"
+homepage: "https://github.com/links-lang/links"
+dev-repo: "https://github.com/links-lang/links.git"
+bug-reports: "https://github.com/links-lang/links/issues"
+license: "GPL-2"
+
+available: [
+  ocaml-version >= "4.06.0"
+]
+
+build: [
+  [ "dune" "subst" ] {pinned}
+  [ "dune" "build" "-p" name "-j" jobs ]
+]
+
+install: [
+# Install documentation
+  [ "mkdir" "-p" "%{links:doc}%"                                      ]
+  [ "cp" "INSTALL" "%{links:doc}%/README"                             ]
+# Copy examples
+  [ "mkdir" "-p" "%{links:share}%/examples"                           ]
+  [ "sh" "-c" "cp -r examples/dbsetup %{links:share}%/examples/dbsetup/" ]
+  [ "sh" "-c" "cp examples/*.links %{links:share}%/examples"          ]
+  [ "sh" "-c" "cp examples/*.jpg %{links:share}%/examples"            ]
+  [ "sh" "-c" "cp examples/*.sql %{links:share}%/examples"            ]
+  [ "sh" "-c" "cp examples/*.html %{links:share}%/examples"           ]
+  [ "sh" "-c" "cp examples/*.css %{links:share}%/examples"            ]
+  [ "sh" "-c" "cp examples/*.js %{links:share}%/examples"             ]
+  [ "sh" "-c" "cp -r examples/dictionary %{links:share}%/examples/"   ]
+  [ "sh" "-c" "cp -r examples/games %{links:share}%/examples/"        ]
+  [ "sh" "-c" "cp -r examples/sessions %{links:share}%/examples/"     ]
+  [ "sh" "-c" "cp -r examples/webserver %{links:share}%/examples/"    ]
+  [ "sh" "-c" "cp -r examples/css %{links:share}%/examples/"          ]
+# Generate and install a config file
+  [ "touch" "config"                                                  ]
+  [ "sh" "-c" "echo jsliburl=/lib/js > config"                          ]
+  [ "sh" "-c" "echo jslibdir=%{links:lib}%/js >> config"               ]
+  [ "sh" "-c" "echo #database_driver=postgresql >> config"             ]
+  [ "sh" "-c" "echo #database_args=localhost:5432:user:pass >> config" ]
+  [ "mkdir" "-p" "%{links:etc}%"                                      ]
+  [ "cp" "config" "%{links:etc}%"                                     ]
+]
+
+remove: [
+  [ "rm" "-f"  "%{links:bin}%/linx" ]
+  [ "rm" "-f"  "%{links:lib}%/prelude.links" ]
+  [ "rm" "-rf" "%{links:lib}%/stdlib" ]
+  [ "rm" "-rf" "%{links:lib}%/js" ]
+  [ "rm" "-rf" "%{links:share}%/examples" ]
+  [ "rm" "-f"  "%{links:etc}%/config" ]
+  [ "rm" "-f"  "%{links:doc}%/README" ]
+]
+
+depends: [
+  "dune" {build}
+  "ppx_deriving"
+  "ppx_deriving_yojson"
+  "base64"
+  "linenoise"
+  "ANSITerminal"
+  "lwt" {>= "3.1.0"}
+  "cohttp"
+  "websocket-lwt"
+  "safepass"
+  "ocamlfind"
+]
