@@ -1,5 +1,15 @@
 opam-version: "2.0"
-maintainer: "Yann Régis-Gianas <yann.regis-gianas@irif.fr>"
+
+synopsis: "A trustworthy parser for POSIX shell"
+description: """
+Morbig is a parser for shell scripts written in the POSIX shell script
+language. It parses the scripts statically, that is without executing
+them, and constructs a concrete syntax tree for each of them. The
+concrete syntax trees are built using constructors according to the
+shell grammar of the POSIX standard.
+"""
+
+maintainer: "Nicolas Jeannerod <nicolas.jeannerod@irif.fr>"
 authors: [
   "Yann Régis-Gianas <yann.regis-gianas@irif.fr>"
   "Ralf Treinen <ralf.treinen@irif.fr>"
@@ -11,29 +21,25 @@ homepage: "https://github.com/colis-anr/morbig"
 bug-reports: "https://github.com/colis-anr/morbig/issues"
 dev-repo: "git://github.com/colis-anr/morbig.git"
 
-available: os != "macos"
+available: [os != "macos"]
 depends: [
-  "ocaml" {>= "4.03" & < "4.07"}
-  "ocamlbuild" {build}
-  "menhir" {build}
-  "yojson"
+  "menhir"               {build}
+  "ocaml"                {build & >= "4.03"}
+  "ocamlbuild"           {build}
   "ppx_deriving_yojson"
   "visitors"
+  "yojson"
 ]
-build: [
-  [make]
-  [make "check"] {with-test}
-]
+
+build: [make]
 install: [make "install"]
 remove: [make "uninstall"]
-synopsis: "A trustworthy parser for POSIX shell"
-description: """
-Morbig is a parser for shell scripts written in the POSIX shell script
-language. It parses the scripts statically, that is without executing
-them, and constructs a concrete syntax tree for each of them.  The
-concrete syntax trees are built using constructors according to the
-shell grammar of the POSIX standard."""
+
+run-test: [make "check"]
 url {
   src: "https://github.com/colis-anr/morbig/archive/v0.9.tar.gz"
-  checksum: "md5=a3f8e32c87b6f401117946c7b6e1151d"
+  checksum: [
+    "md5=a3f8e32c87b6f401117946c7b6e1151d"
+    "sha512=4e6903e88af11b13dbf0314230a086ace5f317de71eb34cee04f63a676eac90dc32185075dc1381dac30404af61e9389b76864fddbd5c8b748825d802f273840"
+  ]
 }
