@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 
 write() {
 cat > conf-mpi.config <<EOF
@@ -8,55 +8,57 @@ binpath: "${MPI_BIN_PATH}"
 EOF
 }
 
-if [[ -v MPI_INC_DIR && -v MPI_LIB_DIR && -v MPI_BIN_PATH ]]
+if [ ! -z ${MPI_INC_DIR+x} ] \
+    &&  [ ! -z ${MPI_LIB_DIR+x} ] \
+    && [ ! -z ${MPI_BIN_PATH+x} ]
 then
   write
-elif $(pkg-config --exists ompi)
+elif pkg-config --exists ompi
 then
   MPI_INC_DIR=$(pkg-config --variable=includedir ompi)
   MPI_LIB_DIR=$(pkg-config --variable=libdir ompi)/lib
   MPI_BIN_PATH=$(pkg-config --variable=libdir ompi)/bin/
   write
-elif $(pkg-config --exists mpich)
+elif pkg-config --exists mpich
 then
   MPI_INC_DIR=$(pkg-config --variable=includedir mpich)
   MPI_LIB_DIR=$(pkg-config --variable=libdir mpich)
-  MPIBIPATH=$(pkg-config --variable=libdir mpich)/../bin/
+  MPI_BIN_PATH=$(pkg-config --variable=libdir mpich)/../bin/
   write
 else
   OPENMPI_INCDIR=$(ls -d -1 /usr/include/openmpi* 2>/dev/null | head -n 1)
   MPICH_INCDIR=$(ls -d -1 /usr/include/mpich* 2>/dev/null | head -n 1)
-  if [[ -d ${OPENMPI_INCDIR} ]]
+  if [ -d "${OPENMPI_INCDIR}" ]
   then
     MPI_INC_DIR=${OPENMPI_INCDIR}
     MPI32=/usr/lib/openmpi
     MPI64=/usr/lib64/openmpi
-    if [[ -d ${MPI32} ]]
+    if [ -d ${MPI32} ]
     then
       MPI=${MPI32}
-    elif [[ -d ${MPI64} ]]
+    elif [ -d ${MPI64} ]
     then
       MPI=${MPI64}
     fi
-    if [[ -d "${MPI}" ]]
+    if [ -d "${MPI}" ]
     then
       MPI_LIB_DIR=${MPI}/lib
       MPI_BIN_PATH=${MPI}/bin/
       write
     fi
-  elif [[ -d ${MPICH_INCDIR} ]]
+  elif [ -d "${MPICH_INCDIR}" ]
   then
     MPI_INC_DIR=${MPICH_INCDIR}
     MPI32=/usr/lib/mpich
     MPI64=/usr/lib64/mpich
-    if [[ -d ${MPI32} ]]
+    if [ -d ${MPI32} ]
     then
       MPI=${MPI32}
-    elif [[ -d ${MPI64} ]]
+    elif [ -d "${MPI64}" ]
     then
       MPI=${MPI64}
     fi
-    if [[ -d "${MPI}" ]]
+    if [ -d "${MPI}" ]
     then
       MPI_LIB_DIR=${MPI}/lib
       MPI_BIN_PATH=${MPI}/bin/
@@ -65,18 +67,17 @@ else
   fi
 fi
 
-if [[ ! -f conf-mpi.config ]]
+if [ ! -f conf-mpi.config ]
 then
   echo "Unable to locate a valid MPI installation (openmpi or mpich)."
-  echo "Please install a MPI implementation"
+  echo
   echo "If you have one and it is not detected, you may manually set"
   echo "the following variables and restart this script:"
+  echo "* MPI_INC_DIR: include directory containing 'mpi.h', e.g., /usr/include/openmpi"
+  echo "* MPI_LIB_DIR: library directory containing 'libmpi.{so,dll}', e.g., /usr/lib/openmpi/lib"
+  echo "* MPI_BIN_PATH: path to the 'mpicc' and 'mpirun' binaries, e.g., /usr/lib/openmpi/bin"
   echo
-  echo "- MPI_INC_DIR: the include directly containing 'mpi.h',"
-  echo "  for example /usr/include/openmpi"
-  echo "- MPI_LIB_DIR: the library directory containing 'libmpi.{so,dll}',"
-  echo "  for example /usr/lib/openmpi/lib"
-  echo "- MPI_BIN_PATH: the path to the '${MPI_BIN_PATH}mpicc' and '${MPI_BIN_PATH}mpirun' binaries,"
-  echo "  for example /usr/lib/openmpi/bin/"
+  echo "To install MPI, try: opam depext conf-mpi"
   exit 2
 fi
+

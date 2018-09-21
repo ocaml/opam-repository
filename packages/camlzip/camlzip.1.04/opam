@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "2.0"
 maintainer: "https://github.com/ocaml/opam-repository/issues"
 build: [
   [make "all"]
@@ -7,15 +7,29 @@ build: [
 remove: [
   ["ocamlfind" "remove" "camlzip"]
 ]
-depends: ["ocamlfind"]
+depends: [
+  "ocaml" {< "4.03"}
+  "ocamlfind"
+]
 depexts: [
-  [["debian"] ["zlib1g-dev"]]
-  [["ubuntu"] ["zlib1g-dev"]]
-  [["centos"] ["zlib-devel"]]
-  [["rhel"]   ["zlib-devel"]]
-  [["fedora"] ["zlib-devel"]]
-  [["alpine"] ["zlib-dev"]]
+  ["zlib1g-dev"] {os-distribution = "debian"}
+  ["zlib1g-dev"] {os-distribution = "ubuntu"}
+  ["zlib-devel"] {os-distribution = "centos"}
+  ["zlib-devel"] {os-distribution = "rhel"}
+  ["zlib-devel"] {os-distribution = "fedora"}
+  ["zlib-dev"] {os-distribution = "alpine"}
 ]
 patches: ["camlzip-install.diff"]
 install: [make "install"]
-available: [ ocaml-version < "4.03" ]
+synopsis:
+  "Provides easy access to compressed files in ZIP, GZIP and JAR format"
+flags: light-uninstall
+extra-files: [
+  ["camlzip.install" "md5=12f39f07b491506db6958c7c55bcb826"]
+  ["camlzip-install.diff" "md5=5a4fd95a35bb9cd517c2daf153037b12"]
+  ["META" "md5=aadcb18085412671e21d9520d70fdca5"]
+]
+url {
+  src: "http://forge.ocamlcore.org/frs/download.php/328/camlzip-1.04.tar.gz"
+  checksum: "md5=b3930f4f2e2563b9a5e1b17aa455e635"
+}

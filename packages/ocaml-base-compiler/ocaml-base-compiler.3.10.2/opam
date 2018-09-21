@@ -1,0 +1,30 @@
+opam-version: "2.0"
+synopsis: "Official 3.10.2 release"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "3.10.2" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  ["./configure" "-prefix" prefix "-cc" "cc" "-aspp" "cc -c"]
+    {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world"]
+  [make "world.opt"]
+]
+install: [
+  [make "install"]
+  ["mkdir" "-p" "%{prefix}%/lib/ocaml/compiler-libs"]
+  ["cp" "-r" "typing" "parsing" "utils" "%{prefix}%/lib/ocaml/compiler-libs/"]
+]
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-3.10/ocaml-3.10.2.tar.gz"
+  checksum: "md5=52c795592c90ecb15c2c4754f04eeff4"
+}

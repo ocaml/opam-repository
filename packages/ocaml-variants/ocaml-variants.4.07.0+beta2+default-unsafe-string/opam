@@ -1,0 +1,39 @@
+opam-version: "2.0"
+synopsis: "Second beta for 4.07.0 without safe strings by default"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.07.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-default-unsafe-string"
+  ] {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-default-unsafe-string"
+    "-cc"
+    "cc"
+    "-aspp"
+    "cc -c"
+  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.07.0+beta2.tar.gz"
+  checksum: "md5=7730fea507d108b5e30ced23613980c8"
+}

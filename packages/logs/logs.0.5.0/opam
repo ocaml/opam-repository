@@ -1,28 +1,56 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
 authors: ["Daniel Bünzli <daniel.buenzl i@erratique.ch>"]
 homepage: "http://erratique.ch/software/logs"
 doc: "http://erratique.ch/software/logs"
-dev-repo: "http://erratique.ch/repos/logs.git"
+dev-repo: "git+http://erratique.ch/repos/logs.git"
 bug-reports: "https://github.com/dbuenzli/logs/issues"
 tags: [ "log" "system" "org:erratique" ]
 license: "BSD-3-Clause"
-available: [ ocaml-version >= "4.01.0" & ocaml-version < "4.04.0" ]
 depends: [
+  "ocaml" {>= "4.01.0" & < "4.04.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "mtime" {test}
-  "result" ]
+  "mtime" {with-test}
+  "result"
+]
 depopts: [ "js_of_ocaml" "fmt" "cmdliner" "lwt" ]
 conflicts: [ "cmdliner" {< "0.9.8"} ]
 build: ["ocaml" "pkg/git.ml"]
 install: [
   "ocaml"
   "pkg/build.ml"
-  "native=%{ocaml-native}%"
-  "native-dynlink=%{ocaml-native-dynlink}%"
+  "native=%{ocaml:native}%"
+  "native-dynlink=%{ocaml:native-dynlink}%"
   "jsoo=%{js_of_ocaml:installed}%"
   "fmt=%{fmt:installed}%"
   "cmdliner=%{cmdliner:installed}%"
   "lwt=%{lwt:installed}%"
 ]
+synopsis: "Logging infrastructure for OCaml"
+description: """
+Logs provides a logging infrastructure for OCaml. Logging is performed
+on sources whose reporting level can be set independently. Log message
+report is decoupled from logging and is handled by a reporter.
+
+A few optional log reporters are distributed with the base library and
+the API easily allows to implement your own.
+
+`Logs` depends only on the `result` compatibility package. The
+optional `Logs_fmt` reporter on OCaml formatters depends on [Fmt][1].
+The optional `Logs_browser` reporter that reports to the web browser
+console depends on [js_of_ocaml][2]. The optional `Logs_cli` library
+that provides command line support for controlling Logs depends on
+[`Cmdliner`][3]. The optional `Logs_lwt` library that provides Lwt logging
+functions depends on [`Lwt`][4]
+
+Logs and its reporters are distributed under the BSD3 license.
+
+[1]: http://ocsigen.org/js_of_ocaml/
+[2]: http://erratique.ch/software/fmt
+[3]: http://erratique.ch/software/cmdliner
+[4]: http://ocsigen.org/lwt/"""
+url {
+  src: "http://erratique.ch/software/logs/releases/logs-0.5.0.tbz"
+  checksum: "md5=f5a882164b986456c3178d7e50774394"
+}

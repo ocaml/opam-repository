@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "BER-101 MetaOCaml"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.01.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+  "base-metaocaml-ocamlfind" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" "%{prefix}%"]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  ["./configure" "-prefix" "%{prefix}%" "-cc" "cc" "-aspp" "cc -c"]
+    {os = "openbsd" | os = "freebsd" | os = "macos"}
+  ["%{make}%" "world"]
+  ["%{make}%" "world.opt"]
+]
+install: [
+  ["%{make}%" "-i" "install"]
+  ["%{make}%" "-C" "ber-metaocaml-101" "all"]
+  ["%{make}%" "-C" "ber-metaocaml-101" "install"]
+]
+patches: [
+  "ber-101.patch"
+  "bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
+]
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-4.01/ocaml-4.01.0.tar.gz"
+  checksum: "md5=04dfdd7da189462a4f10ec6530359cef"
+}
+extra-source "ber-101.patch" {
+  src: "http://pim.happyleptic.org/~rixed/metaocaml-opam/ber-101.patch"
+  checksum: "md5=ff90d48d21044f1aa14544479a61fe37"
+}
+extra-source "bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff" {
+  src:
+    "https://github.com/diml/ocaml/compare/bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
+  checksum: "md5=a8c6dd8e547a7b766138f7ca3eb1cbfd"
+}

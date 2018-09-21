@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+authors: ["Francois BERENGER"]
+homepage: "https://github.com/UnixJunkie/orrandomForest"
+bug-reports: "https://github.com/UnixJunkie/orrandomForest/issues"
+dev-repo: "git+https://github.com/UnixJunkie/orrandomForest.git"
+license: "LGPL + linking exception"
+build: [
+  ["R" "CMD" "BATCH" "files/install_randomForest.r"]
+  ["R" "CMD" "BATCH" "files/install_matrix.r"]
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml"
+  "dune" {build}
+  "dolog"
+  "conf-r"
+  "conf-gnuplot" {with-test}
+]
+post-messages: [
+"Please interact with R to install needed things in user-space:
+R
+install.packages('Marix', repos='http://cran.r-project.org')
+install.packages('randomForest', repos='http://cran.r-project.org')" {failure}
+]
+synopsis: "Classification or regression using Random Forests"
+description: """
+Uses the R randomForest package under the carpet.
+This package really fires up and talks to an R interpreter.
+Data are exchanged via text files.
+For details, cf. 
+Breiman, L., 2001. Random forests. Machine learning, 45(1), pp.5-32
+(DOI = 10.1023/A:1010933404324)."""
+extra-files: [
+  ["install_randomForest.r" "md5=c39ce051de6937deb5095a1906d86c0c"]
+  ["install_matrix.r" "md5=ab1c0ae726388159b1315bc9fe61a013"]
+]
+url {
+  src: "https://github.com/UnixJunkie/orrandomForest/archive/v1.0.0.tar.gz"
+  checksum: "md5=89e87dbe7d4f8a14d0610b12de5fa5f9"
+}

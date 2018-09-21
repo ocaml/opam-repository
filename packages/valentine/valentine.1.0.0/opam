@@ -1,27 +1,35 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
 homepage: "https://github.com/fxfactorial/valentine"
 bug-reports: "https://github.com/fxfactorial/valentine/issues"
 license: "BSD-3-clause"
-dev-repo: "https://github.com/fxfactorial/valentine.git"
+dev-repo: "git+https://github.com/fxfactorial/valentine.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-available: [ ocaml-version >= "4.02.0" ]
 remove: ["ocaml" "%{etc}%/valentine/_oasis_remove_.ml" "%{etc}%/valentine"]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "cmdliner" {build}
   "markup" {build}
   "oasis" {build & >= "0.4"}
   "ocamlfind" {build}
 ]
+synopsis: "Validate HTML from command line"
+description: "Simple tool to validate HTML according to spec"
+extra-files: [
+  ["valentine.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src: "https://github.com/fxfactorial/valentine/archive/v1.0.0.tar.gz"
+  checksum: "md5=75c51f1b07f0f56fb647a09c26ea4610"
+}

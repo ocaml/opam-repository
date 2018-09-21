@@ -1,17 +1,14 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "simon.beaumont@citrix.com"
 authors:      "Si Beaumont"
 homepage:     "https://github.com/simonjbeaumont/ocaml-flock"
 bug-reports:  "https://github.com/simonjbeaumont/ocaml-flock/issues"
-dev-repo:     "https://github.com/simonjbeaumont/ocaml-flock.git"
-
+dev-repo: "git+https://github.com/simonjbeaumont/ocaml-flock.git"
 build: [
   ["./configure"]
   [make]
-]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: [
@@ -19,11 +16,19 @@ remove: [
   ["ocamlfind" "remove" "flock_bindings"]
 ]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ctypes" {>= "0.4.0"}
   "ctypes-foreign" {>= "0.4.0"}
   "ocamlfind" {build}
   "oasis" {build}
-  "ounit" {test}
+  "ounit" {with-test}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.01.0" & os = "linux"]
+available: os = "linux"
+synopsis: "Ctypes bindings to flock for OCaml"
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/simonjbeaumont/ocaml-flock/archive/v1.0.0/ocaml-flock-v1.0.0.tar.gz"
+  checksum: "md5=36e19ef9f9875decb4d8dd1f16d56324"
+}

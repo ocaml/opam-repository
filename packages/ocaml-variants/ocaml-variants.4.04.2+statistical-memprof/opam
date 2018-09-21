@@ -1,0 +1,37 @@
+opam-version: "2.0"
+synopsis:
+  "OCaml 4.04.2 plus statistical memory profiling, see <http://ocaml.org/meetings/ocaml/2016/Jourdan-statistically_profiling_memory_in_OCaml.pdf>"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.04.2" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix "-with-debug-runtime" "--statmemprof"]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-flambda"
+    "-cc"
+    "cc"
+    "-aspp"
+    "cc -c"
+    "--statmemprof"
+  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src:
+    "https://github.com/chambart/ocaml-1/archive/jhj_memprof_4.04.2.tar.gz"
+  checksum: "md5=5a86f86039623ea089add7c29c8da4f7"
+}

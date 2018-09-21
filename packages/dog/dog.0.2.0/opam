@@ -1,31 +1,35 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      "Thomas Gazagnaire"
 license:      "ISC"
 homepage:     "https://github.com/samoht/dog"
 bug-reports:  "https://github.com/samoht/dog/issues"
-dev-repo:     "https://github.com/samoht/dog.git"
-
+dev-repo: "git+https://github.com/samoht/dog.git"
 build: [
   ["./configure" "--prefix" prefix]
   [make]
-]
-build-test: [
-  ["./configure" "--prefix" prefix "--enable-tests"]
-  [make "test"]
+  ["./configure" "--prefix" prefix "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "dog"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "lwt" {>= "2.4.5" & < "2.7.0"}
   "irmin" {>= "0.9.5" & <= "0.9.9"}
   "irmin-unix" {>= "0.9.5" & <= "0.9.9"}
   "git" {>= "1.4.10"}
-  "cohttp" {<"0.99.0"}
+  "cohttp" {< "0.99.0"}
   "re"
   "dolog" {>= "1.0"}
   "cmdliner"
-  "alcotest" {test}
+  "alcotest" {with-test}
   "ocamlbuild" {build}
 ]
+synopsis: "A loyal and faithful synchronisation tool that you can rely on."
+flags: light-uninstall
+url {
+  src: "https://github.com/samoht/dog/archive/0.2.0.tar.gz"
+  checksum: "md5=bfed925e6faf805451176d2cf7411455"
+}

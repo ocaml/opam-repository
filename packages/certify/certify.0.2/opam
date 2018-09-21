@@ -1,7 +1,7 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "meetup@yomimono.org"
 homepage:     "https://github.com/yomimono/ocaml-certify"
-dev-repo:     "https://github.com/yomimono/ocaml-certify.git"
+dev-repo: "git+https://github.com/yomimono/ocaml-certify.git"
 bug-reports:  "https://github.com/yomimono/ocaml-certify/issues"
 authors: [
   "Mindy Preston"
@@ -10,12 +10,11 @@ tags: ["org:mirage"]
 
 build: [
   ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
-]
-build-test: [
-  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
-  ["test/test.sh"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"] {with-test}
+  ["test/test.sh"] {with-test}
 ]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
@@ -24,6 +23,11 @@ depends: [
   "cstruct" {>= "3.2.0"}
   "ptime"
   "cmdliner" {>= "1.0.0"}
-  "conf-openssl" {test}
+  "conf-openssl" {with-test}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Utility for signing x509 certificates and creating CSRs."
+url {
+  src:
+    "https://github.com/yomimono/ocaml-certify/releases/download/v0.2/certify-0.2.tbz"
+  checksum: "md5=6d2faab47941a748af34eee056907a87"
+}

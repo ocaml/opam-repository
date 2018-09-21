@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "dev-team@skylable.com"
 authors: [ "edwin@skylable.com" ]
 license: "GPL-2.0 with OpenSSL exception"
@@ -8,6 +8,7 @@ build: [
   [make]
 ]
 depends: [
+  "ocaml" {>= "3.12.1"}
   "base-threads"
   "base-unix"
   "ocamlfind" {>= "1.2.0"}
@@ -19,8 +20,26 @@ depends: [
   "ocamlnet" {>= "3.7.4" & < "4.0.0"}
   "lwt" {>= "2.4.2"}
   "ocsigenserver" {= "2.4.0"}
-  "sqlite3" # for ocsigenserver, choose sqlite3 as dbm doesn't build
+  "sqlite3"
   "ocamlbuild" {build}
 ]
-ocaml-version: [ >= "3.12.1" ]
 patches:[ "depfix.patch" ]
+synopsis: "Amazon S3 compatible server"
+description: """
+LibreS3 is a robust Open Source replacement for the Amazon S3 service,
+implementing (a subset of) the S3 REST API. It is written in a monadic
+style, currently using Lwt and Ocsigenserver as implementations.
+
+Standard S3 client libraries and tools (for example s3cmd,
+python-boto, ocaml-aws, etc.) can be used to access it.
+
+It uses Skylable SX as the storage backend, which automatically
+provides data deduplication and replication."""
+extra-files: [
+  ["libres3.install" "md5=2c359ea0c2bbe8448070610e98d62e80"]
+  ["depfix.patch" "md5=0762983d6ea4096b67a9e38eef52ac6f"]
+]
+url {
+  src: "http://cdn.skylable.com/source/libres3-0.1.tar.gz"
+  checksum: "md5=1b1c9b4442f16aef9d210038798d1e5a"
+}

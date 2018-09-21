@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "Jan Rochel <jan@besport.com>"
+authors: "Jan Rochel (BeSport)"
+homepage: "https://github.com/ocsigen/resource-pooling"
+bug-reports: "https://github.com/ocsigen/resource-pooling/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/ocsigen/resource-pooling.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocamlfind" "remove" "resource-pooling"]
+depends: [
+  "ocaml" {>= "4.02"}
+  "lwt" {>= "2.4.7" & < "4.0.0"}
+  "oasis" {build & >= "0.4.7"} | "oasis-mirage" {build & >= "0.4.7"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+]
+synopsis:
+  "library for pooling resources like connections, threads, or similar"
+description: """
+This package is derived from the module Lwt_pool from the lwt package,
+which implements resource pooling. With Resource_pool this package
+provides a modified version with additional features. Also there is a
+module called Server_pool that manages resource clusters, specifically
+a cluster of servers each with its own connection pool."""
+flags: light-uninstall
+url {
+  src: "https://github.com/ocsigen/resource-pooling/archive/0.2.tar.gz"
+  checksum: "md5=cdca2d97b7a0a8c9c29275b37a8718ed"
+}
