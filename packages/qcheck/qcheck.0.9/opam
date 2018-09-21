@@ -7,6 +7,7 @@ doc: "http://c-cube.github.io/qcheck/"
 bug-reports: "https://github.com/c-cube/qcheck/issues"
 depends: [
   "dune" {build}
+  "ocaml" {>= "4.03.0"}
   "base-bytes"
   "base-unix"
   "qcheck-core" {>= "0.9"}
@@ -16,11 +17,12 @@ depends: [
 conflicts: [
   "ounit" {< "2.0"}
 ]
-available: ocaml-version >= "4.03.0"
-build: ["dune" "build" "-p" name "-j" jobs]
-run-test: ["dune" "runtest" "-p" name]
+build: [
+    ["dune" "build" "-p" name "-j" jobs]
+    ["dune" "runtest" "-p" name] {with-test}
+    ["dune" "build" "@doc" "-p" name] {with-doc}
+]
 dev-repo: "git+https://github.com/c-cube/qcheck.git"
-build-doc: ["dune" "build" "@doc" "-p" name]
 url {
   src: "https://github.com/c-cube/qcheck/archive/0.9.tar.gz"
   checksum: [
