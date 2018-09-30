@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "A simple immutable database for the masses"
+description: """
+SandDB is a simple immutable database, which is also:
+- Simple: It only does one thing, which is persisting data in a file.
+- Easy to use: SandDB's API is extremely small, so you only need to know few functions to use it.
+- Type safe: Every common dangerous operation (like parsing) is covered by the Result type, so you will know where to expect errors.
+- Immutable: Database is based on the immutable stack idea, where you can only push onto the stack.
+- Crud capable: Even though the database is immutable you still can update and delete records, by shadowing them.
+- Version keeping: Every update and delete operation will produce a new version of the affected record, without modifying the original, so you will have all versions of your data.
+- Concurrent: SandDB is based on lwt, so every database operation is asynchronous.
+- Supports multiple serializers: SandDB supports both json and biniou serialization format thanks to the atdgen library.
+"""
+maintainer: "Robert Toth <kkdstryker@gmail.com>"
+authors: ["Robert Toth"]
+homepage: "https://github.com/StrykerKKD/SandDB"
+bug-reports: "https://github.com/StrykerKKD/SandDB/issues"
+dev-repo: "git+https://github.com/StrykerKKD/SandDB.git"
+license: "MIT"
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "@doc" "-p" name] {with-doc}
+]
+run-test: [
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "dune" {build}
+  "atdgen" {>= "1.12.0"}
+  "lwt" {>= "3.3.0"}
+  "uuidm" {>= "0.9.6"}
+  "base" {>= "v0.11.0"}
+  "alcotest" {with-test}
+  "odoc" {with-doc}
+  "ocaml" {>= "4.04.2"}
+]
+url {
+  src: "https://github.com/StrykerKKD/SandDB/archive/0.2.tar.gz"
+  checksum: "md5=576971abffbcee20fb27bb49fb8dc3db"
+}
