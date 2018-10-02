@@ -1,21 +1,33 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Etienne Millon <etienne@cryptosense.com>"
 authors: "Etienne Millon <etienne@cryptosense.com>"
 homepage: "https://github.com/cryptosense/ocamllint"
 bug-reports: "https://github.com/cryptosense/ocamllint/issues"
 license: "BSD-2"
-dev-repo: "https://github.com/cryptosense/ocamllint.git"
+dev-repo: "git+https://github.com/cryptosense/ocamllint.git"
 build: [
-    [make "all"]
+  [make "all"]
+  [make "check"] {with-test}
 ]
 install: [
     [make "install"]
 ]
-build-test: [make "check"]
 remove: [["ocamlfind" "remove" "ocamllint"]]
 depends: [
-    "ocamlfind" {>= "1.5.0"}
-    "ounit" {test}
-    "ppx_tools"
+  "ocaml" {>= "4.02.0" & < "4.03.0"}
+  "ocamlfind" {>= "1.5.0"}
+  "ounit" {with-test}
+  "ppx_tools"
 ]
-available: [ocaml-version >= "4.02.0" & ocaml-version < "4.03.0"]
+synopsis: "Detect common errors in OCaml code"
+description: """
+OCamllint is a ppx plugin that checks for patterns in a OCaml code base:
+
+  - common programming errors: using the wrong kind of comparison, computing
+    unused values, going several times through a data structure, etc.
+  - enforce style: use snake_case for identifiers, module types in caps, etc."""
+flags: light-uninstall
+url {
+  src: "https://github.com/cryptosense/ocamllint/archive/v0.2.0.tar.gz"
+  checksum: "md5=f09848b2dd24fb574a1d50545cac08ea"
+}

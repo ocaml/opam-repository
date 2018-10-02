@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "agarwal1975@gmail.com"
 authors: [
   "Ashish Agarwal"
@@ -17,17 +17,19 @@ build: [
     "BUILD_APP=true"
   ]
   ["omake" "-j2"]
-]
-build-test: [
-  ["omake" "configure" "PREFIX=%{prefix}%" "BUILD_TESTS=true" "BUILD_APP=false"]
-  ["omake" "test"]
-]
-build-doc: [
-  ["omake" "doc"]
-  ["omake" "install_doc" "INSTALL_DOCDIR=%{doc}%"]
+  [
+    "omake"
+    "configure"
+    "PREFIX=%{prefix}%"
+    "BUILD_TESTS=true"
+    "BUILD_APP=false"
+  ] {with-test}
+  ["omake" "test"] {with-test}
+  ["omake" "doc"] {with-doc}
 ]
 remove: [["ocamlfind" "remove" "biocaml"]]
 depends: [
+  "ocaml"
   "ocamlfind"
   "core" {>= "109.27.00" & <= "109.47.00"}
   "sexplib"
@@ -40,4 +42,19 @@ depends: [
   "lwt" {< "2.5.0"}
 ]
 dev-repo: "git://github.com/biocaml/biocaml"
-install: ["omake" "install"]
+install: [
+  ["omake" "install"]
+  ["omake" "install_doc" "INSTALL_DOCDIR=%{doc}%"] {with-doc}
+]
+synopsis: "The OCaml Bioinformatics Library"
+description: """
+Biocaml aims to be a high-performance user-friendly library for
+Bioinformatics. See the [website](http://biocaml.org) for detailed API
+documentation. We welcome contributors and feedback from users. Please
+contact us with any comments and suggestions for features you would
+like added."""
+flags: light-uninstall
+url {
+  src: "https://github.com/biocaml/biocaml/archive/0.3.1.tar.gz"
+  checksum: "md5=40f2d6226de0dede87d7190536cf986d"
+}

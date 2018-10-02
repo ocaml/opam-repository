@@ -1,7 +1,7 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "anil@recoil.org"
 homepage:     "https://github.com/mirage/ocaml-dns"
-dev-repo:     "https://github.com/mirage/ocaml-dns.git"
+dev-repo: "git+https://github.com/mirage/ocaml-dns.git"
 bug-reports:  "https://github.com/mirage/ocaml-dns/issues"
 doc:          "https://mirage.github.io/ocaml-dns/"
 license: "ISC"
@@ -15,7 +15,41 @@ build: [
 ]
 
 depends: [
-  "dns" {>="1.0.0"}
-  "async" {>="v0.9.0"}
+  "ocaml" {>= "4.03.0"}
+  "dns" {>= "1.0.0"}
+  "async" {>= "v0.9.0"}
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis: "DNS client and server implementation in pure OCaml"
+description: """
+This is a pure OCaml implementation of the DNS protocol.  It is intended to be
+a reasonably high-performance implementation, but clarity is preferred rather
+than low-level performance hacks.
+
+[![Build Status](https://travis-ci.org/mirage/ocaml-dns.svg?branch=master)](https://travis-ci.org/mirage/ocaml-dns)
+
+To build it, please use the [OPAM](https://opam.ocaml.org) package manager (1.2+):
+
+    opam pin add dns .
+
+This will install the dependencies needed and give you a working development
+version of the library.
+
+Packages:
+
+* `lib/` contains the core DNS protocol, which is packed into the `Dns` module.
+* `lib_test/` contains unit tests and sample uses of the library.
+  In particular, `time_server` is a simple dynamic responder.
+
+Areas that need work:
+
+* We need an Lwt-based client iterative resolver
+  Patches for this are highly welcome!
+* EDNS0 extensions
+* DNSSEC extensions (using [nocrypto](https://github.com/mirleft/ocaml-nocrypto/))
+* TC bit and TCP fallback
+* mDNS resolver"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-dns/releases/download/v1.0.0/dns-1.0.0.tbz"
+  checksum: "md5=5fe4efe11671253950f89036a6cc1a21"
+}

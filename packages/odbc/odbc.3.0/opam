@@ -1,4 +1,4 @@
-opam-version: "1"
+opam-version: "2.0"
 name: "odbc"
 version: "3.0"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
@@ -13,10 +13,21 @@ build: [
 remove: [
   ["ocamlfind" "remove" "odbc"]
 ]
-depends: [ "ocamlfind" ]
+depends: ["ocaml" "ocamlfind"]
 depexts: [
-  [ [ "ubuntu"  ] [ "unixodbc-dev" ] ]
-  [ [ "debian"  ] [ "unixodbc-dev" ] ]
-  [ [ "osx" "homebrew" ] [ "unixodbc" ] ]
+  ["unixodbc-dev"] {os-distribution = "ubuntu"}
+  ["unixodbc-dev"] {os-distribution = "debian"}
+  ["unixodbc"] {os = "macos" & os-distribution = "homebrew"}
 ]
 install: [make "findlib_install"]
+synopsis: "Interface to various ODBC drivers"
+description: """
+Supported ODBC drivers include PostgreSQL, MySQL, unixODBC, DB2 and
+OPENINGRES.  They require the installation of the corresponding C
+libraries before compiling this package."""
+flags: light-uninstall
+url {
+  src:
+    "https://forge.ocamlcore.org/frs/download.php/1452/ocaml-odbc-3.0.tar.gz"
+  checksum: "md5=2399d644496c8bfacc674aa84910b84e"
+}

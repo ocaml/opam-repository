@@ -1,0 +1,52 @@
+opam-version: "2.0"
+maintainer: "ygrek@autistici.org"
+license: "BSD"
+authors: [
+  "Maas-Maarten Zeeman <mmzeeman@xs4all.nl>"
+  "ygrek <ygrek@autistici.org>"
+]
+homepage: "https://github.com/ygrek/ocaml-libevent"
+dev-repo: "git://github.com/ygrek/ocaml-libevent.git"
+bug-reports: "https://github.com/ygrek/ocaml-libevent/issues"
+tags: ["org:ygrek"]
+build: [
+  [make "depend"]
+  [make]
+  [make "test"] {with-test & os != "macos"}
+  [make "doc"] {with-doc}
+]
+install: [
+  [make "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "libevent"]
+]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind" {build}
+  "base-unix"
+  "base-bytes" {with-test}
+  "ounit" {with-test}
+]
+depexts: [
+  ["libevent-dev"] {os-distribution = "debian"}
+  ["libevent-dev"] {os-distribution = "ubuntu"}
+  ["libevent-devel"] {os-distribution = "fedora"}
+  ["libevent-devel"] {os-distribution = "centos"}
+  ["libevent-dev"] {os-distribution = "alpine"}
+  ["libevent"] {os-distribution = "homebrew"}
+]
+synopsis: "OCaml wrapper for the libevent API"
+description: """
+libevent provides a mechanism to execute a callback function
+when a specific event occurs on a file descriptor or
+after a timeout has been reached. Furthermore, libevent also
+supports callbacks due to signals or regular timeouts."""
+flags: light-uninstall
+url {
+  src:
+    "http://ygrek.org.ua/p/release/ocaml-libevent/ocaml-libevent-0.8.1.tar.gz"
+  checksum: "md5=0f87c6327e62a8bf631a45e85289be07"
+  mirrors:
+    "https://github.com/ygrek/ocaml-libevent/releases/download/v0.8.1/ocaml-libevent-0.8.1.tar.gz"
+}

@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "opam-devel@lists.ocaml.org"
 authors: [
   "Thomas Gazagnaire <thomas@gazagnaire.org>"
@@ -12,18 +12,18 @@ authors: [
 ]
 homepage: "https://opam.ocaml.org"
 bug-reports: "https://github.com/ocaml/opam/issues"
-dev-repo: "https://github.com/ocaml/opam.git"
+dev-repo: "git+https://github.com/ocaml/opam.git"
 build: [
   ["./configure" "--disable-checks" "--prefix" prefix]
   [make name]
   [make "%{name}%.install"]
+  [make "opam-check" "tests"] {with-test}
 ]
-build-test: [make "opam-check" "tests"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "opam-client" {= "2.0.0~beta3"}
   "cmdliner" {>= "0.9.8"}
 ]
-available: [ocaml-version >= "4.01.0"]
 post-messages: [
   "
 The development version of opam has been successfuly compiled into %{lib}%/%{name}%. You should not run it from there, please install the binaries to your PATH, e.g. with
@@ -34,3 +34,13 @@ If you just want to give it a try without altering your current installation, yo
   "
     {success}
 ]
+synopsis: "opam 2.0.0 beta version"
+description: """
+This package compiles (bootstraps) the beta version of opam 2.0.0. For
+consistency and safety of the installation, the binaries are not installed into
+the PATH, but into lib/opam-devel, from where the user can manually install them
+system-wide."""
+url {
+  src: "https://github.com/ocaml/opam/archive/2.0.0-beta3.tar.gz"
+  checksum: "md5=19ce08c078494cf5640b65843ce650ab"
+}

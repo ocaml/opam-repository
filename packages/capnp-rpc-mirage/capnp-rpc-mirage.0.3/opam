@@ -1,26 +1,34 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "Thomas Leonard <thomas.leonard@docker.com>"
 authors:      "Thomas Leonard <thomas.leonard@docker.com>"
 license:      "Apache"
 homepage:     "https://github.com/mirage/capnp-rpc"
 bug-reports:  "https://github.com/mirage/capnp-rpc/issues"
-dev-repo:     "https://github.com/mirage/capnp-rpc.git"
-
-build: ["jbuilder" "build" "-p" name "-j" jobs]
-build-test: ["jbuilder" "runtest" "-p" name]
-
+dev-repo: "git+https://github.com/mirage/capnp-rpc.git"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name] {with-test}
+]
 depends: [
-  "capnp" { >= "3.1.0" }
-  "capnp-rpc-lwt" { >= "0.3" }
+  "ocaml" {>= "4.03.0"}
+  "capnp" {>= "3.1.0"}
+  "capnp-rpc-lwt" {>= "0.3"}
   "astring"
   "fmt"
   "logs"
   "mirage-dns"
   "mirage-stack-lwt"
-  "alcotest-lwt" {test}
-  "io-page-unix" {test}
-  "tcpip" {test}
-  "mirage-vnetif" {test}
-  "jbuilder" {build & >= "1.0+beta10" }
+  "alcotest-lwt" {with-test}
+  "io-page-unix" {with-test}
+  "tcpip" {with-test}
+  "mirage-vnetif" {with-test}
+  "jbuilder" {build & >= "1.0+beta10"}
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis:
+  "Cap'n Proto is a capability-based RPC system with bindings for many languages."
+description:
+  "This package provides a version of the Cap'n Proto RPC system for use with MirageOS."
+url {
+  src: "https://github.com/mirage/capnp-rpc/archive/v0.3.tar.gz"
+  checksum: "md5=131758728124170d94a78839fd1c1041"
+}

@@ -1,0 +1,58 @@
+opam-version: "2.0"
+maintainer:   "martin@lucina.net"
+homepage:     "https://github.com/mirage/mirage-solo5"
+bug-reports:  "https://github.com/mirage/mirage-solo5/issues/"
+dev-repo: "git+https://github.com/mirage/mirage-solo5.git"
+license:      "ISC"
+authors: [
+  "Anil Madhavapeddy <anil@recoil.org>"
+  "Dan Williams <djwillia@us.ibm.com>"
+  "Martin Lucina <martin@lucina.net>"
+]
+tags: [
+  "org:mirage"
+]
+build: [
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" ] { os != "openbsd" }
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "false" ] { os = "openbsd" }
+]
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "0.7.6"}
+  "ocb-stubblr" {build}
+  "cstruct" {>= "1.0.1"}
+  "lwt" {>= "2.4.3"}
+  "ocaml-freestanding" {>= "0.4.0"}
+  "logs"
+  "solo5-bindings-hvt" | "solo5-bindings-virtio" | "solo5-bindings-muen"
+]
+conflicts: [
+  "io-page" {< "2.0.0"}
+  "solo5-kernel-ukvm"
+  "solo5-kernel-virtio"
+  "solo5-kernel-muen"
+]
+post-messages: [
+  "As of MirageOS 3.2.0 / Solo5 0.4.0, the 'ukvm' target has been renamed to 'hvt'. Please refer to https://github.com/mirage/mirage/blob/master/CHANGES.md for further details on this change."
+]
+synopsis: "Solo5 core platform libraries for MirageOS"
+description: """
+This package provides the MirageOS `OS` library for
+[Solo5][1] targets, which handles the main loop and timers. It also provides
+the low level C startup code and C stubs required by the OCaml code.
+
+Currently this package also includes the C stubs used by the Solo5 `console`,
+`block` and `net` implementations.
+
+The OCaml runtime and C runtime required to support it are provided separately
+by the [ocaml-freestanding][2] package.
+
+[1]: https://github.com/Solo5/solo5
+[2]: https://github.com/mirage/ocaml-freestanding"""
+url {
+  src:
+    "https://github.com/mirage/mirage-solo5/releases/download/v0.4.0/mirage-solo5-0.4.0.tbz"
+  checksum: "md5=8cede6e04b1264a3d3540d3b42f97bdf"
+}

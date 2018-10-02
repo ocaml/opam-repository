@@ -1,26 +1,35 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "zandoye@gmail.com"
 authors: [ "ZAN DoYe" ]
 homepage: "https://bitbucket.org/zandoye/mmseg/"
 bug-reports: "https://bitbucket.org/zandoye/mmseg/issues"
 license: "MIT"
 dev-repo: "hg://https://bitbucket.org/zandoye/mmseg"
-available: [ ocaml-version >= "4.00.1" ]
 build: [
   [make]
+  [make "doc"] {with-doc}
 ]
-build-doc: [
-  [make "doc"]
-  [make "DOCDIR=%{doc}%/mmseg" "install-doc"]
+install: [
+  [make "install"]
+  [make "DOCDIR=%{doc}%/mmseg" "install-doc"] {with-doc}
 ]
-install: [make "install"]
 remove: [
   ["ocamlfind" "remove" "mmseg"]
   ["rm" "-rf" "%{doc}%/mmseg"]
 ]
 depends: [
+  "ocaml" {>= "4.00.1"}
   "ocamlfind" {build}
   "core_kernel"
   "trie"
   "camomile"
 ]
+synopsis:
+  "A word identification system based on the maximum matching algorithm."
+description:
+  "The full technology page of the MMSEG system is available on http://technology.chtsai.org/mmseg/"
+flags: light-uninstall
+url {
+  src: "https://bitbucket.org/zandoye/mmseg/get/0.1.1.tar.gz"
+  checksum: "md5=ce5379abe367f6c2db15f9efb8bfea23"
+}

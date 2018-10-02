@@ -1,45 +1,51 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "qcow-format"
 maintainer: "dave@recoil.org"
 version: "0.2"
 authors: ["David Scott"]
 license: "ISC"
 homepage: "https://github.com/mirage/ocaml-qcow"
-dev-repo: "https://github.com/mirage/ocaml-qcow.git"
+dev-repo: "git+https://github.com/mirage/ocaml-qcow.git"
 bug-reports: "https://github.com/mirage/ocaml-qcow/issues"
 tags: ["org:mirage"]
 build: [
   [make "PREFIX=%{prefix}%"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: [make "PREFIX=%{prefix}%" "install"]
 remove: [
   [make "PREFIX=%{prefix}%" "uninstall"]
 ]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "camlp4"
   "type_conv"
   "base-bytes"
   "cstruct"
   "type_conv"
   "result"
-  "io-page" {<"2.0.0"}
+  "io-page" {< "2.0.0"}
   "mirage-types-lwt" {>= "2.6.0" & < "3.0.0"}
   "lwt"
-  "mirage-block" {>= "0.2" & <"1.0"}
-  "mirage-block-unix" {>= "2.1.0" & <"2.5.0"}
+  "mirage-block" {>= "0.2" & < "1.0"}
+  "mirage-block-unix" {>= "2.1.0" & < "2.5.0"}
   "cmdliner"
   "sexplib" {< "113.24.00"}
   "ocamlfind" {build}
   "oasis" {build}
-  "ounit" {test}
-  "mirage-block-ramdisk" {test}
-  "ezjsonm" {test}
-  "nbd" {test & >= "2.0.1"}
+  "ounit" {with-test}
+  "mirage-block-ramdisk" {with-test}
+  "ezjsonm" {with-test}
+  "nbd" {with-test & >= "2.0.1"}
 ]
-build-doc: ["ocaml" "setup.ml" "-doc"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-available: [ocaml-version >= "4.02.0"]
+synopsis: "Read and write images in Qcow2 format"
+description: """
+If you want to `create`, `read`, `write` or analyse qcow2-formatted
+data in pure OCaml then this library is for you!"""
+url {
+  src: "https://github.com/mirage/ocaml-qcow/archive/v0.2.tar.gz"
+  checksum: "md5=d507a2fac0a8abacda020acbc72ba3c3"
+}

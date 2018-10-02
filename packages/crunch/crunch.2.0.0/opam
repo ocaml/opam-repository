@@ -1,27 +1,33 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "anil@recoil.org"
 authors:      ["Anil Madhavapeddy" "Thomas Gazagnaire"]
 homepage:     "https://github.com/mirage/ocaml-crunch"
 bug-reports:  "https://github.com/mirage/ocaml-crunch/issues"
 license:      "ISC"
-dev-repo:     "https://github.com/mirage/ocaml-crunch.git"
+dev-repo: "git+https://github.com/mirage/ocaml-crunch.git"
 tags:         ["org:mirage" "org:xapi-project"]
-available:     [ ocaml-version >= "4.03.0" ]
-
 depends: [
+  "ocaml" {>= "4.03.0"}
   "cmdliner"
-  "ocamlfind" {build & test}
+  "ocamlfind" {build & with-test}
   "ocamlbuild" {build}
   "topkg" {build}
-  "bos" {test}
-  "cstruct" {test}
-  "lwt" {test}
-  "mirage-kv-lwt" {test & >= "1.0.0"}
-  "io-page" {test}
-  "rresult" {test}
+  "bos" {with-test}
+  "cstruct" {with-test}
+  "lwt" {with-test}
+  "mirage-kv-lwt" {with-test & >= "1.0.0"}
+  "io-page" {with-test}
+  "rresult" {with-test}
 ]
-build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
-build-test: [
-  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ]
-  [ "ocaml" "pkg/pkg.ml" "test" ]
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
+synopsis: "Convert a filesystem into a static OCaml module"
+url {
+  src:
+    "https://github.com/mirage/ocaml-crunch/releases/download/2.0.0/crunch-2.0.0.tbz"
+  checksum: "md5=9764a599cbcb4ae4bce758f10d70cb8e"
+}

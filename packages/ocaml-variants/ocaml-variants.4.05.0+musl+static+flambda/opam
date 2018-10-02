@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis:
+  "Official 4.05.0 release compiled with musl-clang -static and with flambda activated"
+description:
+  "Requires musl-clang to be installed (package musl on Arch Linux or musl-tools on Debian)"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.05.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-flambda"
+    "-cc"
+    "musl-clang -Os"
+    "-aspp"
+    "musl-clang -c"
+    "-libs"
+    "-static"
+    "-no-curses"
+    "-no-graph"
+    "-no-shared-libs"
+  ]
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.05.0.tar.gz"
+  checksum: "md5=7e0079162134336a24b9028349c756bb"
+}

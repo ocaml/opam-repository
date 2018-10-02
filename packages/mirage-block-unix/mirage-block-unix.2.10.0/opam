@@ -1,23 +1,20 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors:      "Dave Scott <dave@recoil.org>"
 maintainer:   "dave@recoil.org"
 homepage:     "https://github.com/mirage/mirage-block-unix"
-dev-repo:     "https://github.com/mirage/mirage-block-unix.git"
+dev-repo: "git+https://github.com/mirage/mirage-block-unix.git"
 bug-reports:  "https://github.com/mirage/mirage-block-unix/issues"
 tags:         "org:mirage"
 license:      "ISC"
 
 build: [
-  [ "jbuilder" "subst" "-p" name ] {pinned}
-  [ "jbuilder" "build" "-p" name "-j" jobs ]
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-
-build-test: [
-  [ "jbuilder" "runtest" "-p" name "-j" jobs ]
-]
-
 depends: [
-  "jbuilder" {build & >="1.0+beta10"}
+  "ocaml" {>= "4.03.0"}
+  "jbuilder" {build & >= "1.0+beta10"}
   "cstruct" {>= "3.0.0"}
   "cstruct-lwt"
   "mirage-block-lwt" {>= "1.0.0"}
@@ -25,19 +22,32 @@ depends: [
   "io-page-unix" {>= "2.0.0"}
   "uri" {>= "1.9.0"}
   "logs"
-  "ounit" {test}
-  "diet" {test}
-  "fmt" {test}
-  "ppx_tools" {test}
-  "ppx_sexp_conv" {test}
-  "ppx_type_conv" {test}
+  "ounit" {with-test}
+  "diet" {with-test}
+  "fmt" {with-test}
+  "ppx_tools" {with-test}
+  "ppx_sexp_conv" {with-test}
+  "ppx_type_conv" {with-test}
 ]
-available: [ ocaml-version >= "4.03.0" ]
 depexts: [
- [["debian"] ["linux-libc-dev" ]]
- [["ubuntu"] ["linux-libc-dev"]]
- [["opensuse"] ["linux-glibc-devel"]]
- [["rhel"] ["kernel-headers"]]
- [["centos"] ["kernel-headers"]]
- [["alpine"] ["linux-headers"]]
+  ["linux-libc-dev"] {os-distribution = "debian"}
+  ["linux-libc-dev"] {os-distribution = "ubuntu"}
+  ["linux-glibc-devel"] {os-distribution = "opensuse"}
+  ["kernel-headers"] {os-distribution = "rhel"}
+  ["kernel-headers"] {os-distribution = "centos"}
+  ["linux-headers"] {os-distribution = "alpine"}
 ]
+synopsis: "MirageOS disk block driver for Unix"
+description: """
+[![Build Status](https://travis-ci.org/mirage/mirage-block-unix.png?branch=master)](https://travis-ci.org/mirage/mirage-block-unix) [![Coverage Status](https://coveralls.io/repos/mirage/mirage-block-unix/badge.png?branch=master)](https://coveralls.io/r/mirage/mirage-block-unix?branch=master)
+
+Unix implementation of the Mirage `BLOCK_DEVICE` interface.
+
+This module provides raw I/O to files and block devices with as little
+caching as possible.
+
+E-mail: <mirageos-devel@lists.xenproject.org>"""
+url {
+  src: "https://github.com/mirage/mirage-block-unix/archive/v2.10.0.tar.gz"
+  checksum: "md5=809563842d4660418ee803224e07c601"
+}

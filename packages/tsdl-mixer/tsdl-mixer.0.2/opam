@@ -1,11 +1,11 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Julian Squires <julian@cipht.net>"
 authors: "Julian Squires <julian@cipht.net>"
 homepage: "http://github.com/tokenrove/tsdl-mixer"
 bug-reports: "http://github.com/tokenrove/tsdl-mixer/issues"
 license: "BSD3"
 tags: ["bindings" "audio"]
-dev-repo: "https://github.com/tokenrove/tsdl-mixer.git"
+dev-repo: "git+https://github.com/tokenrove/tsdl-mixer.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure"]
@@ -14,6 +14,7 @@ build: [
 install: ["ocaml" "setup.ml" "-install"]
 remove: ["ocamlfind" "remove" "tsdl_mixer"]
 depends: [
+  "ocaml"
   "ctypes" {>= "0.4.0"}
   "ctypes-foreign"
   "tsdl" {>= "0.9.0"}
@@ -21,7 +22,16 @@ depends: [
   "oasis" {build}
 ]
 depexts: [
-  [["debian"] ["libsdl2-mixer-dev"]]
-  [["homebrew" "osx"] ["sdl2_mixer"]]
-  [["ubuntu"] ["libsdl2-mixer-dev"]]
+  ["libsdl2-mixer-dev"] {os-distribution = "debian"}
+  ["sdl2_mixer"] {os-distribution = "homebrew" & os = "macos"}
+  ["libsdl2-mixer-dev"] {os-distribution = "ubuntu"}
 ]
+synopsis: "SDL2_mixer bindings to go with Tsdl"
+description: """
+Tsdl_mixer provides bindings to SDL2_mixer intended to be used with
+Tsdl."""
+flags: light-uninstall
+url {
+  src: "https://github.com/tokenrove/tsdl-mixer/archive/0.2.tar.gz"
+  checksum: "md5=0bc79088c06f15369b35c24777dabb6e"
+}

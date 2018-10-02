@@ -1,20 +1,27 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "andrenth@gmail.com"
 authors: ["Andre Nathan"]
 license: "BSD3"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-build-doc: [["ocaml" "setup.ml" "-doc"]]
 remove: [["ocamlfind" "remove" "milter"]]
 depends: [
+  "ocaml" {< "4.02.0"}
   "ocamlfind"
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["libmilter-dev"]]
-  [["ubuntu"] ["libmilter-dev"]]
+  ["libmilter-dev"] {os-distribution = "debian"}
+  ["libmilter-dev"] {os-distribution = "ubuntu"}
 ]
-available: ocaml-version < "4.02.0"
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "OCaml libmilter bindings"
+flags: light-uninstall
+url {
+  src:
+    "http://forge.ocamlcore.org/frs/download.php/1006/ocaml-milter-1.0.0.tar.gz"
+  checksum: "md5=91220c2dc5492182f960b09f584184d4"
+}

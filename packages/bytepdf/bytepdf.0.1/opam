@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "Drup <drupyog@zoho.com>"
+authors: "Drup <drupyog@zoho.com>"
+license: "ISC"
+homepage: "https://github.com/Drup/bytepdf"
+bug-reports: "https://github.com/Drup/bytepdf/issues"
+dev-repo: "git+https://github.com/Drup/bytepdf.git"
+
+depends: [
+  "ocaml" {>= "4.03"}
+  "dune" {build}
+  "containers"
+  "bos"
+  "cmdliner"
+  "obytelib" {>= "1.4"}
+  "camlpdf"
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+synopsis: "Tool to create PDFs that are also OCaml bytecodes"
+description: """
+The `bytepdf` tool allows you to take a PDF `foo.pdf` and an OCaml bytecode `foo.byte` and merges them into a file that is both a valid PDF and a valid bytecode.
+
+```
+bytepdf --ml foo.byte --pdf foo.pdf -o bar.pdf
+```
+
+The resulting file can both be read as a pdf and executed by the ocaml interpreter:
+
+```
+open bar.pdf
+ocamlrun bar.pdf
+```
+
+Furthermore, if you open the PDF with Acrobat Reader, the PDF will contain the OCaml bytecode as a file attachment. For more details, you can read the help. For an explanation of how this work, consider looking at [this abstract](abstract.pdf).
+The only current limitation is that the bytecode should not
+have been statically linked with C code."""
+url {
+  src:
+    "https://github.com/Drup/bytepdf/releases/download/0.1/bytepdf-0.1.tbz"
+  checksum: "md5=5480d78b88229a03019dad0d023c3162"
+}

@@ -1,0 +1,27 @@
+opam-version: "2.0"
+synopsis: "Runtime with frame-pointers (improved GDB & perf usage)"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.00.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix]
+  [make "world" "world.opt"]
+]
+install: [make "install"]
+patches: "omit-frame-pointer-4.00.0.patch"
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00.0.tar.bz2"
+  checksum: "md5=7b14718e69d84f10e7fb251c7ce0acd2"
+}
+extra-source "omit-frame-pointer-4.00.0.patch" {
+  src: "http://www.ocamlpro.com/files/omit-frame-pointer-4.00.0.patch"
+  checksum: "md5=681ebe15d8fab3374a32e945cd75ac73"
+}

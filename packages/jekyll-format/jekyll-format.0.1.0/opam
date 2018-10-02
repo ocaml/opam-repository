@@ -1,14 +1,14 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Anil Madhavapeddy <anil@recoil.org>"
 authors: ["Anil Madhavapeddy <anil@recoil.org>"]
 homepage: "https://github.com/avsm/jekyll-format"
 doc: "https://avsm.github.io/jekyll-format/doc"
 license: "ISC"
-dev-repo: "https://github.com/avsm/jekyll-format.git"
+dev-repo: "git+https://github.com/avsm/jekyll-format.git"
 bug-reports: "https://github.com/avsm/jekyll-format/issues"
 tags: ["org:ocamllabs" "org:mirage"]
-available: [ ocaml-version >= "4.02.3"]
 depends: [
+  "ocaml" {>= "4.02.3"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
@@ -19,9 +19,24 @@ depends: [
   "rresult"
   "ptime"
   "fpath"
-  "alcotest" {test & >="0.7.0"}
-  "bos" {test}
+  "alcotest" {with-test & >= "0.7.0"}
+  "bos" {with-test}
 ]
-depopts: []
-build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
-build-test: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true" ]
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+]
+synopsis: "Jekyll post parsing library"
+description: """
+[Jekyll](https://jekyllrb.com) is a simple, blog-aware static site
+generator that takes a template directory of files and turns them into
+a website. This library exists to parse those blog posts and make them
+easy to manipulate from OCaml code.
+
+jekyll-format is distributed under the ISC license."""
+url {
+  src:
+    "https://github.com/avsm/jekyll-format/releases/download/v0.1.0/jekyll-format-0.1.0.tbz"
+  checksum: "md5=a16f308684848ba53b7166589b8a802f"
+}

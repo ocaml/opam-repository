@@ -1,27 +1,29 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      "Thomas Gazagnaire"
 license:      "ISC"
 homepage:     "https://github.com/mirage/irmin"
 bug-reports:  "https://github.com/mirage/irmin/issues"
-dev-repo:     "https://github.com/mirage/irmin.git"
-
+dev-repo: "git+https://github.com/mirage/irmin.git"
 build: [
-  ["./configure" "--prefix" prefix
-      "--%{cohttp:enable}%-http"
-      "--%{git:enable}%-git"
-      "--%{conduit+cohttp+camlzip+nocrypto+base-unix:enable}%-unix"
-      "--%{mirage-git:enable}%-mirage"]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--%{cohttp:enable}%-http"
+    "--%{git:enable}%-git"
+    "--%{conduit+cohttp+camlzip+nocrypto+base-unix:enable}%-unix"
+    "--%{mirage-git:enable}%-mirage"
+  ]
   [make]
-]
-build-test: [
-  ["./configure" "--enable-tests" "--enable-examples"]
-  [make "test"]
+  ["./configure" "--enable-tests" "--enable-examples"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "irmin"]
 
 depends: [
+  "ocaml" {>= "4.01.0" & < "4.03.0"}
   "ocamlfind" {build}
   "ezjsonm" {>= "0.4.2" & < "0.5.0"}
   "ocamlgraph"
@@ -36,10 +38,10 @@ depends: [
   "re"
   "cmdliner"
   "crunch"
-  "base-unix" {test}
-  "git" {test}
-  "cohttp" {test}
-  "alcotest" {test & >= "0.4.1"}
+  "base-unix" {with-test}
+  "git" {with-test}
+  "cohttp" {with-test}
+  "alcotest" {with-test & >= "0.4.1"}
   "ocamlbuild" {build}
 ]
 depopts: [
@@ -55,4 +57,17 @@ conflicts: [
   "cohttp" {< "0.18.3"}
   "git"    {< "1.7.0" & >= "1.8.0"}
 ]
-available: [ocaml-version >= "4.01.0" & ocaml-version < "4.03.0"]
+synopsis: "Irmin, the database that never forgets"
+description: """
+Irmin is a distributed database with built-in snapshot, branch and
+revert mechanisms. It is designed to use a large variety of backends,
+although it is optimized for append-only store.
+
+Irmin is written in pure OCaml. It can thus be compiled to Javascript
+-- and run in the browsers; or into a MirageOS unikernel -- and run directly
+on top of Xen."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/irmin/archive/0.9.10.tar.gz"
+  checksum: "md5=4df65e9fe984406b4a1eeb873e55a09b"
+}

@@ -1,5 +1,4 @@
-
-opam-version: "1.2"
+opam-version: "2.0"
 name: "reason-parser"
 version: "1.12.0"
 maintainer: "Jordan Walke <jordojw@gmail.com>"
@@ -14,22 +13,41 @@ substs: [ "pkg/META" ]
 build: [
   [make "compile_error"]
   ["ocamlbuild" "-package" "topkg" "pkg/build.native"]
-  ["./build.native" "build"
-                    "--native" "%{ocaml-native}%"
-                    "--native-dynlink" "%{ocaml-native-dynlink}%"]
-]
-build-test: [
-  "ocamlbuild" "-classic-display" "-use-ocamlfind" "src_test/test_reason.byte" "--"
+  [
+    "./build.native"
+    "build"
+    "--native"
+    "%{ocaml:native}%"
+    "--native-dynlink"
+    "%{ocaml:native-dynlink}%"
+  ]
+  [
+    "ocamlbuild"
+    "-classic-display"
+    "-use-ocamlfind"
+    "src_test/test_reason.byte"
+    "--"
+  ] {with-test}
 ]
 depends: [
-  "ocamlfind"               {build}
-  "menhir"                  {>= "20160303" & < "20170418"}
-  "merlin-extend"           {>= "0.3"}
-  "result"                  {=  "1.2"}
-  "topkg"                   {=  "0.8.1"}
+  "ocaml" {>= "4.02" & < "4.05"}
+  "ocamlfind" {build}
+  "menhir" {>= "20160303" & < "20170418"}
+  "merlin-extend" {>= "0.3"}
+  "result" {= "1.2"}
+  "topkg" {= "0.8.1"}
   "ocaml-migrate-parsetree"
-  "ppx_tools_versioned"     {= "5.0alpha"}
+  "ppx_tools_versioned" {= "5.0alpha"}
 ]
-depopts: [
-]
-available: [ ocaml-version >= "4.02" & ocaml-version < "4.05" ]
+synopsis: "Reason Parser: Meta Language Toolchain"
+description: """
+reason allows development of Meta Language syntax trees in non-text format. It
+allows a development model that is equivalent to collaborating on syntax trees
+that have been committed to a source code repository.
+
+This is the parser sub-package."""
+url {
+  src:
+    "https://github.com/facebook/reason/releases/download/reason-parser-1.12.0/reason-parser-1.12.0.tar.gz"
+  checksum: "md5=3f4834052a844b52eeab5bfd5dc1de4a"
+}

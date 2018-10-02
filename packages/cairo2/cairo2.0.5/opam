@@ -1,28 +1,38 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
 authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
            "Pierre Hauweele <pierre@hauweele.net>" ]
 license: "LGPL-3.0 with OCaml linking exception"
 homepage: "https://github.com/Chris00/ocaml-cairo"
-dev-repo: "https://github.com/Chris00/ocaml-cairo.git"
+dev-repo: "git+https://github.com/Chris00/ocaml-cairo.git"
 bug-reports: "https://github.com/Chris00/ocaml-cairo/issues"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix
-    "--%{lablgtk:enable}%-lablgtk2"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{lablgtk:enable}%-lablgtk2"
+  ]
   ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{lablgtk:enable}%-lablgtk2"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "cairo2"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"
-    "--%{lablgtk:enable}%-lablgtk2"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml"
   "base-bigarray"
   "ocamlfind" {build}
   "ocamlbuild" {build}
@@ -31,3 +41,15 @@ depends: [
 depopts: [
   "lablgtk"
 ]
+synopsis: "Binding to Cairo, a 2D Vector Graphics Library."
+description: """
+This is a binding to Cairo, a 2D graphics library with support for
+multiple output devices. Currently supported output targets include
+the X Window System, Quartz, Win32, image buffers, PostScript, PDF,
+and SVG file output."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/Chris00/ocaml-cairo/releases/download/0.5/cairo2-0.5.tar.gz"
+  checksum: "md5=7081cf03e729ce05e5399d3023f267c2"
+}

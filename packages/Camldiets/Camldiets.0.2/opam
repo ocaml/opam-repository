@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "opam-devel@lists.ocaml.org"
 authors: ["Oliver Friedmann" "Martin Lange"]
 homepage: "https://github.com/tcsprojects/camldiets"
@@ -8,15 +8,24 @@ dev-repo: "git://github.com/tcsprojects/camldiets.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 remove: ["ocamlfind" "remove" "Camldiets"]
 depends: [
+  "ocaml"
   "ocamlbuild" {build}
   "ocamlfind" {build}
 ]
+synopsis:
+  "A highly efficient OCaml set implementation for fat sets, i.e. densely populated sets over a discrete linear order."
+description: """
+A highly efficient OCaml set implementation for fat sets, i.e. densely
+populated sets over a discrete linear order."""
+flags: light-uninstall
+url {
+  src: "https://github.com/tcsprojects/camldiets/archive/v0.2.tar.gz"
+  checksum: "md5=05222445e9a4e90daa29500e667d33b6"
+}

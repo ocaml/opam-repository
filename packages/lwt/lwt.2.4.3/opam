@@ -1,7 +1,7 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "jeremie@dimino.org"
 build: [
-  ["patch" "-p1" "-i" "4.01cloexec.diff"] {ocaml-version >= "4.01.0"}
+  ["patch" "-p1" "-i" "4.01cloexec.diff"] {ocaml:version >= "4.01.0"}
   [
     "./configure"
     "--%{conf-libev:enable}%-libev"
@@ -17,6 +17,7 @@ build: [
 ]
 remove: [["ocamlfind" "remove" "lwt"]]
 depends: [
+  "ocaml" {< "4.02.0"}
   "ocamlfind"
   "camlp4"
   "ocamlbuild" {build}
@@ -34,5 +35,15 @@ conflicts: [
   "react" {>="1.0.0"}
   "ssl" {>="0.5.0"}
 ]
-available: ocaml-version < "4.02.0"
 install: [make "install"]
+synopsis: "A cooperative threads library for OCaml"
+description: """
+This library is part of the Ocsigen project. See:
+
+http://ocsigen.org/lwt"""
+flags: light-uninstall
+extra-files: ["4.01cloexec.diff" "md5=e2e6515cf101199ce0af9ec3d878f794"]
+url {
+  src: "http://ocsigen.org/download/lwt-2.4.3.tar.gz"
+  checksum: "md5=4a4a22da7da4301c6282f361edd0c241"
+}

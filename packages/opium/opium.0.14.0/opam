@@ -1,14 +1,15 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "rudi.grinberg@gmail.com"
 authors: ["Rudi Grinberg"]
 license: "MIT"
 
 homepage: "https://github.com/rgrinberg/opium"
 bug-reports: "https://github.com/rgrinberg/opium/issues"
-dev-repo: "https://github.com/rgrinberg/opium.git"
-
-build: [ [make] ]
-
+dev-repo: "git+https://github.com/rgrinberg/opium.git"
+build: [
+  [make]
+  [make "check"] {with-test}
+]
 install: [make "install"]
 
 remove: [
@@ -16,13 +17,12 @@ remove: [
   ["ocamlfind" "remove" "opium"]
 ]
 
-build-test: [ [make "check"] ]
-
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "omake" {build}
   "cppo" {build}
-  "cohttp" {>= "0.15.0" & <"0.99"}
+  "cohttp" {>= "0.15.0" & < "0.99"}
   "ezjsonm" {>= "0.4.0"}
   "base64" {>= "2.0.0"}
   "lwt"
@@ -34,7 +34,21 @@ depends: [
   "magic-mime"
   "cow" {>= "0.10.0" & < "2.0.0"}
   "fieldslib" {<= "113.00.00"}
-  "ounit" {test}
+  "ounit" {with-test}
 ]
+synopsis: "Sinatra like web toolkit based on Lwt + Cohttp"
+description: """
+Opium is a minimalistic library for quickly binding functions
+to http routes. Its features include (but not limited to):
 
-available: [ocaml-version >= "4.01.0"]
+* Middleware system for app independent components
+* A simple router for matching urls and parsing parameters
+* Request/Response pretty printing for easier debugging
+
+Note: This library is still at an early stage so expect breakages
+until 1.0"""
+flags: light-uninstall
+url {
+  src: "https://github.com/rgrinberg/opium/archive/v0.14.0.tar.gz"
+  checksum: "md5=09be6a2006fc1abda8ec0e1547f21503"
+}

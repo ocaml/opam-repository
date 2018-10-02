@@ -1,20 +1,30 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "john.else@citrix.com"
 authors:      ["Dave Scott" "Jon Ludlam" "John Else"]
 homepage:     "https://github.com/xapi-project/xcp-rrd"
 bug-reports:  "https://github.com/xapi-project/xcp-rrd/issues"
-dev-repo:     "https://github.com/xapi-project/xcp-rrd.git"
-
-build:      [make]
-build-test: [make "test"]
+dev-repo: "git+https://github.com/xapi-project/xcp-rrd.git"
+build: [
+  [make]
+  [make "test"] {with-test}
+]
 install:    [make "PREFIX=%{prefix}%" "install"]
 remove:     [make "PREFIX=%{prefix}%" "uninstall"]
 
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
-  "oasis"     {build}
+  "oasis" {build}
   "rpc"
   "uuidm"
   "ounit"
 ]
-available: ocaml-version >= "4.01.0"
+synopsis: "RRD library for use with xapi"
+description: """
+Round-Robin Databases (RRDs) are constant-space datastructures
+used for archiving historical data where the older data is stored
+at a lower resolution."""
+url {
+  src: "https://github.com/xapi-project/xcp-rrd/archive/v0.12.0.tar.gz"
+  checksum: "md5=a51c3d90d07ee770f418d856bc0cdffe"
+}
