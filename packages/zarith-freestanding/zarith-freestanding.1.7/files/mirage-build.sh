@@ -10,7 +10,7 @@ CFLAGS="$(pkg-config --cflags gmp-freestanding ocaml-freestanding)" \
 LDFLAGS="$(pkg-config --libs gmp-freestanding)" \
 ./configure -gmp
 
-if [ `uname -s` = "FreeBSD" ]; then
+if [ `uname -s` = "FreeBSD" ] || [ `uname -s` = "OpenBSD" ]; then
     gmake
 else
     make
