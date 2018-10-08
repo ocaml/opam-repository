@@ -1,0 +1,30 @@
+opam-version: "2.0"
+synopsis: "BER-N107 MetaOCaml"
+maintainer: "yallop@gmail.com"
+depends: [
+  "ocaml" {= "4.07.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-metaocaml-ocamlfind" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" "%{prefix}%"]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  ["./configure" "-prefix" "%{prefix}%" "-cc" "cc" "-aspp" "cc -c"]
+    {os = "openbsd" | os = "freebsd" | os = "macos"}
+  ["sh" "-c" "cd ber-metaocaml-107 && make patch"]
+  [make "world" "bootstrap" "world.opt"]
+  [make "-C" "ber-metaocaml-107" "all"]
+]
+install: [
+  [make "-i" "install"]
+  [make "-C" "ber-metaocaml-107" "install" "install.opt"]
+]
+url {
+  src: "https://github.com/metaocaml/ber-metaocaml/archive/ber-n107.tar.gz"
+  checksum: "md5=45f8ceeda06ab3d335a2b9388b30b8f5"
+}
