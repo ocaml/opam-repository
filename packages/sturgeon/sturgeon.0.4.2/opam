@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "A toolkit for communicating with Emacs"
+description: """
+Sturgeon implements various tools for manipulating Emacs from OCaml:
+- `Sturgeon_sexp` implements the Emacs dialect of S-expressions
+- `Sturgeon_session` implements an "session protocol" to make RPC to Emacs from OCaml and vice versa
+- `Sturgeon_stui` is a session implementing an [Inuit](https://github.com/let-def/inuit) backend: one can now runs text user-interface on an Emacs buffer
+- `Sturgeon_recipes_*` offers different "rendez-vous" points to connect to Emacs
+
+Sturgeon is distributed under the ISC license."""
+maintainer: "Frédéric Bour <frederic.bour@lakaban.net>"
+authors: "Frédéric Bour <frederic.bour@lakaban.net>"
+license: "ISC"
+homepage: "https://github.com/let-def/sturgeon"
+doc: "https://let-def.github.io/sturgeon/doc"
+bug-reports: "https://github.com/let-def/sturgeon/issues"
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "dune" {build}
+  "inuit"
+  "result"
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+post-messages: """
+sturgeon installed.
+
+Emacs setup:
+
+Add opam emacs directory to your load-path if it is not there yet:
+  (let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
+   (when (and opam-share (file-directory-p opam-share))
+    (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))))
+
+Load sturgeon file:
+  (require 'sturgeon)"""
+dev-repo: "git+https://github.com/let-def/sturgeon.git"
+url {
+  src: "https://github.com/let-def/sturgeon/archive/v0.4.2.tar.gz"
+  checksum: [
+    "md5=16f984c347be593eb590c0ad0611ee08"
+    "sha512=cfe091eeb36b14029ae1560a780ad099239de8f80f9c942dc6b0ef1b08bf47add0f29a575d8127ed4648cb3ab27f3ca0d520befa55aeb22411dcfca545e0bd44"
+  ]
+}
