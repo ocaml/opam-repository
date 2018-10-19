@@ -20,12 +20,13 @@ let () =
   in
   let ocamlc = ocaml^"c"^suffix in
   let libdir =
-    let ic = Unix.open_process_in (ocamlc^" -where") in
-    set_binary_mode_in ic false;
-    let r = input_line ic in
-    if Unix.close_process_in ic <> Unix.WEXITED 0 then 
-      failwith "Bad return from 'ocamlc -where'";
-    r
+    if Sys.command (ocamlc^" -where > where") = 0 then
+      (* Must be opened in text mode for Windows *)
+      let ic = open_in "where" in
+      let r = input_line ic in
+      close_in ic; r
+    else
+      failwith "Bad return from 'ocamlc -where'"
   in
   let stubsdir =
     let ic = open_in (Filename.concat libdir "ld.conf") in
