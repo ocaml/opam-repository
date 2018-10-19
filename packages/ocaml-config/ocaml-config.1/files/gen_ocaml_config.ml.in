@@ -3,13 +3,13 @@ let () =
     let v = Sys.ocaml_version in
     try String.sub v 0 (String.index v '+') with Not_found -> v
   in
-  if ocaml_version <> "%{_:version}%" then
+  if ocaml_version <> Sys.argv.(1) then
     (Printf.eprintf
-       "OCaml version mismatch: %%s, expected %{_:version}%"
-       ocaml_version;
+       "OCaml version mismatch: %%s, expected %s"
+       ocaml_version Sys.argv.(1);
      exit 1)
   else
-  let oc = open_out "%{_:name}%.config" in
+  let oc = open_out (Sys.argv.(2) ^ ".config") in
   let exe = ".exe" in
   let (ocaml, suffix) =
     let s = Sys.executable_name in
