@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer:   "thomas@gazagnaire.org"
+authors:      ["Thomas Gazagnaire"]
+license:      "ISC"
+homepage:     "https://github.com/mirage/metrics"
+bug-reports:  "https://github.com/mirage/metrics/issues"
+dev-repo:     "git+https://github.com/mirage/metrics.git"
+doc:          "https://mirage.github.io/metrics/"
+
+build: [
+ ["dune" "subst"] {pinned}
+ ["dune" "build" "-p" name "-j" jobs]
+ ["dune" "runtest" "-p" name] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.04.0"}
+  "dune" {build}
+  "fmt"
+  "alcotest" {with-test}
+]
+synopsis: "Metrics infrastructure for OCaml"
+description: """
+Metrics provides a basic infrastructure to monitor and gather runtime
+metrics for OCaml program. Monitoring is performed on sources, indexed
+by tags, allowing users to enable or disable at runtime the gathering
+of data-points. As disabled metric sources have a low runtime cost
+(only a closure allocation), the library is designed to instrument
+production systems.
+
+Metric reporting is decoupled from monitoring and is handled by a
+custom reporter. A few reporters are (will be) provided by default.
+
+Metrics is heavily inspired by
+[Logs](http://erratique.ch/software/logs).
+"""
+url {
+  src:
+    "https://github.com/mirage/metrics/releases/download/0.1.0/metrics-0.1.0.tbz"
+  checksum: "md5=bdc701d2cbe8ec6a172c56468279dc38"
+}
