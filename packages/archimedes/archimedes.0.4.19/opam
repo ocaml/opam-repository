@@ -1,0 +1,53 @@
+opam-version: "2.0"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: [
+  "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+  "Pierre Hauweele <pierre@hauweele.net>"
+  "Fabian Pijcke <fabian.pijcke@gmail.com>"
+  "Noémie Meunier <noemie_6462@hotmail.com>"
+  "Bertrand Desmons <bibi-6@hotmail.fr>"
+  "Xavier Deschuyteneer <xavier.deschuyteneer@gmail.com>"
+]
+license: "LGPL-3.0 with OCaml linking exception"
+homepage: "http://forge.ocamlcore.org/projects/archimedes/"
+bug-reports: "http://forge.ocamlcore.org/projects/archimedes/"
+dev-repo: "git+http://forge.ocamlcore.org/anonscm/git/archimedes/archimedes.git"
+build: [
+  ["oasis" "setup"]
+  [ "ocaml" "setup.ml" "-configure" "--prefix" prefix
+    "--%{ocamlfind:enable}%-graphics"
+    "--enable-cairo2" {"%{cairo:installed}%" | "%{cairo2:installed}%"} ]
+  ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  [ "ocaml" "setup.ml" "-configure" "--enable-tests"
+    "--%{ocamlfind:enable}%-graphics"
+    "--enable-cairo2" {"%{cairo:installed}%" | "%{cairo2:installed}%"}
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocaml" "%{etc}%/archimedes/_oasis_remove_.ml" "%{etc}%/archimedes"]
+depends: [
+  "ocaml"
+  "base-bigarray"
+  "camlp4"
+  "oasis" {build & >= "0.3"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+]
+depopts: ["cairo2"]
+conflicts: [
+  "cairo2" {< "0.6"}
+]
+synopsis: "Extensible 2D plotting library"
+description: """
+Archimedes is a high quality, platform-independent, extensible 2D
+plotting library.  It provides dynamically loaded backends such as
+Graphics and Cairo."""
+url {
+  src:
+    "https://github.com/Chris00/ocaml-cairo/releases/download/0.6/archimedes-0.4.19.tar.gz"
+  checksum: "md5=7f3bd1771751a074e4b4d2ccc5213260"
+}
