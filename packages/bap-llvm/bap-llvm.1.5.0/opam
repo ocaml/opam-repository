@@ -1,0 +1,51 @@
+opam-version: "2.0"
+name: "bap-llvm"
+version: "1.5.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure"
+  "--prefix=%{prefix}%"
+  "--with-cxx=`which clang++`"
+  "--with-llvm-version=%{conf-bap-llvm:package-version}%"
+  "--with-llvm-config=%{conf-bap-llvm:config}%"
+  "--enable-llvm"]
+  [make]
+  ]
+
+install: [
+  [make "install"]
+]
+
+remove: [
+  ["ocamlfind" "remove" "bap-plugin-llvm"]
+  ["ocamlfind" "remove" "bap-llvm"]
+  ["bapbundle" "remove" "llvm.plugin"]
+]
+
+depends: [
+  "ocaml" {>= "4.03" & < "4.06"}
+  "bap-std" {= "1.5.0"}
+  "cmdliner"
+  "conf-env-travis"
+  "conf-bap-llvm" {>= "1.1" & <= "1.3"}
+  "ogre"
+  "monads"
+]
+depexts: [
+  ["clang"] {os-distribution = "ubuntu"}
+  ["clang"] {os-distribution = "debian"}
+]
+synopsis: "BAP LLVM backend"
+description:
+  "Provides a loader and a disassembler, based on LLVM-MC library."
+extra-files: ["detect.travis" "md5=00e7b28719062d550dcd7813becf7396"]
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v1.5.0.tar.gz"
+  checksum: "md5=9eed04fda6610dd4a8aa83948abfffc3"
+  mirrors: "https://mirrors.aegis.cylab.cmu.edu/bap/1.5.0/v1.5.0.tar.gz"
+}

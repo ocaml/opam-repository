@@ -1,0 +1,132 @@
+#load "unix.cma"
+
+open Printf
+
+let read_all ch =
+  let buf = Buffer.create 16 in
+  let rec loop () =
+    match input_char ch with
+    | ch -> Buffer.add_char buf ch; loop ()
+    | exception End_of_file -> String.trim (Buffer.contents buf) in
+  loop ()
+
+let split_on_char sep s =
+  let r = ref [] in
+  let j = ref (String.length s) in
+  for i = String.length s - 1 downto 0 do
+    if String.get s i = sep then begin
+      r := String.sub s (i + 1) (!j - i - 1) :: !r;
+      j := i
+    end
+  done;
+  String.sub s 0 !j :: !r
+
+let split str =
+  List.map String.trim (split_on_char '\n' str) |>
+  List.filter (fun s -> s <> "")
+
+exception Command_failed of Unix.process_status
+
+let process_status_to_string s =
+  let open Unix in
+  match s with
+  | WEXITED i -> sprintf "exit status %d" 1
+  | WSTOPPED i -> sprintf "proccess was stopped by signal %d" i
+  | WSIGNALED i -> sprintf "proccess was killed by signal %d" i
+
+let exn_to_string = function
+  | Command_failed s -> sprintf "%s" (process_status_to_string s)
+  | e -> Printexc.to_string e
+
+let cmd fmt =
+  let run c =
+    try
+      let inp = Unix.open_process_in c in
+      let res = read_all inp in
+      match Unix.close_process_in inp with
+      | Unix.WEXITED 0 -> Some res
+      | s -> raise (Command_failed s)
+    with e ->
+      eprintf "command %s failed: %s\n" c (exn_to_string e);
+      None in
+  ksprintf run fmt
+
+let split_results fmt =
+  let run c =
+    match cmd "%s" c with
+    | None -> []
+    | Some s -> split s in
+  ksprintf run fmt
+
+let string_of_targets targets =
+  List.fold_left (fun acc x ->
+      sprintf "%s\"%s\"; " acc x) "[" targets ^ "]"
+
+let write objdump targets =
+  let digest path = Digest.to_hex (Digest.file path) in
+  let depends = function
+    | None -> ""
+    | Some file ->
+      sprintf "[ %S %S ]" file (digest file) in
+  let get x = match x with
+    | None -> ""
+    | Some x -> x in
+  let file_depends =
+    let deps = depends objdump in
+    if deps = "" then ""
+    else sprintf "file-depends: [ %s ]" deps in
+  let targets = string_of_targets targets in
+  let oc = open_out "%{_:name}%.config" in
+  let objdump = get objdump in
+  fprintf oc {|
+opam-version: "2.0"
+%s
+variables {
+  objdump: %S
+  targets: %S
+}
+|} file_depends objdump targets;
+  close_out oc
+
+let collect_objdumps () =
+  let find where =
+    split_results
+      "find %s -name \"*objdump\" -executable -type f" where in
+  find "/bin" @ find "/usr"
+
+let collect_targets objdumps =
+  let has_prefix str pref =
+    let len = String.length pref in
+    len <= String.length str &&
+    String.(sub str 0 len = pref) in
+  List.fold_left (fun acc obj ->
+      let file = Filename.basename obj in
+      if file = "objdump" || file = "gobjdump" || has_prefix file "llvm"
+      then acc
+      else
+      if Filename.check_suffix file "-objdump" then
+        Filename.chop_suffix file "-objdump" :: acc
+      else acc) [] objdumps
+
+let which = cmd "which %s"
+
+let () =
+  try
+    match "%{os}%" with
+    | "linux" ->
+      let objdump = which "objdump" in
+      let objdumps = collect_objdumps () in
+      let targets = collect_targets objdumps in
+      write objdump targets
+    | "macos" ->
+      let objdump= which "gobjdump" in
+      let objdumps = split_results "mdfind -name objdump" in
+      let objdumps = List.filter (fun x -> not (Sys.is_directory x)) objdumps in
+      let targets = collect_targets objdumps in
+      write objdump targets
+    | s ->
+      eprintf "unsupported OS %s\n" s;
+      exit 1
+  with e ->
+    eprintf "build failed: %s\n" (Printexc.to_string e);
+    exit 1
