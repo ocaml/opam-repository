@@ -1,0 +1,148 @@
+#load "unix.cma"
+
+open Printf
+
+let read_all ch =
+  let buf = Buffer.create 16 in
+  let rec loop () =
+    match input_char ch with
+    | ch -> Buffer.add_char buf ch; loop ()
+    | exception End_of_file -> String.trim (Buffer.contents buf) in
+  loop ()
+
+exception Command_failed of Unix.process_status
+
+let process_status_to_string s =
+  let open Unix in
+  match s with
+  | WEXITED i -> sprintf "exit status %d" 1
+  | WSTOPPED i -> sprintf "proccess was stopped by signal %d" i
+  | WSIGNALED i -> sprintf "proccess was killed by signal %d" i
+
+let exn_to_string = function
+  | Command_failed s -> sprintf "%s" (process_status_to_string s)
+  | e -> Printexc.to_string e
+
+let cmd fmt =
+  let run c =
+    try
+      let inp = Unix.open_process_in c in
+      let res = read_all inp in
+      match Unix.close_process_in inp with
+      | Unix.WEXITED 0 -> Some res
+      | s -> raise (Command_failed s)
+    with e ->
+      eprintf "command %s failed: %s\n" c (exn_to_string e);
+      None in
+  ksprintf run fmt
+
+let of_opam_config () =
+  let cfg = "%{llvm-config}%" in
+  if cfg = "" then None
+  else Some cfg
+
+let of_env () =
+  try Some (Sys.getenv "LLVM_CONFIG")
+  with Not_found -> None
+
+let write path version =
+  let digest = Digest.to_hex (Digest.file path) in
+  let oc = open_out "%{_:name}%.config" in
+  fprintf oc {|
+opam-version: "2.0"
+file-depends: [ [ %S %S ] ]
+variables {
+  config: %S
+  package-version: "%s"
+}
+|} path digest path version;
+  close_out oc
+
+let (/) = Filename.concat
+
+let normalize ver =
+  let ver =
+    if String.length ver >= 3 then
+      String.sub ver 0 3
+    else ver in
+  if ver > "3.8" then String.sub ver 0 1
+  else ver
+
+let brew_config ver =
+  match cmd "brew --cellar" with
+  | None -> None
+  | Some cellar ->
+    match cmd "ls %s | grep %s" cellar (normalize ver) with
+    | None -> None
+    | Some p ->
+      cmd "find %s/%s -name \"llvm-config\"" cellar p
+
+let macports_config ver = sprintf "llvm-config-mp-%s" ver
+
+let index_opt str c =
+  try Some (String.index str '.')
+  with Not_found -> None
+
+let configs ver =
+  let ver' = match index_opt ver '.' with
+    | None -> ver
+    | Some i -> String.sub ver 0 i ^ String.sub ver (i + 1) 1 in
+  let configs = [
+    sprintf "llvm-config-%s" ver;
+    sprintf "llvm-config-%s" ver';
+    "llvm-config";
+  ] in
+  match "%{os}%" with
+  | "macos" ->
+    let configs = match brew_config ver with
+      | None -> configs
+      | Some b -> b :: configs in
+    macports_config ver :: configs
+  | _ -> configs
+
+let find_opt ~f xs =
+  try Some (List.find f xs)
+  with Not_found -> None
+
+let versions_equal v v' =
+  String.equal (normalize v) (normalize v')
+
+let locate () =
+  let versions = ["5.0"; "4.0"; "3.8"; "3.4"] in
+  List.fold_left (fun cfg ver ->
+      match cfg with
+      | Some _ -> cfg
+      | None ->
+        let configs = configs ver in
+        find_opt (fun cfg ->
+            match cmd "which %s" cfg with
+            | None -> false
+            | Some cfg ->
+              match cmd "%s --version" cfg with
+              | None -> false
+              | Some ver' ->
+                List.exists (versions_equal ver') versions) configs)
+    None versions
+
+let rec find_map fs =
+  match fs with
+  | [] -> None
+  | f :: fs ->
+    match f () with
+    | None -> find_map fs
+    | x -> x
+
+let () =
+  try
+    let path = match find_map [of_opam_config; of_env; locate] with
+      | Some cfg -> cmd "which %s" cfg
+      | None -> None in
+    match path with
+    | None -> eprintf "LLVM not found"; exit 1
+    | Some path ->
+      match cmd "%s --version" path with
+      | None -> eprintf "'%s --version' failed\n" path; exit 1
+      | Some version -> write path version
+  with e ->
+    eprintf "build failed: %s\n" (Printexc.to_string e);
+    exit 1

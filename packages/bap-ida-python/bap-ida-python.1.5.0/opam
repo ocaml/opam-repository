@@ -1,0 +1,43 @@
+opam-version: "2.0"
+name: "bap-ida-python"
+version: "1.5.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap-ida-python/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap-ida-python/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap-ida-python/"
+license: "MIT"
+substs: [
+    "bap.cfg"
+]
+install: [
+    ["mkdir" "-p" "%{prefix}%/share/%{name}%/"]
+    ["cp" "-v"  "plugins/plugin_loader_bap.py" "%{prefix}%/share/%{name}%/"]
+    ["cp" "-rv" "plugins/bap" "%{prefix}%/share/%{name}%/"]
+    ["cp" "-v"  "bap.cfg" "%{prefix}%/share/%{name}%/"]
+]
+remove: [
+    ["rm" "-rf" "%{prefix}%/share/%{name}%/"]
+]
+depends: [
+  "ocaml" {>= "4.03" & < "4.06"}
+  "bap" {= "1.5.0"}
+  "conf-ida"
+]
+synopsis: "A BAP - IDA Pro integration library"
+flags: light-uninstall
+extra-files: ["bap.cfg.in" "md5=aec3a830555380469b523da74daef069"]
+url {
+  src:
+    "https://github.com/BinaryAnalysisPlatform/bap-ida-python/archive/v1.5.0.tar.gz"
+  checksum: "md5=88b4041d764c0f9c0375235d9e94ad6f"
+}
+
+post-messages: [
+  "In order to install bap-ida-python plugin:
+    $: rm -rf %{conf-ida:path}%/plugins/bap/
+    $: cp %{prefix}%/share/%{name}%/plugin_loader_bap.py %{conf-ida:path}%/plugins/
+    $: cp -r %{prefix}%/share/%{name}%/bap %{conf-ida:path}%/plugins/
+    $: cp %{prefix}%/share/%{name}%/bap.cfg %{conf-ida:path}%/cfg/
+ "
+]

@@ -1,0 +1,42 @@
+opam-version: "2.0"
+name: "bap-emacs-goodies"
+version: "0.1"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: [
+  "Thomas Barabosch <thomas.barabosch@fkie.fraunhofer.de>"
+  "Ivan Gotovchits <ivg@ieee.org>"
+]
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+
+depends: [
+  "ocaml"
+  "bap-emacs-mode" {= "0.1"}
+  "bap-emacs-dot" {= "0.1"}
+]
+post-messages: [
+  " Apppend this to your .emacs:
+  ;; Add opam emacs directory to you load paths:
+  (defun opam-path (path)
+     (let ((opam-share-dir (ignore-errors (car (process-lines \"opam\" \"config\" \"var\" \"share\")))))
+       (concat opam-share-dir \"/\" path)))
+  (add-to-list 'load-path (opam-path \"emacs/site-lisp\"))
+  ;; load bap-emacs-goodies
+  (require \'bap-mode)
+  (require \'dot)
+"
+]
+synopsis: "A collection of useful Emacs tools for BAP"
+description: """
+bap-mode
+Emacs major mode for reading and analyzing programs in BAP's IR.
+It allows to interact with BAP from within emacs. For example, bap-open-file (C-c C-b o) opens
+a file with BAP and emits the IR to an Emacs buffer. bap-mode hightlights the syntax and allows
+to quickly navigate the code (e.g. C-c C-b m to jump to the main function).
+https://github.com/fkie-cad/bap-mode
+
+emacs-dot
+Will automatically detect graph specifications in a dot syntax and display them using overlaying.
+https://github.com/ivg/emacs-dot"""
