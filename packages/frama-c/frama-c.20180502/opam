@@ -1,5 +1,6 @@
 opam-version: "2.0"
 name: "frama-c"
+synopsis: "Platform dedicated to the analysis of source code written in C"
 version: "20180502"
 maintainer: "francois.bobot@cea.fr"
 authors: [
@@ -41,8 +42,8 @@ authors: [
 ]
 homepage: "http://frama-c.com/"
 license: "GNU Lesser General Public License version 2.1"
-dev-repo: "git+https://github.com/Frama-C/Frama-C-snapshot.git"
-doc: ["http://frama-c.com/download/user-manual-Chlorine-20180501.pdf"]
+dev-repo: "git+https://github.com/Frama-C/Frama-C-snapshot.git#latest"
+doc: "http://frama-c.com/download/user-manual-Chlorine-20180501.pdf"
 bug-reports: "https://bts.frama-c.com/"
 tags: [
   "deductive"
@@ -61,61 +62,46 @@ tags: [
 ]
 
 build: [
-  ["sh" "-eux" "./run_autoconf_if_needed.sh"]
-  [
-    "./configure"
-    "--prefix"
-    prefix
-    "--disable-gui"
-      {!conf-gtksourceview:installed | !conf-gnomecanvas:installed}
-    "--mandir=%{man}%"
-  ]
-  [make "-j%{jobs}%"]
-  [make "-C" "doc" "download"] {with-doc}
-]
-install: [
-  [make "install"]
-  [make "-C" "doc" "install"] {with-doc}
-]
-remove: [
   ["sh" "-eux" "./run_autoconf_if_needed.sh"] # when used in pinned mode,
                                               # the configure *cannot* yet be
                                               # generated
   ["./configure" "--prefix" prefix
                  "--disable-gui" { !conf-gtksourceview:installed |
                                    !conf-gnomecanvas:installed }
+                 "--mandir=%{man}%"
+  ]
+  [make "-j%{jobs}%"]
+  [make "-C" "doc" "download"] {with-doc}
 ]
-  [make "uninstall"]
-  ["rm" "-rf" doc]
+
+install: [
+  [make "install"]
+  [make "-C" "doc" "install"] {with-doc}
 ]
 
 depends: [
-  "ocaml" {>= "4.02.3"}
-  "ocamlgraph" {>= "1.8.8" & < "1.9~"}
-  "ocamlfind"
+  "ocaml" { >= "4.02.3" }
+  "ocamlgraph" { >= "1.8.8" & < "1.9~" }
+  "ocamlfind" # needed beyond build stage, used by -load-module
   "zarith"
-  "conf-autoconf"
-  "lablgtk" {>= "2.18.2"}
+  "conf-autoconf" { build }
+  "lablgtk" { >= "2.18.2" } #for ocaml >= 4.02.1
   "conf-gtksourceview"
   "conf-gnomecanvas"
   "alt-ergo"
-]
-depopts: [
-  "coq" { build }
-  "why3" { build }
-  "altgr-ergo" { build }
-  "yojson" { build }
+  "conf-graphviz" { post }
 ]
 
-messages: [
-  "Why3 can be used by the WP plug-in for running additional automatic solvers" { !why3:installed }
-  "Coq can be used with the WP plug-in for proving interactively proof obligations" { !coq:installed }
-  "Alt-Ergo Graphical Interface can be used by the WP plug-in" { !altgr-ergo:installed }
-  "Yojson enables kernel option -json-compilation-database" { !yojson:installed }
+depopts: [
+  "yojson" { build }
+  "coq" { build }
+  "why3" { build }
+  "mlgmpidl" { build }
+  "apron" { build }
 ]
 
 conflicts: [
-  "why3-base" { < "0.88" >= "1.0.0" } #for WP plug-in
+  "why3-base" { < "0.88" | >= "1.0.0" } #for WP plug-in
   "coq"      { < "8.4.6" } #for WP plug-in
   "lablgtk" { < "2.18.2" } #for ocaml >= 4.02.1
   "frama-c-e-acsl" #avoid mixing old releases of E-ACSL, it is already
@@ -124,23 +110,19 @@ conflicts: [
                    #'frama-c' package exists
 ]
 
-synopsis: "Platform dedicated to the analysis of source code written in C."
-description: """
-Frama-C gathers several analysis techniques in a single collaborative
-framework, based on analyzers (called "plug-ins") that can build upon the
-results computed by other analyzers in the framework.
-Thanks to this approach, Frama-C provides sophisticated tools, including:
-- an analyzer based on abstract interpretation (Eva plug-in);
-- a program proof framework based on weakest precondition calculus (WP plug-in);
-- a program slicer (Slicing plug-in);
-- a tool for verification of temporal (LTL) properties (Aoraï plug-in);
-- a runtime verification tool (E-ACSL plug-in);
-- several tools for code base exploration and dependency analysis
-  (plug-ins From, Impact, Metrics, Occurrence, Scope, etc.).
-These plug-ins communicate between each other via the Frama-C API
-and via ACSL (ANSI/ISO C Specification Language) properties."""
-extra-files: [
-  "run_autoconf_if_needed.sh" "md5=8896537e4468e4228e7b0112f1cfd0ed"
+messages: [
+  "Yojson enables kernel option -json-compilation-database"
+    {!yojson:installed}
+  "Why3 can be used by the WP plug-in for running additional automatic solvers"
+    {!why3:installed}
+  "Coq can be used with the WP plug-in for proving interactively proof obligations"
+    {!coq:installed}
+  "Alt-Ergo Graphical Interface can be used by the WP plug-in"
+    {!altgr-ergo:installed & alt-ergo <= "1.30"}
+  "Note: the package altgr-ergo could prevent the installation of newer versions of Alt-Ergo"
+    {!altgr-ergo:installed & alt-ergo <= "1.30" & ocaml >= "4.04.0"}
+  "Note: the installed package altgr-ergo could prevent the installation of newer versions of Alt-Ergo"
+    {altgr-ergo:installed & ocaml >= "4.04.0"}
 ]
 url {
   src: "http://frama-c.com/download/frama-c-Chlorine-20180502.tar.gz"
