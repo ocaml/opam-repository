@@ -1,7 +1,7 @@
 opam-version: "2.0"
 name: "frama-c"
 synopsis: "Platform dedicated to the analysis of source code written in C"
-version: "20180502"
+version: "17.1"
 maintainer: "francois.bobot@cea.fr"
 authors: [
   "Michele Alberti"
@@ -62,9 +62,7 @@ tags: [
 ]
 
 build: [
-  ["sh" "-eux" "./run_autoconf_if_needed.sh"] # when used in pinned mode,
-                                              # the configure *cannot* yet be
-                                              # generated
+  ["autoconf"] {pinned}
   ["./configure" "--prefix" prefix
                  "--disable-gui" { !conf-gtksourceview:installed |
                                    !conf-gnomecanvas:installed }
@@ -101,7 +99,8 @@ depopts: [
 ]
 
 conflicts: [
-  "why3-base" { < "0.88" | >= "1.0.0" } #for WP plug-in
+  "why3-base" { < "0.88" } #for WP plug-in
+  "why3-base" { >= "1.0.0" } #for WP plug-in
   "coq"      { < "8.4.6" } #for WP plug-in
   "lablgtk" { < "2.18.2" } #for ocaml >= 4.02.1
   "frama-c-e-acsl" #avoid mixing old releases of E-ACSL, it is already
