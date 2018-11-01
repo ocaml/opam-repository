@@ -1,0 +1,26 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+authors: ["Francois Berenger"]
+homepage: "http://www.freedesktop.org/wiki/Software/pkg-config/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "GPL"
+build: [
+  ["pkgconf" "--help"] {os = "openbsd"}
+]
+install: [
+  ["ln" "-s" "/usr/local/bin/pkgconf" "%{bin}%/pkg-config"] {os = "openbsd"}
+]
+remove: [
+  ["rm" "-f" "%{bin}%/pkg-config"] {os = "openbsd"}
+]
+post-messages: [
+  "conf-pkg-config-openbsd: A symlink to /usr/local/bin/pkgconf has been installed in the OPAM bin directory (%{bin}%) on your PATH as 'pkg-config'." {os = "openbsd"}
+]
+depexts: [
+  ["devel/pkgconf"] {os = "openbsd"}
+]
+synopsis: "conf-pkg-conf fix for OpenBSD"
+description: """
+This package can only install if the pkgconf package is installed
+on the system."""
+flags: light-uninstall
