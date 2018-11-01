@@ -7,8 +7,14 @@ license: "GPL"
 build: [
   ["pkg-config" "--help"]
 ]
-depends: [
-  "pkg-config-openbsd" {os = "openbsd"}
+install: [
+  ["ln" "-s" "/usr/local/bin/pkgconf" "%{bin}%/pkg-config"] {os = "openbsd"}
+]
+remove: [
+  ["rm" "-f" "%{bin}%/pkg-config"] {os = "openbsd"}
+]
+post-messages: [
+  "conf-pkg-config: A symlink to /usr/local/bin/pkgconf has been installed in the OPAM bin directory (%{bin}%) on your PATH as 'pkg-config'. This is necessary for correct operation." {os = "openbsd"}
 ]
 depexts: [
   ["pkg-config"] {os-distribution = "debian"}
@@ -21,6 +27,7 @@ depexts: [
   ["pkgconfig"] {os-distribution = "oraclelinux"}
   ["pkgconfig"] {os-distribution = "alpine"}
   ["devel/pkgconf"] {os = "freebsd"}
+  ["devel/pkgconf"] {os = "openbsd"}
   ["pkg-config"] {os = "macos" & os-distribution = "homebrew"}
   ["pkgconf"] {os = "freebsd"}
 ]
