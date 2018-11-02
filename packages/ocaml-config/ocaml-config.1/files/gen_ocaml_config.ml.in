@@ -3,13 +3,13 @@ let () =
     let v = Sys.ocaml_version in
     try String.sub v 0 (String.index v '+') with Not_found -> v
   in
-  if ocaml_version <> "%{_:version}%" then
+  if ocaml_version <> Sys.argv.(1) then
     (Printf.eprintf
-       "OCaml version mismatch: %%s, expected %{_:version}%"
-       ocaml_version;
+       "OCaml version mismatch: %%s, expected %s"
+       ocaml_version Sys.argv.(1);
      exit 1)
   else
-  let oc = open_out "%{_:name}%.config" in
+  let oc = open_out (Sys.argv.(2) ^ ".config") in
   let exe = ".exe" in
   let (ocaml, suffix) =
     let s = Sys.executable_name in
@@ -20,12 +20,13 @@ let () =
   in
   let ocamlc = ocaml^"c"^suffix in
   let libdir =
-    let ic = Unix.open_process_in (ocamlc^" -where") in
-    set_binary_mode_in ic false;
-    let r = input_line ic in
-    if Unix.close_process_in ic <> Unix.WEXITED 0 then 
-      failwith "Bad return from 'ocamlc -where'";
-    r
+    if Sys.command (ocamlc^" -where > where") = 0 then
+      (* Must be opened in text mode for Windows *)
+      let ic = open_in "where" in
+      let r = input_line ic in
+      close_in ic; r
+    else
+      failwith "Bad return from 'ocamlc -where'"
   in
   let stubsdir =
     let ic = open_in (Filename.concat libdir "ld.conf") in

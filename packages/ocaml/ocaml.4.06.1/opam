@@ -5,6 +5,7 @@ This package requires a matching implementation of OCaml,
 and polls it to initialise specific variables like `ocaml:native-dynlink`"""
 maintainer: "platform@lists.ocaml.org"
 depends: [
+  "ocaml-config"
   "ocaml-base-compiler" {= "4.06.1"} |
   "ocaml-variants" {>= "4.06.1" & < "4.06.2~"} |
   "ocaml-system" {= "4.06.1"}
@@ -14,6 +15,15 @@ setenv: [
   [CAML_LD_LIBRARY_PATH += "%{lib}%/stublibs"]
   [OCAML_TOPLEVEL_PATH = "%{toplevel}%"]
 ]
-build: ["ocaml" "unix.cma" "gen_ocaml_config.ml"]
-substs: "gen_ocaml_config.ml"
+build: ["ocaml" "%{ocaml-config:share}%/gen_ocaml_config.ml" _:version _:name]
 build-env: CAML_LD_LIBRARY_PATH = ""
+homepage: "https://ocaml.org"
+bug-reports: "https://caml.inria.fr/mantis/"
+authors: [
+  "Xavier Leroy"
+  "Damien Doligez"
+  "Alain Frisch"
+  "Jacques Garrigue"
+  "Didier Rémy"
+  "Jérôme Vouillon"
+]
