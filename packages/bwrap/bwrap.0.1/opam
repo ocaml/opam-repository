@@ -1,0 +1,43 @@
+opam-version: "2.0"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: ["Christophe Troestler <Christophe.Troestler@umons.ac.be>"]
+tags: ["sandbox" "bubblewrap"]
+license: "ISC"
+homepage: "https://github.com/Chris00/ocaml-bwrap"
+dev-repo: "git+https://github.com/Chris00/ocaml-bwrap.git"
+bug-reports: "https://github.com/Chris00/ocaml-bwrap/issues"
+doc: "https://Chris00.github.io/ocaml-bwrap/doc"
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "@doc"] {with-doc}
+]
+run-test: [
+  ["dune" "runtest" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml" {>= "4.03"}
+  "dune" {build}
+  "cppo" {build}
+  "base-unix"
+  "base-bytes"
+]
+available: [os = "linux"]
+depexts: [
+  ["bubblewrap"] {os-distribution = "debian"}
+  ["bubblewrap"] {os-distribution = "ubuntu" & os-version >= "17.0"}
+  ["bubblewrap"] {os-distribution = "alpine"}
+  ["bubblewrap"] {os-distribution = "fedora"}
+  ["bubblewrap"] {os-distribution = "rhel"}
+  ["bubblewrap" "epel-release"] {os-distribution = "centos" & os-version >= "7"}
+  ["bubblewrap"] {os-distribution = "opensuse" & os-version >= "15"}
+  ["bubblewrap"] {os-distribution = "mageia"}
+]
+synopsis: "Use Bubblewrap to sandbox executables"
+description: """
+Library using Bubblewrap to execute programs in a sandbox."""
+url {
+  src:
+    "https://github.com/Chris00/ocaml-bwrap/releases/download/0.1/bwrap-0.1.tbz"
+  checksum: "md5=4560cf99611d432d16bd428ca13bfe21"
+}
