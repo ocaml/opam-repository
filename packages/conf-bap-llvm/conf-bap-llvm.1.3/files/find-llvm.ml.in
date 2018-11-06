@@ -77,6 +77,12 @@ let brew_config ver =
     | Some p ->
       cmd "find %s/%s -name \"llvm-config\"" cellar p
 
+let fedora_config ver =
+  let bits = match "%{arch}%" with
+    | "x86_32" | "ppc32" | "arm32" -> 32
+    | _ -> 64 in
+  sprintf "llvm-config-%s-%d" ver bits
+
 let macports_config ver = sprintf "llvm-config-mp-%s" ver
 
 let index_opt str c =
@@ -98,6 +104,7 @@ let configs ver =
       | None -> configs
       | Some b -> b :: configs in
     macports_config ver :: configs
+  | "fedora" -> fedora_config ver :: configs
   | _ -> configs
 
 let find_opt ~f xs =
