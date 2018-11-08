@@ -1,0 +1,56 @@
+opam-version: "2.0"
+maintainer:   "martin@lucina.net"
+homepage:     "https://github.com/mirage/mirage-solo5"
+bug-reports:  "https://github.com/mirage/mirage-solo5/issues/"
+dev-repo:     "git+https://github.com/mirage/mirage-solo5.git"
+license:      "ISC"
+authors: [
+  "Anil Madhavapeddy <anil@recoil.org>"
+  "Dan Williams <djwillia@us.ibm.com>"
+  "Martin Lucina <martin@lucina.net>"
+]
+tags: [
+  "org:mirage"
+]
+build: [
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" ] { os != "openbsd" }
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "false" ] { os = "openbsd" }
+]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "0.7.6"}
+  "ocb-stubblr" {build}
+  "ocaml" {>= "4.04.2"}
+  "cstruct" {>= "1.0.1"}
+  "lwt" {>= "2.4.3"}
+  "ocaml-freestanding" {>= "0.4.1"}
+  "logs"
+  ("solo5-bindings-hvt" | "solo5-bindings-virtio" | "solo5-bindings-muen" | "solo5-bindings-genode")
+]
+conflicts: [
+  "io-page" {< "2.0.0"}
+  "solo5-kernel-ukvm"
+  "solo5-kernel-virtio"
+  "solo5-kernel-muen"
+]
+post-messages: [
+  "As of MirageOS 3.2.0 / Solo5 0.4.0, the 'ukvm' target has been renamed to 'hvt'. Please refer to https://github.com/mirage/mirage/blob/master/CHANGES.md for further details on this change."
+]
+synopsis: "Solo5 core platform libraries for MirageOS"
+description: """
+This package provides the MirageOS `OS` library for
+[Solo5](https://github.com/Solo5/solo5) targets, which handles the main loop
+and timers. It also provides the low level C startup code and C stubs required
+by the OCaml code.
+
+Currently this package also includes the C stubs used by the Solo5 `console`,
+`block` and `net` implementations.
+
+The OCaml runtime and C runtime required to support it are provided separately
+by the [ocaml-freestanding](https://github.com/mirage/ocaml-freestanding) package.
+"""
+url {
+  src: "https://github.com/mirage/mirage-solo5/releases/download/v0.5.0/mirage-solo5-0.5.0.tbz"
+  checksum: "sha512=7135edb2529e747f25157e5fc557a6781f64dd006a0e61566ab1ace6f794db4973ca551c447dab447fa131ef7645d97d96bdf44e5fafc1b6b78ab2eb9efee7c9"
+}
