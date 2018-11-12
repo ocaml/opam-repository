@@ -1,0 +1,55 @@
+opam-version: "2.0"
+synopsis: "Fast pipe, pipe first as a syntax transform"
+description: """
+Pipe first as a syntax transform.
+Provides a ppx to transform expressions containing the |. (Ocaml) or -> (Reason)
+operator. Pipes the left side as first argument to the right side.
+
+Example Reason:
+--------------
+/* validateAge(getAge(parseData(person))) */
+person
+->parseData
+->getAge
+->validateAge;
+
+/* Some(preprocess(name)); */
+name->preprocess->Some;
+
+/* f(a, ~b, ~c) */
+a->f(~b, ~c)
+
+Example Ocaml:
+--------------
+(* validateAge (getAge (parseData person)) *)
+person
+|. parseData
+|. getAge
+|. validateAge
+
+(* Some(preprocess name) *)
+name |. preprocess |. Some;
+
+(*f a ~b ~c *)
+a |. f ~b ~c
+"""
+maintainer: "Iwan Karamazow <m.falka@icloud.com>"
+authors: "Iwan Karamazow m.falka@icloud.com"
+license: "MIT"
+homepage: "https://github.com/IwanKaramazow/FastPipe"
+bug-reports: "https://github.com/IwanKaramazow/FastPipe"
+dev-repo: "git://github.com/IwanKaramazow/FastPipe.git"
+depends: [ 
+  "ocaml" {>= "4.02" & < "4.08"}
+  "reason" {>= "3.3.7"}
+  "dune"
+  "ocaml-migrate-parsetree"
+]
+build: ["dune" "build" "-p" name]
+url {
+  src: "https://github.com/IwanKaramazow/FastPipe/archive/0.0.1.tar.gz"
+  checksum: [
+    "md5=29272b2e2fdbb72b6df929d35d9d25d7"
+    "sha512=3efe004cc4c2e10244beee429120edaae62e3278ab7618dba4e4563c6e306b5bbbacc49a6062b7912ca0b1e5fde42f763ebb09438c83005ea0a42129407d0b46"
+  ]
+}
