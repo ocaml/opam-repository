@@ -8,33 +8,29 @@ tags:         [ "org:mirage"]
 doc:          "https://docs.mirage.io"
 
 build: [
-  ["jbuilder" "subst" "-n" name] {pinned}
-  ["jbuilder" "build" "-p" name "-j" jobs]
+  [ "jbuilder" "subst" "-n" name ] {pinned}
+  [ "jbuilder" "build" "-p" name "-j" jobs ]
+  [ "jbuilder" "runtest" "-p" name "-j" jobs ] {with-test}
 ]
 
 depends: [
   "jbuilder" {build & >= "1.0+beta9"}
   "ocaml" {>= "4.03.0"}
-  "charrua-core" {>= "0.11"}
-  "charrua-client-lwt" {>= "0.11"}
-  "charrua-client" {>= "0.11"}
+  "alcotest"     {with-test}
+  "cstruct-unix" {with-test}
+  "mirage-random-test" {with-test}
+  "charrua-core" {>= "0.11.0"}
   "cstruct" {>="3.0.2"}
   "ipaddr"
-  "rresult"
-  "mirage-random" {>= "1.0.0"}
-  "mirage-clock"
-  "duration"
-  "logs"
-  "tcpip" {>= "3.5.0"}
-  "fmt"
-  "lwt"
-  "mirage-types-lwt" {>="3.0.0"}
 ]
-synopsis: "A DHCP client for MirageOS"
+synopsis: "DHCP client implementation"
 description: """
-`charrua-client-mirage` exposes an additional `Dhcp_client_mirage` for direct use
-with the [MirageOS library operating system](https://github.com/mirage/mirage).
+charrua-client is a DHCP client powered by [charrua-core](https://github.com/haesbaert/charrua-core).
+
+The base library exposes a simple state machine in `Dhcp_client`
+for use in acquiring a DHCP lease.
 """
+
 url {
 archive: "https://github.com/mirage/charrua-core/releases/download/v0.11.0/charrua-core-0.11.0.tbz"
 checksum: "f4bb1ac3d1443a576982eae49d0eb7d8"
