@@ -1,0 +1,133 @@
+opam-version: "1.2"
+name: "frama-c"
+synopsis: "Platform dedicated to the analysis of source code written in C"
+version: "20181101"
+maintainer: "francois.bobot@cea.fr"
+authors: [
+  "Michele Alberti"
+  "Thibaud Antignac"
+  "Gergö Barany"
+  "Patrick Baudin"
+  "Lionel Blatter"
+  "François Bobot"
+  "Richard Bonichon"
+  "Quentin Bouillaguet"
+  "David Bühler"
+  "Zakaria Chihani"
+  "Loïc Correnson"
+  "Julien Crétin"
+  "Pascal Cuoq"
+  "Zaynah Dargaye"
+  "Jean-Christophe Filliâtre"
+  "Philippe Herrmann"
+  "Maxime Jacquemin"
+  "Florent Kirchner"
+  "Tristan Le Gall"
+  "Jean-Christophe Léchenet"
+  "Matthieu Lemerre"
+  "David Maison"
+  "Claude Marché"
+  "André Maroneze"
+  "Melody Méaulle"
+  "Benjamin Monate"
+  "Yannick Moy"
+  "Anne Pacalet"
+  "Valentin Perrelle"
+  "Guillaume Petiot"
+  "Virgile Prevosto"
+  "Armand Puccetti"
+  "Muriel Roger"
+  "Julien Signoles"
+  "Kostyantyn Vorobyov"
+  "Boris Yakobowski"
+]
+homepage: "http://frama-c.com/"
+license: "GNU Lesser General Public License version 2.1"
+dev-repo: "https://github.com/Frama-C/Frama-C-snapshot.git#latest"
+doc: "http://frama-c.com/download/user-manual-18.0-Argon.pdf"
+bug-reports: "https://bts.frama-c.com/"
+tags: [
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "interactive theorem prover"
+  "C"
+  "plugins"
+  "abstract interpretation"
+  "slicing"
+  "weakest precondition"
+  "ACSL"
+  "dataflow analysis"
+  "runtime verification"
+]
+
+build: [
+  ["autoconf"] {pinned}
+  ["./configure" "--prefix" prefix
+                 "--disable-gui" { !conf-gtksourceview:installed |
+                                   !conf-gnomecanvas:installed }
+                 "--mandir=%{man}%"
+]
+  [make "-j%{jobs}%"]
+]
+
+install: [
+  [make "install"]
+]
+
+remove: [
+  ["./configure" "--prefix" prefix
+                 "--disable-gui" { !conf-gtksourceview:installed |
+                                   !conf-gnomecanvas:installed }
+]
+  [make "uninstall"]
+  ["rm" "-rf" doc]
+]
+
+build-doc: [
+   [make "-C" "doc" "download"]
+   [make "-C" "doc" "install"]
+]
+
+depends: [
+  "ocamlgraph" { >= "1.8.8" & < "1.9~" }
+  "ocamlfind" # needed beyond build stage, used by -load-module
+  "zarith"
+  "conf-autoconf" { build }
+  "lablgtk" { >= "2.18.2" } #for ocaml >= 4.02.1
+  "conf-gtksourceview"
+  "conf-gnomecanvas"
+  "alt-ergo"
+  "conf-graphviz" { post }
+]
+
+depopts: [
+  "yojson" { build }
+  "coq" { build }
+  "why3" { build }
+# "altgr-ergo" { build } no more an optional dependency since the tool is now  included into "alt-ergo" package (> "1.30")
+  "mlgmpidl" { build }
+  "apron" { build }
+]
+
+messages: [
+  "Yojson enables kernel option -json-compilation-database" { !yojson:installed }
+  "Why3 can be used by the WP plug-in for running additional automatic solvers" { !why3:installed }
+  "Coq can be used with the WP plug-in for proving interactively proof obligations" { !coq:installed }
+  "Alt-Ergo Graphical Interface can be used by the WP plug-in" { !altgr-ergo:installed & alt-ergo <= "1.30" }
+  "Note: the package altgr-ergo could prevent the installation of newer versions of Alt-Ergo" { !altgr-ergo:installed & alt-ergo <= "1.30" & ocaml >= "4.04.0" }
+  "Note: the installed package altgr-ergo could prevent the installation of newer versions of Alt-Ergo" { altgr-ergo:installed & ocaml >= "4.04.0" }
+]
+
+conflicts: [
+  "why3-base" { < "0.88" >= "1.0.0" } #for WP plug-in
+  "coq"      { < "8.4.6" } #for WP plug-in
+  "lablgtk" { < "2.18.2" } #for ocaml >= 4.02.1
+  "frama-c-e-acsl" #avoid mixing old releases of E-ACSL, it is already
+                   #distributed with this version of Frama-C
+  "frama-c-base"   #avoid mixing old releases of Frama-C, now that only the
+                   #'frama-c' package exists
+]
+
+available: [ ocaml-version >= "4.02.3" ]
