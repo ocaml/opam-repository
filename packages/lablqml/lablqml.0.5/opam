@@ -7,9 +7,13 @@ dev-repo: "git+https://github.com/Kakadu/lablqml.git"
 tags: [ "gui" "ui" "qt" ]
 
 build: [
-  ["./configure"]
-  [make]
-  [make "demos"] {with-test}
+  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH ./configure"] {os-distribution = "alpine"}
+  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make"]        {os-distribution = "alpine"}
+  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make demos"]  {os-distribution = "alpine" & with-test }
+
+  ["./configure"]           { os-distribution != "alpine" }
+  [make]                    { os-distribution != "alpine" }
+  [make "demos"] {with-test & os-distribution != "alpine" }
 ]
 install: [make "opam.install"]
 remove: [
@@ -18,15 +22,16 @@ remove: [
 ]
 flags: [ light-uninstall ]
 depends: [
-  "ocaml" {>= "4.03.0"}
+  "ocaml" {>= "4.03.0" & < "4.05" }
   "ocamlfind"
   "ocamlbuild" {build}
   "conf-qt" {>= "5.2.1"}
+  "conf-pkg-config" {build}
   "lwt" {with-test}
   "cppo" {with-test}
 ]
 synopsis:
-  "OCamlfind package and PPX extension to interface OCaml and QtQuick."
+  "OCamlfind package and PPX extension to interface OCaml and QtQuick"
 description: "Versions <= 0.4 are known as `lablqt`, >0.5 -- as `lablqml`."
 url {
   src: "https://github.com/Kakadu/lablqml/archive/0.5.tar.gz"
