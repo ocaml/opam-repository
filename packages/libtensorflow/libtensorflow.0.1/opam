@@ -1,0 +1,49 @@
+opam-version: "2.0"
+homepage: "https://github.com/LaurentMazare/tensorflow-ocaml"
+maintainer: "lmazare@gmail.com"
+bug-reports: "https://github.com/LaurentMazare/tensorflow-ocaml/issues"
+authors: [
+  "Laurent Mazare"
+]
+install: [
+  [
+    "sh"
+    "-c"
+    """
+test -d %{lib}%/tensorflow/libtensorflow.so ||
+  ( tar xzf libtensorflow-linux.tar.gz &&
+    mkdir -p %{lib}%/tensorflow &&
+    cp lib/libtensorflow.so %{lib}%/tensorflow/ &&
+    cp lib/libtensorflow_framework.so %{lib}%/tensorflow/
+  )
+    """
+  ] { os = "linux" }
+  [
+    "sh"
+    "-c"
+    """
+test -d %{lib}%/tensorflow/libtensorflow.so ||
+  ( tar xzf libtensorflow-darwin.tar.gz &&
+    mkdir -p %{lib}%/tensorflow &&
+    cp lib/libtensorflow.so %{lib}%/tensorflow/ &&
+    cp lib/libtensorflow_framework.so %{lib}%/tensorflow/
+  )
+    """
+  ] { os = "macos" }
+]
+remove: [
+  [ "rm" "%{lib}%/tensorflow/libtensorflow.so" ]
+  [ "rm" "%{lib}%/tensorflow/libtensorflow_framework.so" ]
+]
+synopsis: "TensorFlow library package"
+description: """
+This is used by the tensorflow package to trigger the install of the
+TensorFlow library."""
+extra-source "libtensorflow-linux.tar.gz" {
+  src: "https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-1.10.0.tar.gz"
+  checksum: "md5=30fb0d167c453821ea84f8627233341a"
+}
+extra-source "libtensorflow-darwin.tar.gz" {
+  src: "https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-darwin-x86_64-1.10.0.tar.gz"
+  checksum: "md5=402c3ac68d7467c176e64c65bf03f2e6"
+}
