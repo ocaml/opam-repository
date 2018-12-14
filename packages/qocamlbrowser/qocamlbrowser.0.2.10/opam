@@ -6,12 +6,16 @@ authors: "Kakadu"
 dev-repo: "git://github.com/Kakadu/QOcamlBrowser_quick"
 
 build: [
-  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH ./configure"]
-    {os != "macos"}
-  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make"]
-    {os != "macos"}
-  ["sh" "-exc" "PATH=/usr/local/opt/qt/bin:$PATH ./configure"] {os = "macos"}
-  ["sh" "-exc" "PATH=/usr/local/opt/qt/bin:$PATH make"] {os = "macos"}
+#  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH ./configure"]
+#    {os != "macos"}
+#  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make"]
+#    {os != "macos"}
+#  ["sh" "-exc" "PATH=/usr/local/opt/qt/bin:$PATH ./configure"] {os = "macos"}
+#  ["sh" "-exc" "PATH=/usr/local/opt/qt/bin:$PATH make"] {os = "macos"}
+  [ "find" "." ]
+  [ "ocamlbuild" "-use-ocamlfind" "-classic-display" "src/qrc_resources.c" ]
+  [ "ocamlbuild" "-use-ocamlfind" "-classic-display" "src/moc_dataItem.c" "src/moc_controller.c" "src/moc_abstractModel.c" "src/moc_historyModel.c" "src/libcppstubs.a" "src/program.native" ]
+ 
 ]
 install: [make "install" "PREFIX=%{prefix}%"]
 remove: [
