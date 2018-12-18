@@ -1,0 +1,76 @@
+opam-version: "2.0"
+maintainer: "dev@ocsigen.org"
+synopsis: "A full-featured and extensible Web server."
+description: "Ocsigen Server implements most features of the HTTP protocol, and has a very powerful extension mechanism that makes it very easy to plug your own OCaml modules for generating pages. Many extensions are already implemented, like a reverse proxy, content compression, access control, authentication, etc."
+authors: "dev@ocsigen.org"
+homepage: "http://ocsigen.org/ocsigenserver/"
+bug-reports: "https://github.com/ocsigen/ocsigenserver/issues/"
+license: "LGPL-2.1 with OCaml linking exception"
+dev-repo: "git+https://github.com/ocsigen/ocsigenserver.git"
+build: [
+  [
+    "sh"
+    "configure"
+    "--prefix"
+    "%{prefix}%"
+    "--ocsigen-user"
+    "%{user}%"
+    "--ocsigen-group"
+    "%{group}%"
+    "--commandpipe"
+    "%{lib}%/ocsigenserver/var/run/ocsigenserver_command"
+    "--logdir"
+    "%{lib}%/ocsigenserver/var/log/ocsigenserver"
+    "--mandir"
+    "%{man}%/man1"
+    "--docdir"
+    "%{lib}%/ocsigenserver/share/doc/ocsigenserver"
+    "--commandpipe"
+    "%{lib}%/ocsigenserver/var/run/ocsigenserver_command"
+    "--staticpagesdir"
+    "%{lib}%/ocsigenserver/var/www"
+    "--datadir"
+    "%{lib}%/ocsigenserver/var/lib/ocsigenserver"
+    "--sysconfdir"
+    "%{lib}%/ocsigenserver/etc/ocsigenserver"
+  ]
+  [make]
+]
+install: [make "install"]
+remove: [
+  ["rm" "-rf" "%{lib}%/ocsigenserver"]
+  ["rm" "-rf" "%{doc}%/ocsigenserver"]
+  ["rm" "-f" "%{man}%/man1/ocsigenserver.1"]
+]
+depends: [
+  "ocaml" {>= "4.06.1"}
+  "ocamlfind"
+  "base-unix"
+  "base-threads"
+  "react"
+  "ssl"
+  "lwt" {>= "3.0.0"}
+  "lwt_ssl"
+  "lwt_react"
+  "lwt_log"
+  "ocamlnet" {>= "4.0.2"}
+  "pcre"
+  "cryptokit"
+  "tyxml" {>= "4.0.0"}
+  "dbm" | "sqlite3" | "pgocaml"
+  "ipaddr" {>= "2.1"}
+  "xml-light"
+]
+depopts: "camlzip"
+conflicts: [
+  "camlzip" {< "1.04"}
+  "pgocaml" {< "2.2"}
+]
+flags: light-uninstall
+url {
+  src: "https://github.com/ocsigen/ocsigenserver/archive/2.10.tar.gz"
+  checksum: [
+    "md5=5411f740605611f0a1ea0d3a2b683f64"
+    "sha512=920d4c737f1490c78ba9de67151aab0bf334c35f3f175e21b8f017d0fcc2408f475f46cb416dd6c86ad8731d8e5b341630d01e87f55eafd6f75e48d39e99a768"
+  ]
+}
