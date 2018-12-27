@@ -1,0 +1,51 @@
+opam-version: "2.0"
+maintainer:   "Anil Madhavapeddy <anil@recoil.org>"
+authors:      "Anil Madhavapeddy <anil@recoil.org>"
+homepage:     "https://github.com/mirage/ocaml-vmnet"
+bug-reports:  "https://github.com/mirage/ocaml-vmnet/issues"
+dev-repo:     "git+https://github.com/mirage/ocaml-vmnet.git"
+doc:          "https://mirage.github.io/ocaml-vmnet/"
+license:      "ISC"
+
+build: [
+  [ "dune" "subst"] {pinned}
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "dune" "runtest" ] {with-test}
+]
+depends: [
+  "ocaml" {>="4.04"}
+  "dune" {build}
+  "ppx_sexp_conv"
+  "sexplib" {>= "113.24.00"}
+  "ipaddr" {>="1.4.0"}
+  "lwt" {>="2.4.3"}
+  "cstruct" {>="1.9.0"}
+  "cstruct-unix"
+]
+available: [ os = "macos" ]
+synopsis: "MacOS X `vmnet` NAT networking"
+description: """
+macOS 10.10 (Yosemite) introduced the somewhat undocumented `vmnet`
+framework.  This exposes virtual network interfaces to userland applications.
+There are a number of advantages of this over previous implementations:
+
+- Unlike [tuntaposx](http://tuntaposx.sourceforge.net/), this is builtin
+  to MacOS X now and so is easier to package up and distribute for end users.
+- `vmnet` uses the XPC sandboxing interfaces and should make it easier to
+  drop a hard dependency on running networking applications as `root`.
+- Most significantly, `vmnet` optionally supports NATing network traffic to the
+  outside world, which was previously unsupported.
+
+These OCaml bindings are constructed against the documentation contained
+in the `<vmnet.h>` header file in Yosemite, and may not be correct due to
+the lack of any other example code.  However, they do suffice to run
+[MirageOS](http://openmirage.org) applications that can connect to the
+outside world.
+
+Note the application must be configured to use DHCP: static IPs are not supported.
+"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-vmnet/releases/download/1.3.2/vmnet-1.3.2.tbz"
+  checksum: "md5=1192b96a6c1b87a2eb843c59d23368db"
+}
