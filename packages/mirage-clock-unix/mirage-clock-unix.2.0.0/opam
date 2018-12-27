@@ -1,0 +1,32 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: ["Anil Madhavapeddy" "Daniel C. Bünzli" "Matthew Gray"]
+license: "ISC"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/mirage-clock"
+doc: "https://mirage.github.io/mirage-clock/"
+bug-reports: "https://github.com/mirage/mirage-clock/issues"
+synopsis: "Unix-based implementation for the MirageOS Clock interface"
+description: """
+The Unix implementation of the MirageOS Clock interface uses
+`gettimeofday` or `clock_gettime`, depending on
+which OS is in use (see [clock_stubs.c](https://github.com/mirage/mirage-clock/blob/master/unix/clock_stubs.c)).
+"""
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "dune" {build}
+  "mirage-clock" {>= "1.2.0"}
+  "mirage-clock-lwt" {>= "1.2.0"}
+  "lwt"
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/mirage-clock.git"
+url {
+  src:
+    "https://github.com/mirage/mirage-clock/releases/download/v2.0.0/mirage-clock-v2.0.0.tbz"
+  checksum: "md5=d51d5ec423bcb13bb03e7ebffc855f6a"
+}
