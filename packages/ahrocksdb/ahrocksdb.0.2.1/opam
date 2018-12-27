@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "A binding to RocksDB"
+description: """
+This is a binding to Facebook's RocksDB.
+
+Early prototype of this library based on [orocksdb](https://github.com/domsj/orocksdb), we decided to rewrite our own binding to make use of Ctypes's stubs generators instead of the dynamic mode used in orocksdb.
+
+It is currently based and was tested against RocksDB 5.14fb, and should work with newer versions of this library.
+
+## API changes and contributions
+
+While we do not plan big changes in what is already implemented, we do not guarantee the stability of these APIs.
+
+Some APIs could definitely use improvements (moving the current configuration system to a builder-like pattern),
+and some breakage may or may-not happen.
+
+Pull requests to improve any parts of the library are however welcome, whether they are related to
+tests, binding coverage, or API improvements, feel free to open an issue to discuss changes."""
+maintainer: "Enguerrand Decorne <enguerrand.decorne@ahrefs.com>"
+authors: "Enguerrand Decorne <enguerrand.decorne@ahrefs.com>"
+license: "MIT"
+homepage: "https://github.com/ahrefs/ocaml-ahrocksdb"
+doc: "https://ahrefs.github.io/ocaml-ahrocksdb/"
+bug-reports: "https://github.com/ahrefs/ocaml-ahrocksdb/issues"
+depends: [
+  "ocaml" {>= "4.06.0"}
+  "dune" {build}
+  "ctypes" {>= "0.12.0"}
+  "astring"
+  "conf-rocksdb"
+  "rresult"
+  "bos" {with-test}
+  "cryptokit" {with-test}
+  "alcotest" {with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest"] {with-test}
+]
+dev-repo: "git+https://github.com/ahrefs/ocaml-ahrocksdb.git"
+url {
+  src:
+    "https://github.com/ahrefs/ocaml-ahrocksdb/releases/download/0.2.1/ahrocksdb-0.2.1.tbz"
+  checksum: "md5=765b94952fe27eb78f703b1d7580506c"
+}
