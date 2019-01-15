@@ -1,0 +1,49 @@
+opam-version: "2.0"
+maintainer: "dave@recoil.org"
+authors: ["Anil Madhavapeddy" "David Scott" "Thomas Leonard"]
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/mirage-block-xen"
+doc: "https://mirage.github.io/mirage-block-xen/"
+bug-reports: "https://github.com/mirage/mirage-block-xen/issues"
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "dune" {build}
+  "cmdliner"
+  "logs"
+  "stringext"
+  "lwt" {>= "2.4.3"}
+  "cstruct" {>= "1.9.0"}
+  "shared-memory-ring-lwt"
+  "mirage-block-lwt" {>= "1.0.0"}
+  "ipaddr"
+  "io-page-xen" {>= "2.0.0"}
+  "mirage-xen" {>= "1.0.1"}
+  "rresult"
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+dev-repo: "git+https://github.com/mirage/mirage-block-xen.git"
+synopsis: "MirageOS block driver for Xen that implements the blkfront/back protocol"
+description: """
+This library allows a Mirage OCaml application to
+
+  1. read and write blocks from any Xen "backend" (server)
+  2. service block requests from any Xen "frontend" (client)
+
+This library can be used in both kernelspace (on Xen)
+or in userspace (using libraries that come with Xen).
+
+This library depends on the
+[shared-memory-ring](https://github.com/mirage/shared-memory-ring)
+library which enables high-throughput, low-latency data
+transfers over shared memory on both x86 and ARM architectures,
+using the standard Xen RPC and event channel semantics.
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage-block-xen/releases/download/v1.6.0/mirage-block-xen-v1.6.0.tbz"
+  checksum: "md5=6a07dd312289ba29efddb0e5ca98bf78"
+}
