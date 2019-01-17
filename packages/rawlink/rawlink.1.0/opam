@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
+authors: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
+license: "ISC"
+homepage: "https://github.com/haesbaert/rawlink"
+bug-reports: "https://github.com/haesbaert/rawlink/issues"
+dev-repo: "git+https://github.com/haesbaert/rawlink.git"
+doc: "https://haesbaert.github.io/rawlink/"
+build: [
+  [ "dune" "subst" ] {pinned}
+  [ "dune" "build" "-p" name "-j" jobs ] ]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "dune" {build}
+  "lwt" {>= "2.4.7"}
+  "cstruct" {>= "3.2.0"}
+  "ppx_cstruct"
+]
+depexts: [
+  ["linux-headers"] {os-distribution = "alpine"}
+]
+synopsis: "Portable library to read and write raw packets"
+description: """
+Rawlink is an ocaml library for sending and receiving raw packets at the link
+layer level. Sometimes you need to have full control of the packet, including
+building the full ethernet frame.
+
+The API is platform independent, it uses BPF on real UNIXes and AF_SOCKET on
+linux. Some functionality is sacrificed so that the API is portable enough.
+
+Currently BPF and AF_PACKET are implemented, including filtering capabilities.
+Writing a BPF program is a pain in the ass, so no facilities are provided for
+it. If you need a BPF filter, I suggest you write a small .c file with a
+function that returns the BPF program as a string, check `rawlink_stubs.c` for
+an example.
+"""
+url {
+  src:
+    "https://github.com/haesbaert/rawlink/releases/download/v1.0/rawlink-v1.0.tbz"
+  checksum: "md5=90a85604ed73955f9fefedfd6b624598"
+}
