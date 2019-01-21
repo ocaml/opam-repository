@@ -1,0 +1,51 @@
+let () =
+  let ocaml_version =
+    let v = Sys.ocaml_version in
+    try String.sub v 0 (String.index v '+') with Not_found -> v
+  in
+  if ocaml_version <> "%{_:version}%" then
+    (Printf.eprintf
+       "OCaml version mismatch: %%s, expected %{_:version}%"
+       ocaml_version;
+     exit 1)
+  else
+  let oc = open_out "%{_:name}%.config" in
+  let exe = ".exe" in
+  let (ocaml, suffix) =
+    let s = Sys.executable_name in
+    if Filename.check_suffix s exe then
+      (Filename.chop_suffix s exe, exe)
+    else
+      (s, "")
+  in
+  let ocamlc = ocaml^"c"^suffix in
+  let libdir =
+    let ic = Unix.open_process_in (ocamlc^" -where") in
+    set_binary_mode_in ic false;
+    let r = input_line ic in
+    if Unix.close_process_in ic <> Unix.WEXITED 0 then 
+      failwith "Bad return from 'ocamlc -where'";
+    r
+  in
+  let stubsdir =
+    let ic = open_in (Filename.concat libdir "ld.conf") in
+    let rec r acc = try r (input_line ic::acc) with End_of_file -> acc in
+    let lines = List.rev (r []) in
+    close_in ic;
+    String.concat ":" lines
+  in
+  let p fmt = Printf.fprintf oc (fmt ^^ "\n") in
+  p "opam-version: \"2.0\"";
+  p "variables {";
+  p "  native: %%b"
+    (Sys.file_exists (ocaml^"opt"^suffix));
+  p "  native-tools: %%b"
+    (Sys.file_exists (ocamlc^".opt"^suffix));
+  p "  native-dynlink: %%b"
+    (Sys.file_exists (Filename.concat libdir "dynlink.cmxa"));
+  p "  stubsdir: %%S"
+    stubsdir;
+  p "  preinstalled: %{ocaml-system:installed}%";
+  p "  compiler: \"%{ocaml-system:installed?system:}%%{ocaml-base-compiler:version}%%{ocaml-variants:version}%\"";
+  p "}";
+  close_out oc
