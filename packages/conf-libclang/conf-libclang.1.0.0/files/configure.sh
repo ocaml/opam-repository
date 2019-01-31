@@ -28,6 +28,9 @@ LLVM_CFLAGS="`\"$llvm_config\" --cflags`"
 LLVM_LDFLAGS="`\"$llvm_config\" --ldflags`"
 LLVM_LIBDIR="`\"$llvm_config\" --libdir`"
 
+# Filter -Wstring-conversion for OpenSUSE
+LLVM_CFLAGS="`echo $LLVM_CFLAGS | sed s/-Wstring-conversion\\ //`"
+
 tempdir="`mktemp -d`"
 
 clean_tempdir () {
