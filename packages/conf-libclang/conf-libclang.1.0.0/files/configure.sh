@@ -29,18 +29,16 @@ LLVM_LDFLAGS="`\"$llvm_config\" --ldflags`"
 LLVM_LIBDIR="`\"$llvm_config\" --libdir`"
 
 # These filters enable compilation with gcc.
-# We will use clang instead in the test below.
-#
-## Filter -Wstring-conversion for OpenSUSE
-#LLVM_CFLAGS="`echo $LLVM_CFLAGS | sed s/-Wstring-conversion\\ //`"
-#
-## Filter -Werror=unguarded-availability-new and -Wcovered-switch-default
-## (which appear with LLVM 7)
-#LLVM_CFLAGS="`echo $LLVM_CFLAGS | sed s/-Werror=unguarded-availability-new\\ //`"
-#LLVM_CFLAGS="`echo $LLVM_CFLAGS | sed s/-Wcovered-switch-default\\ //`"
-#
-## Filter "-Wdelete-non-virtual-dtor" (warning only)
-#LLVM_CFLAGS="`echo $LLVM_CFLAGS | sed s/-Wdelete-non-virtual-dtor\\ //`"
+# Filter -Wstring-conversion for OpenSUSE
+LLVM_CFLAGS="`echo $LLVM_CFLAGS | sed s/-Wstring-conversion\\ //`"
+
+# Filter -Werror=unguarded-availability-new and -Wcovered-switch-default
+# (which appear with LLVM 7)
+LLVM_CFLAGS="`echo $LLVM_CFLAGS | sed s/-Werror=unguarded-availability-new\\ //`"
+LLVM_CFLAGS="`echo $LLVM_CFLAGS | sed s/-Wcovered-switch-default\\ //`"
+
+# Filter "-Wdelete-non-virtual-dtor" (warning only)
+LLVM_CFLAGS="`echo $LLVM_CFLAGS | sed s/-Wdelete-non-virtual-dtor\\ //`"
 
 tempdir="`mktemp -d`"
 
@@ -62,7 +60,7 @@ main(int argc, char *argv[])
   return EXIT_SUCCESS;
 }
 EOF
-CC=clang
+CC=cc
 "$CC" -o "$tempdir/test_libclang.o" -c $LLVM_CFLAGS \
     "$tempdir/test_libclang.c" || \
     ( clean_tempdir; echo "Error: cannot compile libclang test."; exit 1 )
