@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: [
+  "Anil Madhavapeddy"
+  "Tim Deegan"
+  "Richard Mortier"
+  "Haris Rotsos"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "Luke Dunstan"
+  "David Scott"
+]
+synopsis: "DNS implementation for Unix and Windows using Lwt_unix"
+description: """
+This is an implementation of the DNS protocol and a client
+and server resolver using the `Lwt_unix` concurrency framework.
+Despite the name, the library should work on both Unix and Windows
+(as supported by Lwt_unix upstream).
+"""
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/ocaml-dns"
+doc: "https://mirage.github.io/ocaml-dns/"
+bug-reports: "https://github.com/mirage/ocaml-dns/issues"
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "dune" {build}
+  "dns-lwt"
+  "base-unix"
+  "cmdliner"
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-dns.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-dns/releases/download/v1.1.1/dns-v1.1.1.tbz"
+  checksum: "md5=42a49a41d3b53567e074b864926d4411"
+}
