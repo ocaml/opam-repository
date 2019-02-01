@@ -63,10 +63,10 @@ main(int argc, char *argv[])
 }
 EOF
 CC=clang
-$(CC) -o "$tempdir/test_libclang.o" -c $LLVM_CFLAGS \
+"$CC" -o "$tempdir/test_libclang.o" -c $LLVM_CFLAGS \
     "$tempdir/test_libclang.c" || \
     ( clean_tempdir; echo "Error: cannot compile libclang test."; exit 1 )
-$(CC) -o "$tempdir/test_libclang" \
+"$CC" -o "$tempdir/test_libclang" \
     $LLVM_LDFLAGS "$tempdir/test_libclang.o" \
     "-lclang" "-Wl,-rpath,$LLVM_LIBDIR" || \
     ( clean_tempdir; echo "Error: cannot link libclang test."; exit 1 )
