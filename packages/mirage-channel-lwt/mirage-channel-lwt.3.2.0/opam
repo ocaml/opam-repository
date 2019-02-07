@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "Anil Madhavapeddy <anil@recoil.org>"
+authors: ["Anil Madhavapeddy" "Mindy Preston" "Thomas Gazagnaire"]
+license: "ISC"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/mirage-channel"
+doc: "http://docs.mirage.io/mirage-channel"
+bug-reports: "https://github.com/mirage/mirage-channel/issues"
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "dune" {build & >= "1.0"}
+  "mirage-flow-lwt" {>= "1.2.0"}
+  "mirage-channel" {>= "3.0.0"}
+  "io-page"
+  "lwt" {>= "2.4.7"}
+  "cstruct"
+  "logs"
+  "alcotest" {with-test}
+  "io-page-unix" {with-test}
+]
+conflicts: [
+  "tcpip" {< "2.5.0"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/mirage-channel.git"
+synopsis: "Buffered Lwt channels for MirageOS FLOW types"
+description: """
+Channels are buffered reader/writers built on top of unbuffered `FLOW`
+implementations.  This library is specialised to use the Lwt library
+for the IO impleentation.
+
+mirage-channel-lwt is distributed under the ISC license.
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage-channel/releases/download/v3.2.0/mirage-channel-v3.2.0.tbz"
+  checksum: "md5=d42c47f25978a16519bdbeafbeae876a"
+}

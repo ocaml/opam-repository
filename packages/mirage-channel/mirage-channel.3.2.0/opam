@@ -1,0 +1,52 @@
+opam-version: "2.0"
+maintainer: "Anil Madhavapeddy <anil@recoil.org>"
+authors: ["Anil Madhavapeddy" "Mindy Preston" "Thomas Gazagnaire"]
+license: "ISC"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/mirage-channel"
+doc: "http://mirage.github.io/mirage-channel/"
+bug-reports: "https://github.com/mirage/mirage-channel/issues"
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "dune" {build & >= "1.0"}
+  "mirage-flow" {>= "1.2.0"}
+]
+conflicts: [
+  "tcpip" {< "3.0.0"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+dev-repo: "git+https://github.com/mirage/mirage-channel.git"
+synopsis: "Buffered channels for MirageOS FLOW types"
+description: """
+Channels are buffered reader/writers built on top of unbuffered `FLOW`
+implementations.
+
+Example:
+
+```ocaml
+module Channel = Channel.Make(Flow)
+...
+Channel.read_exactly ~len:16 t
+>>= fun bufs -> (* read header of message *)
+let payload_length = Cstruct.(LE.get_uint16 (concat bufs) 0) in
+Channel.read_exactly ~len:payload_length t
+>>= fun bufs -> (* payload of message *)
+
+(* process message *)
+
+Channel.write_buffer t header;
+Channel.write_buffer t payload;
+Channel.flush t
+>>= fun () ->
+```
+
+mirage-channel is distributed under the ISC license.
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage-channel/releases/download/v3.2.0/mirage-channel-v3.2.0.tbz"
+  checksum: "md5=d42c47f25978a16519bdbeafbeae876a"
+}
