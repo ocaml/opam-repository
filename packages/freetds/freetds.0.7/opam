@@ -1,0 +1,50 @@
+opam-version: "2.0"
+authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+           "Kenn Knowles <kenn.knowles@gmail.com>" ]
+maintainer: "Christophe.Troestler@umons.ac.be"
+homepage: "https://github.com/kennknowles/ocaml-freetds"
+dev-repo: "git+https://github.com/kennknowles/ocaml-freetds.git"
+bug-reports: "https://github.com/kennknowles/ocaml-freetds/issues"
+doc: "https://kennknowles.github.io/ocaml-freetds/doc"
+license: "LGPL-2.1"
+
+tags: [
+  "clib:ct"
+  "clib:sybdb"
+]
+
+build: [
+  ["dune" "subst"]{pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "dune" {build & >= "1.4.0"}
+  "cppo" {build}
+  "ounit" {with-test & >= "2.0.0"}
+  "ocaml" {>= "4.06.0"}
+]
+depexts: [
+  ["freetds-dev"] {os-distribution = "alpine"}
+  ["epel-release" "freetds-devel"] {os-distribution = "centos"}
+  ["freetds-dev"] {os-distribution = "debian"}
+  ["freetds-dev"] {os-distribution = "ubuntu"}
+  ["freetds-dev"] {os-distribution = "alpine"}
+  ["freetds-devel"] {os-distribution = "fedora"}
+  ["freetds-devel"] {os-distribution = "rhel"}
+  ["libfreetds-devel"] {os-distribution = "mageia"}
+  ["freetds-devel"] {os-family = "suse"}
+  ["freetds-devel"] {os = "freebsd"}
+  ["freetds"] {os = "macos" & os-distribution = "homebrew"}
+  ["freetds"] {os = "win32" & os-distribution = "cygwinports"}
+]
+synopsis: "Binding to the FreeTDS library"
+description: """
+FreeTDS is a set of libraries for Unix and Linux that allows your
+programs to natively talk to Microsoft SQL Server and Sybase
+databases."""
+url {
+  src:
+    "https://github.com/kennknowles/ocaml-freetds/releases/download/0.7/freetds-0.7.tbz"
+  checksum: "md5=f950713241b759335af0e95555b4bb1f"
+}
