@@ -1,0 +1,30 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: "The MirageOS team"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/mirage-platform"
+bug-reports: "https://github.com/mirage/mirage-platform/issues/"
+depends: [
+  "ocaml" {>= "4.04.2" & < "4.09.0"}
+  "mirage-xen-posix" {>= "2.6.0"}
+  "conf-pkg-config"
+  "ocamlfind" {build}
+  "ocaml-src"
+]
+substs: [
+  "xen-ocaml/flags/cflags.tmp"
+  "xen-ocaml/flags/libs.tmp"
+  ]
+conflicts: ["ocaml-system"]
+available: os = "linux"
+build: [make "xen-ocaml-build"]
+install: [make "xen-ocaml-install" "PREFIX=%{prefix}%"]
+remove: [make "xen-ocaml-uninstall" "PREFIX=%{prefix}%"]
+dev-repo: "git+https://github.com/mirage/mirage-platform.git"
+synopsis: "MirageOS headers for the OCaml runtime"
+description:
+  "The package contains the OCaml runtime patches and build system."
+url {
+  src: "https://github.com/mirage/mirage-platform/archive/v3.3.0.tar.gz"
+  checksum: "md5=25b42ec49cdd2c4503eb994d0279ef35"
+}
