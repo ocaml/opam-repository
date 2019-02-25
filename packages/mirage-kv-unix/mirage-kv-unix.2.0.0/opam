@@ -1,0 +1,38 @@
+opam-version: "2.0"
+authors:      [ "Mindy Preston" "Hannes Mehnert" "Anil Madhavapeddy"
+                "Thomas Gazagnaire" "Stefanie Schirmer" ]
+maintainer:   [ "anil@recoil.org" "thomas@gazagnaire.org" ]
+homepage:     "https://github.com/mirage/mirage-kv-unix"
+dev-repo:     "git+https://github.com/mirage/mirage-kv-unix.git"
+bug-reports:  "https://github.com/mirage/mirage-kv-unix/issues"
+doc:          "https://mirage.github.io/mirage-kv-unix/"
+tags:         [ "org:mirage" ]
+build: [
+  ["dune" "subst" ] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depends: [
+  "dune" {build & >= "1.0"}
+  "ocaml" {>= "4.05.0"}
+  "cstruct" {>= "3.2.0"}
+  "mirage-kv-lwt" {>= "1.0.0"}
+  "lwt"
+  "ptime"
+  "rresult" {with-test}
+  "mirage-clock-unix" {with-test & >= "2.0.0"}
+  "alcotest" {with-test & >= "0.7.1"}
+]
+synopsis: "Key-value store for MirageOS backed by Unix filesystem"
+description: """
+This is a Mirage key-value store backed by an underlying Unix directory.
+
+The current version supports the `Mirage_kv_lwt.RO` and `Mirage_kv_lwt.RW`
+signatures defined in the `mirage-kv-lwt` package.
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage-kv-unix/releases/download/v2.0.0/mirage-kv-unix-v2.0.0.tbz"
+  checksum: "md5=8db16acc7f3f2e8d3c71cc699329ca1e"
+}
