@@ -8,29 +8,27 @@ tags:         [ "org:mirage"]
 doc:          "https://docs.mirage.io"
 
 build: [
-  ["jbuilder" "subst" "-n" name] {pinned}
-  ["jbuilder" "build" "-p" name "-j" jobs]
-  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
 
 depends: [
-  "jbuilder" {build & >= "1.0+beta9"}
+  "dune" {build & >= "1.0"}
   "ocaml" {>= "4.04.2"}
   "alcotest"     {with-test}
   "cstruct-unix" {with-test}
-  "charrua-core" {>= "0.11.0" & < "0.12.0"}
-  "charrua-client" {>= "0.11.0" & < "0.12.0"}
+  "charrua-core" {>= "0.12.0"}
+  "charrua-client" {>= "0.12.0"}
   "cstruct" {>="3.0.2"}
-  "ipaddr" {< "3.0.0"}
-  "rresult"
+  "ipaddr" {>="3.0.0"}
   "mirage-random" {>= "1.0.0"}
   "duration"
   "mirage-time-lwt"
+  "mirage-net-lwt" {>= "2.0.0"}
   "logs"
-  "tcpip" {>= "3.2.0" & < "3.6.0"}
   "fmt"
   "lwt"
-  "mirage-types-lwt" {>="3.0.0"}
 ]
 synopsis: "A DHCP client using lwt as effectful layer"
 description: """
@@ -38,8 +36,8 @@ description: """
 using the provided modules for timing and networking logic,
 for convenient use by a program which might wish to implement a full client.
 """
-
 url {
-archive: "https://github.com/mirage/charrua-core/releases/download/v0.11.0/charrua-core-0.11.0.tbz"
-checksum: "f4bb1ac3d1443a576982eae49d0eb7d8"
+  src:
+    "https://github.com/mirage/charrua-core/releases/download/v0.12.0/charrua-core-v0.12.0.tbz"
+  checksum: "md5=a1edfeeaea6d9ed079efec4514f0e44c"
 }
