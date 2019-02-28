@@ -12,9 +12,6 @@ build: [
   ["ocaml" "setup.ml" "-build"] {os != "macos"}
   ["env" "SQLITE3_OCAML_BREWCHECK=1" "ocaml" "setup.ml" "-build"]
     {os = "macos"}
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
-  ["ocaml" "setup.ml" "-build"] {with-test}
-  ["ocaml" "setup.ml" "-test"] {with-test}
   ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
@@ -26,18 +23,7 @@ depends: [
   "ocamlbuild" {build}
   "ocamlfind" {build & >= "1.3.1"}
   "conf-pkg-config" {build}
-]
-depexts: [
-  ["libsqlite3-dev"] {os-distribution = "debian"}
-  ["database/sqlite3"] {os = "freebsd"}
-  ["database/sqlite3"] {os = "openbsd"}
-  ["libsqlite3-dev"] {os-distribution = "ubuntu"}
-  ["sqlite-devel"] {os-distribution = "centos"}
-  ["sqlite-devel"] {os-distribution = "rhel"}
-  ["sqlite-devel"] {os-distribution = "fedora"}
-  ["sqlite-dev"] {os-distribution = "alpine"}
-  ["sqlite3"] {os = "macos" & os-distribution = "homebrew"}
-  ["sqlite3"] {os = "macos" & os-distribution = "macports"}
+  "conf-sqlite3" {build}
 ]
 synopsis: "SQLite3 bindings"
 description: """
