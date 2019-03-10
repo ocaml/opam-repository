@@ -1,0 +1,39 @@
+opam-version: "2.0"
+maintainer: "thomas@gazagnaire.org"
+authors: "Thomas Gazagnaire"
+license: "ISC"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/mirage-flow-rawlink"
+doc: "https://mirage.github.io/mirage-flow-rawlink/"
+bug-reports: "https://github.com/mirage/mirage-flow-rawlink/issues"
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "dune" {build & >= "1.0"}
+  "mirage-flow-lwt" {>= "1.2.0"}
+  "rawlink" {>= "0.5"}
+  "cstruct"
+  "lwt"
+]
+build: [
+ [ "dune" "subst" ] {pinned}
+ [ "dune" "build" "-p" name "-j" jobs ]
+]
+dev-repo: "git+https://github.com/mirage/mirage-flow-rawlink.git"
+synopsis: "Expose rawlink interfaces as MirageOS flows"
+description: """
+Allow the use of rawlink interfaces as MirageOS flows.
+
+An example:
+
+```
+  Lwt_rawlink.open_link "eth0" >>= fun rawlink ->
+  Mirage_flow_lwt.read rawlink >>= function
+  | Ok (`Data buf) ->
+  ...
+```
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage-flow-rawlink/releases/download/v1.1.0/mirage-flow-rawlink-v1.1.0.tbz"
+  checksum: "md5=eb549ad9c899feaa391d51ee815068af"
+}
