@@ -1,0 +1,30 @@
+opam-version: "2.0"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+homepage: "https://github.com/ocaml/opam-repository/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "ISC"
+build: [
+  ["sh" "-exc" "cc $CFLAGS -c test-unix.c"] {os != "freebsd" & os != "win32"
+                                             & os != "macos"}
+  ["sh" "-exc" "${CC:-gcc} $CFLAGS -c test-unix.c"] {os = "freebsd"}
+]
+depexts: [
+  ["libbluetooth-dev"] {os-distribution = "debian"}
+  ["libbluetooth-dev"] {os-distribution = "ubuntu"}
+  ["bluez-libs-devel"] {os-distribution = "centos"}
+  ["bluez-libs-devel"] {os-distribution = "fedora"}
+  ["bluez-libs-devel"] {os-distribution = "mageia"}
+  ["bluez-devel"] {os-family = "suse"}
+  ["bluez-dev"] {os-distribution = "alpine"}
+]
+synopsis: "Virtual package for Bluetooth library"
+description: """
+This pasckage will install if the development files for Bluetooth are
+present on the system.
+"""
+extra-files: [
+  ["test-unix.c" "md5=eded6f4b460a7dac86cfa150ed197df0"]
+]
+flags: conf
+
