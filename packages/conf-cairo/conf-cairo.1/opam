@@ -3,7 +3,12 @@ maintainer: "blue-prawn"
 homepage: "http://cairographics.org/"
 authors: ["Keith Packard" "Carl Worth" "Behdad Esfahbod"]
 license: "LGPL v2.1, or MPL v1.1"
-build: [["pkg-config" "cairo"]]
+build: [
+  ["pkg-config" "cairo"] {os != "macos"}
+  ["sh" "-exc"
+   "export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/; pkg-config --libs cairo"]
+   {os = "macos" & os-distribution = "homebrew"}
+]
 depends: ["conf-pkg-config" {build}]
 depexts: [
   ["libcairo2-dev"] {os-distribution = "debian"}
