@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "dave@recoil.org"
+authors: ["Dave Scott" "Jon Ludlam"]
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/ocaml-vhd"
+doc: "https://mirage.github.io/ocaml-vhd/"
+bug-reports: "https://github.com/mirage/ocaml-vhd/issues"
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "cstruct"
+  "lwt" {>= "3.2.0"}
+  "mirage-block"
+  "mirage-types-lwt" {>= "3.0.0"}
+  "ounit"
+  "vhd-format"
+  "io-page-unix" {with-test}
+  "dune" {build & >= "1.0"}
+]
+available: os = "linux" | os = "macos"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depexts: ["linux-headers"] {os-distribution = "alpine"}
+dev-repo: "git+https://github.com/mirage/ocaml-vhd.git"
+synopsis: "Lwt interface to read/write VHD format data"
+description: """
+A pure OCaml library to read and write
+[vhd](http://en.wikipedia.org/wiki/VHD_(file_format)) format data, plus a
+simple command-line tool which allows vhd files to be interrogated,
+manipulated, format-converted and streamed to and from files and remote
+servers.
+
+This package provides an Lwt compatible interface to the library.
+"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-vhd/releases/download/v0.12.0/vhd-format-v0.12.0.tbz"
+  checksum: "md5=73b88364f534dc0fcee23e6c4ceca8c7"
+}

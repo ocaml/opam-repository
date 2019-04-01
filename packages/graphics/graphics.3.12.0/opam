@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "David Allsopp <david.allsopp@metastack.com>"
+bug-reports: "https://caml.inria.fr/mantis"
+dev-repo: "git+https://github.com/ocaml/ocaml.git"
+authors: [ "Xavier Leroy"
+           "Jun Furuse"
+           "J-M Geffroy"
+           "Jacob Navia"
+           "Pierre Weis" ]
+homepage: "https://ocaml.org"
+license: "LGPL-2.1 with OCaml linking exception"
+build: [
+  ["chmod" "+x" "install.sh"]
+  ["./install.sh" "build" "%{ocaml:preinstalled}%" "%{ocaml:lib}%" make "allopt" {ocaml:native}]
+]
+install: [
+  ["./install.sh" "install" "%{ocaml:preinstalled}%" "%{_:lib}%" make stublibs "installopt" {ocaml:native}]
+]
+depends: [
+  "conf-libX11"
+  "ocaml" {= "3.12.0"}
+]
+synopsis: "The OCaml graphics library"
+description:
+  "Ensures that the OCaml graphics library is available, building it if needed."
+extra-files: [
+  ["META" "md5=b1ca11d3ca48378167c67d197e8e6991"]
+  ["install.sh" "md5=62f8421d654b8ed18b72c693bd58aef7"]]
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-3.12/ocaml-3.12.0.tar.gz"
+  checksum: "md5=3ba7cc65123c3579f14e7c726d3ee782"
+}
+patches: ["file_download.php?file_id=418&type=bug" "PR5477.patch"]
+extra-source "file_download.php?file_id=418extra-source {type=bug" {
+  src: "http://caml.inria.fr/mantis/file_download.php?file_id=418&type=bug"
+  checksum: "md5=8c664a0a346424ea2ec6fc6f713170c6"
+}
+extra-source "PR5477.patch" {
+  src:
+    "https://raw.githubusercontent.com/metastack/ocaml-legacy/master/PR5477-to-3.12.1.patch"
+  checksum: "md5=f81b445f189af91b18c1a6fa5bcb9ac4"
+}

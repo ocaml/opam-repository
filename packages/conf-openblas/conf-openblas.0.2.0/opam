@@ -6,14 +6,14 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "BSD"
 build: [
   ["sh" "-exc" "cc $CFLAGS -I/usr/include/openblas test.c -lopenblas"]
-    {os = "fedora" | os = "centos" | os = "opensuse"}
+    {os-distribution = "fedora" | os-distribution = "centos" | os-family = "suse"}
   [
     "sh"
     "-exc"
     "cc $CFLAGS -I/usr/local/opt/openblas/include test.c -L/usr/local/opt/openblas/lib -lopenblas"
-  ] {os = "macos"}
+  ] {os = "macos" & os-distribution = "homebrew"}
   ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"]
-    {os != "fedora" & os != "centos" & os != "opensuse" & os != "macos"}
+    {os-distribution != "fedora" & os-distribution != "centos" & os-family != "suse" & os != "macos"}
 ]
 depexts: [
   ["libc-dev" "openblas-dev"] {os-distribution = "alpine"}
