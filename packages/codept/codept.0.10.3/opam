@@ -1,6 +1,4 @@
 opam-version: "2.0"
-name: "codept"
-version: "0.10.3"
 author: "octachron <octa@polychoron.fr>"
 maintainer: "octachron <octa@polychoron.fr>"
 homepage: "https://github.com/Octachron/codept"
@@ -8,13 +6,16 @@ bug-reports: "https://github.com/Octachron/codept/issues"
 license: "gpl-3"
 dev-repo: "git+https://github.com/Octachron/codept.git"
 build: [
-  ["dune" "build" "-p" name]
-  ["dune" "build" "@private-docs" {with-doc}]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "build" "@private-docs"] {with-doc}
 ]
-run-test: [
-  ["dune" "runtest"]
+depends: [
+  "dune" {build}
+  "menhir" {build}
+  "ocaml" {>="4.03" & < "4.09"}
+  "odoc"{with-doc}
 ]
-depends: ["dune" {build} "menhir" {build} "ocaml" {>="4.03" & < "4.09"} "odoc"{with-doc}]
 synopsis: "Alternative ocaml dependency analyzer"
 description:"""
 Codept intends to be a dependency solver for OCaml project and an alternative to ocamldep. Compared to ocamldep, codept major features are:
