@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "dev@ocsigen.org"
+synopsis: "Interface to PostgreSQL databases"
+description: "PG'OCaml provides an interface to PostgreSQL databases for OCaml applications. It uses Camlp4 to extend the OCaml syntax, enabling one to directly embed SQL statements inside the OCaml code. Moreover, it uses the describe feature of PostgreSQL to obtain type information about the database. This allows PG'OCaml to check at compile-time if the program is indeed consistent with the database structure. This type-safe database access is the primary advantage that PG'OCaml has over other PostgreSQL bindings for OCaml."
+authors: ["Richard W.M. Jones <rich@annexia.org>"]
+homepage: "http://pgocaml.forge.ocamlcore.org/"
+bug-reports: "https://github.com/darioteixeira/pgocaml/issues"
+dev-repo: "git+https://github.com/darioteixeira/pgocaml.git"
+license: "LGPL-2.0 with OCaml linking exception"
+build: [
+  ["./configure" "--%{camlp4:enable}%-p4" "--enable-ppx" "--enable-debug" "--prefix" prefix "--docdir" "%{doc}%/pgocaml"]
+  [make]
+  [make "doc"]
+]
+install: [[make "install"]]
+remove: [["ocamlfind" "remove" "pgocaml"]]
+depends: [
+  "ocaml" {>= "4.05"}
+  "base-bytes"
+  "calendar"
+  "csv"
+  "hex"
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {with-test}
+  "ppx_tools" {build}
+  "re"
+  "rresult" {build}
+  "ocaml-migrate-parsetree"
+  "ppx_tools_versioned"
+]
+depopts: [ "camlp4" ]
+flags: light-uninstall
+url {
+  src: "https://github.com/darioteixeira/pgocaml/archive/v3.2.tar.gz"
+  checksum: [
+    "md5=48fce170e25bec6536858fd3f78d2fee"
+    "sha512=7f9c35844839df4b35083f8de18e0e55f82db80886d1f1251fa4a6bc894137da2f058c5a2e8bf3b308ed09b96120824248e8570aa1904d5247613a42ca9a8b77"
+  ]
+}
