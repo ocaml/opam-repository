@@ -1,0 +1,44 @@
+opam-version: "2.0"
+name: "mirage-nat"
+maintainer: "Mindy Preston <meetup@yomimono.org>"
+authors: "Mindy Preston <meetup@yomimono.org>"
+homepage: "https://github.com/mirage/mirage-nat"
+bug-reports: "https://github.com/mirage/mirage-nat/issues/"
+dev-repo: "git+https://github.com/mirage/mirage-nat.git"
+doc: "https://mirage.github.io/mirage-nat/"
+license: "ISC"
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ipaddr"
+  "cstruct"
+  "mirage-time-lwt"
+  "mirage-clock-lwt"
+  "lwt"
+  "rresult"
+  "logs"
+  "lru" {>= "0.3.0"}
+  "ppx_deriving" {build & >= "4.2" }
+  "dune" {build & >= "1.0"}
+  "tcpip" { >= "3.7.2" }
+  "ethernet" { >= "2.0.0" }
+  "arp"
+  "alcotest" {with-test}
+  "mirage-clock-unix" {with-test}
+]
+synopsis: "Mirage-nat is a library for network address translation to be used with MirageOS"
+description: """
+Mirage-nat is a library for [network address
+translation](https://tools.ietf.org/html/rfc2663).  It is intended for use in
+[MirageOS](https://mirage.io) and makes extensive use of
+[tcpip](https://github.com/mirage/mirage-tcpip), the network stack used by
+default in MirageOS unikernels.
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage-nat/releases/download/v1.2.0/mirage-nat-v1.2.0.tbz"
+  checksum: "md5=da7cf8e84c4dd1822cac912deb035f5b"
+}
