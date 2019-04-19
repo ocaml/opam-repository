@@ -1,1 +1,1 @@
-print 'python-3.6 OK'
+print('python-3.6 OK')
