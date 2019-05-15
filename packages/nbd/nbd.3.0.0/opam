@@ -10,8 +10,8 @@ build: [
   ["oasis" "setup"]
   ["./configure" "--prefix" prefix]
   [make]
-  ["./configure" "--enable-tests"] {with-test}
-  [make "test"] {with-test}
+  ["./configure" "--enable-tests"] {with-test & ocaml:version < "4.06.0"}
+  [make "test"] {with-test & ocaml:version < "4.06.0"}
 ]
 install: [
   [make "install" "BINDIR=%{bin}%"]
@@ -42,7 +42,6 @@ depends: [
   "ppx_deriving"
   "ppx_sexp_conv" {!= "113.33.00+4.03" & < "v0.13"}
 ]
-conflicts: [ "ocaml" {>="4.06.0" & with-test} ]
 tags: [ "org:mirage" "org:xapi-project" ]
 synopsis: "Network Block Device (NBD) protocol implementation"
 description: """
