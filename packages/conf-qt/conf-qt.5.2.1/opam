@@ -5,11 +5,16 @@ homepage:     "http://kakadu.github.io/lablqml/"
 bug-reports:  "https://github.com/kakadu/lablqml/issues"
 dev-repo: "git+https://github.com/Kakadu/lablqml.git"
 build: [
-    ["find" "/" "-name" "qmake"]
-    ["sh" "-exc" "echo \"Your Qt version is `PATH=/usr/local/bin:/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH qmake -query QT_VERSION`\"" ] 
-    ["sh" "-exc" "min=\"5.2.1\"         cur=`PATH=/usr/local/bin:/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH qmake -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`; [ \"$res\" = \"$min\" ]"
+    ["sh" "-exc" "echo \"Your Qt version is `PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH qmake -query QT_VERSION`\"" ] 
+    ["sh" "-exc" "min=\"5.2.1\"         cur=`PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH qmake -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`; [ \"$res\" = \"$min\" ]"
     ]
 ]
+
+# It currently doesn't compile on MacOS because I don't know how to get mac-specific build command
+# (the syntax similar to depexts seems to be not supported).
+# In general, we need to add extra PATH (Mac only) variable in manner like 
+#       "$(brew --cellar qt)/$(brew list --versions qt | tr ' ' '\n' | tail -1)/bin"
+# to make `qmake` available. But currently I don't know how to express it in opam recipe
 
 post-messages:
   "It's recommended to set PKG_CONFIG_PATH to /usr/local/opt/qt/lib/pkgconfig to enable pkg-config"
