@@ -8,12 +8,13 @@ doc:          "https://mirage.github.io/mirage-xen/"
 license:      "ISC"
 tags:         ["org:mirage"]
 
-build: [ 
+build: [
   [ "env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "dune" "subst" ] {pinned}
   [ "env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "dune" "build" "-p" name "-j" jobs ]
 ]
 depends: [
   "ocaml" {>= "4.04.2"}
+  "dune" {build}
   "cstruct" {>= "1.0.1"}
   "lwt" {>= "2.4.3"}
   "shared-memory-ring-lwt"
@@ -28,7 +29,10 @@ depends: [
   "mirage-xen-minios" {>= "0.7.0"}
   "logs"
 ]
-available: [ os = "linux" ]
+conflicts: [
+  "dune" {> "1.9.0" & < "1.9.3"}
+]
+available: [ false ]
 synopsis: "Xen core platform libraries for MirageOS"
 description: """
 This package provides the MirageOS `OS` library for
