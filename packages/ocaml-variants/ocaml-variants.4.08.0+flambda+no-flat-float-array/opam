@@ -1,0 +1,33 @@
+opam-version: "2.0"
+synopsis:
+  "Official release 4.08.0, with flambda activated and -no-flat-float-array"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.08.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "--prefix=%{prefix}%"
+                 "--enable-flambda" "--disable-flat-float-array"]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "./configure"
+    "--prefix=%{prefix}%"
+    "CC=cc"
+    "ASPP=cc -c"
+    "--enable-flambda"
+    "--disable-flat-float-array"
+  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.08.0.tar.gz"
+  checksum: "md5=42ed24e9a7c0e3998cab7d5e7c9f7618"
+}
