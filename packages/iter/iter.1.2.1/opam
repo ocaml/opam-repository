@@ -10,6 +10,7 @@ homepage: "https://github.com/c-cube/iter/"
 doc: "https://c-cube.github.io/iter/doc/1.2"
 bug-reports: "https://github.com/c-cube/iter/issues"
 depends: [
+  "ocaml"
   "base-bytes"
   "result"
   "dune" {build}
@@ -21,8 +22,8 @@ depends: [
 depopts: ["base-bigarray"]
 build: [
   ["dune" "build" "@install" "-p" name "-j" jobs]
-  ["dune" "build" "@doc" "-p" name] {with-doc}
-  ["dune" "runtest" "-p" name] {with-test}
+  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & ocaml:version >= "4.03.0"}
 ]
 dev-repo: "git+https://github.com/c-cube/iter.git"
 url {
