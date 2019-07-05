@@ -5,8 +5,8 @@ maintainer: "unixjunkie@sdf.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "BSD-3"
 build: [
-  ["sh" "-c" "c++ test.cpp -o test -I/usr/local/include -I/usr/include/rdkit -L/usr/local/lib -lRDGeneral || \\
-              c++ test.cpp -o test -I/usr/local/include -I/usr/include/rdkit -L/usr/local/lib -lRDKitRDGeneral"]
+  ["sh" "-c" "c++ test.cpp -o test -I/usr/local/include/rdkit -L/usr/local/lib -lRDKitRDGeneral"] {os = "macos"}
+  ["sh" "-c" "c++ test.cpp -o test -I/usr/include/rdkit -lRDKitRDGeneral || c++ test.cpp -o test -I/usr/include/rdkit -lRDGeneral"] {os = "linux"}
   ["./test"]
 ]
 depexts: [
@@ -16,7 +16,7 @@ depexts: [
 ]
 post-messages:
     "This package requires rdkit to be installed. If you are using homebrew, you might want to try:
-    'brew tap rdkit/rdkit; brew install rdkit; pip3 install numpy; brew install --HEAD rdkit --with-python3 --with-inchi'"
+    'brew tap rdkit/rdkit; pip3 install numpy; brew install --HEAD rdkit --with-python3 --with-inchi'"
     {failure & os = "macos"}
 synopsis: "Virtual package relying on rdkit library installation"
 description: """
