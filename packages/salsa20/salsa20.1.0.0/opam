@@ -1,0 +1,48 @@
+opam-version: "2.0"
+name: "salsa20"
+synopsis: "Salsa20 family of encryption functions, in pure OCaml"
+description: """
+```ocaml
+utop[0]> #require "nocrypto";;
+utop[1]> #require "nocrypto.unix";;
+utop[2]> Nocrypto_entropy_unix.initialize ();;
+- : unit = ()
+utop[3]> let key = Nocrypto.Rng.generate 32;;
+val key : Cstruct.t = {Cstruct.buffer = <abstr>; off = 0; len = 32}
+utop[4]> let nonce = Cstruct.create 8;;
+val nonce : Cstruct.t = {Cstruct.buffer = <abstr>; off = 0; len = 8}
+utop[5]> #require "salsa20";;
+utop[6]> let state = Salsa20.create key nonce;;
+val state : Salsa20.t = <abstr>
+utop[7]> Salsa20.encrypt (Cstruct.of_string "My secret text") state |> Cstruct.to_string;;
+- : string = " 2\\193\\020`\\142\\182\\234\\188H[R\\241V"
+```
+"""
+maintainer: "Alfredo Beaumont <alfredo.beaumont@gmail.com>"
+authors: "Alfredo Beaumont <alfredo.beaumont@gmail.com>"
+license: "BSD2"
+homepage: "https://github.com/abeaumont/ocaml-salsa20"
+dev-repo: "git+https://github.com/abeaumont/ocaml-salsa20.git"
+bug-reports: "https://github.com/abeaumont/ocaml-salsa20/issues"
+doc: "https://abeaumont.github.io/ocaml-salsa20/"
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "dune" {build}
+  "cstruct" {>= "1.7.0"}
+  "nocrypto" {>= "0.5.3"}
+  "salsa20-core" {>= "0.1.0"}
+  "alcotest" {with-test}
+]
+build: [
+  ["dune" "subst" ] {pinned}
+  [ "dune" "build" "-j" jobs "-p" name "@install" ]
+  [ "dune" "runtest" "-j" jobs "-p" name ] {with-test}
+]
+url {
+  src:
+    "https://github.com/abeaumont/ocaml-salsa20/releases/download/1.0.0/salsa20-1.0.0.tbz"
+  checksum: [
+    "sha256=c816c6658b07d70a23faa85f1582719ec5cb08426f6ca0463abc813af7760a76"
+    "sha512=8017293d2d4185ee8bd283bfeeccf4b25730d193f1aca0724afade0a7e304bbf630b66493de9777d531033d7930373ca42c2efb8a1100ebf5d8a20cadd03aa09"
+  ]
+}

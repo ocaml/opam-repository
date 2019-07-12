@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "talex5@gmail.com"
+authors: [ "Thomas Leonard" ]
+license: "ISC"
+homepage: "https://github.com/mirage/mirage-logs"
+dev-repo: "git+https://github.com/mirage/mirage-logs.git"
+bug-reports: "https://github.com/mirage/mirage-logs/issues"
+doc: "https://mirage.github.io/mirage-logs/"
+tags: ["org:mirage"]
+depends: [
+  "ocaml" { >= "4.01.0"}
+  "dune" {build & >= "1.0"}
+  "logs" { >= "0.5.0" }
+  "ptime" { >= "0.8.1" }
+  "mirage-clock" { >= "1.2.0"}
+  "mirage-profile"
+  "lwt"
+  "alcotest" {with-test}
+]
+build: [ 
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name] {with-test}
+]
+synopsis: "A reporter for the Logs library that writes log messages to stderr, using a Mirage `CLOCK` to add timestamps"
+description: """
+It can also log only important messages to the console, while writing all received messages to a ring buffer which is displayed if an exception occurs.
+
+If tracing is enabled (via mirage-profile), it also writes each log message to the trace buffer.
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage-logs/releases/download/v1.0.0/mirage-logs-v1.0.0.tbz"
+  checksum: [
+    "sha256=b3c52e71336c2756df1145e5466bbd9ccc95bad28207998f9b70949a9fc050ee"
+    "sha512=f5e4f71448478f6d49a63bf4f490d40ce6b45727acd4bdf0822ba48478ca65d65d8fbe55436eec904a7fcb01529f08d6d721fab10e9b9d1106b65080ee848031"
+  ]
+}

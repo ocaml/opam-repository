@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "David Allsopp <david.allsopp@metastack.com>"
+bug-reports: "https://caml.inria.fr/mantis"
+dev-repo: "git+https://github.com/ocaml/ocaml.git"
+authors: [ "Xavier Leroy"
+           "Jun Furuse"
+           "J-M Geffroy"
+           "Jacob Navia"
+           "Pierre Weis" ]
+homepage: "https://ocaml.org"
+license: "LGPL-2.1 with OCaml linking exception"
+build: [
+  ["chmod" "+x" "install.sh"]
+  ["./install.sh" "build" "%{ocaml:preinstalled}%" "%{ocaml:lib}%" make "allopt" {ocaml:native}]
+]
+install: [
+  ["./install.sh" "install" "%{ocaml:preinstalled}%" "%{_:lib}%" make stublibs "installopt" {ocaml:native}]
+]
+depends: [
+  "conf-libX11"
+  "ocaml" {= "3.11.2"}
+]
+synopsis: "The OCaml graphics library"
+description:
+  "Ensures that the OCaml graphics library is available, building it if needed."
+extra-files: [
+  ["META" "md5=4703dbfd3b8aec0cabec32086a4e90dd"]
+  ["install.sh" "md5=62f8421d654b8ed18b72c693bd58aef7"]]
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-3.11/ocaml-3.11.2.tar.gz"
+  checksum: "md5=9d0611245122ffbc8263735cae1da7fb"
+}
+patches: ["3.11.2_binutils.patch" "PR5477.patch"]
+extra-source "3.11.2_binutils.patch" {
+  src: "http://www.ocamlpro.com/patches/3.11.2_binutils.patch"
+  checksum: "md5=041f12c823520d687a7bbbce10cd57e3"
+}
+extra-source "PR5477.patch" {
+  src:
+    "https://raw.githubusercontent.com/metastack/ocaml-legacy/master/PR5477-to-3.12.1.patch"
+  checksum: "md5=f81b445f189af91b18c1a6fa5bcb9ac4"
+}

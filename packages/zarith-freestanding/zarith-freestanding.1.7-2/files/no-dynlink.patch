@@ -1,0 +1,85 @@
+This patch is required to build Zarith on an ocaml-freestanding type setup. It
+does three things:
+
+1. Add an option to configure to forcibly disable dynlink.
+2. Stop configure from adding a host -lgmp.
+3. In addition to (1), force project.mak to use "ocamlmklib -custom" instead of
+   "ocamlmklib -failsafe".
+
+We need all three because the Zarith build system is TOTALLY INSANE and has
+never even remotely heard of such a thing as cross compiling, and we need it to
+just shut up and build ONLY with the flags we pass it. KTHXBYE
+
+--- a/configure	2017-10-13 19:45:41.000000000 +0200
++++ b/configure	2018-11-30 19:12:36.809951317 +0100
+@@ -21,6 +21,7 @@
+ host='auto'
+ gmp='auto'
+ perf='no'
++nodynlink='no'
+ 
+ ar='ar'
+ ocaml='ocaml'
+@@ -59,6 +60,7 @@
+   -gmp                 use GMP library (default if found)
+   -mpir                use MPIR library instead of GMP
+   -perf                enable performance statistics
++  -nodynlink           disable dynamic linking
+ 
+ Environment variables that affect configuration:
+   CC                   C compiler to use (default: try gcc, then cc)
+@@ -99,6 +101,8 @@
+             gmp='mpir';;
+         -perf|--perf)
+             perf='yes';;
++        -nodynlink|--nodynlink)
++            nodynlink='yes';;
+         *)
+             echo "unknown option $1, try -help"
+             exit 2;;
+@@ -248,7 +252,7 @@
+ 
+ hasdynlink='no'
+ 
+-if test $hasocamlopt = yes
++if test $hasocamlopt = yes -a $nodynlink = no
+ then
+     checkcmxalib dynlink.cmxa
+     if test $? -eq 1; then hasdynlink='yes'; fi
+@@ -340,12 +344,8 @@
+ if test "$gmp" = 'gmp' -o "$gmp" = 'auto'; then
+     checkinc gmp.h
+     if test $? -eq 1; then
+-        checklib gmp
+-        if test $? -eq 1; then 
+-            gmp='OK'
+-            cclib="$cclib -lgmp"
+-            ccdef="-DHAS_GMP $ccdef"
+-        fi
++        gmp='OK'
++        ccdef="-DHAS_GMP $ccdef"
+     fi
+ fi
+ if test "$gmp" = 'mpir' -o "$gmp" = 'auto'; then
+--- a/project.mak	2017-10-13 19:45:41.000000000 +0200
++++ b/project.mak	2018-11-30 19:11:16.205189144 +0100
+@@ -60,16 +60,16 @@
+ 	make -C tests test
+ 
+ zarith.cma: $(MLSRC:%.ml=%.cmo)
+-	$(OCAMLMKLIB) -failsafe -o zarith $+ $(LIBS)
++	$(OCAMLMKLIB) -custom -o zarith $+ $(LIBS)
+ 
+ zarith.cmxa zarith.$(LIBSUFFIX): $(MLSRC:%.ml=%.cmx)
+-	$(OCAMLMKLIB) -failsafe -o zarith $+ $(LIBS)
++	$(OCAMLMKLIB) -custom -o zarith $+ $(LIBS)
+ 
+ zarith.cmxs: zarith.cmxa libzarith.$(LIBSUFFIX)
+ 	$(OCAMLOPT) -shared -o $@ -I . zarith.cmxa -linkall
+ 
+ libzarith.$(LIBSUFFIX) dllzarith.$(DLLSUFFIX): $(SSRC:%.S=%.$(OBJSUFFIX)) $(CSRC:%.c=%.$(OBJSUFFIX)) 
+-	$(OCAMLMKLIB) -failsafe -o zarith $+ $(LIBS)
++	$(OCAMLMKLIB) -custom -o zarith $+ $(LIBS)
+ 
+ doc: $(MLISRC)
+ 	mkdir -p html

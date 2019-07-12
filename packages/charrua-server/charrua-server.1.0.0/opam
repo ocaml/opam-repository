@@ -1,0 +1,57 @@
+opam-version: "2.0"
+maintainer: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
+authors: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
+license: "ISC"
+homepage: "https://github.com/mirage/charrua"
+bug-reports: "https://github.com/mirage/charrua/issues"
+dev-repo: "git+https://github.com/mirage/charrua.git"
+doc: "https://mirage.github.io/charrua/api"
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depends: [
+  "dune" {build & >= "1.0"}
+  "ppx_sexp_conv"
+  "menhir"        {build}
+  "charrua"       {>= "1.0.0"}
+  "ocaml"         {>= "4.04.2"}
+  "cstruct"       {>= "3.0.1"}
+  "sexplib"
+  "ipaddr"        {>= "3.0.0"}
+  "macaddr"
+  "cstruct-unix"  {with-test}
+]
+synopsis: "DHCP server"
+description: """
+Charrua-server consists of a single `Dhcp_server` module used for constructing DHCP
+servers.
+
+[dhcp](https://github.com/mirage/mirage-skeleton/tree/master/applications/dhcp)
+is a Mirage DHCP unikernel server based on charrua, included as a part of the MirageOS unikernel example and starting-point repository.
+
+#### Features
+
+* `Dhcp_server` supports a stripped down ISC dhcpd.conf, so you can probably just
+  use your old `dhcpd.conf`. It also supports manual configuration building in
+  OCaml.
+* Logic/sequencing is agnostic of IO and platform, so it can run on Unix as a
+  process, as a Mirage unikernel or anything else.
+* All DHCP options are supported at the time of this writing.
+* Code is purely applicative.
+* It's in OCaml, so it's pretty cool.
+
+The name `charrua` is a reference to the, now extinct, semi-nomadic people of
+southern South America.
+"""
+url {
+  src:
+    "https://github.com/mirage/charrua/releases/download/v1.0.0/charrua-v1.0.0.tbz"
+  checksum: [
+    "sha256=c318158366541be647cec9df9f3090879818f3257d274e13f466ed14311870b5"
+    "sha512=567889744d741572666952c6c4e02754da25dee4b32a9879b11a185aaefbf80e3aa08120cc2d1b141047a98c8f36e33b3a74b98055de529fa9743da016b1a63f"
+  ]
+}

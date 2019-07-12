@@ -74,3 +74,11 @@ her pull request.
 2. Or, if you cannot find someone to replace you, simply issue a pull
 request that updates all the `maintainer:` fields that have your details
 with the address of the repository issue tracker (see above).
+
+Other questions
+---------------
+
+If your question about contributing is not answered here, please post on the
+<https://discuss.ocaml.org> forum in the `ecosystem` category with your query.
+Beginners questions are welcome there, particularly since we can use your
+question to refine the documentation of the project.

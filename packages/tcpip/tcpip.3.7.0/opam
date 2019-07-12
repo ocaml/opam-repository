@@ -14,9 +14,11 @@ tags: ["org:mirage"]
 
 build: [
   ["dune" "subst"] {pinned}
-  ["dune" "build" "-p" name "-j" jobs]
-  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "dune" "build" "-p" name "-j" jobs]
+  ["env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
+
+depopts: ["mirage-xen-ocaml"]
 
 depends: [
   "dune" {build & >= "1.0"}
@@ -52,7 +54,7 @@ depends: [
   "mirage-clock-unix" {with-test & >= "1.2.0"}
   "mirage-random-test" {with-test}
   "arp-mirage" {with-test & < "2.0.0"}
-  "lru"
+  "lru" {< "0.3.0"}
 ]
 synopsis: "OCaml TCP/IP networking stack, used in MirageOS"
 description: """

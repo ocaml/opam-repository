@@ -72,9 +72,9 @@ function build_one {
     echo "... package available."
     echo
     echo "====== External dependency handling ======"
-    opam install 'depext>=1.1.0'
-    depext=$(opam depext -ls $pkg)
-    opam depext $pkg
+    opam install 'depext>=1.1.3'
+    depext=$(opam depext --with-test -ls $pkg)
+    opam depext --with-test $pkg
     echo
     echo "====== Installing dependencies ======"
     opam install --deps-only $pkg
