@@ -20,11 +20,20 @@ build: [
     "CC=cc"
     "ASPP=cc -c"
   ] {os = "openbsd" | os = "freebsd" | os = "macos"}
-  [make "world"]
-  [make "world.opt"]
+  [make "-j%{jobs}%" {os != "cygwin"} "world"]
+  [make "-j%{jobs}%" {os != "cygwin"} "world.opt"]
 ]
 install: [make "install"]
 url {
   src: "https://github.com/ocaml/ocaml/archive/4.08.0+beta2.tar.gz"
   checksum: "md5=a0bc4382e736c086b7c3f63f86f0ddac"
 }
+post-messages: [
+  "A failure in the middle of the build may be caused by build parallelism
+   (enabled by default).
+   Please file a bug report at https://github.com/ocaml/ocaml/issues"
+  {failure & jobs > 1 & os != "cygwin"}
+  "You can try installing again including --jobs=1
+   to force a sequential build instead."
+  {failure & jobs > 1 & os != "cygwin" & opam-version >= "2.0.5"}
+]

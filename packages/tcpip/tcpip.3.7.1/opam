@@ -14,12 +14,14 @@ tags: ["org:mirage"]
 
 build: [
   ["dune" "subst"] {pinned}
-  ["dune" "build" "-p" name "-j" jobs]
-  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "dune" "build" "-p" name "-j" jobs]
+  ["env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
 
+depopts: ["mirage-xen-ocaml"]
+
 depends: [
-  "dune"     {build & >= "1.0"}
+  "dune" {>= "1.0"}
   "configurator" {build}
   "ocaml" {>= "4.03.0"}
   "rresult" {>= "0.5.0"}
@@ -30,11 +32,11 @@ depends: [
   "mirage-random" {>= "1.0.0"}
   "mirage-clock-lwt" {>= "1.2.0"}
   "mirage-stack-lwt" {>= "1.3.0"}
-  "mirage-protocols" {>= "2.0.0"}
-  "mirage-protocols-lwt" {>= "2.0.0"}
+  "mirage-protocols" {>= "2.0.0" & < "3.0.0"}
+  "mirage-protocols-lwt" {>= "2.0.0" & < "3.0.0"}
   "mirage-time-lwt" {>= "1.0.0"}
   "ipaddr" {>= "3.0.0"}
-  "macaddr"
+  "macaddr" {< "4.0.0"}
   "mirage-profile" {>= "0.5"}
   "fmt"
   "lwt" {>= "3.0.0"}
@@ -45,7 +47,7 @@ depends: [
   "ethernet" {>= "2.0.0"}
   "mirage-flow" {with-test & >= "1.2.0"}
   "mirage-vnetif" {with-test & >= "0.4.0"}
-  "alcotest" {with-test & >="0.7.0"}
+  "alcotest" {with-test & >= "0.7.0"}
   "pcap-format" {with-test}
   "mirage-clock-unix" {with-test & >= "1.2.0"}
   "mirage-random-test" {with-test}

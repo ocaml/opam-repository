@@ -14,12 +14,14 @@ tags: ["org:mirage"]
 
 build: [
   ["dune" "subst"] {pinned}
-  ["dune" "build" "-p" name "-j" jobs]
-  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "dune" "build" "-p" name "-j" jobs]
+  ["env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
 
+depopts: ["mirage-xen-ocaml"]
+
 depends: [
-  "dune" {build & >= "1.0"}
+  "dune" {>= "1.0"}
   "configurator" {build}
   "ocaml" {>= "4.03.0"}
   "rresult" {>= "0.5.0"}
@@ -35,7 +37,7 @@ depends: [
   "mirage-protocols-lwt" {>= "1.4.0" & < "2.0.0"}
   "mirage-time-lwt" {>= "1.0.0"}
   "ipaddr" {>= "3.0.0"}
-  "macaddr"
+  "macaddr" {< "4.0.0"}
   "mirage-profile" {>= "0.5"}
   "fmt"
   "lwt" {>= "3.0.0"}
