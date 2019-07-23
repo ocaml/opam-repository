@@ -1,0 +1,56 @@
+opam-version: "2.0"
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: ["The down programmers"]
+homepage: "https://erratique.ch/software/down"
+doc: "https://erratique.ch/software/down/doc"
+license: "ISC"
+dev-repo: "git+https://erratique.ch/repos/down.git"
+bug-reports: "https://github.com/dbuenzli/down/issues"
+tags: [ "org:erratique" "dev" "toplevel" "repl" ]
+depends: [
+  "ocaml" {>= "4.04.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "0.9.1" } ]
+build: [
+  "ocaml" "pkg/pkg.ml" "build"
+          "--dev-pkg" "%{pinned}%"
+          "--lib-dir" "%{lib}%" ]
+
+# Following is only to deal with
+# https://caml.inria.fr/mantis/view.php?id=7808
+
+install:
+[
+  ["install" "-d" "%{lib}%/ocaml/"]
+  ["install" "src/down.top" "src/down.nattop" "%{lib}%/ocaml/"]
+]
+
+remove:
+[[
+  "rm" "-f" "%{lib}%/ocaml/down.top" "%{lib}%/ocaml/down.nattop"
+]]
+synopsis: """An OCaml toplevel (REPL) upgrade"""
+description: """\
+
+Down is an unintrusive user experience upgrade for the `ocaml`
+toplevel (REPL).
+
+Simply load the zero dependency `Down` library in the `ocaml` toplevel
+and you get line edition, history, session support and identifier
+completion and documentation (courtesy of [`ocp-index`][ocp-index]).
+
+Add this to your `~/.ocamlinit`:
+
+    #use "down.top"
+
+![tty](https://raw.githubusercontent.com/dbuenzli/down/master/doc/tty.png)
+
+Down is distributed under the ISC license.
+
+
+[ocp-index]: https://github.com/OCamlPro/ocp-index"""
+url {
+archive: "https://erratique.ch/software/down/releases/down-0.0.1.tbz"
+checksum: "d224bb0d60da70fecd2fc5895bba9745"
+}
