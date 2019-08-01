@@ -68,14 +68,10 @@ if test "$1" = 'build' ; then
   # Build the library
   $5 -C otherlibs/graph CAMLC=ocamlc CAMLOPT=ocamlopt MKLIB=ocamlmklib all $6
 
-  if ! $2 ; then
-    # System compilers must always have META installed (since ocamlfind either
-    # won't have installed it, or won't create it when installed), but otherwise
-    # it should only be installed if ocamlfind is already installed (since a
-    # subsequent installation will detect the graphics library and install META)
-    if ! test -e "$3/topfind" ; then
-      echo 'lib: ["META"]' >> graphics.install
-    fi
+  # System compilers must always have META installed; this package is a depopt
+  # of ocamlfind, so it will be reinstalled if this package is added.
+  if $2 ; then
+    echo 'lib: ["META"]' >> graphics.install
   fi
 elif test -e otherlibs/graph/graphics.cmi ; then
   # $2 = 'true' or 'false' (ocaml:preinstalled)
