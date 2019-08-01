@@ -1,23 +1,46 @@
 #!/bin/sh
 
-if test -e "`ocamlopt -where 2>/dev/null || ocamlc -where`/graphics.cmi" ; then
-  # Graphics library already installed
-  exit 0
-fi
-
 VERSION=`ocamlopt -version 2>/dev/null || ocamlc -version`
 VERSION=`echo $VERSION | sed -e 's/[+.]//g'`
 
-# Installation variables in the Makefile altered with 4.02.0
-if test $VERSION -ge 4020 ; then
-  K_LIBDIR=INSTALL_LIBDIR
-  K_STUBLIBDIR=INSTALL_STUBLIBDIR
-else
-  K_LIBDIR=LIBDIR
-  K_STUBLIBDIR=STUBLIBDIR
-fi
+# $1 is either build or install
+if test "$1" = 'build' ; then
+  # $2 = 'true' or 'false' (ocaml:preinstalled)
+  # $3 = value of ocaml:lib
+  # $4 = value of _:share
+  # $5 = value of make
+  # $6 = 'allopt' or ''
 
-if test "$1" = "build" ; then
+  # Determine if the graphics library was installed with OCaml.
+  # This is extremely delicate, as if the this package is being reinstalled then
+  # the presence of graphics files could because of *this* package's previous
+  # build.
+
+  STATE="$4/state"
+
+  if test -e "$STATE" ; then
+    STATE="`cat $STATE`"
+  else
+    STATE=built
+    if test -e "`ocamlopt -where 2>/dev/null || ocamlc -where`/graphics.cmi" ; then
+      # Graphics library already installed
+      # This rather dirty inspection of the switch state deals with previous
+      # versions of this package which didn't write the state file
+      CHANGES="$OPAM_SWITCH_PREFIX/.opam-switch/install/graphics.changes"
+      if ! test -e "$CHANGES" || \
+         ! grep -F graphics.cm "$CHANGES" >/dev/null ; then
+        # And it wasn't installed by this package
+        STATE=preinstalled
+      fi
+    fi
+  fi
+
+  echo "$STATE" > state
+
+  if test "$STATE" = 'preinstalled' ; then
+    exit 0
+  fi
+
   # For system compilers, use the real OCaml LIBDIR, otherwise use the opam one
   if $2 ; then
     OCAML_LIBDIR="`ocamlopt -where 2>/dev/null || ocamlc -where`"
@@ -30,7 +53,7 @@ if test "$1" = "build" ; then
     if test $VERSION -ge 4040 ; then
       # reconfigure target introduced in 4.04.0
       cp "$OCAML_LIBDIR/Makefile.config" config/Makefile
-      $4 reconfigure
+      $5 reconfigure
     else
       # Otherwise, execute the first line from Makefile.config (which includes
       # the arguments used)
@@ -43,7 +66,7 @@ if test "$1" = "build" ; then
   fi
 
   # Build the library
-  $4 -C otherlibs/graph CAMLC=ocamlc CAMLOPT=ocamlopt MKLIB=ocamlmklib all $5
+  $5 -C otherlibs/graph CAMLC=ocamlc CAMLOPT=ocamlopt MKLIB=ocamlmklib all $6
 
   if ! $2 ; then
     # System compilers must always have META installed (since ocamlfind either
@@ -51,20 +74,30 @@ if test "$1" = "build" ; then
     # it should only be installed if ocamlfind is already installed (since a
     # subsequent installation will detect the graphics library and install META)
     if ! test -e "$3/topfind" ; then
-      rm META
+      echo 'lib: ["META"]' >> graphics.install
     fi
   fi
-else
-  if test -e META ; then
-    mkdir -p "$3"
-    cp -f META "$3/META"
+elif test -e otherlibs/graph/graphics.cmi ; then
+  # $2 = 'true' or 'false' (ocaml:preinstalled)
+  # $3 = value of make
+  # $4 = value of _:lib
+  # $5 = value of stublibs
+  # $6 = 'installopt' or ''
+
+  # Installation variables in the Makefile altered with 4.02.0
+  if test $VERSION -ge 4020 ; then
+    K_LIBDIR=INSTALL_LIBDIR
+    K_STUBLIBDIR=INSTALL_STUBLIBDIR
+  else
+    K_LIBDIR=LIBDIR
+    K_STUBLIBDIR=STUBLIBDIR
   fi
 
   if $2 ; then
-    mkdir -p "$3"
+    mkdir -p "$4"
     mkdir -p "$5"
-    $4 "$K_LIBDIR=$3" "$K_STUBLIBDIR=$5" -C otherlibs/graph install $6
+    $3 "$K_LIBDIR=$4" "$K_STUBLIBDIR=$5" -C otherlibs/graph install $6
   else
-    $4 -C otherlibs/graph install $6
+    $3 -C otherlibs/graph install $6
   fi
 fi
