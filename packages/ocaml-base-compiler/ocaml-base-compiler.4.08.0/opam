@@ -15,14 +15,12 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
-  ["./configure" "--prefix=%{prefix}%"]
-    {os != "openbsd" & os != "freebsd" & os != "macos"}
   [
     "./configure"
     "--prefix=%{prefix}%"
-    "CC=cc"
-    "ASPP=cc -c"
-  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+    "CC=cc" {os = "openbsd" | os = "freebsd" | os = "macos"}
+    "ASPP=cc -c" {os = "openbsd" | os = "freebsd" | os = "macos"}
+  ]
   [make "-j%{jobs}%" {os != "cygwin"} "world"]
   [make "-j%{jobs}%" {os != "cygwin"} "world.opt"]
 ]
