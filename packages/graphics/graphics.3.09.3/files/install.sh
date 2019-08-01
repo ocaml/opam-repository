@@ -61,6 +61,8 @@ else
   fi
 
   if $2 ; then
+    mkdir -p "$3"
+    mkdir -p "$5"
     $4 "$K_LIBDIR=$3" "$K_STUBLIBDIR=$5" -C otherlibs/graph install $6
   else
     $4 -C otherlibs/graph install $6
