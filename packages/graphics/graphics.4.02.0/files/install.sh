@@ -7,16 +7,17 @@ VERSION=`echo $VERSION | sed -e 's/[+.]//g'`
 if test "$1" = 'build' ; then
   # $2 = 'true' or 'false' (ocaml:preinstalled)
   # $3 = value of ocaml:lib
-  # $4 = value of _:share
-  # $5 = value of make
-  # $6 = 'allopt' or ''
+  # $4 = value of ocaml:share
+  # $5 = value of _:share
+  # $6 = value of make
+  # $7 = 'allopt' or ''
 
   # Determine if the graphics library was installed with OCaml.
   # This is extremely delicate, as if the this package is being reinstalled then
   # the presence of graphics files could because of *this* package's previous
   # build.
 
-  STATE="$4/state"
+  STATE="$5/state"
 
   if test -e "$STATE" ; then
     STATE="`cat $STATE`"
@@ -52,8 +53,18 @@ if test "$1" = 'build' ; then
   if test $VERSION -ge 3090 ; then
     if test $VERSION -ge 4040 ; then
       # reconfigure target introduced in 4.04.0
-      cp "$OCAML_LIBDIR/Makefile.config" config/Makefile
-      $5 reconfigure
+      if test $VERSION -ge 4080 ; then
+        # config/Makefile became Makefile.config in 4.08.0
+        cp "$OCAML_LIBDIR/Makefile.config" Makefile.config
+        # Makefile.common is now generated in 4.08.0+
+        touch Makefile.common
+      else
+        cp "$OCAML_LIBDIR/Makefile.config" config/Makefile
+      fi
+      if test -e "$4/config.cache" ; then
+        grep -Fv ac_cv_have_x "$4/config.cache" > config.cache
+      fi
+      $6 reconfigure
     else
       # Otherwise, execute the first line from Makefile.config (which includes
       # the arguments used)
@@ -66,7 +77,7 @@ if test "$1" = 'build' ; then
   fi
 
   # Build the library
-  $5 -C otherlibs/graph CAMLC=ocamlc CAMLOPT=ocamlopt MKLIB=ocamlmklib all $6
+  $6 -C otherlibs/graph CAMLC=ocamlc CAMLOPT=ocamlopt MKLIB=ocamlmklib all $7
 
   # System compilers must always have META installed; this package is a depopt
   # of ocamlfind, so it will be reinstalled if this package is added.
