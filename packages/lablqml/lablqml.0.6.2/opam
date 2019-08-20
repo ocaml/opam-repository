@@ -7,18 +7,25 @@ dev-repo: "git+https://github.com/Kakadu/lablqml.git"
 tags: [ "gui" "ui" "qt" ]
 
 build: [
-  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH ./configure"] {os-distribution = "alpine" | os-distribution = "centos" | os-distribution = "fedora" }
-  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make"]        {os-distribution = "alpine" | os-distribution = "centos" | os-distribution = "fedora" }
-  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make demos"]  
-    { (os-distribution = "alpine"  | os-distribution = "centos" | os-distribution = "fedora") & with-test }
-  
-  ["./configure"]            { os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
-  [make]                     { os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
-  [make "demos"] { with-test & os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" } 
+  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH ./configure"]
+      {os-distribution = "alpine" | os-distribution = "centos" | os-distribution = "fedora" }
+  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make"]
+      {os-distribution = "alpine" | os-distribution = "centos" | os-distribution = "fedora" }
+  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make demos"]
+      { (os-distribution = "alpine"  | os-distribution = "centos" | os-distribution = "fedora") & with-test }
+
+  ["./configure"]
+      { os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
+  ["dune" "build" "-p" "lablqml,ppx_qt"]
+      { os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
+  [make "demos"]
+      { with-test & os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
 ]
 install: [
-  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make install"]       { os-distribution  = "alpine" | os-distribution  = "centos" | os-distribution  = "fedora" }
-  [make "install"]                                                                  { os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
+  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make install"]
+      { os-distribution  = "alpine" | os-distribution  = "centos" | os-distribution  = "fedora" }
+  [make "install"]
+      { os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
 ]
 
 depends: [
@@ -35,6 +42,5 @@ synopsis:
 description: "Versions <= 0.4 are known as `lablqt`, >0.5 -- as `lablqml`."
 url {
   src: "https://github.com/Kakadu/lablqml/archive/0.6.2.tar.gz"
-  checksum: "md5=85ab993896c01e30c4f0290966723cdb"
+  checksum: "md5=7d50f1444fd50fe70663138b2ab491f0"
 }
-
