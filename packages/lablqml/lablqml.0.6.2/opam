@@ -9,29 +9,17 @@ tags: [ "gui" "ui" "qt" ]
 build: [
   ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH ./configure"]
       {os-distribution = "alpine" | os-distribution = "centos" | os-distribution = "fedora" }
-  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make"]
-      {os-distribution = "alpine" | os-distribution = "centos" | os-distribution = "fedora" }
-  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make demos"]
-      { (os-distribution = "alpine"  | os-distribution = "centos" | os-distribution = "fedora") & with-test }
-
   ["./configure"]
       { os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
-  ["dune" "build" "-p" "lablqml,ppx_qt"]
-      { os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
+  ["dune" "build" "-p" "lablqml,ppx_qt" "-j" jobs]
   [make "demos"]
-      { with-test & os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
 ]
-install: [
-  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make install"]
-      { os-distribution  = "alpine" | os-distribution  = "centos" | os-distribution  = "fedora" }
-  [make "install"]
-      { os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
-]
+install: [make "install"]
 
 depends: [
   "ocaml" {>= "4.03.0"}
-  "ocamlfind" {build & with-test }
-  "dune"
+  "ocamlfind" {with-test}
+  "dune" {>= "1.0"}
   "configurator" {build & < "v0.13"}
   "conf-qt" {>= "5.2.1"}
   "ppxlib"  {<= "0.9.0"}
