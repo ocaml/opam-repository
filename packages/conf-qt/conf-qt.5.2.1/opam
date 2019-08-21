@@ -4,13 +4,16 @@ maintainer:   "kakadu.hafanana@gmail.com"
 homepage:     "http://kakadu.github.io/lablqml/"
 bug-reports:  "https://github.com/kakadu/lablqml/issues"
 dev-repo: "git+https://github.com/Kakadu/lablqml.git"
+
+setenv: [ "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH"] {os-distribution = "alpine" | os-distribution = "centos" | os-distribution = "fedora" }
+
 build: [
     ["which" "qmake"]
     ["qmake" "--version"]
     ["which" "moc"]
     ["moc" "--version"]
-    ["sh" "-exc" "echo \"Your Qt version is `PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH qmake -query QT_VERSION`\"" ] 
-    ["sh" "-exc" "min=\"5.2.1\"         cur=`PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH qmake -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`; [ \"$res\" = \"$min\" ]"
+    ["sh" "-exc" "echo \"Your Qt version is `qmake -query QT_VERSION`\"" ] 
+    ["sh" "-exc" "min=\"5.2.1\"         cur=`qmake -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`; [ \"$res\" = \"$min\" ]"
     ]
 ]
 
@@ -30,7 +33,11 @@ depexts: [
   ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"]
     {os-distribution = "debian"}
 
-  ["qtchooser@edge" "qt5-qtbase-dev" "qt5-qtdeclarative-dev"] {os-distribution = "alpine"}
+  # to set right paths for qt5 automatically we should 
+  #   1) add `@edge http://nl.alpinelinux.org/alpine/edge/testing` to `/etc/apk/repositories`
+  #   2) perform installation via `apk add qtchooser@edge`
+  # but this repo is not shipped by default on CI
+  ["qt5-qtbase-dev" "qt5-qtdeclarative-dev"] {os-distribution = "alpine"}
 
   ["qt5-qtbase-devel" "qt5-qtdeclarative-devel"] {os-distribution = "centos"}
   ["qt5-qtbase-devel" "qt5-qtdeclarative-devel"] {os-distribution = "fedora"}
