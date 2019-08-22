@@ -1,0 +1,28 @@
+opam-version: "1.2"
+maintainer: "erwan.jahier@imag.fr"
+authors: [ "Erwan Jahier" ]
+license: "CeCILL"
+homepage: "https://gricad-gitlab.univ-grenoble-alpes.fr/verimag/synchrone/lutils/"
+dev-repo: "https://gricad-gitlab.univ-grenoble-alpes.fr/verimag/synchrone/lutils.git"
+bug-reports: "https://gricad-gitlab.univ-grenoble-alpes.fr/verimag/synchrone/lutils/"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/lutils/setup.ml" "-C" "%{etc}%/lutils" "-uninstall"]
+]
+build-test: [
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+depends: [
+  "base-unix"
+  "ocamlbuild" {build}
+  "ocamlfind"
+  "num"
+]
+available: [ ocaml-version >= "4.02" ]
+post-messages: ["The last version can be obtained via (opam repo add) http://www-verimag.imag.fr/DIST-TOOLS/SYNCHRONE/opam-repository/ "]

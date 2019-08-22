@@ -1,0 +1,23 @@
+opam-version: "1.2"
+maintainer: "erwan.jahier@univ-grenoble-alpes.fr"
+authors: [ "Erwan Jahier" ]
+license: "CeCILL"
+homepage: "https://gricad-gitlab.univ-grenoble-alpes.fr/verimag/synchrone/rdbg"
+dev-repo: "https://gricad-gitlab.univ-grenoble-alpes.fr/verimag/synchrone/rdbg.git"
+bug-reports: "https://gricad-gitlab.univ-grenoble-alpes.fr/verimag/synchrone/rdbg"
+build:  [make "build"]
+install:  [make "install"]
+remove: [
+  ["ocaml" "%{etc}%/rdbg/setup.ml" "-C" "%{etc}%/rdbg" "-uninstall"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "base-unix" {build}
+  "lutils" {>= "1.9"}
+  ("oasis" {build & >= "0.4.7"} | "oasis-mirage" {build & >= "0.4.7"})
+  "ocamlbuild" {build}
+  "ocamlfind" 
+  "ounit" {build & >= "2.0.0"}
+]
+available: [ ocaml-version >= "4.02" ]
+post-messages: ["The last version can be obtained via (opam repo add) http://www-verimag.imag.fr/DIST-TOOLS/SYNCHRONE/opam-repository/ "]

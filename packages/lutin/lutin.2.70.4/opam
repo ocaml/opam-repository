@@ -1,0 +1,52 @@
+opam-version: "1.2"
+maintainer: "erwan.jahier@univ-grenoble-alpes.fr"
+authors: [ "Erwan Jahier"
+           "Pascal Raymond"
+           "Bertrand Jeannnet (polka)"
+           "Yvan Roux" ]
+license: "CeCILL"
+homepage: "http://www-verimag.imag.fr/Lutin.html"
+dev-repo: "https://gricad-gitlab.univ-grenoble-alpes.fr/verimag/synchrone/lutin.git"
+bug-reports: "http://www-verimag.imag.fr/Lutin.html"
+tags: [ "clib:stdc" "clib:camlidl"  ]
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  [make "build"]
+]
+install:  [make "install"]
+remove: [
+  ["ocaml" "%{etc}%/lutin/setup.ml" "-C" "%{etc}%/lutin" "-uninstall"]
+]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "base-bigarray"
+  "conf-gmp"
+  "conf-perl" {build}
+  "base-unix" {build}
+  "num"
+  "camlidl"
+  ("extlib" {build} | "extlib-compat" {build})
+  "lustre-v6"
+  "lutils" {>= "1.9"}
+  "mlgmpidl"
+  ("oasis" {build & >= "0.4.7"} | "oasis-mirage" {build & >= "0.4.7"})
+  "ocamlbuild" {build}
+  "ocamlfind"
+  "rdbg" {>= "1.170"}
+]
+available: [ ocaml-version >= "4.02" ]
+depexts: [
+  [ ["alpine" ]  ["perl" "gmp-dev" "mpfr-dev" "m4"] ]
+  [ ["centos" ]  ["perl" "gmp-devel" "mpfr-devel" "m4"] ]
+  [ ["debian" ]  ["perl" "libgmp-dev" "libmpfr-dev" "m4"] ]
+  [ ["ubuntu" ]  ["perl" "libgmp-dev" "libmpfr-dev" "m4"] ]
+    
+]
+post-messages: ["The last version can be obtained via (opam repo add) http://www-verimag.imag.fr/DIST-TOOLS/SYNCHRONE/opam-repository/ "]
