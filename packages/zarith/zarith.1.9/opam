@@ -1,0 +1,49 @@
+opam-version: "2.0"
+maintainer: "Xavier Leroy <xavier.leroy@inria.fr>"
+authors: [
+  "Antoine Miné"
+  "Xavier Leroy"
+  "Pascal Cuoq"
+]
+homepage: "https://github.com/ocaml/Zarith"
+bug-reports: "https://github.com/ocaml/Zarith/issues"
+dev-repo: "git+https://github.com/ocaml/Zarith.git"
+build: [
+  ["./configure"] {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "sh"
+    "-exc"
+    "LDFLAGS=\"$LDFLAGS -L/usr/local/lib\" CFLAGS=\"$CFLAGS -I/usr/local/include\" ./configure"
+  ] {os = "openbsd" | os = "freebsd"}
+  [
+    "sh"
+    "-exc"
+    "LDFLAGS=\"$LDFLAGS -L/opt/local/lib -L/usr/local/lib\" CFLAGS=\"$CFLAGS -I/opt/local/include -I/usr/local/include\" ./configure"
+  ] {os = "macos"}
+  [make]
+]
+install: [
+  [make "install"]
+]
+remove:  ["ocamlfind" "remove" "zarith"]
+depends: [
+  "ocaml"
+  "ocamlfind"
+  "conf-gmp"
+  "conf-perl" {build}
+]
+synopsis:
+  "Implements arithmetic and logical operations over arbitrary-precision integers"
+description: """
+The Zarith library implements arithmetic and logical operations over
+arbitrary-precision integers. It uses GMP to efficiently implement
+arithmetic over big integers. Small integers are represented as Caml
+unboxed integers, for speed and space economy."""
+flags: light-uninstall
+url {
+  src: "https://github.com/ocaml/Zarith/archive/release-1.9.tar.gz"
+  checksum: [
+    "md5=08283d3d389b7b746810f1c1b913ef97"
+    "sha512=aa19379738726810c7d7ae382b33c5625573c3d79a46905081bfcac9627690acf30f3d66db2d12779d3b5d63178bacb7a8b88b33d533e8f7031c47e6be75233e"
+  ]
+}
