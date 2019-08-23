@@ -1,21 +1,29 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Marco Aurélio <marcoonroad@gmail.com>"
 authors: "Marco Aurélio <marcoonroad@gmail.com>"
 homepage: "http://github.com/marcoonroad/shared-secret"
 bug-reports: "http://github.com/marcoonroad/shared-secret/issues"
 license: "MIT"
-dev-repo: "http://github.com/marcoonroad/shared-secret.git"
+dev-repo: "git+http://github.com/marcoonroad/shared-secret.git"
 build: [
   ["oasis" "setup"]
   ["./configure" "--prefix=%{prefix}%" "--%{ounit:enable}%-tests"]
   [make]
+  [make "test"] {with-test}
 ]
 install: [make "install"]
-build-test: [make "test"]
 remove: ["ocamlfind" "remove" "shared-secret"]
 depends: [
-  "ounit" {test}
+  "ocaml" {>= "4.02"}
+  "ounit" {with-test}
   "oasis" {build}
   "ocamlfind" {build}
 ]
-available: [ocaml-version >= "4.02"]
+synopsis: "Exceptions are shared secrets."
+description:
+  "Abstract (encapsulated) messages or hidden (semi-deterministic) exceptions using OCaml's module system."
+flags: light-uninstall
+url {
+  src: "https://github.com/marcoonroad/shared-secret/archive/v0.3.zip"
+  checksum: "md5=1fcdc9408e844c46e3a510c162836944"
+}

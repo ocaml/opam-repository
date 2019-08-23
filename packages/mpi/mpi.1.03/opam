@@ -1,0 +1,30 @@
+opam-version: "2.0"
+version: "1.03"
+maintainer: "Timothy Bourke <tim@tbrk.org>"
+authors: ["Xavier Leroy"]
+homepage: "https://github.com/xavierleroy/ocamlmpi"
+bug-reports: "https://github.com/xavierleroy/ocamlmpi/issues"
+dev-repo: "git://github.com/xavierleroy/ocamlmpi"
+license: "LGPL-2 with OCaml linking exception"
+build: [
+  [make "all" "opt"
+    "MPIINCDIR=%{conf-mpi:includedir}%"
+    "MPILIBDIR=%{conf-mpi:libdir}%"
+    "MPICC=%{conf-mpi:binpath}%mpicc"
+    "MPIRUN=%{conf-mpi:binpath}%mpirun"
+  ]
+]
+patches: ["post103.patch"]
+install: [[make "install"]]
+remove: [[make "uninstall"]]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "conf-mpi"
+  "ocamlfind" {build}
+]
+synopsis: "OCaml binding to the Message Passing Interface (MPI)"
+extra-files: ["post103.patch" "md5=137e92a72f89e2835a23eec33204c642"]
+url {
+  src: "https://github.com/xavierleroy/ocamlmpi/archive/rel103.tar.gz"
+  checksum: "md5=ba5b0e0e43b3e7af265109bb1ec94690"
+}

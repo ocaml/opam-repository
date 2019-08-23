@@ -1,10 +1,10 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Vladimir Brankov <vbrankov@janestreet.com>"
 authors: "Vladimir Brankov <vbrankov@janestreet.com>"
 homepage: "https://github.com/vbrankov/hdf5-ocaml"
 bug-reports: "https://github.com/vbrankov/hdf5-ocaml/issues"
 license: "MIT"
-dev-repo: "https://github.com/vbrankov/hdf5-ocaml.git"
+dev-repo: "git+https://github.com/vbrankov/hdf5-ocaml.git"
 build: [
   ["./configure" "--prefix=%{prefix}%"]
   [make]
@@ -15,10 +15,20 @@ remove: [
   ["ocamlfind" "remove" "hdf5_raw"]
 ]
 depends: [
+  "ocaml" {>= "4.02" & < "4.03.0"}
   "ocamlfind" {build}
 ]
 depexts: [
-  [["ubuntu"] ["libhdf5-serial-dev"]]
-  [["osx" "homebrew"] ["homebrew/science/hdf5"]]
+  ["libhdf5-serial-dev"] {os-distribution = "ubuntu"}
+  ["homebrew/science/hdf5"] {os = "macos" & os-distribution = "homebrew"}
 ]
-available: [ocaml-version >= "4.02" & ocaml-version < "4.03.0"]
+synopsis: "Manages HDF5 files used for storing large amounts of data"
+description: """
+The library manages reading and writing to HDF5 files. HDF5 file format is used for
+storing and organizing large amounts of data. Also provided is a fast way of working with
+large arrays of records, much faster than OCaml arrays of records."""
+flags: light-uninstall
+url {
+  src: "https://github.com/vbrankov/hdf5-ocaml/archive/v0.1.1-alpha.tar.gz"
+  checksum: "md5=39cfac63baa35eb7a7eb8bb15ce682d7"
+}

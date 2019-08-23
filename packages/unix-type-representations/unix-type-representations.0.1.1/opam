@@ -1,19 +1,29 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Jeremy Yallop <yallop@gmail.com>"
 authors: "Jeremy Yallop <yallop@gmail.com>"
 license: "MIT"
 homepage: "https://github.com/yallop/ocaml-unix-type-representations"
 bug-reports: "https://github.com/yallop/ocaml-unix-type-representations/issues"
-dev-repo: "https://github.com/yallop/ocaml-unix-type-representations.git"
-build: [[ "ocaml" "pkg/pkg.ml" "build" "--dev-pkg" "%{pinned}%" ]]
-build-test:
-[[ "ocaml" "pkg/pkg.ml" "build" "--dev-pkg" "%{pinned}%" "--tests" "true" ]
- [ "ocaml" "pkg/pkg.ml" "test" ]]
+dev-repo: "git+https://github.com/yallop/ocaml-unix-type-representations.git"
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--dev-pkg" "%{pinned}%"]
+  ["ocaml" "pkg/pkg.ml" "build" "--dev-pkg" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+]
 depends: [
+  "ocaml"
   "topkg" {build & >= "0.9.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "base-unix"
-  "ctypes" {test}
-  "ounit" {test}
+  "ctypes" {with-test}
+  "ounit" {with-test}
 ]
+synopsis:
+  "Functions that expose the underlying types of some abstract types in the Unix module."
+url {
+  src:
+    "https://github.com/yallop/ocaml-unix-type-representations/archive/0.1.1.tar.gz"
+  checksum: "md5=e78a1b4e08ff39a3698e6e30a829aff9"
+}

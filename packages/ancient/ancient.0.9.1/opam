@@ -1,0 +1,39 @@
+opam-version: "2.0"
+authors: "Richard Jones et.al."
+homepage: "https://github.com/UnixJunkie/ocaml-ancient"
+bug-reports: "https://github.com/UnixJunkie/ocaml-ancient/issues"
+dev-repo: "git+https://github.com/UnixJunkie/ocaml-ancient.git"
+maintainer: "unixjunkie@sdf.org"
+build: [
+  ["sh" "-c" "cd mmalloc && ./configure"]
+  [make "depend"]
+  [make]
+]
+remove: ["ocamlfind" "remove" "ancient"]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "ocamlfind" {build}
+]
+install: [make "install" "DESTDIR=%{lib}%"]
+flags: light-uninstall
+url {
+  src: "https://github.com/UnixJunkie/ocaml-ancient/archive/0.9.1.tar.gz"
+  checksum: "md5=4c6cd6a03f675b1972c0bb5a6f06b99b"
+}
+synopsis: "Use data structures larger than available memory"
+description: """
+This module allows you to use in-memory data structures which are
+larger than available memory and so are kept in swap.  If you try this
+in normal OCaml code, you'll find that the machine quickly descends
+into thrashing as the garbage collector repeatedly iterates over
+swapped memory structures.  This module lets you break that
+limitation.  Of course the module doesn't work by magic :-) If your
+program tries to access these large structures, they still need to be
+swapped back in, but it is suitable for large, sparsely accessed
+structures.
+
+Secondly, this module allows you to share those structures between
+processes.  In this mode, the structures are backed by a disk file,
+and any process that has read/write access that disk file can map that
+file in and see the structures.
+"""

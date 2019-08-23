@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis: "Handle security identfiers"
+maintainer: "Philipp Gesang <phg@phi-gamma.net>"
+authors: "Philipp Gesang"
+license: "LGPL-3.0-only with OCaml linking exception"
+homepage: "https://gitlab.com/phgsng/ocaml-sid"
+bug-reports: "https://gitlab.com/phgsng/ocaml-sid"
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "oasis" {build}
+  "stdint"
+  "cmdliner"
+  "ounit" {with-test}
+]
+build: [
+  ["oasis" "setup"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--enable-tests" {with-test}
+  ]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+run-test: [make "test"]
+install: [make "install"]
+dev-repo: "git+https://gitlab.com/phgsng/ocaml-sid.git"
+url {
+  src:
+    "https://gitlab.com/phgsng/ocaml-sid/-/archive/v1.1/ocaml-sid-v1.1.tar.gz"
+  checksum: [
+    "md5=b621c94f94c43eeff4fd98ea6ed93041"
+    "sha512=a1bdfdc9de037b1e32801e24e49aa537fb27cb00fc88cfca1cdec8023c8b680d284c3eee791ad106825ad7baf83a85621319fe20dd383a99ed075fd599677231"
+  ]
+}

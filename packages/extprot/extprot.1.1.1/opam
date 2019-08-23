@@ -1,22 +1,37 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "ygrek@autistici.org"
 homepage: "https://github.com/mfp/extprot"
 license: "MIT"
 doc: ["https://github.com/mfp/extprot/blob/master/README.md"]
-build: "omake"
-build-test: [["omake" "test"] {"%{ounit:installed}"}]
+build: [
+  ["omake"]
+  ["omake" "test"] {with-test & "%{ounit:installed}"}
+]
 remove: [
   ["ocamlfind" "remove" "extprot"]
   ["rm" "-f" "%{bin}%/extprotc" "%{bin}%/extprotc.exe"]
 ]
 depends: [
+  "ocaml" {< "4.02.0"}
   "ocamlfind"
   ("extlib" | "extlib-compat")
   "sexplib" {< "113.01.00"}
   "type_conv"
   "omake"
 ]
-patches: ["no_bin_annot.patch" {ocaml-version < "4.00"}]
-available: [ ocaml-version < "4.02.0" ]
+patches: "no_bin_annot.patch" {ocaml:version < "4.00"}
 dev-repo: "git://github.com/mfp/extprot"
 install: ["omake" "install" "prefix=%{prefix}%"]
+synopsis:
+  "Extensible binary protocols for cross-language communication and long-term serialization"
+description: """
+extprot allows you to create compact, efficient, extensible, binary protocols that can
+be used for cross-language communication and long-term data serialization.
+extprot supports protocols with rich, composable types, whose definition can evolve
+while keeping both forward and backward compatibility."""
+flags: light-uninstall
+extra-files: ["no_bin_annot.patch" "md5=e7143bac42d75d00b4a76af08f61b1c1"]
+url {
+  src: "https://github.com/mfp/extprot/archive/v1.1.1.tar.gz"
+  checksum: "md5=33a6ffa66db466cf6f66ed52a7152fac"
+}

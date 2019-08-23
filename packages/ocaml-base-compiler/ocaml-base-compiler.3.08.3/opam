@@ -1,0 +1,30 @@
+opam-version: "2.0"
+synopsis: "Official 3.08.3 release"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "3.08.3" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["sed" "-i" "-e" "s/struct sigaltstack/stack_t/" "asmrun/signals.c"]
+  ["./configure" "-prefix" prefix]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  ["./configure" "-prefix" prefix "-cc" "cc" "-aspp" "cc -c"]
+    {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world"]
+  [make "world.opt"]
+]
+install: [
+  [make "install"]
+  ["mkdir" "-p" "%{prefix}%/lib/ocaml/compiler-libs"]
+  ["cp" "-r" "typing" "parsing" "utils" "%{prefix}%/lib/ocaml/compiler-libs/"]
+]
+url {
+  src: "https://caml.inria.fr/pub/distrib/ocaml-3.08/ocaml-3.08.3.tar.gz"
+  checksum: "md5=b1fc455aca6980e02e8cce8a3cbb4c81"
+}

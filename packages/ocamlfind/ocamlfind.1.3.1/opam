@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "Thomas Gazagnaire <thomas@gazagnaire.org>"
-author:       "Gerd Stolpmann <gerd@gerd-stolpmann.de>"
 homepage:     "http://projects.camlcity.org/projects/findlib.html"
 bug-reports:  "https://gitlab.camlcity.org/gerd/lib-findlib/issues"
-dev-repo:     "https://gitlab.camlcity.org/gerd/lib-findlib.git"
+dev-repo: "git+https://gitlab.camlcity.org/gerd/lib-findlib.git"
+patches: ["no-awk-check.patch"]
 build: [
   [
     "./configure"
@@ -15,18 +15,47 @@ build: [
     man
     "-config"
     "%{lib}%/findlib.conf"
-    "-no-topfind" {preinstalled}
+    "-no-topfind" {ocaml:preinstalled}
   ]
   [make "all"]
   [make "opt"]
 ]
-available: [(ocaml-version >= "3.08") & (ocaml-version < "3.12.2")]
 depends: [
+  "ocaml" {>= "3.08" & < "3.12.2"}
   "conf-m4" {build}
   "num" {= "0"}
 ]
 install: [make "install"]
 remove: [
-  ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-custom" "-no-topfind" {preinstalled}]
+  [
+    "./configure"
+    "-bindir"
+    bin
+    "-sitelib"
+    lib
+    "-mandir"
+    man
+    "-config"
+    "%{lib}%/findlib.conf"
+    "-no-custom"
+    "-no-topfind" {ocaml:preinstalled}
+  ]
   [make "uninstall"]
 ]
+synopsis: "A library manager for OCaml."
+description: """
+Findlib is a library manager for OCaml. It provides a convention how
+to store libraries, and a file format ("META") to describe the
+properties of libraries. There is also a tool (ocamlfind) for
+interpreting the META files, so that it is very easy to use libraries
+in programs and scripts."""
+authors: "Gerd Stolpmann <gerd@gerd-stolpmann.de>"
+extra-files: [
+  ["ocamlfind.install" "md5=aba2fbf5de8c723a190d49fbb46d0637"]
+  ["no-awk-check.patch" "md5=0378123bf1a45fccdea434c053ddb687"]
+]
+url {
+  src: "http://download.camlcity.org/download/findlib-1.3.1.tar.gz"
+  checksum: "md5=e632bad87f1c7be9414a6b754232ba01"
+  mirrors: "http://download2.camlcity.org/download/findlib-1.3.1.tar.gz"
+}

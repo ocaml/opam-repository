@@ -1,24 +1,29 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Romain Calascibetta <romain.calascibetta@gmail.com>"
 authors: "Romain Calascibetta <romain.calascibetta@gmail.com>"
 homepage: "https://github.com/oklm-wsh/Callipyge"
 bug-reports: "https://github.com/oklm-wsh/Callipyge/issues"
 license: "MIT"
-dev-repo: "https://github.com/oklm-wsh/Callipyge.git"
+dev-repo: "git+https://github.com/oklm-wsh/Callipyge.git"
 build: [
   ["./configure" "--prefix=%{prefix}%"]
   [make]
+  ["./configure" "--enable-tests" "--prefix=%{prefix}%"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
-build-test: [
-  ["./configure" "--enable-tests" "--prefix=%{prefix}%"]
-  [make "test"]
-]
 remove: ["ocamlfind" "remove" "callipyge"]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "oasis" {build}
   "base-bytes"
-  "alcotest" {test}
+  "alcotest" {with-test}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.02.0"]
+synopsis: "Curve25519 in OCaml"
+description: "Curve25519 in OCaml"
+flags: light-uninstall
+url {
+  src: "https://github.com/oklm-wsh/Callipyge/archive/0.1.tar.gz"
+  checksum: "md5=37d16e36c5830a0864cb4331e6b13a43"
+}

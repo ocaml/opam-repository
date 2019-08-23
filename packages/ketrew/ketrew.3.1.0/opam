@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "seb@mondet.org"
 authors: [
   "Sebastien Mondet <seb@mondet.org>"
@@ -9,7 +9,7 @@ authors: [
 ]
 homepage: "http://www.hammerlab.org/docs/ketrew/master/index.html"
 bug-reports: "https://github.com/hammerlab/ketrew/issues"
-dev-repo: "https://github.com/hammerlab/ketrew.git"
+dev-repo: "git+https://github.com/hammerlab/ketrew.git"
 install: [
   ["omake" "WITH_POSTGRESQL=%{postgresql:installed}%"]
   [
@@ -25,6 +25,7 @@ remove: [
   ["rm" "-f" "%{bin}%/ketrew"]
 ]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "omake" {>= "0.9.8.6-0.rc1"}
   "ocamlfind"
   "ocamlify"
@@ -38,10 +39,10 @@ depends: [
   "uri"
   "ppx_deriving"
   "ppx_deriving_yojson" {>= "3.0"}
-  "cohttp" {>= "0.21.0" & <"0.99"}
+  "cohttp" {>= "0.21.0" & < "0.99"}
   "lwt" {< "3.0.0"}
   "conduit"
-  "js_of_ocaml" {>= "2.6" & <"3.0"}
+  "js_of_ocaml" {>= "2.6" & < "3.0"}
   "tyxml" {>= "4.0.0"}
   "reactiveData" {>= "0.2"}
 ]
@@ -50,4 +51,21 @@ conflicts: [
   "ppx_inline_test" {>= "v0.9.0"}
   "ppx_sexp_conv" {>= "v0.9.0"}
 ]
-available: [ocaml-version >= "4.03.0"]
+synopsis: "A Workflow Engine for Computational Experiments"
+description: """
+Ketrew is:
+
+1. An OCaml library providing an EDSL API to define complex and
+convoluted workflows (interdependent steps/programs using a lot of
+data, with many parameter variations, running on different hosts with
+various schedulers).
+2. A client-server application to interact with these workflows. The
+engine at heart of the server takes care of orchestrating workflows,
+and keeps track of everything that succeeds, fails, or gets lost.
+The clients interact with an API and with two user-interfaces: a
+terminal-app and a WebUI."""
+flags: light-uninstall
+url {
+  src: "https://github.com/hammerlab/ketrew/archive/ketrew.3.1.0.tar.gz"
+  checksum: "md5=a748ddd1ed7a97fd9ba5587341eb24f5"
+}

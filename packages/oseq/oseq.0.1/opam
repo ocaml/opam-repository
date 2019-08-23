@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "simon.cruanes.2007@m4x.org"
 authors: "Simon Cruanes"
 homepage: "https://github.com/c-cube/oseq/"
@@ -6,18 +6,28 @@ bug-reports: "https://github.com/c-cube/oseq/issues"
 license: "BSD-2-clauses"
 doc: "https://c-cube.github.io/oseq/"
 tags: ["sequence" "iterator" "seq" "pure" "list"]
-dev-repo: "https://github.com/c-cube/oseq.git"
-build: [make "build"]
-build-test: [make "test"]
-build-doc: [make "doc"]
+dev-repo: "git+https://github.com/c-cube/oseq.git"
+build: [
+  ["jbuilder" "build" "-p" name]
+  ["jbuilder" "runtest" "-p" name] {with-test}
+  ["jbuilder" "build" "@doc" "-p" name] {with-doc}
+]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
   "jbuilder" {build}
-  "qcheck" {test}
-  "qtest" {test}
-  "gen" {test}
-  "containers" {test}
-  "odoc" {doc}
+  "qcheck" {with-test}
+  "qtest" {with-test}
+  "gen" {with-test}
+  "containers" {with-test}
+  "odoc" {with-doc}
   "seq"
 ]
-available: [ocaml-version >= "4.02.0"]
+synopsis:
+  "Simple list of suspensions, as a composable lazy iterator that behaves like a value."
+description:
+  "Will be compatible with the new standard library's `Seq` module."
+url {
+  src: "https://github.com/c-cube/oseq/archive/0.1.tar.gz"
+  checksum: "md5=bac70c88e5d57d264b4455240a8c5968"
+}

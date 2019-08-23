@@ -1,30 +1,34 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors: "Gabriel Radanne <drupyog@zoho.com>"
 maintainer: "Gabriel Radanne <drupyog@zoho.com>"
 homepage: "https://github.com/Drup/llvmgraph"
 bug-reports: "https://github.com/Drup/llvmgraph/issues"
-dev-repo: "https://github.com/Drup/llvmgraph.git"
+dev-repo: "git+https://github.com/Drup/llvmgraph.git"
 license: "MIT"
 tags: [ "llvm" "ocamlgraph" ]
 
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-]
-build-test: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests"]
-  ["ocaml" "setup.ml" "-test"]
+    {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
-build-doc: ["ocaml" "setup.ml" "-doc"]
-
 install: ["ocaml" "setup.ml" "-install"]
 
 remove: ["ocamlfind" "remove" "llvmgraph"]
 
-available: [ocaml-version >= "4.01.0"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "llvm"
   "ocamlgraph" {< "1.8.6" & >= "1.8.5"}
   "ocamlbuild" {build}
 ]
+synopsis: "Ocamlgraph overlay for llvm"
+flags: light-uninstall
+url {
+  src: "https://github.com/Drup/llvmgraph/archive/0.1.tar.gz"
+  checksum: "md5=ea32433e8602455cef6d0d2f3859b153"
+}

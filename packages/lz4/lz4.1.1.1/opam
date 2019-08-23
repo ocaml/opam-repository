@@ -1,34 +1,42 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "whitequark <whitequark@whitequark.org>"
 authors: "whitequark <whitequark@whitequark.org>"
 homepage: "https://github.com/whitequark/ocaml-lz4"
 bug-reports: "https://github.com/whitequark/ocaml-lz4/issues"
 license: "BSD-3-clause"
 doc: "http://whitequark.github.io/ocaml-lz4"
-tags: "syntax"
+tags: ["compression"]
 dev-repo: "git://github.com/whitequark/ocaml-lz4.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
-  ["ocaml" "setup.ml" "-build"] { os != "darwin" }
-  ["ocaml" "setup.ml" "-build"
-   "-cflags" "-ccopt,-I,-ccopt,/usr/local/include"] { os = "darwin" }
+  ["ocaml" "setup.ml" "-build"] {os != "macos"}
+  [
+    "ocaml"
+    "setup.ml"
+    "-build"
+    "-cflags"
+    "-ccopt,-I,-ccopt,/usr/local/include"
+  ] {os = "macos"}
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests"]
+    {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "lz4"]
 depends: [
+  "ocaml"
   "base-bytes"
-  "ocamlfind"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
   "ctypes" {>= "0.4.1"}
-  "ounit" {test}
+  "ounit" {with-test}
+  "conf-liblz4"
 ]
-depexts: [
-  [["debian"] ["liblz4-dev"]]
-  [["ubuntu"] ["liblz4-dev"]]
-  [["osx" "homebrew"] ["lz4"]]
-]
+synopsis: "Bindings for LZ4, a very fast lossless compression algorithm"
+flags: light-uninstall
+url {
+  src: "https://github.com/whitequark/ocaml-lz4/archive/v1.1.1.tar.gz"
+  checksum: "md5=a4db848b6d584f8f8e93fd2ecf1b684d"
+}

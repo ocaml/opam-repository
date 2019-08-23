@@ -1,0 +1,43 @@
+opam-version: "2.0"
+maintainer: "ygrek@autistici.org"
+homepage: "http://ygrek.org.ua/p/ocaml-hdfs"
+dev-repo: "git://github.com/ygrek/ocaml-hdfs.git"
+bug-reports: "https://github.com/ygrek/ocaml-hdfs/issues"
+doc: "http://ygrek.org.ua/p/ocaml-hdfs/api/index.html"
+license: "LGPL-2.1 with OCaml linking exception"
+authors: ["ygrek"]
+tags: [ "org:ygrek" "clib:hdfs"  ]
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "hdfs"]
+]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "base-bytes"
+  "base-unix"
+  "camlidl"
+  "ocamlbuild" {build}
+  "ocamlfind" {build & >= "1.5"}
+]
+post-messages: [
+  "
+  This package depends on C compiler being able to find libhdfs header and library files.
+  Given that hadoop is often installed outside of default system paths it may require additional
+  manual configuration for the build to succeed.
+  See https://github.com/ygrek/ocaml-hdfs/blob/master/README.md
+  "
+  {failure}
+]
+synopsis: "Bindings to libhdfs"
+description: "libhdfs is a JNI based C api for Hadoop's DFS. It provides a simple subset of C apis to manipulate DFS files and the filesystem"
+flags: light-uninstall
+url {
+  src: "http://ygrek.org.ua/p/release/ocaml-hdfs/ocaml-hdfs-0.1.tar.gz"
+  checksum: "md5=69115f9484029f6b2a619153a970e74b"
+  mirrors: "https://github.com/ygrek/ocaml-hdfs/releases/download/v0.1/ocaml-hdfs-0.1.tar.gz"
+}

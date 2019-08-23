@@ -1,27 +1,35 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "win-error"
 maintainer: "dave@recoil.org"
 version: "0.2"
 authors: [ "David Scott" ]
 license: "ISC"
 homepage: "https://github.com/djs55/ocaml-win-error"
-dev-repo: "https://github.com/djs55/ocaml-win-error.git"
+dev-repo: "git+https://github.com/djs55/ocaml-win-error.git"
 bug-reports: "https://github.com/djs55/ocaml-win-error/issues"
 
 build: [
   [make]
-]
-
-build-test:[
-  [make "test"]
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "win-error"]
 
 depends: [
+  "ocaml" {>= "3.12.1"}
   "base-bytes"
   "base-unix"
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "3.12.1" ]
+synopsis: "Windows system error codes"
+description: """
+If your application is likely to run on Windows, simply replace uses of
+`Unix.error_message` with `Win_error.error_message` for enhanced error
+reporting. Note this code is platform-agnostic so can be linked into Unix
+applications too."""
+flags: light-uninstall
+url {
+  src: "https://github.com/djs55/ocaml-win-error/archive/v0.2.tar.gz"
+  checksum: "md5=e90c76fc5c599061718de385099cb1ce"
+}

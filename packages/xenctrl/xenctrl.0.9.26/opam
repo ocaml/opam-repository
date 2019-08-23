@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "dave.scott@eu.citrix.com"
 tags: [
   "org:mirage"
@@ -14,17 +14,28 @@ remove: [
   ["rm" "-f" "%{bin}%/xenguest"]
 ]
 depends: [
+  "ocaml" {>= "4.00.0" & < "4.02.0"}
   "ocamlfind"
   "lwt"
   "cmdliner"
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["libxen-dev" "uuid-dev"]]
-  [["ubuntu"] ["libxen-dev" "uuid-dev"]]
-  [["centos"] ["xen-devel"]]
-  [["xenserver"] ["xen-dom0-libs-devel" "xen-libs-devel"]]
+  ["libxen-dev" "uuid-dev"] {os-distribution = "debian"}
+  ["libxen-dev" "uuid-dev"] {os-distribution = "ubuntu"}
+  ["xen-devel"] {os-distribution = "centos"}
+  ["xen-dom0-libs-devel" "xen-libs-devel"] {os = "xenserver"}
 ]
 dev-repo: "git://github.com/xapi-project/ocaml-xen-lowlevel-libs"
-available: ocaml-version >= "4.00.0" & ocaml-version < "4.02.0"
 install: [make "install" "BINDIR=%{bin}%"]
+synopsis: "Low-level Xen hypercall bindings."
+description: """
+These are experimental bindings based on the code in xen-unstable.git.
+This package should compile and work against Xen 4.2, 4.3, 4.4 and
+4.5-unstable as of 1/Sept/2014."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/xapi-project/ocaml-xen-lowlevel-libs/archive/0.9.26.tar.gz"
+  checksum: "md5=360f1b94c7d4d26b836a1a8c76cedd13"
+}

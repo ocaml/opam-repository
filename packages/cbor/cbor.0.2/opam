@@ -1,0 +1,43 @@
+opam-version: "2.0"
+maintainer: "ygrek@autistici.org"
+authors: "ygrek"
+homepage: "https://github.com/ygrek/ocaml-cbor"
+bug-reports: "https://github.com/ygrek/ocaml-cbor/issues"
+dev-repo: "git://github.com/ygrek/ocaml-cbor.git"
+tags: "org:ygrek"
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--%{yojson:enable}%-tests"
+    "--prefix"
+    prefix
+  ]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [["ocamlfind" "remove" "cbor"]]
+depends: [
+  "ocaml" {>= "4.00.0"}
+  "ocamlfind" {build}
+  "base-bytes"
+  "ocplib-endian" {>= "0.6"}
+  "oasis" {>= "0.4.0"}
+  "ocamlbuild" {build}
+  "yojson" {with-test}
+]
+synopsis: "CBOR encoder/decoder (RFC 7049) - native OCaml implementation"
+description: """
+The Concise Binary Object Representation (CBOR) is a data format whose design goals
+include the possibility of extremely small code size, fairly small message size, and
+extensibility without the need for version negotiation."""
+flags: light-uninstall
+url {
+  src: "http://ygrek.org.ua/p/release/ocaml-cbor/ocaml-cbor-0.2.tar.gz"
+  checksum: "md5=3d2f106ed2e815f5eac3c5e3bf1df475"
+  mirrors:
+    "https://github.com/ygrek/ocaml-cbor/releases/download/0.2/ocaml-cbor-0.2.tar.gz"
+}

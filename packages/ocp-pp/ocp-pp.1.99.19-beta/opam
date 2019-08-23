@@ -1,10 +1,47 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"
 authors: [
   "Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"
   ]
 homepage: "http://www.typerex.org/ocp-build.html"
-dev-repo: "https://github.com/OCamlPro/ocp-build.git"
+dev-repo: "git+https://github.com/OCamlPro/ocp-build.git"
 bug-reports: "https://github.com/OCamlPro/ocp-build/issues"
-depends: [ "ocp-build" {= "1.99.19-beta" } ]
-
+depends: [
+  "ocaml" {>= "4.02.0"}
+]
+patches: [ "0001-Fix-ocp-pp-for-changes-in-compiler-libs.patch" {ocaml:version >= "4.08"} ]
+build: [
+  [
+    "cp"
+    "tools/ocp-pp/compat/4.02.0/ocpp_version.ml"
+      {ocaml:version < "4.02.2~"}
+    "tools/ocp-pp/compat/4.02.2/ocpp_version.ml"
+      {ocaml:version >= "4.02.2~" & ocaml:version < "4.03.0~"}
+    "tools/ocp-pp/compat/4.03.0/ocpp_version.ml"
+      {ocaml:version >= "4.03.0~" & ocaml:version < "4.04.0~"}
+    "tools/ocp-pp/compat/4.04.0/ocpp_version.ml"
+      {ocaml:version >= "4.04.0~"}
+    "tools/ocp-pp/"
+  ]
+  ["sh" "-exc" "cd tools/ocp-pp && ocamlyacc ocpp_parser.mly"]
+  [
+    "sh" "-exc"
+    "cd tools/ocp-pp && %{ocaml:native?ocamlopt:ocamlc}% -I +compiler-libs ocamlcommon.%{ocaml:native?cmxa:cma}% ocpp_version.ml versioning.mli versioning.ml ocpp_types.ml ocpp_parser.mli ocpp_parser.ml ocpp.ml main.ml -o ocp-pp"
+  ]
+]
+install: ["cp" "tools/ocp-pp/ocp-pp" bin]
+synopsis: "A simple preprocessor for OCaml"
+description: """
+Allowed directives:
+```
+#include "XXX"
+#if OCAML_VERSION < <= = >= > "3.12.1"
+#else
+#elif
+#endif
+```
+"""
+url {
+  src: "http://github.com/OCamlPro/ocp-build/archive/1.99.20-beta.tar.gz"
+  checksum: "md5=72d9c1b1a42d1873628e2d6e7529d8cb"
+}

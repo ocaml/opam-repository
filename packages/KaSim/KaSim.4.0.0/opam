@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "KaSim"
 
 maintainer: "Pierre Boutillier <pierre.boutillier@laposte.net>"
@@ -9,31 +9,37 @@ authors: [
 license: "LGPL-3.0"
 homepage: "http://dev.executableknowledge.org/"
 bug-reports: "https://github.com/Kappa-Dev/KaSim/issues"
-dev-repo: "https://github.com/Kappa-Dev/KaSim.git"
-
-depends : [
+dev-repo: "git+https://github.com/Kappa-Dev/KaSim.git"
+depends: [
+  "ocaml" {>= "4.02.3"}
   "num"
   "ocamlfind"
   "ocamlbuild" {build}
   "yojson"
   "lwt"
 ]
-
 depopts: [
   "labltk" "cohttp-lwt-unix"
   "atdgen" {build}
 ]
 
-build: [
-  [ make "USE_TK=1" {labltk:installed} "all" ]
-  [ make "META" "kappalib" ]
-  [ make "agents" ] {atdgen:installed}
-  [ make "bin/WebSim" ] {atdgen:installed & cohttp-lwt-unix:installed}
+conflicts: [
+  "atdgen" {>= "1.13.0"}
 ]
 
+build: [
+  [make "USE_TK=1" {labltk:installed} "all"]
+  [make "META" "kappalib"]
+  [make "agents"] {atdgen:installed}
+  [make "bin/WebSim"] {atdgen:installed & cohttp-lwt-unix:installed}
+  [make "check"] {with-test}
+]
 install: [ [ make "install-lib" ] ]
 remove: [ [ "ocamlfind" "remove" "KappaLib" ] ]
 
-build-test: [ [ make "check" ] ]
-
-available: [ ocaml-version >= "4.02.3" ]
+synopsis: "Software suite for the Kappa language."
+flags: light-uninstall
+url {
+  src: "https://github.com/Kappa-Dev/KaSim/archive/v4.0.tar.gz"
+  checksum: "md5=894a517c7991f42100d2e957efc6cfa2"
+}

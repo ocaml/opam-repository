@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "ygrek@autistici.org"
+authors: "ygrek"
+homepage: "http://ygrek.org.ua/p/ocaml-geoip/"
+doc: ["http://ygrek.org.ua/p/ocaml-geoip/api/index.html"]
+bug-reports: "https://github.com/ygrek/ocaml-geoip/issues"
+dev-repo: "git://github.com/ygrek/ocaml-geoip.git"
+tags: ["org:ygrek"]
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+remove: [["ocamlfind" "remove" "geoip"]]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+depexts: [
+  ["libgeoip-dev"] {os-family = "debian"}
+  ["geoip"] {os = "macos" & os-distribution = "homebrew"}
+  ["geoip-dev"] {os-distribution = "alpine"}
+  ["GeoIP-devel"] {os-distribution = "centos"}
+]
+install: ["ocaml" "setup.ml" "-install"]
+synopsis: "Bindings to GeoIP database library."
+description:
+  "GeoIP lets you discover information about a specific IP address."
+flags: light-uninstall
+url {
+  src: "http://ygrek.org.ua/p/release/ocaml-geoip/ocaml-geoip-0.0.3.tar.gz"
+  checksum: "md5=470df2ff7952d36fe58cf23082cdfcae"
+  mirrors:
+    "https://github.com/ygrek/ocaml-geoip/releases/download/v0.0.3/ocaml-geoip-0.0.3.tar.gz"
+}

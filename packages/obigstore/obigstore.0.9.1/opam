@@ -1,25 +1,79 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "mfp@acm.org"
 homepage: "https://github.com/mfp/obigstore"
 license: "LGPL + static linking exception"
 doc: ["https://github.com/mfp/obigstore/blob/master/README.md"]
-build: ["omake" "-j9"]
-build-test: [["omake" "test"] {"%{ounit:installed}"}]
+build: [
+  ["omake" "-j9"]
+  ["omake" "test"] {with-test & "%{ounit:installed}"}
+]
 remove: [
   ["ocamlfind" "remove" "obigstore"]
   ["rm" "-f" "%{bin}%/obigstore" "%{bin}%/obigstore.exe" "%{bin}%/ob_repl" "%{bin}%/ob_repl.exe" "%{bin}%/ob_load" "%{bin}%/ob_load.exe" "%{bin}%/ob_dump" "%{bin}%/ob_dump.exe" ]
 ]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "batteries"
   "cryptokit"
   "leveldb"
-  "extprot" {<"1.1.2"}
+  "extprot" {< "1.1.2"}
   "lwt" {< "2.4.7"}
-  "omake" {build & <"0.10.0"}
+  "omake" {build & < "0.10.0"}
   "num"
   "ounit"
 ]
 patches: [ "obigstore-unset-warn-error.diff" ]
 dev-repo: "git://github.com/mfp/obigstore"
 install: ["omake" "install" "prefix=%{prefix}%"]
+synopsis: "Client/server + embeddable semi-structured database."
+description: """
+obigstore is a database server + client library and associated tools. It
+exposes a multidimensional BigTable-like data model built on top of the Google
+LevelDB library, inheriting its fundamental strengths, such as fast random
+writes or control over the physical data layout.  It can be used in a
+client/server setting or as an embedded database. More information can be
+found at [obigstore.forge.ocamlcore.org](http://obigstore.forge.ocamlcore.org).
+
+obigstore's salient features include:
+
+* strong data durability guarantees:
+  * **fully fsync'ed writes** with group commit
+  * data integrity ensured with **CRCs at the protocol level**
+  * **synchronous and asynchronous replication**
+  * **online backup**
+* rich semi-structured data model:
+  * **atomic transactions** (both read-committed and repeatable-read
+    isolation levels)
+  * optimistic and pessimistic **concurrency control**
+  * asynchronous notifications
+  * limited support for complex documents (BSON serialized)
+  * support for composite keys (REPL and client lib)
+* performance:
+  * **fast random writes**
+  * **efficient range queries** thanks to **spatial locality**
+  * cross-record **redundancy reduction** at the page level (snappy compression)
+  * fast recovery (independent of dataset size)
+
+obigstore currently includes:
+
+* the standalone database server
+* the embeddable database library
+* the client library
+* a friendly REPL for interactive data manipulation
+* DB dump/restore tools
+* a number of benchmarking tools
+
+Limitations
+-----------
+* transactions must fit in memory
+* sharding on key ranges is not built-in at this point
+* no automatic failover yet"""
+flags: light-uninstall
+extra-files: [
+  "obigstore-unset-warn-error.diff" "md5=db739e64dbffece2df490265195baef8"
+]
+url {
+  src: "https://github.com/mfp/obigstore/archive/obigstore-0.9.1.tar.gz"
+  checksum: "md5=6a044a490d820271f0bae1da5a1ea7e5"
+}

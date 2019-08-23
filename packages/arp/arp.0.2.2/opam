@@ -1,0 +1,71 @@
+opam-version: "2.0"
+maintainer: "Hannes Mehnert <hannes@mehnert.org>"
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+homepage: "https://github.com/hannesm/arp"
+doc: "https://hannesm.github.io/arp/doc"
+dev-repo: "git+https://github.com/hannesm/arp.git"
+bug-reports: "https://github.com/hannesm/arp/issues"
+license: "ISC"
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "cstruct" {>= "2.2.0"}
+  "ipaddr" {>= "2.2.0" & < "3.0.0"}
+  "logs"
+  "alcotest" {with-test}
+  "nocrypto" {with-test}
+]
+depopts: [
+  "mirage-protocols-lwt"
+  "mirage-time-lwt"
+  "mirage-clock"
+  "mirage-protocols"
+  "tcpip"
+  "lwt"
+  "duration"
+]
+conflicts: [
+  "tcpip" {<"2.8.0"}
+  "mirage-types-lwt" {<"3.0.0"}
+]
+build: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "false"
+    "--with-mirage"
+    "%{mirage-protocols+mirage-protocols-lwt+mirage-time-lwt+mirage-clock+lwt+tcpip+duration:installed}%"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+    "--with-mirage"
+    "%{mirage-protocols+mirage-protocols-lwt+mirage-time-lwt+mirage-clock+lwt+tcpip+duration:installed}%"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+]
+synopsis: "Address Resolution Protocol purely in OCaml"
+description: """
+ARP is an implementation of the address resolution protocol (RFC826) purely in
+OCaml.  It handles IPv4 protocol addresses and Ethernet hardware addresses only.
+
+A MirageOS
+[Mirage_protocols.ARP](https://github.com/mirage/mirage-protocols/blob/4776d2ab1d8c5b1bfd69d46583779c2caef7b5e8/src/mirage_protocols.mli#L169)
+implementation is in the `mirage` subdirectory.
+
+Motivation for this implementation is [written up](https://hannes.nqsb.io/Posts/ARP)."""
+url {
+  src: "https://github.com/mirage/arp/releases/download/0.2.2/arp-0.2.2.tbz"
+  checksum: "md5=8d67c2cd2fecf82b10e7189c3760260f"
+}

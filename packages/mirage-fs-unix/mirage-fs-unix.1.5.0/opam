@@ -1,0 +1,42 @@
+opam-version: "2.0"
+authors:      [ "Mindy Preston" "Hannes Mehnert" "Anil Madhavapeddy"
+                "Thomas Gazagnaire" ]
+maintainer:   [ "anil@recoil.org" "thomas@gazagnaire.org"]
+homepage:     "https://github.com/mirage/mirage-fs-unix"
+dev-repo:     "git+https://github.com/mirage/mirage-fs-unix.git"
+bug-reports:  "https://github.com/mirage/mirage-fs-unix/issues"
+doc:          "https://mirage.github.io/mirage-fs-unix/"
+tags:         [ "org:mirage" ]
+build: [
+  ["jbuilder" "subst" "-p" name ] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depends: [
+  "jbuilder" {build & >= "1.0+beta7"}
+  "ocaml" {>= "4.04.2"}
+  "cstruct" {>= "3.2.0" & < "3.4.0"}
+  "cstruct-lwt" {< "3.4.0"}
+  "mirage-kv-lwt" {>= "1.0.0" & < "2.0.0"}
+  "mirage-fs-lwt" {>= "1.0.0"}
+  "lwt"
+  "rresult" {with-test}
+  "mirage-clock-unix" {with-test & >= "1.2.0"}
+  "alcotest" {with-test & >= "0.7.1"}
+  "ptime" {with-test}
+]
+synopsis: "Passthrough filesystem for MirageOS on Unix"
+description: """
+This is a pass-through Mirage filesystem to an underlying Unix directory.  The
+interface is intended to support eventual privilege separation (e.g. via the
+Casper daemon in FreeBSD 11).
+
+The current version supports the `Mirage_fs.S` and `Mirage_fs_lwt.S` signatures
+defined in the `mirage-fs` package.
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage-fs-unix/releases/download/v1.5.0/mirage-fs-unix-v1.5.0.tbz"
+  checksum: "md5=a472aae5ba28ed0169ef9637e8a0e4b1"
+}

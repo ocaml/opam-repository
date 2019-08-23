@@ -1,0 +1,33 @@
+opam-version: "2.0"
+maintainer: "Nicolas Berthier <m@nberth.space>"
+authors: ["Bertrand Jeannet" "Nicolas Berthier"]
+homepage: "https://www.inrialpes.fr/pop-art/people/bjeannet/mlxxxidl-forge/mlcuddidl/index.html"
+bug-reports: "https://gforge.inria.fr/projects/mlxxxidl/"
+# SVN repositories not supported (yet).
+# dev-repo: "svn://scm.gforge.inria.fr/svnroot/mlxxxidl/mlcuddidl/"
+dev-repo: "git+https://framagit.org/nberth/mlcuddidl.git"
+license: "LGPL-2.1"
+build: [
+  ["./configure"
+     "--disable-profiling" { arch = "arm64" } ]
+  [make "-j%{jobs}%"]
+]
+install: [
+  [make "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "cudd"]
+]
+depends: [
+  "ocaml" {>= "4.02"}
+  "ocamlfind"  {build}
+  "camlidl"    {build}
+  "ocamlbuild" {build}
+  "conf-m4"    {build}
+]
+synopsis: "OCaml interface to the CUDD BDD library"
+flags: light-uninstall
+url {
+  src: "http://nberth.space/pool/mlcuddidl/mlcuddidl-3.0.4.tar.gz"
+  checksum: "md5=8af11a926e2c878b047505abf8fa7c80"
+}

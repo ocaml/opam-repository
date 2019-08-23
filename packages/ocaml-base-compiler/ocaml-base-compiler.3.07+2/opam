@@ -1,0 +1,36 @@
+opam-version: "2.0"
+synopsis: "Official 3.07+2 release"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "3.07+2" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["sed" "-i" "-e" "$s/^/LC_ALL=C /" "ocamldoc/remove_DEBUG"]
+  ["sed" "-i" "-e" "s/struct sigaltstack/stack_t/" "asmrun/signals.c"]
+  ["./configure" "-prefix" prefix]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  ["./configure" "-prefix" prefix "-cc" "cc" "-aspp" "cc -c"]
+    {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world"]
+  [make "world.opt"]
+]
+install: [
+  [make "install"]
+  ["mkdir" "-p" "%{prefix}%/lib/ocaml/compiler-libs"]
+  ["cp" "-r" "typing" "parsing" "utils" "%{prefix}%/lib/ocaml/compiler-libs/"]
+]
+patches: "ocaml-3.07-patch2.diffs"
+url {
+  src: "https://caml.inria.fr/pub/distrib/ocaml-3.07/ocaml-3.07.tar.gz"
+  checksum: "md5=2dd038055f5e1350078ad81270411b78"
+}
+extra-source "ocaml-3.07-patch2.diffs" {
+  src: "https://caml.inria.fr/pub/distrib/ocaml-3.07/ocaml-3.07-patch2.diffs"
+  checksum: "md5=f91d1f1e531f77011bd554817dbbc12a"
+}

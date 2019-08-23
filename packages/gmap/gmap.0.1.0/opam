@@ -1,0 +1,73 @@
+opam-version: "2.0"
+maintainer: "Hannes Mehnert <hannes@mehnert.org>"
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+homepage: "https://github.com/hannesm/gmap"
+doc: "https://hannesm.github.io/gmap/doc"
+dev-repo: "git+https://github.com/hannesm/gmap.git"
+bug-reports: "https://github.com/hannesm/gmap/issues"
+license: "ISC"
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "fmt"
+]
+build: [
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
+]
+synopsis: "Heterogenous maps over a GADT"
+description: """
+Gmap exposes the functor `Make` which takes a key type (a GADT 'a key) and
+outputs a type-safe Map where each 'a key is associated with a 'a value.  This
+removes the need for additional packing.
+
+```OCaml
+type _ k =
+  | A : int k
+  | B : string k
+
+module K = struct
+  type 'a t = 'a k
+
+  let compare : type a b. a t -> b t -> (a, b) Gmap.Order.t = fun t t' ->
+    let open Gmap.Order in
+    match t, t' with
+    | A, A -> Eq | A, _ -> Lt | _, A -> Gt
+    | B, B -> Eq
+
+  let pp : type a. Format.formatter -> a t -> a -> unit = fun ppf t v ->
+    match t, v with
+    | A, x -> Fmt.pf ppf "A %d" x
+    | B, s -> Fmt.pf ppf "B %s" s
+end
+
+module M = Gmap.Make(K)
+
+
+let () =
+  let m = M.empty in
+  ...
+  match M.find A m with
+  | Some x -> Printf.printf "got %d\\n" x
+  | None -> Printf.printf "found nothing\\n"
+```
+
+This is already an exhaustive pattern match: there is no need for another case
+(for the constructor `B`) since the type system knows that looking for `A` will
+result in an `int`.
+
+Motivation came from parsing of protocols which usually specify optional values
+and extensions via a tag-length-value (TLV) mechanism: for a given tag the
+structure of value is different - see for example IP options, TCP options, DNS
+resource records, TLS hello extensions, etc.
+
+Discussing this problem with Justus Matthiesen, we came up with this design. Its
+main difference to Daniel C. Bünzli's [hmap](http://erratique.ch/software/hmap)
+is that in gmap the key-value GADT type must be provided when instantiating the
+functor.  In hmap, keys are created dynamically."""
+url {
+  src:
+    "https://github.com/hannesm/gmap/releases/download/0.1.0/gmap-0.1.0.tbz"
+  checksum: "md5=aeea8ba33dc24e13d34d49ba2bd6e55a"
+}

@@ -1,28 +1,27 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Zach Shipko <zachshipko@gmail.com>"
 authors: ["Zach Shipko <zachshipko@gmail.com>"]
 homepage: "https://github.com/zshipko/resp-server"
 doc: "https://github.com/zshipko/resp-server"
 license: "ISC"
-dev-repo: "https://github.com/zshipko/resp-server.git"
+dev-repo: "git+https://github.com/zshipko/resp-server.git"
 bug-reports: "https://github.com/zshipko/resp-server/issues"
 tags: ["redis"]
 
-available: [ ocaml-version >= "4.05.0"]
-
-depends:
-[
-    "jbuilder" {build}
-    "hiredis" {>= "0.7"}
-    "conduit-lwt-unix" {>= "1.0"}
+depends: [
+  "ocaml" {>= "4.05.0"}
+  "jbuilder" {build}
+  "hiredis" {<= "0.7"}
+  "conduit-lwt-unix" {>= "1.0" & <"2.0.0"}
 ]
-
-build:
-[
-    ["jbuilder" "build"]
+build: [
+  ["jbuilder" "build" "-p" name]
+  ["jbuilder" "runtest"] {with-test}
 ]
-
-build-test:
-[
-    ["jbuilder" "runtest"]
-]
+synopsis: "A server that communicates using the REdis Serialization Protocol"
+description:
+  "resp-server allows you to build RESP servers quickly, without having to worry about any server implementation details."
+url {
+  src: "https://github.com/zshipko/resp-server/archive/v0.2.tar.gz"
+  checksum: "md5=40364d304770cf880797972c6307b98b"
+}

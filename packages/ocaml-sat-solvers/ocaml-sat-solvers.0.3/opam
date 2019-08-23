@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "ocaml-sat-solvers"
 version: "0.3"
 maintainer: "opam-devel@lists.ocaml.org"
@@ -11,19 +11,24 @@ bug-reports: "https://github.com/tcsprojects/ocaml-sat-solvers/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "ocaml-sat-solvers"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml" {>= "4.03.0"}
   "minisat"
   "ocamlbuild" {build}
   "ocamlfind" {build}
 ]
-available: [ ocaml-version >= "4.03.0" ]
+synopsis: "An abstraction layer for integrating SAT Solvers into OCaml."
+description: "An abstraction layer for integrating SAT Solvers into OCaml."
+flags: light-uninstall
+url {
+  src: "https://github.com/tcsprojects/ocaml-sat-solvers/archive/v0.3.tar.gz"
+  checksum: "md5=3f91093e42464c9ed1b7ef333808f2a7"
+}

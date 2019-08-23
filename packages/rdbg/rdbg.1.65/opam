@@ -1,27 +1,26 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "erwan.jahier@imag.fr"
 authors: [ "Erwan Jahier" ]
 license: "GPL-3"
 homepage: "http://rdbg.forge.imag.fr/"
-dev-repo: "https://forge.imag.fr/anonscm/git/rdbg/rdbg.git"
+dev-repo: "git+https://forge.imag.fr/anonscm/git/rdbg/rdbg.git"
 bug-reports: "http://rdbg.forge.imag.fr/"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocaml" "%{etc}%/rdbg/_oasis_remove_.ml" "%{etc}%/rdbg"]
 ]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "4.01" & < "4.04.0"}
   "base-unix" {build}
   "camlp4" {build}
   "lutils"
@@ -30,4 +29,16 @@ depends: [
   "ounit" {build & >= "2.0.0"}
   "num"
 ]
-available: [ ocaml-version >= "4.01" & ocaml-version < "4.04.0" ]
+synopsis: "RDBG: a reactive programs debugger."
+description: """
+The library rdbg-plugin contains all the necessary ocaml modules
+needed to add a rdbg plugin. Such a plugin allows ocaml-interpreted
+languages to be executed (à la Lurette) or/and debugged (with rdbg)."""
+extra-files: [
+  ["rdbg.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src: "http://www-verimag.imag.fr/DIST-TOOLS/SYNCHRONE/pool/rdbg.1.65.tgz"
+  checksum: "md5=bc242ad397aaaab380c84510cf41612f"
+}

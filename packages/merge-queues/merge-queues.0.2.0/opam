@@ -1,26 +1,33 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      ["Benjamin Farinier" "Thomas Gazagnaire"]
 homepage:     "https://github.com/mirage/merge-queues"
 bug-reports:  "https://github.com/mirage/merge-queues/issues"
-dev-repo:     "https://github.com/mirage/merge-queues.git"
+dev-repo: "git+https://github.com/mirage/merge-queues.git"
 license:      "ISC"
 
 build: [
-  ["./configure" "--prefix" prefix ]
+  ["./configure" "--prefix" prefix]
   [make]
-]
-build-test: [
-  ["./configure" "--prefix" prefix "--enable-tests"]
-  [make "test"]
+  ["./configure" "--prefix" prefix "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "merge-queues"]
 depends: [
+  "ocaml"
   "irmin" {>= "0.9.3" & < "0.10.0"}
   "comparelib"
-  "alcotest" {test}
-  "git" {test}
-  "cohttp" {test}
+  "alcotest" {with-test}
+  "git" {with-test}
+  "cohttp" {with-test}
   "ocamlbuild" {build}
 ]
+synopsis: "Mergeable queues"
+description:
+  "The package implements \"mergeable\" queues, ie. persistent queues with a fast merge operation."
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/merge-queues/archive/0.2.0.tar.gz"
+  checksum: "md5=52a3e3d772290a688be2a16a1316ef34"
+}

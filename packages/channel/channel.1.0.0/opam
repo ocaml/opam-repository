@@ -1,31 +1,38 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Thomas Gazagnaire <thomas@gazagnaire.org>"
 authors: "Thomas Gazagnaire <thomas@gazagnaire.org>"
 homepage: "https://github.com/mirage/mirage-channel"
 bug-reports: "https://github.com/mirage/mirage-channel/issues"
 license: "ISC"
-dev-repo: "https://github.com/mirage/mirage-channel.git"
+dev-repo: "git+https://github.com/mirage/mirage-channel.git"
 build: [
   ["./configure" "--prefix" prefix]
   [make]
-]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "channel"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "mirage-types-lwt" {< "3.0.0"}
   "io-page" {< "2.0.0"}
   "lwt" {>= "2.4.7"}
   "cstruct"
-  "alcotest" {test}
-  "ounit" {test}
-  "mirage-flow" {test  & < "1.2.0"}
+  "alcotest" {with-test}
+  "ounit" {with-test}
+  "mirage-flow" {with-test & < "1.2.0"}
 ]
 conflicts: [
   "tcpip" {< "2.5.0"}
 ]
+synopsis: "MirageOS channels"
+description:
+  "An implementation of MirageOS' V1.CHANNEL using page aligned buffers."
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/mirage-channel/archive/1.0.0.tar.gz"
+  checksum: "md5=74478e4fa322d9a196b270deb1920af9"
+}

@@ -1,0 +1,56 @@
+opam-version: "2.0"
+maintainer: "ygrek@autistici.org"
+authors: ["ygrek"]
+homepage: "http://ygrek.org.ua/p/sqlgg/"
+dev-repo: "git+https://github.com/ygrek/sqlgg.git"
+bug-reports: "https://github.com/ygrek/sqlgg/issues"
+tags: ["org:ygrek"]
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{mysql:enable}%-mysql"
+    "--%{sqlite3:enable}%-sqlite3"
+    "--prefix" prefix
+  ]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: [
+  ["ocaml" "setup.ml" "-install"]
+]
+remove: [
+  ["ocamlfind" "remove" "sqlgg"]
+  ["rm" "-f" "%{bin}%/sqlgg" "%{bin}%/sqlgg.exe"]
+]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "mybuild" {build}
+  "menhir"
+  "ppx_deriving"
+  ("extlib" | "extlib-compat")
+  "base-unix"
+  "ounit"
+]
+depopts: [
+  "mysql"
+  "sqlite3"
+]
+synopsis: "SQL Guided (code) Generator"
+description: """
+sqlgg is an SQL query parser and binding code generator for C#, C++, Java, OCaml.
+It starts off with SQL schema and queries, and generates code (or XML, allowing
+further code generation for various purposes). Generated code only defines a mapping
+of output columns and query parameters to the host language, trying to be as unobtrusive
+as possible and leaving the choice of SQL database (and API to access it) to the developer."""
+flags: light-uninstall
+url {
+  src: "http://ygrek.org.ua/p/release/sqlgg/sqlgg-0.4.5.tar.gz"
+  checksum: "md5=ebaf4a8076dcbeaa01e5a68bd6ad74b1"
+  mirrors:
+    "https://github.com/ygrek/sqlgg/releases/download/0.4.5/sqlgg-0.4.5.tar.gz"
+}

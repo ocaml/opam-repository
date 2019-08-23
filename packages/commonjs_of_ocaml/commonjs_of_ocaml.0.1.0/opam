@@ -1,30 +1,41 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Tony Aldridge <tony@angry-lawyer.com>"
 authors: "Tony Aldridge <tony@angry-lawyer.com>"
 homepage: "https://github.com/angrylawyer/commonjs_of_ocaml"
 bug-reports: "https://github.com/angrylawyer/commonjs_of_ocaml/issues"
-dev-repo: "https://github.com/angrylawyer/commonjs_of_ocaml.git"
+dev-repo: "git+https://github.com/angrylawyer/commonjs_of_ocaml.git"
 license: "MIT"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 remove: [
   "ocaml"
   "%{etc}%/commonjs_of_ocaml/_oasis_remove_.ml"
   "%{etc}%/commonjs_of_ocaml"
 ]
 depends: [
-  "js_of_ocaml" {>= "2.7" & <"3.0"}
+  "ocaml" {>= "4.02"}
+  "js_of_ocaml" {>= "2.7" & < "3.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "cppo_ocamlbuild" {build}
   "cppo" {build}
 ]
-available: [ocaml-version >= "4.02"]
+synopsis: "Import and export CommonJS modules in js_of_ocaml"
+description: """
+Helper PPX and functions for ease of interfacing with other CommonJS
+modules when building a project through js_of_ocaml"""
+extra-files: [
+  ["commonjs_of_ocaml.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src:
+    "https://github.com/AngryLawyer/commonjs_of_ocaml/archive/v0.1.0.tar.gz"
+  checksum: "md5=3e5dccd67a02ac7c01df182426c542f6"
+}

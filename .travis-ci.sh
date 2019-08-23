@@ -1,9 +1,6 @@
 bash -c "while true; do echo \$(date) - building ...; sleep 360; done" &
 PING_LOOP_PID=$!
 
-# Variable value from .travis.yml - probably overridden during install step
-BUILD_OCAML_VERSION=$OCAML_VERSION
-
 # generated during the install step
 source .travis-ocaml.env
 
@@ -35,12 +32,6 @@ else
   fi
 fi
 
-echo OCaml version
-ocaml -version
-echo OPAM versions
-opam --version
-opam --git-version
-
 export OPAMYES=1
 
 case $TRAVIS_OS_NAME in
@@ -55,38 +46,10 @@ cat pullreq.diff | sed -E -n -e 's,\+\+\+ b/packages/[^/]*/([^/]*)/.*,\1,p' | so
 echo To Build:
 cat tobuild.txt
 
-function opam_version_compat {
-  local OPAM_MAJOR OPAM_MINOR ocamlv bytev
-  if [ -n "$opam_version_compat_done" ]; then return; fi
-  opam_version_compat_done=1
-  OPAM_MAJOR=${OPAM_VERSION%%.*}
-  OPAM_MINOR=${OPAM_VERSION#*.}
-  OPAM_MINOR=${OPAM_MINOR%%.*}
-  if [ $OPAM_MAJOR -eq 1 ] && [ $OPAM_MINOR -lt 2 ]; then
-      opam_version_11=1
-      ocamlv=$(ocamlrun -vnum)
-      bytev=${ocamlv%.*}
-      curl -L https://opam.ocaml.org/repo_compat_1_1.byte$bytev -o compat.byte
-      ocamlrun compat.byte
-  fi
-}
-opam_version_compat
-
 function build_switch {
   rm -rf ~/.opam
   echo "build switch: $OPAM_SWITCH"
-  if [ -n "${opam_version_11}" ]; then
-      # Hide OCaml build log
-      if opam init . --comp=$OPAM_SWITCH > build.log 2>&1 ; then
-          echo -n
-      else
-          rc=$?
-          cat build.log
-          exit $rc
-      fi
-  else
-      opam init . --comp=$OPAM_SWITCH
-  fi
+  opam init . --comp=$OPAM_SWITCH
   eval `opam config env`
 }
 
@@ -109,10 +72,9 @@ function build_one {
     echo "... package available."
     echo
     echo "====== External dependency handling ======"
-    opam install depext
-    # No --build-tests option on opam depext, workaround from https://github.com/ocaml/opam-depext/issues/10#issuecomment-93882764
-    depext=$(OPAMBUILDTEST=1 opam depext -ls $pkg --no-sources)
-    OPAMBUILDTEST=1 opam depext $pkg
+    opam install 'depext>=1.1.3'
+    depext=$(opam depext --with-test -ls $pkg)
+    opam depext --with-test $pkg
     echo
     echo "====== Installing dependencies ======"
     opam install --deps-only $pkg
@@ -136,36 +98,18 @@ function build_one {
 
 build_switch
 
-INSTALL_CAMLP4=0
-if [[ $OPAM_SWITCH = "system" ]] ; then
-  for i in $(cat tobuild.txt) ; do
-    if opam install $i --build-test --deps-only --show | grep "\<camlp4\>" > /dev/null 2>&1 ; then
-      INSTALL_CAMLP4=1
-      break
-    fi
-  done
-fi
-
-if [[ $INSTALL_CAMLP4 -eq 1 ]] ; then
-  case $BUILD_OCAML_VERSION in
-    4.02)
-      CAMLP4_RELEASE=7
-      ;;
-    *)
-      CAMLP4_RELEASE=1
-      ;;
-  esac
-  opam install ocamlbuild
-  opam source camlp4.$BUILD_OCAML_VERSION+$CAMLP4_RELEASE
-  cd camlp4*
-  ./configure --bindir=/usr/local/bin --libdir=/usr/local/lib/ocaml
-  make all
-  sudo make install
-  cd ..
-fi
+echo OCaml version
+ocaml -version
+echo OPAM versions
+opam --version
+opam --git-version
 
 for i in `cat tobuild.txt`; do
-  build_one $i
+    name=$(echo $i | cut -f1 -d".")
+    case $name in
+        ocaml|ocaml-base-compiler) ;;
+        *) build_one $i
+    esac
 done
 
 kill $PING_LOOP_PID

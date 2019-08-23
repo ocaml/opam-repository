@@ -1,24 +1,32 @@
-opam-version: "1.2"
-maintainer: "mmottl"
-author: "mmottl"
+opam-version: "2.0"
+maintainer: "Markus Mottl <markus.mottl@gmail.com>"
+authors: "Markus Mottl <markus.mottl@gmail.com>"
 homepage: "http://www.netlib.org/blas"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-dev-repo: "https://github.com/ocaml/opam-repository.git"
-license: "GPL-2.0"
+license: "LGPL-2.1+ with OCaml linking exception"
 build: [
-  ["sh" "-exc" "cc $CFLAGS test.c -lblas"] {os != "darwin" & os != "freebsd" & os != "win32"}
-  ["sh" "-exc" "${CC:-gcc} $CFLAGS test.c -lblas $LDFLAGS"] {os = "freebsd"}
-  ["sh" "-exc" "cc -framework Accelerate $CFLAGS test.c -lblas"] {os = "darwin"}
+  ["sh" "-exc" "cc $CFLAGS test.c ${LACAML_LIBS:--lblas}"] {os != "macos" & os != "freebsd" & os != "win32"}
+  ["sh" "-exc" "${CC:-gcc} $CFLAGS test.c ${LACAML_LIBS:--lblas} $LDFLAGS"] {os = "freebsd"}
+  ["sh" "-exc" "cc -framework Accelerate $CFLAGS test.c ${LACAML_LIBS:--lblas}"] {os = "macos"}
   ["%{build}%/test-win.sh"] {os = "win32"}
 ]
 depexts: [
-  [["debian"] ["libblas-dev"]]
-  [["mageia"] ["libblas-devel"]]
-  [["ubuntu"] ["libblas-dev"]]
-  [["centos"] ["blas-devel"]]
-  [["fedora"] ["blas-devel"]]
-  [["rhel"] ["blas-devel"]]
-  [["alpine"] ["lapack-dev"]]
-  [["opensuse"] ["blas-devel"]]
-  [["freebsd"] ["blas" "gcc"]]
+  ["libblas-dev"] {os-family = "debian"}
+  ["libblas-devel"] {os-distribution = "mageia"}
+  ["blas-devel"] {os-distribution = "centos"}
+  ["blas-devel"] {os-distribution = "fedora"}
+  ["blas-devel"] {os-distribution = "rhel"}
+  ["lapack-dev"] {os-distribution = "alpine"}
+  ["blas-devel"] {os-family = "suse"}
+  ["blas" "gcc"] {os = "freebsd"}
 ]
+synopsis: "Virtual package for BLAS configuration"
+description: """
+Virtual package relying on a BLAS (Basic Linear Algebra Subroutines) library
+installation.  This package can only install if a compatible BLAS library is
+found on the system (e.g. reference BLAS, ATLAS, vendor-implementations, etc.)."""
+extra-files: [
+  ["test.c" "md5=2bf678ea49b283c0afeee23d2e05606d"]
+  ["test-win.sh" "md5=55cb2c1d412d196ba5034905fd2f08de"]
+]
+flags: conf

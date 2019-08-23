@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "dave.scott@citrix.com"
 authors: "Dave Scott"
 homepage: "https://github.com/mirage/xentropyd"
@@ -9,6 +9,7 @@ build: [
   ["ocaml" "setup.ml" "-build"]
 ]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "cstruct" {>= "0.6.0"}
   "lwt"
   "sexplib" {< "113.01.00"}
@@ -27,11 +28,22 @@ depends: [
   "ocamlbuild" {build}
 ]
 depexts: [
-  [["debian"] ["libxen-dev" "uuid-dev"]]
-  [["ubuntu"] ["libxen-dev" "uuid-dev"]]
-  [["centos"] ["xen-devel"]]
-  [["xenserver"] ["xen-dom0-libs-devel" "xen-libs-devel"]]
+  ["libxen-dev" "uuid-dev"] {os-distribution = "debian"}
+  ["libxen-dev" "uuid-dev"] {os-distribution = "ubuntu"}
+  ["xen-devel"] {os-distribution = "centos"}
+  ["xen-dom0-libs-devel" "xen-libs-devel"] {os = "xenserver"}
 ]
-available: [ ocaml-version >= "4.01.0" ]
 dev-repo: "git://github.com/mirage/xentropyd"
 install: ["cp" "main.native" "%{bin}%/xentropyd"]
+synopsis: "Xentropyd: provide entropy to Xen VMs"
+description: """
+It is difficult to find good entropy sources in a virtualised environment,
+since VMs do not have direct access to real hardware devices. Xentropyd
+is a stand-alone service which runs in domain 0 (like xenconsoled), connecting
+to domains and offering them entropy from the host, subject to a rate-limit.
+
+This is similar to virtio-rng."""
+url {
+  src: "https://github.com/mirage/xentropyd/archive/v0.9.1.tar.gz"
+  checksum: "md5=e56914ae847fc280e66d836a3d8fba4a"
+}

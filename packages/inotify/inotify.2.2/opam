@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "whitequark <whitequark@whitequark.org>"
 authors: [ "whitequark <whitequark@whitequark.org>" ]
 license: "LGPL-2.1"
@@ -9,12 +9,17 @@ dev-repo: "git://github.com/whitequark/ocaml-inotify.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--%{lwt:enable}%-lwt" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-]
-build-test: [
-  ["ocaml" "setup.ml" "-configure"
-   "--%{lwt:enable}%-lwt" "--prefix" prefix "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--%{lwt:enable}%-lwt"
+    "--prefix"
+    prefix
+    "--enable-tests"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: [
   ["ocaml" "setup.ml" "-install"]
@@ -23,11 +28,18 @@ remove: [
   ["ocamlfind" "remove" "inotify"]
 ]
 depends: [
+  "ocaml"
   "base-unix"
   "base-bytes"
   "ocamlfind" {build}
-  "fileutils" {test}
+  "fileutils" {with-test}
   "ocamlbuild" {build}
 ]
 depopts: ["lwt"]
 available: [os = "linux"]
+synopsis: "Inotify bindings for ocaml."
+flags: light-uninstall
+url {
+  src: "https://github.com/whitequark/ocaml-inotify/archive/v2.2.tar.gz"
+  checksum: "md5=a62de155ec4a1d102bc07fc75a060e08"
+}

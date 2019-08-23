@@ -1,0 +1,32 @@
+opam-version: "2.0"
+maintainer:   "Dave Scott <dave@recoil.org>"
+authors:      [ "Anil Madhavapeddy" "Dave Scott" "Richard Mortier" ]
+license:      "ISC"
+homepage:     "https://github.com/mirage/ocaml-pcap"
+dev-repo: "git+https://github.com/mirage/ocaml-pcap.git"
+bug-reports:  "https://github.com/mirage/ocaml-pcap/issues"
+doc:          "https://mirage.github.io/ocaml-pcap/"
+tags:         [ "org:mirage" "org:xapi-project" ]
+
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "subst" "-p" name] {with-test & pinned}
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ocaml" {< "4.08.0"}
+  "jbuilder" {build & >= "1.0+beta10"}
+  "ppx_tools" {build}
+  "cstruct" {>= "1.9.0" & <"5.0.0"}
+  "ppx_cstruct" {> "0"}
+  "ounit" {with-test}
+]
+synopsis: "Decode and encode PCAP (packet capture) files"
+description: """
+pcap-format provides an interface to encode and decode pcap files, dealing with
+both endianess, including endianess detection."""
+url {
+  src: "https://github.com/mirage/ocaml-pcap/archive/0.5.1.tar.gz"
+  checksum: "md5=a7add065902759bc70eeecc8553f839d"
+}

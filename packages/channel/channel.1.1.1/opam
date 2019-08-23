@@ -1,14 +1,14 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Anil Madhavapeddy <anil@recoil.org>"
 authors: ["Anil Madhavapeddy" "Mindy Preston" "Thomas Gazagnaire"]
 homepage: "https://github.com/mirage/mirage-channel"
 doc: "http://docs.mirage.io/channel/"
 license: "ISC"
-dev-repo: "https://github.com/mirage/mirage-channel.git"
+dev-repo: "git+https://github.com/mirage/mirage-channel.git"
 bug-reports: "https://github.com/mirage/mirage-channel/issues"
 tags: ["org:mirage"]
-available: [ocaml-version >= "4.01.0"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
@@ -17,17 +17,24 @@ depends: [
   "lwt" {>= "2.4.7"}
   "cstruct"
   "logs"
-  "alcotest" {test}
-  "ounit" {test}
-  "mirage-flow" {test & < "1.2.0"}
+  "alcotest" {with-test}
+  "ounit" {with-test}
+  "mirage-flow" {with-test & < "1.2.0"}
 ]
 conflicts: [
   "tcpip" {< "2.5.0"}
 ]
 
 build: [
-  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
 ]
-build-test: [
-  "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"
-]
+synopsis: "MirageOS channels"
+description:
+  "An implementation of MirageOS' V1.CHANNEL using page aligned buffers."
+url {
+  src:
+    "https://github.com/mirage/mirage-channel/releases/download/v1.1.1/channel-1.1.1.tbz"
+  checksum: "md5=219f4fa56171f698618b87eb48d7257e"
+}

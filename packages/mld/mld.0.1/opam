@@ -1,11 +1,11 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "mld"
 version: "0.1"
 maintainer: "Stephane Graham-Lengrand <graham-lengrand@lix.polytechnique.fr>"
 authors: [ "Stephane Graham-Lengrand <graham-lengrand@lix.polytechnique.fr>" ]
 homepage: "https://github.com/disteph/mld"
 bug-reports: "https://github.com/disteph/mld/issues"
-dev-repo: "https://github.com/disteph/mld.git"
+dev-repo: "git+https://github.com/disteph/mld.git"
 license: "CeCILL-C"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
@@ -16,9 +16,43 @@ remove: [
   ["ocamlfind" "remove" "mld"]
 ]
 depends: [
-  ((("ocamlbuild" {>= "0.9.0"}) & ("ocamlbuild" {<= "0.11.0"})) | "ocamlbuild" {= "0"})
+  "ocaml" {>= "4.02"}
+  ((("ocamlbuild" {>= "0.9.0"}) ("ocamlbuild" {<= "0.11.0"})) |
+   "ocamlbuild" {= "0"})
   "ocamlfind" {build}
 ]
-available: [
-    ocaml-version >= "4.02"
-]
+synopsis: "The MLD package makes directory foo.mld turn into module Foo"
+description: """
+The contents of module Foo are the modules that can be "found" in directory foo.mld and recursively in its subdirectories,
+down to other directories of the form bar.mld:
+Bar will be a submodule of Foo, and the recursive search for Foo's modules stops there.
+The contents of bar.mld will then be used to determine the submodules of Foo.Bar.
+Hence, the following source tree
+
+-src/
+ |-foo.mld/
+   |-a/
+   | |-bar.mld/
+   | | |-b.ml
+   | |
+   | |-c/
+   |   |-d.ml
+   |
+   |-e.ml
+
+will turn into the following module structure
+
+-Foo
+ |-Bar
+ | |-B
+ |
+ |-D
+ |-E
+
+In the background:
+an mlpack is automatically generated for each directory *.mld, and the -for-pack options are automatically generated."""
+flags: light-uninstall
+url {
+  src: "https://github.com/disteph/mld/archive/0.1.tar.gz"
+  checksum: "md5=0505fca21af588f588bb0897b322a354"
+}

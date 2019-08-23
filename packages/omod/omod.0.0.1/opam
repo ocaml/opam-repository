@@ -1,0 +1,48 @@
+opam-version: "2.0"
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: ["The omod programmers"]
+homepage: "http://erratique.ch/software/omod"
+doc: "http://erratique.ch/software/omod/doc"
+license: "ISC"
+dev-repo: "git+http://erratique.ch/repos/omod.git"
+bug-reports: "https://github.com/dbuenzli/omod/issues"
+tags: [ "org:erratique" "dev" "toplevel" "repl" ]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "0.9.1"}
+  "cmdliner" {>= "1.0.2"}
+]
+build:
+[[
+  "ocaml" "pkg/pkg.ml" "build"
+          "--dev-pkg" "%{pinned}%"
+          "--lib-dir" "%{lib}%"
+]]
+
+# Following is only to deal with
+# https://caml.inria.fr/mantis/view.php?id=7808
+
+install:
+[
+ ["install" "-d" "%{lib}%/ocaml/"]
+ ["install" "src/omod.top" "src/omod.nattop" "%{lib}%/ocaml/"]
+]
+
+remove:
+[[
+  "rm" "-f" "%{lib}%/ocaml/omod.top" "%{lib}%/ocaml/omod.nattop"
+]]
+synopsis: "Lookup and load installed OCaml modules"
+description: """
+Omod is a library and command line to lookup and load installed OCaml
+modules. It provides a mecanism to load modules and their dependencies
+in the OCaml toplevel system (REPL).
+
+omod is distributed under the ISC license."""
+flags: light-uninstall
+url {
+  src: "http://erratique.ch/software/omod/releases/omod-0.0.1.tbz"
+  checksum: "md5=4473c5d474a0c2ba8715f64bd3d2b800"
+}

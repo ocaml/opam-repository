@@ -1,0 +1,34 @@
+opam-version: "2.0"
+synopsis: "Official 4.02.2 release"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.02.2" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix "-with-debug-runtime"]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-cc"
+    "cc"
+    "-aspp"
+    "cc -c"
+  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world"]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.2.tar.gz"
+  checksum: "md5=359ad0ef89717341767142f2a4d050b2"
+}

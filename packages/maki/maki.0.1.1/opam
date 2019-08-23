@@ -1,23 +1,24 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "simon.cruanes@inria.fr"
 authors: "Simon Cruanes"
 homepage: "https://github.com/c-cube/maki/"
 bug-reports: "https://github.com/c-cube/maki/issues/"
 doc: "http://cedeela.fr/~simon/software/maki/"
 tags: ["incremental" "persistent" "memoization"]
-dev-repo: "https://github.com/c-cube/maki.git"
+dev-repo: "git+https://github.com/c-cube/maki.git"
 build: [
   ["./configure" "--prefix" prefix "--%{yojson:enable}%-yojson"]
   [make "build"]
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
 ]
 install: [make "install"]
-build-test: [make "test"]
-build-doc: [make "doc"]
 remove: [
   ["ocamlfind" "remove" "maki"]
   ["rm" "%{bin}%/maki_gc"]
 ]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "result"
@@ -28,4 +29,13 @@ depends: [
   "base-threads"
 ]
 depopts: "yojson"
-available: [ocaml-version >= "4.02.0"]
+synopsis:
+  "Persistent incremental computations, for repeatable tests and benchmarks."
+description: """
+See http://cedeela.fr/maki-on-disk-memoization-for-deterministic-fun-and-profit.html for
+more information."""
+flags: light-uninstall
+url {
+  src: "https://github.com/c-cube/maki/archive/0.1.1.tar.gz"
+  checksum: "md5=3707a8f302e18012211be1da766699eb"
+}

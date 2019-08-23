@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Jordan Walke <jordojw@gmail.com>"
 authors: "Jordan Walke <jordojw@gmail.com>"
 homepage: "https://github.com/facebook/reason"
@@ -15,19 +15,20 @@ build: [
     "./build.native"
     "build"
     "--native"
-    "%{ocaml-native}%"
+    "%{ocaml:native}%"
     "--native-dynlink"
-    "%{ocaml-native-dynlink}%"
+    "%{ocaml:native-dynlink}%"
   ]
-]
-build-test: [
-  "ocamlbuild"
-  "-classic-display"
-  "-use-ocamlfind"
-  "src_test/test_reason.byte"
-  "--"
+  [
+    "ocamlbuild"
+    "-classic-display"
+    "-use-ocamlfind"
+    "src_test/test_reason.byte"
+    "--"
+  ] {with-test}
 ]
 depends: [
+  "ocaml" {>= "4.02" & < "4.05"}
   "ocamlfind" {build}
   "menhir" {>= "20160303" & < "20170418"}
   "merlin-extend" {>= "0.3"}
@@ -36,4 +37,15 @@ depends: [
   "ocaml-migrate-parsetree"
   "ppx_tools_versioned" {= "5.0alpha"}
 ]
-available: [ocaml-version >= "4.02" & ocaml-version < "4.05"]
+synopsis: "Reason Parser: Meta Language Toolchain"
+description: """
+reason allows development of Meta Language syntax trees in non-text format. It
+allows a development model that is equivalent to collaborating on syntax trees
+that have been committed to a source code repository.
+
+This is the parser sub-package."""
+url {
+  src:
+    "https://github.com/facebook/reason/releases/download/1.13.2/reason-parser-1.13.2.tar.gz"
+  checksum: "md5=e659d1f545c46a8c565e9f243cdd01df"
+}

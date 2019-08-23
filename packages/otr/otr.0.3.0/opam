@@ -1,23 +1,33 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name:         "otr"
 homepage:     "https://github.com/hannesm/ocaml-otr"
-dev-repo:     "https://github.com/hannesm/ocaml-otr.git"
+dev-repo: "git+https://github.com/hannesm/ocaml-otr.git"
 bug-reports:  "https://github.com/hannesm/ocaml-otr/issues"
 authors:      ["Hannes Mehnert <hannes@mehnert.org>"]
 maintainer:   ["Hannes Mehnert <hannes@mehnert.org>"]
 license:      "BSD2"
 
 build: [
-  ["ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                          "native-dynlink=%{ocaml-native-dynlink}%"]
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+  ]
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+  ] {with-test}
+  [
+    "sh"
+    "-exc"
+    "if test -f ./feedback.native; then ./feedback.native; else ./feedback.byte; fi"
+  ] {with-test}
 ]
-build-test: [
-  ["ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                          "native-dynlink=%{ocaml-native-dynlink}%"]
-  ["sh" "-exc" "if test -f ./feedback.native; then ./feedback.native; else ./feedback.byte; fi"]
-]
-
 depends: [
+  "ocaml" {>= "4.01.0" & < "4.03"}
   "ocamlfind" {build}
   "cstruct" {>= "1.6.0" & < "2.0.0"}
   "type_conv"
@@ -26,4 +36,15 @@ depends: [
   "astring"
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.01.0" & ocaml-version < "4.03" ]
+synopsis: "Off-the-record in pure OCaml"
+description: """
+This is an implementation of version 2 and 3 of the Off-the-record
+protocol (https://otr.cypherpunks.ca/Protocol-v3-4.0.0.html) in OCaml.
+
+Including the socialist millionairs protocol to authenticate a
+communication partner over an encrypted channel providing a shared
+secret."""
+url {
+  src: "https://github.com/hannesm/ocaml-otr/archive/0.3.0.tar.gz"
+  checksum: "md5=3317419727ff8a8d577bc13647263e6d"
+}

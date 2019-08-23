@@ -1,24 +1,14 @@
-opam-version: "1.2"
+opam-version: "2.0"
 authors: "John Else"
 homepage: "https://github.com/johnelse/ocaml-webtest"
 bug-reports: "https://github.com/johnelse/ocaml-webtest/issues"
 dev-repo: "git://github.com/johnelse/ocaml-webtest"
 maintainer: "john.else@gmail.com"
-available: [ ocaml-version >= "4.02.1" ]
 build: [
-  [
-    "./configure"
-    "--prefix" prefix
-    "--enable-docs"
-  ]
+  ["./configure" "--prefix" prefix "--enable-docs"]
   [make "build"]
-]
-build-test: [
-  [
-    "./configure"
-    "--enable-tests"
-  ]
-  [make "test"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [
   [make "PREFIX=%{prefix}%" "install"]
@@ -27,8 +17,15 @@ remove: [
   ["ocamlfind" "remove" "webtest"]
 ]
 depends: [
+  "ocaml" {>= "4.02.1"}
   "oasis" {build}
   "ocamlbuild" {build}
   "ocamlfind" {build}
-  "js_of_ocaml" {> "2.8" & <"3.0"}
+  "js_of_ocaml" {> "2.8" & < "3.0"}
 ]
+synopsis: "Framework aimed at in-browser testing of js_of_ocaml code"
+flags: light-uninstall
+url {
+  src: "https://github.com/johnelse/ocaml-webtest/archive/1.0.0.tar.gz"
+  checksum: "md5=a43606cb7b47a9c7948884f590773fbe"
+}

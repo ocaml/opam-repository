@@ -1,0 +1,39 @@
+opam-version: "2.0"
+synopsis: "BER-101 MetaOCaml"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.01.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+  "base-metaocaml-ocamlfind" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" "%{prefix}%"]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  ["./configure" "-prefix" "%{prefix}%" "-cc" "cc" "-aspp" "cc -c"]
+    {os = "openbsd" | os = "freebsd" | os = "macos"}
+  ["%{make}%" "world"]
+  ["%{make}%" "world.opt"]
+]
+install: [
+  ["%{make}%" "-i" "install"]
+  ["%{make}%" "-C" "ber-metaocaml-101" "all"]
+  ["%{make}%" "-C" "ber-metaocaml-101" "install"]
+]
+patches: [
+  "bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
+]
+url {
+  src: "https://github.com/metaocaml/ber-metaocaml/archive/ber-n101.tar.gz"
+  checksum: "md5=6a366887562dee1b9ea34a43c8d6413a"
+}
+extra-source "bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff" {
+  src:
+    "https://github.com/diml/ocaml/compare/bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
+  checksum: "md5=faccda3b3ab092fa9ac7d5d4d8beb004"
+}

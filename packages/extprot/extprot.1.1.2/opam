@@ -1,15 +1,18 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "ygrek@autistici.org"
 homepage: "https://github.com/mfp/extprot"
 license: "MIT"
 doc: ["https://github.com/mfp/extprot/blob/master/README.md"]
-build: "omake"
-build-test: [["omake" "test"] {"%{ounit:installed}"}]
+build: [
+  ["omake"]
+  ["omake" "test"] {with-test & "%{ounit:installed}"}
+]
 remove: [
   ["ocamlfind" "remove" "extprot"]
   ["rm" "-f" "%{bin}%/extprotc" "%{bin}%/extprotc.exe"]
 ]
 depends: [
+  "ocaml"
   "ocamlfind"
   ("extlib" | "extlib-compat")
   "sexplib" {< "113.01.00"}
@@ -18,3 +21,15 @@ depends: [
 ]
 dev-repo: "git://github.com/mfp/extprot"
 install: ["omake" "install" "prefix=%{prefix}%"]
+synopsis:
+  "Extensible binary protocols for cross-language communication and long-term serialization"
+description: """
+extprot allows you to create compact, efficient, extensible, binary protocols that can
+be used for cross-language communication and long-term data serialization.
+extprot supports protocols with rich, composable types, whose definition can evolve
+while keeping both forward and backward compatibility."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mfp/extprot/archive/v1.1.2.tar.gz"
+  checksum: "md5=0f24a1c6b7561fef1b7cace0daffcf7d"
+}

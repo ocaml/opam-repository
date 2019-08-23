@@ -1,27 +1,31 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Spiros Eliopoulos <seliopou@gmail.com>"
 authors: [ "Spiros Eliopoulos <seliopou@gmail.com>" ]
 license: "BSD-3-clause"
 homepage: "https://github.com/seliopou/ocaml-d3"
-dev-repo: "https://github.com/seliopou/ocaml-d3.git"
+dev-repo: "git+https://github.com/seliopou/ocaml-d3.git"
 bug-reports: "https://github.com/seliopou/ocaml-d3/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "d3"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
-  "js_of_ocaml" { <"3.0"}
+  "ocaml" {>= "4.01.0"}
+  "js_of_ocaml" {< "3.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.01.0" ]
+synopsis: "OCaml bindings for D3.js"
+flags: light-uninstall
+url {
+  src: "https://github.com/seliopou/ocaml-d3/archive/v0.2.1.tar.gz"
+  checksum: "md5=0477becd6ed7dc69ab860fe3d2416b3e"
+}

@@ -1,0 +1,116 @@
+opam-version: "2.0"
+name: "frama-c-base"
+version: "12.1"
+maintainer: "francois.bobot@cea.fr"
+authors: [
+  "Patrick Baudin"
+  "François Bobot"
+  "Richard Bonichon"
+  "David Bühler"
+  "Loïc Correnson"
+  "Pascal Cuoq"
+  "Zaynah Dargaye"
+  "Jean-Christophe Filliâtre"
+  "Philippe Herrmann"
+  "Florent Kirchner"
+  "Matthieu Lemerre"
+  "Claude Marché"
+  "André Maroneze"
+  "Benjamin Monate"
+  "Yannick Moy"
+  "Anne Pacalet"
+  "Valentin Perrelle"
+  "Guillaume Petiot"
+  "Virgile Prevosto"
+  "Armand Puccetti"
+  "Muriel Roger"
+  "Julien Signoles"
+  "Boris Yakobowski"
+]
+homepage: "http://frama-c.com/"
+license: "GNU Lesser General Public License version 2.1"
+dev-repo: "git+https://github.com/Frama-C/Frama-C-snapshot.git"
+doc: ["http://frama-c.com/download/user-manual-Magnesium-20151002.pdf"]
+bug-reports: "https://bts.frama-c.com/"
+tags: [
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "interactive theorem prover"
+  "C"
+  "plugins"
+  "abstract interpretation"
+  "slicing"
+  "weakest precondition"
+  "ACSL"
+  "dataflow analysis"
+]
+
+build: [
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--disable-gui"
+      {!conf-gtksourceview:installed | !conf-gnomecanvas:installed}
+  ]
+  [make]
+  [make "-C" "doc" "download"] {with-doc}
+]
+install: [
+  [make "install"]
+  [make "-C" "doc" "FRAMAC_DOCDIR=%{frama-c:doc}%" "install"] {with-doc}
+]
+remove: [
+  ["./configure" "--prefix" prefix "--disable-local-ocamlgraph"
+                 "--disable-gui" { !conf-gtksourceview:installed | !conf-gnomecanvas:installed }
+]
+  [make "uninstall"]
+  ["rm" "-rf" frama-c:doc]
+]
+
+depends: [
+  "ocaml" {>= "4.0" & != "4.02.0" & != "4.02.2" & < "4.04.0"}
+  "ocamlgraph" {= "1.8.5" | = "1.8.6"}
+  "ocamlfind"
+  "num"
+]
+patches: "wp-ocaml-403.patch" {ocaml:version >= "4.03.0"}
+depopts: [
+  "zarith"
+  "lablgtk"
+  "conf-gtksourceview"
+  "conf-gnomecanvas"
+  "coq" { build }
+]
+
+messages: [
+   "Why3 can be used by the WP plugin for running additional automatic solvers" { !why3:installed }
+   "Coq can be used with the WP plugin for proving interactively proof obligations" { !coq:installed }
+]
+
+conflicts: [
+  "why3" { < "0.85" }
+  "lablgtk" { < "2.18.2" } #for ocaml >= 4.02.1
+]
+
+synopsis:
+  "Platform dedicated to the static analysis of source code written in C"
+description: """
+Frama-C is a suite of tools dedicated to the analysis of the source
+code of software written in C. Magnesium version.
+
+Frama-C gathers several static analysis techniques in a single
+collaborative framework. The collaborative approach of Frama-C allows
+static analyzers to build upon the results already computed by other
+analyzers in the framework. Thanks to this approach, Frama-C provides
+sophisticated tools, such as a slicer and dependency analysis.
+
+This package depends on the minimal number of dependencies (look for
+frama-c for a more complete set of dependencies)."""
+extra-files: ["wp-ocaml-403.patch" "md5=c6e9fd9ebd8c61fe7acbd871ff22edbf"]
+url {
+  src: "http://frama-c.com/download/frama-c-Magnesium-20151002.tar.gz"
+  checksum: "md5=b7d761bdf0a58f3f8ec4242a3b67d50a"
+}

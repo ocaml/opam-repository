@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "opam-devel@lists.ocaml.org"
 authors: [
   "Thomas Gazagnaire <thomas@gazagnaire.org>"
@@ -12,14 +12,15 @@ authors: [
 ]
 homepage: "https://opam.ocaml.org"
 bug-reports: "https://github.com/ocaml/opam/issues"
-dev-repo: "https://github.com/ocaml/opam.git"
+dev-repo: "git+https://github.com/ocaml/opam.git"
 build: [
   ["./configure" "--disable-checks" "--prefix" prefix]
   [make name]
   [make "%{name}%.install"]
+  [make "tests"] {with-test}
 ]
-build-test: [make "tests"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "opam-client" {= "2.0~alpha5"}
   "cmdliner" {>= "0.9.8" & < "1.0.0"}
 ]
@@ -28,4 +29,12 @@ post-messages: [
     sudo cp %{lib}%/%{name}%/* /usr/local/bin"
   {success}
 ]
-available: ocaml-version >= "4.01.0"
+synopsis: "opam 2.0 development version"
+description: """
+This package compiles the development version of opam 2.0. For consistency and
+safety of the installation, the binaries are not installed into the PATH, but
+into lib/opam-devel, from where the user can manually install them system-wide."""
+url {
+  src: "https://github.com/ocaml/opam/archive/2.0-alpha5+1.tar.gz"
+  checksum: "md5=f8a571ba9132a08d1de90cce499b0fb3"
+}

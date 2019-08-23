@@ -1,31 +1,41 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Maël Valais <mael.valais@gmail.com>"
 authors: [ "Maël Valais <mael.valais@gmail.com>"
            "Olivier Lezaud" ]
 license: "MIT"
 homepage: "http://touist.github.io"
-dev-repo: "https://github.com/touist/touist.git"
+dev-repo: "git+https://github.com/touist/touist.git"
 bug-reports: "https://github.com/touist/touist/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocaml" "%{etc}%/touist/setup.ml" "-C" "%{etc}%/touist" "-uninstall"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "fileutils" {build & >= "0.4.0"}
   "menhir" {build & >= "20150118"}
   "minisat" {build}
   "ocamlbuild" {build}
   "ocamlfind" {build}
-  "ounit" {test}
+  "ounit" {with-test}
 ]
-available: [ ocaml-version >= "4.01.0" ]
+synopsis: "The solver for the Touist language"
+description: """
+The Touist language is a friendly language for writing propositional
+logic and logic on real and integers (SMT). This language aims to
+formalize real-life problems (e.g., the sudoku can be solved in a few
+lines). Touist embeds the minisat solver (for propositional logic) and
+(coming soon) the SMT2 solver. It can also generate the DIMACS, SMT2
+and latex formats from you touist file."""
+url {
+  src: "https://github.com/touist/touist/archive/v3.0.0.tar.gz"
+  checksum: "md5=d4e29a5160b1ae0132fbb41ca0e47888"
+}

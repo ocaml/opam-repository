@@ -1,22 +1,38 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "The Savonet Team <savonet-users@lists.sourceforge.net>"
 authors: "The Savonet Team <savonet-users@lists.sourceforge.net>"
 homepage: "https://github.com/savonet/ocaml-fdkaac"
 bug-reports: "https://github.com/savonet/ocaml-fdkaac/issues"
 license: "GPL-2.0"
-dev-repo: "https://github.com/savonet/ocaml-fdkaac.git"
+dev-repo: "git+https://github.com/savonet/ocaml-fdkaac.git"
 build: [
-  ["./configure" "--prefix=%{prefix}%"] { os != "darwin" }
-  ["./configure" "OCAMLFLAGS=-cclib -L/usr/local/lib" "--prefix=%{prefix}%"] { os = "darwin" }
+  ["./configure" "--prefix=%{prefix}%"] {os != "macos"}
+  ["./configure" "OCAMLFLAGS=-cclib -L/usr/local/lib" "--prefix=%{prefix}%"]
+    {os = "macos"}
   [make]
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "fdkaac"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
 ]
 depexts: [
-  [["debian"] ["libfdk-aac-dev"]]
-  [["ubuntu"] ["libfdk-aac-dev"]]
-  [["osx" "homebrew"] ["fdk-aac"]]
+  ["fdk-aac-dev"] {os-distribution = "alpine"}
+  ["libfdk-aac"] {os-distribution = "arch"}
+  ["fdk-aac-devel"] {os-distribution = "centos"}
+  ["fdk-aac-devel"] {os-distribution = "fedora"}
+  ["fdk-aac-devel"] {os-family = "suse"}
+  ["libfdk-aac-dev"] {os-family = "debian"}
+  ["fdk-aac"] {os = "macos" & os-distribution = "homebrew"}
 ]
+synopsis: "Fraunhofer FDK AAC Codec Library"
+description: """
+The FDK AAC Codec Library For Android contains an encoder implementation of the
+Advanced Audio Coding (AAC) audio codec."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/savonet/ocaml-fdkaac/releases/download/0.2.1/ocaml-fdkaac-0.2.1.tar.gz"
+  checksum: "md5=fff652fa282b4954d2f504ca1c2a70e9"
+}

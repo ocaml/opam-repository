@@ -1,0 +1,38 @@
+opam-version: "2.0"
+synopsis: "OCaml 4.02.3 compiled with musl-gcc -static"
+description:
+  "Requires musl-gcc to be installed (apt-get install musl-tools on Debian)"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.02.3" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-cc"
+    "musl-gcc -Os"
+    "-aspp"
+    "musl-gcc -c"
+    "-libs"
+    "-static"
+    "-no-curses"
+    "-no-graph"
+    "-no-shared-libs"
+  ]
+  [make "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.3.tar.gz"
+  checksum: "md5=ef1a324608c97031cbd92a442d685ab7"
+}

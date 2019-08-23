@@ -1,24 +1,30 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "JHU PL Lab <pl.cs@jhu.edu>"
 authors: "JHU PL Lab <pl.cs@jhu.edu>"
 homepage: "https://github.com/zepalmer/ocaml-monadic"
 bug-reports: "https://github.com/zepalmer/ocaml-monadic/issues"
 license: "BSD-3-clause"
-dev-repo: "https://github.com/zepalmer/ocaml-monadic.git"
+dev-repo: "git+https://github.com/zepalmer/ocaml-monadic.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 depends: [
+  "ocaml" {>= "4.02.0" & < "4.03.0"}
   "oasis" {build & >= "0.4"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.02.0" & ocaml-version < "4.03.0" & opam-version >= "1.2"]
+available: opam-version >= "1.2"
+synopsis: "Lightweight monadic syntax extension."
+description:
+  "This project contains a lightweight PPX extension for OCaml to support natural monadic syntax."
+url {
+  src: "https://github.com/zepalmer/ocaml-monadic/archive/0.3.0.tar.gz"
+  checksum: "md5=d41c999dfad3b44c59faa420eb9601d6"
+}

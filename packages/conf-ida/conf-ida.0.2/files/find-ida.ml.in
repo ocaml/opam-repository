@@ -1,0 +1,173 @@
+#load "unix.cma"
+
+open Printf
+
+type sys =
+  | MacOs
+  | Linux
+  | Other of string
+
+let os = match "linux" with
+  | "macos" -> MacOs
+  | "linux" -> Linux
+  | s -> Other s
+
+let (/) = Filename.concat
+
+let getenv_opt var =
+  try Some (Sys.getenv var)
+  with Not_found -> None
+
+let headless = os = Linux && getenv_opt "DISPLAY" = None
+
+let read_all ch =
+  let buf = Buffer.create 16 in
+  let rec loop () =
+    match input_char ch with
+    | ch -> Buffer.add_char buf ch; loop ()
+    | exception End_of_file -> String.trim (Buffer.contents buf) in
+  loop ()
+
+let split_on_char sep s =
+  let r = ref [] in
+  let j = ref (String.length s) in
+  for i = String.length s - 1 downto 0 do
+    if String.get s i = sep then begin
+      r := String.sub s (i + 1) (!j - i - 1) :: !r;
+      j := i
+    end
+  done;
+  String.sub s 0 !j :: !r
+
+let split str =
+  List.map String.trim (split_on_char '\n' str) |>
+  List.filter (fun s -> s <> "")
+
+exception Command_failed of Unix.process_status
+
+let process_status_to_string s =
+  let open Unix in
+  match s with
+  | WEXITED i -> sprintf "exit status %d" 1
+  | WSTOPPED i -> sprintf "proccess was stopped by signal %d" i
+  | WSIGNALED i -> sprintf "proccess was killed by signal %d" i
+
+let exn_to_string = function
+  | Command_failed s -> sprintf "%s" (process_status_to_string s)
+  | e -> Printexc.to_string e
+
+let cmd fmt =
+  let run c =
+    try
+      let inp = Unix.open_process_in c in
+      let res = read_all inp in
+      match Unix.close_process_in inp with
+      | Unix.WEXITED 0 -> Some res
+      | s -> raise (Command_failed s)
+    with e ->
+      eprintf "command %s failed: %s\n" c (exn_to_string e);
+      None in
+  ksprintf run fmt
+
+let find_map xs ~f =
+  let rec loop = function
+    | [] -> None
+    | hd :: tl ->
+      match f hd with
+      | None -> loop tl
+      | x -> x in
+  loop xs
+
+let known_names = ["ida"; "idaq"]
+
+let which_ida64 () = find_map known_names ~f:(cmd "which %s64")
+
+let find_ida64 path =
+  cmd
+    "find %s -executable -type f -name \"ida*64\" 2>/dev/null | sort -n -r"
+    path |> function
+  | None -> None
+  | Some idas ->
+    match split idas with
+    | [] -> None
+    | idas ->
+      let known = List.map (fun x -> x ^ "64") known_names in
+      find_map idas ~f:(fun file ->
+          if List.mem (Filename.basename file) known then
+            Some file
+          else None)
+
+let find_at_home () =
+  match getenv_opt "HOME" with
+  | None -> None
+  | Some home -> find_ida64 home
+
+let locate_linux () =
+  match find_at_home () with
+  | None -> find_ida64 "/"
+  | x -> x
+
+let locate_macos () =
+  find_map known_names ~f:(fun name ->
+      match cmd "mdfind -name %s | sort -n -r" name with
+      | None -> None
+      | Some result ->
+         let pathes = split result in
+         try
+           let path =
+             List.find (fun p -> Filename.basename p = name ^ ".app") pathes in
+           Some (sprintf "%s/Contents/MacOS/" path)
+         with Not_found -> None)
+
+let rec find fs =
+  match fs with
+  | [] -> None
+  | f :: fs ->
+    match f () with
+    | None -> find fs
+    | x -> x
+
+let locate () =
+  match os with
+  | MacOs -> find [which_ida64; locate_macos]
+  | Linux -> find [which_ida64; locate_linux]
+  | Other system ->
+    eprintf
+      "warning: we don't know how to find programs on %s!\n" system;
+    exit 1
+
+let write path =
+  let dir, file_depends =
+    if Sys.is_directory path then path, ""
+    else
+      Filename.dirname path,
+      sprintf "file-depends: [ [ %S %S ] ]\n"
+        path (Digest.to_hex (Digest.file path)) in
+  let oc = open_out "conf-ida.config" in
+  fprintf oc {|
+opam-version: "2.0"
+%s
+variables {
+  path: %S
+  headless: %b
+}
+|} file_depends dir headless;
+  close_out oc
+
+let of_config () =
+  let path = "" in
+  if path = "" then None
+  else Some path
+
+let of_env () = getenv_opt "IDA_PATH"
+
+let () =
+  try
+    match find [ of_config; of_env; locate; ] with
+    | Some path -> write path
+    | None ->
+      eprintf "failed to locate IDA Pro\n";
+      exit 1
+  with e ->
+    eprintf "build failed: %s\n" (Printexc.to_string e);
+    exit 1

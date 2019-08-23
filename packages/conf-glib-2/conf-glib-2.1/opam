@@ -1,23 +1,28 @@
-opam-version: "1.2"
+opam-version: "2.0"
+authors: "The GNOME Project et al."
+maintainer: "Anton Bachin <antonbachin@yahoo.com>"
 homepage: "https://wiki.gnome.org/Projects/GLib"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "LGPL-2.0"
 build: [["pkg-config" "glib-2.0"]]
 depexts: [
-  [["debian"] ["libglib2.0-dev"]]
-  [["ubuntu"] ["libglib2.0-dev"]]
-  [["fedora"] ["glib2-devel"]]
-  [["centos"] ["glib2-devel"]]
-  [["alpine"] ["glib-dev"]]
-  [["osx" "homebrew"] ["glib"]]
-  [["osx" "macports"] ["glib2-devel"]]
+  ["libglib2.0-dev"] {os-family = "debian"}
+  ["glib2-devel"] {os-distribution = "fedora"}
+  ["glib2-devel"] {os-distribution = "centos"}
+  ["glib-dev"] {os-distribution = "alpine"}
+  ["glib"] {os = "macos" & os-distribution = "homebrew"}
+  ["glib2-devel"] {os = "macos" & os-distribution = "macports"}
 ]
 post-messages: [
   "This package requires GLib 2 development files installed on your system"
     {failure}
-
-  "To solve pkg-config issues, you may need to do
+  """
+To solve pkg-config issues, you may need to do
 'export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig' (macports)
 or 'export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig' (homebrew)
-and retry"
-    {failure & (os = "darwin")}
+and retry"""
+    {failure & os = "macos"}
 ]
+synopsis: "Virtual package relying on a system GLib 2 installation"
+depends: ["conf-pkg-config" {build}]
+flags: conf

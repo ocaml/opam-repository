@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "whitequark <whitequark@whitequark.org>"
 authors: "whitequark <whitequark@whitequark.org>"
 homepage: "https://github.com/whitequark/ppx_deriving"
@@ -9,24 +9,39 @@ tags: "syntax"
 dev-repo: "git://github.com/whitequark/ppx_deriving.git"
 substs: "pkg/META"
 build: [
-  "ocaml"
-  "pkg/build.ml"
-  "native=%{ocaml-native-dynlink}%"
-  "native-dynlink=%{ocaml-native-dynlink}%"
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native-dynlink}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+  ]
+  [
+    "ocamlbuild"
+    "-classic-display"
+    "-use-ocamlfind"
+    "src_test/test_ppx_deriving.byte"
+    "--"
+  ] {with-test}
+  [make "doc"] {with-doc}
 ]
-build-test: [
-  "ocamlbuild"
-  "-classic-display"
-  "-use-ocamlfind"
-  "src_test/test_ppx_deriving.byte"
-  "--"
-]
-build-doc: [make "doc"]
 depends: [
+  "ocaml" {>= "4.02.1" & < "4.03"}
   "ocamlbuild" {build}
   "ppx_tools" {>= "0.99.2"}
   "ocamlfind" {build & >= "1.5.4"}
-  "ounit" {test}
+  "ounit" {with-test}
 ]
-available: [ocaml-version >= "4.02.1" & ocaml-version < "4.03" & opam-version >= "1.2"]
+available: opam-version >= "1.2"
 patches: [ "fix_ppx_deriving_make_mllib.patch" ]
+synopsis: "Type-driven code generation for OCaml >=4.02"
+description: """
+ppx_deriving provides common infrastructure for generating
+code based on type definitions, and a set of useful plugins
+for common tasks."""
+extra-files: [
+  "fix_ppx_deriving_make_mllib.patch" "md5=d3cc18fb066b59bdc6893af134f90f94"
+]
+url {
+  src: "https://github.com/whitequark/ppx_deriving/archive/v3.1.tar.gz"
+  checksum: "md5=3dd0359d08051ab8801c8dbc02ac13d8"
+}
