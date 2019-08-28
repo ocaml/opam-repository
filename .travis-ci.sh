@@ -58,7 +58,7 @@ function build_one {
   echo "build one: $pkg"
   # test for installability
   echo "Checking for availability..."
-  if ! opam install $pkg --dry-run; then
+  if ! opam install -t $pkg --dry-run; then
       echo "Package unavailable."
       if opam show $pkg; then
           echo "Package is unavailable on this configuration, skipping:"
