@@ -5,8 +5,13 @@ build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
-remove: [["ocamlfind" "remove" "ZMQ"]]
-depends: ["ocaml" "ocamlfind" "ounit" "uint"]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "ounit"
+  "uint" {< "2.0.0"}
+  "base-unsafe-string"
+]
 depexts: [
   ["libzmq3-dev"] {os-family = "debian"}
   ["zeromq-devel"] {os-distribution = "centos"}
@@ -15,7 +20,6 @@ depexts: [
 conflicts: ["zmq"]
 install: ["ocaml" "setup.ml" "-install"]
 synopsis: "OCaml bindings for ZMQ 2.1"
-flags: light-uninstall
 url {
   src: "https://github.com/issuu/ocaml-zmq/tarball/67586823edd"
   checksum: "md5=32db494bfaaeb15ee536644090ee0b2b"
