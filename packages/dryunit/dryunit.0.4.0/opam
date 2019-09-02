@@ -1,0 +1,54 @@
+opam-version: "2.0"
+maintainer: "gerson.xp@gmail.com"
+authors: "Gerson Moraes"
+homepage: "https://github.com/gersonmoraes/dryunit"
+bug-reports: "https://github.com/gersonmoraes/dryunit"
+dev-repo: "git+https://github.com/gersonmoraes/dryunit.git"
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "jbuilder" {build}
+  "cppo" {build}
+  "cmdliner" {>= "1.0.2"}
+]
+synopsis: "A detection tool for traditional unit testing in OCaml"
+description: """
+Dryunit is a generates bootstrap code for test frameworks. As a result, you get to use plain old OCaml.
+For more information, checkout the [repository](https://github.com/gersonmoraes/dryunit).
+
+
+## Installation
+
+```
+opam install dryunit
+```
+
+## Conventions
+
+- Test files should either be called `tests.ml`  or `something_tests.ml`
+- Test functions should called `test_something`
+- By default, test executables are named `main`
+
+
+## Usage
+
+If you use jbuilder, you can get started using this:
+
+```sh
+mkdir tests
+dryunit init > tests/jbuild
+```
+
+You can also define the framework explicitly using `dryunit init alcotest`. Adding a sample test:
+
+```sh
+echo "let test_error () = raise Not_found" > tests/something_tests.ml
+jbuilder build tests/main.exe && _build/default/tests/main.exe
+```"""
+url {
+  src: "https://github.com/gersonmoraes/dryunit/archive/0.4.0.tar.gz"
+  checksum: "md5=14f1029a3c628eeaef50c025b454215e"
+}

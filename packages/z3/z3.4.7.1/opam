@@ -1,0 +1,32 @@
+opam-version: "2.0"
+maintainer: "simon@aestheticintegration.com"
+authors: "MSR"
+homepage: "https://github.com/Z3prover/z3"
+bug-reports: "https://github.com/Z3prover/z3/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Z3prover/z3.git"
+patches: ["fix-parallel-build.patch"]
+build: [
+  [ "python2.7" "scripts/mk_make.py" "--ml" ]
+  [ make "-C" "build" "-j" jobs ]
+  [ "sh" "-c" "cp build/libz3* build/api/ml/" ]
+]
+install: [
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/META -nodll build/api/ml/*" ]
+]
+remove: ["ocamlfind" "remove" "z3"]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "num"
+  "conf-gmp"
+  "conf-python-2-7" {build}
+]
+synopsis: "Z3 solver"
+flags: light-uninstall
+extra-files: ["fix-parallel-build.patch" "md5=54516d6bf1f1005508f5cbfe9c53dad2"]
+url {
+  src:
+    "https://github.com/Z3Prover/z3/releases/download/z3-4.7.1/z3-4.7.1.tar.gz"
+  checksum: "md5=6402fcbd54150a1583aa89017db38335"
+}

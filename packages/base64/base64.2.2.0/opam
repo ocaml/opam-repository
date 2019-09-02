@@ -1,0 +1,54 @@
+opam-version: "2.0"
+maintainer: "mirageos-devel@lists.xenproject.org"
+authors: [ "Thomas Gazagnaire"
+           "Anil Madhavapeddy"
+           "Peter Zotov" ]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-base64"
+doc: "http://mirage.github.io/ocaml-base64/"
+bug-reports: "https://github.com/mirage/ocaml-base64/issues"
+dev-repo: "git+https://github.com/mirage/ocaml-base64.git"
+depends: [
+  "ocaml"
+  "base-bytes"
+  "jbuilder" {build & >= "1.0+beta10"}
+  "bos" {with-test}
+  "rresult" {with-test}
+  "alcotest" {with-test & >= "0.4.0"}
+]
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name] {with-test}
+]
+synopsis: "Base64 encoding for OCaml"
+description: """
+Base64 is a group of similar binary-to-text encoding schemes that represent
+binary data in an ASCII string format by translating it into a radix-64
+representation.  It is specified in [RFC 4648][rfc4648].
+
+See also [documentation][docs].
+
+[rfc4648]: https://tools.ietf.org/html/rfc4648
+[docs]: http://mirage.github.io/ocaml-base64/base64/
+
+## Example
+
+Simple encoding and decoding.
+
+```shell
+utop # #require "base64";;
+utop # let enc = B64.encode "OCaml rocks!";;
+val enc : string = "T0NhbWwgcm9ja3Mh"
+utop # let plain = B64.decode enc;;
+val plain : string = "OCaml rocks!"
+```
+
+## License
+
+[ISC](https://www.isc.org/downloads/software-support-policy/isc-license/)"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-base64/releases/download/v2.2.0/base64-2.2.0.tbz"
+  checksum: "md5=49f2bc4ae37b832c652277c0b701a02a"
+}

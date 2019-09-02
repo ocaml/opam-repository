@@ -1,0 +1,85 @@
+opam-version: "2.0"
+maintainer: "gerd@gerd-stolpmann.de"
+homepage: "http://projects.camlcity.org/projects/ocamlnet.html"
+doc: ["http://projects.camlcity.org/projects/dl/ocamlnet-4.1.6/doc/html-main/index.html"]
+bug-reports: "https://gitlab.camlcity.org/gerd/lib-ocamlnet3/issues"
+dev-repo: "git+https://gitlab.camlcity.org/gerd/lib-ocamlnet3.git"
+build: [
+  [
+    "./configure"
+    "-bindir"
+    bin
+    "-%{conf-gssapi:enable}%-gssapi"
+    "-%{conf-gnutls:enable}%-gnutls"
+    "-%{pcre:enable}%-pcre"
+    "-%{lablgtk:enable}%-gtk2"
+    "-%{camlzip:enable}%-zip"
+    "-with-nethttpd"
+  ]
+  [make "all"]
+  [make "opt"]
+]
+authors: ["Gerd Stolpmann"]
+remove: [
+  ["ocamlfind" "remove" "equeue"]
+  ["ocamlfind" "remove" "equeue-gtk2"] {"%{lablgtk:installed}%"}
+  ["ocamlfind" "remove" "netcamlbox"]
+  ["ocamlfind" "remove" "netcgi2"]
+  ["ocamlfind" "remove" "netcgi2-plex"]
+  ["ocamlfind" "remove" "netclient"]
+  ["ocamlfind" "remove" "netgss-system"] {"%{conf-gssapi:installed}%"}
+  ["ocamlfind" "remove" "nethttpd"]
+  ["ocamlfind" "remove" "netmulticore"]
+  ["ocamlfind" "remove" "netplex"]
+  ["ocamlfind" "remove" "netshm"]
+  ["ocamlfind" "remove" "netstring"]
+  ["ocamlfind" "remove" "netstring-pcre"] {"%{pcre:installed}%"}
+  ["ocamlfind" "remove" "netsys"]
+  ["ocamlfind" "remove" "nettls-gnutls"] {"%{conf-gnutls:installed}%"}
+  ["ocamlfind" "remove" "netunidata"]
+  ["ocamlfind" "remove" "netzip"] {"%{camlzip:installed}%"}
+  ["ocamlfind" "remove" "pop"]
+  ["ocamlfind" "remove" "rpc"]
+  ["ocamlfind" "remove" "rpc-auth-local"]
+  ["ocamlfind" "remove" "rpc-generator"]
+  ["ocamlfind" "remove" "shell"]
+  ["ocamlfind" "remove" "smtp"]
+
+]
+depends: [
+  "ocaml" {>= "4.00.0"}
+  "ocamlfind"
+  "ocamlbuild" {build}
+  "base-bytes"
+]
+depopts: [
+  "conf-gnutls"
+  "conf-gssapi"
+  "lablgtk"
+  "pcre"
+  "camlzip"
+]
+install: [make "install"]
+synopsis:
+  "Internet protocols (HTTP, CGI, e-mail etc.) and helper data structures"
+description: """
+(mail messages, character sets, etc.)
+
+Ocamlnet is an enhanced system platform library for Ocaml. As the name
+suggests, large parts of it have to do with network programming, but
+it is actually not restricted to this. Other parts deal with the
+management of multiple worker processes, and the interaction with
+other programs running on the same machine. You can also view Ocamlnet
+as an extension of the system interface as provided by the Unix module
+of the standard library."""
+conflicts: [
+  "ocaml-variants"
+    {= "4.04.0+flambda" | = "4.04.1+flambda" | = "4.04.2+flambda"}
+]
+flags: light-uninstall
+extra-files: ["ocamlnet.install" "md5=ed54a9f3d6382ccc01ea1cf1af8f2c38"]
+url {
+  src: "http://download.camlcity.org/download/ocamlnet-4.1.6.tar.gz"
+  checksum: "md5=6a632896685421ff09e0c7ee3e17e79d"
+  mirrors: "http://download2.camlcity.org/download/ocamlnet-4.1.6.tar.gz"
+}

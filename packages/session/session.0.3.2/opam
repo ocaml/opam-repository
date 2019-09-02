@@ -1,0 +1,82 @@
+opam-version: "2.0"
+name: "session"
+maintainer: "Spiros Eliopoulos <spiros@inhabitedtype.com>"
+authors: [ "Spiros Eliopoulos <spiros@inhabitedtype.com>" ]
+license: "BSD-3-clause"
+homepage: "https://github.com/inhabitedtype/ocaml-session"
+dev-repo: "git+https://github.com/inhabitedtype/ocaml-session.git"
+bug-reports: "https://github.com/inhabitedtype/ocaml-session/issues"
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{webmachine:enable}%-webmachine"
+    "--%{postgresql:enable}%-postgresql"
+    "--%{redis-lwt:enable}%-redis"
+    "--%{lwt:enable}%-lwt"
+    "--%{cohttp:enable}%-cohttp"
+    "--%{async:enable}%-async"
+  ]
+  ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{webmachine:enable}%-webmachine"
+    "--%{postgresql:enable}%-postgresql"
+    "--%{redis-lwt:enable}%-redis"
+    "--%{lwt:enable}%-lwt"
+    "--%{cohttp:enable}%-cohttp"
+    "--%{async:enable}%-async"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "session"]
+]
+depends: [
+  "ocaml"
+  "nocrypto"
+  "ocamlfind" {build}
+  "ounit" {with-test & >= "1.0.2"}
+  "result"
+]
+depopts: [
+  "async" {< "v0.13"}
+  "base-threads"
+  "cohttp"
+  "postgresql"
+  # If session ever switches to jbuilder, then this constraint should turn into
+  # something along the lines of the following constraint in
+  # session-redis-lwt.opam:
+  #
+  #   depends: [
+  #     ...
+  #     ("redis-lwt" | ("redis" & "lwt"))
+  #     ...
+  #   ]
+  "lwt"
+  "redis-lwt"
+  "webmachine"
+]
+conflicts: [
+  "cohttp" {>= "0.99.0"}
+]
+synopsis: "A session manager for your everyday needs"
+description: """
+ocaml-session is an session manager that handles cookie headers and
+backend storage for HTTP servers. The library supports CoHTTP and
+Webmachine; Async and Lwt; and pluggable backing stores based on a
+functor interface."""
+flags: light-uninstall
+url {
+  src: "https://github.com/inhabitedtype/ocaml-session/archive/0.3.2.tar.gz"
+  checksum: "md5=9c0a5179613e00520c889d50623a4c41"
+}

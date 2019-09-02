@@ -1,0 +1,39 @@
+opam-version: "2.0"
+maintainer: "Etienne Millon <etienne@cryptosense.com>"
+authors: "Etienne Millon <etienne@cryptosense.com>"
+homepage: "https://github.com/cryptosense/multipart-form-data"
+bug-reports: "https://github.com/cryptosense/multipart-form-data/issues"
+license: "BSD-2"
+dev-repo: "git+https://github.com/cryptosense/multipart-form-data.git"
+doc: "https://cryptosense.github.io/multipart-form-data/doc"
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "jbuilder" {build}
+  "ocaml-migrate-parsetree" {build}
+  "alcotest" {with-test}
+  "stringext"
+  "lwt"
+  "lwt_ppx"
+]
+synopsis:
+  "Parser for ocaml [![Build Status](https://travis-ci.org/cryptosense/multipart-form-data.svg)](https://travis-ci.org/cryptosense/multipart-form-data)"
+description: """
+This is a parser for structured form data based on `Lwt_stream` in order to use
+it with [cohttp](https://github.com/mirage/ocaml-cohttp/). You can use it to
+send POST parameters.
+
+There are two APIs:
+
+- a high-level one: `parse_stream` and `get_parts`. It works for strings, but
+  has some problems with files.
+- a low-level one: `parse`. It works for well for both strings and files."""
+url {
+  src:
+    "https://github.com/cryptosense/multipart-form-data/releases/download/v0.2.0/multipart-form-data-0.2.0.tbz"
+  checksum: "md5=7e6276ba4b19d6289cc4129fc45ab1f2"
+}

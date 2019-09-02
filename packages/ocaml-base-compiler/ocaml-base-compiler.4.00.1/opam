@@ -1,0 +1,28 @@
+opam-version: "2.0"
+synopsis: "Official 4.00.1 release"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.00.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix]
+  [make "world" "opt" "opt.opt"]
+]
+install: [make "install"]
+patches: "bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00.1.tar.gz"
+  checksum: "md5=91124a8eb12a57f1e56c02fe3db0f9e7"
+}
+extra-source "bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff" {
+  src:
+    "https://github.com/diml/ocaml/compare/bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
+  checksum: "md5=faccda3b3ab092fa9ac7d5d4d8beb004"
+}

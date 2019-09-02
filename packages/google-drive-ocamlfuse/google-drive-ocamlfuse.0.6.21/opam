@@ -1,0 +1,39 @@
+opam-version: "2.0"
+maintainer: "Alessandro Strada <alessandro.strada@gmail.com>"
+authors: [ "Alessandro Strada" ]
+license: "MIT"
+homepage: "https://astrada.github.io/google-drive-ocamlfuse/"
+dev-repo: "git+https://github.com/astrada/google-drive-ocamlfuse.git"
+bug-reports: "https://github.com/astrada/google-drive-ocamlfuse/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/google-drive-ocamlfuse/setup.ml"
+    "-C" "%{etc}%/google-drive-ocamlfuse" "-uninstall"]
+]
+depends: [
+  "ocaml" {>= "3.12.0" & < "4.06.0"}
+  "base-threads" {build}
+  "camlidl" {build}
+  "gapi-ocaml" {>= "0.2.14" & < "0.3.5"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ocamlfuse" {< "2.7.1-cvs6"}
+  "ounit" {with-test}
+  "sqlite3"
+]
+synopsis: "A FUSE filesystem over Google Drive"
+description: """
+google-drive-ocamlfuse is a FUSE-based file system backed by Google
+Drive, written in OCaml."""
+url {
+  src:
+    "https://github.com/astrada/google-drive-ocamlfuse/archive/v0.6.21-fix.tar.gz"
+  checksum: "md5=acccf2203a717634a16b7434d7ab44c8"
+}

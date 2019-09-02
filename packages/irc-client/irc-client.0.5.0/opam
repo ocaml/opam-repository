@@ -1,0 +1,48 @@
+opam-version: "2.0"
+authors: ["John Else" "Simon Cruanes"]
+homepage: "https://github.com/johnelse/ocaml-irc-client"
+bug-reports: "https://github.com/johnelse/ocaml-irc-client/issues"
+dev-repo: "git://github.com/johnelse/ocaml-irc-client"
+maintainer: "john.else@gmail.com"
+build: [
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--%{lwt:enable}%-lwt"
+    "--%{tls:enable}%-tls"
+    "--%{base-unix:enable}%-unix"
+    "--enable-docs"
+    "--enable-examples"
+  ]
+  [make "build"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
+]
+install: [
+  [make "PREFIX=%{prefix}%" "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "irc-client"]
+]
+depends: [
+  "ocaml" {>= "4.00.1"}
+  "oasis" {build}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "result"
+  "ounit" {with-test}
+]
+depopts: [
+  "base-unix"
+  "lwt"
+  "tls"
+]
+synopsis: "IRC client library"
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/johnelse/ocaml-irc-client/archive/irc-client.0.5.0.tar.gz"
+  checksum: "md5=fb82142695a6719fe11d50f53e611ef7"
+}

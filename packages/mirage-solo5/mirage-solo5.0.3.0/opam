@@ -1,0 +1,56 @@
+opam-version: "2.0"
+maintainer:   "martin@lucina.net"
+homepage:     "https://github.com/mirage/mirage-solo5"
+bug-reports:  "https://github.com/mirage/mirage-solo5/issues/"
+dev-repo: "git+https://github.com/mirage/mirage-solo5.git"
+license:      "ISC"
+authors: [
+  "Anil Madhavapeddy <anil@recoil.org>"
+  "Dan Williams <djwillia@us.ibm.com>"
+  "Martin Lucina <martin@lucina.net>"
+]
+tags: [
+  "org:mirage"
+]
+build: [
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" ] { os != "openbsd" }
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "false" ] { os = "openbsd" }
+]
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "0.7.6"}
+  "ocb-stubblr" {build}
+  "cstruct" {>= "1.0.1"}
+  "lwt" {>= "2.4.3"}
+  "ocaml-freestanding" {>= "0.3.0"}
+  "logs"
+  "solo5-kernel-ukvm" {>= "0.3.0"} | "solo5-kernel-virtio" {>= "0.3.0"} |
+  "solo5-kernel-muen" {>= "0.3.0"}
+]
+conflicts: [
+  "io-page" {< "2.0.0"}
+  "solo5-bindings-hvt"
+  "solo5-bindings-virtio"
+  "solo5-bindings-muen"
+]
+synopsis: "Solo5 core platform libraries for MirageOS"
+description: """
+This package provides the MirageOS `OS` library for
+[Solo5][1] targets, which handles the main loop and timers. It also provides
+the low level C startup code and C stubs required by the OCaml code.
+
+Currently this package also includes the C stubs used by the Solo5 `console`,
+`block` and `net` implementations.
+
+The OCaml runtime and C runtime required to support it are provided separately
+by the [ocaml-freestanding][2] package.
+
+[1]: https://github.com/Solo5/solo5
+[2]: https://github.com/mirage/ocaml-freestanding"""
+url {
+  src:
+    "https://github.com/mirage/mirage-solo5/releases/download/v0.3.0/mirage-solo5-0.3.0.tbz"
+  checksum: "md5=9ba8e7360a0572383dcabcbfba330c30"
+}

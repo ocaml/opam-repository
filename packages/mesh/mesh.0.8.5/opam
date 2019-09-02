@@ -1,11 +1,12 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "mesh"
 version: "0.8.5"
 maintainer: "Christophe.Troestler@umons.ac.be"
 authors: [ "Christophe Troestler" ]
-# license: "LGPL-2.0 with OCaml linking exception"
-# homepage: "http://forge.ocamlcore.org/projects/mesh/"
-# dev-repo: "ssh://forge.ocamlcore.org//git/mesh/mesh.git"
+license: "LGPL-2.0 with OCaml linking exception"
+homepage: "https://github.com/Chris00/mesh"
+dev-repo: "git+https://github.com/Chris00/mesh.git"
+bug-reports: "https://github.com/Chris00/mesh/issues"
 tags: [ "clib:triangle"  ]
 build: [
   [
@@ -17,12 +18,13 @@ build: [
     "--%{lacaml:enable}%-lacaml"
   ]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 remove: [
   ["ocamlfind" "remove" "mesh"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {< "4.06"}
   "base-bigarray"
   "ocamlfind"
   "ocamlbuild" {build}
@@ -31,3 +33,14 @@ depopts: [
   "lacaml"
 ]
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "Triangular mesh generation and manipulation."
+description: """
+This is an interface to various mesh generators, in particular
+triangle. It also provides functions to optimize the numbering of mesh
+points and to export meshes and piecewise linear functions defined on
+them to TikZ, Scilab, Matlab, and Mathematica formats."""
+flags: light-uninstall
+url {
+  src: "https://download.ocamlcore.org/mesh/mesh/0.8.5/mesh-0.8.5.tar.gz"
+  checksum: "md5=91417a9793b38594d8e2b8abb8ba9f51"
+}

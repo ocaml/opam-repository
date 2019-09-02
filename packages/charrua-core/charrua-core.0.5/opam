@@ -1,0 +1,75 @@
+opam-version: "2.0"
+name: "charrua-core"
+maintainer: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
+authors: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
+license: "ISC"
+homepage: "https://github.com/mirage/charrua-core"
+bug-reports: "https://github.com/mirage/charrua-core/issues"
+dev-repo: "git+https://github.com/mirage/charrua-core.git"
+doc: "https://mirage.github.io/charrua-core/api"
+
+available: opam-version >= "1.2"
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.03"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "ppx_deriving"
+  "ppx_sexp_conv" {< "v0.13"}
+  "ppx_tools"
+  "menhir" {build}
+  "cstruct" {>= "1.9.0" & < "3.0.0"}
+  "ppx_cstruct"
+  "sexplib" {< "v0.13"}
+  "ipaddr" {>= "2.5.0" & < "3.0.0"}
+  "tcpip" {>= "3.1.0" & < "3.2.0"}
+  "rresult"
+  "io-page" {with-test}
+]
+synopsis: "Charrua DHCP core library."
+description: """
+[charrua-core](http://www.github.com/haesbaert/charrua-core) is an
+_ISC-licensed_ DHCP library implementation in ocaml.
+
+It provides basically two modules, a `Dhcp` responsible for parsing and
+constructing DHCP messages and a `Dhcp_server` module used for constructing DHCP
+servers.
+
+[charrua-unix](http://www.github.com/haesbaert/charrua-unix) is a Unix DHCP
+server based on charrua-core.
+
+[mirage](https://github.com/mirage/mirage-skeleton/tree/master/dhcp) is a Mirage
+DHCP unikernel server based on charrua-core.
+
+You can browse the API for [charrua-core] at
+http://haesbaert.github.io/charrua-core/api
+
+Features
+
+* Dhcp_server supports a stripped down ISC dhcpd.conf, so you can probably just
+  use your old dhcpd.conf, it also supports manual configuration building in
+  ocaml.
+* Logic/sequencing is agnostic of IO and platform, so it can run on Unix as a
+  process, as a Mirage unikernel or anything else.
+* Dhcp_wire provides marshalling and unmarshalling utilities for DHCP, it is the
+  base for Dhcp_server.
+* All DHCP options are supported at the time of this writing.
+* Code is purely applicative.
+* It's in ocaml, so it's pretty cool.
+
+The name `charrua` is a reference to the, now extinct, semi-nomadic people of
+southern South America.
+
+This project became one of the [Mirage Pioneer]
+(https://github.com/mirage/mirage-www/wiki/Pioneer-Projects) projects."""
+url {
+  src:
+    "https://github.com/mirage/charrua-core/releases/download/v0.5/charrua-core-0.5.tbz"
+  checksum: "md5=e722882d95dd898454bdb3d6c12048a4"
+}

@@ -1,15 +1,32 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      "Thomas Gazagnaire <thomas@gazagnaire.org>"
 homepage:     "https://github.com/samoht/ocaml-dumpast"
 bug-reports:  "https://github.com/samoht/ocaml-dumpast/issues"
-dev-repo:     "https://github.com/samoht/ocaml-dumpast.git"
+dev-repo: "git+https://github.com/samoht/ocaml-dumpast.git"
 license:      "ISC"
 build: [
   make
-    "HAS_ANNOT=false"
-    "OCAML_VERSION=402" {ocaml-version >= "4.02.0"}
-    "OCAML_VERSION=401" {ocaml-version <  "4.02.0"}
+  "HAS_ANNOT=false"
+  "OCAML_VERSION=402" {ocaml:version >= "4.02.0"}
+  "OCAML_VERSION=401" {ocaml:version < "4.02.0"}
 ]
-depends: ["ocamlfind"]
-available: [ocaml-version >= "4.00.0" & ocaml-version < "4.04.0"]
+depends: [
+  "ocaml" {>= "4.00.0" & < "4.04.0"}
+  "ocamlfind"
+]
+synopsis: "OCaml AST dumper"
+description: """
+Usage:
+
+```
+ocaml-dumpast [TOOL FLAGS*]? INPUT
+```
+
+The only feature of that tool is to *not* call `TOOL` if
+`FLAGS` are empty, but use compiler-libs directly. This
+can be used to speed-up camlp4 invoctions."""
+url {
+  src: "https://github.com/samoht/ocaml-dumpast/archive/0.2.0.tar.gz"
+  checksum: "md5=3696c216ca25970fd6fb13c9a6b80766"
+}

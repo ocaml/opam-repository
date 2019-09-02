@@ -1,0 +1,108 @@
+--- a/configure	2018-04-06 00:23:56.000000000 -0500
++++ b/configure	2018-04-06 00:24:07.000000000 -0500
+@@ -12403,8 +12391,8 @@
+ 
+ 
+ 
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ocaml camomile module" >&5
+-$as_echo_n "checking for ocaml camomile module... " >&6; }
++{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ocaml camomile module >= 1.0.0" >&5
++$as_echo_n "checking for ocaml camomile module >= 1.0.0... " >&6; }
+ 
+ OCAML_CHECK="${OCAMLFIND} query camomile"
+ 
+@@ -12433,11 +12421,11 @@
+ $as_echo "Not found." >&6; }
+      else
+          CAMOMILE_version="`${OCAMLFIND} query -format "%v" camomile 2>/dev/null`"
+-         if test -z "" ; then
++         if test -z "1.0.0" ; then
+     VERSION_OK=yes
+   else
+     as_arg_v1=${CAMOMILE_version}
+-as_arg_v2=
++as_arg_v2=1.0.0
+ awk "$as_awk_strverscmp" v1="$as_arg_v1" v2="$as_arg_v2" /dev/null
+ case $? in #(
+   1) :
+@@ -12451,8 +12439,8 @@
+ esac
+ fi
+          if test -z "${VERSION_OK}"; then
+-           { $as_echo "$as_me:${as_lineno-$LINENO}: result: requires version >=  found ${CAMOMILE_version}." >&5
+-$as_echo "requires version >=  found ${CAMOMILE_version}." >&6; }
++           { $as_echo "$as_me:${as_lineno-$LINENO}: result: requires version >= 1.0.0 found ${CAMOMILE_version}." >&5
++$as_echo "requires version >= 1.0.0 found ${CAMOMILE_version}." >&6; }
+          else
+            if test -z "${CAMOMILE_SHARED}"; then
+              CAMOMILE_PACKAGES="`${OCAMLFIND} query -separator " " -format "-package %p" $BINDING_PKGS 2>/dev/null`"
+@@ -12474,11 +12462,11 @@
+     if test -r ${with_camomile_dir}/META >/dev/null 2>&1; then
+       # Grab version
+       CAMOMILE_version=`cat "${with_camomile_dir}/META" | grep version | cut -d'=' -f 2 | tr -d ' ' | tr -d '"' | head -n 1`
+-      if test -z "" ; then
++      if test -z "1.0.0" ; then
+     VERSION_OK=yes
+   else
+     as_arg_v1=${CAMOMILE_version}
+-as_arg_v2=
++as_arg_v2=1.0.0
+ awk "$as_awk_strverscmp" v1="$as_arg_v1" v2="$as_arg_v2" /dev/null
+ case $? in #(
+   1) :
+@@ -12492,15 +12480,15 @@
+ esac
+ fi
+       if test -z "${VERSION_OK}"; then
+-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: requires version >=  found ${CAMOMILE_version}." >&5
+-$as_echo "requires version >=  found ${CAMOMILE_version}." >&6; }
++        { $as_echo "$as_me:${as_lineno-$LINENO}: result: requires version >= 1.0.0 found ${CAMOMILE_version}." >&5
++$as_echo "requires version >= 1.0.0 found ${CAMOMILE_version}." >&6; }
+         CAMOMILE_STOP_CHECK=yes
+       fi
+       CAMOMILE_requires=`cat "${with_camomile_dir}/META" | grep 'requires' | cut -d '=' -f 2 | tr -d '"'`
+       CAMOMILE_path="${with_camomile_dir}"
+     else
+       CAMOMILE_path=`${OCAMLFIND} -query camomile 2>/dev/null`
+-      if ! test -z ""; then
++      if ! test -z "1.0.0"; then
+         { $as_echo "$as_me:${as_lineno-$LINENO}: result: cannot find version from META file." >&5
+ $as_echo "cannot find version from META file." >&6; }
+         CAMOMILE_STOP_CHECK=yes
+@@ -12561,17 +12549,9 @@
+     as_fn_error $? "Camomile provides charset detection and conversions. It is strongly advised to enable those features. If you really don't want this, use --disable-camomile." "$LINENO" 5
+   fi
+ else
+-    camdir=`$OCAMLFIND query camomile -l | \
+-      grep location | tr -d ' ' | cut -d':' -f 2`
+-    camencoding=Camomile.CharEncoding
+-    # Use Camomile with environment variables if
+-    # available
+-    if test -f $camdir/camomileLibraryDyn.cmi ; then
+-      if test -z "$w_CUSTOM_PATH"; then
+-        camencoding=CamomileLibraryDyn.$camencoding
+-      else
+-        camencoding="CamomileLibrary.CharEncoding.Configure(CamomileConfig)"
+-        cat >> src/configure.ml <<EOCONF
++    if test -n "$w_CUSTOM_PATH"; then
++      camencoding="CamomileLibrary.CharEncoding.Configure(CamomileConfig)"
++      cat >> src/configure.ml <<EOCONF
+ module CamomileConfig =
+ struct
+   let datadir = Filename.concat (get_dir "camomile") "database"
+@@ -12580,14 +12560,8 @@
+   let unimapdir = Filename.concat (get_dir "camomile") "mappings"
+ end
+ EOCONF
+-      fi
+     else
+-      if test -n "$w_CUSTOM_PATH"; then
+-        as_fn_error $? "Your camomile module is too old to support loading from a custom path.. Please upgrade it or disable custom path loading." "$LINENO" 5
+-      fi
+-      if test -f $camdir/camomileLibrary.cmi ; then
+-        camencoding=CamomileLibrary.Default.$camencoding
+-      fi
++      camencoding=CamomileLibraryDefault.Camomile.CharEncoding
+     fi
+     cat >> src/configure.ml <<EOCONF
+ module C = $camencoding

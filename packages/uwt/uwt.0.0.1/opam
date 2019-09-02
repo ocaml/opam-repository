@@ -1,21 +1,23 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "uwt"
 version: "0.0.1"
 maintainer: "andreas@ml.ignorelist.com"
 authors: [ "andreas@ml.ignorelist.com" ]
 license: "LGPL-2.1+ with OCaml linking exception"
 homepage: "https://github.com/fdopen/uwt"
-dev-repo: "https://github.com/fdopen/uwt.git"
+dev-repo: "git+https://github.com/fdopen/uwt.git"
 bug-reports: "https://github.com/fdopen/uwt/issues"
 tags: ["clib:libuv"]
-build: [["omake" "lib"]]
+build: [
+  ["omake" "lib"]
+  ["omake" "test"] {with-test}
+]
 install: [["omake" "install"]]
-build-test: [["omake" "test"]]
 remove: [
   ["ocamlfind" "remove" "uwt"]
 ]
-available: [ocaml-version >= "4.02.1"]
 depends: [
+  "ocaml" {>= "4.02.1"}
   "base-unix"
   "base-bigarray"
   "base-threads"
@@ -25,16 +27,22 @@ depends: [
   "ocamlfind" {build}
   "cppo" {build}
   "omake" {build}
-  "ounit" {test & >= "2.0"}
-  "ppx_deriving" {test & >= "2.0"}
-  "ppx_import" {test & >= "1.0"}
+  "ounit" {with-test & >= "2.0"}
+  "ppx_deriving" {with-test & >= "2.0"}
+  "ppx_import" {with-test & >= "1.0"}
 ]
-depexts: [
-#  [["debian"] ["pkg-config" "libuv-dev"]]
-#  [["ubuntu"] ["pkg-config" "libuv-dev"]]
-  [["freebsd"] ["pkgconf" "libuv"]]
-]
-
+depexts: ["pkgconf" "libuv"] {os = "freebsd"}
 post-messages: [
   "Could not build uwt. The most common reason for that is a missing or old 'libuv' system package (version 0.x is not supported)." {failure}
 ]
+synopsis: "libuv bindings"
+description: """
+uwt provides OCaml bindings for libuv.
+The main loop of libuv is integrated into lwt,
+the light-weight cooperative threads library."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/fdopen/uwt/releases/download/0.0.1/uwt-0.0.1.tar.gz"
+  checksum: "md5=7fdfe2efd35b6c637cc883da69e76fa5"
+}

@@ -1,0 +1,80 @@
+opam-version: "2.0"
+name: "lwt"
+version: "3.0.0"
+maintainer: [
+  "Anton Bachin <antonbachin@yahoo.com>"
+  "Mauricio Fernandez <mfp@acm.org>"
+  "Simon Cruanes <simon.cruanes.2007@m4x.org>"
+]
+authors: [
+  "Jérôme Vouillon"
+  "Jérémie Dimino"
+]
+homepage: "https://github.com/ocsigen/lwt"
+doc: "https://ocsigen.org/lwt/manual/"
+bug-reports: "https://github.com/ocsigen/lwt/issues"
+license: "LGPL with OpenSSL linking exception"
+dev-repo: "git+https://github.com/ocsigen/lwt.git"
+build: [
+  [make "setup"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{conf-libev:enable}%-libev"
+    "--%{camlp4:enable}%-camlp4"
+    "--%{base-unix:enable}%-unix"
+    "--%{base-threads:enable}%-preemptive"
+    "--%{ppx_tools:enable}%-ppx"
+  ]
+  [make "build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
+]
+install: [[make "install"]]
+remove: [[ "ocamlfind" "remove" "lwt" ]]
+depends: [
+  "ocaml" {>= "4.02.0" & < "4.08.0"}
+  "ocamlfind" {build & >= "1.5.0"}
+  "ocamlbuild" {build}
+  "result"
+  "cppo" {build & >= "1.1.0"}
+  "cppo_ocamlbuild" {build}
+  ("base-no-ppx" | "ppx_tools" {build})
+]
+depopts: [
+  "base-threads"
+  "base-unix"
+  "conf-libev"
+  "camlp4"
+]
+conflicts: [
+  "ocaml-variants" {= "4.02.1+BER"}
+  "ppx_tools" {< "1.0.0"}
+]
+messages: [
+  "For module Lwt_ssl, please install package lwt_ssl"
+  {ssl:installed & !lwt_ssl:installed}
+  "For module Lwt_glib, please install package lwt_glib"
+  {lablgtk:installed & !lwt_glib:installed}
+  "For module Lwt_react, please install package lwt_react"
+  {react:installed & !lwt_react:installed}
+]
+synopsis: "Monadic promises and concurrent I/O"
+description: """
+A promise is a value that may become determined in the future.
+
+Lwt provides typed, composable promises. Promises that are resolved by I/O are
+resolved by Lwt in parallel.
+
+Meanwhile, OCaml code, including code creating and waiting on promises, runs in
+a single thread by default. This reduces the need for locks or other
+synchronization primitives. Code can be run in parallel on an opt-in basis."""
+flags: light-uninstall
+extra-files: ["lwt.install" "md5=9e723b3e98cb071d38898896ff0e9232"]
+url {
+  src: "https://github.com/ocsigen/lwt/archive/3.0.0.tar.gz"
+  checksum: "md5=6c45ce0035f627d0de0d3d185f2a1a7f"
+}

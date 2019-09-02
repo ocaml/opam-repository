@@ -1,0 +1,29 @@
+opam-version: "2.0"
+maintainer: "garrigue@math.nagoya-u.ac.jp"
+authors: "The GTK Toolkit"
+homepage: "https://developer.gnome.org/"
+bug-reports: "https://github.com/garrigue/lablgtk/issues"
+build: [["pkg-config" "--short-errors" "--print-errors" "--atleast-version" "3.18" "gtk+-3.0"]]
+depends: ["conf-pkg-config" {build}]
+depexts: [
+  ["libgtk-3-dev" "libexpat1-dev"] {os-distribution = "debian"}
+  ["libgtk-3-dev" "libexpat1-dev"] {os-distribution = "ubuntu"}
+  ["gtk" "expat"] {os-distribution = "homebrew" & os = "macos"}
+  ["gtk3-devel"] {os-distribution = "centos"}
+  ["gtk3-devel"] {os-distribution = "fedora"}
+  ["gtk3-devel"] {os-distribution = "ol"}
+  ["gtk+3.0-dev"] {os-distribution = "alpine"}
+  ["gtk3-devel"] {os-family = "suse"}
+]
+post-messages: [
+  "This package requires gtk+ 3.0 development packages installed on your system"
+    {failure}
+  """
+To solve pkg-config issues, you may need to do
+'export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig' and retry"""
+    {failure & os = "macos"}
+]
+synopsis: "Virtual package relying on GTK+ 3"
+description:
+  "This package can only install if GTK+ 3 is installed on the system."
+flags: conf

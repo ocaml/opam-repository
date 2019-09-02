@@ -1,0 +1,32 @@
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+authors: ["Francois Rouaix"]
+homepage: "https://github.com/ocaml/dbm"
+bug-reports: "https://github.com/ocaml/dbm/issues"
+dev-repo: "git+https://github.com/ocaml/dbm.git"
+license: "LGPL-v2 with OCaml linking exception"
+build: [
+  ["./configure"]
+  [make "all"]
+  [make "test"] {with-test}
+]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "conf-dbm"
+]
+install: [
+  ["mkdir" "-p" "%{lib}%/dbm"]
+  [make "install" "STUBLIBDIR=%{lib}%/stublibs" "LIBDIR=%{lib}%/dbm"]
+  ["cp" "META" "%{lib}%/dbm"]
+]
+remove: [
+  ["rm" "-f" "%{lib}%/stublibs/dllcamldbm.so"]
+  ["ocamlfind" "remove" "dbm"]
+]
+synopsis: "Binding to the NDBM/GDBM Unix \"databases\""
+flags: light-uninstall
+url {
+  src: "https://github.com/ocaml/dbm/archive/camldbm-1.2.tar.gz"
+  checksum: "md5=180133dd10b0b10dc47bdd8a6ab8feab"
+}

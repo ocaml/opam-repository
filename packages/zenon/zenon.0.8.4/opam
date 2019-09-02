@@ -1,0 +1,31 @@
+opam-version: "2.0"
+homepage: "http://zenon-prover.org/"
+dev-repo: "git+https://github.com/zenon-prover/zenon.git"
+maintainer: "Damien Doligez <damien.doligez@inria.fr>"
+authors: [ "R. Bonichon" "D. Delahaye" "D. Doligez" ]
+bug-reports: "https://github.com/zenon-prover/zenon/issues"
+depends: [
+  "ocaml" {>= "4.02.0"}
+]
+depopts: [
+  "coq" {< "8.9"}
+]
+build: [
+  ["./configure" "--prefix" "%{prefix}%" "--libdir" "%{zenon:lib}%"]
+  [make]
+]
+install: [[make "install"]]
+remove:  [
+  ["./configure" "--prefix" prefix "--libdir" zenon:lib]
+  [make "uninstall" "BIN_DIR=%{zenon:bin}%" "LIB_DIR=%{lib}%"]
+]
+synopsis: "An Extensible Automated Theorem Prover Producing Checkable Proofs"
+description: """
+Automated theorem prover for first order classical logic (with
+equality), based on the tableau method. Zenon handles first-order
+logic with equality. Its most important feature is that it outputs the
+proofs of the theorems, in Coq-checkable form."""
+url {
+  src: "https://github.com/zenon-prover/zenon/archive/0.8.4.tar.gz"
+  checksum: "md5=c66dde20620b57d5b721a2ecb27cba25"
+}

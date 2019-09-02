@@ -1,0 +1,25 @@
+opam-version: "2.0"
+maintainer: "armael@isomorphis.me"
+homepage: "https://github.com/systemd/systemd"
+doc: "https://www.freedesktop.org/software/systemd/man/libudev.html"
+bug-reports: "https://github.com/systemd/systemd/issues"
+dev-repo: "git+https://github.com/systemd/systemd.git"
+authors: [ "Kay Sievers" "Tom Gundersen" ]
+available: [ os = "linux" ]
+depends: ["conf-pkg-config" {build}]
+build: [
+  ["pkg-config" "libudev"]
+]
+depexts: [
+  ["libudev-dev"] {os-family = "debian"}
+  ["eudev-dev"] {os-distribution = "alpine"}
+  ["systemd-devel"] {os-distribution = "centos"}
+  ["systemd-devel"] {os-distribution = "fedora"}
+]
+post-messages: [
+  "This package requires libudev development packages installed on your system" {failure}
+]
+synopsis: "Virtual package relying on a libudev system installation"
+description:
+  "This package can only install if libudev is installed on the system."
+flags: conf

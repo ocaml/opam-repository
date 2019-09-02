@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "Executable markdown files"
+description: """
+`mdx` allows to execute code blocks inside markdow files.
+
+### Supported extensions
+
+#### Cram tests
+
+Codes blocks using `sh` are considered as cram tests:
+
+```sh
+  $ for i in `seq 1 3`; do echo $i; done
+  1
+  2
+  3
+```
+
+which can be executed with `mdx test <file.md>`
+
+#### OCaml code
+
+Code blocks using `ocaml` are considered either normal OCaml files
+or toplevel fragements"""
+maintainer: "Thomas Gazagnaire <thomas@gazagnaire.org>"
+authors: "Thomas Gazagnaire <thomas@gazagnaire.org"
+license: "ISC"
+homepage: "https://github.com/realworldocaml/mdx"
+doc: "https://realworldocaml.github.io/mdx/"
+bug-reports: "https://github.com/realworldocaml/mdx/issues"
+depends: [
+  "ocaml" {>= "4.06.0" & < "4.07.0"}
+  "dune"
+  "fmt"
+  "astring"
+  "logs" {< "0.6.3"}
+  "cmdliner"
+  "re" {>= "1.7.2"}
+  "ppx_tools"
+  "lwt" {with-test}
+]
+flags: light-uninstall
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name] {with-test}
+]
+dev-repo: "git+https://github.com/realworldocaml/mdx.git"
+url {
+  src:
+    "https://github.com/realworldocaml/mdx/releases/download/1.0.0/mdx-1.0.0.tbz"
+  checksum: "md5=0dd02ff985d2fb72261c346571f2944b"
+}

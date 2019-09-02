@@ -1,0 +1,60 @@
+opam-version: "2.0"
+maintainer: "simon.cruanes@inria.fr"
+authors: "Simon Cruanes"
+homepage: "https://github.com/c-cube/zipperposition"
+bug-reports: "https://github.com/c-cube/zipperposition/issues"
+tags: ["logic" "unification" "term" "superposition" "prover"]
+dev-repo: "git+https://github.com/c-cube/zipperposition.git"
+build: [
+  [
+    "./configure"
+    "--bindir"
+    "%{bin}%"
+    "--disable-tests"
+    "--disable-docs"
+    "--%{menhir+tip-parser:enable}%-parsers"
+    "--disable-hornet-prover"
+    "--enable-zipperposition-prover"
+    "--disable-solving"
+    "--disable-qcheck"
+    "--disable-tools"
+  ]
+  [make]
+]
+install: [make "install"]
+remove: [
+  ["ocamlfind" "remove" "logtk"]
+  ["ocamlfind" "remove" "libzipperposition"]
+  ["rm" "-f" "%{bin}%/zipperposition"]
+  ["rm" "-f" "%{bin}%/hornet"]
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "ocamlfind" {build}
+  "base-bytes"
+  "base-unix"
+  "zarith"
+  "containers" {>= "1.0" & < "2.0"}
+  "sequence" {>= "0.4" & < "1.0"}
+  "msat" {>= "0.5" & < "0.8" }
+  "menhir" {build}
+  "tip-parser" {< "0.4"}
+]
+depopts: [
+  "qcheck" {with-test}
+]
+conflicts: "logtk"
+synopsis:
+  "A fully automatic theorem prover for typed first-order and beyond."
+description: """
+Zipperposition is intended to be a superposition prover for full first
+order logic, plus some extensions (datatypes, recursive functions, arithmetic
+for integers and rationals, higher-order, induction).
+The accent is on flexibility, modularity and simplicity rather than
+performance, to allow quick experimenting on automated theorem proving. It
+generates TSTP traces or graphviz files for nice graphical display."""
+flags: light-uninstall
+url {
+  src: "https://github.com/c-cube/zipperposition/archive/1.2.tar.gz"
+  checksum: "md5=ef9803cfb67f6ed1fce23853030472f1"
+}

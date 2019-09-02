@@ -1,0 +1,29 @@
+From 5e30975c8bb5bb6ed279287c4b2ca2d00a220d3c Mon Sep 17 00:00:00 2001
+From: Gabriel Scherer <gabriel.scherer@gmail.com>
+Date: Sat, 25 Feb 2017 17:10:12 -0500
+Subject: [PATCH] Fix a non-generalized variable issue for 4.05 compatibility
+
+See https://github.com/ocaml/ocaml/pull/929
+
+opam-builder report:
+  http://opam.ocamlpro.com/builder/html/fury-puyo/fury-puyo.0.5/c867894506caedd7d7e8a3406dfc7df5
+---
+ IO.ml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/IO.ml b/IO.ml
+index 8f16926..8c1607d 100644
+--- a/IO.ml
++++ b/IO.ml
+@@ -317,7 +317,7 @@ module MakeReader(A: ACTION) = struct
+   let auto = ref KeyMap.empty
+   let pressed_keys = ref KeyMap.empty
+ 
+-  let action mapref key acc =
++  let action mapref key acc : A.t list =
+     try KeyMap.find key !mapref :: acc
+     with Not_found -> acc
+ 
+-- 
+2.9.3
+

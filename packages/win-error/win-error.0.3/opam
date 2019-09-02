@@ -1,0 +1,32 @@
+opam-version: "2.0"
+name: "win-error"
+maintainer: "dave@recoil.org"
+version: "0.3"
+authors: [ "David Scott" ]
+license: "ISC"
+homepage: "https://github.com/djs55/ocaml-win-error"
+dev-repo: "git+https://github.com/djs55/ocaml-win-error.git"
+bug-reports: "https://github.com/djs55/ocaml-win-error/issues"
+
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "subst" "-p" name] {with-test & pinned}
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ocaml" {>= "3.12.1"}
+  "base-bytes"
+  "base-unix"
+  "jbuilder" {build & >= "1.0+beta10"}
+]
+synopsis: "Windows system error codes"
+description: """
+If your application is likely to run on Windows, simply replace uses of
+`Unix.error_message` with `Win_error.error_message` for enhanced error
+reporting. Note this code is platform-agnostic so can be linked into Unix
+applications too."""
+url {
+  src: "https://github.com/djs55/ocaml-win-error/archive/0.3.tar.gz"
+  checksum: "md5=7f3db92cc61ebc5373c4c40d9345961a"
+}

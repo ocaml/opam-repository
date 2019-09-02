@@ -1,0 +1,30 @@
+opam-version: "2.0"
+name: "bap-dead-code-elimination"
+version: "1.3.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure" "--prefix=%{prefix}%" "--enable-dead-code-elimination"]
+  [make]
+]
+install: [[make "install"]]
+remove: [["ocamlfind" "remove" "bap-plugin-dead_code_elimination"]
+         ["bapbundle" "remove" "dead_code_elimination.plugin"]]
+depends: [
+  "ocaml"
+  "bap-std" {= "1.3.0"}
+]
+synopsis: "A sound analysis that will remove all unused code"
+description: """
+An pass that conservatively removes dead code. The removed dead code
+is usually produced by a lifter, though it might be possible that a
+binary indeed contains a dead code. The algorithm doesn't remove
+variables that are stored in memory, only registers are considered."""
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v1.3.0.tar.gz"
+  checksum: "md5=8df8c0b2c56abd082dbb994b2359e4c4"
+}

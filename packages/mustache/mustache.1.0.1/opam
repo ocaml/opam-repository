@@ -1,25 +1,24 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "rudi.grinberg@gmail.com"
 authors: "Rudi Grinberg"
 homepage: "https://github.com/rgrinberg/ocaml-mustache"
 bug-reports: "https://github.com/rgrinberg/ocaml-mustache/issues"
 license: "MIT"
-dev-repo: "https://github.com/rgrinberg/ocaml-mustache.git"
+dev-repo: "git+https://github.com/rgrinberg/ocaml-mustache.git"
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure"]
   ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "mustache"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "oasis" {build & >= "0.4.0"}
   "ezjsonm" {>= "0.4.0"}
@@ -27,4 +26,10 @@ depends: [
   "re"
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Mustache logic-less templates in OCaml"
+description: "Manual for mustache: http://mustache.github.io/mustache.5.html"
+flags: light-uninstall
+url {
+  src: "https://github.com/rgrinberg/ocaml-mustache/archive/v1.0.1.tar.gz"
+  checksum: "md5=f8363183b1ebc46a9d6a0c998814d7be"
+}

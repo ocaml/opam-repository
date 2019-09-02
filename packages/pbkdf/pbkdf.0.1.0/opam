@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Alfredo Beaumont <alfredo.beaumont@gmail.com>"
 authors: [
   "Alfredo Beaumont <alfredo.beaumont@gmail.com>"
@@ -7,32 +7,40 @@ authors: [
 homepage: "https://github.com/abeaumont/ocaml-pbkdf"
 bug-reports: "https://github.com/abeaumont/ocaml-pbkdf/issues"
 license: "BSD2"
-dev-repo: "https://github.com/abeaumont/ocaml-pbkdf.git"
+dev-repo: "git+https://github.com/abeaumont/ocaml-pbkdf.git"
 build: [
-  "ocaml"
-  "pkg/build.ml"
-  "native=%{ocaml-native}%"
-  "native-dynlink=%{ocaml-native-dynlink}%"
-  "alcotest=false"
-]
-build-test: [
   [
     "ocaml"
     "pkg/build.ml"
-    "native=%{ocaml-native}%"
-    "native-dynlink=%{ocaml-native-dynlink}%"
-    "alcotest=true"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+    "alcotest=false"
   ]
+  [
+    "ocaml"
+    "pkg/build.ml"
+    "native=%{ocaml:native}%"
+    "native-dynlink=%{ocaml:native-dynlink}%"
+    "alcotest=true"
+  ] {with-test}
   [
     "sh"
     "-exc"
     "if test -f ./pbkdf_tests.native; then ./pbkdf_tests.native -v; else ./pbkdf_tests.byte -v; fi"
-  ]
+  ] {with-test}
 ]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "cstruct" {>= "1.7.0"}
   "nocrypto" {>= "0.5.0"}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "ocamlbuild" {build}
 ]
+synopsis: "Password based key derivation functions from PKCS#5, RFC 2898"
+description:
+  "An implementation of PBKDF 1 and 2 as defined by PKCS#5 (RFC 2898) in OCaml, using nocrypto."
+url {
+  src: "https://github.com/abeaumont/ocaml-pbkdf/archive/0.1.0.tar.gz"
+  checksum: "md5=a59b1ec460f25209ea5259ded6a18fbe"
+}

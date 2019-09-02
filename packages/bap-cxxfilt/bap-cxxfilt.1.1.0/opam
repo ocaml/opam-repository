@@ -1,0 +1,34 @@
+opam-version: "2.0"
+name: "bap-cxxfilt"
+version: "1.1.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure" "--prefix=%{prefix}%"
+                 "--enable-cxxfilt"
+                 "--cxxfilt-targets=%{conf-binutils:targets}%"
+                 "--cxxfilt-path=%{conf-binutils:cxxfilt}%"
+                 ]
+  [make]
+]
+install: [[make "install"]]
+remove: [
+        ["ocamlfind" "remove" "bap-plugin-cxxfilt"]
+        ["bapbundle" "remove" "cxxfilt.plugin"]
+
+]
+depends: [
+  "ocaml"
+  "bap-std" {= "1.1.0"}
+  "bap-demangle" {= "1.1.0"}
+  "conf-binutils" {>= "0.2"}
+]
+synopsis: "A demangler that relies on a c++filt utility"
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v1.1.0.tar.gz"
+  checksum: "md5=92e7f703d58ce1835bfeeed9ec523242"
+}

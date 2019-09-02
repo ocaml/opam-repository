@@ -1,0 +1,159 @@
+opam-version: "2.0"
+maintainer:   "KC Sivaramakrishnan <sk826@cl.cam.ac.uk>"
+authors:      ["KC Sivaramakrishnan" "Thomas Gazagnaire" "Benjamin Farinier"]
+homepage:     "https://github.com/kayceesrk/ezirmin"
+doc:          "https://kayceesrk.github.io/ezirmin/"
+license:      "ISC"
+dev-repo: "git+https://github.com/kayceesrk/ezirmin.git"
+bug-reports:  "https://github.com/kayceesrk/ezirmin/issues"
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "lwt"
+  "git-unix"
+  "irmin" {>= "0.12.0" & < "1.0.0"}
+  "irmin-watcher"
+  "ptime"
+  "ppx_jane" {< "v0.13"}
+]
+build: [
+  "ocaml" "pkg/pkg.ml" "build"
+          "--pinned" pinned ]
+synopsis: "An easy interface on top of the Irmin library."
+description: """
+Ezirmin is an easy interface on top of the
+[Irmin](https://github.com/mirage/irmin) library. It comes with set of mergeable
+datatypes, instantiated to specific backends to quickly get going. For
+example,
+
+```ocaml
+$ utop
+utop # #require "ezirmin";;
+utop # module M = Ezirmin.FS_queue(Tc.String);; (* Mergeable queue of strings *)
+utop # open M;;
+utop # open Lwt.Infix;;
+utop # let m = Lwt_main.run (init ~root:"/tmp/ezirminq" ~bare:true () >>= master);;
+val m : branch = <abstr>
+utop # push m ["home"; "todo"] "buy milk";;
+- : unit = ()
+utop # push m ["work"; "todo"] "publish ezirmin";;
+- : unit = ()
+```
+
+This mergeable queue is saved in the git repository at `/tmp/ezirminq`. In
+another terminal,
+
+```ocaml
+$ utop
+utop # #require "ezirmin";;
+utop # module M = Ezirmin.FS_queue(Tc.String);; (* Mergeable queue of strings *)
+utop # open M;;
+utop # open Lwt.Infix;;
+utop # let m = Lwt_main.run (init ~root:"/tmp/ezirminq" ~bare:true () >>= master);;
+val m : branch = <abstr>
+utop # pop m ["home"; "todo"];;
+- : string option = Some "buy milk"
+```
+
+For concurrency control, use branches. In the first terminal,
+
+```ocaml
+utop # let wip_t1 = Lwt_main.run @@ clone_force m "wip_t1";;
+utop # push wip_t1 ["home"; "todo"] "walk dog";;
+- : unit = ()
+utop # push wip_t1 ["home"; "todo"] "take out trash";;
+- : unit = ()
+```
+
+The changes are not visible until the branches are merged.
+
+```ocaml
+utop # to_list m ["home"; "todo"];;
+- : string list = []
+utop # merge wip_t1 ~into:m;;
+- : unit = ()
+utop # to_list m ["home"; "todo"];;
+- : string list = ["walk dog"; "take out trash"]
+```
+### Working with history
+
+In addition to the data structures being mergeable, they are also persistent. In
+particular, every object stored in Irmin has complete provenance. Ezimrin
+simplifies working with object history.
+
+```ocaml
+let run = Lwt_main.run
+let repo = run @@ init ()
+let path = ["Books"; "Ovine Supply Logistics"]
+let push_msg = push m ~path;;
+
+run begin
+  push_msg "Baa" >>= fun () ->
+  push_msg "Baa" >>= fun () ->
+  push_msg "Black" >>= fun () ->
+  push_msg "Camel"
+end;;
+
+run @@ to_list m path;;
+- : string list = ["Baa"; "Baa"; "Black"; "Camel"]
+```
+
+Clearly this is wrong. Let's fix this by reverting to earlier version:
+
+```ocaml
+let m_1::_ = run @@ predecessors repo m;; (** HEAD~1 version *)
+run @@ to_list m_1 path;;
+- : string list = ["Baa"; "Baa"; "Black"]
+run @@ update_branch m ~set:m_1;;
+run @@ to_list m path;;
+- : string list = ["Baa"; "Baa"; "Black"]
+```
+
+Now that we've undone the error, we can do the right thing.
+
+```ocaml
+run @@ push_msg "Sheep";;
+run @@ to_list m path;;
+- : string list = ["Baa"; "Baa"; "Black"; "Sheep"]
+```
+
+### What's in the box
+
+The mergeable datatypes currently available are:
+
+* [Counter](http://kcsrk.info/ezirmin/Ezirmin.Blob_log.html): A counter with
+  increment and decrement operations.
+* [Blog_log](http://kcsrk.info/ezirmin/Ezirmin.Blob_log.html): An append-only
+  log stored as blobs. Append is an `O(n)` operation where `n` is the size
+  of the log.
+* [Log](http://kcsrk.info/ezirmin/Ezirmin.Log.html): An append-only
+  write-optimized log with support for paginated reads. Append is an `O(1)`
+  operation
+* [Lww_register](http://kcsrk.info/ezirmin/Ezirmin.Lww_register.html):
+  Last-writer-wins register.
+* [Queue](http://kcsrk.info/ezirmin/Ezirmin.Queue.html): An efficient queue with
+  `O(1)` push and pop operations.
+* [Rope](http://kcsrk.info/ezirmin/Ezirmin.Rope.html): An efficient data
+  structure for storing and manipulating int-indexed sequence of contents.
+  Requires a mergeable content implementation.
+* [Rope_string](http://kcsrk.info/ezirmin/Ezirmin.Rope_string.html): A rope
+  specialized to strings with intent-preserving merge implemented using
+  operational transformation.
+
+Since these datatypes are defined such that a merge is always possible and that
+merges in different orders converge, they are
+[CRDTs](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type).
+
+The backends available are:
+
+* Git file system backend
+* Git in-memory backend
+
+Ezirmin is distributed under the ISC license."""
+url {
+  src:
+    "https://github.com/kayceesrk/ezirmin/releases/download/0.2.1/ezirmin-0.2.1.tbz"
+  checksum: "md5=4a9af1f0f12775697bdf404340c4ca11"
+}

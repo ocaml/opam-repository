@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+authors: ["Francois BERENGER"]
+homepage: "https://github.com/UnixJunkie/orsvm-e1071"
+bug-reports: "https://github.com/UnixJunkie/orsvm-e1071/issues"
+dev-repo: "git+https://github.com/UnixJunkie/orsvm-e1071.git"
+license: "LGPL + linking exception"
+build: [
+  ["R" "CMD" "BATCH" "install_e1071.r"]
+  ["R" "CMD" "BATCH" "install_svmpath.r"]
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml"
+  "jbuilder" {build}
+  "conf-r"
+  "dolog" {with-test}
+  "batteries" {with-test}
+  "cpm" {with-test}
+  "minicli" {with-test}
+  "parmap" {with-test}
+]
+post-messages: [
+"Please interact with R to install needed things in user-space:
+R
+install.packages('e1071', repos='http://cran.r-project.org')
+install.packages('svmpath', repos='http://cran.r-project.org')" {failure}
+]
+synopsis: "OCaml wrapper to SVM R packages e1071 and svmpath."
+description: """
+Some OCaml functions to drive the RBF and linear SVMs of the R e1071 package
+and the linear SVM of the svmpath R package.
+The svmpath package allows to efficiently compute the list of cost
+values (lambda = 1/C) that need to be tested in order to find the optimal
+lambda.
+This package really fires up and talks to an R interpreter.
+The Svm module can handle dense or sparse data matrices.
+The Svmpath module only handles dense matrices."""
+extra-files: [
+  ["install_svmpath.r" "md5=5bcfd487963a2558353200750b4bb62f"]
+  ["install_e1071.r" "md5=e4ad6596051f390f3542d9058869c458"]
+]
+url {
+  src: "https://github.com/UnixJunkie/orsvm-e1071/archive/v3.0.0.tar.gz"
+  checksum: "md5=0c02dc297f0d039b781a749bcc4ec022"
+}

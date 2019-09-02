@@ -1,21 +1,26 @@
-opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
 homepage: "https://github.com/pdhborges/ocaml-zmq"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
-remove: [["ocamlfind" "remove" "ZMQ"]]
 depends: [
-  "ocamlfind"
+  "ocaml"
+  "ocamlfind" {build}
   "ounit"
-  "uint"
+  "uint" {< "2.0.0"}
+  "base-unsafe-string"
 ]
 depexts: [
-  [["debian"] ["libzmq3-dev"]]
-  [["ubuntu"] ["libzmq3-dev"]]
-  [["centos"] ["zeromq-devel"]]
-  [["rhel"] ["zeromq-devel"]]
+  ["libzmq3-dev"] {os-family = "debian"}
+  ["zeromq-devel"] {os-distribution = "centos"}
+  ["zeromq-devel"] {os-distribution = "rhel"}
 ]
 conflicts: ["zmq"]
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "OCaml bindings for ZMQ 2.1"
+url {
+  src: "https://github.com/issuu/ocaml-zmq/tarball/67586823edd"
+  checksum: "md5=32db494bfaaeb15ee536644090ee0b2b"
+}

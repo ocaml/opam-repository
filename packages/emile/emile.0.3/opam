@@ -1,0 +1,84 @@
+opam-version: "2.0"
+name:         "emile"
+maintainer:   "Romain Calascibetta <romain.calascibetta@gmail.com>"
+authors:      "Romain Calascibetta <romain.calascibetta@gmail.com>"
+homepage:     "https://github.com/dinosaure/emile"
+bug-reports:  "https://github.com/dinosaure/emile/issues"
+dev-repo: "git+https://github.com/dinosaure/emile.git"
+doc:          "https://dinosaure.github.io/emile/"
+license:      "MIT"
+
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "jbuilder" {build & >= "1.0+beta9"}
+  "angstrom" {>= "0.9.0"}
+  "ipaddr" {>= "2.7.0"}
+  "uutf"
+  "fmt"
+  "alcotest" {with-test}
+]
+synopsis: "[Images](https://youtube.com/watch?v=S70NaQqAfaw))"
+description: """
+[![Build Status](https://travis-ci.org/dinosaure/emile.svg?branch=master)](https://travis-ci.org/dinosure/emile)
+![MirageOS](https://img.shields.io/badge/MirageOS-%F0%9F%90%AB-red.svg)
+
+Emile is a library to parse an e-mail address in OCaml. This project is an
+extraction of [MrMime](https://github.com/oklm-wsh/MrMime.git) - but we use
+[Angstrom](https://github.com/inhabitedtype/angstrom.git) instead an internal
+decoder.
+
+This implementation follow some RFCs:
+- RFC 822
+- RFC 2822
+- RFC 5321 (domain part)
+- RFC 5322
+- RFC 6532
+
+We handle UTF-8 (RFC 6532), domain defined on the SMTP protocol (RFC 5321), and
+general e-mail address purpose (RFC 822, RFC 2822, RFC 5322) including
+_folding-whitespace_.
+
+The last means we can parse something like:
+
+```
+A Group(Some people)
+   :Chris Jones <c@(Chris's host.)public.example>,
+     joe@example.org,
+ John <jdoe@one.test> (my dear friend); (the end of the group)"
+```
+
+For a general purpose, it's not needed and is close e-mail purpose.
+
+Then, for domain part (explained on RFC 6532 - SMTP protocol), we handle this
+kind of domain:
+
+```
+first.last@[12.34.56.78]
+first.last@[IPv6:1111:2222:3333::4444:12.34.56.78]
+```
+
+The parser of IPv* is done by [Ipaddr](https://github.com/mirage/ipaddr.git).
+As a old specification, we handle multiple-domains like:
+ 
+```
+<@a.com,b.com:john@doe.com>
+```
+
+Obviously, we handle (nested) comments:
+
+```
+a(a(b(c)d(e(f))g)h(i)j)@iana.org
+```
+
+All parsers are binded with a comment which explain where you can find the ABNF
+description and some notes about implementation. All was check by hand."""
+url {
+  src:
+    "https://github.com/dinosaure/emile/releases/download/v0.3/emile-0.3.tbz"
+  checksum: "md5=57c23427a11e5ac5a2e37f9b21477b0b"
+}

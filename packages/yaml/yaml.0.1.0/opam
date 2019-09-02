@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "Anil Madhavapeddy <anil@recoil.org>"
+authors: ["Anil Madhavapeddy <anil@recoil.org>"]
+homepage: "https://github.com/avsm/ocaml-yaml"
+doc: "http://anil-code.github.io/ocaml-yaml"
+license: "ISC"
+dev-repo: "git+https://github.com/avsm/ocaml-yaml.git"
+bug-reports: "https://github.com/avsm/ocaml-yaml/issues"
+tags: ["org:mirage" "org:ocamllabs"]
+available: arch != "ppc64"
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "jbuilder" {build & >= "1.0+beta10"}
+  "ctypes" {>= "0.12.0"}
+  "ppx_sexp_conv" {>= "v0.9.0" & < "v0.11.0"}
+  "rresult"
+  "fmt"
+  "logs"
+  "alcotest" {with-test}
+  "ezjsonm" {with-test}
+  "bos" {with-test}
+]
+build: [
+  ["jbuilder" "subst" "-p" name "--name" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest"] {with-test}
+]
+conflicts: [
+  "dune"
+]
+synopsis: "Parse and generate YAML 1.1 files"
+description: """
+This is an OCaml library to parse and generate the YAML file
+format.  It is intended to interoperable with the [Ezjsonm](https://github.com/mirage/ezjsonm)
+JSON handling library, if the simple common subset of Yaml 
+is used.  Anchors and other advanced Yaml features are not
+implemented in the JSON compatibility layer."""
+url {
+  src:
+    "https://github.com/avsm/ocaml-yaml/releases/download/v0.1.0/yaml-0.1.0.tbz"
+  checksum: "md5=f7991364f77ce62e7cfd0d5923e27d83"
+}

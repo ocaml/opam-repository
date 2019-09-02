@@ -1,0 +1,71 @@
+opam-version: "2.0"
+maintainer:   "dave@recoil.org"
+authors:      [ "David Scott" "David Sheets" "Thomas Leonard" ]
+license:      "ISC"
+homepage:     "https://github.com/mirage/ocaml-9p"
+dev-repo: "git+https://github.com/mirage/ocaml-9p.git"
+bug-reports:  "https://github.com/mirage/ocaml-9p/issues"
+doc:          "https://mirage.github.io/ocaml-9p/"
+
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "jbuilder" {build & >= "1.0+beta7"}
+  "ppx_deriving"
+  "ppx_sexp_conv" {>= "v0.9.0" & < "v0.13"}
+  "ppx_tools"
+  "ppx_cstruct" {< "3.4.0"}
+  "base-bytes"
+  "cstruct" {>= "1.9.0" & < "4.0.0"}
+  "cstruct-lwt" {< "3.4.0"}
+  "sexplib" {> "113.00.00" & < "v0.13"}
+  "result"
+  "rresult"
+  "mirage-flow-lwt"
+  "mirage-kv-lwt" {< "2.0.0"}
+  "mirage-channel-lwt"
+  "lwt" {>= "3.0.0"}
+  "base-unix"
+  "cmdliner"
+  "astring"
+  "named-pipe" {>= "0.4.0"}
+  "fmt"
+  "logs" {>= "0.5.0"}
+  "win-error"
+  "alcotest" {with-test & >= "0.4.0"}
+  "prometheus" {with-test}
+]
+synopsis: "An implementation of the 9P protocol in pure OCaml"
+description: """
+[![Build Status](https://travis-ci.org/mirage/ocaml-9p.png?branch=master)](https://travis-ci.org/mirage/ocaml-9p) [![Coverage Status](https://coveralls.io/repos/mirage/ocaml-9p/badge.png?branch=master)](https://coveralls.io/r/mirage/ocaml-9p?branch=master)
+
+ocaml-9p is an implementation of the 9P protocol, written in
+a Mirage-friendly style.
+
+Please read the [API documentation](https://mirage.github.io/ocaml-9p).
+
+Example of the CLI example program:
+```
+o9p ls --username vagrant   /var
+drwxr-xr-x ? root root 4096 Feb 2  2015 lib
+drwxr-xr-x ? root root 4096 Mar 15 2015 cache
+-rwxrwxrwx ? root root 9    May 10 2014 lock
+drwxrwxrwx ? root root 4096 Jul 6  2015 tmp
+drwxr-xr-x ? root root 4096 May 11 2014 spool
+drwxrwxr-x ? root sshd 4096 Sep 28 2015 log
+drwxr-xr-x ? root root 4096 Sep 21 2015 backups
+drwxrwxr-x ? root mail 4096 Apr 16 2014 mail
+drwxr-xr-x ? root root 4096 Apr 16 2014 opt
+drwxrwxr-x ? root 50   4096 Apr 10 2014 local
+-rwxrwxrwx ? root root 4    May 10 2014 run
+```
+
+This library supports the [9P2000.u extension](http://ericvh.github.io/9p-rfc/rfc9p2000.u.html)"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-9p/releases/download/v0.11.1/protocol-9p-0.11.1.tbz"
+  checksum: "md5=577a7fddf019b59dc7f1808de6e51987"
+}

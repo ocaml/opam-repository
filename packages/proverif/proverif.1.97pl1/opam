@@ -1,0 +1,54 @@
+opam-version: "2.0"
+maintainer:
+  "Bruno Blanchet <bruno.blanchet@inria.fr>, Marc Sylvestre <marc.sylvestre@inria.fr>"
+authors:
+  "Bruno Blanchet <bruno.blanchet@inria.fr>, Vincent Cheval <vincent.cheval@icloud.com>, Ben Smyth <research@bensmyth.com>, Marc Sylvestre <marc.sylvestre@inria.fr>"
+homepage: "http://proverif.inria.fr/"
+bug-reports: "bruno.blanchet@inria.fr"
+license: "GNU General Public License"
+build: [
+  ["./build" "ocb.byte"] {!ocaml:native}
+  ["./build" "ocb.native"] {ocaml:native}
+]
+install: [ "./build" "install" "%{prefix}%" ]
+
+remove: [
+  [ "rm" "-rf"
+      "%{prefix}%/doc/proverif"
+      "%{prefix}%/bin/proverif"
+      "%{prefix}%/bin/proveriftotex"
+      "%{prefix}%/bin/proverif.exe"
+      "%{prefix}%/bin/proveriftotex.exe"
+  ]
+]
+depends: [
+  "ocaml" {< "4.06.0"}
+  "ocamlfind"
+  "ocamlbuild"
+]
+depexts: [
+  [[] ["graphviz"] ]
+]
+synopsis: "ProVerif: Cryptographic protocol verifier in the symbolic model"
+description: """
+ProVerif is an automatic cryptographic protocol verifier, in the symbolic model (so called Dolev-Yao model). This protocol verifier is based on a representation of the protocol by Horn clauses. Its main features are:
+
+- It can handle many different cryptographic primitives, including shared- and public-key cryptography (encryption and signatures), hash functions, and Diffie-Hellman key agreements, specified both as rewrite rules or as equations.
+
+- It can handle an unbounded number of sessions of the protocol (even in parallel) and an unbounded message space. This result has been obtained thanks to some well-chosen approximations. This means that the verifier can give false attacks, but if it claims that the protocol satisfies some property, then the property is actually satisfied.
+
+ProVerif can prove the following properties:
+
+- secrecy (the adversary cannot obtain the secret)
+- authentication and more generally correspondence
+- strong secrecy (the adversary does not see the difference when the value of the secret changes)
+- equivalences between processes that differ only by terms
+
+A survey of ProVerif with references to other papers is available at
+
+Bruno Blanchet. Modeling and Verifying Security Protocols with the Applied Pi Calculus and ProVerif. Foundations and Trends in Privacy and Security, 1(1-2):1-135, October 2016. http://dx.doi.org/10.1561/3300000004"""
+flags: light-uninstall
+url {
+  src: "http://proverif.inria.fr/proverif1.97pl1.tar.gz"
+  checksum: "md5=d41ad700772545c8a5d618c7889a1500"
+}

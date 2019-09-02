@@ -1,0 +1,35 @@
+opam-version: "2.0"
+synopsis:
+  "A counter-example finder for higher-order logic, designed to be used from various proof assistants"
+maintainer: "simon.cruanes.2007@m4x.org"
+authors: ["Simon Cruanes" "Jasmin Blanchette"]
+homepage: "https://github.com/nunchaku-inria/nunchaku/"
+bug-reports: "https://github.com/nunchaku-inria/nunchaku/issues"
+depends: [
+  "jbuilder" {build}
+  "containers" {>= "1.0"}
+  "menhir" {build & <= "20181026"}
+  "sequence" {>= "1.0"}
+  "base-unix"
+  "base-threads"
+  "num"
+  "qtest" {with-test}
+  "qcheck" {with-test}
+  "ounit" {with-test}
+  "odoc" {with-doc}
+  "ocaml" {>= "4.02.0"}
+]
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["strip" "_build/default/src/main/nunchaku.exe"]
+  ["jbuilder" "build" "@doc" "-p" name] {with-doc}
+  ["jbuilder" "runtest" "-j" jobs "-p" name] {with-test}
+]
+dev-repo: "git+https://github.com/nunchaku-inria/nunchaku.git"
+url {
+  src: "https://github.com/nunchaku-inria/nunchaku/archive/0.6.tar.gz"
+  checksum: [
+    "md5=dbe85810b12052207e1b27038be72b8d"
+    "sha512=f7d009d2bda679a127fca8a6f0432b9188f4622427003aa3600913369af364a64b72547f2002884dff4c89922a6b7209a80947080cbdb2fec81b9f8e65a1bd3f"
+  ]
+}

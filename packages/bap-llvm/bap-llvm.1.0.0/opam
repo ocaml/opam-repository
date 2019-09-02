@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "bap-llvm"
 version: "1.0.0"
 maintainer: "Ivan Gotovchits <ivg@ieee.org>"
@@ -11,10 +11,8 @@ build: [
   ["./configure"
   "--prefix=%{prefix}%"
   "--with-cxx=`which clang++`"
-  "--with-llvm-version=%{conf-bap-llvm:version}%" {conf-bap-llvm:installed}
-  "--with-llvm-version=%{conf-llvm:version}%"     {conf-llvm:installed}
-  "--with-llvm-config=%{conf-bap-llvm:config}%" {conf-bap-llvm:installed}
-  "--with-llvm-config=%{conf-llvm:config}%"     {conf-llvm:installed}
+  "--with-llvm-version=%{conf-bap-llvm:package-version}%"
+  "--with-llvm-config=%{conf-bap-llvm:config}%"
   "--enable-llvm"]
   [make]
 ]
@@ -25,17 +23,24 @@ install: [
 
 remove: [
   ["ocamlfind" "remove" "bap-plugin-llvm"]
+  ["bapbundle" "remove" "llvm.plugin"]
 ]
 
 depends: [
-    "bap-std"
-    "cmdliner"
-    ("conf-bap-llvm" | "conf-llvm")
-    "conf-env-travis"
+  "ocaml" {>= "4.02.3"}
+  "bap-std" {= "1.0.0"}
+  "cmdliner"
+  "conf-bap-llvm"
+  "conf-env-travis"
 ]
-
 depexts: [
-    [["ubuntu"] ["clang"]]
+  ["clang"] {os-family = "debian"}
 ]
-
-available: [ocaml-version >= "4.02.3"]
+synopsis: "BAP LLVM backend"
+description:
+  "Provides a loader and a disassembler, based on LLVM-MC library."
+extra-files: ["detect.travis" "md5=00e7b28719062d550dcd7813becf7396"]
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v1.0.0.tar.gz"
+  checksum: "md5=07dce66dd871e448652d8885283c6631"
+}

@@ -1,0 +1,62 @@
+opam-version: "2.0"
+maintainer: "simon.cruanes@inria.fr"
+authors: "Simon Cruanes"
+homepage: "https://github.com/c-cube/ocaml-containers/"
+bug-reports: "https://github.com/c-cube/ocaml-containers/issues/"
+doc: "http://cedeela.fr/~simon/software/containers/"
+tags: ["stdlib" "containers" "iterators" "list" "heap" "queue"]
+dev-repo: "git+https://github.com/c-cube/ocaml-containers.git"
+build: [
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--disable-bench"
+    "--disable-tests"
+    "--%{base-unix:enable}%-unix"
+    "--enable-docs"
+  ]
+  [make "build"]
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
+]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "containers"]
+depends: [
+  "ocaml" {>= "4.01.0" & < "4.08.0"}
+  "ocamlfind" {build}
+  "base-bytes"
+  "result"
+  "ocamlbuild" {build}
+  "qtest" {with-test}
+]
+depopts: [
+  "base-unix"
+  "base-threads"
+]
+conflicts: [
+  "sequence" {< "0.5"}
+]
+post-messages:
+  "Release with a few new functions which closes many issues and provides better retro-compatibility with the stdlib.
+
+changelog: https://github.com/c-cube/ocaml-containers/blob/1.5/CHANGELOG.adoc
+  "
+synopsis:
+  "A modular, clean and powerful extension of the OCaml standard library."
+description: """
+Containers is an extension of OCaml's standard library (under BSD license)
+focused on data structures, combinators and iterators, without dependencies on
+unix, str or num. Every module is independent and is prefixed with 'CC' in the
+global namespace. Some modules extend the stdlib (e.g. CCList provides safe
+map/fold_right/append, and additional functions on lists).
+Alternatively, `open Containers` will bring enhanced versions of the standard
+modules into scope.
+
+It also features sub-libraries for dealing with threads, S-expressions,
+and the intricacies of unix."""
+flags: light-uninstall
+url {
+  src: "https://github.com/c-cube/ocaml-containers/archive/1.5.2.tar.gz"
+  checksum: "md5=e0ed5c0f86f7a178a8e2e28c1740f0a3"
+}

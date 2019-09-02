@@ -1,0 +1,35 @@
+opam-version: "2.0"
+maintainer: "Thomas Leonard <talex5@gmail.com>"
+authors: "Thomas Leonard <talex5@gmail.com>"
+homepage: "https://github.com/mirage/mirage-profile"
+dev-repo: "git+https://github.com/mirage/mirage-profile.git"
+bug-reports: "https://github.com/mirage/mirage-profile/issues"
+doc: "https://mirage.github.io/mirage-profile"
+license: "BSD-2-clause"
+
+build: [
+  [ "jbuilder" "subst" "-p" name] {pinned}
+  [ "jbuilder" "build" "-p" name "-j" jobs ]
+]
+
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "jbuilder" {build & >= "1.0+beta9"}
+  "cstruct" {>= "3.0.0"}
+  "ppx_cstruct"
+  "ocplib-endian"
+  "lwt"
+]
+synopsis: "Collect runtime profiling information in CTF format"
+description: """
+This library can be used to trace execution of OCaml/Lwt programs (such as Mirage unikernels) at the level of Lwt threads.
+The traces can be viewed using JavaScript or GTK viewers provided by [mirage-trace-viewer][] or processed by tools supporting the [Common Trace Format (CTF)][ctf].
+Some example traces can be found in the blog post [Visualising an Asynchronous Monad](http://roscidus.com/blog/blog/2014/10/27/visualising-an-asynchronous-monad/).
+
+Libraries can use the functions mirage-profile provides to annotate the traces with extra information.
+When compiled against a normal version of Lwt, mirage-profile's functions are null-ops (or call the underlying untraced operation, as appropriate) and OCaml's cross-module inlining will optimise these calls away, meaning there should be no overhead in the non-profiling case."""
+url {
+  src:
+    "https://github.com/mirage/mirage-profile/releases/download/v0.8.2/mirage-profile-0.8.2.tbz"
+  checksum: "md5=7f094bcb0b81746a712326ea583b2e76"
+}

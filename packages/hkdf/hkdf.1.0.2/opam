@@ -1,28 +1,36 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name:         "hkdf"
 homepage:     "https://github.com/hannesm/ocaml-hkdf"
-dev-repo:     "https://github.com/hannesm/ocaml-hkdf.git"
+dev-repo: "git+https://github.com/hannesm/ocaml-hkdf.git"
 bug-reports:  "https://github.com/hannesm/ocaml-hkdf/issues"
 doc:          "https://hannesm.github.io/ocaml-hkdf/doc"
-author:       ["Hannes Mehnert <hannes@mehnert.org>"]
 maintainer:   ["Hannes Mehnert <hannes@mehnert.org>"]
 license:      "BSD2"
 
 
 build: [
   ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
-]
-build-test: [
   ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
-  ["ocaml" "pkg/pkg.ml" "test"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
-
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
   "cstruct" {>= "1.6.0"}
   "nocrypto" {>= "0.5.0"}
-  "alcotest" {test}
+  "alcotest" {with-test}
 ]
-available: [ ocaml-version >= "4.01.0" ]
+synopsis: "Extract-and-Expand Key Derivation Function (HKDF)"
+description: """
+An implementation of [HKDF](https://tools.ietf.org/html/rfc5869) using
+[nocrypto](https://github.com/mirleft/ocaml-nocrypto), including test cases from
+the RFC."""
+authors: "Hannes Mehnert <hannes@mehnert.org>"
+url {
+  src:
+    "https://github.com/hannesm/ocaml-hkdf/releases/download/1.0.2/hkdf-1.0.2.tbz"
+  checksum: "md5=91627b3d546eea255a42faf98d82dddc"
+}

@@ -1,0 +1,32 @@
+opam-version: "2.0"
+name: "bap-dead-code-elimination"
+version: "1.4.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure" "--prefix=%{prefix}%" "--enable-dead-code-elimination"]
+  [make]
+]
+install: [[make "install"]]
+remove: [["ocamlfind" "remove" "bap-plugin-dead_code_elimination"]
+         ["bapbundle" "remove" "dead_code_elimination.plugin"]]
+depends: [
+  "ocaml" {>= "4.03" & < "4.06"}
+  "bap-std" {= "1.4.0"}
+]
+synopsis: "A BAP plugin that removes dead IR code"
+description: """
+An pass that conservatively removes dead code in the generated IR. The
+removed dead code is usually produced by a lifter, though it might be
+possible that a binary indeed contains a dead code. The algorithm
+doesn't remove variables that are stored in memory, only registers are
+considered."""
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v1.4.0.tar.gz"
+  checksum: "md5=b7785715c24645e8e69a8091427d090e"
+  mirrors: "https://mirrors.aegis.cylab.cmu.edu/bap/1.4.0/v1.4.0.tar.gz"
+}

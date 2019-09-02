@@ -1,0 +1,62 @@
+opam-version: "2.0"
+maintainer: "sheets@alum.mit.edu"
+authors: [
+  "Anil Madhavapeddy"
+  "David Sheets"
+  "Andy Ray"
+  "Jeff Hammerbacher"
+  "Thomas Gazagnaire"
+  "Rudi Grinberg"
+  "Qi Li"
+  "Jeremy Yallop"
+  "Dave Tucker"
+]
+homepage: "https://github.com/mirage/ocaml-github"
+bug-reports: "https://github.com/mirage/ocaml-github/issues"
+dev-repo: "git+https://github.com/mirage/ocaml-github.git"
+tags: [
+  "org:mirage"
+  "org:xapi-project"
+  "git"
+]
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "jbuilder" {build & >= "1.0+beta10"}
+  "cohttp" {>= "0.17.0" & < "0.99"}
+  "js_of_ocaml-ppx"
+  "js_of_ocaml"
+  "github" {>= "3.0.0"}
+]
+synopsis: "GitHub APIv3 OCaml Library"
+description: """
+[![Build Status](https://travis-ci.org/mirage/ocaml-github.svg)](https://travis-ci.org/mirage/ocaml-github)
+[![docs](https://img.shields.io/badge/doc-online-blue.svg)](https://mirage.github.io/ocaml-github/)
+
+This library provides an OCaml interface to the [GitHub
+APIv3](https://developer.github.com/v3/) (JSON). It is compatible with
+[MirageOS](https://mirage.io) and also compiles to pure JavaScript via
+[js_of_ocaml](http://ocsigen.org/js_of_ocaml).
+
+It is [not yet complete](#api-support-coverage) but
+[lib/github.atd](https://github.com/mirage/ocaml-github/blob/master/lib/github.atd)
+contains the data types that have been bound so far.
+
+There are several tests and examples in
+[lib_test](https://github.com/mirage/ocaml-github/tree/master/lib_test)
+for small bits of
+functionality. [jar](https://github.com/mirage/ocaml-github/tree/master/jar)
+contains utility programs that use the [git jar](#git-jar) facility for
+stored tokens.
+
+If you are interested in easily using this library to listen for GitHub
+web hook events, you should look at [dsheets/ocaml-github-hooks](https://github.com/dsheets/ocaml-github-hooks)."""
+url {
+  src:
+    "https://github.com/mirage/ocaml-github/releases/download/v3.0.0/github-3.0.0.tbz"
+  checksum: "md5=8275d7133967626a60beffbe7db41774"
+}

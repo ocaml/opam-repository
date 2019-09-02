@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+authors: ["Francois Rouaix"]
+homepage: "https://github.com/ocaml/dbm"
+bug-reports: "https://github.com/ocaml/dbm/issues"
+dev-repo: "git+https://github.com/ocaml/dbm.git"
+license: "LGPL-v2 with OCaml linking exception"
+build: [
+  ["./configure"]
+  [make "all"]
+  [make "test"] {with-test}
+]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+]
+depexts: [
+  ["libgdbm-dev"] {os-family = "debian"}
+  ["gdbm"] {os-distribution = "nixos"}
+  ["gdbm-devel"] {os-distribution = "centos"}
+  ["gdbm-devel"] {os-distribution = "rhel"}
+  ["gdbm-devel"] {os-distribution = "fedora"}
+  ["gdbm-dev"] {os-distribution = "alpine"}
+  ["gdbm"] {os = "macos" & os-distribution = "homebrew"}
+  ["gdbm"] {os-distribution = "arch"}
+]
+patches: [
+  "include_local_fix.patch"
+]
+install: [
+  ["mkdir" "-p" "%{lib}%/dbm"]
+  [make "install" "STUBLIBDIR=%{lib}%/stublibs" "LIBDIR=%{lib}%/dbm"]
+  ["cp" "META" "%{lib}%/dbm"]
+]
+remove: [
+  ["rm" "-f" "%{lib}%/stublibs/dllcamldbm.so"]
+  ["ocamlfind" "remove" "dbm"]
+]
+synopsis: "Binding to the NDBM/GDBM Unix \"databases\""
+flags: light-uninstall
+extra-files: [
+  "include_local_fix.patch" "md5=417ee4729cc50ed0168c0659ed9881e3"
+]
+url {
+  src: "https://github.com/ocaml/dbm/archive/camldbm-1.1.tar.gz"
+  checksum: "md5=d21a65d7f744677e074600b938195630"
+}

@@ -1,33 +1,39 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "plplot"
 version: "5.11.0"
 maintainer: "Hezekiah M. Carty <hez@0ok.org>"
 authors: [ "Hezekiah M. Carty <hez@0ok.org>" ]
 license: "LGPL-2.1 with OCaml linking exception"
 homepage: "https://github.com/hcarty/ocaml-plplot/"
-dev-repo: "https://github.com/hcarty/ocaml-plplot.git"
+dev-repo: "git+https://github.com/hcarty/ocaml-plplot.git"
 bug-reports: "https://github.com/hcarty/ocaml-plplot/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "plplot"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
 ]
 depexts: [
-  [["debian"] ["libplplot-dev" "libshp-dev"]]
-  [["ubuntu"] ["libplplot-dev" "libshp-dev"]]
-  [[ "osx" "homebrew" ] [ "plplot" ]]
+  ["libplplot-dev" "libshp-dev"] {os-distribution = "debian"}
+  ["libplplot-dev" "libshp-dev"] {os-distribution = "ubuntu"}
+  ["plplot"] {os = "macos" & os-distribution = "homebrew"}
 ]
-
-available: [ocaml-version >= "4.02.0"]
+synopsis: "Bindings for the PLplot library"
+description: """
+PLplot is a library for creating scientific plots.
+http://plplot.sf.net/"""
+flags: light-uninstall
+url {
+  src: "https://github.com/hcarty/ocaml-plplot/archive/v5.11.0.tar.gz"
+  checksum: "md5=b73c6801b42187695d9d3aae96696143"
+}

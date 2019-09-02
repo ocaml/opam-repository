@@ -32,12 +32,6 @@ else
   fi
 fi
 
-echo OCaml version
-ocaml -version
-echo OPAM versions
-opam --version
-opam --git-version
-
 export OPAMYES=1
 
 case $TRAVIS_OS_NAME in
@@ -52,38 +46,10 @@ cat pullreq.diff | sed -E -n -e 's,\+\+\+ b/packages/[^/]*/([^/]*)/.*,\1,p' | so
 echo To Build:
 cat tobuild.txt
 
-function opam_version_compat {
-  local OPAM_MAJOR OPAM_MINOR ocamlv bytev
-  if [ -n "$opam_version_compat_done" ]; then return; fi
-  opam_version_compat_done=1
-  OPAM_MAJOR=${OPAM_VERSION%%.*}
-  OPAM_MINOR=${OPAM_VERSION#*.}
-  OPAM_MINOR=${OPAM_MINOR%%.*}
-  if [ $OPAM_MAJOR -eq 1 ] && [ $OPAM_MINOR -lt 2 ]; then
-      opam_version_11=1
-      ocamlv=$(ocamlrun -vnum)
-      bytev=${ocamlv%.*}
-      curl -L https://opam.ocaml.org/repo_compat_1_1.byte$bytev -o compat.byte
-      ocamlrun compat.byte
-  fi
-}
-opam_version_compat
-
 function build_switch {
   rm -rf ~/.opam
   echo "build switch: $OPAM_SWITCH"
-  if [ -n "${opam_version_11}" ]; then
-      # Hide OCaml build log
-      if opam init . --comp=$OPAM_SWITCH > build.log 2>&1 ; then
-          echo -n
-      else
-          rc=$?
-          cat build.log
-          exit $rc
-      fi
-  else
-      opam init . --comp=$OPAM_SWITCH
-  fi
+  opam init . --comp=$OPAM_SWITCH
   eval `opam config env`
 }
 
@@ -92,7 +58,7 @@ function build_one {
   echo "build one: $pkg"
   # test for installability
   echo "Checking for availability..."
-  if ! opam install $pkg --dry-run; then
+  if ! opam install -t $pkg --dry-run; then
       echo "Package unavailable."
       if opam show $pkg; then
           echo "Package is unavailable on this configuration, skipping:"
@@ -106,12 +72,15 @@ function build_one {
     echo "... package available."
     echo
     echo "====== External dependency handling ======"
-    opam install depext
-    depext=$(opam depext -ls $pkg --no-sources)
-    opam depext $pkg
+    opam install 'depext>=1.1.3'
+    depext=$(opam depext --with-test -ls $pkg)
+    opam depext --with-test $pkg
+    echo
+    echo "====== Installing dependencies ======"
+    opam install --deps-only $pkg
     echo
     echo "====== Installing package ======"
-    opam install $pkg
+    opam install -t -v $pkg
     opam remove -a ${pkg%%.*}
     if [ "$depext" != "" ]; then
       case $TRAVIS_OS_NAME in
@@ -129,8 +98,18 @@ function build_one {
 
 build_switch
 
+echo OCaml version
+ocaml -version
+echo OPAM versions
+opam --version
+opam --git-version
+
 for i in `cat tobuild.txt`; do
-  build_one $i
+    name=$(echo $i | cut -f1 -d".")
+    case $name in
+        ocaml|ocaml-base-compiler) ;;
+        *) build_one $i
+    esac
 done
 
 kill $PING_LOOP_PID

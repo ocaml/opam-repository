@@ -1,0 +1,39 @@
+opam-version: "2.0"
+maintainer: "Simon Cruanes <simon.cruanes@inria.fr>"
+authors: "Simon Cruanes"
+homepage: "https://github.com/c-cube/ocaml-qbf"
+bug-reports: "https://github.com/c-cube/ocaml-qbf/issues"
+license: "BSD-3-clause"
+tags: ["clib:quantor" "clib:qdpll" "clib:picosat"]
+dev-repo: "git+https://github.com/c-cube/ocaml-qbf.git"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocamlfind" "remove" "qbf"]
+depends: [
+  "ocaml"
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {with-test}
+]
+depopts: ["ctypes" "random-generator"]
+synopsis: "QBF solving in OCaml, including bindings to solvers"
+description: """
+Ocaml-qbf provides a unified API to several QBF solvers, along with
+common types for formulas, QCNF and literals and operations such as
+simplifications and reduction to CNF.
+
+It packs:
+- a binding to quantor, which is shipped with the library
+- a binding to Depqbf"""
+flags: light-uninstall
+url {
+  src: "https://github.com/c-cube/ocaml-qbf/archive/0.2.tar.gz"
+  checksum: "md5=4213a4a6138e2056ec5db3871d0dd17a"
+}

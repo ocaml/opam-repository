@@ -1,0 +1,38 @@
+opam-version: "2.0"
+authors: "Didier Le Botlan <github.lebotlan@dfgh.net>"
+maintainer: "Didier Le Botlan <github.lebotlan@dfgh.net>"
+homepage: "https://github.com/lebotlan/ocaml-exenum"
+bug-reports: "https://github.com/lebotlan/ocaml-exenum/issues"
+license: "MIT License"
+dev-repo: "git://github.com/lebotlan/ocaml-exenum.git"
+build: ["jbuilder" "build" "-p" name "-j" jobs]
+depends: ["ocaml" "ocamlfind" "jbuilder" "num"]
+depopts: "lwt"
+conflicts: [
+  "lwt" {>= "4.0.0"}
+]
+synopsis:
+  "Build efficient enumerations for datatypes. Inspired by Feat for Haskell."
+description: """
+The exenum library offers constructors to build enumerations for
+datatypes, that is, functions from (arbitrarily large) integers to
+values. Such enumerations are typically used for unit testing. The
+library is efficient: the n-th element of an enumeration is returned
+without having computed the (n-1) previous elements. Complexity is in
+log(n), except for some pathological datatypes. See the homepage for
+details: http://exenum.forge.ocamlcore.org/
+Inspired by Feat: Functional Enumeration of Algebraic Types, by
+Duregard, Jansson, Wang, Chalmers University.
+
+As an example, consider the following datatype:
+type term = Var of string | App of term * term | Lambda of string * term
+
+Using exenum, one may easily generate zillions of different
+lambda-terms. In our specific example, term number 2000000000000
+happens to be
+((((x v) (fun u -> y)) ((fun u -> y) (fun y -> y))) (((x
+v) (fun u -> v)) (fun u -> y)))"""
+url {
+  src: "https://github.com/lebotlan/ocaml-exenum/archive/v0.82.0.tar.gz"
+  checksum: "md5=5367c3fe8d5a3b645c719b48889a6fce"
+}

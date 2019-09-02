@@ -1,0 +1,39 @@
+opam-version: "2.0"
+maintainer:   "Romain Calascibetta <romain.calascibetta@gmail.com>"
+authors:      "Romain Calascibetta <romain.calascibetta@gmail.com>"
+homepage:     "https://github.com/dinosaure/radis"
+bug-reports:  "https://github.com/dinosaure/radis/issues"
+dev-repo: "git+https://github.com/dinosaure/radis.git"
+doc:          "https://dinosaure.github.io/radis/"
+license:      "MIT"
+
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.06.0" & < "4.07.0"}
+  "jbuilder" {build & >= "1.0+beta9"}
+  "fmt"
+  "alcotest" {with-test}
+]
+synopsis: "Radix tree implementation"
+description: """
+Radis is a little library to provide an implementation of a Radix tree
+(specialized with a scalar key - like a string, bigarray or array). This project
+is a part of ocaml-git to have a fast access to an immutable store. In this way,
+remove operation should be the slowest operation and this data-structure is
+focused on lookup operation when the key is specifically a hash (see
+[digestif](https://github.com/mirage/digestif)).
+
+The idea behind this library is to provide a fast access to an immutable store
+(like git). So, in my mind, if we put a new object in this store, it can not be
+deleted. It's why remove operation should be slow - of course, in a git store,
+it's possible to delete an useless object (see `git gc`), however this
+computation does not appear in this way."""
+url {
+  src:
+    "https://github.com/dinosaure/radis/releases/download/v0.1/radis-0.1.tbz"
+  checksum: "md5=1a8b674f1159f67acb8d03fa46c5d5e7"
+}

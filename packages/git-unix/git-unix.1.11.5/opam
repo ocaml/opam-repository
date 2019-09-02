@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer:   "thomas@gazagnaire.org"
+authors:      "Thomas Gazagnaire"
+license:      "ISC"
+homepage:     "https://github.com/mirage/ocaml-git"
+bug-reports:  "https://github.com/mirage/ocaml-git/issues"
+dev-repo: "git+https://github.com/mirage/ocaml-git.git"
+doc:          "https://mirage.github.io/ocaml-git/"
+
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "jbuilder" {build}
+  "cmdliner"
+  "logs"
+  "git-http" {>= "1.11.0" & < "2.0.0"}
+  "conduit-lwt-unix" {>= "1.0.0"}
+  "cohttp-lwt-unix" {>= "1.0.0"}
+  "nocrypto" {>= "0.2.0"}
+  "mtime" {>= "1.0.0"}
+  "base-unix"
+  "alcotest" {with-test}
+  "io-page" {with-test & >= "1.6.1"}
+]
+synopsis: "Unix backend for the Git protocol(s)"
+description: """
+The library comes with a command-line tool called `ogit` which shares
+a similar interface with `git`, but where all operations are mapped to
+the API exposed `ocaml-git` (and hence using only OCaml code)."""
+url {
+  src:
+    "https://github.com/mirage/ocaml-git/releases/download/1.11.5/git-1.11.5.tbz"
+  checksum: "md5=86090621429b346357604e157274387a"
+}

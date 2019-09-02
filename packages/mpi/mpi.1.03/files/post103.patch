@@ -1,0 +1,33 @@
+diff --git a/Makefile b/Makefile
+index 45b0183..3a36dea 100644
+--- a/Makefile
++++ b/Makefile
+@@ -15,7 +15,8 @@ OBJS=mpi.cmo
+ all: libcamlmpi.a byte
+ 
+ install:
+-	ocamlfind install mpi META mpi.mli mpi.cmi $(wildcard mpi.cm*a) $(wildcard *mpi.a)
++	ocamlfind install mpi META mpi.mli mpi.cmi \
++	    $(wildcard mpi*.cmx) $(wildcard mpi.cm*a) $(wildcard *mpi.a)
+ 
+ uninstall:
+ 	ocamlfind remove mpi
+diff --git a/init.c b/init.c
+index 7edebdf..2dd314a 100644
+--- a/init.c
++++ b/init.c
+@@ -57,8 +57,14 @@ value caml_mpi_init(value arguments)
+   argv[i] = NULL;
+   MPI_Init(&argc, &argv);
+   /* Register an error handler */
++#if MPI_VERSION >= 2
++  MPI_Comm_create_errhandler(
++	  (MPI_Handler_function *)caml_mpi_error_handler, &hdlr);
++  MPI_Comm_set_errhandler(MPI_COMM_WORLD, hdlr);
++#else
+   MPI_Errhandler_create((MPI_Handler_function *)caml_mpi_error_handler, &hdlr);
+   MPI_Errhandler_set(MPI_COMM_WORLD, hdlr);
++#endif
+   return Val_unit;
+ }
+ 

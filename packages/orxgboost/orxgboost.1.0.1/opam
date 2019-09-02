@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+authors: ["Francois BERENGER"]
+homepage: "https://github.com/UnixJunkie/orxgboost"
+bug-reports: "https://github.com/UnixJunkie/orxgboost/issues"
+dev-repo: "git+https://github.com/UnixJunkie/orxgboost.git"
+license: "LGPL + linking exception"
+build: [
+  ["R" "CMD" "BATCH" "files/install_matrix.r"]
+  ["R" "CMD" "BATCH" "files/install_xgboost.r"]
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml"
+  "jbuilder" {build}
+  "conf-r"
+  "dolog" {with-test}
+  "batteries" {with-test}
+  "cpm" {with-test}
+]
+post-messages: [
+"Please interact with R to install needed things in user-space:
+R
+install.packages('Marix', repos='http://cran.r-project.org')
+install.packages('xgboost', repos='http://cran.r-project.org')" {failure}
+]
+synopsis: "Gradient boosting for OCaml using the R xgboost package"
+description: """
+This package really fires up and talks to an R interpreter.
+Data are exchanged via text files.
+It can handle dense or sparse (in CSR format) data matrices.
+For details, cf. Chen, Tianqi, and Carlos Guestrin.
+"Xgboost: A scalable tree boosting system."
+Proceedings of KDD'16. ACM, 2016.
+DOI: 10.1145/2939672.2939785.
+https://xgboost.readthedocs.io/en/latest/"""
+extra-files: [
+  ["install_xgboost.r" "md5=0cc15f242946933f2d335a18b833fff1"]
+  ["install_matrix.r" "md5=ab1c0ae726388159b1315bc9fe61a013"]
+]
+url {
+  src: "https://github.com/UnixJunkie/orxgboost/archive/v1.0.1.tar.gz"
+  checksum: "md5=37389aa495cba09b8c4b79f30e6891f1"
+}

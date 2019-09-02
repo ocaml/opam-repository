@@ -1,0 +1,45 @@
+opam-version: "2.0"
+maintainer: "paurkedal@gmail.com"
+authors: "Petter A. Urkedal <paurkedal@gmail.com>"
+homepage: "https://github.com/paurkedal/ppx_regexp"
+bug-reports: "https://github.com/paurkedal/ppx_regexp/issues"
+license: "LGPL-3 with OCaml linking exception"
+dev-repo: "git+https://github.com/paurkedal/ppx_regexp.git"
+build: ["jbuilder" "build" "--root" "." "-j" jobs "@install"]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "jbuilder" {build}
+  "ocaml-migrate-parsetree"
+  "re" {< "1.7.2~"}
+  "ppx_tools_versioned"
+  "topkg-jbuilder" {build}
+]
+synopsis: "Matching Regular Expressions with OCaml Patterns"
+description: """
+This syntax extension turns
+
+    match%pcre x with
+    | {|re1|} -> e1
+    ...
+    | {|reN|} -> eN
+    | _ -> e0
+
+into suitable invocations of the ocaml-re library.  The patterns are plain
+strings of the form accepted by `Re_pcre`, with the following additions:
+
+  - `(?<var>...)` defines a group and binds whatever it matches as `var`.
+    The type of `var` will be `string` if the match is guaranteed given that
+    the whole pattern matches, and `string option` if the variable is bound
+    to or nested below an optionally matched group.
+
+  - `?<var>` at the start of a pattern binds group 0 as `var : string`.
+    This may not be the full string if the pattern is unanchored.
+
+A variable is allowed for the universal case and is bound to the matched
+string.  A regular alias is currently not allowed for patterns, since it is
+not obvious whether is should bind the full string or group 0."""
+url {
+  src:
+    "https://github.com/paurkedal/ppx_regexp/releases/download/v0.3.1/ppx_regexp-0.3.1.tbz"
+  checksum: "md5=aa1a1aa9e89ec38f2b0596877c9f2819"
+}

@@ -1,27 +1,37 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "rudi.grinberg@gmail.com"
 authors: "Rudi Grinberg"
 homepage: "https://github.com/rgrinberg/ranger"
 bug-reports: "https://github.com/rgrinberg/ranger/issues"
 license: "MIT"
-dev-repo: "https://github.com/rgrinberg/ranger.git"
+dev-repo: "git+https://github.com/rgrinberg/ranger.git"
 build: [
   ["ocaml" "setup.ml" "-configure"]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: ["ocaml" "setup.ml" "-doc"]
 remove: ["ocamlfind" "remove" "ranger"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
-  "kaputt" {test}
+  "kaputt" {with-test}
   "base-bytes"
   "oasis" {build}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "A consecutive range slice library for strings, arrays, etc."
+description: """
+The main type provided by ranger generalizes substrings to arbitrary data
+structures that are "indexed" by an integer. The biggest difference between
+ranger and other libraries like it (e.g. various Substring functors) is that
+ranger doesn't use functors and is polymorphic over the base type (e.g. char in
+the case of substrings)."""
+flags: light-uninstall
+url {
+  src: "https://github.com/rgrinberg/ranger/archive/v0.1.0.tar.gz"
+  checksum: "md5=415036856207646d1bf229f45cd1f8f6"
+}

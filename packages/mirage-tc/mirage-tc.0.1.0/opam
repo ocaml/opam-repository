@@ -1,10 +1,10 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "thomas@gazagnaire.org"
 authors: "Thomas Gazagnaire"
 homepage: "https://github.com/mirage/mirage-tc"
 bug-reports: "https://github.com/mirage/mirage-tc/issues"
 license: "ISC"
-dev-repo: "https://github.com/mirage/mirage-tc.git"
+dev-repo: "git+https://github.com/mirage/mirage-tc.git"
 build: [
   ["./configure" "--prefix" prefix]
   [make]
@@ -12,14 +12,54 @@ build: [
 install: [make "install"]
 remove: ["ocamlfind" "remove" "tc"]
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ezjsonm" {>= "0.3.0" & < "0.4.0"}
   "mstruct" {>= "1.3.1"}
   "cstruct"
   "sexplib" {< "113.01.00"}
   "bin_prot" {< "113.01.00"}
   "comparelib"
-  "alcotest" {test}
-  "ounit" {test}
+  "alcotest" {with-test}
+  "ounit" {with-test}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "MirageOS type-classes"
+description: """
+A set of functors and combinators to pretty-print (using sexplib), to
+convert to and from and JSON and Cstruct buffers.
+
+```ocaml
+# Tc.show (module Tc.S) "Hello world!";;
+- : string = "\\"Hello world!\\""
+# Tc.to_json (module Tc.App2(Tc.P)(Tc.I)(Tc.S)) (3, "foo");;
+- : Ezjsonm.t = `A [`String "3"; `String "foo"]
+```
+
+A slightly more complex example, using autogen code instead of functor
+composition:
+
+```ocaml
+# camlp4o;;
+# require "sexplib.syntax";;
+# require "comparelib.syntax";;
+# require "bin_prot.syntax";;
+# module M = struct
+    type t = { foo: int; bar: string list } with sexp, bin_prot, compare
+  end;;
+# module X = Tc.I0(M);;
+# let t = { foo = 3; bar = [ "hello"; "world" ] };;
+
+# Tc.to_json (module X) t;;
+- : Ezjsonm.t =
+`A
+  [`A [`String "foo"; `String "3"];
+   `A [`String "bar"; `A [`String "hello"; `String "world"]]]
+
+# Tc.write_string (module X) t;;
+- : string = "\\003\\002\\005hello\\005world"
+```"""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/mirage-tc/archive/0.1.0.tar.gz"
+  checksum: "md5=93a51194b72381af02ac698501b5a275"
+}

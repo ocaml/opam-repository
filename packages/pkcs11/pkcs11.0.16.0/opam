@@ -1,0 +1,68 @@
+opam-version: "2.0"
+maintainer: "Etienne Millon <etienne@cryptosense.com>"
+authors: "Etienne Millon <etienne@cryptosense.com>"
+homepage: "https://github.com/cryptosense/pkcs11"
+bug-reports: "https://github.com/cryptosense/pkcs11/issues"
+license: "BSD-2"
+dev-repo: "git+https://github.com/cryptosense/pkcs11.git"
+doc: "https://cryptosense.github.io/pkcs11/doc"
+build: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--with-cmdliner"
+    "%{cmdliner:installed}%"
+    "--with-driver"
+    "%{ctypes:installed}%"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+    "--with-cmdliner"
+    "%{cmdliner:installed}%"
+    "--with-driver"
+    "%{ctypes:installed}%"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "hex" {>= "1.0.0"}
+  "integers"
+  "ppx_deriving" {>= "4.0"}
+  "ppx_deriving_yojson" {>= "3.0"}
+  "zarith"
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "topkg" {build}
+  "ounit" {with-test}
+]
+depopts: [
+  "cmdliner"
+  "ctypes"
+  "ctypes-foreign"
+]
+conflicts: [
+  "ctypes" { < "0.12.0" }
+]
+tags: ["org:cryptosense"]
+available: os != "macos"
+synopsis: "Bindings to the PKCS#11 cryptographic API"
+description: """
+This library contains ctypes bindings to the PKCS#11 API.
+
+This API is used by smartcards and Hardware Security Modules to perform
+cryptographic operations such as signature or encryption."""
+url {
+  src:
+    "https://github.com/cryptosense/pkcs11/releases/download/v0.16.0/pkcs11-0.16.0.tbz"
+  checksum: "md5=2cbd89bd4a81aa97a02918f18c09fee7"
+}

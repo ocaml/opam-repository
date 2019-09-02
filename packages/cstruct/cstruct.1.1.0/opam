@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "anil@recoil.org"
 authors: ["Anil Madhavapeddy"]
 homepage: "https://github.com/mirage/ocaml-cstruct"
@@ -10,6 +10,7 @@ tags: [
 build: make
 remove: [["ocamlfind" "remove" "cstruct"]]
 depends: [
+  "ocaml" {< "4.06.0"}
   "ocamlfind"
   "ocplib-endian"
   "ounit"
@@ -20,5 +21,28 @@ depopts: [
   "async"
   "lwt"
 ]
+conflicts: ["async" {>= "v0.10.0"}]
 dev-repo: "git://github.com/mirage/ocaml-cstruct"
 install: [make "install"]
+synopsis: "access C structures via a camlp4 extension"
+description: """
+Cstruct is a library and syntax extension to make it easier to access C-like
+structures directly from OCaml. It supports both reading and writing to these
+structures, and they are accessed via the Bigarray module.
+
+An example pcap description is:
+
+cstruct pcap_header {
+  uint32_t magic_number;   (* magic number *)
+  uint16_t version_major;  (* major version number *)
+  uint16_t version_minor;  (* minor version number *)
+  uint32_t thiszone;       (* GMT to local correction *)
+  uint32_t sigfigs;        (* accuracy of timestamps *)
+  uint32_t snaplen;        (* max length of captured packets, in octets *)
+  uint32_t network         (* data link type *)
+} as little_endian"""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-cstruct/archive/v1.1.0.tar.gz"
+  checksum: "md5=e77077ad9a7aaa8fa7b8e492058fc4fc"
+}

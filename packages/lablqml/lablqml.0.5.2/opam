@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer:   "kakadu.hafanana@gmail.com"
+authors:      "kakadu.hafanana@gmail.com"
+homepage:     "http://kakadu.github.io/lablqt/"
+bug-reports:  "https://github.com/kakadu/lablqml/issues"
+dev-repo: "git+https://github.com/Kakadu/lablqml.git"
+tags: [ "gui" "ui" "qt" ]
+
+build: [
+  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH ./configure"] {os-distribution = "alpine" | os-distribution = "centos" | os-distribution = "fedora" }
+  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make"]        {os-distribution = "alpine" | os-distribution = "centos" | os-distribution = "fedora" }
+#  ["sh" "-exc" "PATH=/usr/lib64/qt5/bin:/usr/lib/qt5/bin:$PATH make demos"]
+#    { (os-distribution = "alpine"  | os-distribution = "centos" | os-distribution = "fedora") & with-test }
+
+  ["./configure"]            { os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
+  [make]                     { os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
+#  [make "demos"] { with-test & os-distribution != "alpine" & os-distribution != "centos" & os-distribution != "fedora" }
+]
+
+install: [make "-f" "Makefile.install" "opam.install"]
+remove: [
+  ["ocamlfind" "remove" "lablqml"]
+  ["rm" "-f" "%{prefix}%/bin/ppx_qt"]
+]
+flags: [ light-uninstall ]
+depends: [
+  "ocaml" {>= "4.03.0" & < "4.09.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "ocaml-migrate-parsetree"
+  "conf-qt" {>= "5.2.1"}
+  "conf-pkg-config"
+  "lwt" {with-test}
+  "cppo" {with-test}
+]
+synopsis:
+  "OCamlfind package and PPX extension to interface OCaml and QtQuick"
+description: "Versions <= 0.4 are known as `lablqt`, >0.5 -- as `lablqml`"
+url {
+  src: "https://github.com/Kakadu/lablqml/archive/0.5.2.tar.gz"
+  checksum: "md5=c060fe40ea5477843cfd6f0336dc7389"
+}

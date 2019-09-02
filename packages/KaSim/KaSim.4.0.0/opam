@@ -1,0 +1,45 @@
+opam-version: "2.0"
+name: "KaSim"
+
+maintainer: "Pierre Boutillier <pierre.boutillier@laposte.net>"
+authors: [
+  "Jean Krivine" "Jérôme Feret" "Pierre Boutillier"
+  "Ioana Cristescu" "Mutaamba Maasha" "Lý Kim Quyên"
+]
+license: "LGPL-3.0"
+homepage: "http://dev.executableknowledge.org/"
+bug-reports: "https://github.com/Kappa-Dev/KaSim/issues"
+dev-repo: "git+https://github.com/Kappa-Dev/KaSim.git"
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "num"
+  "ocamlfind"
+  "ocamlbuild" {build}
+  "yojson"
+  "lwt"
+]
+depopts: [
+  "labltk" "cohttp-lwt-unix"
+  "atdgen" {build}
+]
+
+conflicts: [
+  "atdgen" {>= "1.13.0"}
+]
+
+build: [
+  [make "USE_TK=1" {labltk:installed} "all"]
+  [make "META" "kappalib"]
+  [make "agents"] {atdgen:installed}
+  [make "bin/WebSim"] {atdgen:installed & cohttp-lwt-unix:installed}
+  [make "check"] {with-test}
+]
+install: [ [ make "install-lib" ] ]
+remove: [ [ "ocamlfind" "remove" "KappaLib" ] ]
+
+synopsis: "Software suite for the Kappa language."
+flags: light-uninstall
+url {
+  src: "https://github.com/Kappa-Dev/KaSim/archive/v4.0.tar.gz"
+  checksum: "md5=894a517c7991f42100d2e957efc6cfa2"
+}

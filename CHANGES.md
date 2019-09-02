@@ -1,3 +1,27 @@
+## Ppx_deriving becomes an optional dependency of ppx_type_conv
+
+There are two ways of using the `ppx_sexp_conv` ppx rewriter:
+
+- the legacy way, with:
+  ```
+  $ ocamlfind ocamlc -package ppx_sexp_conv ...
+  ```
+
+- the new way, with a driver. Since the v0.9.0 version of
+  `ppx_sexp_conv` one can use either the `ocaml-migrate-parsetree`
+  driver or `ppx_driver`. Before v0.9.0 one could only use
+  `ppx_driver`
+
+Using the legacy way requires using `ppx_deriving`. `ppx_deriving`
+used to be a hard dependency of `ppx_sexp_conv` through
+`ppx_type_conv`. Since v0.9.0 it is an optional one. As a result
+pacakges building using the legacy way must declare an explicit
+dependency on `ppx_deriving`.
+
+Many packages didn't at the time `ppx_sexp_conv` v0.9.0 was
+released. To fix builds failure, a `ppx_deriving` dependency was added
+to all packages depending on `ppx_sexp_conv` but not `ppx_deriving`.
+
 ## Split build and install steps (2016-05-18)
 
 The opam tool has been separating the "build" and "install" steps of packages

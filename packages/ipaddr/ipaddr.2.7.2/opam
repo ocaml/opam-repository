@@ -1,0 +1,71 @@
+opam-version: "2.0"
+maintainer:   "sheets@alum.mit.edu"
+authors: [
+              "David Sheets"
+              "Anil Madhavapeddy"
+              "Hugo Heuzard"
+]
+license:      "ISC"
+homepage:     "https://github.com/mirage/ocaml-ipaddr"
+bug-reports:  "https://github.com/mirage/ocaml-ipaddr/issues"
+dev-repo: "git+https://github.com/mirage/ocaml-ipaddr.git"
+doc:          "https://mirage.github.io/ocaml-ipaddr/"
+
+tags: [
+  "org:mirage"
+  "org:xapi-project"
+]
+
+build: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--with-base-unix"
+    "%{base-unix:installed}%"
+  ]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.2"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "base-bytes"
+  "sexplib" {< "v0.11"}
+  "ppx_deriving" {>= "4.2"}
+  "ppx_sexp_conv" {< "v0.11"}
+  "ounit" {with-test}
+]
+depopts: [ "base-unix" ]
+conflicts: [ "ppx_sexp_conv" {="113.33.00+4.03"} ]
+synopsis: "IP (and MAC) address manipulation"
+description: """
+A library for manipulation of IP (and MAC) address representations.
+
+Features:
+
+ * Depends only on sexplib (conditionalization under consideration)
+ * oUnit-based tests
+ * IPv4 and IPv6 support
+ * IPv4 and IPv6 CIDR prefix support
+ * IPv4 and IPv6 [CIDR-scoped address](http://tools.ietf.org/html/rfc4291#section-2.3) support
+ * `Ipaddr.V4` and `Ipaddr.V4.Prefix` modules are `Map.OrderedType`
+ * `Ipaddr.V6` and `Ipaddr.V6.Prefix` modules are `Map.OrderedType`
+ * `Ipaddr` and `Ipaddr.Prefix` modules are `Map.OrderedType`
+ * `Ipaddr_unix` in findlib subpackage `ipaddr.unix` provides compatibility with the standard library `Unix` module
+ * `Ipaddr_top` in findlib subpackage `ipaddr.top` provides top-level pretty printers (requires compiler-libs default since OCaml 4.0)
+ * IP address scope classification
+ * IPv4-mapped addresses in IPv6 (::ffff:0:0/96) are an embedding of IPv4
+ * MAC-48 (Ethernet) address support
+ * `Macaddr` is a `Map.OrderedType`
+ * All types have sexplib serializers/deserializers"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-ipaddr/releases/download/2.7.2/ipaddr-2.7.2.tbz"
+  checksum: "md5=541bac5e56c3254943a78307980efbc2"
+}

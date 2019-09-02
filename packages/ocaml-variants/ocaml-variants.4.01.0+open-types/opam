@@ -1,0 +1,28 @@
+opam-version: "2.0"
+synopsis: "add open extensible types to OCaml"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.01.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix]
+  [make "world" "world.opt"]
+]
+install: [make "install"]
+patches: "bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
+url {
+  src: "https://github.com/lpw25/ocaml/archive/4.01.0+open_types.tar.gz"
+  checksum: "md5=b1b7525d536d8068a5896433c6c20b37"
+}
+extra-source "bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff" {
+  src:
+    "https://github.com/diml/ocaml/compare/bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
+  checksum: "md5=a8c6dd8e547a7b766138f7ca3eb1cbfd"
+}

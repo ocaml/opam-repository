@@ -1,0 +1,39 @@
+opam-version: "2.0"
+maintainer:   "datakit@docker.com"
+authors:      ["Thomas Leonard" "David Scott"]
+license:      "Apache"
+homepage:     "https://github.com/mirage/prometheus"
+bug-reports:  "https://github.com/mirage/prometheus/issues"
+dev-repo: "git+https://github.com/mirage/prometheus.git"
+doc:          "https://mirage.github.io/prometheus/"
+
+build: [
+  ["jbuilder" "build" "--only-packages=prometheus,prometheus-app"]
+  ["jbuilder" "runtest"] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "ocamlfind" {build}
+  "jbuilder" {build}
+  "prometheus" {= "0.2"}
+  "fmt"
+  "re"
+  "cohttp" {>= "0.20.0" & < "0.99"}
+  "lwt" {>= "2.5.0"}
+  "alcotest" {with-test}
+]
+synopsis: "Client library for Prometheus monitoring"
+description: """
+To run services reliably, it is useful if they can report various metrics
+(for example, heap size, queue lengths, number of warnings logged, etc).
+
+A monitoring service can be configured to collect this data regularly.
+The data can be graphed to help understand the performance of the service over time,
+or to help debug problems quickly.
+It can also be used to send alerts if a service is down or behaving poorly.
+
+This repository contains code to report metrics to a Prometheus monitoring server."""
+url {
+  src: "https://github.com/mirage/prometheus/archive/v0.2.tar.gz"
+  checksum: "md5=efc5386127cc451910e0372adef8799e"
+}

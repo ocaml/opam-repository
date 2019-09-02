@@ -1,0 +1,28 @@
+From f0ea53725465260556832398096cef8d3f20b49d Mon Sep 17 00:00:00 2001
+From: David Allsopp <david.allsopp@metastack.com>
+Date: Mon, 8 Jan 2018 12:59:08 +0000
+Subject: [PATCH] Fix make byte for systems with no natdynlink
+
+2a31a83 builds a native-code preprocessor if ocamlbuild supports native
+code. However, it's possible to have systems which support native code but
+don't have natdynlink (e.g. Cygwin without flexdll support) and in this
+case the build fails.
+
+Signed-off-by: David Allsopp <david.allsopp@metastack.com>
+---
+ myocamlbuild.ml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/myocamlbuild.ml b/myocamlbuild.ml
+index 7264df134..ecaac916f 100644
+--- a/myocamlbuild.ml
++++ b/myocamlbuild.ml
+@@ -76,7 +76,7 @@ let () =
+       else
+         let exe =
+           "camlp4boot" ^
+-          if !Options.native_plugin then
++          if C.ocamlnat then
+             (* If we are using a native plugin, we might as well use a native
+                preprocessor. *)
+             ".native"

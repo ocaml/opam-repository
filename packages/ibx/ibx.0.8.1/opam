@@ -1,35 +1,44 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Oliver Gu <gu.oliver@yahoo.com>"
 authors: [ "Oliver Gu <gu.oliver@yahoo.com>" ]
 license: "LGPL-2.1+ with OCaml linking exception"
 homepage: "https://bitbucket.org/ogu/ibx"
-dev-repo: "https://bitbucket.org/ogu/ibx.git"
+dev-repo: "git+https://bitbucket.org/ogu/ibx.git"
 bug-reports: "https://bitbucket.org/ogu/ibx/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "ibx"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
-  "async" {>= "113.33.00"}
+  "ocaml" {= "4.02.3"}
+  "async" {>= "113.33.00" & < "v0.13"}
   "base-threads"
-  "core" {>= "113.33.00"}
+  "core" {>= "113.33.00" & < "v0.13"}
   "ocamlbuild" {build}
   "ocamlfind" {build & >= "1.3.2"}
-  "ppx_fields_conv" {>= "113.33.00"}
-  "ppx_sexp_conv" {>= "113.33.00"}
-  "textutils" {>= "113.33.00"}
+  "ppx_fields_conv" {>= "113.33.00" & < "v0.13"}
+  "ppx_deriving"
+  "ppx_sexp_conv" {>= "113.33.00" & < "v0.13"}
+  "textutils" {>= "113.33.00" & < "v0.13"}
 ]
 depopts: [
   "gnuplot"
 ]
-available: [ ocaml-version = "4.02.3" ]
+synopsis: "OCaml implementation of the Interactive Brokers TWS API"
+description: """
+IBX is a pure OCaml implementation of the Interactive Brokers Trader
+Workstation API (TWS API) built on top of Jane Street's Core and Async
+library."""
+flags: light-uninstall
+url {
+  src: "https://bitbucket.org/ogu/ibx/downloads/ibx-0.8.1.tar.gz"
+  checksum: "md5=bbcb9eddb6489215fcee13e14bc482f7"
+}

@@ -1,0 +1,49 @@
+opam-version: "2.0"
+maintainer: "opam-devel@lists.ocaml.org"
+authors: [
+  "Thomas Gazagnaire <thomas@gazagnaire.org>"
+  "Anil Madhavapeddy   <anil@recoil.org>"
+  "Fabrice Le Fessant  <Fabrice.Le_fessant@inria.fr>"
+  "Frederic Tuong      <tuong@users.gforge.inria.fr>"
+  "Louis Gesbert <louis.gesbert@ocamlpro.com>"
+  "Guillem Rieu        <guillem.rieu@ocamlpro.com>"
+  "Vincent Bernardoff  <vb@luminar.eu.org>"
+  "Roberto Di Cosmo    <roberto@dicosmo.org>"
+]
+homepage: "https://opam.ocaml.org"
+bug-reports: "https://github.com/ocaml/opam/issues"
+dev-repo: "git+https://github.com/ocaml/opam.git"
+build: [
+  ["./configure" "--disable-checks" "--prefix" prefix]
+  [make "%{name}%.install"]
+  [make "tests"] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "opam-client" {= "2.0.0~rc"}
+  "cmdliner" {>= "0.9.8"}
+  "jbuilder" {build & >= "1.0+beta12"}
+]
+conflicts: [
+  "dune"
+]
+post-messages: [
+  "
+The development version of opam has been successfuly compiled into %{lib}%/%{name}%. You should not run it from there, please install the binaries to your PATH, e.g. with
+    sudo cp %{lib}%/%{name}%/* /usr/local/bin
+
+If you just want to give it a try without altering your current installation, you could use instead:
+    alias opam2=\"OPAMROOT=~/.opam2 %{lib}%/%{name}%/opam\"
+  "
+    {success}
+]
+synopsis: "opam 2.0.0 development version"
+description: """
+This package compiles (bootstraps) the development version of opam 2.0.0. For
+consistency and safety of the installation, the binaries are not installed into
+the PATH, but into lib/opam-devel, from where the user can manually install them
+system-wide."""
+url {
+  src: "https://github.com/ocaml/opam/archive/2.0.0-rc.tar.gz"
+  checksum: "md5=ae216e3ea0a9388cc9f711a2a9925557"
+}

@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "simon.cruanes@inria.fr"
+authors: "Simon Cruanes <simon.cruanes@inria.fr>"
+homepage: "https://github.com/c-cube/qcheck/"
+bug-reports: "https://github.com/c-cube/qcheck/issues"
+doc: "http://cedeela.fr/~simon/software/qcheck/QCheck.html"
+tags: ["test" "property" "quickcheck"]
+dev-repo: "git+https://github.com/c-cube/qcheck.git"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  [make "build"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
+  ["./configure" "--enable-docs" "--docdir" "%{doc}%"] {with-doc}
+  [make "doc"] {with-doc}
+]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "qcheck"]
+depends: [
+  "ocaml" {>= "4.00.0"}
+  "ocamlfind"
+  "base-bytes"
+  "base-unix"
+  "ounit"
+]
+conflicts: [
+  "ounit" {< "2.0"}
+]
+synopsis: "QuickCheck inspired property-based testing for OCaml."
+description: """
+This module allows to check invariants (properties of some types) over
+randomly generated instances of the type. It provides combinators for
+generating instances and printing them."""
+flags: light-uninstall
+url {
+  src: "https://github.com/c-cube/qcheck/archive/0.7.tar.gz"
+  checksum: "md5=ca3c7d24200a8ca7e4390f1145eae3a9"
+}

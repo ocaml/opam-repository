@@ -1,0 +1,69 @@
+opam-version: "2.0"
+maintainer:   "mirageos-devel@lists.xenproject.org"
+authors:      [ "Thomas Gazagnaire"
+                "Anil Madhavapeddy"
+                "Dave Scott"
+                "Thomas Leonard"
+                "Gabriel Radanne" ]
+homepage:     "https://github.com/mirage/functoria"
+bug-reports:  "https://github.com/mirage/functoria/issues"
+dev-repo: "git+https://github.com/mirage/functoria.git"
+doc:          "https://mirage.github.io/functoria/"
+license:      "ISC"
+tags:         ["org:mirage"]
+
+build: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pkg-name"
+    name
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "false"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pkg-name"
+    name
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.03" & < "4.07.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "0.7.3"}
+  "base-unix"
+  "cmdliner" {>= "0.9.8"}
+  "rresult"
+  "astring"
+  "fmt"
+  "ocamlgraph"
+  "logs"
+  "bos"
+  "fpath"
+  "ounit" {with-test}
+]
+synopsis: "A DSL to organize functor applications."
+description: """
+Functoria is a DSL to describe a set of modules and functors, their
+types and how to apply them in order to produce a complete
+application.
+
+The main use case is mirage. See the mirage repository for details:
+
+    https://github.com/mirage/mirage"""
+url {
+  src:
+    "https://github.com/mirage/functoria/releases/download/2.0.2/functoria-2.0.2.tbz"
+  checksum: "md5=aa9c413e736c6c38e7eeac587b1528f8"
+}

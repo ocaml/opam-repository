@@ -1,0 +1,88 @@
+opam-version: "2.0"
+maintainer: "Jan Stolarek <jan.stolarek@ed.ac.uk>"
+authors: "The Links Team <links-dev@inf.ed.ac.uk>"
+homepage: "http://www.links-lang.org"
+bug-reports: "https://github.com/links-lang/links/issues"
+license: "GPL-2"
+dev-repo: "git+https://github.com/links-lang/links.git"
+build: [make "nc"]
+install: [
+  ["cp" "links" "%{links:bin}%/linx"]
+  ["mkdir" "-p" "%{links:lib}%"]
+  ["cp" "prelude.links" "%{links:lib}%"]
+  ["./links" "%{links:lib}%/prelude.links"]
+  ["cp" "-r" "lib/js" "%{links:lib}%"]
+  ["cp" "-r" "stdlib" "%{links:lib}%"]
+  ["mkdir" "-p" "%{links:doc}%"]
+  ["cp" "INSTALL" "%{links:doc}%/README"]
+  ["mkdir" "-p" "%{links:share}%/examples"]
+  ["sh" "-c" "cp -r examples/dbsetup %{links:share}%/examples/dbsetup/"]
+  ["sh" "-c" "cp examples/*.links %{links:share}%/examples"]
+  ["sh" "-c" "cp examples/*.jpg %{links:share}%/examples"]
+  ["sh" "-c" "cp examples/*.sql %{links:share}%/examples"]
+  ["sh" "-c" "cp examples/*.html %{links:share}%/examples"]
+  ["sh" "-c" "cp examples/*.css %{links:share}%/examples"]
+  ["sh" "-c" "cp examples/*.js %{links:share}%/examples"]
+  ["sh" "-c" "cp -r examples/dictionary %{links:share}%/examples/"]
+  ["sh" "-c" "cp -r examples/games %{links:share}%/examples/"]
+  ["sh" "-c" "cp -r examples/sessions %{links:share}%/examples/"]
+  ["sh" "-c" "cp -r examples/webserver %{links:share}%/examples/"]
+  ["sh" "-c" "cp -r examples/css %{links:share}%/examples/"]
+  ["touch" "config"]
+  ["sh" "-c" "echo jsliburl=/lib/ > config"]
+  ["sh" "-c" "echo jslibdir=%{links:lib}%/js >> config"]
+  ["sh" "-c" "echo #database_driver=postgresql >> config"]
+  ["sh" "-c" "echo #database_args=localhost:5432:user:pass >> config"]
+  ["mkdir" "%{links:etc}%"]
+  ["cp" "config" "%{links:etc}%"]
+]
+remove: [
+  ["rm" "-f" "%{links:bin}%/linx"]
+  ["rm" "-rf" "%{links:lib}%"]
+  ["rm" "-rf" "%{links:share}%/examples"]
+  ["rm" "-rf" "%{links:etc}%/config"]
+  ["rm" "-rf" "%{links:doc}%/README"]
+]
+depends: [
+  "ocaml" {>= "4.04.0" & < "4.06"}
+  "ocamlfind" {build}
+  "deriving" {build}
+  "cgi"
+  "base64" {< "3.0.0"}
+  "linenoise"
+  "ANSITerminal"
+  "lwt"
+  "cohttp" {< "0.99.0"}
+  "websocket-lwt"
+]
+depopts: ["mysql" "postgresql" "sqlite3"]
+synopsis:
+  "Links is a functional programming language designed to make web programming easier."
+description: """
+Links eases building interactive web applications with significant client- and
+server-side components.
+
+A typical, modern web program involves many "tiers": part of the program runs
+in the web browser, part runs on a web server, and part runs in back-end
+systems such as a relational database. To create such a program, the programmer
+must master a myriad of languages: the logic is written in a mixture of Java,
+Python, and Perl; the presentation in HTML; the GUI behavior in Javascript; and
+the queries are written in SQL or XQuery. There is no easy way to link these,
+for example, to be sure that an HTML form or an SQL query produces the type of
+data that the Java code expects. This problem is called the impedance
+mismatch problem.
+
+Links eases the impedance mismatch problem by providing a single language for
+all three tiers. The system generates code for each tier; for instance,
+translating some code into Javascript for the browser, some into a bytecode for
+the server, and some into SQL for the database.
+
+Links incorporates proven ideas from other programming languages:
+database-query support from Kleisli, web-interaction proposals from PLT Scheme,
+and distributed-computing support from Erlang. On top of this, it adds some new
+web-centric features of its own."""
+flags: light-uninstall
+url {
+  src: "https://github.com/links-lang/links/archive/v0.7.1.tar.gz"
+  checksum: "md5=684202c361b2a3cb9b17730e5b02f9b3"
+}

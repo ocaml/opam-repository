@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "Vincent Jacques <vincent@vincent-jacques.net>"
+authors: "Vincent Jacques <vincent@vincent-jacques.net>"
+homepage: "https://jacquev6.github.io/General/"
+bug-reports: "http://github.com/jacquev6/General/issues/"
+dev-repo: "git+https://github.com/jacquev6/General.git"
+build: [
+  "ocamlbuild"
+  "-use-ocamlfind"
+  "-plugin-tag"
+  "package(cppo_ocamlbuild)"
+  "General.cma"
+  "General.cmxa"
+]
+install: [
+  ["mkdir" "-p" "%{prefix}%/lib/General"]
+  [
+    "cp"
+    "META"
+    "_build/src/General.cmi"
+    "_build/src/General.cma"
+    "_build/src/General.a"
+    "_build/src/General.cmxa"
+    "_build/src/Foundations.cmx"
+    "_build/src/Traits.cmx"
+    "_build/src/Concepts.cmx"
+    "_build/src/Implementation.cmx"
+    "_build/src/Testing.cmx"
+    "_build/src/Specializations.cmx"
+    "_build/src/General.cmx"
+    "%{prefix}%/lib/General"
+  ]
+]
+remove: ["ocamlfind" "remove" "General"]
+depends: [
+  "ocaml" {>= "4.02.3" & < "4.06.0"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "cppo_ocamlbuild"
+]
+synopsis: "Rich functionality for built-in and basic OCaml types"
+flags: light-uninstall
+url {
+  src: "https://github.com/jacquev6/General/archive/0.2.0.tar.gz"
+  checksum: "md5=3f926a020a428ff5749efa674185acf9"
+}

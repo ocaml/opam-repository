@@ -1,0 +1,71 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+]
+homepage: "https://github.com/mirage/ocaml-cohttp"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+build: [
+  [make "PREFIX=%{prefix}%"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+    {with-test & ocaml:version < "4.06.0"}
+  ["ocaml" "setup.ml" "-build"] {with-test & ocaml:version < "4.06.0"}
+  ["ocaml" "setup.ml" "-test"] {with-test & ocaml:version < "4.06.0"}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: [make "PREFIX=%{prefix}%" "install"]
+remove: ["ocamlfind" "remove" "cohttp"]
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "base-bytes"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "cmdliner" {build & >= "0.9.4"}
+  "re"
+  "uri" {>= "1.9.0" & < "2.0.0"}
+  "fieldslib" {< "v0.13"}
+  "sexplib" {< "v0.13"}
+  "conduit" {>= "0.14.0" & < "0.16.0"}
+  "ppx_fields_conv" {< "v0.13"}
+  "ppx_deriving"
+  "ppx_sexp_conv" {< "v0.13"}
+  "stringext"
+  "base64" {>= "2.0.0" & < "3.0.0"}
+  "magic-mime"
+  "ounit" {with-test}
+  "alcotest" {with-test}
+]
+depopts: [
+  "async" {< "v0.13"}
+  "lwt"
+  "js_of_ocaml"
+]
+conflicts: [
+  "async" {< "113.24.00"}
+  "lwt" {< "2.5.0"}
+  "lwt" {>= "4.0.0"}
+  "js_of_ocaml" {< "2.8"}
+  "js_of_ocaml" {>= "3.0"}
+]
+synopsis: "HTTP(S) library for Lwt, Async and Mirage"
+description: """
+There are several optional dependencies which activate functionality:
+
+* Lwt: `opam install lwt cohttp`
+* Lwt and SSL: `opam install lwt ssl cohttp`
+* Async: `opam install async cohttp`
+* Async and SSL: `opam install async_ssl cohttp`"""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-cohttp/archive/v0.21.1.tar.gz"
+  checksum: "md5=594877707fe4fe2b87fa75f6b1588958"
+}

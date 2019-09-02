@@ -1,0 +1,49 @@
+opam-version: "2.0"
+maintainer: "mfp@acm.org"
+authors: ["Mauricio Fernandez <mfp@acm.org>"]
+license: "LGPL-2.1 with OCaml linking exception"
+homepage: "http://github.com/mfp/ocaml-sqlexpr"
+dev-repo: "git+https://github.com/mfp/ocaml-sqlexpr.git"
+bug-reports: "https://github.com/mfp/ocaml-sqlexpr/issues"
+doc: "doc"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ocaml"
+  "jbuilder" {build}
+  "ppx_tools_versioned"
+  "ppx_core"
+  "ocaml-migrate-parsetree"
+  "base-unix"
+  "re" {build & >= "1.3.0"}
+  "ounit" {with-test}
+  "lwt" {with-test}
+]
+synopsis:
+  "Type-safe, convenient SQLite database access - extension for use with sqlexpr."
+description: """
+sqlexpr provides type-safe, convenient execution of SQL statements. Currently
+compatible with Sqlite3.
+
+Sqlexpr features:
+
+* automated prepared statement caching, param binding, data
+extraction, error checking (including automatic stmt reset to avoid
+BUSY/LOCKED errors in subsequent queries), stmt finalization on db
+close, etc.
+
+* HOFs like iter, fold, transaction
+
+* support for different concurrency models: everything is functorized
+over a THREAD monad, so you can for instance do concurrent folds/iters
+with Lwt
+
+* support for SQL stmt syntax checks and some extra semantic checking
+(column names, etc)"""
+url {
+  src:
+    "https://github.com/mfp/ocaml-sqlexpr/releases/download/0.9.0/ocaml-sqlexpr-0.9.0.tar.gz"
+  checksum: "md5=edca74c7c1af6f7ebb0c46598f242552"
+}

@@ -1,0 +1,76 @@
+opam-version: "2.0"
+maintainer: "Maël Valais <mael.valais@gmail.com>"
+authors: ["Maël Valais <mael.valais@gmail.com>" "Olivier Lezaud"]
+homepage: "http://touist.github.io"
+bug-reports: "https://github.com/touist/touist/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/touist/touist.git"
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{yices2:enable}%-yices2"
+  ]
+  ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{yices2:enable}%-yices2"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  "ocaml" "%{etc}%/touist/setup.ml" "-C" "%{etc}%/touist" "-uninstall"
+]
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "cppo" {build}
+  "cppo_ocamlbuild" {build}
+  "fileutils" {build & >= "0.4.0"}
+  "menhir" {build & >= "20151023"}
+  "minisat" {build}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {with-test}
+]
+depopts: "yices2"
+conflicts: [
+  "yices2" {< "0.0.2"}
+]
+post-messages: [
+  "
+Touist built without yices2 support.
+To enable the SMT solver (yices2), please install yices2 with the command:
+    opam install yices2
+  "
+    {success & !yices2:installed}
+  "
+Touist built with yices2 support.
+**Yices2 is free [only] for non-commercial use**
+License terms: http://yices.csl.sri.com/yices-newnewlicense.html
+  "
+    {success & yices2:installed}
+]
+synopsis: "The solver for the Touist language"
+description: """
+The Touist language is a friendly language for writing propositional
+logic and logic on real and integers (SMT). This language aims to
+formalize real-life problems (e.g., the sudoku can be solved in a few
+lines). Touist embeds the minisat solver (for propositional logic) and
+the yices2 solver (optional, for SMT logic). It can also generate the
+DIMACS, SMT2 and latex formats from you touist file. To use the SMT
+solver, install yices2 with
+
+   opam install yices2"""
+url {
+  src: "https://github.com/touist/touist/archive/v3.1.0.tar.gz"
+  checksum: "md5=b8dd0572f84baaf7eb1f191f0bb9a208"
+}

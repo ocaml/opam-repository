@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "erwan.jahier@univ-grenoble-alpes.fr"
+authors: [ "Erwan Jahier" ]
+license: "CeCILL"
+homepage: "https://gricad-gitlab.univ-grenoble-alpes.fr/verimag/synchrone/rdbg"
+dev-repo:
+  "git+https://gricad-gitlab.univ-grenoble-alpes.fr/verimag/synchrone/rdbg.git"
+bug-reports: "https://gricad-gitlab.univ-grenoble-alpes.fr/verimag/synchrone/rdbg"
+build: [
+  [make "build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install:  [make "install"]
+remove: [
+  ["ocaml" "%{etc}%/rdbg/setup.ml" "-C" "%{etc}%/rdbg" "-uninstall"]
+]
+depends: [
+  "ocaml" {>= "4.02"}
+  "base-unix" {build}
+  "camlp4" {build}
+  "lutils" {>= "1.9"}
+  "oasis" {build & >= "0.4.7"} | "oasis-mirage" {build & >= "0.4.7"}
+  "ocamlbuild" {build}
+  "ocamlfind"
+  "ounit" {build & >= "2.0.0"}
+]
+post-messages: ["The last version can be obtained via (opam repo add) http://www-verimag.imag.fr/DIST-TOOLS/SYNCHRONE/opam-repository/ "]
+synopsis: "RDBG: a reactive programs debugger."
+description: """
+The library rdbg-plugin contains all the necessary ocaml modules
+needed to add a rdbg plugin. Such a plugin allows ocaml-interpreted
+languages to be executed (à la Lurette) or/and debugged (with rdbg)."""
+url {
+  src: "http://www-verimag.imag.fr/DIST-TOOLS/SYNCHRONE/pool/rdbg.1.175.tgz"
+  checksum: "md5=0df4a0287c76d0bc69bda9de4b0f1610"
+}

@@ -1,0 +1,49 @@
+opam-version: "2.0"
+name: "regular"
+version: "1.2.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure"
+                 "--prefix=%{prefix}%"
+                 "--mandir=%{man}%"
+                 "--enable-regular"]
+  [make]
+]
+
+install: [
+  [make "install"]
+]
+
+remove: [
+  ["ocamlfind" "remove" "regular"]
+]
+
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "core_kernel" {>= "113.24.00" & < "v0.9.0"}
+  "oasis" {build & = "0.4.7"}
+  "ppx_jane" {>= "113.24.01" & < "v0.9"}
+]
+synopsis: "Library for regular data types"
+description: """
+Provides functors and typeclasses implementing functionality expected
+for a regular data type, like i/o, containers, printing, etc.
+
+In particular, the library includes:
+
+- module Data that adds generic i/o routines for each regular data type.
+- module Cache that adds caching service for data types
+- module Regular that glues everything together
+- module Opaque for regular but opaque data types
+- module Seq that extends Core_kernel's sequence module
+- module Bytes that provides a rich core-like interface for Bytes data type."""
+flags: light-uninstall
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v1.2.0.tar.gz"
+  checksum: "md5=3692c341001760ae8c18d95dec157b78"
+}

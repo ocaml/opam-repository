@@ -1,0 +1,34 @@
+opam-version: "2.0"
+name: "caqti-dynload"
+authors: ["Petter A. Urkedal"]
+maintainer: "paurkedal@gmail.com"
+homepage: "https://github.com/paurkedal/ocaml-caqti/"
+bug-reports: "https://github.com/paurkedal/ocaml-caqti/issues"
+dev-repo: "git+https://github.com/paurkedal/ocaml-caqti.git"
+license: "LGPL-3 with OCaml linking exception"
+
+build: [["jbuilder" "build" "-p" name "-j" jobs]]
+
+depends: [
+  "ocaml"
+  "caqti" {= "0.10.1"}
+  "jbuilder" {build}
+  "ocamlfind"
+  "ppx_optcomp" {>= "v0.9.0" & < "v0.11.0"}
+  "ppx_driver"
+]
+synopsis: "Dynamic linking of Caqti drivers using findlib.dynload."
+description: """
+This library registers a dynamic linker which will be called when
+encoutering an unhandled database URI.  It tries to load a findlib package
+named "caqti-driver-<scheme>" where "<scheme>" is the scheme of the URI,
+which is expected register a driver for the scheme.
+
+This is a separate package to avoid the dependency on the findlib.dynload
+for architectures, like MirageOS, where dynamic linking may be unavailable.
+The alternative is to link drivers directly into the application."""
+url {
+  src:
+    "https://github.com/paurkedal/ocaml-caqti/releases/download/v0.10.1/caqti-0.10.1.tbz"
+  checksum: "md5=7abd1ee41a02eb7483617cbc22b09691"
+}

@@ -1,0 +1,70 @@
+opam-version: "2.0"
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+homepage: "http://erratique.ch/software/vg"
+authors: [
+  "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+  "Arthur Wendling"
+]
+doc: "http://erratique.ch/software/vg/doc/Vg"
+dev-repo: "git+http://erratique.ch/repos/vg.git"
+bug-reports: "https://github.com/dbuenzli/vg/issues"
+tags: [
+  "pdf" "svg" "html-canvas" "cairo" "declarative" "graphics"
+  "org:erratique"
+]
+license: "ISC"
+depends: [
+  "ocaml" {>= "4.02.2"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "gg" {>= "0.9.0"}
+  "result"
+  "uchar"
+  "js_of_ocaml" {>= "3.0" & < "3.4"}
+  "js_of_ocaml-compiler" {>= "3.0"}
+  "js_of_ocaml-ocamlbuild" {>= "3.0"}
+  "js_of_ocaml-ppx" {>= "3.0"}
+]
+depopts: [
+  "uutf"
+  "otfm"
+  "cairo2"
+]
+conflicts: [
+  "otfm" {< "0.3.0"}
+  "uutf" {< "1.0.0"}
+  "cairo2" {>= "0.6.0"}
+]
+build: [[
+  "ocaml" "pkg/pkg.ml" "build"
+          "--pinned" "%{pinned}%"
+          "--with-uutf" "%{uutf:installed}%"
+          "--with-otfm" "%{otfm:installed}%"
+          "--with-js_of_ocaml" "%{js_of_ocaml:installed}%"
+          "--with-cairo2" "%{cairo2:installed}%" ]]
+synopsis: "Declarative 2D vector graphics for OCaml"
+description: """
+Vg is an OCaml module for declarative 2D vector graphics. In Vg,
+images are values that denote functions mapping points of the
+cartesian plane to colors. The module provides combinators to define
+and compose these values.
+
+Renderers for PDF, SVG, Cairo and the HTML canvas are distributed with the
+module. An API allows to implement new renderers.
+     
+Vg depends only on [Gg][gg]. The SVG renderer has no dependency, the
+PDF renderer depends on [Uutf][uutf] and [Otfm][otfm], the HTML canvas
+renderer depends on [js_of_ocaml][jsoo], the Cairo renderer depends on
+[cairo2][cairo2]. Vg and its renderers are distributed under the ISC
+license.
+     
+[gg]: http://erratique.ch/software/gg
+[uutf]: http://erratique.ch/software/uutf
+[otfm]: http://erratique.ch/software/otfm
+[jsoo]: http://ocsigen.org/js_of_ocaml/ 
+[cairo2]: https://forge.ocamlcore.org/projects/cairo/"""
+url {
+  src: "http://erratique.ch/software/vg/releases/vg-0.9.1.tbz"
+  checksum: "md5=a2403d2bb52aaccf678623ffad5135bb"
+}

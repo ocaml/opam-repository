@@ -1,0 +1,45 @@
+opam-version: "2.0"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "https://github.com/fxfactorial/ocaml-emoji"
+bug-reports: "https://github.com/fxfactorial/ocaml-emoji/issues"
+license: "BSD-3-clause"
+dev-repo: "git+https://github.com/fxfactorial/ocaml-emoji.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocamlfind" "remove" "emoji"]
+depends: [
+  "ocaml" {>= "4.04.0"}
+  "oasis" {build & >= "0.4.7"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+]
+synopsis: "Use emojis by name"
+description: """
+Names for byte code sequences of 2389 emojis
+
+```ocaml
+#require "emoji";;
+
+let () =
+  let ar = Emoji.all_emojis |> Array.of_list in
+  for i = 0 to Array.length ar - 1 do
+    if (i mod 80 = 0) then print_newline ();
+    print_string ar.(i);
+  done;
+  print_endline Emoji.camel;
+  print_endline Emoji.two_hump_camel
+```"""
+flags: light-uninstall
+url {
+  src: "https://github.com/fxfactorial/ocaml-emoji/archive/v1.1.0.tar.gz"
+  checksum: "md5=b5f1570c58417aa3ef9d72df5dc32eac"
+}

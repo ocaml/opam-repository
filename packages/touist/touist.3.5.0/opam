@@ -1,0 +1,55 @@
+opam-version: "2.0"
+maintainer: "Maël Valais <mael.valais@gmail.com>"
+authors: ["Maël Valais <mael.valais@gmail.com>" "Olivier Lezaud"]
+homepage: "https://www.irit.fr/touist"
+bug-reports: "https://github.com/touist/touist/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/touist/touist.git"
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+  ["jbuilder" "build" "@doc" "-j" jobs] {with-doc}
+]
+install: ["jbuilder" "install"]
+remove: ["jbuilder" "uninstall"]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "jbuilder" {build & >= "1.0+beta12"}
+  "menhir" {>= "20151023"}
+  "minisat"
+  "re"
+  "cmdliner" {>= "0.9.8"}
+  "ounit" {with-test}
+  "odoc" {with-doc}
+]
+depopts: ["qbf" "yices2"]
+conflicts: [
+  "qbf" {< "0.1"}
+  "yices2" {< "0.0.2"}
+]
+post-messages: [
+  "To install more solvers, see 'opam info touist'" {success}
+  "Built without yices2 (SMT solver)" {success & !yices2:installed}
+  "Built without qbf (QBF solver)" {success & !qbf:installed}
+  "Built with yices2 (SMT solver). See 'opam info touist' for license."
+    {success & yices2:installed}
+  "Built with qbf (QBF solver)" {success & qbf:installed}
+]
+synopsis: "The solver for the Touist language"
+description: """
+The Touist language is a friendly language for writing propositional
+logic (SAT), logic on real and integers (SMT) and quantified boolean
+formulas (QBF). This language aims to formalize real-life problems
+(e.g., the sudoku can be solved in a few lines). Touist embeds a SAT
+solver (minisat) and can be built with optionnal SMT and QBF solvers.
+Touist is also able to generate the latex, DIMACS, SMT-LIB and QDIMACS
+formats from a touist file.
+
+Optionnal solvers:
+- for using Yices2 (--smt --solve), run `opam install yices2`
+- for using Quantor (--qbf --solve), run `opam install qbf`"""
+url {
+  src: "https://github.com/touist/touist/archive/v3.5.0.tar.gz"
+  checksum: "md5=c09dd1cda8aff444889d1374636c810b"
+}

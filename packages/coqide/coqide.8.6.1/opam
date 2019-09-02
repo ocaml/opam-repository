@@ -1,0 +1,49 @@
+opam-version: "2.0"
+name: "coqide"
+version: "8.6.1"
+maintainer: "Maxime Dénès <mail@maximedenes.fr>"
+authors: "The Coq development team, INRIA, CNRS, University Paris Sud, University Paris 7, Ecole Polytechnique."
+homepage: "https://coq.inria.fr/"
+bug-reports: "https://coq.inria.fr/bugs/"
+dev-repo: "git+https://github.com/coq/coq.git"
+license: "LGPL-2.1"
+build: [
+  [
+    "./configure"
+    "-configdir"
+    "%{lib}%/coq/config"
+    "-mandir"
+    man
+    "-docdir"
+    doc
+    "-prefix"
+    prefix
+    "-usecamlp5"
+    "-camlp5dir"
+    "%{lib}%/camlp5"
+  ]
+  [make "-j%{jobs}%" "coqide-files"]
+  [make "-j%{jobs}%" "coqide-binaries"]
+]
+remove: ["rm" "-R" "%{lib}%/coq/ide" "%{doc}%/FAQ-CoqIde"]
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "camlp5"
+  "coq" {= "8.6.1"}
+  "lablgtk"
+  "conf-gtksourceview"
+]
+install: [
+  make
+  "install-ide-bin"
+  "install-ide-files"
+  "install-ide-info"
+  "install-ide-devfiles"
+]
+synopsis: "IDE of the Coq formal proof management system."
+flags: light-uninstall
+extra-files: ["coqide.install" "md5=d005cda8cb7888fbea94c5416dcb31bc"]
+url {
+  src: "https://github.com/coq/coq/archive/V8.6.1.tar.gz"
+  checksum: "md5=17d6a99370458b752a45299b9197c29b"
+}

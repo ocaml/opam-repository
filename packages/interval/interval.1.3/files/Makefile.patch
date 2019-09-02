@@ -1,0 +1,71 @@
+From 350b07d9faa7d6647c19dd8a8ea06f31c09f67ee Mon Sep 17 00:00:00 2001
+From: Christophe Troestler <Christophe.Troestler@umons.ac.be>
+Date: Thu, 6 Jul 2017 17:17:46 +0200
+Subject: [PATCH 2/2] Improve compilation & install via ocamlfind
+Content-Type: text/plain; charset="utf-8"
+
+---
+ Makefile | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index d6d47bf..ee00ad1 100755
+--- a/Makefile
++++ b/Makefile
+@@ -1,27 +1,27 @@
+ OCAMLDIR:= "$(shell ocamlc -where)"
+-CSLC = ocamlc
+-CSLOPT = ocamlopt
++CSLC = ocamlc -annot
++CSLOPT = ocamlopt -annot
+ NORM_OBJS= fpu.cmo fpu_rename_all.cmo fpu_rename.cmo interval.cmo 
+ OPT_OBJS=  $(NORM_OBJS:.cmo=.cmx)
+ CC = gcc
+ 
+-all : interval.cma interval.cmxa libinterval.a doc/index.html ocamlfpu
++all : interval.cma interval.cmxa doc/index.html ocamlfpu
+ 
+-interval.cma: $(NORM_OBJS)
+-	$(CSLC) -a -custom -o interval.cma $(NORM_OBJS)
+ 
++interval.cma interval.cmxa: $(NORM_OBJS) $(OPT_OBJS) chcw.o
++	ocamlmklib -o interval -oc interval_ocaml $^
+ 
+-interval.cmxa: $(OPT_OBJS)
+-	$(CSLOPT) -a -o interval.cmxa  $(OPT_OBJS)
++ocamlfpu: interval.cma
++	ocamlmktop -I . -o ocamlfpu interval.cma
+ 
+-libinterval.a: chcw.o
+-	rm -f $@
+-	ar rc $@  chcw.o
+-	ranlib $@
++install: all
++	ocamlfind install interval $(wildcard META \
++	  *.cmi *.cmti *.cma *.cmx *.cmxa *.mli *.a *.so)
+ 
+-ocamlfpu: interval.cma libinterval.a
+-	ocamlmktop -o ocamlfpu chcw.o interval.cma libinterval.a
++remove:
++	ocamlfind remove interval
+ 
++.PHONY: install remove
+ 
+ .SUFFIXES: .ml .mli .cmo .cmi .cmx
+ 
+@@ -32,10 +32,10 @@ ocamlfpu: interval.cma libinterval.a
+ .ml.cmx :
+ 	$(CSLOPT) -c $<
+ .c.o :
+-	$(CC) -W -Wall -O3 -I $(OCAMLDIR)/caml -c  $<
++	$(CC) -W -Wall -O3 -I $(OCAMLDIR)/caml -fPIC -c  $<
+ 
+ clean:
+-	\rm -f *.cmo *.cmi *.cmx *.o *~ *.cma *.cmxa *.a a.out ocamlfpu ocamlfpu.exe
++	$(RM) -f *.cmo *.cmi *.cmx *.o *~ *.cma *.cmxa *.a a.out *.so ocamlfpu ocamlfpu.exe
+ 
+ doc/index.html: *.mli
+ 	ocamldoc -d doc -html *.mli
+-- 
+2.13.2
+

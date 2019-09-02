@@ -1,0 +1,68 @@
+opam-version: "2.0"
+name:         "vmnet"
+maintainer:   "Anil Madhavapeddy <anil@recoil.org>"
+authors:      "Anil Madhavapeddy <anil@recoil.org>"
+homepage:     "https://github.com/mirage/ocaml-vmnet"
+bug-reports:  "https://github.com/mirage/ocaml-vmnet/issues"
+dev-repo: "git+https://github.com/mirage/ocaml-vmnet.git"
+doc:          "https://mirage.github.io/ocaml-vmnet/"
+license:      "ISC"
+
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "subst" "-p" name] {with-test & pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs] {with-test}
+  ["jbuilder" "runtest"] {with-test}
+]
+depends: [
+  "ocaml" {< "4.6.0"}
+  "jbuilder" {build & >= "1.0+beta9"}
+  "ppx_tools"
+  "ppx_sexp_conv" {< "v0.13"}
+  "ocaml-migrate-parsetree" {build}
+  "sexplib" {>= "113.24.00" & < "v0.13"}
+  "ipaddr" {>= "1.4.0" & < "3.0.0"}
+  "lwt" {>= "2.4.3" & < "4.0.0"}
+  "cstruct" {>= "1.9.0"}
+  "cstruct-unix"
+]
+available: os = "macos"
+post-messages: [
+  "This package requires the vmnet.framework plus development headers which are present in Yosemite (10.10.*) and later." {failure}
+]
+synopsis: "Userlevel network bridging on MacOS X"
+description: """
+MacOS X 10.10 (Yosemite) introduced the somewhat undocumented `vmnet`
+framework.  This exposes virtual network interfaces to userland applications.
+There are a number of advantages of this over previous implementations:
+
+- Unlike [tuntaposx](http://tuntaposx.sourceforge.net/), this is builtin
+  to MacOS X now and so is easier to package up and distribute for end users.
+- `vmnet` uses the XPC sandboxing interfaces and should make it easier to
+  drop a hard dependency on running networking applications as `root`.
+- Most significantly, `vmnet` supports bridging network traffic to the
+  outside world, which was previously unsupported.
+
+These OCaml bindings are constructed against the documentation contained
+in the `<vmnet.h>` header file in Yosemite, and may not be correct due to
+the lack of any other example code.  However, they do suffice to run
+[MirageOS](http://openmirage.org) applications that can connect to the
+outside world.  The bindings are also slightly complicated by the need
+to interface [GCD](http://en.wikipedia.org/wiki/Grand_Central_Dispatch)
+thread pools with the OCaml runtime, so please report any instabilities
+that you see when using this interface as a consumer.
+
+There are two libraries provided:
+
+- `Vmnet` is the raw OCaml binding to the `vmnet` framework, using
+   OCaml preemptive threads to handle synchronisation.
+- `Lwt_vmnet` uses the [Lwt](http://ocsigen.org/lwt) framework to
+  provide a monadic asynchronous I/O interface at a higher level.
+
+Most users should use `Lwt_vmnet` to handle guest traffic."""
+url {
+  src:
+    "https://github.com/mirage/ocaml-vmnet/releases/download/1.3.0/vmnet-1.3.0.tbz"
+  checksum: "md5=d0850d85ae529b0acd770d7ee59baac2"
+}

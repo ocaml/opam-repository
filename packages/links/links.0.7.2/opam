@@ -1,0 +1,113 @@
+opam-version: "2.0"
+maintainer: "Simon Fowler <simon.fowler@ed.ac.uk>"
+authors: "The Links Team <links-dev@inf.ed.ac.uk>"
+homepage: "https://github.com/links-lang/links"
+dev-repo: "git+https://github.com/links-lang/links.git"
+bug-reports: "https://github.com/links-lang/links/issues"
+license: "GPL-2"
+
+build: [
+  [ "jbuilder" "subst" "-p" name ] {pinned}
+  [ "jbuilder" "build" "-p" name "-j" jobs ]
+]
+
+install: [
+# Install documentation
+  [ "mkdir" "-p" "%{links:doc}%"                                      ]
+  [ "cp" "INSTALL" "%{links:doc}%/README"                             ]
+# Copy examples
+  [ "mkdir" "-p" "%{links:share}%/examples"                           ]
+  [ "sh" "-c" "cp -r examples/dbsetup %{links:share}%/examples/dbsetup/" ]
+  [ "sh" "-c" "cp examples/*.links %{links:share}%/examples"          ]
+  [ "sh" "-c" "cp examples/*.jpg %{links:share}%/examples"            ]
+  [ "sh" "-c" "cp examples/*.sql %{links:share}%/examples"            ]
+  [ "sh" "-c" "cp examples/*.html %{links:share}%/examples"           ]
+  [ "sh" "-c" "cp examples/*.css %{links:share}%/examples"            ]
+  [ "sh" "-c" "cp examples/*.js %{links:share}%/examples"             ]
+  [ "sh" "-c" "cp -r examples/dictionary %{links:share}%/examples/"   ]
+  [ "sh" "-c" "cp -r examples/games %{links:share}%/examples/"        ]
+  [ "sh" "-c" "cp -r examples/sessions %{links:share}%/examples/"     ]
+  [ "sh" "-c" "cp -r examples/webserver %{links:share}%/examples/"    ]
+  [ "sh" "-c" "cp -r examples/css %{links:share}%/examples/"          ]
+# Generate and install a config file
+  [ "touch" "config"                                                  ]
+  [ "sh" "-c" "echo jsliburl=/lib/js > config"                          ]
+  [ "sh" "-c" "echo jslibdir=%{links:lib}%/js >> config"               ]
+  [ "sh" "-c" "echo #database_driver=postgresql >> config"             ]
+  [ "sh" "-c" "echo #database_args=localhost:5432:user:pass >> config" ]
+  [ "mkdir" "-p" "%{links:etc}%"                                      ]
+  [ "cp" "config" "%{links:etc}%"                                     ]
+]
+
+remove: [
+  [ "rm" "-f"  "%{links:bin}%/linx" ]
+  [ "rm" "-f"  "%{links:lib}%/prelude.links" ]
+  [ "rm" "-rf" "%{links:lib}%/stdlib" ]
+  [ "rm" "-rf" "%{links:lib}%/js" ]
+  [ "rm" "-rf" "%{links:share}%/examples" ]
+  [ "rm" "-f"  "%{links:etc}%/config" ]
+  [ "rm" "-f"  "%{links:doc}%/README" ]
+]
+
+depends: [
+  "ocaml" {>= "4.04.0" & < "4.06"}
+  "jbuilder" {build}
+  "deriving" {build}
+  "cgi"
+  "base64" {< "3.0.0"}
+  "linenoise"
+  "ANSITerminal"
+  "lwt"
+  "cohttp" {< "0.99.0"}
+  "websocket-lwt"
+  "safepass"
+]
+synopsis: "Linking Theory to Practice for the Web"
+description: """
+[![Build Status](https://travis-ci.org/links-lang/links.svg?branch=master)](https://travis-ci.org/links-lang/links)
+
+Links helps to build modern Ajax-style applications: those with
+significant client- and server-side components.
+
+A typical, modern web program involves many "tiers": part of the
+program runs in the web browser, part runs on a web server, and part
+runs in specialized systems such as a relational database. To create
+such a program, the programmer must master a myriad of languages: the
+logic is written in a mixture of Java, Python, and Perl; the
+presentation in HTML; the GUI behavior in Javascript; and the queries
+are written in SQL or XQuery. There is no easy way to link these: to
+be sure, for example, that an HTML form or an SQL query produces the
+type of data that the Java code expects. This is called the impedance
+mismatch problem.
+
+Links eases the impedance mismatch problem by providing a single
+language for all three tiers. The system is responsible for
+translating the code into suitable languages for each tier: for
+instance, translating some code into Javascript for the browser, some
+into Java for the server, and some into SQL to use the database.
+
+Links incorporates ideas proven in other programming languages:
+database-query support from Kleisli, web-interaction proposals from
+PLT Scheme, and distributed-computing support from Erlang. On top of
+this, it adds some new web-centric features of its own.
+
+FEATURES
+
+ * Allows web programs to be written in a single programming language
+ * Call-by-value functional language
+ * Server / Client annotations
+ * AJAX
+ * Scalability through defunctionalised server continuations.
+ * Statically typed database access a la Kleisli
+ * Concurrent processes on the client and the server
+ * Statically typed Erlang-esque message passing
+ * Polymorphic records and variants
+ * An effect system for supporting abstraction over database queries
+whilst guaranteeing that they can be efficiently compiled to SQL
+ * Handlers for algebraic effects on the server-side and the client-side"""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/links-lang/links/releases/download/0.7.2/links-0.7.2.tbz"
+  checksum: "md5=dded7b86bb08a2de544193972cb7a5e9"
+}

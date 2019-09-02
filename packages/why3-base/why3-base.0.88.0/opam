@@ -1,0 +1,73 @@
+opam-version: "2.0"
+maintainer: "guillaume.melquiond@inria.fr"
+authors: [
+  "François Bobot"
+  "Jean-Christophe Filliâtre"
+  "Claude Marché"
+  "Guillaume Melquiond"
+  "Andrei Paskevich"
+]
+
+homepage: "http://why3.lri.fr/"
+license: "GNU Lesser General Public License version 2.1"
+doc: "http://why3.lri.fr/#documentation"
+bug-reports: "https://gforge.inria.fr/tracker/?func=browse&group_id=2990&atid=10293"
+dev-repo: "git+https://scm.gforge.inria.fr/anonscm/git/why3/why3.git"
+tags: [
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "interactive theorem prover"
+]
+build: [
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--disable-frama-c"
+    "--disable-ide" {!conf-gtksourceview:installed}
+  ]
+  [make "-j%{jobs}%" "all" "opt" "byte"]
+  [make "doc" "stdlibdoc" "apidoc"] {with-doc}
+]
+install: [
+  [make "install" "install-lib"]
+  [make "DOCDIR=%{doc}%/why3" "install-doc"] {with-doc}
+]
+remove: [
+  ["rm" "%{bin}%/why3"]
+  ["rm" "-r" "%{lib}%/why3"]
+  ["rm" "-r" "%{share}%/why3"]
+]
+
+depends: [
+  "ocaml" {>= "4.02.3" & < "4.06.0"}
+  "ocamlfind"
+  "menhir"
+]
+depopts: [
+  "lablgtk"
+  "conf-gtksourceview"
+  "zarith"
+  "camlzip"
+  "ocamlgraph"
+  "coq"
+]
+
+conflicts: [
+  "lablgtk" {< "2.14.2"}
+  "ocamlgraph" {< "1.8.2"}
+  "coq" {< "8.4"}
+  "coq" {>= "8.7"}
+]
+synopsis: "Why3 environment for deductive program verification (base)"
+description: """
+This package is for advanced users only, normal users should use the
+full why3 package."""
+flags: light-uninstall
+url {
+  src:
+    "https://gforge.inria.fr/frs/download.php/file/37147/why3-0.88.0.tar.gz"
+  checksum: "md5=1aef885ff8eee34107585e11db623a8d"
+}

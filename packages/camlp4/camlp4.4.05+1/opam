@@ -1,0 +1,62 @@
+opam-version: "2.0"
+authors: ["Daniel de Rauglaudre" "Nicolas Pouillard"]
+maintainer: "jeremie@dimino.org"
+homepage: "https://github.com/ocaml/camlp4"
+license: "LGPLv2"
+patches: [
+  "safe-string.patch"
+  "f0ea53725465260556832398096cef8d3f20b49d.patch"
+]
+build: [
+  [
+    "./configure"
+    "--bindir=%{bin}%"
+    "--libdir=%{lib}%/ocaml"
+    "--pkgdir=%{lib}%"
+  ]
+  [make "clean"]
+  [make "all"] {ocaml:native-dynlink}
+  [make "byte"] {!ocaml:native-dynlink}
+]
+depends: [
+  "ocaml" {>= "4.05" & < "4.06"}
+  "ocamlbuild" {build}
+]
+install: [
+  [make "install" "install-META"]
+]
+remove: [
+  ["ocamlfind" "remove" "camlp4"]
+  ["rm" "-rf" "%{lib}%/ocaml/camlp4"]
+  ["rm" "-f" "%{bin}%/camlp4"  "%{bin}%/camlp4boot" "%{bin}%/mkcamlp4"
+             "%{bin}%/camlp4r" "%{bin}%/camlp4rf"   "%{bin}%/camlp4orf"
+             "%{bin}%/camlp4o" "%{bin}%/camlp4of"   "%{bin}%/camlp4oof"
+             "%{bin}%/camlp4prof"]
+]
+
+bug-reports: "https://github.com/ocaml/camlp4/issues"
+dev-repo: "git+https://github.com/ocaml/camlp4.git"
+synopsis:
+  "Camlp4 is a system for writing extensible parsers for programming languages"
+description: """
+It provides a set of OCaml libraries that are used to define grammars as well
+as loadable syntax extensions of such grammars. Camlp4 stands for Caml
+Preprocessor and Pretty-Printer and one of its most important applications is
+the definition of domain-specific extensions of the syntax of OCaml.
+
+Camlp4 was part of the official OCaml distribution until its version 4.01.0.
+Since then it has been replaced by a simpler system which is easier to maintain
+and to learn: ppx rewriters and extension points."""
+conflicts: ["ocaml-system"]
+flags: light-uninstall
+extra-files: [
+  ["safe-string.patch" "md5=63fc1a60718ebbba6c4b821b706a3042"]
+  [
+    "f0ea53725465260556832398096cef8d3f20b49d.patch"
+    "md5=4e15b0fb960be4be48b154bfafbb9a16"
+  ]
+]
+url {
+  src: "https://github.com/ocaml/camlp4/archive/4.05+1.tar.gz"
+  checksum: "md5=c69d1c2aebf231ea98e7464f020cffc4"
+}

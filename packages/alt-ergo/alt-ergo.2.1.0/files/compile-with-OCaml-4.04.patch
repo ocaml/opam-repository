@@ -1,0 +1,23 @@
+diff --git a/lib/reasoners/satml.ml b/lib/reasoners/satml.ml
+index 1c6703c..72f170c 100644
+--- a/lib/reasoners/satml.ml
++++ b/lib/reasoners/satml.ml
+@@ -1729,6 +1729,9 @@ module Make (Th : Theory.S) : SAT_ML with type th = Th.t = struct
+       | None -> assert false
+ 
+ 
++let rec list_find_opt p = function
++  | [] -> None
++  | x :: l -> if p x then Some x else list_find_opt p l
+ 
+ 
+ let add_form_to_lazy_cnf =
+@@ -1755,7 +1758,7 @@ let add_form_to_lazy_cnf =
+           List.fold_left add_aux ma l
+ 
+         | OR l  ->
+-          match List.find_opt (fun e ->
++          match list_find_opt (fun e ->
+             let p = get_atom_or_proxy e env.proxies in
+             p.is_true) l
+           with

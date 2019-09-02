@@ -1,25 +1,24 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "sheets@alum.mit.edu"
 authors: ["David Sheets"]
 homepage: "https://github.com/dsheets/ocaml-unix-sys-resource"
 bug-reports: "https://github.com/dsheets/ocaml-unix-sys-resource/issues"
-dev-repo: "https://github.com/dsheets/ocaml-unix-sys-resource.git"
+dev-repo: "git+https://github.com/dsheets/ocaml-unix-sys-resource.git"
 tags: [ "unix" "posix" "sys/resource.h" "getrlimit" "setrlimit" "rlimit" ]
 license: "ISC"
 build: [
   [make "build"]
-]
-build-test: [
-  [make "test"]
+  [make "test"] {with-test}
 ]
 install: [
   [make "install"]
 ]
 remove: [make "uninstall"]
 depends: [
+  "ocaml"
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "alcotest" {test}
+  "alcotest" {with-test}
   "unix-errno" {>= "0.3.0" & < "0.4.0"}
   "ctypes"
 ]
@@ -30,3 +29,23 @@ conflicts: [
   "ctypes" {< "0.4.0"}
   "ctypes" {>= "0.6.0"}
 ]
+synopsis:
+  "Unix sys/resource.h types and bindings (getrlimit, setrlimit, and friends)"
+description: """
+unix-sys-resource provides access to the features exposed in
+sys/resource.h in a way that is not tied to the implementation on the
+host system.
+
+The Sys_resource module provides types and functions for describing and
+working with rlimit resources and limits.
+
+The Sys_resource_unix module provides bindings to functions that use the
+types in Sys_resource.
+
+Currently, getrlimit and setrlimit and their corresponding flags are
+bound."""
+url {
+  src:
+    "https://github.com/dsheets/ocaml-unix-sys-resource/archive/0.1.0.tar.gz"
+  checksum: "md5=7555aa595876f249cadabcb71c12ef60"
+}

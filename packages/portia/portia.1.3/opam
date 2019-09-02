@@ -1,0 +1,42 @@
+opam-version: "2.0"
+name: "portia"
+version: "1.3"
+maintainer: "Cedric Cellier <rixed@happyleptic.org>"
+authors: "Cedric Cellier <rixed@happyleptic.org>"
+homepage: "https://github.com/rixed/portia"
+doc: "http://rixed.github.io/portia/"
+dev-repo: "git+https://github.com/rixed/portia.git"
+bug-reports: "mailto:rixed-opam@happyleptic.org"
+synopsis: "Literate Programming Preprocessor"
+description: """
+A literate programming preprocessor written in literate programming style.
+You need funnelweb (or portia) to compile it from scratch, but preprocessed
+source files are also available.
+
+    @O@<literate_quine.sh@>==@{@-
+    #!/bin/sh
+    cat README.md
+    @}
+"""
+build: [
+  [make]
+  [make "check"] {with-test}
+  [make "doc"] {with-doc}
+]
+install: [make "install"]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind" {build}
+  "batteries"
+  "qtest" {with-test}
+]
+depexts: [
+  ["asciidoc"] {os-family = "debian"}
+]
+post-messages: [
+  "This package requires asciidoc to build the doc." {failure}
+]
+url {
+  src: "https://github.com/rixed/portia/archive/v1.3.tar.gz"
+  checksum: "md5=25d87aa8f2d56cc53a44346729be152a"
+}

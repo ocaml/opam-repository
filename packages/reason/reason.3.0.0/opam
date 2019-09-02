@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "Jordan Walke <jordojw@gmail.com>"
+authors: "Jordan Walke <jordojw@gmail.com>"
+homepage: "https://github.com/facebook/reason"
+bug-reports: "https://github.com/facebook/reason/issues"
+license: "BSD. Additional patent grant provided."
+doc: "http://reasonml.github.io/"
+tags: "syntax"
+dev-repo: "git://github.com/facebook/reason.git"
+substs: "pkg/META"
+build: [
+  [make "compile_error"]
+  ["ocamlbuild" "-use-ocamlfind" "-package" "topkg" "pkg/build.native"]
+  [
+    "./build.native"
+    "build"
+    "--native"
+    "%{ocaml:native}%"
+    "--native-dynlink"
+    "%{ocaml:native-dynlink}%"
+    "--utop"
+    "%{utop:installed}%"
+  ]
+]
+depends: [
+  "ocaml" {>= "4.02" & < "4.06"}
+  "ocamlfind" {build}
+  "menhir" {>= "20170418" & <= "20170712"}
+  "utop" {>= "1.17"}
+  "merlin-extend" {>= "0.3" & < "0.4"}
+  "result" {= "1.2"}
+  "topkg" {>= "0.9.1"}
+  "ocaml-migrate-parsetree"
+]
+conflicts: [
+  "utop" {< "1.17"}
+]
+synopsis: "Reason: Syntax & Toolchain for OCaml"
+description: """
+Reason gives OCaml a new syntax that is remniscient of languages like
+JavaScript. It's also the umbrella project for a set of tools for the OCaml &
+JavaScript ecosystem."""
+url {
+  src: "https://github.com/facebook/reason/archive/3.0.0.tar.gz"
+  checksum: "md5=f3ce46cf6819fc742b74d0e08a27e853"
+}

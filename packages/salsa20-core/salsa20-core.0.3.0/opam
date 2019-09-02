@@ -1,0 +1,54 @@
+opam-version: "2.0"
+name:         "salsa20-core"
+homepage:     "https://github.com/abeaumont/ocaml-salsa20-core"
+dev-repo: "git+https://github.com/abeaumont/ocaml-salsa20-core.git"
+bug-reports:  "https://github.com/abeaumont/ocaml-salsa20-core/issues"
+maintainer:   "Alfredo Beaumont <alfredo.beaumont@gmail.com>"
+license:      "BSD2"
+
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "ocb-stubblr" {build}
+  "cstruct" {>= "1.7.0"}
+  "alcotest" {with-test}
+]
+synopsis: "Salsa20 core functions, in OCaml"
+description: """
+An OCaml implementation of [Salsa20 Core](http://cr.yp.to/salsa20.html) functions, both Salsa20/20 Core and the reduced Salsa20/8 Core and Salsa20/12 Core functions.
+The hot loop is implemented in C for efficiency reasons.
+
+Salsa 20 Core are functions from 64-byte strings to 64-byte strings.
+
+## Installation
+
+```
+opam install salsa20-core
+```
+
+## Usage
+
+```ocaml
+utop[0]> #require "salsa20-core";;
+utop[1]> 0
+|> Char.chr
+|> String.make 64
+|> Cstruct.of_string
+|> Salsa20_core.salsa20_20_core (* or salsa20_12_core / salsa20_8_core *)
+|> Cstruct.to_string;;
+- : string =
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000"
+```"""
+authors: "Alfredo Beaumont <alfredo.beaumont@gmail.com>"
+url {
+  src: "https://github.com/abeaumont/ocaml-salsa20-core/archive/0.3.0.tar.gz"
+  checksum: "md5=a8b0f41bb3501af748edaf7bbdafed1a"
+}

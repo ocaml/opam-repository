@@ -1,0 +1,48 @@
+opam-version: "2.0"
+authors: "John Else"
+homepage: "https://github.com/johnelse/ocaml-osc"
+bug-reports: "https://github.com/johnelse/ocaml-osc/issues"
+dev-repo: "git://github.com/johnelse/ocaml-osc"
+maintainer: "john.else@gmail.com"
+build: [
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--%{lwt:enable}%-lwt"
+    "--%{base-unix:enable}%-unix"
+    "--enable-docs"
+  ]
+  [make "build"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
+  [make "test-interop-sclang"] {with-test}
+]
+install: [
+  [make "PREFIX=%{prefix}%" "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "osc"]
+]
+depends: [
+  "ocaml" {>= "4.02.1"}
+  "oasis" {build}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ocplib-endian"
+  "rresult"
+  "ounit" {with-test}
+]
+depopts: [
+  "base-unix"
+  "lwt"
+]
+conflicts: [
+  "lwt" {< "2.7.0"}
+]
+synopsis: "Pure OCaml OpenSoundControl client and server implementation"
+flags: light-uninstall
+url {
+  src: "https://github.com/johnelse/ocaml-osc/archive/osc.0.1.4.tar.gz"
+  checksum: "md5=b21799c49c24e07341ff208f278f6a59"
+}

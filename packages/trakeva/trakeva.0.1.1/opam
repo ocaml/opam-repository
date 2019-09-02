@@ -1,0 +1,45 @@
+opam-version: "2.0"
+maintainer: "Sebastien Mondet <seb@mondet.org>"
+authors: "Sebastien Mondet <seb@mondet.org>"
+homepage: "http://www.hammerlab.org/docs/trakeva/master/index.html"
+bug-reports: "https://github.com/smondet/trakeva/issues"
+license: "Apache-2.0"
+dev-repo: "git+https://github.com/smondet/trakeva.git"
+build: [
+  [
+    "./configure"
+    "--%{sqlite3:enable}%-sqlite"
+    "--%{postgresql:enable}%-postgresql"
+    "--disable-test"
+    prefix
+  ]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "trakeva"]
+  ["ocamlfind" "remove" "trakeva_sqlite"]
+  ["ocamlfind" "remove" "trakeva_postgresql"]
+  ["ocamlfind" "remove" "trakeva_of_uri"]
+]
+depends: [
+  "ocaml"
+  "base-threads"
+  "nonstd"
+  "oasis" {build & >= "0.4"}
+  "ocamlfind" {build}
+  "pvem_lwt_unix"
+  "uri"
+]
+depopts: ["postgresql" "sqlite3"]
+synopsis: "Transactions, Keys, and Values; with Postgresql and/or Sqlite."
+description: """
+A common key-value API with transactions on top of Postgresql or Sqlite.
+The library `trakeva_of_uri` does dynamic loading based on a configuration URI
+(`postgresql://` or `sqlite://`, depending on backends available at
+compile-time)."""
+flags: light-uninstall
+url {
+  src: "https://github.com/smondet/trakeva/archive/trakeva.0.1.1.tar.gz"
+  checksum: "md5=6e37bdc1059e84c3836e9bfadd7da56b"
+}

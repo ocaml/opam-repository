@@ -26,9 +26,7 @@ let cut_tail l = List.rev (List.tl (List.rev l))
 
 let string_split sep source =
   let copy_part index offset =
-    let dst = String.create (offset - index) in
-    let () = String.blit source index dst 0 (offset - index) in
-    dst
+    String.sub source index (offset - index)
   in
   let l = String.length source in
   let rec loop prev current acc =

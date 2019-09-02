@@ -1,0 +1,31 @@
+opam-version: "2.0"
+maintainer: "Christopher Zimmermann <christopher@gmerlin.de>"
+homepage: "https://github.com/savonet/ocaml-ssl"
+dev-repo: "git+https://github.com/savonet/ocaml-ssl.git"
+bug-reports: "https://github.com/savonet/ocaml-ssl/issues"
+build: [
+  ["./configure" "--prefix" prefix] {os != "macos"}
+  [
+    "sh"
+    "-exc"
+    "./configure --prefix %{prefix}% CPPFLAGS=\"$CPPFLAGS -I/opt/local/include -I/usr/local/opt/openssl/include\""
+  ] {os = "macos"}
+  [make]
+]
+install: [[make "install"]]
+remove: [["ocamlfind" "remove" name]]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "conf-which" {build}
+  "conf-openssl"
+  "base-bytes"
+]
+synopsis: "Bindings for OpenSSL"
+authors: "Samuel Mimram <samuel.mimram@ens-lyon.org>"
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/savonet/ocaml-ssl/releases/download/0.5.4/ocaml-ssl-0.5.4.tar.gz"
+  checksum: "md5=fa17599362d888a9dc11329e8b1ad2c3"
+}

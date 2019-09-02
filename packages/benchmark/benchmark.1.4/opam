@@ -1,21 +1,22 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "benchmark"
 version: "1.4"
 maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
 authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>" ]
 license: "LGPL-3.0 with OCaml linking exception"
 homepage: "http://ocaml-benchmark.forge.ocamlcore.org/"
-dev-repo: "https://github.com/Chris00/ocaml-benchmark.git"
+dev-repo: "git+https://github.com/Chris00/ocaml-benchmark.git"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocamlfind" "remove" "benchmark"]
 ]
-build-doc: [ "ocaml" "setup.ml" "-doc" ]
 depends: [
+  "ocaml" {>= "3.12.0"}
   "base-unix"
   "ocamlfind"
   "ocamlbuild" {build}
@@ -24,4 +25,14 @@ depopts: [
   "base-bigarray"
   "pcre"
 ]
-ocaml-version: [ >= "3.12.0" ]
+synopsis: "Benchmark running times of code."
+description: """
+This module provides a set of tools to measure the running times of
+your functions and to easily compare the results. A statistical test
+is used to determine whether the results truly differ."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/Chris00/ocaml-benchmark/releases/download/1.4/benchmark-1.4.tar.gz"
+  checksum: "md5=d82b5522a6159de8909b6af553c08965"
+}

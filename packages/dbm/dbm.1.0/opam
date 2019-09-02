@@ -1,23 +1,27 @@
-opam-version: "1"
-maintainer: "contact@ocamlpro.com"
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
 authors: ["Francois Rouaix"]
-homepage: "https://forge.ocamlcore.org/projects/camldbm/"
+homepage: "https://github.com/ocaml/dbm"
+bug-reports: "https://github.com/ocaml/dbm/issues"
+dev-repo: "git+https://github.com/ocaml/dbm.git"
 license: "LGPL-v2 with OCaml linking exception"
 build: [
-  ["mkdir" "-p" "%{lib}%/dbm"]
   ["./configure"]
   [make "all"]
-  [make "test"]
+  [make "test"] {with-test}
 ]
-depends: ["ocamlfind"]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+]
 depexts: [
-  [["debian"] ["libgdbm-dev"]]
-  [["ubuntu"] ["libgdbm-dev"]]
-  [["nixpkgs"] ["gdbm"]]
-  [["centos"] ["gdbm-devel"]]
-  [["rhel"] ["gdbm-devel"]]
-  [["fedora"] ["gdbm-devel"]]
-  [["alpine"] ["gdbm-dev"]]
+  ["libgdbm-dev"] {os-family = "debian"}
+  ["gdbm"] {os-distribution = "nixos"}
+  ["gdbm-devel"] {os-distribution = "centos"}
+  ["gdbm-devel"] {os-distribution = "rhel"}
+  ["gdbm-devel"] {os-distribution = "fedora"}
+  ["gdbm-dev"] {os-distribution = "alpine"}
+  ["gdbm"] {os-distribution = "arch"}
 ]
 patches: [
   "hasgotfix.patch"
@@ -25,6 +29,22 @@ patches: [
   "mkdir-stublibs.patch"
 ]
 install: [
+  ["mkdir" "-p" "%{lib}%/dbm"]
   [make "install" "STUBLIBDIR=%{lib}%/stublibs" "LIBDIR=%{lib}%/dbm"]
   ["cp" "META" "%{lib}%/dbm"]
 ]
+remove: [
+  ["rm" "-f" "%{lib}%/stublibs/dllcamldbm.so"]
+  ["ocamlfind" "remove" "dbm"]
+]
+synopsis: "Binding to the NDBM/GDBM Unix \"databases\""
+flags: light-uninstall
+extra-files: [
+  ["mkdir-stublibs.patch" "md5=fe28ae3da0723ab2438f41c9cbb2b8f3"]
+  ["include_fix.patch" "md5=27df514fc62ef34881f2625b452ea961"]
+  ["hasgotfix.patch" "md5=b47c3bd0728c929227ca30463f41a7f7"]
+]
+url {
+  src: "https://download.ocamlcore.org/camldbm/template/CamlDBM1.0/camldbm-1.0.tgz"
+  checksum: "md5=79a297c0e0c54fbb3c7e795359e5f902"
+}

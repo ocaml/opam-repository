@@ -1,0 +1,68 @@
+opam-version: "2.0"
+maintainer: "dev@ocsigen.org"
+homepage: "https://ocsigen.org/tyxml/"
+bug-reports: "https://github.com/ocsigen/tyxml/issues"
+doc: "https://ocsigen.org/tyxml/manual/"
+dev-repo: "git+https://github.com/ocsigen/tyxml.git"
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--%{camlp4:enable}%-syntax"
+    "--%{markup+ppx_tools_versioned:enable}%-ppx"
+    "--prefix"
+    prefix
+  ]
+  ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--%{camlp4:enable}%-syntax"
+    "--%{markup+ppx_tools_versioned:enable}%-ppx"
+    "--enable-tests"
+    "--prefix"
+    prefix
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocamlfind" "remove" "tyxml"]
+depends: [
+  "ocaml" {>= "4.02"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "uchar"
+  "uutf" {>= "1.0.0"}
+  "base-bytes"
+  "re" {>= "1.5.0"}
+  "alcotest" {with-test}
+]
+depopts: [
+  "camlp4"
+  "markup"
+  "ppx_tools_versioned"
+]
+messages: [
+  "For tyxml's ppx, please install tyxml-ppx."
+  {!markup:installed | !ppx_tools_versioned:installed}
+  "Tyxml's camlp4-based libraries (tyxml.syntax and tyxml.parser) are now deprecated and will be removed in the next major version."
+  {camlp4:installed}
+]
+synopsis:
+  "TyXML is a library for building statically correct HTML5 and SVG documents"
+description: """
+TyXML allows you to build HTML5 and SVG trees whose validity is ensured by the typechecker.
+It provides a printer for said XML trees, along with a ppx syntax extension.
+Finally it also provides a functorial interface to choose your XML datastructure.
+It's part of the ocsigen project and is used in js_of_ocaml and eliom."""
+authors: "The ocsigen team"
+flags: light-uninstall
+extra-files: ["tyxml.install" "md5=c5877ac0f3060afc7dbbb9ac65f76e0a"]
+url {
+  src: "https://github.com/ocsigen/tyxml/archive/4.2.0.tar.gz"
+  checksum: "md5=c802f3c7036adcea3fc00398c23d1b2b"
+}

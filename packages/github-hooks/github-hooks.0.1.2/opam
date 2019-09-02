@@ -1,0 +1,71 @@
+opam-version: "2.0"
+maintainer: "sheets@alum.mit.edu"
+authors: [
+  "David Sheets"
+  "Thomas Gazagnaire"
+]
+homepage: "https://github.com/dsheets/ocaml-github-hooks"
+bug-reports: "https://github.com/dsheets/ocaml-github-hooks/issues"
+dev-repo: "git+https://github.com/dsheets/ocaml-github-hooks.git"
+doc: "https://dsheets.github.io/ocaml-github-hooks/"
+
+tags: [
+  "git"
+  "github"
+]
+build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "base-unix"
+  "fmt"
+  "logs"
+  "lwt"
+  "cohttp" {< "0.99"}
+  "github" {>= "2.0.1" & < "3.0.0"}
+  "nocrypto"
+  "hex"
+]
+synopsis: "GitHub API web hook listener library"
+description: """
+Library to create GitHub webhook server.
+
+### Web hook tests
+
+This repository contains a GitHub web hook test harness that confirms
+that ocaml-github can parse both polled and web-hook-received events and
+that the expected events are delivered in the correct order. To run the
+`test_hook_server` program, you must have a publicly accessible IP
+address with a DNS `A` record and a TLS certificate. You can use [Let's
+Encrypt](https://letsencrypt.org/) to get a TLS certificate for your
+domain for free. `test_hook_server` should be run from an account on the
+public-facing machine which also has agent access to an SSH key which is
+registered with GitHub. I recommend using a remote VM for the domain and
+forwarding a local ssh agent with something like `ssh -A example.net`.
+
+Once this is configured, place your TLS certificate in the file
+`webhook.crt` and the key for that certificate in
+`webhook.key`. Generate a personal GitHub token named `test` with `git
+jar make --scopes=admin:repo_hook,delete_repo,repo [GitHub token
+username] test` (with the `git-jar` subcommand from
+[mirage/ocaml-github](https://github.com/mirage/ocaml-github)) which has
+`admin:repo_hook`, `delete_repo`, and `repo` authority scopes. This
+token has quite a lot of authority so it is important to keep safe or
+use a test account rather than your primary GitHub account.
+
+Finally, run `make test` and then `_build/test/test_hook_server.native
+https://example.net:4433 [GitHub token username] test-github-hooks
+[GitHub SSH username]` to run the tests on your server at `example.net`
+on port `4433` as the user `[GitHub token username]` but git-pushing as the
+user `[GitHub SSH username]`. The test program will create and delete the
+repository `test-github-hooks` in the process of running. If the tests
+fail, you may have to remove the cloned repository called
+`test-github-hooks` and the GitHub repository `[GitHub token
+username]/test-github-hooks`."""
+url {
+  src:
+    "https://github.com/dsheets/ocaml-github-hooks/releases/download/0.1.2/github-hooks-0.1.2.tbz"
+  checksum: "md5=1ac582f612ee188f335f37e76e49f8c5"
+}

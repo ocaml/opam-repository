@@ -1,0 +1,79 @@
+opam-version: "2.0"
+maintainer:   "anil@recoil.org"
+homepage:     "https://github.com/mirage/mirage-tcpip"
+dev-repo: "git+https://github.com/mirage/mirage-tcpip.git"
+bug-reports:  "https://github.com/mirage/mirage-tcpip/issues"
+authors: [
+  "Anil Madhavapeddy"
+  "Balraj Singh"
+  "Richard Mortier"
+  "Nicolas Ojeda Bar"
+  "Thomas Gazagnaire"
+  "Vincent Bernardoff"
+  "Magnus Skjegstad"
+  "Mindy Preston"
+  "Thomas Leonard"
+  "David Scott"
+  "Gabor Pali"
+  "Hannes Mehnert"
+  "Haris Rotsos"
+  "Kia"
+  "Luke Dunstan"
+  "Pablo Polvorin"
+  "Tim Cuthbertson"
+  "lnmx"
+  "pqwy"
+]
+license: "ISC"
+tags: ["org:mirage"]
+
+build: [
+  ["./configure" "--prefix" prefix "--%{mirage-xen:enable}%-xen"]
+  [make]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test" "TESTFLAGS=-v"] {with-test}
+]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "tcpip"]
+depends: [
+  "ocaml" {>= "4.02.3" & < "4.06.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "result"
+  "rresult"
+  "cstruct" {>= "2.2.0" & < "3.4.0"}
+  "ppx_tools"
+  "mirage-net" {>= "1.0.0" & < "2.0.0"}
+  "mirage-net-lwt" {>= "1.0.0" & < "2.0.0"}
+  "mirage-clock" {>= "1.2.0"}
+  "mirage-random" {>= "1.0.0" & < "1.2.0"}
+  "mirage-clock-lwt" {>= "1.2.0"}
+  "mirage-stack-lwt" {>= "1.0.0" & < "1.2.0"}
+  "mirage-protocols" {>= "1.1.0" & < "1.3.0"}
+  "mirage-protocols-lwt" {>= "1.1.0" & < "1.3.0"}
+  "mirage-time-lwt" {>= "1.0.0"}
+  "ipaddr" {>= "2.2.0" & < "3.0.0"}
+  "mirage-profile" {>= "0.5" & < "0.8.0"}
+  "mirage-flow" {with-test & >= "1.2.0"}
+  "mirage-vnetif" {with-test & >= "0.3.1"}
+  "alcotest" {with-test & >= "0.7.0"}
+  "ounit" {with-test}
+  "pcap-format" {with-test}
+  "mirage-clock-unix" {with-test & >= "1.2.0" & < "2.0.0"}
+  "fmt"
+  "lwt" {>= "2.4.7" & < "3.0.0"}
+  "logs" {>= "0.6.0"}
+  "duration"
+  "randomconv"
+  "cstruct-lwt"
+  "io-page" {< "2.0.0"}
+]
+depopts: [
+  "mirage-xen"
+]
+synopsis: "Userlevel TCP/IP stack"
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/mirage-tcpip/archive/v3.1.0.tar.gz"
+  checksum: "md5=76c2d7f210d43e647f070a1979da9fd5"
+}

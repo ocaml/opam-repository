@@ -1,0 +1,68 @@
+opam-version: "2.0"
+name: "jupyter"
+maintainer: [
+  "Akinori ABE <aabe.65535@gmail.com>"
+]
+authors: [
+  "Akinori ABE"
+]
+license: "MIT"
+homepage: "https://akabe.github.io/ocaml-jupyter/"
+bug-reports: "https://github.com/akabe/ocaml-jupyter/issues"
+dev-repo: "git+https://github.com/akabe/ocaml-jupyter.git"
+build: [
+  [ "ocaml" "setup.ml" "-configure"
+            "--prefix" prefix
+            "--enable-archimedes" {cairo2:installed & archimedes:installed} ]
+  [ "ocaml" "setup.ml" "-build" ]
+]
+install: [
+  [ "ocaml" "setup.ml" "-install" ]
+]
+remove: [
+  [ "sh" "-c" "cd %{share}%/ocaml-jupyter ; ocaml setup.ml -uninstall" ]
+  [ "rm" "-rf" "%{share}%/ocaml-jupyter" ]
+]
+depends: [
+  "ocaml" {>= "4.02.0" & < "4.08.0"}
+  "base-threads"
+  "base-unix"
+  "uuidm" {>= "0.9.6"}
+  "base64" {>= "2.1.2" & < "3.0.0"}
+  "lwt" {>= "3.0.0" & < "4.0.0"}
+  "stdint" {>= "0.4.2"}
+  "zmq" {>= "4.0-8" & < "5.0.0"}
+  "lwt-zmq" {>= "2.1.0"}
+  "yojson" {>= "1.3.3"}
+  "ppx_deriving_yojson" {>= "3.0"}
+  "cryptokit" {>= "1.12"}
+  "ocamlfind" {build & >= "1.5.0"}
+  "ocamlbuild" {build}
+  "cppo" {build & >= "1.6.0"}
+  "cppo_ocamlbuild" {build & >= "1.6.0"}
+]
+depopts: [
+  "merlin"
+  "cairo2"
+  "archimedes"
+]
+conflicts: [
+  "merlin" {< "3.0.0"}
+]
+
+post-messages: [
+  "If Jupyter is installed, ocaml-jupyter kernel is already available."
+  "Otherwise you setup Jupyter and the OCaml kernel as follows:"
+  ""
+  "$ pip install jupyter"
+  "$ jupyter kernelspec install --name ocaml-jupyter \\
+    %{share}%/ocaml-jupyter"
+  {success}
+]
+synopsis: "An OCaml kernel for Jupyter notebook"
+description:
+  "OCaml Jupyter provides an OCaml REPL on Jupyter (a great interface with markdown/HTML documentation, LaTeX formula by MathJax, and image embedding). This is useful for data analysis in OCaml."
+url {
+  src: "https://github.com/akabe/ocaml-jupyter/archive/v1.0.2.tar.gz"
+  checksum: "md5=87011366223f8a0ee2e06117d0c2c95b"
+}

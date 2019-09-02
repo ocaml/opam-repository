@@ -1,0 +1,108 @@
+opam-version: "2.0"
+maintainer:   "anil@recoil.org"
+homepage:     "https://github.com/mirage/ocaml-dns"
+dev-repo: "git+https://github.com/mirage/ocaml-dns.git"
+bug-reports:  "https://github.com/mirage/ocaml-dns/issues"
+authors: [
+  "Anil Madhavapeddy"
+  "Tim Deegan"
+  "Richard Mortier"
+  "Haris Rotsos"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "Luke Dunstan"
+  "David Scott"
+]
+license: "ISC"
+tags: [
+  "org:mirage"
+  "org:xapi-project"
+]
+
+build: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "false"
+    "--with-lwt"
+    "%{lwt+mirage-profile+cmdliner:installed}%"
+    "--with-mirage"
+    "%{mirage-time-lwt+mirage-stack-lwt+mirage-kv-lwt+lwt+duration+mirage-profile:installed}%"
+    "--with-async"
+    "%{async:installed}%"
+  ]
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "true"
+    "--with-lwt"
+    "%{lwt+mirage-profile+cmdliner:installed}%"
+    "--with-mirage"
+    "%{mirage-time-lwt+mirage-stack-lwt+mirage-kv-lwt+lwt+duration+mirage-profile:installed}%"
+    "--with-async"
+    "%{async:installed}%"
+  ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "0.8.0"}
+  "ppx_tools"
+  "base-bytes"
+  "cstruct" {>= "2.0.0" & < "3.4.0"}
+  "ppx_cstruct"
+  "re"
+  "ipaddr" {>= "2.6.0" & < "2.8.0"}
+  "uri" {>= "1.7.0" & < "1.9.4"}
+  "base64" {>= "2.0.0" & < "3.0.0"}
+  "hashcons"
+  "result"
+  "lwt" {with-test}
+  "ounit" {with-test}
+  "pcap-format" {with-test}
+  "mirage-protocols" {with-test & >= "1.1.0" & < "2.0.0"}
+  "mirage-stack-lwt" {with-test}
+  "mirage-time-lwt" {with-test}
+  "mirage-kv" {with-test & < "2.0.0"}
+  "mirage-kv-lwt" {with-test & < "2.0.0"}
+  "mirage-profile" {with-test}
+  "duration" {with-test}
+]
+depopts: [
+  "async" {< "v0.13"}
+
+  "lwt"
+  "mirage-profile"
+  "cmdliner"
+
+  "mirage-stack-lwt"
+  "mirage-kv-lwt"
+  "mirage-time-lwt"
+  "duration"
+]
+conflicts: [
+  "mirage-types-lwt" {< "3.0.0"}
+  "async" {<"112.24.00"}
+  "lwt" {< "2.4.7"}
+  "lwt" {>= "3.0.0"}
+  "mirage-kv-lwt" {>= "2.0.0"}
+]
+synopsis: "DNS client and server implementation"
+description: """
+This is a pure OCaml implementation of the DNS protocol. It is intended to be a
+reasonably high-performance implementation, but clarity is preferred rather
+than low-level performance hacks."""
+url {
+  src: "https://github.com/mirage/ocaml-dns/archive/v0.20.0.tar.gz"
+  checksum: "md5=d7f1801871de48f822871bfb728ca501"
+}

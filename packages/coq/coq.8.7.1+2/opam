@@ -1,0 +1,80 @@
+opam-version: "2.0"
+maintainer: "Ralf Jung <post@ralfj.de>"
+authors: "The Coq development team, INRIA, CNRS, University Paris Sud, University Paris 7, Ecole Polytechnique."
+homepage: "https://coq.inria.fr/"
+bug-reports: "https://github.com/coq/coq/issues"
+dev-repo: "git+https://github.com/coq/coq.git"
+license: "LGPL-2.1"
+patches: [ "0001_make_install_static_plug.patch"
+           "0002_alpine_linux.patch"
+           "0003_fix_num_ocamlfind_detection.patch"
+           "0004_fix_more_num.patch"
+         ]
+build: [
+  [
+    "./configure"
+    "-configdir" "%{lib}%/coq/config"
+    "-prefix" prefix
+    "-mandir" man
+    "-docdir" doc
+    "-libdir" "%{lib}%/coq"
+    "-datadir" "%{share}%/coq"
+    "-camlp5dir" "%{lib}%/camlp5"
+    "-coqide" "no"
+  ]
+  [make "-j%{jobs}%"]
+  [make "-j%{jobs}%" "byte"]
+]
+install: [
+  [make "install"]
+  [make "install-byte"]
+]
+remove: [
+  ["rm" "-R" "%{lib}%/coq" "%{share}%/coq"]
+  ["rm"
+  "%{man}%/man1/coqc.1"
+  "%{man}%/man1/coqchk.1"
+  "%{man}%/man1/coqdep.1"
+  "%{man}%/man1/coqdoc.1"
+  "%{man}%/man1/coqide.1"
+  "%{man}%/man1/coq_makefile.1"
+  "%{man}%/man1/coqmktop.1"
+  "%{man}%/man1/coq-tex.1"
+  "%{man}%/man1/coqtop.1"
+  "%{man}%/man1/coqtop.byte.1"
+  "%{man}%/man1/coqtop.opt.1"
+  "%{man}%/man1/coqwc.1"
+  "%{man}%/man1/gallina.1"
+  "%{share}%/texmf/tex/latex/misc/coqdoc.sty"
+  "%{share}%/emacs/site-lisp/coq-font-lock.el"
+  "%{share}%/emacs/site-lisp/coq-inferior.el"
+  "%{share}%/emacs/site-lisp/gallina-db.el"
+  "%{share}%/emacs/site-lisp/gallina.el"
+  "%{share}%/emacs/site-lisp/gallina-syntax.el"
+  ]
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "ocamlfind" {build}
+  "camlp5"
+  "num"
+]
+synopsis: "Formal proof management system."
+flags: light-uninstall
+extra-files: [
+  ["coq.install" "md5=b85e0eb533d6836c15581f0e5cb0ebc2"]
+  ["0004_fix_more_num.patch" "md5=4e9d6e85e25d9b6c732afbc63b1e5433"]
+  [
+    "0003_fix_num_ocamlfind_detection.patch"
+    "md5=00e16fbfe56dfc21f985e9aead3e74da"
+  ]
+  ["0002_alpine_linux.patch" "md5=4e57a3fca795f4dc27e7136c9325bfd3"]
+  [
+    "0001_make_install_static_plug.patch"
+    "md5=541273f7b7b584fc5f62e65162389bd1"
+  ]
+]
+url {
+  src: "https://github.com/coq/coq/archive/V8.7.1.tar.gz"
+  checksum: "md5=15347f45471e2d5277c60585297cd3e0"
+}

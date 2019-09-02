@@ -1,0 +1,34 @@
+diff --git a/Makefile.build b/Makefile.build
+index b0e754611..312ce53dd 100644
+--- a/Makefile.build
++++ b/Makefile.build
+@@ -530,7 +530,7 @@ CSDPCERTCMO:=lib/clib.cma $(addprefix plugins/micromega/, \
+ 
+ $(CSDPCERT): $(call bestobj, $(CSDPCERTCMO))
+ 	$(SHOW)'OCAMLBEST -o $@'
+-	$(HIDE)$(call bestocaml,,nums unix)
++	$(HIDE)$(call bestocaml,-linkpkg -package num -package unix,)
+ 
+ ###########################################################################
+ # tests
+diff --git a/tools/coqmktop.ml b/tools/coqmktop.ml
+index 950ed53cc..c387c8798 100644
+--- a/tools/coqmktop.ml
++++ b/tools/coqmktop.ml
+@@ -108,7 +108,7 @@ let incl_all_subdirs dir opts =
+ 
+ (** OCaml + CamlpX libraries *)
+ 
+-let ocaml_libs = ["str.cma";"unix.cma";"nums.cma";"dynlink.cma";"threads.cma"]
++let ocaml_libs = ["str.cma";"dynlink.cma"]
+ let camlp4_libs = ["gramlib.cma"]
+ let libobjs = ocaml_libs @ camlp4_libs
+ 
+@@ -289,6 +289,7 @@ let main () =
+       List.filter ((<>) "") (split_on_char ' ' Coq_config.caml_flags) in
+     let args =
+       coq_camlflags @ "-linkall" :: "-w" :: "-31" :: flags @ copts @ options @
++      ["-linkpkg"; "-package"; "num"] @
+       (std_includes basedir) @ tolink @ [ main_file ] @ topstart
+     in
+     if !echo then begin

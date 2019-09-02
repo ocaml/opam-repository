@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "Hezekiah M. Carty <hez@0ok.org>"
+authors: [ "Hezekiah M. Carty <hez@0ok.org>" ]
+license: "MIT"
+homepage: "https://github.com/hcarty/ppx_defer"
+bug-reports: "https://github.com/hcarty/ppx_defer/issues"
+dev-repo: "git+https://github.com/hcarty/ppx_defer.git"
+build:[ "jbuilder" "build" "-p" name "-j" jobs ]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "jbuilder" {build & >= "1.0+beta9"}
+  "ocaml-migrate-parsetree"
+  "ppx_tools_versioned"
+]
+synopsis: "Go-like `[%defer later]; now` syntax."
+description: """
+This is an OCaml language extension implementing a somewhat Go-ish
+`[%defer expr1]; expr2` which will defer the evaluation of `expr1` until after
+`expr2`.  `expr1` will still be evaluated if `expr2` raises an exception.
+
+If you are using Lwt you can use `[%defer.lwt expr1]; expr2`.
+
+Thanks to Drup for guidance in figuring out ppx details!
+
+## Using ppx_defer
+
+```ocaml
+let () =
+  let ic = open_in_bin "some_file" in
+  [%defer close_in ic];
+  let length = in_channel_length ic in
+  let bytes = really_input_string ic length in
+  print_endline bytes
+```
+
+See the `examples/` directory for more examples."""
+url {
+  src:
+    "https://github.com/hcarty/ppx_defer/releases/download/v0.3.0/ppx_defer-0.3.0.tbz"
+  checksum: "md5=ce43604abdf98806c2321481ecf6e75b"
+}

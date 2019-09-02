@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Alfredo Beaumont <alfredo.beaumont@gmail.com>"
 authors: [
   "Alfredo Beaumont <alfredo.beaumont@gmail.com>"
@@ -7,19 +7,27 @@ authors: [
 homepage: "https://github.com/abeaumont/ocaml-scrypt-kdf"
 bug-reports: "https://github.com/abeaumont/ocaml-scrypt-kdf/issues"
 license: "BSD2"
-dev-repo: "https://github.com/abeaumont/ocaml-scrypt-kdf.git"
-build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
-build-test: [
+dev-repo: "git+https://github.com/abeaumont/ocaml-scrypt-kdf.git"
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
   ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
-  ["ocaml" "pkg/pkg.ml" "test"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
 ]
 depends: [
+  "ocaml" {>= "4.02.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
   "cstruct" {>= "1.7.0"}
   "nocrypto" {>= "0.5.3"}
   "pbkdf" {>= "0.1.0"}
-  "alcotest" {test}
+  "alcotest" {with-test}
 ]
-available: [ocaml-version >= "4.02.0"]
+synopsis: "The scrypt Password-Based Key Derivation Function in pure OCaml"
+description:
+  "A pure OCaml implementation of scrypt password based key derivation function, as defined in The scrypt Password-Based Key Derivation Function internet draft, including test cases from the RFC. It also includes a pure OCaml implementation of Salsa20 Core functions, both Salsa20/20 Core and the reduced Salsa20/8 Core (required by scrypt) and Salsa20/12 Core functions, including test cases from the spec."
+url {
+  src: "https://github.com/abeaumont/ocaml-scrypt-kdf/archive/0.2.0.tar.gz"
+  checksum: "md5=cca263d2f7b25a17fa704d7c66aff7cb"
+}

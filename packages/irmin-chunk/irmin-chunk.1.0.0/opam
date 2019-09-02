@@ -1,27 +1,34 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer:   "thomas@gazagnaire.org"
 authors:      ["Mounir Nasr Allah" "Thomas Gazagnaire"]
 license:      "ISC"
 homepage:     "https://github.com/mirage/irmin-chunk"
 bug-reports:  "https://github.com/mirage/irmin-chunk/issues"
-dev-repo:     "https://github.com/mirage/irmin-chunk.git"
-
+dev-repo: "git+https://github.com/mirage/irmin-chunk.git"
 build: [
   ["./configure" "--prefix" prefix]
   [make]
-]
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make "test"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "irmin-chunk"]
 
 depends: [
+  "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
   "irmin" {>= "0.9.10" & < "0.10.0"}
   "lwt"
-  "alcotest" {test & >= "0.4.1"}
+  "alcotest" {with-test & >= "0.4.1"}
   "ocamlbuild" {build}
 ]
-available: [ocaml-version >= "4.01.0"]
+synopsis: "Irmin backend to store raw contents into chunks"
+description: """
+Allow to store raw contents into a well-balanced rope-like structure, where
+leafs are chunk of all the same size. Also provides a functor to do it while
+keeping the store keys stable."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/irmin-chunk/archive/1.0.0.tar.gz"
+  checksum: "md5=4a7374a29e245563c48590e56c7c8da9"
+}

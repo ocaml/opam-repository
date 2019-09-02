@@ -1,0 +1,60 @@
+opam-version: "2.0"
+name:         "digestif"
+maintainer:   [ "Eyyüb Sari <eyyub.sari@epitech.eu>"
+                "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+authors:      [ "Eyyüb Sari <eyyub.sari@epitech.eu>"
+                "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+homepage:     "https://github.com/mirage/digestif"
+bug-reports:  "https://github.com/mirage/digestif/issues"
+dev-repo:     "git+https://github.com/mirage/digestif.git"
+doc:          "https://mirage.github.io/digestif/"
+license:      "MIT"
+synopsis:     "Hashes implementations (SHA*, RIPEMD160, BLAKE2* and MD5)"
+description: """
+Digestif is a toolbox to provide hashes implementations in C and OCaml.
+
+It uses the linking trick and user can decide at the end to use the C implementation or the OCaml implementation.
+
+We provides implementation of:
+ * MD5
+ * SHA1
+ * SHA224
+ * SHA256
+ * SHA384
+ * SHA512
+ * BLAKE2B
+ * BLAKE2S
+ * RIPEMD160
+"""
+
+build: [
+  [ "dune" "subst"]
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
+]
+
+depends: [
+  "ocaml"          {>= "4.03.0"}
+  "dune"
+  "eqaf"
+  "base-bytes"
+  "base-bigarray"
+  "fmt"            {with-test}
+  "alcotest"       {with-test}
+]
+
+depopts: [
+  "ocaml-freestanding"
+  "mirage-xen-posix"
+]
+
+conflicts: [
+  "mirage-xen-posix" {< "3.1.0"}
+  "ocaml-freestanding" {< "0.4.1"}
+  "eqaf" {= "0.3"}
+]
+url {
+  src:
+    "https://github.com/mirage/digestif/releases/download/v0.7.1/digestif-v0.7.1.tbz"
+  checksum: "md5=f13be3170563925a2b50a4769594a31d"
+}

@@ -1,0 +1,60 @@
+opam-version: "2.0"
+maintainer: "coqdev@inria.fr"
+authors: "The Coq development team, INRIA, CNRS, and contributors."
+homepage: "https://coq.inria.fr/"
+bug-reports: "https://github.com/coq/coq/issues"
+dev-repo: "git+https://github.com/coq/coq.git"
+license: "LGPL-2.1"
+
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "ocamlfind" {build}
+  "camlp5"
+  "num"
+]
+patches: [ "Makefile.checker.patch" ]
+build: [
+  [
+    "./configure"
+    "-configdir" "%{lib}%/coq/config"
+    "-prefix" prefix
+    "-mandir" man
+    "-docdir" doc
+    "-libdir" "%{lib}%/coq"
+    "-datadir" "%{share}%/coq"
+    "-camlp5dir" "%{lib}%/camlp5"
+    "-coqide" "no"
+  ]
+  [make "-j%{jobs}%"]
+  [make "-j%{jobs}%" "byte"]
+]
+install: [
+  [make "install"]
+  [make "install-byte"]
+]
+remove: [
+  ["rm" "-rf" "%{lib}%/coq" "%{share}%/coq"]
+  ["rm" "-f"
+  "%{man}%/man1/coqc.1"
+  "%{man}%/man1/coqchk.1"
+  "%{man}%/man1/coqdep.1"
+  "%{man}%/man1/coqdoc.1"
+  "%{man}%/man1/coqide.1"
+  "%{man}%/man1/coq_makefile.1"
+  "%{man}%/man1/coqmktop.1"
+  "%{man}%/man1/coq-tex.1"
+  "%{man}%/man1/coqtop.1"
+  "%{man}%/man1/coqtop.byte.1"
+  "%{man}%/man1/coqtop.opt.1"
+  "%{man}%/man1/coqwc.1"
+  "%{share}%/texmf/tex/latex/misc/coqdoc.sty"
+  ]
+]
+synopsis: "Formal proof management system"
+flags: light-uninstall
+extra-files: [ ["coq.install" "md5=a5d0f9a35ef24aa3948a6960e657b206" ]
+  [ "Makefile.checker.patch" "md5=33fe29936deec207f4e197d27073f2e1"] ]
+url {
+  src: "https://github.com/coq/coq/archive/V8.9.0.tar.gz"
+  checksum: "md5=490c89609c1271fe7f20e6ea1bd107b5"
+}

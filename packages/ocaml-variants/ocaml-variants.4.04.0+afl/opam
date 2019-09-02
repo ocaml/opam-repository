@@ -1,0 +1,33 @@
+opam-version: "2.0"
+synopsis: "OCaml 4.04.0, with afl-fuzz instrumentation backported from 4.05"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.04.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  ["./configure" "-prefix" prefix "-cc" "cc" "-aspp" "cc -c"]
+    {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "world"]
+  [make "world.opt"]
+]
+install: [
+  ["mkdir" "-p" "%{lib}%/ocaml/"]
+  [
+    "sh"
+    "-exc"
+    "echo \"* : g = 1\" > %{lib}%/ocaml/ocaml_compiler_internal_params"
+  ]
+  [make "install"]
+]
+url {
+  src: "https://github.com/stedolan/ocaml/archive/afl-backport.tar.gz"
+  checksum: "md5=2ac30a9a3f014c2dab4ef1a1d365b72c"
+}

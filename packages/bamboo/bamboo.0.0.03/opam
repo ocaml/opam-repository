@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "Yoichi Hirai <i@yoichihirai.com>"
+authors: "Yoichi Hirai <i@yoichihirai.com>"
+homepage: "https://github.com/pirapira/bamboo"
+bug-reports: "https://github.com/pirapira/bamboo/issues"
+license: "Apache-2.0"
+dev-repo: "git+https://github.com/pirapira/bamboo.git"
+build: [
+  [
+    "rm"
+    "-f"
+    "src/parse/parser.ml"
+    "src/parse/parser.mli"
+    "src/parse/lexer.ml"
+  ]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+depends: [
+  "ocaml"
+  "batteries" {build}
+  "cryptokit" {build & >= "1.12"}
+  "hex" {build & >= "0.1.0" & <= "1.0.0"}
+  "menhir" {build & >= "20120123" & <= "20151005"}
+  "ocamlbuild" {build & (>= "0.9.3" | = "0")}
+  "ocamlfind" {build}
+  "rope" {build}
+]
+synopsis: "A compiler targeting Ethereum Virtual Machine"
+description: """
+Bamboo compiles a simple language to Ethereum Virtual Machine. The
+language is designed to keep programmers away from common mistakes. It
+features: state transition as recursion with potentially changing
+arguments, mandatory reentrance continuation when calling out, no
+loops, no assignments except to mappings and partial compliance with
+common Ethereum ABI."""
+extra-files: ["bamboo.install" "md5=ad7c0f051c24f59700b975f1ee3954d7"]
+url {
+  src: "https://github.com/pirapira/bamboo/archive/0.0.03.tar.gz"
+  checksum: "md5=b8ceddf33f2f42a97e8554efd7f64fe3"
+}

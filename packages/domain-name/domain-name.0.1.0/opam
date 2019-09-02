@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "Hannes Mehnert <hannes@mehnert.org>"
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+homepage: "https://github.com/hannesm/domain-name"
+doc: "https://hannesm.github.io/domain-name/doc"
+dev-repo: "git+https://github.com/hannesm/domain-name.git"
+bug-reports: "https://github.com/hannesm/domain-name/issues"
+license: "ISC"
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "fmt"
+  "astring"
+  "alcotest" {with-test}
+]
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+]
+synopsis:
+  "[RFC 1035](https://tools.ietf.org/html/rfc1035) Internet domain names"
+description: """
+A domain name is a sequence of labels separated by dots, such as `foo.example`.
+Each label may contain any bytes. The length of each label may not exceed 63
+charactes.  The total length of a domain name is limited to 253 (byte
+representation is 255), but other protocols (such as SMTP) may apply even
+smaller limits.  A domain name label is case preserving, comparison is done in a
+case insensitive manner.
+
+The invariants on the length of domain names are preserved throughout the
+module."""
+url {
+  src:
+    "https://github.com/hannesm/domain-name/releases/download/0.1.0/domain-name-0.1.0.tbz"
+  checksum: "md5=022ddef71c50706dee4c799494b3a61d"
+}

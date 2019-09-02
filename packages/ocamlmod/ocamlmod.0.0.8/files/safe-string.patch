@@ -1,0 +1,25 @@
+diff --git a/setup.ml b/setup.ml
+index d611c02..13787aa 100644
+--- a/setup.ml
++++ b/setup.ml
+@@ -208,7 +208,7 @@ module OASISString = struct
+       raise Not_found
+ 
+   let replace_chars f s =
+-    let buf = String.make (String.length s) 'X' in
++    let buf = Bytes.make (String.length s) 'X' in
+       for i = 0 to String.length s - 1 do
+         buf.[i] <- f s.[i]
+       done;
+@@ -280,9 +280,9 @@ module OASISUtils = struct
+         let buf =
+           (* Start with a _ if digit *)
+           if '0' <= s.[0] && s.[0] <= '9' then
+-            "_"^buf
++            "_"^Bytes.to_string buf
+           else
+-            buf
++            Bytes.to_string buf
+         in
+           String.lowercase buf
+       end

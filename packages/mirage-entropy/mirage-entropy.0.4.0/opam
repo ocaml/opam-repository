@@ -1,0 +1,41 @@
+opam-version: "2.0"
+name:         "mirage-entropy"
+homepage:     "https://github.com/mirage/mirage-entropy"
+dev-repo: "git+https://github.com/mirage/mirage-entropy.git"
+bug-reports:  "https://github.com/mirage/mirage-entropy/issues"
+maintainer:   "david@numm.org"
+license:      "BSD2"
+
+build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+          "--with-mirage-xen" "%{mirage-xen:installed}%"
+          "--with-mirage-solo5" "%{mirage-solo5:installed}%"
+          "--with-ocaml-freestanding" "%{ocaml-freestanding:installed}%"
+]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "ocb-stubblr" {build}
+  "cstruct"
+  "mirage-os-shim"
+  "lwt"
+]
+depopts: [
+  "mirage-solo5"
+  "ocaml-freestanding"
+  "mirage-xen"
+]
+conflicts: [
+  "ocb-stubblr" {<"0.1.0"}
+  "cstruct" {<"1.4.0"}
+  "mirage-xen" {<"2.2.0"}
+]
+tags: [ "org:mirage"]
+available: arch = "arm" | arch = "x86_32" | arch = "x86_64" | arch = "x86_64"
+synopsis: "Entropy source for MirageOS unikernels."
+authors: ["Hannes Mehnert" "David Kaloper" "Anil Madhavapeddy" "Dave Scott"]
+url {
+  src: "https://github.com/mirage/mirage-entropy/archive/0.4.0.tar.gz"
+  checksum: "md5=ca4ba16d236a9b4137c8ec5bce3b7c51"
+}

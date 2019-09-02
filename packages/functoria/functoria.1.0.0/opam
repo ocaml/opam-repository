@@ -1,5 +1,5 @@
-opam-version: "1.2"
-maintainer: "Gabriel Radanne <drupyog@zoho.com>"
+opam-version: "2.0"
+maintainer:   "mirageos-devel@lists.xenproject.org"
 authors: [
   "Thomas Gazagnaire"
   "Anil Madhavapeddy"
@@ -10,24 +10,35 @@ authors: [
 homepage: "https://github.com/mirage/functoria"
 bug-reports: "https://github.com/mirage/functoria/issues"
 license: "ISC"
-dev-repo: "https://github.com/mirage/functoria.git"
+dev-repo: "git+https://github.com/mirage/functoria.git"
 build: [
   ["./configure" "--prefix=%{prefix}%" "--%{ounit:enable}%-tests"]
   [make]
+  [make "test"] {with-test}
 ]
 install: [make "install"]
-build-test: [make "test"]
 remove: ["ocamlfind" "remove" "functoria"]
 depends: [
+  "ocaml" {>= "4.01" & < "4.03"}
   "ocamlfind" {build}
   "base-unix"
   "cmdliner" {>= "0.9.8"}
   "rresult"
   "fmt"
   "ocamlgraph"
-  "ounit" {test}
+  "ounit" {with-test & >= "2.0.0"}
 ]
-available: [ocaml-version >= "4.01" & ocaml-version < "4.03"]
-conflicts: [
-  "ounit" {< "2.0.0"}
-]
+synopsis: "A DSL to organize functor applications."
+description: """
+Functoria is a DSL to describe a set of modules and functors, their
+types and how to apply them in order to produce a complete
+application.
+
+The main use case is mirage. See the mirage repository for details:
+
+    https://github.com/mirage/mirage"""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/functoria/archive/1.0.0.tar.gz"
+  checksum: "md5=aa8010220b57abadf8add9942c493204"
+}

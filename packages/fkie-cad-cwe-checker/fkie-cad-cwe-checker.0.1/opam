@@ -1,0 +1,38 @@
+opam-version: "2.0"
+name: "fkie-cad-cwe-checker"
+version: "0.1"
+maintainer: "Thomas Barabosch <thomas.barabosch@fkie.fraunhofer.de>"
+authors: "Thomas Barabosch <thomas.barabosch@fkie.fraunhofer.de>"
+homepage: "https://github.com/fkie-cad/cwe_checker"
+bug-reports: "https://github.com/fkie-cad/cwe_checker/issues"
+dev-repo: "git+https://github.com/fkie-cad/cwe_checker"
+license: "LGPL-3.0"
+build: [make]
+install: [
+  ["mkdir" "-p" "%{share}%/bap"]
+  ["cp" "src/config.json" "%{share}%/bap/"]
+]
+
+remove: [
+  [make "uninstall"]
+  ["rm" "-r" "%{share}%/bap/config.json"]
+]
+
+depends: [
+  "ocaml"
+  "bap-std" {>= "1.5.0"}
+  "yojson" {= "1.4.1"}
+  "base-unix"
+  "ppx_jane" {< "v0.11"}
+  "core_kernel" {< "v0.11"}
+]
+synopsis:
+  "A plugin for bap that detects common bug classes, e.g. use of dangerous functions and simple integer overflows"
+description: """
+These bug classes are formally known as Common Weakness Enumerations (CWEs).
+Its main goal is to aid analysts to quickly find vulnerable code paths.
+"""
+url {
+  src: "https://github.com/fkie-cad/cwe_checker/archive/v0.1.tar.gz"
+  checksum: "md5=16a1bf6646095151c23267681a7f457e"
+}

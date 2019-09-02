@@ -1,0 +1,28 @@
+opam-version: "2.0"
+synopsis: "Enable -binannot by default"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.00.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-ocamlbuild" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" prefix]
+  [make "world" "world.opt"]
+]
+install: [make "install"]
+patches: "ocaml-annot-4.00.1.patch"
+url {
+  src: "http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00.1.tar.bz2"
+  checksum: "md5=1c9dca1130edc0d1fa4647ae2cd7564a"
+}
+extra-source "ocaml-annot-4.00.1.patch" {
+  src:
+    "https://bitbucket.org/camlspotter/spotinstall/raw/26c014770721e44be11f364f09b149cff54a047f/ocaml-annot-4.00.1.patch"
+  checksum: "md5=4171df269228f085bb93f96adb25ba9a"
+}

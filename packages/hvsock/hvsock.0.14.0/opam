@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "dave@recoil.org"
+authors: [ "David Scott" "Rolf Neugebauer" "Anil Madhavapeddy" "Simon Ferquel"]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-hvsock"
+dev-repo: "git+https://github.com/mirage/ocaml-hvsock.git"
+bug-reports: "https://github.com/mirage/ocaml-hvsock/issues"
+
+build: [
+  ["ocaml" "setup.ml" "-configure" "--%{alcotest:enable}%-tests"]
+  [make]
+  [make "test"] {with-test}
+]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "hvsock"]
+
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "base-bytes"
+  "base-threads"
+  "lwt" {>= "2.4.7" & < "4.0.0"}
+  "logs"
+  "fmt"
+  "base-unix"
+  "cmdliner"
+  "mirage-flow-lwt" {>= "1.2.0"}
+  "mirage-time-lwt" {>= "1.0.0"}
+  "cstruct"
+  "duration"
+  "bos"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "alcotest" {with-test & >= "0.4.0"}
+]
+synopsis: "Bindings to Hyper-V AF_HVSOCK"
+description: """
+AF_HVSOCK sockets allow host <-> VM communication on Hyper-V hosts. A typical
+use is to run some kind of agent in a VM, and connect to it from software
+running on the host. AF_HVSOCK is similar to AF_VSOCK as used by virtio-vsock."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/ocaml-hvsock/archive/v0.14.0.tar.gz"
+  checksum: "md5=daf54c2d899bac73d6d18fc2de1bd09b"
+}

@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "mzp <mzp.ppp@gmail.com>"
+authors: "mzp <mzp.ppp@gmail.com>"
+homepage: "http://github.com/msgpack/msgpack-ocaml/"
+bug-reports: "https://github.com/msgpack/msgpack-ocaml/issues"
+dev-repo: "git+https://github.com/msgpack/msgpack-ocaml.git"
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{ppx_meta_conv:enable}%-conv"
+  ]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocamlfind" "remove" "msgpack"]
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "num"
+  "base-bytes"
+  "ounit" {with-test}
+]
+depopts: "ppx_meta_conv"
+synopsis: "Msgpack library for OCaml"
+description: """
+MessagePack is an efficient binary serialization format.
+If ppx_meta_conv is installed, conv module will be installed."""
+flags: light-uninstall
+url {
+  src: "https://github.com/msgpack/msgpack-ocaml/archive/1.3.0.tar.gz"
+  checksum: "md5=09d28af795069e45b3e8209a87897ce1"
+}

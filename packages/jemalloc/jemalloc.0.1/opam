@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "joris.giovannangeli@ahrefs.com"
+authors: "joris giovannangeli"
+homepage: "https://github.com/ahrefs/ocaml-jemalloc"
+bug-reports: "https://github.com/ahrefs/ocaml-jemalloc/issues"
+license: "MIT"
+tags: ["org:ahrefs" "clib:jemalloc"]
+dev-repo: "git://github.com/ahrefs/ocaml-jemalloc"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocamlfind" "remove" "jemalloc_ctl"]
+depends: [
+  "ocaml" {>= "4.04.1"}
+  ("oasis" {build & >= "0.4.7"} | "oasis-mirage" {build & >= "0.4.7"})
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+]
+depexts: [
+  ["jemalloc-dev"] {os-distribution = "alpine"}
+  ["libjemalloc-dev"] {os-family = "debian"}
+  ["jemalloc-devel"] {os-distribution = "fedora"}
+  ["jemalloc-devel"] {os-distribution = "mageia"}
+  ["jemalloc-devel"] {os-distribution = "rhel"}
+  ["jemalloc-devel"] {os-distribution = "centos"}
+  ["jemalloc"] {os = "macos"}
+]
+synopsis: "Bindings to jemalloc mallctl api"
+description:
+  "Exposes helpers to access jemalloc control api, retrieve allocator statistics and change allocator settings."
+flags: light-uninstall
+url {
+  src: "https://github.com/ahrefs/ocaml-jemalloc/archive/0.1.tar.gz"
+  checksum: "md5=94bcdd7e97ef4d9494534c19641512a3"
+}

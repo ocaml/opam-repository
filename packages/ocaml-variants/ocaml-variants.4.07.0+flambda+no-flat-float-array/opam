@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis:
+  "Official 4.07.0 release with flambda activated and -no-flat-float-array"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.07.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-flambda"
+    "-no-flat-float-array"
+  ] {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "./configure"
+    "-prefix"
+    prefix
+    "-with-debug-runtime"
+    "-flambda"
+    "-no-flat-float-array"
+    "-cc"
+    "cc"
+    "-aspp"
+    "cc -c"
+  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "-j%{jobs}%" {os != "cygwin"} "world"]
+  [make "-j%{jobs}%" {os != "cygwin"} "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.07.0.tar.gz"
+  checksum: "md5=1f78bb35a2f15d5ec737ee6a8dc6890d"
+}
+post-messages: [
+  "A failure in the middle of the build may be caused by build parallelism
+   (enabled by default).
+   Please file a bug report at https://github.com/ocaml/ocaml/issues"
+  {failure & jobs > 1 & os != "cygwin"}
+  "You can try installing again including --jobs=1
+   to force a sequential build instead."
+  {failure & jobs > 1 & os != "cygwin" & opam-version >= "2.0.5"}
+]

@@ -1,33 +1,42 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name:         "tls"
 homepage:     "https://github.com/mirleft/ocaml-tls"
-dev-repo:     "https://github.com/mirleft/ocaml-tls.git"
+dev-repo: "git+https://github.com/mirleft/ocaml-tls.git"
 bug-reports:  "https://github.com/mirleft/ocaml-tls/issues"
 authors:      ["David Kaloper <david@numm.org>" "Hannes Mehnert <hannes@mehnert.org>"]
 maintainer:   ["Hannes Mehnert <hannes@mehnert.org>" "David Kaloper <david@numm.org>"]
 license:      "BSD2"
 
 build: [
-  [ "./configure" "--prefix" prefix
+  [
+    "./configure"
+    "--prefix"
+    prefix
     "--%{lwt:enable}%-lwt"
-    "--%{mirage-types-lwt+ipaddr:enable}%-mirage" ]
-  [ make ]
+    "--%{mirage-types-lwt+ipaddr:enable}%-mirage"
+  ]
+  [make]
+  ["./configure" "--%{ounit:enable}%-tests"] {with-test}
+  [make "test"] {with-test}
 ]
 install: [ make "install"]
 remove: [ "ocamlfind" "remove" "tls" ]
 
 depends: [
+  "ocaml" {>= "4.02.2"}
   "ocamlfind" {build}
   "oasis" {build}
   "ocamlbuild" {build}
   "result"
-  "ppx_tools" {build}
-  "cstruct" {>= "1.9.0"}
-  "ppx_sexp_conv" {build}
-  "sexplib"
+  "ppx_tools"
+  "cstruct" {>= "1.9.0" & < "3.0.0"}
+  "ppx_cstruct"
+  "ppx_deriving"
+  "ppx_sexp_conv" {< "v0.11.0"}
+  "sexplib" {< "v0.13"}
   "nocrypto" {>= "0.5.3"}
-  "x509" {>= "0.5.0"}
-  "ounit" {test}
+  "x509" {>= "0.5.0" & < "0.6.0"}
+  "ounit" {with-test}
 ]
 depopts: [
   "lwt"
@@ -38,12 +47,16 @@ conflicts: [
   "mirage-types-lwt" {<"2.3.0"}
   "mirage-types-lwt" {>="3.0.0"}
   "mirage-net-xen" {<"1.3.0"}
-]
-
-build-test: [
-  [ "./configure" "--%{ounit:enable}%-tests" ]
-  [ make "test" ]
+  "sexplib" {= "v0.9.0"}
 ]
 
 tags: [ "org:mirage"]
-available: [ ocaml-version >= "4.02.2" ]
+synopsis: "Transport Layer Security (TLS) in OCaml"
+description: """
+A clean-slate TLS implementation, with support for protocol versions 1.0-1.2.
+Includes the core library, as well as Lwt and MirageOS frontends."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirleft/ocaml-tls/archive/0.7.1.tar.gz"
+  checksum: "md5=81e9122b63d7fa5a0b1b9333d61adb62"
+}

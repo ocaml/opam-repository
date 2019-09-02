@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer: "JHU PL Lab <pl.cs@jhu.edu>"
+authors: "JHU PL Lab <pl.cs@jhu.edu>"
+homepage: "https://github.com/JHU-PL-Lab/pds-reachability"
+bug-reports: "https://github.com/JHU-PL-Lab/pds-reachability/issues"
+license: "Apache"
+dev-repo: "git+https://github.com/JHU-PL-Lab/pds-reachability.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  "ocaml"
+  "%{etc}%/pds-reachability/setup.ml"
+  "-C"
+  "%{etc}%/pds-reachability"
+  "-uninstall"
+]
+depends: [
+  "ocaml"
+  "base-threads"
+  "batteries"
+  "jhupllib" {>= "0.1.1"}
+  "oasis" {build & >= "0.4.7"}
+  "ocaml-monadic"
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {build}
+  "ppx_deriving" {>= "3.2"}
+  "ppx_deriving_yojson" {>= "2.1"}
+  "yojson"
+]
+synopsis: "A PDS reachability query library."
+description: """
+This library performs efficient reachability queries on abstractly
+specified push-down systems."""
+url {
+  src:
+    "https://github.com/JHU-PL-Lab/pds-reachability/archive/4c7b9abf5ff73e73b7b23455f1f626387311fb86.zip"
+  checksum: "md5=fd3acd007a7247833868a9d1f7470939"
+}

@@ -1,0 +1,51 @@
+opam-version: "2.0"
+maintainer:   "Anil Madhavapeddy <anil@recoil.org>"
+authors:      ["Anil Madhavapeddy" "Mindy Preston" "Thomas Gazagnaire"]
+homepage:     "https://github.com/mirage/mirage-channel"
+doc:          "http://docs.mirage.io/mirage-channel"
+license:      "ISC"
+dev-repo: "git+https://github.com/mirage/mirage-channel.git"
+bug-reports:  "https://github.com/mirage/mirage-channel/issues"
+tags:         ["org:mirage"]
+
+build: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--pinned"
+    "%{pinned}%"
+    "--tests"
+    "false"
+    "-n"
+    name
+  ]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+]
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "0.8.0"}
+  "mirage-flow-lwt" {= "1.2.0"}
+  "mirage-channel" {= "3.0.0"}
+  "io-page"
+  "result"
+  "lwt" {>= "2.4.7"}
+  "cstruct"
+  "logs"
+  "alcotest" {with-test}
+  "io-page-unix" {with-test}
+]
+conflicts: [
+  "tcpip" {< "3.0.0"}
+]
+synopsis: "MirageOS channels"
+description:
+  "An implementation of MirageOS' V1.CHANNEL using page aligned buffers."
+url {
+  src:
+    "https://github.com/mirage/mirage-channel/releases/download/v3.0.0/mirage-channel-lwt-3.0.0.tbz"
+  checksum: "md5=8337ec2339d226bd5c9096fa0f428ecd"
+}

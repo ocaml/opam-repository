@@ -1,36 +1,47 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "INAJIMA Daisuke <inajima@sopht.jp>"
 authors: [ "INAJIMA Daisuke <inajima@sopht.jp>" ]
 license: "MIT"
 homepage: "https://github.com/anyakichi/ocaml-skkserv-lite"
-dev-repo: "https://github.com/anyakichi/ocaml-skkserv-lite.git"
+dev-repo: "git+https://github.com/anyakichi/ocaml-skkserv-lite.git"
 bug-reports: "https://github.com/anyakichi/ocaml-skkserv-lite/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
   ["ocaml" "%{etc}%/skkserv-lite/_oasis_remove_.ml" "%{etc}%/skkserv-lite"]
 ]
-build-test: [
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
-  ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-test"]
-]
 depends: [
+  "ocaml" {>= "4.01" & < "4.06.0"}
   "base-unix" {build}
   "camomile" {build}
-  "lwt" {build}
+  "lwt" {build & < "4.0.0"}
   "ocamlfind" {build}
-  ("sqlite3" {build & >= "4.0.0"} | "sqlite3" {build & = "3.0.0"} |
-   "sqlite3" {build & = "2.0.9"} |
-   "sqlite3" {build & = "2.0.8"} |
-   "sqlite3" {build & = "2.0.7"} |
-   "sqlite3" {build & = "2.0.6"} |
-   "sqlite3" {build & = "2.0.5"} |
-   "sqlite3" {build & = "2.0.4"} |
-   "sqlite3" {build & = "2.0.3"})
+  "sqlite3" {build & >= "4.0.0"} | "sqlite3" {build & = "3.0.0"} |
+  "sqlite3" {build & = "2.0.9"} |
+  "sqlite3" {build & = "2.0.8"} |
+  "sqlite3" {build & = "2.0.7"} |
+  "sqlite3" {build & = "2.0.6"} |
+  "sqlite3" {build & = "2.0.5"} |
+  "sqlite3" {build & = "2.0.4"} |
+  "sqlite3" {build & = "2.0.3"}
   "ocamlbuild" {build}
 ]
-available: [ ocaml-version >= "4.01" ]
+synopsis: "SKK server using sqlite3 dictionaries"
+description: """
+skkserv-lite is a SKK server that uses a sqlite3 database as a
+dictionary. It can use multiple dictionaries and respond to a
+completion request."""
+extra-files: [
+  ["skkserv-lite.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src: "https://github.com/anyakichi/ocaml-skkserv-lite/archive/2.0.tar.gz"
+  checksum: "md5=68ae65da1f25b9bc8cde9eb6569cb5fa"
+}

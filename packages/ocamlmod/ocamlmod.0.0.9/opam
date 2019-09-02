@@ -1,0 +1,34 @@
+opam-version: "2.0"
+maintainer: "opam-devel@lists.ocaml.org"
+homepage: "https://forge.ocamlcore.org/projects/ocamlmod/"
+bug-reports: "https://forge.ocamlcore.org/tracker/?group_id=244"
+dev-repo: "darcs+https://forge.ocamlcore.org/anonscm/darcs/ocamlmod/ocamlmod"
+authors: [ "Sylvain Le Gall" ]
+license: "LGPL-2.1 with OCaml linking exception"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/ocamlmod/_oasis_remove_.ml" "%{etc}%/ocamlmod"]
+]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "ounit" {with-test & >= "2.0.0"}
+  "ocamlbuild" {build}
+]
+synopsis: "Generate OCaml modules from source files"
+extra-files: [
+  ["ocamlmod.install" "md5=0d1b822c897681cf54b3e1aed52dda99"]
+  ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
+]
+url {
+  src:
+    "https://download.ocamlcore.org/ocamlmod/ocamlmod/0.0.9/ocamlmod-0.0.9.tar.gz"
+  checksum: "md5=b52bfbab6bb77f9736bde9c2fe81c508"
+}

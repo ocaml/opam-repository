@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "Spiros Eliopoulos <spiros@inhabitedtype.com>"
+authors: "Spiros Eliopoulos <spiros@inhabitedtype.com>"
+homepage: "https://github.com/inhabitedtype/faraday"
+bug-reports: "https://github.com/inhabitedtype/faraday/issues"
+license: "BSD-3-clause"
+dev-repo: "git+https://github.com/inhabitedtype/faraday.git"
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{base-unix:enable}%-unix"
+    "--%{lwt:enable}%-lwt"
+    "--%{async:enable}%-async"
+  ]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocamlfind" "remove" "faraday"]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "alcotest" {with-test & >= "0.4.1" & < "0.8.0"}
+  "ocamlfind" {build}
+  "ocplib-endian" {>= "0.8"}
+]
+depopts: ["async" "base-unix" "lwt"]
+conflicts: ["async" {>= "v0.10.0"}]
+synopsis: "A library for writing fast and memory-efficient serializers."
+description: """
+Faraday is a library for writing fast and memory-efficient serializers. Its
+core type and related operation gives the user fine-grained control over
+copying and allocation behavior while serializing user-defined types, and
+presents the output in a form that makes it possible to use vectorized write
+operations, such as the writev system call, or any other platform or
+application-specific output APIs."""
+flags: light-uninstall
+url {
+  src: "https://github.com/inhabitedtype/faraday/archive/0.2.0.tar.gz"
+  checksum: "md5=f5493327d8a491ba3b9a6fbed9d1b561"
+}

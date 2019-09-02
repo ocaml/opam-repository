@@ -1,19 +1,31 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "michal.kurcewicz@gmail.com"
+authors: ["Michał Kurcewicz"]
 homepage: "https://bitbucket.org/mkur/nlopt-ocaml"
+bug-reports: "https://github.com/mkur/nlopt-ocaml/issues"
+dev-repo: "git+https://github.com/mkur/nlopt-ocaml.git"
 license: "LGPL-2.1+ with OCaml linking exception"
 build: [
+  ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
 remove: [["ocamlfind" "remove" "nlopt"]]
 depends: [
-  "ocamlfind"
+  "ocaml" {>= "3.12"}
+  "ocamlfind" {build}
   "ocamlbuild" {build}
+  "oasis" {build}
 ]
 depexts: [
-  [["debian"] ["libnlopt0" "libnlopt-dev"]]
-  [["ubuntu"] ["libnlopt0" "libnlopt-dev"]]
- ]
-available: ocaml-version >= "3.12"
+  ["libnlopt0" "libnlopt-dev"] {os-distribution = "debian"}
+  ["libnlopt0" "libnlopt-dev"] {os-distribution = "ubuntu"}
+  ["nlopt"] {os = "macos" & os-distribution = "homebrew"}
+]
 install: ["ocaml" "setup.ml" "-install"]
+synopsis: "OCaml bindings to the NLOpt optimization library"
+flags: light-uninstall
+url {
+  src: "https://bitbucket.org/mkur/nlopt-ocaml/get/release-0.5.1.tar.gz"
+  checksum: "md5=39d0bcd8d52686c0430b9cfd7a882335"
+}

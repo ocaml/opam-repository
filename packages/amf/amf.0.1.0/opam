@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer: "Brian Caine <brian.d.caine@gmail.com>"
+authors: "Brian Caine <brian.d.caine@gmail.com>"
+dev-repo: "git+https://github.com/briancaine/ocaml-amf.git"
+homepage: "https://briancaine.github.io/ocaml-amf/"
+bug-reports: "https://github.com/briancaine/ocaml-amf/issues"
+license: "LGPL with OCaml linking exception"
+build: [
+  ["oasis" "setup"]
+  ["./configure" "--prefix=%{prefix}%"]
+  [make]
+  ["oasis" "setup"] {with-test}
+  ["./configure" "--enable-tests"] {with-test}
+  [make "test"] {with-test}
+  ["oasis" "setup"] {with-doc}
+  [make "doc"] {with-doc}
+]
+install: [
+  ["oasis" "setup"]
+  [make "install"]
+]
+remove: ["ocamlfind" "remove" "amf"]
+depends: [
+  "ocaml" {>= "4.01" & < "4.06"}
+  "oasis" {build} | "oasis-mirage" {build}
+  "ppx_deriving"
+  "ppx_sexp_conv" {< "v0.13"}
+  "base-threads"
+  "core" {>= "v0.9.1" & < "v0.13"}
+  "stdint"
+  "sexplib" {< "v0.13"}
+  "bisect_ppx"
+  "bisect_ppx-ocamlbuild" {build}
+  "ounit" {build}
+]
+synopsis: "Ocaml implementation of Adobe's Action Message Format"
+description: """
+AMF is a binary encoding for JSON-esque data. It's used in a few different Adobe formats and protocols.
+
+This implements AMF V0. V3 is in the works.
+
+Pull requests are welcome."""
+flags: light-uninstall
+url {
+  src: "https://github.com/briancaine/ocaml-amf/archive/v0.1.0.tar.gz"
+  checksum: "md5=6d866570c511ea0ce9d6891e29673d2a"
+}

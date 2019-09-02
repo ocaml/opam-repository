@@ -1,0 +1,72 @@
+opam-version: "2.0"
+maintainer: "Miguel Molina <miguel@erizocosmi.co>"
+authors: "Miguel Molina <miguel@erizocosmi.co>"
+homepage: "https://github.com/erizocosmico/ocaml-socialpeek"
+bug-reports: "https://github.com/erizocosmico/ocaml-socialpeek/issues"
+license: "MIT"
+doc: "http://erizocosmi.co/ocaml-socialpeek"
+dev-repo: "git+https://github.com/erizocosmico/ocaml-socialpeek.git"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "base" {< "v0.13"}
+  "lambdasoup" {< "0.7.0"}
+  "lwt_ssl" {< "1.2.0"}
+  "cohttp-lwt-unix" {< "0.100.0"}
+  "jbuilder" {build & >= "1.0+beta10"}
+  "ounit" {with-test & >= "2.0.6"}
+]
+synopsis:
+  "OCaml library to extract social information such as Twitter cards or OpenGraph data from webpages and HTML."
+description: """
+## Usage
+
+### Get twitter card
+
+```ocaml
+open Socialpeek
+
+let () =
+  (** you can use `from_html` instead if you already have the HTML *)
+  let twitter_card = from_url "http://something.cool" |> Twitter.get_card in
+  match twitter_card with
+  | Twitter.Summary data -> (** Do something with data *)
+  | Twitter.Summary_large_image data -> (** Do something with data *)
+  | Twitter.App data -> (** Do something with data *)
+  | Twitter.Player data -> (** Do something with data *)
+```
+
+Twitter cards can have 4 different shapes: `summary`, `summary_large_image`, `app` or `player` (more info about [twitter cards](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/markup)).
+So the result of `Twitter.get_card` is a variant type that holds only the data a certain type of card can have.
+
+### Get Opengraph data
+
+```ocaml
+open Socialpeek
+
+let () =
+  (** you can use `from_html` instead if you already have the HTML *)
+  let og_data = from_url "http://something.cool" |> Opengraph.get_data in
+  (** do something with the data *)
+```
+
+### Get twitter and opengraph data
+
+```ocaml
+open Socialpeek
+
+let () =
+  (** you can use `from_html` instead if you already have the HTML *)
+  let tags = from_url "http://something.cool" in
+  let og_data = Opengraph.get_data tags in
+  let twitter_card = Twitter.get_card tags in
+  (** do something with the data *)
+```"""
+url {
+  src:
+    "https://github.com/erizocosmico/ocaml-socialpeek/archive/1.0.0.tar.gz"
+  checksum: "md5=a0af71f8d0761d948d29052b68cf850b"
+}

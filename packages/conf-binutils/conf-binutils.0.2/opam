@@ -1,0 +1,35 @@
+opam-version: "2.0"
+name: "conf-binutils"
+version: "0.2"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["ocaml" "find-binutils.ml"]
+]
+
+depexts: [
+  ["binutils-multiarch"] {os-family = "debian"}
+  ["binutils"] {os = "macos" & os-distribution = "homebrew"}
+  [
+    "arm-aout-binutils"
+    "arm-elf-binutils"
+    "arm-none-eabi-binutils"
+    "i386-elf-binutils"
+    "i386-mingw32-binutils"
+    "x86_64-elf-binutils"
+  ] {os = "macos" & os-distribution = "macports"}
+]
+synopsis: "Checks that binutils are installed"
+
+depends: [
+  "ocaml"
+  "base-unix"
+  "conf-which" {build}
+]
+
+substs: [ "find-binutils.ml" ]
+flags: [ conf ]

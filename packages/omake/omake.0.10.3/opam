@@ -1,0 +1,46 @@
+opam-version: "2.0"
+name: "omake"
+maintainer: "Gerd Stolpmann <gerd@gerd-stolpmann.de>"
+authors: [
+  "Aleksey Nogin"
+  "Jason Hickey"
+  "Gerd Stolpmann"
+]
+
+license: "GPL2"
+dev-repo: "git+https://github.com/ocaml-omake/omake.git"
+homepage: "http://projects.camlcity.org/projects/omake.html"
+bug-reports: "https://github.com/ocaml-omake/issues"
+
+patches: ["lib_build_OCaml.om.diff"]
+
+build: [
+  ["./configure" "-prefix" "%{prefix}%"]
+  [make]
+]
+
+install: [
+  [make "install"]
+]
+
+remove: [
+  [ "rm" "-f" "%{prefix}%/bin/omake" ]
+  [ "rm" "-f" "%{prefix}%/bin/osh" ]
+  [ "rm" "-rf" "%{prefix}%/lib/omake" ]
+]
+
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "ocamlfind"
+]
+synopsis: "Build system designed for scalability and portability"
+flags: light-uninstall
+url {
+  src: "http://download.camlcity.org/download/omake-0.10.3.tar.gz"
+  checksum: "md5=e0cefca108852a5db6ecfc16742af047"
+  mirrors: "http://download2.camlcity.org/download/omake-0.10.3.tar.gz"
+}
+
+extra-files: [
+  [ "lib_build_OCaml.om.diff" "md5=04f4ee4d33cf137fc0ac0c8f880bbc06" ]
+]

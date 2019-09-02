@@ -1,18 +1,38 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "ygrek@autistici.org"
-homepage: "http://lzo.forge.ocamlcore.org/"
-doc: ["http://lzo.forge.ocamlcore.org/api/index.html"]
+authors: "ygrek"
+homepage: "http://ygrek.org.ua/p/ocaml-lzo/"
+doc: ["http://ygrek.org.ua/p/ocaml-lzo/api/index.html"]
+bug-reports: "https://github.com/ygrek/ocaml-lzo/issues"
+dev-repo: "git://github.com/ygrek/ocaml-lzo.git"
+tags: ["org:ygrek"]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: [
+  ["ocaml" "setup.ml" "-install"]
 ]
 remove: [["ocamlfind" "remove" "lzo"]]
 depends: [
-  "ocamlfind"
+  "ocaml" {< "4.06.0"}
+  "ocamlfind" {build}
   "ocamlbuild" {build}
+  "base-bytes"
 ]
 depexts: [
-  [["debian"] ["liblzo2-dev"]]
-  [["ubuntu"] ["liblzo2-dev"]]
+  ["liblzo2-dev"] {os-family = "debian"}
+  ["lzo"] {os-distribution = "homebrew"}
+  ["lzo-dev"] {os-distribution = "alpine"}
+  ["lzo-devel"] {os-distribution = "centos"}
 ]
-install: ["ocaml" "setup.ml" "-install"]
+synopsis: "Bindings to LZO - a portable lossless data compression library"
+flags: light-uninstall
+url {
+  src: "http://ygrek.org.ua/p/release/ocaml-lzo/ocaml-lzo-0.0.1.tar.gz"
+  checksum: "md5=bb7c1245749a502b6774e9ee88be95d4"
+  mirrors:
+    "https://github.com/ygrek/ocaml-lzo/releases/download/v0.0.1/ocaml-lzo-0.0.1.tar.gz"
+}

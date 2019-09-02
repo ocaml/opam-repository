@@ -1,0 +1,34 @@
+opam-version: "2.0"
+maintainer: "Markus Mottl <markus.mottl@gmail.com>"
+authors: [ "Markus Mottl <markus.mottl@gmail.com>" ]
+license: "LGPL-2.1+ with OCaml linking exception"
+homepage: "http://mmottl.github.io/pomap"
+dev-repo: "git+https://github.com/mmottl/pomap.git"
+bug-reports: "https://github.com/mmottl/pomap/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "pomap"]
+]
+depends: [
+  "ocaml" {>= "3.12" & < "4.07.0"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build & >= "1.3.1"}
+]
+synopsis: "Partially Ordered Maps for OCaml"
+description: """
+pomap supports creating and manipulating partially ordered maps in a
+purely functional and efficient way."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/mmottl/pomap/releases/download/v3.0.7/pomap-3.0.7.tar.gz"
+  checksum: "md5=17c843d26da7266aa58f8fa1e98da5b5"
+}

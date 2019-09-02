@@ -1,0 +1,94 @@
+opam-version: "2.0"
+maintainer: "Maël Valais <mael.valais@gmail.com>"
+authors: ["Maël Valais <mael.valais@gmail.com>" "Olivier Lezaud"]
+homepage: "http://touist.github.io"
+bug-reports: "https://github.com/touist/touist/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/touist/touist.git"
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--%{yices2:enable}%-yices2"
+    "--%{qbf:enable}%-qbf"
+  ]
+  ["ocaml" "setup.ml" "-build"]
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--enable-tests"
+    "--%{yices2:enable}%-yices2"
+    "--%{qbf:enable}%-qbf"
+  ] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  "ocaml" "%{etc}%/touist/setup.ml" "-C" "%{etc}%/touist" "-uninstall"
+]
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "cppo" {build}
+  "cppo_ocamlbuild" {build}
+  "fileutils" {build & >= "0.4.0"}
+  "menhir" {build & >= "20151023"}
+  "minisat" {build}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {with-test}
+]
+depopts: ["qbf" "yices2"]
+conflicts: [
+  "qbf" {< "0.1"}
+  "yices2" {< "0.0.2"}
+]
+post-messages: [
+  "
+Touist built without yices2. If you also wanted to use the SMT solver, do:
+    opam install yices2
+    opam reinstall touist
+  "
+    {success & !yices2:installed}
+  "
+Touist built without quantor. If you also wanted to use the QBF solver, do
+    opam install qbf
+    opam reinstall touist
+  "
+    {success & !qbf:installed}
+  "
+Touist has been built with the yices2 solver. Yices2 is free [only] for
+non-commercial use. License terms:
+    http://yices.csl.sri.com/yices-newnewlicense.html
+  "
+    {success & yices2:installed}
+  "
+Touist has been built with the solver 'quantor'. Quantor is under BSD
+license.
+  "
+    {success & qbf:installed}
+]
+synopsis: "The solver for the Touist language"
+description: """
+The Touist language is a friendly language for writing propositional
+logic, logic on real and integers (SMT) and quantified boolean
+formulas (QBF). This language aims to formalize real-life problems
+(e.g., the sudoku can be solved in a few lines). Touist embeds the
+minisat solver (for propositional logic) and the yices2 solver
+(optional, for SMT logic). It can also generate the DIMACS, SMT2 and
+latex formats from you touist file.
+
+Optionnal solvers:
+- for using the embeded SMT solver, run `opam install yices2` and then do
+  `opam reinstall touist`
+- for using the embeded QBF solver, run `opam install qbf` and then do
+  `opam reinstall touist`"""
+url {
+  src: "https://github.com/touist/touist/archive/v3.2.0.tar.gz"
+  checksum: "md5=42be6b20683d4b19d3e0379bb0dd846e"
+}

@@ -1,0 +1,128 @@
+opam-version: "2.0"
+name: "frama-c-base"
+version: "13.1"
+maintainer: "francois.bobot@cea.fr"
+authors: [
+  "Patrick Baudin"
+  "François Bobot"
+  "Richard Bonichon"
+  "David Bühler"
+  "Loïc Correnson"
+  "Julien Crétin"
+  "Pascal Cuoq"
+  "Zaynah Dargaye"
+  "Jean-Christophe Filliâtre"
+  "Philippe Herrmann"
+  "Florent Kirchner"
+  "Matthieu Lemerre"
+  "David Maison"
+  "Claude Marché"
+  "André Maroneze"
+  "Benjamin Monate"
+  "Yannick Moy"
+  "Anne Pacalet"
+  "Valentin Perrelle"
+  "Guillaume Petiot"
+  "Virgile Prevosto"
+  "Armand Puccetti"
+  "Muriel Roger"
+  "Julien Signoles"
+  "Boris Yakobowski"
+]
+homepage: "http://frama-c.com/"
+license: "GNU Lesser General Public License version 2.1"
+dev-repo: "git+https://github.com/Frama-C/Frama-C-snapshot.git"
+doc: ["http://frama-c.com/download/user-manual-Aluminium-20160501.pdf"]
+bug-reports: "https://bts.frama-c.com/"
+tags: [
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "interactive theorem prover"
+  "C"
+  "plugins"
+  "abstract interpretation"
+  "slicing"
+  "weakest precondition"
+  "ACSL"
+  "dataflow analysis"
+]
+
+build: [
+  ["sh" "-eux" "./run_autoconf_if_needed.sh"]
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--disable-local-ocamlgraph"
+    "--disable-gui"
+      {!conf-gtksourceview:installed | !conf-gnomecanvas:installed}
+  ]
+  [make "-j%{jobs}%"]
+  [make "-C" "doc" "download"] {with-doc}
+]
+install: [
+  [make "install"]
+  [make "-C" "doc" "FRAMAC_DOCDIR=%{frama-c-base:doc}%" "install"] {with-doc}
+]
+remove: [
+  ["sh" "-eux" "./run_autoconf_if_needed.sh"] # when used in pinned mode,
+                                              # the configure *cannot* yet be
+                                              # generated
+  ["./configure" "--prefix" prefix "--disable-local-ocamlgraph"
+                 "--disable-gui" { !conf-gtksourceview:installed |
+                                   !conf-gnomecanvas:installed }
+]
+  [make "uninstall"]
+  ["rm" "-rf" frama-c-base:doc]
+]
+
+depends: [
+  "ocaml" {>= "4.00.1" & != "4.02.0" & != "4.02.2" & < "4.04.0"}
+  "ocamlgraph" {= "1.8.5" | = "1.8.6"}
+  "ocamlfind"
+  "num"
+]
+depopts: [
+  "zarith"
+  "lablgtk"
+  "conf-gtksourceview"
+  "conf-gnomecanvas"
+  "coq" { build }
+  "why3"
+]
+
+messages: [
+   "Why3 can be used by the WP plug-in for running additional automatic solvers" { !why3:installed }
+   "Coq can be used with the WP plug-in for proving interactively proof obligations" { !coq:installed }
+]
+
+conflicts: [
+  "why3-base" { < "0.86" } #for WP plug-in
+  "coq"      { < "8.4.6" } #for WP plug-in
+  "lablgtk" { < "2.18.2" } #for ocaml >= 4.02.1
+]
+
+synopsis:
+  "Platform dedicated to the analysis of source code written in C. Aluminium version."
+description: """
+Frama-C gathers several analysis techniques in a single collaborative
+framework, based on analyzers (called "plug-ins") that can build upon the
+results computed by other analyzers in the framework.
+Thanks to this approach, Frama-C provides sophisticated tools, including:
+- an analyzer based on abstract interpretation (Value plug-in);
+- a program proof framework based on weakest precondition calculus (WP plug-in);
+- a program slicer (Slicing plug-in);
+- a tool for verification of temporal (LTL) properties (Aoraï plug-in);
+- several tools for code base exploration and dependency analysis
+  (plug-ins From, Impact, Metrics, Occurrence, Scope, etc.).
+These plug-ins communicate between each other via the Frama-C API
+and via ACSL (ANSI/ISO C Specification Language) properties."""
+extra-files: [
+  "run_autoconf_if_needed.sh" "md5=8896537e4468e4228e7b0112f1cfd0ed"
+]
+url {
+  src: "http://frama-c.com/download/frama-c-Aluminium-20160502.tar.gz"
+  checksum: "md5=73775124849b7e21889ae85fff6ea0d2"
+}

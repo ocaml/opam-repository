@@ -1,0 +1,57 @@
+opam-version: "2.0"
+maintainer: "c-cube"
+authors: ["Armael" "Enjolras" "c-cube"]
+homepage: "https://github.com/c-cube/calculon"
+bug-reports: "https://github.com/c-cube/calculon/issues"
+tags: ["irc" "bot" "factoids"]
+dev-repo: "git+http://github.com/c-cube/calculon.git"
+build: [
+  [
+    "./configure"
+    "--bindir"
+    "%{bin}%"
+    "--%{uri+lambdasoup+cohttp+atdgen:enable}%-web"
+    "--%{re+sequence:enable}%-extras"
+  ]
+  [make "build"]
+  [make "test"] {with-test}
+  [make "doc"] {with-doc}
+]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "calculon"]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind" {build}
+  "base-bytes"
+  "base-unix"
+  "result"
+  "lwt"
+  "irc-client" {>= "0.4.0" & < "0.6.0"}
+  "tls"
+  "yojson"
+  "containers" {>= "1.0" & < "2.0"}
+  "ISO8601"
+  "re" {>= "1.5.0" & < "1.7.2"}
+  "stringext"
+]
+depopts: [
+  "uri"
+  "cohttp"
+  "atdgen"
+  "lambdasoup"
+  "sequence"
+]
+conflicts: [
+  "cohttp" {>= "1.0.0"}
+]
+synopsis:
+  "Library for writing IRC bots in OCaml, a collection of plugins, and a dramatic robotic actor."
+description: """
+The core library is called `calculon` and revolves around
+the concept of commands that react to user messages. See the README for a small
+tutorial on how to write your own plugins."""
+flags: light-uninstall
+url {
+  src: "https://github.com/c-cube/calculon/archive/0.1.tar.gz"
+  checksum: "md5=24fb37bb915717a0497962fda9fecc5c"
+}

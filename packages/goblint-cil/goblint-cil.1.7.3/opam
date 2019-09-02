@@ -1,0 +1,41 @@
+opam-version: "2.0"
+authors: ["gabriel@kerneis.info"]
+maintainer: "ralf.vogler@gmail.com"
+homepage: "https://cil-project.github.io/cil/"
+bug-reports: "https://github.com/goblint/cil/issues/"
+dev-repo: "git+https://github.com/goblint/cil/"
+build: [
+  ["env" "FORCE_PERL_PREFIX=1" "./configure" "--prefix" prefix]
+  [make]
+  ["env" "VERBOSE=1" make "test"] {with-test}
+  [make "doc"] {with-doc}
+]
+install: [
+  make "install"
+]
+remove: [
+  ["env" "FORCE_PERL_PREFIX=1" "./configure" "--prefix" prefix]
+  [make "uninstall"]
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "ocamlfind"
+  "ocamlbuild" {build}
+  "num" {build}
+  "conf-perl" {build}
+  "hevea" {build & with-doc}
+  "hevea" {build & with-test}
+]
+conflicts: ["cil"]
+synopsis:
+  "A front-end for the C programming language that facilitates program analysis and transformation."
+description: """
+This is a fork of the 'cil' package needed to build 'goblint'.
+Changes:
+- some warnings are made optional
+- truncated integer constants have a string representation
+- compiles with OCaml 4.06.0"""
+url {
+  src: "https://github.com/goblint/cil/archive/goblint-cil-1.7.3.tar.gz"
+  checksum: "md5=77b8d863893215275e6b8f7f0e055e3e"
+}

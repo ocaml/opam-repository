@@ -1,0 +1,34 @@
+opam-version: "2.0"
+maintainer:   "e@x80.org"
+authors:      "Emilio Jesús Gallego Arias"
+homepage:     "https://github.com/ejgallego/coq-serapi"
+bug-reports:  "https://github.com/ejgallego/coq-serapi/issues"
+dev-repo:     "git+https://github.com/ejgallego/coq-serapi.git"
+license:      "GPL 3"
+
+name: "coq-serapi"
+depends: [
+  "ocaml" {>= "4.06.0"}
+  "coq" {>= "8.7.2" & < "8.8"}
+  "camlp5"
+  "cmdliner"
+  "sexplib" {< "v0.13"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "ppx_import" {>= "1.4"}
+  "ppx_deriving" {>= "4.2.1"}
+  "ppx_driver" {build & >= "v0.10.1"}
+  "ppx_sexp_conv" {< "v0.11.0"}
+]
+build:    [ make "-j%{jobs}%" "TARGET=native" ]
+install: [[ "cp" "sertop.native"  "%{bin}%/sertop" ]
+          [ "cp" "sercomp.native" "%{bin}%/sercomp"]]
+remove:  [[ "rm" "-f" "%{bin}%/sertop" ]
+          [ "rm" "-f" "%{bin}%/sercomp"]]
+synopsis:
+  "Sexp Protocol for machine-based interaction with the Coq Proof Assistant."
+flags: light-uninstall
+url {
+  src: "https://github.com/ejgallego/coq-serapi/archive/8.7.2+0.4.12.tar.gz"
+  checksum: "md5=1473905ab397c8ea8edf8cc26b7c3bc9"
+}

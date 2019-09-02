@@ -1,0 +1,55 @@
+opam-version: "2.0"
+name: "oasis2debian"
+maintainer: "Sylvain Le Gall <sylvain@le-gall.net>"
+authors: [ "Sylvain Le Gall" ]
+license: "GPL-3.0"
+homepage: "http://oasis.forge.ocamlcore.org/oasis2debian.html"
+dev-repo: "git://github.com/ocaml/oasis2debian.git"
+bug-reports: "https://github.com/ocaml/oasis2debian/issues"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/oasis2debian/setup.ml" "-C" "%{etc}%/oasis2debian"
+    "-uninstall"]
+]
+# TODO: reactivate when we can skip the package building part of it that fails
+# on Travis.
+#build-test: [
+#  ["oasis" "setup"]
+#  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+#  ["ocaml" "setup.ml" "-build"]
+#  ["ocaml" "setup.ml" "-test"]
+#]
+depends: [
+  "ocaml" {>= "3.12.1"}
+  "base-unix" {with-test}
+  "calendar" {build}
+  "debian-formats" {build & >= "0.0.1"}
+  "fileutils" {build & >= "0.4.2"}
+  "oasis" {build & >= "0.4.7"}
+  "ocaml-inifiles" {build & >= "1.2"}
+  "ocaml-xdg-basedir" {build & >= "0.0.1"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ocamlmod" {with-test}
+  "ounit" {with-test & >= "2.0.0"}
+  "pcre" {build}
+  "base-bytes" {build}
+]
+synopsis: "Create and maintain Debian package for an OASIS package"
+description: """
+This program is a helper to translate _oasis file into a debian/
+directory that is suitable to create a Debian package.
+
+When the _oasis file is lacking some information, a prompt is
+displayed to gather more data."""
+extra-files: ["oasis.install" "md5=ecc97c692bb2f70fe50124a88d705fde"]
+url {
+  src:
+    "https://download.ocamlcore.org/oasis/oasis2debian/0.1.4/oasis2debian-0.1.4.tar.gz"
+  checksum: "md5=a8ac3abba318546e9a1460f1e529cfb4"
+}

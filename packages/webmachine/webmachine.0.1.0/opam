@@ -1,17 +1,17 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Spiros Eliopoulos <spiros@inhabitedtype.com>"
 homepage: "https://github.com/inhabitedtype/ocaml-webmachine"
-dev-repo: "https://github.com/inhabitedtype/ocaml-webmachine.git"
+dev-repo: "git+https://github.com/inhabitedtype/ocaml-webmachine.git"
 bug-reports: "https://github.com/inhabitedtype/ocaml-webmachine/issues"
 authors: ["Inhabited Type LLC"]
 license: "BSD-3-clause"
 
-available: [
-  ocaml-version >= "4.01"
-]
 build: [
   ["./configure" "--prefix=%{prefix}%"]
   [make]
+  ["./configure" "--enable-tests"] {with-test}
+  [make] {with-test}
+  [make "test"] {with-test}
 ]
 install: [
   [make "install"]
@@ -20,16 +20,23 @@ remove: [
   ["ocamlfind" "remove" "webmachine"]
 ]
 
-build-test: [
-  ["./configure" "--enable-tests"]
-  [make]
-  [make "test"]
-]
-
 depends: [
+  "ocaml" {>= "4.01"}
   "cohttp" {>= "0.12.0" & < "0.21.0"}
-  "ounit" {test}
+  "ounit" {with-test}
   "ocamlfind" {build}
   "re" {>= "1.3.0"}
   "ocamlbuild" {build}
 ]
+synopsis: "A REST toolkit for OCaml"
+description: """
+ocaml-webmachine is a layer on top of cohttp that implements a
+state-machine-based HTTP request processor. It's particularly well-suited for
+writing RESTful APIs. As the name suggests, this is an OCaml port of the
+webmachine project."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/inhabitedtype/ocaml-webmachine/archive/0.1.0.tar.gz"
+  checksum: "md5=dae09666b75ee036e9a01257835cf5b2"
+}
