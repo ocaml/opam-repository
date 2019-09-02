@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "David Allsopp <david.allsopp@metastack.com>"
+bug-reports: "https://caml.inria.fr/mantis"
+dev-repo: "git+https://github.com/ocaml/ocaml.git"
+authors: [ "Xavier Leroy"
+           "Jun Furuse"
+           "J-M Geffroy"
+           "Jacob Navia"
+           "Pierre Weis" ]
+homepage: "https://ocaml.org"
+license: "LGPL-2.1 with OCaml linking exception"
+build: [
+  ["chmod" "+x" "install.sh"]
+  ["./install.sh" "build" "%{ocaml:preinstalled}%" "%{ocaml:lib}%" make "allopt" {ocaml:native}]
+]
+install: [
+  ["./install.sh" "install" "%{ocaml:preinstalled}%" "%{_:lib}%" make stublibs "installopt" {ocaml:native}]
+]
+depends: [
+  "conf-libX11"
+  "ocaml" {= "3.09.1"}
+]
+synopsis: "The OCaml graphics library"
+description:
+  "Ensures that the OCaml graphics library is available, building it if needed."
+extra-files: [
+  ["META" "md5=69cd40daf367bb1a20087666dbf69bd7"]
+  ["install.sh" "md5=62f8421d654b8ed18b72c693bd58aef7"]]
+url {
+  src: "https://caml.inria.fr/pub/distrib/ocaml-3.09/ocaml-3.09.1.tar.gz"
+  checksum: "md5=c73f4b093e27ba5bf13d62923f89befc"
+}
+extra-source "PR5477.patch" {
+  src:
+    "https://raw.githubusercontent.com/metastack/ocaml-legacy/master/PR5477-to-3.09.3.patch"
+  checksum: "md5=0431293b171ef2d09a5dd456dfe43629"
+}
+patches: ["PR5477.patch"]

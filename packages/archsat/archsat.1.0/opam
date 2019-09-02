@@ -1,0 +1,77 @@
+opam-version: "2.0"
+maintainer: "Guillaume Bury <guillaume.bury@gmail.com>"
+license: "BSD-2-clauses"
+build: [
+  [make "bin"]
+  [make "test"] { with-test }
+  [make "static"] { dedukti:installed }
+]
+install:[
+  [make
+    "MANDIR=%{man}%"
+    "BINDIR=%{archsat:bin}%"
+    "SHAREDIR=%{archsat:share}%"
+    "install"]
+  [make
+    "-C" "static"
+    "MANDIR=%{man}%"
+    "BINDIR=%{archsat:bin}%"
+    "SHAREDIR=%{archsat:share}%"
+    "install_dk"] { dedukti:installed }
+]
+remove: [
+  [make
+    "MANDIR=%{man}%"
+    "BINDIR=%{archsat:bin}%"
+    "SHAREDIR=%{archsat:share}%"
+    "uninstall"]
+  [make
+    "-C" "static"
+    "MANDIR=%{man}%"
+    "BINDIR=%{archsat:bin}%"
+    "SHAREDIR=%{archsat:share}%"
+    "uninstall"]
+]
+depends: [
+  "ocaml"       { >= "4.04.0" }
+  "ocamlfind"   { build }
+  "ocamlbuild"  { build }
+  "qcheck"      { with-test & >= "0.8" }
+  "dolmen"      { >= "0.4" }
+  "msat"        { >= "0.7" & < "0.8" }
+  "containers"  { >= "2.0" }
+  "cmdliner"    { >= "0.9.8" }
+  "zarith"
+  "ocamlgraph"
+  "gen"
+  "mtime"
+  "sequence"
+  "spelll" { <= "0.2" }
+  "uucp"
+  "uutf"        { >= "1.0" }
+]
+depopts: [
+  "dedukti"
+]
+tags: [ "sat" "smt" "solver" "theorem prover" "tptp" "logic" "smtlib" "dimacs" ]
+homepage: "https://gforge.inria.fr/projects/archsat/"
+dev-repo: "git+https://scm.gforge.inria.fr/anonscm/git/archsat/archsat.git"
+bug-reports: "https://gforge.inria.fr/tracker/?atid=14153&group_id=7473"
+synopsis: "An first-order theorem prover with formal proof output"
+description:
+"Archsat is an experimental SMT/McSat solver, aimed at solving first-order problems.
+Archsat integrates Tableau theory, superposition, and Rewriting into an McSat core.
+
+Archsat currently features builtin support for equality, uninterpreted functions
+and predicates, as well as rewriting. Additionally, whenever it finds a proof, it is
+able to export that proof to various formal proof formats: coq proof script, coq proof term,
+dedukti proof term.
+"
+authors: "Guillaume Bury"
+url {
+  src: "https://github.com/Gbury/archsat/archive/v1.0.tar.gz"
+  checksum: [
+    "md5=15c709d42486ee4ca71134dd064ee19e"
+    "sha512=7a4f40caf05ba633840cdf425a205b96d7274ace5ef43e8a7b54d8ffdbb75d066692a52935faa58d7a8c764ee02494f43e4dcf1ea36aa08426ab5ef60620c412"
+  ]
+}

@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "first release candidate for 4.08.0, with frame pointers"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.08.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "ocaml-beta"
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "--prefix=%{prefix}%"
+    "--enable-frame-pointers"
+  ] {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "./configure"
+    "--prefix=%{prefix}%"
+    "--enable-frame-pointers"
+    "CC=cc"
+    "ASPP=cc -c"
+  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "-j%{jobs}%" {os != "cygwin"} "world"]
+  [make "-j%{jobs}%" {os != "cygwin"} "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.08.0+rc1.tar.gz"
+  checksum: "md5=737902be9699c38fcb44f1f25f6a5997"
+}
+post-messages: [
+  "A failure in the middle of the build may be caused by build parallelism
+   (enabled by default).
+   Please file a bug report at https://github.com/ocaml/ocaml/issues"
+  {failure & jobs > 1 & os != "cygwin"}
+  "You can try installing again including --jobs=1
+   to force a sequential build instead."
+  {failure & jobs > 1 & os != "cygwin" & opam-version >= "2.0.5"}
+]

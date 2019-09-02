@@ -5,13 +5,14 @@ authors: "Kate <kit.ty.kate@disroot.org>"
 homepage: "https://github.com/kit-ty-kate/labrys"
 dev-repo: "git+https://github.com/kit-ty-kate/labrys.git"
 bug-reports: "https://github.com/kit-ty-kate/labrys/issues"
+patches: ["fix-dune.patch"]
 build: [
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
 depends: [
   "ocaml" {>= "4.04"}
-  "dune" {build}
+  "dune" {>= "1.10"}
   "menhir"
   "base-unix"
   "cmdliner"
@@ -24,12 +25,11 @@ depends: [
   "craml" {with-test}
 ]
 depexts: [
-  ["libgc-dev"] {os-distribution = "debian"}
-  ["libgc-dev"] {os-distribution = "ubuntu"}
+  ["libgc-dev"] {os-family = "debian"}
   ["gc-devel"] {os-distribution = "centos"}
   ["gc-devel"] {os-distribution = "fedora"}
-  ["gc-devel"] {os-distribution = "opensuse"}
-  ["gc"] {os-distribution = "archlinux"}
+  ["gc-devel"] {os-family = "suse"}
+  ["gc"] {os-distribution = "arch"}
   ["gc-dev"] {os-distribution = "alpine"}
   ["boehmgc"] {os-distribution = "macports" & os = "macos"}
   ["bdw-gc"] {os-distribution = "homebrew" & os = "macos"}
@@ -48,6 +48,7 @@ tags: [
 ]
 synopsis:
   "A toy language based on LLVM that implements the System Fω type-system"
+extra-files: ["fix-dune.patch" "md5=06bd57d94ee9a58831c089c5074b5d29"]
 url {
   src: "https://github.com/kit-ty-kate/labrys/archive/0.1.tar.gz"
   checksum: "md5=a18d39762a27e18ff4548978536b8477"

@@ -12,8 +12,5 @@ int main(int argc, char **argv)
   if(strcmp(subversion, "4.0.0") == 0)
     return 0;
 
-  if(strcmp(subversion, "4.0.1") == 0)
-    return 0;
-
   return 1;
 }

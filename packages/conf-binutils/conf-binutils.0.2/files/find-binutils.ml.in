@@ -62,7 +62,17 @@ let string_of_targets targets =
   List.fold_left (fun acc x ->
       sprintf "%s\"%s\"; " acc x) "[" targets ^ "]"
 
+let is_none = function
+  | None -> true
+  | _ -> false
+
+let failed_to_find cmd =
+  eprintf "%s not found\n" cmd;
+  exit 1
+
 let write objdump cxxfilt targets =
+  if is_none objdump then failed_to_find "objdump";
+  if is_none cxxfilt then failed_to_find "cxxfilt";
   let digest path = Digest.to_hex (Digest.file path) in
   let depends = function
     | None -> ""

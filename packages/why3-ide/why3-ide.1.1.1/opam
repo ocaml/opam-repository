@@ -1,0 +1,68 @@
+opam-version: "2.0"
+maintainer: "guillaume.melquiond@inria.fr"
+authors: [
+  "François Bobot"
+  "Jean-Christophe Filliâtre"
+  "Claude Marché"
+  "Guillaume Melquiond"
+  "Andrei Paskevich"
+]
+
+homepage: "http://why3.lri.fr/"
+license: "GNU Lesser General Public License version 2.1"
+doc: "http://why3.lri.fr/doc/"
+bug-reports: "https://gitlab.inria.fr/why3/why3/issues"
+dev-repo: "git+https://gitlab.inria.fr/why3/why3.git"
+
+tags: [
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "interactive theorem prover"
+]
+
+build: [
+  ["./configure"
+   "--prefix" prefix
+   "--disable-why3-lib"
+   "--disable-frama-c"
+   "--disable-coq-libs"
+   "--disable-js-of-ocaml"]
+  [make "-j%{jobs}%" "ide"]
+]
+
+install: [make "install-ide"]
+
+remove: [
+  ["rm" "-f" "%{lib}%/why3/commands/why3ide"]
+  ["rm" "-rf" "%{share}%/why3/images"]
+]
+
+flags: [ light-uninstall ]
+
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "ocamlfind" {build}
+  "why3" {= "1.1.1"}
+  "lablgtk"
+  "conf-gtksourceview"
+]
+
+conflicts: [
+  "lablgtk" {< "2.14.2"}
+]
+
+synopsis: "Why3 environment for deductive program verification"
+
+description: """
+Why3 provides a rich language for specification and programming, called WhyML, and relies on external theorem provers, both automated and interactive, to discharge verification conditions. Why3 comes with a standard library of logical theories (integer and real arithmetic, Boolean operations, sets and maps, etc.) and basic programming data structures (arrays, queues, hash tables, etc.). A user can write WhyML programs directly and get correct-by-construction OCaml programs through an automated extraction mechanism. WhyML is also used as an intermediate language for the verification of C, Java, or Ada programs.
+
+Why3 is a complete reimplementation of the former Why platform. Among the new features are: numerous extensions to the input language, a new architecture for calling external provers, and a well-designed API, allowing to use Why3 as a software library. An important emphasis is put on modularity and genericity, giving the end user a possibility to easily reuse Why3 formalizations or to add support for a new external prover if wanted.
+
+This package provides an IDE for Why3."""
+
+url {
+  src: "https://gforge.inria.fr/frs/download.php/file/37842/why3-1.1.1.tar.gz"
+  checksum: "md5=529d0f3b4ffd91aa9d5f49457dff5dba"
+}
