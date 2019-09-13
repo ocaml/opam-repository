@@ -1,14 +1,14 @@
 opam-version: "2.0"
-synopsis: "4.02.1 release compiled with musl-gcc -static"
+synopsis:
+  "Official 4.06.1 release compiled with musl-clang and with flambda activated"
 description:
-  "Requires musl-gcc to be installed (apt-get install musl-tools on Debian)"
+  "Requires musl-clang to be installed (package musl on Arch Linux or musl-tools on Debian)"
 maintainer: "platform@lists.ocaml.org"
 depends: [
-  "ocaml" {= "4.02.1" & post}
+  "ocaml" {= "4.06.1" & post}
   "base-unix" {post}
   "base-bigarray" {post}
   "base-threads" {post}
-  "base-ocamlbuild" {post}
 ]
 conflict-class: "ocaml-core-compiler"
 flags: compiler
@@ -19,19 +19,19 @@ build: [
     "-prefix"
     prefix
     "-with-debug-runtime"
+    "-flambda"
     "-cc"
-    "musl-gcc -Os"
+    "musl-clang -Os"
     "-aspp"
-    "musl-gcc -c"
-    "-libs"
-    "-static"
+    "musl-clang -c"
     "-no-curses"
     "-no-graph"
   ]
+  [make "world"]
   [make "world.opt"]
 ]
 install: [make "install"]
 url {
-  src: "http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.1.tar.gz"
-  checksum: "md5=3c35318eefd201f96797c093c920b343"
+  src: "https://github.com/ocaml/ocaml/archive/4.06.1.tar.gz"
+  checksum: "md5=d02eb67b828de22c3f97d94b3c46acba"
 }

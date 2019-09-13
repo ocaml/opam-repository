@@ -1,6 +1,6 @@
 opam-version: "2.0"
 synopsis:
-  "Official release 4.08.0, compiled with musl-gcc -static and with flambda activated"
+  "Official release 4.08.1, compiled with musl-gcc and with flambda activated"
 description:
   "Requires musl-gcc to be installed (package musl on Arch Linux or musl-tools on Debian)"
 maintainer: "platform@lists.ocaml.org"
@@ -9,10 +9,14 @@ homepage: "https://ocaml.org"
 bug-reports: "https://github.com/ocaml/ocaml/issues"
 dev-repo: "git://github.com/ocaml/ocaml"
 depends: [
-  "ocaml" {= "4.08.0" & post}
+  "ocaml" {= "4.08.1" & post}
   "base-unix" {post}
   "base-bigarray" {post}
   "base-threads" {post}
+]
+depexts: [
+  ["musl-tools"] {os-family = "debian"}
+  ["musl"] {os-distribution = "archlinux"}
 ]
 conflict-class: "ocaml-core-compiler"
 flags: compiler
@@ -26,7 +30,6 @@ build: [
     "CC=musl-gcc -Os"
     "ASPP=musl-gcc -c"
     "--enable-flambda"
-    "LIBS=-static"
     "--disable-graph-lib"
   ] {os = "openbsd" | os = "freebsd" | os = "macos" | os = "linux"}
   [make "-j%{jobs}%" {os != "cygwin"} "world"]
@@ -34,8 +37,8 @@ build: [
 ]
 install: [make "install"]
 url {
-  src: "https://github.com/ocaml/ocaml/archive/4.08.0.tar.gz"
-  checksum: "md5=42ed24e9a7c0e3998cab7d5e7c9f7618"
+  src: "https://github.com/ocaml/ocaml/archive/4.08.1.tar.gz"
+  checksum: "md5=723b6bfe8cf5abcbccc6911143f71055"
 }
 post-messages: [
   "A failure in the middle of the build may be caused by build parallelism
