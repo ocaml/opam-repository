@@ -1,12 +1,8 @@
 opam-version: "2.0"
-synopsis: "latest 4.09.0 development, with frame-pointers and flambda activated"
+synopsis: "latest 4.09 development"
 maintainer: "platform@lists.ocaml.org"
-authors: "Xavier Leroy and many contributors"
-homepage: "https://ocaml.org"
-bug-reports: "https://github.com/ocaml/ocaml/issues"
-dev-repo: "git://github.com/ocaml/ocaml"
 depends: [
-  "ocaml" {= "4.09.0" & post}
+  "ocaml" {= "4.09.1" & post}
   "base-unix" {post}
   "base-bigarray" {post}
   "base-threads" {post}
@@ -16,17 +12,11 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
+  ["./configure" "--prefix=%{prefix}%"]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
   [
     "./configure"
     "--prefix=%{prefix}%"
-    "--enable-frame-pointers"
-    "--enable-flambda"
-  ] {os != "openbsd" & os != "freebsd" & os != "macos"}
-  [
-    "./configure"
-    "--prefix=%{prefix}%"
-    "--enable-frame-pointers"
-    "--enable-flambda"
     "CC=cc"
     "ASPP=cc -c"
   ] {os = "openbsd" | os = "freebsd" | os = "macos"}
