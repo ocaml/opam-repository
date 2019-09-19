@@ -1,0 +1,31 @@
+opam-version: "2.0"
+maintainer: "Julian Squires <julian@cipht.net>"
+authors: ["Julian Squires <julian@cipht.net>"]
+homepage: "http://github.com/tokenrove/tsdl-image"
+dev-repo: "git+https://github.com/tokenrove/tsdl-image.git"
+bug-reports: "http://github.com/tokenrove/tsdl-image/issues"
+tags: [ "bindings" "graphics" ]
+license: "BSD-3-Clause"
+depends: [
+  "ocaml" {>= "4.02"}
+  "ctypes" {>= "0.4.0"}
+  "ctypes-foreign"
+  "tsdl" {>= "0.9.0"}
+  "result"
+  "dune" {build & >= "1.11.0"}
+]
+depexts: [
+  ["libsdl2-image-dev"] {os-family = "debian"}
+  ["sdl2_image"] {os-distribution = "homebrew" & os = "macos"}
+  ["sdl2_image"] {os-distribution = "arch"}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "test/what.png" "test/test.exe"] {with-test}
+  ["dune" "build" "@doc" "-p" name] {with-doc}
+]
+run-test: ["dune" "runtest" "-p" name]
+synopsis: "SDL2_Image bindings to go with Tsdl"
+description: """
+Tsdl_image provides bindings to SDL2_Image intended to be used with
+Tsdl."""
