@@ -70,9 +70,6 @@ function build_one {
       fi
   else
     echo "... package available."
-    echo
-    echo "====== External dependency handling ======"
-    opam install 'depext>=1.1.3'
     depext=$(opam depext --with-test -ls $pkg)
     opam depext --with-test $pkg
     echo
@@ -103,6 +100,9 @@ ocaml -version
 echo OPAM versions
 opam --version
 opam --git-version
+
+echo "====== External dependency handling ======"
+opam install 'opam-depext>=1.1.3'
 
 for i in `cat tobuild.txt`; do
     name=$(echo $i | cut -f1 -d".")
