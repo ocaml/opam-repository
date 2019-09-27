@@ -4,14 +4,16 @@ find_llvm_config () {
     # Locate llvm-config (taken from conf-llvm's configure.sh file)
 
     shopt -s nullglob
-    for version in 7 6 5 4 3; do
+    for version in 9 8 7 6 5 4 3; do
         if hash brew 2>/dev/null; then
            brew_llvm_config="$(brew --cellar)"/llvm*/${version}*/bin/llvm-config
         fi
         for llvm_config in \
-            llvm-config-$version llvm-config-${version}.0 \
+            llvm-config-${version} llvm-config-${version}.0 \
             llvm-config${version}0 llvm-config-mp-$version \
             llvm-config-mp-${version}.0 $brew_llvm_config \
+            /usr/lib64/llvm/${version}/bin/llvm-config \
+            /usr/lib/llvm/${version}/bin/llvm-config \
             llvm-config; do
             llvm_version="`$llvm_config --version`" || continue
             return
@@ -71,3 +73,6 @@ CC=cc
 "$tempdir/test_libclang" || \
     ( clean_tempdir; echo "Error: cannot execute libclang test."; exit 1 )
 clean_tempdir
+
+echo "config: \"$llvm_config\"" >> conf-libclang.config
+echo "version: \"$llvm_version\"" >> conf-libclang.config
