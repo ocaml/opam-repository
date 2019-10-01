@@ -10,6 +10,8 @@ function filter_experimental_targets {
 }
 
 function llvm_install {
+    rm -rf test
+
     mkdir build
     cd build
 
@@ -20,6 +22,7 @@ function llvm_install {
         -DBUILD_SHARED_LIBS=`[ $1 = "shared" ] && echo TRUE || echo FALSE` \
         -DLLVM_OCAML_OUT_OF_TREE=TRUE \
         -DLLVM_OCAML_INSTALL_PATH="${libdir}" \
+        -DLLVM_INCLUDE_TESTS=OFF \
         ..
     $make ocaml_all
     "$cmake" -P bindings/ocaml/cmake_install.cmake
