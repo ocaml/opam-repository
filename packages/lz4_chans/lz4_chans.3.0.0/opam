@@ -9,9 +9,10 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
 # the tests don't pass on OCaml 4.03.0, because of a marshalling behavior
 # that was working before 4.03.0 and put back in place after 4.03.0
-  [make "test"] {with-test & ocaml:version != "4.03.0"}
+  ["dune" "exec" "-p" name "src/test.exe"] {with-test & ocaml:version != "4.03.0"}
 ]
 depends: [
+  "ocaml"
   "base-unix"
   "conf-lz4"
   "dolog" {>= "4.0.0"}
