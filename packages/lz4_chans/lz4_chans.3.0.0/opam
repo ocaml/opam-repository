@@ -7,7 +7,9 @@ dev-repo: "git+https://github.com/UnixJunkie/lz4-chans.git"
 license: "BSD-3-Clause"
 build: [
   ["dune" "build" "-p" name "-j" jobs]
-  [make "test"] {with-test}
+# the tests don't pass on OCaml 4.03.0, because of a marshalling behavior
+# that was working before 4.03.0 and put back in place after 4.03.0
+  [make "test"] {with-test & ocaml:version != "4.03.0"}
 ]
 depends: [
   "base-unix"
