@@ -7,7 +7,7 @@ if hash brew 2>/dev/null; then
 fi
 
 shopt -s nullglob
-for llvm_config in llvm-config-$version llvm-config-${version}.0 llvm-config${version}0 llvm-config-mp-$version llvm-config-mp-${version}.0 $brew_llvm_config llvm-config; do
+for llvm_config in llvm-config-$version llvm-config-${version}.0 llvm-config${version}0 llvm-config-mp-$version llvm-config-mp-${version}.0 llvm${version}-config $brew_llvm_config llvm-config; do
     llvm_version="`$llvm_config --version`" || true
     case $llvm_version in
     $version*)
