@@ -118,7 +118,7 @@ let c_args =
     | None -> ""
     | Some path -> flags path
 
-let compile args stub_file =
+let compile c_args args stub_file =
   let cmd = sprintf "%s -custom %s %s %s %s > %s 2>&1"
     !ocamlc
     c_args
@@ -144,7 +144,7 @@ let test_code args stub_code =
     output_string oc stub_code;
     flush oc;
     close_out oc;
-    let result = compile args stub_file in
+    let result = compile "" args stub_file || compile c_args args stub_file in
     cleanup ();
     result
   with exn ->

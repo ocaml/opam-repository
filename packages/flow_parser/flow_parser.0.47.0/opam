@@ -11,16 +11,15 @@ authors: [
 ]
 homepage: "https://github.com/facebook/flow/tree/master/src/parser"
 bug-reports: "https://github.com/facebook/flow/issues"
-license: "BSD3"
+license: "BSD-3-Clause"
 
-build: [ "sh" "-c" "cd src/parser && make ocamlfind-install" ]
-
-remove: ["ocamlfind" "remove" "flow_parser"]
+build: [ make "-C" "src/parser" "build-parser" ]
+install: [ make "-C" "src/parser" "ocamlfind-install"]
 depends: [
-  "ocaml" {>= "4.03.0"}
+  "ocaml" {>= "4.03.0" & < "4.08.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "sedlex"
+  "sedlex" {< "2.0"}
 ]
 dev-repo: "git+https://github.com/facebook/flow.git"
 synopsis:
@@ -31,7 +30,6 @@ produces. The Flow Parser can be compiled to native code or can be compiled to
 JavaScript using js_of_ocaml.
 
 To find out more about Flow, check out <http://flowtype.org>."""
-flags: light-uninstall
 url {
   src: "https://github.com/facebook/flow/archive/v0.47.0.tar.gz"
   checksum: "md5=f7d85c086b570ef7d5693f06391bfe19"

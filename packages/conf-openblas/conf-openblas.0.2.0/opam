@@ -3,17 +3,19 @@ maintainer: "Liang Wang <ryanrhymes@gmail.com>"
 authors: [ "Liang Wang" ]
 homepage: "https://github.com/xianyi/OpenBLAS"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-license: "BSD"
+license: "BSD-3-Clause"
 build: [
   ["sh" "-exc" "cc $CFLAGS -I/usr/include/openblas test.c -lopenblas"]
-    {os = "fedora" | os = "centos" | os = "opensuse"}
+    {os-distribution = "fedora" | os-distribution = "centos" | os-family = "suse"}
   [
     "sh"
     "-exc"
     "cc $CFLAGS -I/usr/local/opt/openblas/include test.c -L/usr/local/opt/openblas/lib -lopenblas"
-  ] {os = "macos"}
+  ] {os = "macos" & os-distribution = "homebrew"}
+  ["sh" "-exc" "cc $CFLAGS test.c -lcblas"]
+    {os-distribution = "arch"}
   ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"]
-    {os != "fedora" & os != "centos" & os != "opensuse" & os != "macos"}
+    {os-distribution != "fedora" & os-distribution != "centos" & os-family != "suse" & os != "macos" & os-distribution != "arch"}
 ]
 depexts: [
   ["libc-dev" "openblas-dev"] {os-distribution = "alpine"}
@@ -22,6 +24,7 @@ depexts: [
   ["libopenblas-dev" "liblapacke-dev"] {os-distribution = "ubuntu"}
   ["openblas-devel"] {os-distribution = "fedora"}
   ["openblas-devel"] {os-family = "suse"}
+  ["openblas" "lapacke" "cblas"] {os-distribution = "arch"}
   ["openblas"] {os = "macos" & os-distribution = "homebrew"}
 ]
 synopsis: "Virtual package to install OpenBLAS and LAPACKE"

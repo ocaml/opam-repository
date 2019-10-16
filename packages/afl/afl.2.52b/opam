@@ -2,12 +2,14 @@ opam-version: "2.0"
 maintainer: "meetup@yomimono.org"
 homepage: "http://lcamtuf.coredump.cx/afl"
 bug-reports: "https://groups.google.com/forum/#!forum/afl-users"
-license: "Apache v2"
+license: "Apache-2.0"
 build: [
-  [make]
+  [make] {arch = "x86_64"}
+  [make "AFL_NO_X86=1"] {arch != "x86_64"}
 ]
 install: [
-  [make "AFL_NO_X86=1" "PREFIX=%{prefix}%" "install"]
+  [make "PREFIX=%{prefix}%" "install"] {arch = "x86_64"}
+  [make "AFL_NO_X86=1" "PREFIX=%{prefix}%" "install"] {arch != "x86_64"}
 ]
 remove: [
   [make "PREFIX=%{prefix}%" "uninstall"]

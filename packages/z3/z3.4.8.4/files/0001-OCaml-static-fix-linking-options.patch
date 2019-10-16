@@ -1,0 +1,39 @@
+From c1ad450f7cde79149b73f25cc632d15830b75829 Mon Sep 17 00:00:00 2001
+From: Louis Gesbert <louis.gesbert@ocamlpro.com>
+Date: Tue, 21 May 2019 16:09:18 +0200
+Subject: [PATCH 1/2] OCaml / static: fix linking options
+
+---
+ scripts/mk_util.py | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/mk_util.py b/scripts/mk_util.py
+index 9076b582f..f076817d2 100644
+--- a/scripts/mk_util.py
++++ b/scripts/mk_util.py
+@@ -2253,10 +2253,12 @@ class MLComponent(Component):
+ 
+             OCAMLMKLIB = 'ocamlmklib'
+ 
+-            LIBZ3 = '-L. -lz3'
++            LIBZ3 = '-lz3'
+             if is_cygwin() and not(is_cygwin_mingw()):
+                 LIBZ3 = 'libz3.dll'
+ 
++            LIBZ3 = LIBZ3 + ' ' + ' '.join(map(lambda x: '-cclib ' + x, LDFLAGS.split()))
++
+             if DEBUG_MODE and not(is_cygwin()):
+                 # Some ocamlmklib's don't like -g; observed on cygwin, but may be others as well.
+                 OCAMLMKLIB += ' -g'
+@@ -2267,7 +2269,7 @@ class MLComponent(Component):
+             out.write('%s.cmxa: %s %s %s %s.cma\n' % (z3mls, cmxs, stubso, z3dllso, z3mls))
+             out.write('\t%s -o %s -I %s %s %s %s\n' % (OCAMLMKLIB, z3mls, self.sub_dir, stubso, cmxs, LIBZ3))
+             out.write('%s.cmxs: %s.cmxa\n' % (z3mls, z3mls))
+-            out.write('\t%s -linkall -shared -o %s.cmxs -I %s %s.cmxa\n' % (OCAMLOPTF, z3mls, self.sub_dir, z3mls))
++            out.write('\t%s -linkall -shared -o %s.cmxs -I . -I %s %s.cmxa\n' % (OCAMLOPTF, z3mls, self.sub_dir, z3mls))
+ 
+             out.write('\n')
+             out.write('ml: %s.cma %s.cmxa %s.cmxs\n' % (z3mls, z3mls, z3mls))
+-- 
+2.11.0
+

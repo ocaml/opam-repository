@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "dave@recoil.org"
+authors: [
+  "Vincent Hanquez" "Anil Madhavapeddy" "David Scott" "Jonathan Ludlam"
+]
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/ocaml-evtchn"
+bug-reports: "https://github.com/mirage/ocaml-evtchn/issues"
+doc: "https://mirage.github.io/ocaml-evtchn/"
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "dune" {>= "1.0"}
+  "xen-evtchn" {>="2.0.0"}
+  "lwt-dllist"
+  "lwt"
+  "cmdliner"
+  "ounit" {with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+depexts: [
+  ["xen-dev"] {os-distribution = "alpine"}
+  ["libxen-dev"] {os-family = "debian"}
+  ["xen-devel"] {os-distribution = "centos"}
+  ["xen-devel"] {os-distribution = "fedora"}
+  ["xenstore"] {os-distribution = "arch"}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-evtchn.git"
+synopsis: "Xen event channel interface for Linux"
+description: """
+Event channels are the Xen equivalent of interrupts, used to signal
+when data (or space) is available for processing. This implementation
+is a binding to a set of libxc functions which access `/dev/xen/evtchn`
+for userspace.
+"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-evtchn/releases/download/v2.1.0/xen-evtchn-v2.1.0.tbz"
+  checksum: "md5=5df050f2aaca4cc9d006042633277dbd"
+}

@@ -1,7 +1,7 @@
 opam-version: "2.0"
 maintainer: "dave@recoil.org"
 authors: [ "Jonathan Ludlam" "David Scott" ]
-license: "LGPL-2 with OCaml linking exception"
+license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
 homepage: "https://github.com/xapi-project/nbd"
 dev-repo: "git+https://github.com/xapi-project/nbd.git"
 bug-reports: "https://github.com/xapi-project/nbd/issues"
@@ -10,8 +10,8 @@ build: [
   ["oasis" "setup"]
   ["./configure" "--prefix" prefix]
   [make]
-  ["./configure" "--enable-tests"] {with-test}
-  [make "test"] {with-test}
+  ["./configure" "--enable-tests"] {with-test & ocaml:version < "4.06.0"}
+  [make "test"] {with-test & ocaml:version < "4.06.0"}
 ]
 install: [
   [make "install" "BINDIR=%{bin}%"]
@@ -32,7 +32,7 @@ depends: [
   "cstruct" {>= "1.9.0" & < "3.4.0"}
   "ppx_cstruct" {<"3.4.0"}
   "cmdliner"
-  "sexplib" {< "v0.12"}
+  "sexplib" {< "v0.13"}
   "mirage-types-lwt" {>= "3.0.0"}
   "mirage-block-unix"
   "mirage-block-lwt"
@@ -40,7 +40,7 @@ depends: [
   "mirage" {>= "1.1.0"}
   "uri"
   "ppx_deriving"
-  "ppx_sexp_conv" {!= "113.33.00+4.03" & < "v0.12"}
+  "ppx_sexp_conv" {!= "113.33.00+4.03" & < "v0.13"}
 ]
 tags: [ "org:mirage" "org:xapi-project" ]
 synopsis: "Network Block Device (NBD) protocol implementation"

@@ -9,12 +9,7 @@ build: [
   [
     "sh"
     "-c"
-    """
-test -d ${HOME}/usr/clang39 \\
-    || ( wget http://llvm.org/releases/3.9.0/clang+llvm-3.9.0-x86_64-apple-darwin.tar.xz \\
-      && tar -xf clang+llvm-3.9.0-x86_64-apple-darwin.tar.xz \\
-      && mkdir -p ${HOME}/usr/clang39 \\
-      && mv clang+llvm-3.9.0-x86_64-apple-darwin/* ${HOME}/usr/clang39 )"""
+    "test -d ${HOME}/usr/clang39 || ( wget http://llvm.org/releases/3.9.0/clang+llvm-3.9.0-x86_64-apple-darwin.tar.xz && tar -xf clang+llvm-3.9.0-x86_64-apple-darwin.tar.xz && mkdir -p ${HOME}/usr/clang39 && mv clang+llvm-3.9.0-x86_64-apple-darwin/* ${HOME}/usr/clang39 )"
   ] {os = "macos"}
   [make]
 ]
@@ -23,8 +18,8 @@ remove: [
   [make "uninstall"]
 ]
 depends: [
-  "ocaml" {>= "4.03.0"}
-  "dolog"
+  "ocaml" {>= "4.03.0" & < "4.05.0"}
+  "dolog" {< "4.0.0"}
   "batteries"
   "deriving"
   "ANSITerminal"
@@ -37,11 +32,13 @@ depends: [
   "conf-wget" {build}
 ]
 depexts: [
-  ["boost"] {os-distribution = "archlinux"}
-  ["clang-3.9" "libboost-dev" "libclang-3.9-dev" "llvm-3.9-dev"]
+  ["boost"] {os-distribution = "arch"}
+  ["binutils-dev" "clang-3.9" "libboost-dev" "libclang-3.9-dev" "llvm-3.9-dev"
+   "libncurses-dev"]
     {os-distribution = "debian"}
   ["dev-libs/boost"] {os-distribution = "gentoo"}
-  ["libboost-dev"] {os-distribution = "ubuntu"}
+  ["binutils-dev" "clang-3.9" "libboost-dev" "libclang-3.9-dev" "llvm-3.9-dev"
+   "libncurses-dev"] {os-distribution = "ubuntu"}
   ["boost160"] {os = "macos" & os-distribution = "homebrew"}
 ]
 available: os != "alpine" & os != "centos"

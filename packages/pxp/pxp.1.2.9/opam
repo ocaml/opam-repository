@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "codinuum@me.com"
+authors: "Gerd Stolpmann <gerd@gerd-stolpmann.de>"
+homepage: "http://projects.camlcity.org/projects/pxp.html"
+dev-repo: "git+https://gitlab.camlcity.org/gerd/lib-pxp.git"
+bug-reports: "ocaml-pxp-users@orcaware.com"
+license: "MIT/X11"
+patches: "408.patch" {ocaml:version >= "4.08.0"}
+build: [
+  [
+    "./configure"
+    "-without-wlex"
+    "-without-wlex-compat"
+    "-lexlist"
+    "utf8,iso88591"
+  ]
+  [make "all"]
+  [make "opt"]
+]
+install: [make "install" "MANDIR=%{man}%"]
+depends: [
+  "ocaml" {>= "4.01"}
+  "ocamlfind" {build}
+  "ocamlnet" {>= "4.1.0"}
+  "ulex"
+]
+synopsis: "Polymorphic XML Parser"
+description: """
+PXP is an XML parser for OCaml. It represents the parsed document
+either as tree or as stream of events. In tree mode, it is possible to
+validate the XML document against a DTD.
+
+The acronym PXP means Polymorphic XML Parser. This name reflects the
+ability to create XML trees with polymorphic type parameters."""
+extra-files: ["408.patch" "md5=f9909ef9d83c30204c1cd3a1e8c4c784"]
+url {
+  src: "http://download.camlcity.org/download/pxp-1.2.9.tar.gz"
+  checksum: "md5=8002253eade813b8355500f4c59f8da8"
+  mirrors: "http://download2.camlcity.org/download/pxp-1.2.9.tar.gz"
+}

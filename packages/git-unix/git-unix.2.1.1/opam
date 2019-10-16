@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer:   [ "thomas@gazagnaire.org"
+                "romain.calascibetta@gmail.com" ]
+authors:      "Thomas Gazagnaire"
+license:      "ISC"
+homepage:     "https://github.com/mirage/ocaml-git"
+bug-reports:  "https://github.com/mirage/ocaml-git/issues"
+dev-repo:     "git+https://github.com/mirage/ocaml-git.git"
+doc:          "https://mirage.github.io/ocaml-git/"
+synopsis:     "Virtual package to install and configure ocaml-git's Unix backend"
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j1" "--no-buffer"] {with-test}
+]
+
+depends: [
+  "ocaml"           {>= "4.03.0"}
+  "dune"            {>= "1.1"}
+  "mmap"            {>= "1.1.0"}
+  "cmdliner"
+  "git-http"        {= version}
+  "cohttp"          {>= "1.0.0"}
+  "cohttp-lwt-unix" {>= "1.0.0"}
+  "mtime"           {>= "1.0.0"}
+  "base-unix"
+  "alcotest"        {with-test & >= "0.8.1"}
+  "nocrypto"        {with-test & >= "0.5.4"}
+  "tls"             {with-test}
+  "io-page"         {with-test & >= "1.6.1"}
+]
+url {
+  src:
+    "https://github.com/mirage/ocaml-git/releases/download/2.1.1/git-2.1.1.tbz"
+  checksum: [
+    "sha256=9d9db7028c58eb82ee44236afdd68feb42ebe9778aa23a3e59ba65aa2d40ce6d"
+    "sha512=ae73f03138455d2bbd3617c9740c2d950f6f6e848dc9f76fbc608cc17f57eab041e1fbdb338a82f94c5121e7dacb733618a40585959097e2dce9c8c87e9f10d0"
+  ]
+}

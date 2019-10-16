@@ -3,19 +3,19 @@ authors: "https://github.com/rdkit/rdkit/graphs/contributors"
 homepage: "http://www.rdkit.org/"
 maintainer: "unixjunkie@sdf.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-license: "BSD-3"
+license: "BSD-3-Clause"
 build: [
-  ["sh" "-c" "c++ test.cpp -o test -I/usr/local/include -I/usr/include/rdkit -L/usr/local/lib -lRDGeneral || \\
-              c++ test.cpp -o test -I/usr/local/include -I/usr/include/rdkit -L/usr/local/lib -lRDKitRDGeneral"]
+  ["sh" "-c" "c++ test.cpp -o test -I/usr/local/include/rdkit -L/usr/local/lib -lRDKitRDGeneral -DSWIG"] {os = "macos"}
+  ["sh" "-c" "c++ test.cpp -o test -I/usr/include/rdkit -lRDKitRDGeneral -DSWIG || c++ test.cpp -o test -I/usr/include/rdkit -lRDGeneral -DSWIG"] {os = "linux"}
   ["./test"]
 ]
 depexts: [
-  ["librdkit-dev" "python-rdkit"] {os-distribution = "debian"}
-  ["librdkit-dev" "python-rdkit"] {os-distribution = "ubuntu"}
+  ["librdkit-dev" "python-rdkit"] {os-family = "debian"}
   ["rdkit-devel" "python2-rdkit"] {os-distribution = "centos"}
 ]
 post-messages:
-  "This package requires rdkit to be installed. If you are using homebrew, you might want to try: 'brew tap rdkit/rdkit && brew install rdkit'"
+    "This package requires rdkit to be installed. If you are using homebrew, you might want to try:
+    'brew tap rdkit/rdkit; pip3 install numpy; brew install --HEAD rdkit --with-python3 --with-inchi'"
     {failure & os = "macos"}
 synopsis: "Virtual package relying on rdkit library installation"
 description: """

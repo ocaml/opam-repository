@@ -58,7 +58,7 @@ function build_one {
   echo "build one: $pkg"
   # test for installability
   echo "Checking for availability..."
-  if ! opam install $pkg --dry-run; then
+  if ! opam depext --with-test -ls $pkg; then
       echo "Package unavailable."
       if opam show $pkg; then
           echo "Package is unavailable on this configuration, skipping:"
@@ -70,11 +70,8 @@ function build_one {
       fi
   else
     echo "... package available."
-    echo
-    echo "====== External dependency handling ======"
-    opam install 'depext>=1.1.0'
-    depext=$(opam depext -ls $pkg)
-    opam depext $pkg
+    depext=$(opam depext --with-test -ls $pkg)
+    opam depext --with-test $pkg
     echo
     echo "====== Installing dependencies ======"
     opam install --deps-only $pkg
@@ -103,6 +100,9 @@ ocaml -version
 echo OPAM versions
 opam --version
 opam --git-version
+
+echo "====== External dependency handling ======"
+opam install 'opam-depext>=1.1.3'
 
 for i in `cat tobuild.txt`; do
     name=$(echo $i | cut -f1 -d".")

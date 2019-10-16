@@ -8,11 +8,7 @@ build: [
   [
     "sh"
     "-c"
-    """
-test -d ${HOME}/usr/clang39 ||
-              ( wget http://llvm.org/releases/3.9.0/clang+llvm-3.9.0-x86_64-apple-darwin.tar.xz &&
-                tar -xf clang+llvm-3.9.0-x86_64-apple-darwin.tar.xz &&
-                mkdir -p ${HOME}/usr/clang39 && mv clang+llvm-3.9.0-x86_64-apple-darwin/* ${HOME}/usr/clang39 )"""
+    "test -d ${HOME}/usr/clang39 || ( wget http://llvm.org/releases/3.9.0/clang+llvm-3.9.0-x86_64-apple-darwin.tar.xz && tar -xf clang+llvm-3.9.0-x86_64-apple-darwin.tar.xz && mkdir -p ${HOME}/usr/clang39 && mv clang+llvm-3.9.0-x86_64-apple-darwin/* ${HOME}/usr/clang39 )"
   ] {os = "macos"}
   [make]
 ]
@@ -20,7 +16,7 @@ install: [make "install"]
 remove: [make "uninstall"]
 depends: [
   "ocaml" {>= "4.03.0"}
-  "dolog"
+  "dolog" {< "4.0.0"}
   "batteries"
   "deriving"
   "ANSITerminal"
@@ -31,7 +27,7 @@ depends: [
   "conf-wget" {build}
 ]
 depexts: [
-  ["binutils" "boost"] {os-distribution = "archlinux"}
+  ["binutils" "boost"] {os-distribution = "arch"}
   ["dev-libs/boost" "sys-devel/binutils" "sys-devel/binutils-libs"]
     {os-distribution = "gentoo"}
   [

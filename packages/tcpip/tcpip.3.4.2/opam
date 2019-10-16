@@ -13,18 +13,21 @@ tags: ["org:mirage"]
 
 build: [
   ["jbuilder" "subst" "-p" name] {pinned}
-  ["jbuilder" "build" "-p" name "-j" jobs]
-  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+  ["env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "jbuilder" "build" "-p" name "-j" jobs]
+  ["env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
 ]
+
+depopts: ["mirage-xen-ocaml"]
+
 depends: [
   "ocaml" {>= "4.03.0"}
   "jbuilder" {build & >= "1.0+beta10"}
-  "configurator" {build & < "v0.12"}
+  "configurator" {build & < "v0.13"}
   "rresult" {>= "0.5.0"}
   "cstruct" {>= "3.0.2"}
   "cstruct-lwt"
-  "mirage-net" {>= "1.0.0"}
-  "mirage-net-lwt" {>= "1.0.0"}
+  "mirage-net" {>= "1.0.0" & < "2.0.0"}
+  "mirage-net-lwt" {>= "1.0.0" & < "2.0.0"}
   "mirage-clock" {>= "1.2.0"}
   "mirage-random" {>= "1.0.0" & < "1.2.0"}
   "mirage-clock-lwt" {>= "1.2.0"}
@@ -44,7 +47,7 @@ depends: [
   "mirage-vnetif" {with-test & >= "0.4.0"}
   "alcotest" {with-test & >= "0.7.0"}
   "pcap-format" {with-test}
-  "mirage-clock-unix" {with-test & >= "1.2.0"}
+  "mirage-clock-unix" {with-test & >= "1.2.0" & < "2.0.0"}
 ]
 synopsis: "An OCaml TCP/IP networking stack"
 description: """
