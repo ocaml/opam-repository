@@ -8,14 +8,14 @@ Contributions are welcome !
 The [CONTRIBUTING.md](CONTRIBUTING.md) document has general guidelines
 on how to contribute.
 
-If you would like to add a new package consult
+If you would like to add a new package, kindly consult
 [these instructions](https://opam.ocaml.org/doc/Packaging.html#Publishing).
 
 ## License
 
 All the metadata contained in this repository are licensed under the
 [CC0 1.0 Universal](http://creativecommons.org/publicdomain/zero/1.0/)
-license.
+license respectfully.
 
 Moreover, as the collection of the metadata in this repository is
 technically a "Database" -- which is subject to a "sui generis" right
