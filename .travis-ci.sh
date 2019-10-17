@@ -2,7 +2,7 @@
 source .travis-ocaml.env
 
 # Ensure build logs are printed live
-export OPAM_VERBOSE=y
+export OPAMVERBOSE=y
 
 # display info about OS distribution and version
 case $TRAVIS_OS_NAME in
