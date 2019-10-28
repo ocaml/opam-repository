@@ -12,14 +12,12 @@ build: [
   [ "sh" "-c" "cd src/lua_c ; tar xf lua-5.1.5.tar.gz" ]
   [ "sh" "-c" "cd src/lua_c/lua-5.1.5 ; patch -p1 -i ../lua.patch" ]
   [ "sh" "-c" "cd src/lua_c ; mv lua-5.1.5 lua515" ]
-  [ "dune" "build" "@install" ]
-  [ "dune" "build" "@doc" ] {with-doc}
+  [ "dune" "build" "-p" name "-j" jobs "@install" ]
+  [ "dune" "build" "-p" name "-j" jobs "@doc" ] {with-doc}
 ]
-install: [ "dune" "install" ]
-remove: [[ "dune" "uninstall" ]]
 depends: [
   "ocaml" {>= "4.08.0"}
-  "dune" {build}
+  "dune" {>= "1.11"}
   "odoc" {with-doc}
 ]
 synopsis: "Lua bindings"
@@ -33,7 +31,6 @@ to exchange data with Lua programs and also to extend Lua with OCaml
 functions.
 
 [Lua homepage](http://www.lua.org)"""
-flags: light-uninstall
 url {
   src: "https://github.com/pdonadeo/ocaml-lua/archive/v1.8.tar.gz"
   checksum: "md5=f5fd56bd53f8e87818cb18137304e415"
