@@ -1,0 +1,37 @@
+opam-version: "2.0"
+maintainer: "p.donadeo@gmail.com"
+authors: [
+  "Paolo Donadeo"
+  "Sylvain Le Gall"
+]
+homepage: "https://pdonadeo.github.io/ocaml-lua/"
+bug-reports: "https://github.com/pdonadeo/ocaml-lua/issues"
+dev-repo: "git+https://github.com/pdonadeo/ocaml-lua.git"
+license: "MIT"
+build: [
+  [ "sh" "-c" "cd src/lua_c ; tar xf lua-5.1.5.tar.gz" ]
+  [ "sh" "-c" "cd src/lua_c/lua-5.1.5 ; patch -p1 -i ../lua.patch" ]
+  [ "sh" "-c" "cd src/lua_c ; mv lua-5.1.5 lua515" ]
+  [ "dune" "build" "-p" name "-j" jobs "@install" ]
+  [ "dune" "build" "-p" name "-j" jobs "@doc" ] {with-doc}
+]
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "1.11"}
+  "odoc" {with-doc}
+]
+synopsis: "Lua bindings"
+description: """
+Lua is a powerful, light-weight programming language designed for
+extending applications. It provides a good general purpose programming
+language to replace DSL that don't really need to be specific.
+
+This library provides bindings to Lua API which allows the application
+to exchange data with Lua programs and also to extend Lua with OCaml
+functions.
+
+[Lua homepage](http://www.lua.org)"""
+url {
+  src: "https://github.com/pdonadeo/ocaml-lua/archive/v1.8.tar.gz"
+  checksum: "md5=f5fd56bd53f8e87818cb18137304e415"
+}
