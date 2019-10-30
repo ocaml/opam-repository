@@ -10,9 +10,10 @@ bug-reports: "https://github.com/LPCIC/elpi/issues"
 build: [
   ["dune" "subst"] {pinned}
   ["dune" "build" "-p" name "-j" jobs]
-  [make "tests"] {with-test & os != "macos"}
+  [make "tests" "DUNE_OPTS=-p %{name}%"] {with-test & os != "macos"}
 ]
-
+patches: [ "0001-Makefile-pass-DUNE_OPTS-to-dune.patch" ]
+extra-files: [ ["0001-Makefile-pass-DUNE_OPTS-to-dune.patch" "810836aa85bdb52d6a02947e93353ced"] ]
 depends: [
   "ocaml" {>= "4.04.0"}
   "camlp5"
