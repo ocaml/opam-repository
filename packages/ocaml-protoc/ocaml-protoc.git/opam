@@ -1,0 +1,28 @@
+opam-version: "2.0"
+synopsis: "Protobuf compiler for OCaml"
+description: "Protobuf compiler for OCaml"
+maintainer: "Maxime Ransan <maxime.ransan@gmail.com>"
+authors:[
+  "Maxime Ransan <maxime.ransan@gmail.com>"
+]
+homepage: "https://github.com/mransan/ocaml-protoc"
+bug-reports:"https://github.com/mransan/ocaml-protoc/issues"
+dev-repo:"git+https://github.com/mransan/ocaml-protoc.git"
+license: "MIT"
+build: [
+  [make "lib.byte"]   
+  [make "lib.native"]
+  [make "bin.native"]
+]
+install: [
+  [make "lib.install" ]
+  [make "bin.install" "PREFIX=%{prefix}%" "BINDIR=%{bin}%"]
+]
+remove:  [make "uninstall" "PREFIX=%{prefix}%" "BINDIR=%{bin}%"]
+depends: [
+  "ocaml" {>="4.02.1"}
+  "ocamlfind"  {build}
+  "ocamlbuild" {build}
+  "ppx_deriving_protobuf"
+]
+available: [ opam-version >= "1.2" ]
