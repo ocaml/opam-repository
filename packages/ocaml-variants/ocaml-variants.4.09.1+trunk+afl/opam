@@ -1,8 +1,8 @@
 opam-version: "2.0"
-synopsis: "latest 4.09 development, with flambda activated"
+synopsis: "latest 4.09 development, with afl-fuzz instrumentation"
 maintainer: "platform@lists.ocaml.org"
 depends: [
-  "ocaml" {= "4.09.0" & post}
+  "ocaml" {= "4.09.1" & post}
   "base-unix" {post}
   "base-bigarray" {post}
   "base-threads" {post}
@@ -12,14 +12,14 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
-  ["./configure" "--prefix=%{prefix}%" "--enable-flambda"]
+  ["./configure" "--prefix=%{prefix}%" "--with-afl" ]
     {os != "openbsd" & os != "freebsd" & os != "macos"}
   [
     "./configure"
     "--prefix=%{prefix}%"
-    "--enable-flambda"
     "CC=cc"
     "ASPP=cc -c"
+    "--with-afl"
   ] {os = "openbsd" | os = "freebsd" | os = "macos"}
   [make "-j%{jobs}%" {os != "cygwin"} "world"]
   [make "-j%{jobs}%" {os != "cygwin"} "world.opt"]
