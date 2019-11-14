@@ -1,0 +1,43 @@
+opam-version: "2.0"
+maintainer: "Liang Wang <ryanrhymes@gmail.com>"
+authors: [ "Liang Wang" ]
+license: "MIT"
+homepage: "https://github.com/owlbarn/owl"
+dev-repo: "git+https://github.com/owlbarn/owl.git"
+bug-reports: "https://github.com/owlbarn/owl/issues"
+doc: "https://owlbarn.github.io/owl/"
+synopsis: "OCaml Scientific and Engineering Computing"
+description: """
+Owl: OCaml Scientific and Engineering Computing
+
+Owl is an OCaml numerical library.
+It supports N-dimensional arrays, both dense and sparse matrix operations, linear algebra, regressions, fast Fourier transforms, and many advanced mathematical and statistical functions (such as Markov chain Monte Carlo methods).
+Recently, Owl has implemented algorithmic differentiation which essentially makes developing machine learning and neural network algorithms trivial.
+"""
+
+build: [
+  [ "dune" "subst" ] {pinned}
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.06.0"}
+  "alcotest" {with-test}
+  "base" {>= "1.7.0" & build}
+  "base-bigarray"
+  "conf-openblas" {>= "0.2.0"}
+  "ctypes"
+  "dune" {build & >= "1.2.1"}
+  "eigen" {>= "0.1.0"}
+  "owl-base" {>= version}
+  "stdio" {build}
+  "stdlib-shims"
+]
+url {
+  src: "https://github.com/owlbarn/owl/releases/download/0.7.0/owl-0.7.0.tbz"
+  checksum: [
+    "sha256=772a93da31c826b5bf381f48059f435f9def141585a6d9fa51190032fc6f6137"
+    "sha512=2d7310f346b85ce6707fb658bc4c551230c4a1c37963de60cceb8a86dfe3dcb523b064b200a735fbf99c05890647d16ec16ac98b1ec1fe0a9a79da28df5a0cfa"
+  ]
+}
