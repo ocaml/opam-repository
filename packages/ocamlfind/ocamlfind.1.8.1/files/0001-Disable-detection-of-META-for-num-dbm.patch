@@ -1,0 +1,42 @@
+From b826fa99f2b7e8436174ec9ec6ea0eaf0b959008 Mon Sep 17 00:00:00 2001
+From: Louis Gesbert <louis.gesbert@ocamlpro.com>
+Date: Thu, 21 Nov 2019 16:26:06 +0100
+Subject: [PATCH] Disable detection of META for num, dbm
+
+these are hurtful for repeated runs, e.g. in opam: see https://github.com/ocaml/opam-repository/issues/10925
+---
+ configure | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/configure b/configure
+index 64656f2..db17419 100755
+--- a/configure
++++ b/configure
+@@ -513,10 +513,7 @@ fi
+ 
+ # dbm?
+ 
+-if [ -f "${ocaml_sitelib}/dbm/META" ]; then
+-    echo "dbm: package already present"
+-    ldbm=""
+-elif [ -f "${ocaml_core_stdlib}/dbm.cmi" ]; then
++if [ -f "${ocaml_core_stdlib}/dbm.cmi" ]; then
+     echo "dbm: found"
+     ldbm="dbm"
+ else
+@@ -526,11 +523,7 @@ fi
+ 
+ # num?
+ 
+-if [ -f "${ocaml_sitelib}/num/META" ]; then
+-    echo "num: package already present"
+-    lnum=""
+-    numtop=""
+-elif [ -f "${ocaml_core_stdlib}/num.cmi" ]; then
++if [ -f "${ocaml_core_stdlib}/num.cmi" ]; then
+     echo "num: found but not as package"
+     lnum="num num-top"
+     numtop="num-top"
+-- 
+2.20.1
+
