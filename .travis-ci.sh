@@ -1,8 +1,8 @@
-bash -c "while true; do echo \$(date) - building ...; sleep 360; done" &
-PING_LOOP_PID=$!
-
 # generated during the install step
 source .travis-ocaml.env
+
+# Ensure build logs are printed live
+export OPAMVERBOSE=yes
 
 # display info about OS distribution and version
 case $TRAVIS_OS_NAME in
@@ -77,7 +77,7 @@ function build_one {
     opam install --deps-only $pkg
     echo
     echo "====== Installing package ======"
-    opam install -t -v $pkg
+    opam install -t $pkg
     opam remove -a ${pkg%%.*}
     if [ "$depext" != "" ]; then
       case $TRAVIS_OS_NAME in
@@ -111,5 +111,3 @@ for i in `cat tobuild.txt`; do
         *) build_one $i
     esac
 done
-
-kill $PING_LOOP_PID

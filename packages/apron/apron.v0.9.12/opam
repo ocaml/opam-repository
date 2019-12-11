@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "APRON numerical abstract domain library"
+authors: [
+  "Bertrand Jeannet"
+  "Antoine Miné"
+  "https://github.com/antoinemine/apron/graphs/contributors"
+]
+license: "LGPL-2.1 with linking exception"
+homepage: "https://antoinemine.github.io/Apron/doc/"
+maintainer: "Nicolas Berthier <m@nberth.space>"
+dev-repo: "git+https://github.com/antoinemine/apron.git"
+bug-reports: "https://github.com/antoinemine/apron/issues"
+build: [
+  [
+    "sh"
+    "./configure"
+    "--prefix"
+    "%{share}%/apron"
+    "--no-ppl" {!conf-ppl:installed}
+    "--no-ocaml-plugins" {os = "freebsd"}
+    "--absolute-dylibs" {os = "macos"}
+    "--ext-dll" {os = "win32"} "dll" {os = "win32"}
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [
+  [make "install"]
+]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "camlidl"
+  "mlgmpidl"
+  "ocamlbuild" {build}
+  "conf-perl"
+]
+depopts: [
+  "conf-ppl"
+]
+description:"""
+Apron is a library to represent properties of numeric variables, such as variable bounds or linear relations between variables, and to manipulate these properties through semantic operations, such as variable assignments, tests, conjunctions, entailment. Apron is intended to be used in static program analyzers, in order to infer invariants of numeric variables, i.e., properties that hold for all executions of a program. It is based on the theory of Abstract Interpretation."""
+url {
+  src: "https://github.com/antoinemine/apron/archive/v0.9.12.tar.gz"
+  checksum: [
+    "md5=140d0a94ad01f1341d77eda2a1910b8d"
+    "sha512=c5c8c05f7bf04ecd2fb71c023a7a2537a366fcc68286f8319481b8274aa9c4bbd1883113ce10e5073232357cf0bbeb433e51339d504d14d656eccede98459742"
+  ]
+}

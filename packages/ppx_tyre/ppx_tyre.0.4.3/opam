@@ -1,0 +1,57 @@
+opam-version: "2.0"
+maintainer: "Petter A. Urkedal <paurkedal@gmail.com>"
+authors: [
+  "Gabriel Radanne <drupyog@zoho.com>"
+  "Petter A. Urkedal <paurkedal@gmail.com>"
+]
+license: "LGPL-3 with OCaml linking exception"
+homepage: "https://github.com/paurkedal/ppx_regexp"
+bug-reports: "https://github.com/paurkedal/ppx_regexp/issues"
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "dune" {>= "1.11"}
+  "ocaml-migrate-parsetree" {>= "1.4.0"}
+  "re" {>= "1.7.1"}
+  "ppx_tools_versioned" {>= "5.2.3"}
+  "tyre" {>= "0.4.1"}
+  "qcheck" {with-test}
+]
+build: ["dune" "build" "-p" name "-j" jobs]
+dev-repo: "git+https://github.com/paurkedal/ppx_regexp.git"
+synopsis: "PPX syntax for tyre regular expressions and routes"
+description: """
+This PPX compiles
+
+    [%tyre {|re|}]
+
+into `'a Tyre.t` and
+
+    function%tyre
+    | {|re1|} as x1 -> e1
+    ...
+    | {|reN|} as x2 -> eN
+
+into `'a Type.route`, where `re`, `re1`, ... are regular expressions
+expressed in a slightly extended subset of PCRE.  The interpretations are:
+
+- `re?` extracts an option of what `re` extracts.
+- `re+`, `re*`, `re{n,m}` extracts a list of what `re` extracts.
+- `(?@qname)` refers to any identifier bound to a typed regular expression
+  of type `'a Tyre.t`.
+- One or more `(?<v>re)` at the top level can be used to bind variables
+  instead of `as ...`.
+- One or more `(?<v>re)` in a sequence extracts an object where each method
+  `v` is bound to what `re` extracts.
+- An alternative with one `(?<v>re)` per branch extracts a polymorphic
+  variant where each constructor `` `v`` receives what `re` extracts as its
+  argument.
+- `(?&v:qname)` is a shortcut for `(?<v>(?&qname))`.
+"""
+url {
+  src:
+    "https://github.com/paurkedal/ppx_regexp/releases/download/v0.4.3/ppx_regexp-v0.4.3.tbz"
+  checksum: [
+    "sha256=70cbf4495de5e8ca4aada49c4fe25c586858dade8448efef29fd2d2ea620d413"
+    "sha512=284f4b7c99125e26697f1691909fb2ba6e9d6c7fb74c6272c442bee84211486d566183db928b1bc5b3a2c385372e830cfec3e6fb3cb4184f16805bb420bc85be"
+  ]
+}

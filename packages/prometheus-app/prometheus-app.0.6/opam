@@ -1,0 +1,54 @@
+opam-version: "2.0"
+synopsis: "Client library for Prometheus monitoring"
+maintainer: "talex5@gmail.com"
+authors: ["Thomas Leonard" "David Scott"]
+license: "Apache"
+homepage: "https://github.com/mirage/prometheus"
+doc: "https://mirage.github.io/prometheus/"
+bug-reports: "https://github.com/mirage/prometheus/issues"
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "dune" {>= "1.0"}
+  "prometheus" {=version} 
+  "fmt"
+  "re"
+  "cohttp" {>= "1.0.0"}
+  "cohttp-lwt"
+  "cohttp-lwt-unix"
+  "lwt" {>= "2.5.0"}
+  "cmdliner"
+  "alcotest" {with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/prometheus.git"
+description: """
+Applications can enable metric reporting using the `prometheus-app` opam package.
+This depends on cohttp and can serve the metrics collected above over HTTP.
+
+The `prometheus-app.unix` ocamlfind library provides the `Prometheus_unix` module,
+which includes a cmdliner option and pre-configured web-server.
+See the `examples/example.ml` program for an example, which can be run as:
+
+```shell
+$ dune exec -- examples/example.exe --listen-prometheus=9090
+If run with the option --listen-prometheus=9090, this program serves metrics at
+http://localhost:9090/metrics
+Tick!
+Tick!
+...
+```
+
+Unikernels can use `Prometheus_app` instead of `Prometheus_unix` to avoid the `Unix` dependency.
+"""
+url {
+  src:
+    "https://github.com/mirage/prometheus/releases/download/v0.6/prometheus-v0.6.tbz"
+  checksum: [
+    "sha256=86509374e5af8ce5987535b43d8cb9cffec066e3b9b09a6ef07fa5371b878629"
+    "sha512=25976154fce5062f679694a49941a346c9da77083d16072b941cdfd7ae739f5603bee243ef55dbdd3a1ad26e51eb23c3a08cac6bd3d1fc40e3d7a9cc2bbc4ade"
+  ]
+}

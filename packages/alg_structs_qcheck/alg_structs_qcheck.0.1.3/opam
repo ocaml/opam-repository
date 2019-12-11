@@ -1,0 +1,46 @@
+opam-version: "2.0"
+version: "0.1.3"
+synopsis: "Provides qCheck generators for laws of alg_structs"
+description: """
+
+Combinators for generating qCheck property based tests to check that
+implementations of the algebraic structures provided by alg_structs adhere to
+the stated laws.
+"""
+maintainer: ["shon.feder@gmail.com"]
+authors: ["Shon Feder"]
+license: "MIT"
+homepage: "https://github.com/shonfeder/alg_structs"
+doc: "https://shonfeder.github.io/alg_structs/"
+bug-reports: "https://github.com/shonfeder/alg_structs/issues"
+depends: [
+  "dune" {>= "1.11.3"}
+  "ocaml" {>= "4.08.0"}
+  "alg_structs" {>= "0.1.3" & < "0.2.0"}
+  "qcheck" {>= "0.11"}
+  "alcotest" {with-test & >= "0.8.5"}
+  "qcheck-alcotest" {with-test & >= "0.11"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/shonfeder/alg_structs.git"
+url {
+  src:
+    "https://github.com/shonfeder/alg_structs/releases/download/0.1.3/alg_structs_qcheck-0.1.3.tbz"
+  checksum: [
+    "sha256=6b0113f2500e70fd00862879ba36d64e9e0f1815ad6ffe2325b1e5e8ed561c08"
+    "sha512=80e7a34fb04791221df44d876482a562a48b8e84665258be556fefc1cb77c380425bff7b1f52939bffbf69d78d223ff428e936f7a32dccb7901c6f06783cd764"
+  ]
+}

@@ -143,7 +143,7 @@ let write path =
       Filename.dirname path,
       sprintf "file-depends: [ [ %S %S ] ]\n"
         path (Digest.to_hex (Digest.file path)) in
-  let oc = open_out "conf-ida.config" in
+  let oc = open_out "%{_:name}%.config" in
   fprintf oc {|
 opam-version: "2.0"
 %s
@@ -155,7 +155,7 @@ variables {
   close_out oc
 
 let of_config () =
-  let path = "" in
+  let path = "%{ida-path}%" in
   if path = "" then None
   else Some path
 

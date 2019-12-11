@@ -1,0 +1,25 @@
+opam-version: "2.0"
+maintainer: "ygrek"
+authors: ["MariaDB Foundation"]
+homepage: "https://mariadb.org/"
+bug-reports: "https://jira.mariadb.org/projects/MDEV/issues"
+dev-repo: "git+https://github.com/MariaDB/server.git"
+license: "GPL-2.0-only"
+build: [
+  ["pkg-config" "mariadb"] {os != "macos" & os-distribution != "alpine"}
+  ["pkg-config" "libmariadb"] {os = "macos" | os-distribution = "alpine"}
+]
+depends: [
+  "conf-pkg-config" {build}
+]
+depexts: [
+  ["libmariadbclient-dev"] {os-family = "debian"}
+  ["mariadb-devel"] {os-distribution = "centos"}
+  ["mariadb-connector-c"] {os = "macos" & os-distribution = "homebrew"}
+  ["mariadb-connector-c-dev"] {os-distribution = "alpine"}
+]
+synopsis:
+  "Virtual package relying on a libmariadbclient system installation"
+description:
+  "This package can only install if the libmariadbclient is installed on the system."
+flags: conf

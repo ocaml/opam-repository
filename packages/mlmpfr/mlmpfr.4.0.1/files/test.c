@@ -5,7 +5,7 @@
 int main(int argc, char **argv)
 {
   const char *version = mpfr_get_version();
-  char subversion[5];
+  char subversion[6];
   memcpy(subversion, version, 5);
   subversion[5] = '\0';
 
