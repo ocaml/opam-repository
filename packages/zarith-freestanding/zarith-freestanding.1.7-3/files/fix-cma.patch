@@ -1,0 +1,29 @@
+ocamlmklib put by default -lzarith into zarith.cmxa. By this
+way, any link with this zarith.cmxa, even if we compiled it with
+right flags requested by ocaml-freestanding, will link with
+libzarith.a (compiled by default flags).
+
+In our case, we want to link with -lzarith-freestanding according
+what mirage-install.sh does - the shell script copies libzarith.a
+to libzarith-freestanding.a. So we add a new option -oc to tell
+to ocamlmklib to link with -lzarith-freestanding correctly.
+
+Then, mirage-install.sh copies zarith.cmxa to zarith-freestanding.cmxa
+and add a new META information. zarith-freestanding.cmxa will be
+chosen if we want to link with zarith.freestanding.
+
+--- a/project.mak	2017-10-13 19:45:41.000000000 +0200
++++ b/project.mak	2018-11-30 19:11:16.205189144 +0100
+@@ -60,10 +60,10 @@
+ 	make -C tests test
+ 
+ zarith.cma: $(MLSRC:%.ml=%.cmo)
+-	$(OCAMLMKLIB) -custom -o zarith $+ $(LIBS)
++	$(OCAMLMKLIB) -custom -o zarith $+ -oc zarith-freestanding $(LIBS)
+ 
+ zarith.cmxa zarith.$(LIBSUFFIX): $(MLSRC:%.ml=%.cmx)
+-	$(OCAMLMKLIB) -custom -o zarith $+ $(LIBS)
++	$(OCAMLMKLIB) -custom -o zarith $+ -oc zarith-freestanding $(LIBS)
+ 
+ zarith.cmxs: zarith.cmxa libzarith.$(LIBSUFFIX)
+ 	(OCAMLOPT) -shared -o $@ -I . zarith.cmxa -linkall
