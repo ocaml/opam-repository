@@ -1,0 +1,368 @@
+diff -urN pxp-1.2.9/configure pxp-camlp5-1.2.9/configure
+--- pxp-1.2.9/configure	2017-02-28 22:21:45.000000000 +0900
++++ pxp-camlp5-1.2.9/configure	2019-12-17 19:23:02.000000000 +0900
+@@ -152,23 +152,23 @@
+ fi
+ 
+ ######################################################################
+-# Check camlp4 version
++# Check camlp5 version
+ 
+ 
+-printf "%s" "Checking for camlp4... "
+-if camlp4; then
+-    if camlp4 -loaded-modules >/dev/null 2>/dev/null; then
++printf "%s" "Checking for camlp5... "
++if camlp5; then
++    if camlp5 -loaded-modules >/dev/null 2>/dev/null; then
+         echo "3.10 style"
+-        camlp4_style="310"
+-        camlp4_opts="-package camlp4 -syntax camlp4o -ppopt pa_extend.cmo -ppopt q_MLast.cmo"
++        camlp5_style="310"
++        camlp5_opts="-package camlp5 -syntax camlp5o -ppopt pa_extend.cmo -ppopt q_MLast.cmo"
+     else
+         echo "3.09 style"
+-        camlp4_style="309"
+-        camlp4_opts="-package camlp4 -syntax camlp4o -ppopt pa_extend.cmo -ppopt q_MLast.cmo -ppopt -loc -ppopt loc"
++        camlp5_style="309"
++        camlp5_opts="-package camlp5 -syntax camlp5o -ppopt pa_extend.cmo -ppopt q_MLast.cmo -ppopt -loc -ppopt loc"
+     fi
+ else
+     echo "not found"
+-    echo "Make sure the camlp4 command is in your PATH"
++    echo "Make sure the camlp5 command is in your PATH"
+     exit 1
+ fi
+ 
+@@ -262,7 +262,7 @@
+ 
+ if [ $with_ulex -gt 0 ]; then
+     printf "%s" "Checking for ulex... "
+-    if ocamlfind query ulex >/dev/null 2>/dev/null; then
++    if ocamlfind query ulex-camlp5 >/dev/null 2>/dev/null; then
+ 	echo "found"
+     else
+ 	echo "not found"
+@@ -301,20 +301,20 @@
+ rm -f tmp.*
+ 
+ ######################################################################
+-# Check type of camlp4 locations
++# Check type of camlp5 locations
+ 
+-printf "%s" "Checking type of camlp4 location... "
++printf "%s" "Checking type of camlp5 location... "
+ cat <<EOF >tmp.ml
+ open Stdpp;;
+ raise_with_loc (0,0) Not_found;;
+ EOF
+ 
+-if ocamlc -c -I +camlp4 tmp.ml >/dev/null 2>/dev/null; then
++if ocamlc -c -I +camlp5 tmp.ml >/dev/null 2>/dev/null; then
+     echo "old style"
+-    camlp4_loc=""
++    camlp5_loc=""
+ else
+     echo "new style"
+-    camlp4_loc="-ppopt -DOCAML_NEW_LOC"
++    camlp5_loc="-ppopt -DOCAML_NEW_LOC"
+ fi
+ 
+ rm -f tmp.*
+@@ -479,9 +479,9 @@
+ EXEC_SUFFIX = $exec_suffix
+ LEXBUF_307 = $lexbuf_307
+ LEX_OPT = $lex_opt
+-CAMLP4_LOC = $camlp4_loc
+-CAMLP4_STYLE = $camlp4_style
+-CAMLP4_OPTS = $camlp4_opts
++CAMLP5_LOC = $camlp5_loc
++CAMLP5_STYLE = $camlp5_style
++CAMLP5_OPTS = $camlp5_opts
+ NETUNIDATA = $netunidata
+ STRING_OPTS = $string_opts
+ _EOF_
+diff -urN pxp-1.2.9/gensrc/pxp-lex-pattern/META.in pxp-camlp5-1.2.9/gensrc/pxp-lex-pattern/META.in
+--- pxp-1.2.9/gensrc/pxp-lex-pattern/META.in	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5-1.2.9/gensrc/pxp-lex-pattern/META.in	2019-12-17 23:26:30.000000000 +0900
+@@ -1,5 +1,5 @@
+ description = "Polymorphic XML parser - Lexical analyzer for @ENCNAME@"
+-requires = "pxp-engine"
++requires = "pxp-camlp5-engine"
+ version = "@VERSION@"
+ 
+ archive(byte) = "pxp_lex_@ENCNAME@.cma pxp_lex_link_@ENCNAME@.cmo"
+diff -urN pxp-1.2.9/gensrc/pxp-ulex-utf8/META.in pxp-camlp5-1.2.9/gensrc/pxp-ulex-utf8/META.in
+--- pxp-1.2.9/gensrc/pxp-ulex-utf8/META.in	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5-1.2.9/gensrc/pxp-ulex-utf8/META.in	2019-12-17 23:27:12.000000000 +0900
+@@ -1,5 +1,5 @@
+ description = "Polymorphic XML parser - Lexical analyzer for UTF-8 based on wlex"
+-requires = "pxp-engine,ulex"
++requires = "pxp-camlp5-engine,ulex-camlp5"
+ version = "@VERSION@"
+ 
+ archive(byte) = "pxp_ulex_utf8.cma pxp_ulex_link_utf8.cmo"
+diff -urN pxp-1.2.9/gensrc/pxp-ulex-utf8/Makefile pxp-camlp5-1.2.9/gensrc/pxp-ulex-utf8/Makefile
+--- pxp-1.2.9/gensrc/pxp-ulex-utf8/Makefile	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5-1.2.9/gensrc/pxp-ulex-utf8/Makefile	2019-12-17 22:30:18.000000000 +0900
+@@ -7,9 +7,9 @@
+ ML = $(shell echo pxp_ulex_$(ENC)_*.ml)
+ CMO = $(ML:.ml=.cmo)
+ CMX = $(ML:.ml=.cmx)
+-OCAMLC_OPTIONS += -I $(TOP_DIR)/src/pxp-engine -syntax camlp4o
+-OCAMLOPT_OPTIONS += -I $(TOP_DIR)/src/pxp-engine -syntax camlp4o
+-PACKAGES = netstring,ulex
++OCAMLC_OPTIONS += -I $(TOP_DIR)/src/pxp-engine -syntax camlp5o
++OCAMLOPT_OPTIONS += -I $(TOP_DIR)/src/pxp-engine -syntax camlp5o
++PACKAGES = netstring,ulex-camlp5
+ 
+ .PHONY: all opt generate clean CLEAN distclean install uninstall
+ 
+@@ -37,7 +37,7 @@
+ 
+ .PHONY: expand
+ expand:
+-	camlp4 -I `ocamlfind query ulex` pa_o.cmo pa_op.cmo pa_ulex.cma pr_o.cmo pxp_ulex_utf8_01.ml
++	camlp5 -I `ocamlfind query ulex` pa_o.cmo pa_op.cmo pa_ulex.cma pr_o.cmo pxp_ulex_utf8_01.ml
+ 
+ clean:
+ 	rm -f $(CLEAN_LIST) *.ml *.mll gen_done
+diff -urN pxp-1.2.9/gensrc/pxp-wlex/META.in pxp-camlp5-1.2.9/gensrc/pxp-wlex/META.in
+--- pxp-1.2.9/gensrc/pxp-wlex/META.in	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5-1.2.9/gensrc/pxp-wlex/META.in	2019-12-17 23:27:38.000000000 +0900
+@@ -1,3 +1,3 @@
+ description = "Polymorphic XML parser - Lexical analyzer for UTF-8 and ISO-8859-1 based on wlex (compat package)"
+-requires = "pxp-wlex-utf8 pxp-lex-iso88591"
++requires = "pxp-camlp5-wlex-utf8 pxp-camlp5-lex-iso88591"
+ version = "@VERSION@"
+diff -urN pxp-1.2.9/gensrc/pxp-wlex/Makefile pxp-camlp5-1.2.9/gensrc/pxp-wlex/Makefile
+--- pxp-1.2.9/gensrc/pxp-wlex/Makefile	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5-1.2.9/gensrc/pxp-wlex/Makefile	2019-12-17 23:27:51.000000000 +0900
+@@ -19,7 +19,7 @@
+ 	rm -f META
+ 
+ install:
+-	$(OCAMLFIND) install pxp-wlex META
++	$(OCAMLFIND) install pxp-camlp5-wlex META
+ 
+ uninstall:
+-	$(OCAMLFIND) remove pxp-wlex
++	$(OCAMLFIND) remove pxp-camlp5-wlex
+diff -urN pxp-1.2.9/gensrc/pxp-wlex-utf8/META.in pxp-camlp5-1.2.9/gensrc/pxp-wlex-utf8/META.in
+--- pxp-1.2.9/gensrc/pxp-wlex-utf8/META.in	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5-1.2.9/gensrc/pxp-wlex-utf8/META.in	2019-12-17 23:28:15.000000000 +0900
+@@ -1,5 +1,5 @@
+ description = "Polymorphic XML parser - Lexical analyzer for UTF-8 based on wlex"
+-requires = "pxp-engine,wlexing"
++requires = "pxp-camlp5-engine,wlexing"
+ version = "@VERSION@"
+ 
+ archive(byte) = "pxp_wlex_utf8.cma pxp_wlex_link_utf8.cmo"
+diff -urN pxp-1.2.9/gensrc/pxp-wlex-utf8/Makefile pxp-camlp5-1.2.9/gensrc/pxp-wlex-utf8/Makefile
+--- pxp-1.2.9/gensrc/pxp-wlex-utf8/Makefile	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5-1.2.9/gensrc/pxp-wlex-utf8/Makefile	2019-12-17 23:28:48.000000000 +0900
+@@ -48,7 +48,7 @@
+ 
+ install:
+ 	files=`$(COLLECT_FILES) *.mli *.cmi *.cma *.cmxa *.a pxp_wlex_link_*.cmo pxp_wlex_link_*.cmx pxp_wlex_link_*.o META` && \
+-        $(OCAMLFIND) install pxp-wlex-$(ENC) $$files
++        $(OCAMLFIND) install pxp-camlp5-wlex-$(ENC) $$files
+ 
+ uninstall:
+-	$(OCAMLFIND) remove pxp-wlex-$(ENC)
++	$(OCAMLFIND) remove pxp-camlp5-wlex-$(ENC)
+diff -urN pxp-1.2.9/src/pxp-engine/Makefile pxp-camlp5-1.2.9/src/pxp-engine/Makefile
+--- pxp-1.2.9/src/pxp-engine/Makefile	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5-1.2.9/src/pxp-engine/Makefile	2019-12-17 23:23:57.000000000 +0900
+@@ -33,10 +33,10 @@
+ 
+ install:
+ 	files=`$(COLLECT_FILES) *.mli *.cmi *.cma *.cmxa *.a pxp_top.cmo META` && \
+-	$(OCAMLFIND) install pxp-engine $$files
++	$(OCAMLFIND) install pxp-camlp5-engine $$files
+ 
+ uninstall:
+-	$(OCAMLFIND) remove pxp-engine
++	$(OCAMLFIND) remove pxp-camlp5-engine
+ 
+ pxp_lexing.ml: pxp_lexing.mlp
+ 	$(IFDEF) $(LEXBUF_307) pxp_lexing.mlp
+diff -urN pxp-1.2.9/src/pxp-engine/pxp_lexing.mli pxp-camlp5-1.2.9/src/pxp-engine/pxp_lexing.mli
+--- pxp-1.2.9/src/pxp-engine/pxp_lexing.mli	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5-1.2.9/src/pxp-engine/pxp_lexing.mli	2019-12-17 19:10:46.000000000 +0900
+@@ -10,11 +10,11 @@
+ 
+ type lexbuf = Lexing.lexbuf
+ 
+-val from_channel : in_channel -> lexbuf
++val from_channel : ?with_positions:bool -> in_channel -> lexbuf
+ 
+-val from_string : string -> lexbuf
++val from_string : ?with_positions:bool -> string -> lexbuf
+ 
+-val from_function : (Bytes.t -> int -> int) -> lexbuf
++val from_function : ?with_positions:bool -> (Bytes.t -> int -> int) -> lexbuf
+ 
+ val lexeme : lexbuf -> string
+ 
+diff -urN pxp-1.2.9/src/pxp-pp/META.in pxp-camlp5-1.2.9/src/pxp-pp/META.in
+--- pxp-1.2.9/src/pxp-pp/META.in	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5-1.2.9/src/pxp-pp/META.in	2019-12-17 23:24:46.000000000 +0900
+@@ -2,13 +2,13 @@
+ version = "@VERSION@"
+ 
+ # At runtime, we need at least pxp-engine.
+-requires = "camlp4,pxp-engine"
++requires = "camlp4,pxp-camlp5-engine"
+ 
+ # At preprocess time, we need netstring and ulex:
+-requires(syntax) = "camlp4,netstring,ulex"
++requires(syntax) = "camlp5,netstring,ulex-camlp5"
+ 
+ # The toploop is the combination of both:
+-requires(syntax,toploop) = "camlp4,netstring,ulex,pxp-engine"
++requires(syntax,toploop) = "camlp5,netstring,ulex-camlp5,pxp-camlp5-engine"
+ 
+ # Specification of stand-alone preprocessor call:
+ archive(syntax,preprocessor) = "pxp_pp.cma"
+diff -urN pxp-1.2.9/src/pxp-pp/Makefile pxp-camlp5-1.2.9/src/pxp-pp/Makefile
+--- pxp-1.2.9/src/pxp-pp/Makefile	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5-1.2.9/src/pxp-pp/Makefile	2019-12-17 23:25:16.000000000 +0900
+@@ -2,10 +2,10 @@
+ 
+ include $(TOP_DIR)/Makefile.rules
+ 
+-PACKAGES = netstring,ulex,camlp4.quotations,camlp4.macro
++PACKAGES = netstring,ulex-camlp5,camlp5.quotations,camlp5.macro
+ 
+-OCAMLC_OPTIONS += -syntax camlp4o
+-OCAMLC_OPTIONS += $(CAMLP4_LOC) -ppopt -loc -ppopt loc
++OCAMLC_OPTIONS += -syntax camlp5o
++OCAMLC_OPTIONS += $(CAMLP5_LOC) -ppopt -loc -ppopt loc
+ 
+ 
+ all: pxp_pp.cma
+@@ -15,8 +15,8 @@
+ pxp_pp.cma: pxp_pp.cmo
+ 	$(OCAMLC) -a -o pxp_pp.cma pxp_pp.cmo
+ 
+-pxp_pp.ml: pxp_pp.ml.$(CAMLP4_STYLE)
+-	cp pxp_pp.ml.$(CAMLP4_STYLE) pxp_pp.ml
++pxp_pp.ml: pxp_pp.ml.$(CAMLP5_STYLE)
++	cp pxp_pp.ml.$(CAMLP5_STYLE) pxp_pp.ml
+ 
+ clean:
+ 	rm -f $(CLEAN_LIST)
+@@ -27,7 +27,7 @@
+ 	rm -f META depend
+ 
+ install:
+-	$(OCAMLFIND) install pxp-pp pxp_pp.cma META
++	$(OCAMLFIND) install pxp-camlp5-pp pxp_pp.cma META
+ 
+ uninstall:
+-	$(OCAMLFIND) remove pxp-pp
++	$(OCAMLFIND) remove pxp-camlp5-pp
+diff -urN pxp-1.2.9/src/pxp-pp/pxp_pp.ml.309 pxp-camlp5-1.2.9/src/pxp-pp/pxp_pp.ml.309
+--- pxp-1.2.9/src/pxp-pp/pxp_pp.ml.309	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5-1.2.9/src/pxp-pp/pxp_pp.ml.309	2019-12-17 22:26:30.000000000 +0900
+@@ -627,7 +627,7 @@
+           ((_p2_line,_p2_line_start,p2_pos)) =
+   (* Differs in O'Caml 3.07 and 3.08 *)
+   IFDEF OCAML_NEW_LOC THEN
+-    let l1 = { Lexing.pos_fname = "";
++(*    let l1 = { Lexing.pos_fname = "";
+ 	       Lexing.pos_lnum = _p1_line;
+ 	       Lexing.pos_bol = _p1_line_start;
+ 	       Lexing.pos_cnum = p1_pos } in
+@@ -635,7 +635,8 @@
+ 	       Lexing.pos_lnum = _p2_line;
+ 	       Lexing.pos_bol = _p2_line_start;
+ 	       Lexing.pos_cnum = p2_pos } in
+-    (l1,l2)
++    (l1,l2)*)
++    Stdpp.make_lined_loc _p1_line _p1_line_start (p1_pos, p2_pos)
+   ELSE
+     (p1_pos,p2_pos)
+   END
+@@ -1108,14 +1109,14 @@
+       match annlist with
+ 	(`Single, e) :: annlist' ->
+ 	  ( <:patt< $int:string_of_int k$ >>, 
+-	    None, 
++	    Ploc.VaVal None, 
+ 	    <:expr< let ev = $e$ in
+ 	            do { _state.val := $int:string_of_int(k+1)$;
+ 	                  Some ev } 
+             >> ) :: generate_match (k+1) annlist'
+       | ((`Tree | `Forest), e) :: annlist' ->
+ 	  ( <:patt< $int:string_of_int k$ >>, 
+-	    None, 
++	    Ploc.VaVal None, 
+ 	    <:expr< match $e$ _arg with
+ 		    [ None -> do { _state.val := $int:string_of_int(k+1)$;
+ 				   _generator _arg }
+@@ -1124,11 +1125,11 @@
+             >> ) :: generate_match (k+1) annlist'
+       | [] ->
+ 	  [ <:patt< $int:string_of_int k$ >>,
+-	    None,
++	    Ploc.VaVal None,
+ 	    <:expr< None >>;
+ 
+ 	    <:patt< _ >>,
+-	    None,
++	    Ploc.VaVal None,
+ 	    <:expr< assert False >>
+ 	  ]
+     in
+diff -urN pxp-1.2.9/tools/src/lexpp/main.ml pxp-camlp5-1.2.9/tools/src/lexpp/main.ml
+--- pxp-1.2.9/tools/src/lexpp/main.ml	2017-02-28 22:21:52.000000000 +0900
++++ pxp-camlp5-1.2.9/tools/src/lexpp/main.ml	2019-12-17 19:28:01.000000000 +0900
+@@ -463,7 +463,7 @@
+ 	with Not_found ->
+ 	  failwith ("No such rule: " ^  name)
+       in
+-      String.capitalize (Filename.basename filename)
++      String.capitalize_ascii (Filename.basename filename)
+   in
+ 
+   let link_str' = subst_link_pattern lookup link_str in
+diff -urN pxp-1.2.9/tools/src/m2parsergen/generator.ml pxp-camlp5-1.2.9/tools/src/m2parsergen/generator.ml
+--- pxp-1.2.9/tools/src/m2parsergen/generator.ml	2017-02-28 22:21:52.000000000 +0900
++++ pxp-camlp5-1.2.9/tools/src/m2parsergen/generator.ml	2019-12-17 19:29:21.000000000 +0900
+@@ -760,8 +760,8 @@
+         (-1)
+       else
+         try String.index_from s k '\010' with Not_found -> (-1) in
+-    if next_cr >= 0 & (next_lf < 0 or next_cr < next_lf) then begin
+-      if next_cr+1 < l & s.[next_cr+1] = '\010' then
++    if next_cr >= 0 && (next_lf < 0 || next_cr < next_lf) then begin
++      if next_cr+1 < l && s.[next_cr+1] = '\010' then
+         count (n+1) (next_cr+2) false (next_lf < 0)
+       else
+         count (n+1) (next_cr+1) false (next_lf < 0)
+diff -urN pxp-1.2.9/tools/src/odoc/Makefile pxp-camlp5-1.2.9/tools/src/odoc/Makefile
+--- pxp-1.2.9/tools/src/odoc/Makefile	2017-02-28 22:21:52.000000000 +0900
++++ pxp-camlp5-1.2.9/tools/src/odoc/Makefile	2019-12-17 19:10:46.000000000 +0900
+@@ -6,6 +6,8 @@
+ OCAMLC_OPTIONS += -I +ocamldoc
+ CLEAN_LIST += chtml.ml
+ 
++PACKAGES = compiler-libs.common
++
+ .PHONY: all
+ all: chtml.cmo
+ 
+diff -urN pxp-1.2.9/tools/src/odoc/chtml_ocaml4.ml pxp-camlp5-1.2.9/tools/src/odoc/chtml_ocaml4.ml
+--- pxp-1.2.9/tools/src/odoc/chtml_ocaml4.ml	2017-02-28 22:21:52.000000000 +0900
++++ pxp-camlp5-1.2.9/tools/src/odoc/chtml_ocaml4.ml	2019-12-17 19:10:46.000000000 +0900
+@@ -34,7 +34,7 @@
+ open Odoc_info
+ open Module
+ 
+-module StringSet = Odoc_html.StringSet
++module StringSet = Odoc_html.String.Set
+ 
+ 
+ let word_re = Str.regexp "[ \t\r\n]+"
