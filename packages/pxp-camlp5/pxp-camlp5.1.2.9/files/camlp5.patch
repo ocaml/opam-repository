@@ -1,6 +1,6 @@
-diff -urN pxp-1.2.9/configure pxp-camlp5-1.2.9/configure
+diff -urN pxp-1.2.9/configure pxp-camlp5.1.2.9/configure
 --- pxp-1.2.9/configure	2017-02-28 22:21:45.000000000 +0900
-+++ pxp-camlp5-1.2.9/configure	2019-12-17 19:23:02.000000000 +0900
++++ pxp-camlp5.1.2.9/configure	2019-12-18 00:23:00.000000000 +0900
 @@ -152,23 +152,23 @@
  fi
  
@@ -82,9 +82,9 @@ diff -urN pxp-1.2.9/configure pxp-camlp5-1.2.9/configure
  NETUNIDATA = $netunidata
  STRING_OPTS = $string_opts
  _EOF_
-diff -urN pxp-1.2.9/gensrc/pxp-lex-pattern/META.in pxp-camlp5-1.2.9/gensrc/pxp-lex-pattern/META.in
+diff -urN pxp-1.2.9/gensrc/pxp-lex-pattern/META.in pxp-camlp5.1.2.9/gensrc/pxp-lex-pattern/META.in
 --- pxp-1.2.9/gensrc/pxp-lex-pattern/META.in	2017-02-28 22:21:46.000000000 +0900
-+++ pxp-camlp5-1.2.9/gensrc/pxp-lex-pattern/META.in	2019-12-17 23:26:30.000000000 +0900
++++ pxp-camlp5.1.2.9/gensrc/pxp-lex-pattern/META.in	2019-12-17 23:26:30.000000000 +0900
 @@ -1,5 +1,5 @@
  description = "Polymorphic XML parser - Lexical analyzer for @ENCNAME@"
 -requires = "pxp-engine"
@@ -92,9 +92,22 @@ diff -urN pxp-1.2.9/gensrc/pxp-lex-pattern/META.in pxp-camlp5-1.2.9/gensrc/pxp-l
  version = "@VERSION@"
  
  archive(byte) = "pxp_lex_@ENCNAME@.cma pxp_lex_link_@ENCNAME@.cmo"
-diff -urN pxp-1.2.9/gensrc/pxp-ulex-utf8/META.in pxp-camlp5-1.2.9/gensrc/pxp-ulex-utf8/META.in
+diff -urN pxp-1.2.9/gensrc/pxp-lex-pattern/Makefile.in pxp-camlp5.1.2.9/gensrc/pxp-lex-pattern/Makefile.in
+--- pxp-1.2.9/gensrc/pxp-lex-pattern/Makefile.in	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5.1.2.9/gensrc/pxp-lex-pattern/Makefile.in	2019-12-18 00:26:45.000000000 +0900
+@@ -45,7 +45,7 @@
+ 
+ install:
+ 	files=`$(COLLECT_FILES) *.mli *.cmi *.cma *.cmxa *.a pxp_lex_link_*.cmo pxp_lex_link_*.cmx pxp_lex_link_*.o META` && \
+-        $(OCAMLFIND) install pxp-lex-$(ENC) $$files
++        $(OCAMLFIND) install pxp-camlp5-lex-$(ENC) $$files
+ 
+ uninstall:
+-	$(OCAMLFIND) remove pxp-lex-$(ENC)
++	$(OCAMLFIND) remove pxp-camlp5-lex-$(ENC)
+diff -urN pxp-1.2.9/gensrc/pxp-ulex-utf8/META.in pxp-camlp5.1.2.9/gensrc/pxp-ulex-utf8/META.in
 --- pxp-1.2.9/gensrc/pxp-ulex-utf8/META.in	2017-02-28 22:21:46.000000000 +0900
-+++ pxp-camlp5-1.2.9/gensrc/pxp-ulex-utf8/META.in	2019-12-17 23:27:12.000000000 +0900
++++ pxp-camlp5.1.2.9/gensrc/pxp-ulex-utf8/META.in	2019-12-17 23:27:12.000000000 +0900
 @@ -1,5 +1,5 @@
  description = "Polymorphic XML parser - Lexical analyzer for UTF-8 based on wlex"
 -requires = "pxp-engine,ulex"
@@ -102,9 +115,9 @@ diff -urN pxp-1.2.9/gensrc/pxp-ulex-utf8/META.in pxp-camlp5-1.2.9/gensrc/pxp-ule
  version = "@VERSION@"
  
  archive(byte) = "pxp_ulex_utf8.cma pxp_ulex_link_utf8.cmo"
-diff -urN pxp-1.2.9/gensrc/pxp-ulex-utf8/Makefile pxp-camlp5-1.2.9/gensrc/pxp-ulex-utf8/Makefile
+diff -urN pxp-1.2.9/gensrc/pxp-ulex-utf8/Makefile pxp-camlp5.1.2.9/gensrc/pxp-ulex-utf8/Makefile
 --- pxp-1.2.9/gensrc/pxp-ulex-utf8/Makefile	2017-02-28 22:21:46.000000000 +0900
-+++ pxp-camlp5-1.2.9/gensrc/pxp-ulex-utf8/Makefile	2019-12-17 22:30:18.000000000 +0900
++++ pxp-camlp5.1.2.9/gensrc/pxp-ulex-utf8/Makefile	2019-12-18 00:25:03.000000000 +0900
 @@ -7,9 +7,9 @@
  ML = $(shell echo pxp_ulex_$(ENC)_*.ml)
  CMO = $(ML:.ml=.cmo)
@@ -123,21 +136,31 @@ diff -urN pxp-1.2.9/gensrc/pxp-ulex-utf8/Makefile pxp-camlp5-1.2.9/gensrc/pxp-ul
  .PHONY: expand
  expand:
 -	camlp4 -I `ocamlfind query ulex` pa_o.cmo pa_op.cmo pa_ulex.cma pr_o.cmo pxp_ulex_utf8_01.ml
-+	camlp5 -I `ocamlfind query ulex` pa_o.cmo pa_op.cmo pa_ulex.cma pr_o.cmo pxp_ulex_utf8_01.ml
++	camlp5 -I `ocamlfind query ulex-camlp5` pa_o.cmo pa_op.cmo pa_ulex.cma pr_o.cmo pxp_ulex_utf8_01.ml
  
  clean:
  	rm -f $(CLEAN_LIST) *.ml *.mll gen_done
-diff -urN pxp-1.2.9/gensrc/pxp-wlex/META.in pxp-camlp5-1.2.9/gensrc/pxp-wlex/META.in
+@@ -51,7 +51,7 @@
+ 
+ install:
+ 	files=`$(COLLECT_FILES) *.mli *.cmi *.cma *.cmxa *.a pxp_ulex_link_*.cmo pxp_ulex_link_*.cmx pxp_ulex_link_*.o META` && \
+-        $(OCAMLFIND) install pxp-ulex-$(ENC) $$files
++        $(OCAMLFIND) install pxp-camlp5-ulex-$(ENC) $$files
+ 
+ uninstall:
+-	$(OCAMLFIND) remove pxp-ulex-$(ENC)
++	$(OCAMLFIND) remove pxp-camlp5-ulex-$(ENC)
+diff -urN pxp-1.2.9/gensrc/pxp-wlex/META.in pxp-camlp5.1.2.9/gensrc/pxp-wlex/META.in
 --- pxp-1.2.9/gensrc/pxp-wlex/META.in	2017-02-28 22:21:46.000000000 +0900
-+++ pxp-camlp5-1.2.9/gensrc/pxp-wlex/META.in	2019-12-17 23:27:38.000000000 +0900
++++ pxp-camlp5.1.2.9/gensrc/pxp-wlex/META.in	2019-12-17 23:27:38.000000000 +0900
 @@ -1,3 +1,3 @@
  description = "Polymorphic XML parser - Lexical analyzer for UTF-8 and ISO-8859-1 based on wlex (compat package)"
 -requires = "pxp-wlex-utf8 pxp-lex-iso88591"
 +requires = "pxp-camlp5-wlex-utf8 pxp-camlp5-lex-iso88591"
  version = "@VERSION@"
-diff -urN pxp-1.2.9/gensrc/pxp-wlex/Makefile pxp-camlp5-1.2.9/gensrc/pxp-wlex/Makefile
+diff -urN pxp-1.2.9/gensrc/pxp-wlex/Makefile pxp-camlp5.1.2.9/gensrc/pxp-wlex/Makefile
 --- pxp-1.2.9/gensrc/pxp-wlex/Makefile	2017-02-28 22:21:46.000000000 +0900
-+++ pxp-camlp5-1.2.9/gensrc/pxp-wlex/Makefile	2019-12-17 23:27:51.000000000 +0900
++++ pxp-camlp5.1.2.9/gensrc/pxp-wlex/Makefile	2019-12-17 23:27:51.000000000 +0900
 @@ -19,7 +19,7 @@
  	rm -f META
  
@@ -148,9 +171,9 @@ diff -urN pxp-1.2.9/gensrc/pxp-wlex/Makefile pxp-camlp5-1.2.9/gensrc/pxp-wlex/Ma
  uninstall:
 -	$(OCAMLFIND) remove pxp-wlex
 +	$(OCAMLFIND) remove pxp-camlp5-wlex
-diff -urN pxp-1.2.9/gensrc/pxp-wlex-utf8/META.in pxp-camlp5-1.2.9/gensrc/pxp-wlex-utf8/META.in
+diff -urN pxp-1.2.9/gensrc/pxp-wlex-utf8/META.in pxp-camlp5.1.2.9/gensrc/pxp-wlex-utf8/META.in
 --- pxp-1.2.9/gensrc/pxp-wlex-utf8/META.in	2017-02-28 22:21:46.000000000 +0900
-+++ pxp-camlp5-1.2.9/gensrc/pxp-wlex-utf8/META.in	2019-12-17 23:28:15.000000000 +0900
++++ pxp-camlp5.1.2.9/gensrc/pxp-wlex-utf8/META.in	2019-12-17 23:28:15.000000000 +0900
 @@ -1,5 +1,5 @@
  description = "Polymorphic XML parser - Lexical analyzer for UTF-8 based on wlex"
 -requires = "pxp-engine,wlexing"
@@ -158,9 +181,9 @@ diff -urN pxp-1.2.9/gensrc/pxp-wlex-utf8/META.in pxp-camlp5-1.2.9/gensrc/pxp-wle
  version = "@VERSION@"
  
  archive(byte) = "pxp_wlex_utf8.cma pxp_wlex_link_utf8.cmo"
-diff -urN pxp-1.2.9/gensrc/pxp-wlex-utf8/Makefile pxp-camlp5-1.2.9/gensrc/pxp-wlex-utf8/Makefile
+diff -urN pxp-1.2.9/gensrc/pxp-wlex-utf8/Makefile pxp-camlp5.1.2.9/gensrc/pxp-wlex-utf8/Makefile
 --- pxp-1.2.9/gensrc/pxp-wlex-utf8/Makefile	2017-02-28 22:21:46.000000000 +0900
-+++ pxp-camlp5-1.2.9/gensrc/pxp-wlex-utf8/Makefile	2019-12-17 23:28:48.000000000 +0900
++++ pxp-camlp5.1.2.9/gensrc/pxp-wlex-utf8/Makefile	2019-12-17 23:28:48.000000000 +0900
 @@ -48,7 +48,7 @@
  
  install:
@@ -171,9 +194,22 @@ diff -urN pxp-1.2.9/gensrc/pxp-wlex-utf8/Makefile pxp-camlp5-1.2.9/gensrc/pxp-wl
  uninstall:
 -	$(OCAMLFIND) remove pxp-wlex-$(ENC)
 +	$(OCAMLFIND) remove pxp-camlp5-wlex-$(ENC)
-diff -urN pxp-1.2.9/src/pxp-engine/Makefile pxp-camlp5-1.2.9/src/pxp-engine/Makefile
+diff -urN pxp-1.2.9/src/pxp/Makefile pxp-camlp5.1.2.9/src/pxp/Makefile
+--- pxp-1.2.9/src/pxp/Makefile	2017-02-28 22:21:46.000000000 +0900
++++ pxp-camlp5.1.2.9/src/pxp/Makefile	2019-12-18 00:27:16.000000000 +0900
+@@ -13,7 +13,7 @@
+ 	rm -f META
+ 
+ install:
+-	$(OCAMLFIND) install pxp META
++	$(OCAMLFIND) install pxp-camlp5 META
+ 
+ uninstall:
+-	$(OCAMLFIND) remove pxp
++	$(OCAMLFIND) remove pxp-camlp5
+diff -urN pxp-1.2.9/src/pxp-engine/Makefile pxp-camlp5.1.2.9/src/pxp-engine/Makefile
 --- pxp-1.2.9/src/pxp-engine/Makefile	2017-02-28 22:21:46.000000000 +0900
-+++ pxp-camlp5-1.2.9/src/pxp-engine/Makefile	2019-12-17 23:23:57.000000000 +0900
++++ pxp-camlp5.1.2.9/src/pxp-engine/Makefile	2019-12-17 23:23:57.000000000 +0900
 @@ -33,10 +33,10 @@
  
  install:
@@ -187,9 +223,9 @@ diff -urN pxp-1.2.9/src/pxp-engine/Makefile pxp-camlp5-1.2.9/src/pxp-engine/Make
  
  pxp_lexing.ml: pxp_lexing.mlp
  	$(IFDEF) $(LEXBUF_307) pxp_lexing.mlp
-diff -urN pxp-1.2.9/src/pxp-engine/pxp_lexing.mli pxp-camlp5-1.2.9/src/pxp-engine/pxp_lexing.mli
+diff -urN pxp-1.2.9/src/pxp-engine/pxp_lexing.mli pxp-camlp5.1.2.9/src/pxp-engine/pxp_lexing.mli
 --- pxp-1.2.9/src/pxp-engine/pxp_lexing.mli	2017-02-28 22:21:46.000000000 +0900
-+++ pxp-camlp5-1.2.9/src/pxp-engine/pxp_lexing.mli	2019-12-17 19:10:46.000000000 +0900
++++ pxp-camlp5.1.2.9/src/pxp-engine/pxp_lexing.mli	2019-12-17 19:10:46.000000000 +0900
 @@ -10,11 +10,11 @@
  
  type lexbuf = Lexing.lexbuf
@@ -205,9 +241,9 @@ diff -urN pxp-1.2.9/src/pxp-engine/pxp_lexing.mli pxp-camlp5-1.2.9/src/pxp-engin
  
  val lexeme : lexbuf -> string
  
-diff -urN pxp-1.2.9/src/pxp-pp/META.in pxp-camlp5-1.2.9/src/pxp-pp/META.in
+diff -urN pxp-1.2.9/src/pxp-pp/META.in pxp-camlp5.1.2.9/src/pxp-pp/META.in
 --- pxp-1.2.9/src/pxp-pp/META.in	2017-02-28 22:21:46.000000000 +0900
-+++ pxp-camlp5-1.2.9/src/pxp-pp/META.in	2019-12-17 23:24:46.000000000 +0900
++++ pxp-camlp5.1.2.9/src/pxp-pp/META.in	2019-12-17 23:24:46.000000000 +0900
 @@ -2,13 +2,13 @@
  version = "@VERSION@"
  
@@ -225,9 +261,9 @@ diff -urN pxp-1.2.9/src/pxp-pp/META.in pxp-camlp5-1.2.9/src/pxp-pp/META.in
  
  # Specification of stand-alone preprocessor call:
  archive(syntax,preprocessor) = "pxp_pp.cma"
-diff -urN pxp-1.2.9/src/pxp-pp/Makefile pxp-camlp5-1.2.9/src/pxp-pp/Makefile
+diff -urN pxp-1.2.9/src/pxp-pp/Makefile pxp-camlp5.1.2.9/src/pxp-pp/Makefile
 --- pxp-1.2.9/src/pxp-pp/Makefile	2017-02-28 22:21:46.000000000 +0900
-+++ pxp-camlp5-1.2.9/src/pxp-pp/Makefile	2019-12-17 23:25:16.000000000 +0900
++++ pxp-camlp5.1.2.9/src/pxp-pp/Makefile	2019-12-17 23:25:16.000000000 +0900
 @@ -2,10 +2,10 @@
  
  include $(TOP_DIR)/Makefile.rules
@@ -263,9 +299,9 @@ diff -urN pxp-1.2.9/src/pxp-pp/Makefile pxp-camlp5-1.2.9/src/pxp-pp/Makefile
  uninstall:
 -	$(OCAMLFIND) remove pxp-pp
 +	$(OCAMLFIND) remove pxp-camlp5-pp
-diff -urN pxp-1.2.9/src/pxp-pp/pxp_pp.ml.309 pxp-camlp5-1.2.9/src/pxp-pp/pxp_pp.ml.309
+diff -urN pxp-1.2.9/src/pxp-pp/pxp_pp.ml.309 pxp-camlp5.1.2.9/src/pxp-pp/pxp_pp.ml.309
 --- pxp-1.2.9/src/pxp-pp/pxp_pp.ml.309	2017-02-28 22:21:46.000000000 +0900
-+++ pxp-camlp5-1.2.9/src/pxp-pp/pxp_pp.ml.309	2019-12-17 22:26:30.000000000 +0900
++++ pxp-camlp5.1.2.9/src/pxp-pp/pxp_pp.ml.309	2019-12-17 22:26:30.000000000 +0900
 @@ -627,7 +627,7 @@
            ((_p2_line,_p2_line_start,p2_pos)) =
    (* Differs in O'Caml 3.07 and 3.08 *)
@@ -316,9 +352,9 @@ diff -urN pxp-1.2.9/src/pxp-pp/pxp_pp.ml.309 pxp-camlp5-1.2.9/src/pxp-pp/pxp_pp.
  	    <:expr< assert False >>
  	  ]
      in
-diff -urN pxp-1.2.9/tools/src/lexpp/main.ml pxp-camlp5-1.2.9/tools/src/lexpp/main.ml
+diff -urN pxp-1.2.9/tools/src/lexpp/main.ml pxp-camlp5.1.2.9/tools/src/lexpp/main.ml
 --- pxp-1.2.9/tools/src/lexpp/main.ml	2017-02-28 22:21:52.000000000 +0900
-+++ pxp-camlp5-1.2.9/tools/src/lexpp/main.ml	2019-12-17 19:28:01.000000000 +0900
++++ pxp-camlp5.1.2.9/tools/src/lexpp/main.ml	2019-12-17 19:28:01.000000000 +0900
 @@ -463,7 +463,7 @@
  	with Not_found ->
  	  failwith ("No such rule: " ^  name)
@@ -328,9 +364,9 @@ diff -urN pxp-1.2.9/tools/src/lexpp/main.ml pxp-camlp5-1.2.9/tools/src/lexpp/mai
    in
  
    let link_str' = subst_link_pattern lookup link_str in
-diff -urN pxp-1.2.9/tools/src/m2parsergen/generator.ml pxp-camlp5-1.2.9/tools/src/m2parsergen/generator.ml
+diff -urN pxp-1.2.9/tools/src/m2parsergen/generator.ml pxp-camlp5.1.2.9/tools/src/m2parsergen/generator.ml
 --- pxp-1.2.9/tools/src/m2parsergen/generator.ml	2017-02-28 22:21:52.000000000 +0900
-+++ pxp-camlp5-1.2.9/tools/src/m2parsergen/generator.ml	2019-12-17 19:29:21.000000000 +0900
++++ pxp-camlp5.1.2.9/tools/src/m2parsergen/generator.ml	2019-12-17 19:29:21.000000000 +0900
 @@ -760,8 +760,8 @@
          (-1)
        else
@@ -342,9 +378,9 @@ diff -urN pxp-1.2.9/tools/src/m2parsergen/generator.ml pxp-camlp5-1.2.9/tools/sr
          count (n+1) (next_cr+2) false (next_lf < 0)
        else
          count (n+1) (next_cr+1) false (next_lf < 0)
-diff -urN pxp-1.2.9/tools/src/odoc/Makefile pxp-camlp5-1.2.9/tools/src/odoc/Makefile
+diff -urN pxp-1.2.9/tools/src/odoc/Makefile pxp-camlp5.1.2.9/tools/src/odoc/Makefile
 --- pxp-1.2.9/tools/src/odoc/Makefile	2017-02-28 22:21:52.000000000 +0900
-+++ pxp-camlp5-1.2.9/tools/src/odoc/Makefile	2019-12-17 19:10:46.000000000 +0900
++++ pxp-camlp5.1.2.9/tools/src/odoc/Makefile	2019-12-17 19:10:46.000000000 +0900
 @@ -6,6 +6,8 @@
  OCAMLC_OPTIONS += -I +ocamldoc
  CLEAN_LIST += chtml.ml
@@ -354,9 +390,9 @@ diff -urN pxp-1.2.9/tools/src/odoc/Makefile pxp-camlp5-1.2.9/tools/src/odoc/Make
  .PHONY: all
  all: chtml.cmo
  
-diff -urN pxp-1.2.9/tools/src/odoc/chtml_ocaml4.ml pxp-camlp5-1.2.9/tools/src/odoc/chtml_ocaml4.ml
+diff -urN pxp-1.2.9/tools/src/odoc/chtml_ocaml4.ml pxp-camlp5.1.2.9/tools/src/odoc/chtml_ocaml4.ml
 --- pxp-1.2.9/tools/src/odoc/chtml_ocaml4.ml	2017-02-28 22:21:52.000000000 +0900
-+++ pxp-camlp5-1.2.9/tools/src/odoc/chtml_ocaml4.ml	2019-12-17 19:10:46.000000000 +0900
++++ pxp-camlp5.1.2.9/tools/src/odoc/chtml_ocaml4.ml	2019-12-17 19:10:46.000000000 +0900
 @@ -34,7 +34,7 @@
  open Odoc_info
  open Module
