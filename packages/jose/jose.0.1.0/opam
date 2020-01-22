@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis: "JOSE implementation for OCaml and ReasonML"
+description:
+  "JavaScript Object Signing and Encryption built ontop of pure OCaml libs"
+maintainer: ["ulrik.strid@outlook.com"]
+authors: ["Ulrik Strid"]
+license: "MIT"
+homepage: "https://ulrikstrid.github.io/reason-jose"
+doc: "https://ulrikstrid.github.io/reason-jose"
+bug-reports: "https://github.com/ulrikstrid/reason-jose/issues"
+depends: [
+  "ocaml" {>= "4.06.0"}
+  "base64"
+  "dune" {>= "1.11" & < "2.0"}
+  "nocrypto"
+  "x509" {>= "0.8.0"}
+  "astring"
+  "yojson"
+  "zarith"
+  "containers" {with-test}
+  "bisect_ppx" {with-test}
+  "reason" {with-test}
+  "rely" {with-test}
+  "lwt" {with-test}
+]
+dev-repo: "git+https://github.com/ulrikstrid/reason-jose.git"
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+  ["dune" "exec" "test/test_exe/RunTests.exe"] {with-test}
+]
+pin-depends: [
+  [ "nocrypto.dev" "git+https://github.com/mirleft/ocaml-nocrypto.git#dune" ]
+]
+url {
+  src:
+    "https://github.com/ulrikstrid/reason-jose/releases/download/v0.1.0/jose-v0.1.0.tbz"
+  checksum: [
+    "sha256=d9e1a3d1d3ab149f8b95aee01333f32c5487ec218df702f24f1059018d911aff"
+    "sha512=d8db2996f7489dd74b6fb5110525e1aa6b5c079ca4286d85833074dc28224edc1f3be246e1d2eb63b8a808759bc0afb518212b10af565336abeb4077f6bd3d16"
+  ]
+}
