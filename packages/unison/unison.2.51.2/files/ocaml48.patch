@@ -1,13 +1,13 @@
-diff --git a/unison-2.51.2/src/Makefile.OCaml b/unison-2.51.2-original/src/Makefile.OCaml
-index 378fc8b..7cefa2e 100644
---- a/unison-2.51.2/src/Makefile.OCaml
-+++ b/unison-2.51.2-original/src/Makefile.OCaml
+diff --git a/unison-2.51.2-original/src/Makefile.OCaml b/unison-2.51.2/src/Makefile.OCaml
+index 7cefa2e..378fc8b 100644
+--- a/unison-2.51.2-original/src/Makefile.OCaml
++++ b/unison-2.51.2/src/Makefile.OCaml
 @@ -272,7 +272,7 @@ endif
  
  # Gtk GUI
  ifeq ($(UISTYLE), gtk)
--  CAMLFLAGS+=-I $(LABLGTKLIB)
-+  CAMLFLAGS+=-I +lablgtk
+-  CAMLFLAGS+=-I +lablgtk
++  CAMLFLAGS+=-I $(LABLGTKLIB)
    OCAMLOBJS+=pixmaps.cmo uigtk.cmo linkgtk.cmo
    OCAMLLIBS+=lablgtk.cma
  endif
@@ -15,62 +15,62 @@ index 378fc8b..7cefa2e 100644
  
  ifeq ($(UISTYLE), gtk2)
    ifndef OCAMLFIND
--    CAMLFLAGS+=-I $(LABLGTK2LIB)
-+    CAMLFLAGS+=-I +lablgtk2
+-    CAMLFLAGS+=-I +lablgtk2
++    CAMLFLAGS+=-I $(LABLGTK2LIB)
    else
      CAMLFLAGS+=$(shell $(OCAMLFIND) query -i-format lablgtk2 )
    endif
-diff --git a/unison-2.51.2/src/files.ml b/unison-2.51.2-original/src/files.ml
-index 1d1fbcc..5ff1881 100644
---- a/unison-2.51.2/src/files.ml
-+++ b/unison-2.51.2-original/src/files.ml
+diff --git a/unison-2.51.2-original/src/files.ml b/unison-2.51.2/src/files.ml
+index 5ff1881..1d1fbcc 100644
+--- a/unison-2.51.2-original/src/files.ml
++++ b/unison-2.51.2/src/files.ml
 @@ -734,7 +734,7 @@ let get_files_in_directory dir =
    with End_of_file ->
      dirh.System.closedir ()
    end;
--  List.sort String.compare !files
-+  Sort.list (<) !files
+-  Sort.list (<) !files
++  List.sort String.compare !files
  
  let ls dir pattern =
    Util.convertUnixErrorsToTransient
-diff --git a/unison-2.51.2/src/recon.ml b/unison-2.51.2-original/src/recon.ml
-index 2412c18..2c619bb 100644
---- a/unison-2.51.2/src/recon.ml
-+++ b/unison-2.51.2-original/src/recon.ml
+diff --git a/unison-2.51.2-original/src/recon.ml b/unison-2.51.2/src/recon.ml
+index 2c619bb..2412c18 100644
+--- a/unison-2.51.2-original/src/recon.ml
++++ b/unison-2.51.2/src/recon.ml
 @@ -661,8 +661,8 @@ let rec reconcile
  
  (* Sorts the paths so that they will be displayed in order                   *)
  let sortPaths pathUpdatesList =
--  List.sort
--    Path.compare
-+  Sort.list
-+    (fun (p1, _) (p2, _) -> Path.compare p1 p2 <= 0)
+-  Sort.list
+-    (fun (p1, _) (p2, _) -> Path.compare p1 p2 <= 0)
++  List.sort
++    Path.compare
      pathUpdatesList
  
  let rec enterPath p1 p2 t =
-diff --git a/unison-2.51.2/src/system/system_generic.ml b/unison-2.51.2-original/src/system/system_generic.ml
-index c2288b8..453027d 100755
---- a/unison-2.51.2/src/system/system_generic.ml
-+++ b/unison-2.51.2-original/src/system/system_generic.ml
+diff --git a/unison-2.51.2-original/src/system/system_generic.ml b/unison-2.51.2/src/system/system_generic.ml
+index 453027d..c2288b8 100755
+--- a/unison-2.51.2-original/src/system/system_generic.ml
++++ b/unison-2.51.2/src/system/system_generic.ml
 @@ -47,7 +47,7 @@ let open_out_gen = open_out_gen
  let chmod = Unix.chmod
  let chown = Unix.chown
  let utimes = Unix.utimes
--let link s d = Unix.link s d
-+let link = Unix.link
+-let link = Unix.link
++let link s d = Unix.link s d
  let openfile = Unix.openfile
  let opendir f =
    let h = Unix.opendir f in
-diff --git a/unison-2.51.2/src/uigtk2.ml b/unison-2.51.2-original/src/uigtk2.ml
-index 4e82cc2..fbc5d8f 100644
---- a/unison-2.51.2/src/uigtk2.ml
-+++ b/unison-2.51.2-original/src/uigtk2.ml
+diff --git a/unison-2.51.2-original/src/uigtk2.ml b/unison-2.51.2/src/uigtk2.ml
+index fbc5d8f..4e82cc2 100644
+--- a/unison-2.51.2-original/src/uigtk2.ml
++++ b/unison-2.51.2/src/uigtk2.ml
 @@ -94,7 +94,7 @@ let icon =
  let icon =
    let p = GdkPixbuf.create ~width:48 ~height:48 ~has_alpha:true () in
    Gpointer.blit
--    (Gpointer.region_of_bytes Pixmaps.icon_data) (GdkPixbuf.get_pixels p);
-+    (Gpointer.region_of_string Pixmaps.icon_data) (GdkPixbuf.get_pixels p);
+-    (Gpointer.region_of_string Pixmaps.icon_data) (GdkPixbuf.get_pixels p);
++    (Gpointer.region_of_bytes Pixmaps.icon_data) (GdkPixbuf.get_pixels p);
    p
  
  let leftPtrWatch =
