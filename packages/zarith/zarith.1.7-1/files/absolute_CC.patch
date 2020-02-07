@@ -1,0 +1,35 @@
+commit 6681ae124c90489eba31cf3a6938cf31632f28ed
+Author: Xavier Leroy <xavier.leroy@inria.fr>
+Date:   Mon Jan 22 14:33:53 2018 +0100
+
+    PR#28: "configure" support for absolute paths
+    
+    Previously, "CC=/some/path/to/gcc configure" would not work.
+    
+    Also: use "test -f $i -a -x $i" to check that "$i" is an executable file.
+    Without the -f, a directory named "gcc", say, can fool the test.
+
+diff --git configure configure
+index 1382309..3a55de5 100755
+--- a/configure
++++ b/configure
+@@ -119,11 +119,18 @@ searchbin()
+ {
+     if test "x$1" = "x"; then return 0; fi
+     echo_n "binary $1: "
++    case "$1" in
++      /*|./*|../*)
++        if test -f "$1" -a -x "$1"
++        then echo "found"; return 1
++        else echo "not found"; return 0
++        fi;;
++    esac
+     IFS=':'
+     for i in $PATH
+     do
+         if test -z "$i"; then i='.'; fi
+-        if test -x $i/$1; then echo "found in $i"; unset IFS; return 1; fi
++        if test -f $i/$1 -a -x $i/$1; then echo "found in $i"; unset IFS; return 1; fi
+     done
+     echo "not found"
+     unset IFS
