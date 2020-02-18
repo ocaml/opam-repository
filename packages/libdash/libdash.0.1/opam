@@ -10,19 +10,24 @@ bug-reports: "https://github.com/mgree/libdash/issues"
 depends: [
   "ocaml" {>= "4.0.7"}
   "ctypes" {>= "0.11.5"}
+  "ocamlfind" {>= "1.8.0"}
   "ctypes-foreign" {>= "0.4.0"}
   "conf-autoconf" {build}
   "conf-libtool" {build}
 ]
 build: [
   ["./autogen.sh"]
-  ["./configure" "--prefix=%{prefix}%" "--libdir=%{lib}%"]
+  ["./configure" "--prefix=%{prefix}%" "--libdir=%{_:lib}%"]
   [make]
   [make "-C" "ocaml"]
 ]
 install: [
   [make "install"]
   [make "-C" "ocaml" "install"]
+  [make "-C" "test" "test"] {with-test}
+]
+remove: [
+  ["ocamlfind" "remove" "libdash"]
 ]
 dev-repo: "git+https:///github.com/mgree/libdash"
 url {
