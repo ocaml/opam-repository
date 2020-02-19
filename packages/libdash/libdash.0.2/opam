@@ -16,7 +16,12 @@ depends: [
   "conf-libtool" {build}
 ]
 build: [
-  ["./autogen.sh"]
+  ["libtoolize"] {os != "macos"}
+  ["glibtoolize"] {os = "macos"}
+  ["aclocal"]
+  ["autoheader"]
+  ["automake" "--add-missing"]
+  ["autoconf"]
   ["./configure" "--prefix=%{prefix}%" "--libdir=%{_:lib}%"]
   [make]
   [make "-C" "ocaml"]
