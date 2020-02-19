@@ -46,13 +46,6 @@ cat pullreq.diff | sed -E -n -e 's,\+\+\+ b/packages/[^/]*/([^/]*)/.*,\1,p' | so
 echo To Build:
 cat tobuild.txt
 
-function build_switch {
-  rm -rf ~/.opam
-  echo "build switch: $OPAM_SWITCH"
-  opam init . --comp=$OPAM_SWITCH
-  eval `opam config env`
-}
-
 function build_one {
   pkg=$1
   echo "build one: $pkg"
@@ -92,8 +85,6 @@ function build_one {
     fi
   fi
 }
-
-build_switch
 
 echo OCaml version
 ocaml -version
