@@ -1,6 +1,6 @@
 opam-version: "2.0"
 name: "libdash"
-version: "0.2.1"
+version: "0.2.2"
 synopsis: "Bindings to the dash shell's parser"
 maintainer: "Michael Greenberg <michael.greenberg@pomona.edu>"
 authors: "Michael Greenberg <michael.greenberg@pomona.edu>"
@@ -22,20 +22,16 @@ build: [
   ["autoheader"]
   ["automake" "--add-missing"]
   ["autoconf"]
-  ["./configure" "--prefix=%{prefix}%" "--libdir=%{_:lib}%"]
+  ["mkdir" "_build"]
+  ["./configure" "--prefix=%{build}%/_build"]
   [make]
-  [make "-C" "ocaml"]
-]
-install: [
-  [make "install"]
-  [make "-C" "ocaml" "install"]
-  [make "-C" "test" "test"] {with-test}
-]
-remove: [
-  ["ocamlfind" "remove" "libdash"]
+  [make "install"] # into _build
+  [make "-C" "ocaml" "all"]
+  ["./mk_dot_install.sh"]
+  [make "-C" "ocaml" "test"] {with-test}
 ]
 dev-repo: "git+https:///github.com/mgree/libdash"
 url {
-  src: "https://github.com/mgree/libdash/archive/0.2.1.tar.gz"
-  checksum: "md5=8d71b366655871125286402f51d5225c"
+  src: "https://github.com/mgree/libdash/archive/0.2.2.tar.gz"
+  checksum: "md5=ef65c591a6ed23108795f093172fbc8a"
 }
