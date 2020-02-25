@@ -27,12 +27,11 @@ build: [
   [make]
   [make "install"] # into _build
   [make "-C" "ocaml" "all"]
-  ["./mk_dot_install.sh"]
   ["./ldconfig.sh"] # fix up .so files if ldconfig didn't do it
   [make "-C" "ocaml" "test"] {with-test}
 ]
 install: [
-  ["opam-installer" "--prefix=%{prefix}%" "libdash.install"]
+  ["./libdash_install.sh"] # autotools borks if we call it install.sh, lol
   [make "-C" "test" "test"] {with-test}
 ]
 dev-repo: "git+https:///github.com/mgree/libdash"
