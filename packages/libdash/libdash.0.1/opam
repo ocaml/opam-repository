@@ -12,6 +12,7 @@ depends: [
   "ocamlfind" {>= "1.8.0"}
   "ctypes" {>= "0.11.5"}
   "ctypes-foreign" {>= "0.4.0"}
+  "opam-installer" {>= "2.0.0"}
   "conf-autoconf" {build}
   "conf-libtool" {build}
 ]
@@ -27,16 +28,17 @@ build: [
   [make]
   [make "install"] # into _build
   [make "-C" "ocaml" "all"]
+  ["./mk_dot_install.sh"]
   ["./ldconfig.sh"] # fix up .so files if ldconfig didn't do it
   [make "-C" "ocaml" "test"] {with-test}
 ]
 install: [
-  ["./libdash_install.sh"] # autotools borks if we call it install.sh, lol
+  ["opam-installer" "--prefix=%{prefix}%" "libdash.install"]
   [make "-C" "test" "test"] {with-test}
 ]
 dev-repo: "git+https:///github.com/mgree/libdash"
 url {
   src: "https://github.com/mgree/libdash/archive/v0.1.tar.gz"
-  checksum: "md5=74726af91b217a424837450135bd374a"
+  checksum: "md5=ea26777aa9a7776c1b2f940110cc354b"
 }
 
