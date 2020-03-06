@@ -9,7 +9,20 @@ license: "BSD"
 homepage: "https://github.com/thierry-martinez/traverse"
 doc: "https://github.com/thierry-martinez/traverse"
 bug-reports: "https://github.com/thierry-martinez/traverse"
-build: ["dune" "build" "-p" name "-j" jobs]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
 depends: [
   "ocaml" {>= "4.03.0" & < "4.11.0"}
   "dune" {>= "1.11.0"}
