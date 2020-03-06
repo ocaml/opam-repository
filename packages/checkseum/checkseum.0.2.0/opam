@@ -1,0 +1,62 @@
+opam-version: "2.0"
+name:         "checkseum"
+maintainer:   [ "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+authors:      [ "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+homepage:     "https://github.com/mirage/checkseum"
+bug-reports:  "https://github.com/mirage/checkseum/issues"
+dev-repo:     "git+https://github.com/mirage/checkseum.git"
+doc:          "https://mirage.github.io/checkseum/"
+license:      "MIT"
+synopsis:     "Adler-32, CRC32 and CRC32-C implementation in C and OCaml"
+description: """
+Checkseum is a library to provide implementation of Adler-32, CRC32 and CRC32-C
+in C and OCaml.
+
+This library use the linking trick to choose between the C implementation
+(checkseum.c) or the OCaml implementation (checkseum.ocaml). This library is on
+top of optint to get the best representation of an int32. """
+
+build: [
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "sh" "-exc" "echo \"xen_linkopts = \\\"-l:laolao/xen/liblaolao_xen_stubs.a\\\"\" >> _build/default/META.checkseum"]
+  [ "sh" "-exc" "echo \"freestanding_linkopts = \\\"-l:laolao/freestanding/liblaolao_freestanding_stubs.a\\\"\" >> _build/default/META.checkseum"]
+  [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
+]
+
+install: [
+  [ "dune" "install" "-p" name ]
+  [ "./test/test_runes.ml" ] {with-test}
+]
+
+depends: [
+  "ocaml"         {>= "4.07.0"}
+  "dune"          {>= "1.9.2"}
+  "optint"        {>= "0.0.3"}
+  "base-bytes"
+  "bigarray-compat"
+  "alcotest"      {with-test}
+  "bos"           {with-test}
+  "astring"       {with-test}
+  "fmt"           {with-test}
+  "fpath"         {with-test}
+  "rresult"       {with-test}
+  "ocamlfind"     {with-test}
+]
+
+depopts: [
+  "ocaml-freestanding"
+  "mirage-xen-posix"
+]
+
+conflicts: [
+  "mirage-xen-posix" {< "3.1.0"}
+  "ocaml-freestanding" {< "0.4.3"}
+]
+url {
+  src:
+    "https://github.com/mirage/checkseum/releases/download/v0.2.0/checkseum-v0.2.0.tbz"
+  checksum: [
+    "sha256=1e03734b7a952e915f1824193df2567ed4bc29756c5fef75e09ed299503f576b"
+    "sha512=882fe559160c2006c9d3a2fbe01e7a3ec7bd43a57884d9906a8a0209f9266da0d3da359edf73f772d47bee25cdc8589246f2572a96729bfa42f8649e61c53ab0"
+  ]
+}
