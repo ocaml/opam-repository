@@ -1,0 +1,43 @@
+opam-version: "2.0"
+name:         "eqaf"
+maintainer:   [ "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+authors:      [ "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+homepage:     "https://github.com/mirage/eqaf"
+bug-reports:  "https://github.com/mirage/eqaf/issues"
+dev-repo:     "git+https://github.com/mirage/eqaf.git"
+doc:          "https://mirage.github.io/eqaf/"
+license:      "MIT"
+synopsis:     "Constant-time equal function on string"
+description: """
+This package provides an equal function on string in constant-time to avoid timing-attack with crypto stuff.
+"""
+
+build: [
+  [ "dune" "subst" ] {pinned}
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "dune" "runtest" "-p" name "-j" "1" "--no-buffer" "--verbose" ] {with-test}
+]
+
+depends: [
+  "ocaml"          {>= "4.03.0"}
+  "dune"
+  "alcotest"       {with-test}
+  "crowbar"        {with-test}
+]
+
+depopts: [
+  "cstruct"
+  "bigarray-compat"
+]
+
+conflicts: [
+  "cstruct" {< "4.0.0"}
+]
+
+url {
+  src: "https://github.com/mirage/eqaf/releases/download/v0.6/eqaf-v0.6.tbz"
+  checksum: [
+    "sha256=09ebddd1789828354eb84253b679c6ca1be9a44e0b7fac2ebef52015c3101919"
+    "sha512=8c3dd3dbd53eb7ebd4b42e67b9798c407408a93e20b40d92a590b87674b095f70cef5b273cd0d8c7371dc946f0fbf47043b62eb51186648912bc499a162c6417"
+  ]
+}
