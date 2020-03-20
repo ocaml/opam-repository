@@ -1,0 +1,62 @@
+From a8271945129217f3cdfca269a9a024536c008714 Mon Sep 17 00:00:00 2001
+From: David Allsopp <david.allsopp@metastack.com>
+Date: Fri, 20 Mar 2020 13:05:44 +0000
+Subject: [PATCH] Merge pull request #9383 from dra27/explicit-awk
+
+Don't assume . in AWKPATH
+
+(cherry picked from commit d4ace8c347a9a4f8baa8f0b1738a5b4436fcd027)
+---
+ stdlib/Compflags   | 2 +-
+ stdlib/Makefile    | 2 +-
+ testsuite/Makefile | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/stdlib/Compflags b/stdlib/Compflags
+index 0f3138cd8f7..ad75da16795 100755
+--- a/stdlib/Compflags
++++ b/stdlib/Compflags
+@@ -17,7 +17,7 @@
+ case $1 in
+   stdlib.cm[iox]|stdlib.p.cmx)
+       echo ' -nopervasives -no-alias-deps -w -49' \
+-           ' -pp "$AWK -f expand_module_aliases.awk"';;
++           ' -pp "$AWK -f ./expand_module_aliases.awk"';;
+   camlinternalOO.cmx|camlinternalOO.p.cmx) echo ' -inline 0 -afl-inst-ratio 0';;
+   camlinternalLazy.cmx|camlinternalLazy.p.cmx) echo ' -afl-inst-ratio 0';;
+     # never instrument camlinternalOO or camlinternalLazy (PR#7725)
+diff --git a/stdlib/Makefile b/stdlib/Makefile
+index 67dc8bc4788..f158592f9f9 100644
+--- a/stdlib/Makefile
++++ b/stdlib/Makefile
+@@ -307,7 +307,7 @@ SPACE := $(EMPTY) $(EMPTY)
+ depend:
+ 	$(CAMLDEP) $(DEPFLAGS) $(filter-out stdlib.%,$(wildcard *.mli *.ml)) \
+ 	  > .depend.tmp
+-	$(CAMLDEP) $(DEPFLAGS) -pp "$(AWK) -f remove_module_aliases.awk" \
++	$(CAMLDEP) $(DEPFLAGS) -pp "$(AWK) -f ./remove_module_aliases.awk" \
+ 	  stdlib.ml stdlib.mli >> .depend.tmp
+ 	$(CAMLDEP) $(DEPFLAGS) $(filter-out stdlib.%,$(wildcard *.ml)) \
+ 	  | sed -e 's/\.cmx : /.p.cmx : /g' >>.depend.tmp
+diff --git a/testsuite/Makefile b/testsuite/Makefile
+index b383ec2308e..8263232e99f 100644
+--- a/testsuite/Makefile
++++ b/testsuite/Makefile
+@@ -287,7 +287,7 @@ clean:
+ .PHONY: report
+ report:
+ 	@if [ ! -f $(TESTLOG) ]; then echo "No $(TESTLOG) file."; exit 1; fi
+-	@awk -f makefiles/summarize.awk < $(TESTLOG)
++	@$(AWK) -f makefiles/summarize.awk < $(TESTLOG)
+ 
+ .PHONY: retry-list
+ retry-list:
+@@ -302,7 +302,7 @@ retry-list:
+ 
+ .PHONY: retries
+ retries:
+-	@awk -v retries=1 -v max_retries=$(MAX_TESTSUITE_DIR_RETRIES) \
++	@$(AWK) -v retries=1 -v max_retries=$(MAX_TESTSUITE_DIR_RETRIES) \
+ 	     -f makefiles/summarize.awk < $(TESTLOG) > _retries
+ 	@test `cat _retries | wc -l` -eq 0 || $(MAKE) $(NO_PRINT) retry-list
+ 	@rm -f _retries
