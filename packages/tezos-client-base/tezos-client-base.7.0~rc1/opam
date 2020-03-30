@@ -1,0 +1,26 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "tezos-tooling" { with-test & = version }
+  "dune" { >= "1.11" }
+  "tezos-shell-services" { = version }
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/lib_client_base/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: common helpers for `tezos-client`"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v7.0-rc1/tezos-v7.0-rc1.tar.bz2"
+  checksum: [
+    "sha256=89385ff254582d64b909bcd33f10068f1ba5fe8a47802bb0bcf983f30f7eb49b"
+    "sha512=413bb72b556de80fadfdf3278a6c674a471a614af6adf19c9b383cbc2ee0d081f0421156c92fa917808d47eccaed4a369fc9613a267d5f77a6c3b8e928e5f244"
+  ]
+}
