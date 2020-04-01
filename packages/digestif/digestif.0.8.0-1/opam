@@ -27,15 +27,12 @@ We provides implementation of:
  * RIPEMD160
 """
 
-available: os != "freebsd"
 build: [
   [ "dune" "build" "-p" name "-j" jobs ]
-  [ "patch" "-p1" "-i" "mirage.patch" ]
+  [ "sh" "-exc" "echo \"xen_linkopts = \\\"-l:rakia/xen/librakia_xen_stubs.a\\\"\" >> _build/default/META.digestif"]
+  [ "sh" "-exc" "echo \"freestanding_linkopts = \\\"-l:rakia/freestanding/librakia_freestanding_stubs.a\\\"\" >> _build/default/META.digestif"]
 ]
 run-test: [ "dune" "runtest" "-p" name "-j" jobs ]
-extra-files: [
-  [ "mirage.patch" "md5=6f2e091200d1ba9cb63910e9c0b33416" ]
-]
 
 depends: [
   "ocaml"          {>= "4.03.0"}
