@@ -28,19 +28,12 @@ build: [
   [
     "./configure"
     "--prefix=%{prefix}%"
-    "CC=musl-gcc"
+    "CC=musl-gcc" {os-distribution != "alpine"}
     "CFLAGS=-Os"
-    "ASPP=musl-gcc -c"
+    "ASPP=musl-gcc -c" {os-distribution != "alpine"}
     "--enable-flambda"
     "LIBS=-static"
-  ] {os = "openbsd" | os = "freebsd" | os = "macos" | os = "linux" & os-distribution != "alpine" }
-  [
-    "./configure"
-    "--prefix=%{prefix}%"
-    "CFLAGS=-Os"
-    "--enable-flambda"
-    "LIBS=-static"
-  ] {os = "linux" & os-distribution = "alpine" }
+  ] {os = "openbsd" | os = "freebsd" | os = "macos" | os = "linux"}
   [make "-j%{jobs}%" {os != "cygwin"} "world"]
   [make "-j%{jobs}%" {os != "cygwin"} "world.opt"]
 ]
