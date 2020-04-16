@@ -1,8 +1,8 @@
 opam-version: "2.0"
-synopsis: "latest 4.11.0 development, with afl-fuzz instrumentation"
+synopsis: "current trunk, with flambda activated"
 maintainer: "platform@lists.ocaml.org"
 depends: [
-  "ocaml" {= "4.11.0" & post}
+  "ocaml" {= "4.12.0" & post}
   "base-unix" {post}
   "base-bigarray" {post}
   "base-threads" {post}
@@ -12,21 +12,21 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
-  ["./configure" "--prefix=%{prefix}%" "--with-afl" ]
+  ["./configure" "--prefix=%{prefix}%" "--enable-flambda"]
     {os != "openbsd" & os != "freebsd" & os != "macos"}
   [
     "./configure"
     "--prefix=%{prefix}%"
+    "--enable-flambda"
     "CC=cc"
     "ASPP=cc -c"
-    "--with-afl"
   ] {os = "openbsd" | os = "freebsd" | os = "macos"}
   [make "-j%{jobs}%" {os != "cygwin"} "world"]
   [make "-j%{jobs}%" {os != "cygwin"} "world.opt"]
 ]
 install: [make "install"]
 url {
-  src: "https://github.com/ocaml/ocaml/archive/4.11.tar.gz"
+  src: "https://github.com/ocaml/ocaml/archive/trunk.tar.gz"
 }
 post-messages: [
   "A failure in the middle of the build may be caused by build parallelism
