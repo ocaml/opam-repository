@@ -9,4 +9,4 @@ mkdir build
 cd build
 cmake ../
 make
-cp ranger `opam config var bin`/ml_rf_ranger
+cp ranger ${1}/ml_rf_ranger
