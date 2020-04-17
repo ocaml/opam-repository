@@ -1,0 +1,81 @@
+diff --git a/vendors/ocaml-lmdb/test/test.ml b/vendors/ocaml-lmdb/test/test.ml
+index db68600f69..a50b6c6f4b 100644
+--- a/vendors/ocaml-lmdb/test/test.ml
++++ b/vendors/ocaml-lmdb/test/test.ml
+@@ -21,15 +21,20 @@ let test_string_of_error () =
+   let errmsg = string_of_error KeyExist in
+   assert (String.length errmsg > 0)
+ 
++let tmpdir = Filename.get_temp_dir_name ()
++
+ let cleanup () =
+-  let files = [ "/tmp/data.mdb" ; "/tmp/lock.mdb" ] in
++  let files = [
++      Filename.concat tmpdir "data.mdb" ;
++      Filename.concat tmpdir "lock.mdb"
++    ] in
+   ListLabels.iter files ~f:begin fun fn ->
+     Sys.(if file_exists fn then remove fn)
+   end
+ 
+ let env () =
+   cleanup () ;
+-  opendir ~maxreaders:34 ~maxdbs:1 "/tmp" 0o644 >>= fun env ->
++  opendir ~maxreaders:34 ~maxdbs:1 tmpdir 0o644 >>= fun env ->
+   let _stat = stat env in
+   let _envinfo = envinfo env in
+   let _flags = get_flags env in
+@@ -42,7 +47,7 @@ let env () =
+ 
+ let txn () =
+   cleanup () ;
+-  opendir ~maxdbs:1 "/tmp" 0o644 >>= fun env ->
++  opendir ~maxdbs:1 tmpdir 0o644 >>= fun env ->
+   create_ro_txn env >>= fun rotxn ->
+   reset_ro_txn rotxn ;
+   create_rw_txn env >>= fun rwtxn ->
+@@ -64,7 +69,7 @@ let txn () =
+ 
+ let cursors () =
+   cleanup () ;
+-  opendir "/tmp" 0o644 >>= fun env ->
++  opendir tmpdir 0o644 >>= fun env ->
+   create_rw_txn env >>= fun txn ->
+   opendb txn >>= fun db ->
+   opencursor txn db >>= fun cursor ->
+@@ -89,7 +94,7 @@ let cursors () =
+ 
+ let cursors_del () =
+   cleanup () ;
+-  opendir "/tmp" 0o644 >>= fun env ->
++  opendir tmpdir 0o644 >>= fun env ->
+   with_rw_db env ~f:begin fun txn db ->
+     with_cursor txn db ~f:begin fun cursor ->
+       cursor_put_string cursor "k1" "v1" >>= fun () ->
+@@ -104,7 +109,7 @@ let cursors_del () =
+ 
+ let cursors_del4 () =
+   cleanup () ;
+-  opendir "/tmp" 0o644 >>= fun env ->
++  opendir tmpdir 0o644 >>= fun env ->
+   with_rw_db env ~f:begin fun txn db ->
+     with_cursor txn db ~f:begin fun cursor ->
+       cursor_put_string cursor "k1" "v1" >>= fun () ->
+@@ -122,7 +127,7 @@ let cursors_del4 () =
+ 
+ let fold () =
+   cleanup () ;
+-  opendir "/tmp" 0o644 >>= fun env ->
++  opendir tmpdir 0o644 >>= fun env ->
+   with_rw_db env ~f:begin fun txn db ->
+     opencursor txn db >>= fun cursor ->
+     cursor_put_string cursor "k1" "v1" >>= fun () ->
+@@ -142,7 +147,7 @@ let fold () =
+ 
+ let consistency () =
+   cleanup () ;
+-  opendir "/tmp" 0o644 >>= fun env ->
++  opendir tmpdir 0o644 >>= fun env ->
+   let v = Cstruct.(to_bigarray (of_string "bleh")) in
+   with_rw_db env ~f:begin fun txn db ->
+     put txn db "bleh" v
