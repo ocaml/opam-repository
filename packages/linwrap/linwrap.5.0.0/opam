@@ -1,0 +1,57 @@
+opam-version: "2.0"
+authors: "Francois Berenger"
+maintainer: "unixjunkie@sdf.org"
+homepage: "https://github.com/UnixJunkie/linwrap"
+bug-reports: "https://github.com/UnixJunkie/linwrap/issues"
+dev-repo: "git+https://github.com/UnixJunkie/linwrap.git"
+license: "BSD-3"
+build: ["dune" "build" "-p" name "-j" jobs]
+install: [
+  ["cp" "bin/ecfp6.py" "%{bin}%/linwrap_ecfp6.py"]
+]
+depends: [
+  "base-unix"
+  "batteries"
+  "conf-liblinear-tools"
+  "conf-python-3"
+  "conf-rdkit"
+  "cpm"
+  "dokeysto_camltc"
+  "dolog" {>= "4.0.0"}
+  "dune" {>= "1.10"}
+  "minicli" {>= "5.0.0"}
+  "parany" {>= "6.0.0" & < "10.0.0"}
+]
+synopsis: "Wrapper around liblinear-tools"
+description: """
+Only L2-regularized logistic regression is supported currently.
+When using bagging, each model is trained on balanced bootstraps
+from the training set (one bootstrap for the positive class,
+one for the negative class).
+The size of the bootstrap is the size of the smallest (under-represented)
+class.
+
+usage: linwrap
+  -i <filename>: training set or DB to screen
+  [-o <filename>]: predictions output file
+  [-np <int>]: ncores
+  [-c <float>]: fix C
+  [-w <float>]: fix w1
+  [-k <int>]: number of bags for bagging (default=off)
+  [-n <int>]: folds of cross validation
+  [--seed <int>]: fix random seed
+  [-p <float>]: training set portion (in [0.0:1.0])
+  [--train <train.liblin>]: training set (overrides -p)
+  [--valid <valid.liblin>]: validation set (overrides -p)
+  [--test <test.liblin>]: test set (overrides -p)
+  [{-l|--load} <filename>]: prod. mode; use trained models
+  [{-s|--save} <filename>]: train. mode; save trained models
+  [-f]: force overwriting existing model file
+  [--scan-c]: scan for best C
+  [--scan-w]: scan weight to counter class imbalance
+  [--scan-k]: scan number of bags (advice: optim. k rather than w)
+"""
+url {
+  src: "https://github.com/UnixJunkie/linwrap/archive/v5.0.0.tar.gz"
+  checksum: "md5=3407f24bc31cfdbafa6141aced22ce81"
+}
