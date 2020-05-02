@@ -7,6 +7,7 @@ export OPAMVERBOSE=yes
 # display info about OS distribution and version
 case $TRAVIS_OS_NAME in
 osx) sw_vers ;;
+freebsd) uname -a ;;
 *) cat /etc/*-release
    lsb_release -a
    uname -a
@@ -80,6 +81,9 @@ function build_one {
         ;;
       osx)
         brew remove $depext
+        ;;
+      freebsd)
+        pkg remove -ay $depext
         ;;
       esac
     fi
