@@ -4,7 +4,10 @@ authors: ["The OpenSSL Project"]
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 homepage: "https://www.openssl.org/"
 license: "Apache-1.0"
-build: ["pkg-config" "openssl"]
+build: [
+  ["pkg-config" "openssl"]
+    {os != "freebsd" & os != "openbsd" & os != "netbsd"} # libssl is provided by base system on BSDs
+]
 depends: [
   "conf-pkg-config" {build}
 ]
@@ -19,7 +22,6 @@ depexts: [
   ["openssl"] {os-distribution = "nixos"}
   ["openssl"] {os-distribution = "arch"}
   ["libopenssl-devel"] {os-family = "suse"}
-  ["openssl"] {os = "freebsd"}
 ]
 post-messages: [
   "Make sure libssl/openssl is installed and accessible using pkg-config." {failure}
