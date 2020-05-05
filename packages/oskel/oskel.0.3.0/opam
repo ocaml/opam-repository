@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Skeleton generator for OCaml projects"
+description: """
+Skeleton generator for OCaml projects
+
+oskel is a tool for generating stubs of OCaml projects pre-equipped with the
+standard boilerplate: OCamlformat config file, Alcotest scaffolding,
+auto-generation of [*.opam] files via [dune-project] etc. It supports generating
+binaries with Cmdliner, Fmt and Logs support. The resulting projects are
+compliant with [dune-release lint].
+"""
+maintainer: ["Craig Ferguson <me@craigfe.io>"]
+authors: ["Craig Ferguson <me@craigfe.io>"]
+homepage: "https://github.com/CraigFe/oskel"
+doc: "https://CraigFe.github.io/oskel"
+bug-reports: "https://github.com/CraigFe/oskel/issues"
+depends: [
+  "dune" {>= "2.0"}
+  "cmdliner"
+  "fmt" {>= "0.8.7"}
+  "logs"
+  "stdlib-shims"
+  "ocaml-syntax-shims"
+  "lwt"
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/CraigFe/oskel.git"
+url {
+  src:
+    "https://github.com/CraigFe/oskel/releases/download/0.3.0/oskel-0.3.0.tbz"
+  checksum: [
+    "sha256=e7d1abb7cb501334ca495757ef10744883f3773cac8ac67de54394ad5f6dc71b"
+    "sha512=228b11bd586b322f0306a08448ef800fc067e4e8979a812590c4bda50ea499d055fb0ecd429ad73caba599fdcd98da8d2ad1fb42253a3d1c6a3ea9737f213cdb"
+  ]
+}
