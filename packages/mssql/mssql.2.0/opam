@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "Async SQL Server client using FreeTDS"
+description:
+  "Mssql wraps FreeTDS in a nicer and safer interface, with support for parameterized queries, thread-based async IO, and a thread pool."
+maintainer: ["Arena Developers <silver-snakes@arena.io>"]
+authors: ["Arena Developers <silver-snakes@arena.io>"]
+license: "Apache-2.0"
+homepage: "https://github.com/arenadotio/ocaml-mssql"
+bug-reports: "https://github.com/arenadotio/ocaml-mssql/issues"
+depends: [
+  "alcotest" {with-test & >= "1.0.1"}
+  "alcotest-async" {with-test & >= "1.0.1"}
+  "async_unix"
+  "bignum"
+  "ppx_jane"
+  "iter" {>= "1.2"}
+  "ocaml" {>= "4.06.1"}
+  "logs"
+  "text" {>= "0.8.0"}
+  "freetds" {>= "0.7"}
+  "bisect_ppx" {dev & >= "2.0.0"}
+  "dune" {>= "1.11"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/arenadotio/ocaml-mssql.git"
+url {
+  src:
+    "https://github.com/arenadotio/ocaml-mssql/releases/download/2.0/mssql-2.0.tbz"
+  checksum: [
+    "sha256=274a27d19cdb43681bb2e506081dd6ddb88566fae72999431f2f2352d53f6154"
+    "sha512=73d7d85a6aeb19336d05275f3f3bb3683fdd8f449bb9f7c1c98c250e7fe9074ad6542a443decf7979bfbebd0905b5a6defd213c59113e0c8966a254f7312fdff"
+  ]
+}
