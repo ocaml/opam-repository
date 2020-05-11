@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer:   ["Mindy Preston"]
+authors   :   ["Mindy Preston"]
+homepage:     "https://github.com/mirage/charrua"
+bug-reports:  "https://github.com/mirage/charrua/issues"
+dev-repo:     "git+https://github.com/mirage/charrua.git"
+tags:         [ "org:mirage"]
+doc:          "https://docs.mirage.io"
+
+build: [
+  [ "dune" "subst" ] {pinned}
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
+]
+
+depends: [
+  "dune" {>= "1.4.0"}
+  "ocaml" {>= "4.06.0"}
+  "alcotest"     {with-test}
+  "cstruct-unix" {with-test}
+  "mirage-random-test" {with-test & >= "0.1.0"}
+  "charrua-server" {= version & with-test}
+  "charrua" {= version}
+  "cstruct" {>="3.0.2"}
+  "ipaddr" {>= "4.0.0"}
+  "macaddr" {>= "4.0.0"}
+]
+synopsis: "DHCP client implementation"
+description: """
+charrua-client is a DHCP client powered by [charrua](https://github.com/mirage/charrua).
+
+The base library exposes a simple state machine in `Dhcp_client`
+for use in acquiring a DHCP lease.
+"""
+url {
+  src:
+    "https://github.com/mirage/charrua/releases/download/v1.2.1/charrua-v1.2.1.tbz"
+  checksum: [
+    "sha256=6c995afe52064abe012d06e850ada455b66e2c363d2ee093c4e4c8411b3a68ed"
+    "sha512=8e973b7aded4d6e9fb3c775b123c835c9f302af4ca990d20d7de49cdc8081a0ecc5252faeb6080732909fa1406f5b05048f8d1d039348f64db3c3440f6f55f79"
+  ]
+}
