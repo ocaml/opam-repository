@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis: "Bindings to the dash shell's parser"
+maintainer: "Michael Greenberg <michael.greenberg@pomona.edu>"
+authors: "Michael Greenberg <michael.greenberg@pomona.edu>"
+license: "BSD"
+homepage: "https://github.com/mgree/libdash"
+bug-reports: "https://github.com/mgree/libdash/issues"
+depends: [
+  "ocaml" {>= "4.0.7"}
+  "ocamlfind" {>= "1.8.0"}
+  "ctypes" {>= "0.11.5"}
+  "ctypes-foreign" {>= "0.4.0"}
+  "conf-autoconf" {build}
+  "conf-aclocal" {build}
+  "conf-libtool" {build}
+]
+build: [
+  ["libtoolize"] {os != "macos"}
+  ["glibtoolize"] {os = "macos"}
+  ["aclocal"]
+  ["autoheader"]
+  ["automake" "--add-missing"]
+  ["autoconf"]
+  ["mkdir" "_build"]
+  ["./configure" "--prefix=%{build}%/_build"]
+  [make]
+  [make "install"] # into _build
+  [make "-C" "ocaml" "all"]
+  ["./mk_dot_install.sh"]
+  ["./ldconfig.sh"] # fix up .so files if ldconfig didn't do it
+  [make "-C" "ocaml" "test"] {with-test}
+]
+dev-repo: "git+https:///github.com/mgree/libdash"
+url {
+  src: "https://github.com/mgree/libdash/archive/v0.1.1.tar.gz"
+  checksum: [
+    "md5=a9a2fbc37e7671cb1ae268da2be3aa43"
+    "sha512=35f2f29ed06c6522a86ab18dab482db585fe2d331fcbd56d0e80fbb852583159a14a7f64e0b49d2f6fcf502d1b1147793a99f9cfbc3d966b0ab9dff74d820ddc"
+  ]
+}
