@@ -4,7 +4,7 @@ find_llvm_config () {
     # Locate llvm-config (taken from conf-llvm's configure.sh file)
 
     shopt -s nullglob
-    for version in 9 8 7 6 5 4 3; do
+    for version in 10 9 8 7 6 5 4 3; do
         if hash brew 2>/dev/null; then
            brew_llvm_config="$(brew --cellar)"/llvm*/${version}*/bin/llvm-config
         fi
@@ -74,15 +74,5 @@ CC=cc
     ( clean_tempdir; echo "Error: cannot execute libclang test."; exit 1 )
 clean_tempdir
 
-# $equivalent_version is used by clangml.4.0.1, which does not recognize
-# Clang/LLVM 9.0.1, but there is no change in API between Clang 9.0.0 and
-# Clang 9.0.1.
-if [ "$llvm_version" = 9.0.1 ]; then
-    equivalent_version=9.0.0
-else
-    equivalent_version=
-fi
-
 echo "config: \"$llvm_config\"" >> conf-libclang.config
 echo "version: \"$llvm_version\"" >> conf-libclang.config
-echo "equivalent_version: \"$equivalent_version\"" >> conf-libclang.config
