@@ -80,7 +80,7 @@ clean_tempdir
 if [ "$llvm_version" = 9.0.1 ]; then
     equivalent_version=9.0.0
 else
-    equivalent_version="$llvm_version"
+    equivalent_version=
 fi
 
 echo "config: \"$llvm_config\"" >> conf-libclang.config
