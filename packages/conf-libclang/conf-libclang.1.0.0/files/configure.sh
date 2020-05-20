@@ -74,5 +74,15 @@ CC=cc
     ( clean_tempdir; echo "Error: cannot execute libclang test."; exit 1 )
 clean_tempdir
 
+# $equivalent_version is used by clangml.4.0.1, which does not recognize
+# Clang/LLVM 9.0.1, but there is no change in API between Clang 9.0.0 and
+# Clang 9.0.1.
+if [ "$llvm_version" = 9.0.1 ]; then
+    equivalent_version=9.0.0
+else
+    equivalent_version="$llvm_version"
+fi
+
 echo "config: \"$llvm_config\"" >> conf-libclang.config
 echo "version: \"$llvm_version\"" >> conf-libclang.config
+echo "equivalent_version: \"$equivalent_version\"" >> conf-libclang.config
