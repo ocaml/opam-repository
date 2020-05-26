@@ -1,0 +1,57 @@
+From 79c47d87adb12a9d4ec7e866bd8945a9540044ea Mon Sep 17 00:00:00 2001
+From: Louis Gesbert <louis.gesbert@ocamlpro.com>
+Date: Fri, 8 Mar 2019 23:21:06 +0100
+Subject: [PATCH] Fix ocp-pp for changes in compiler-libs
+
+---
+ tools/ocp-pp/main.ml | 2 +-
+ tools/ocp-pp/ocpp.ml | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tools/ocp-pp/main.ml b/tools/ocp-pp/main.ml
+index 88b89cb..e744c02 100644
+--- a/tools/ocp-pp/main.ml
++++ b/tools/ocp-pp/main.ml
+@@ -137,7 +137,7 @@ let () =
+       ), " Display general information";
+     "--debug", Arg.Set debug,
+     " Print tokens and corresponding lines";
+-    "-I", Arg.String (fun s -> Config.load_path := [s] @ !Config.load_path),
++    "-I", Arg.String (Load_path.add_dir),
+     "<dir> Add directory to path searched for include files";
+   ] in
+   Arg.parse arg_list preprocess_filename arg_usage;
+diff --git a/tools/ocp-pp/ocpp.ml b/tools/ocp-pp/ocpp.ml
+index 2856c11..e05c44d 100644
+--- a/tools/ocp-pp/ocpp.ml
++++ b/tools/ocp-pp/ocpp.ml
+@@ -1004,7 +1004,7 @@ and preprocess_directive lexer  directive =
+           if debug_ocpp then
+             Printf.eprintf "loc_fname = %S\n%!"  loc.loc_start.pos_fname;
+           Format.eprintf "%aWarning: %s\n@."
+-            Location.print loc  (Compat.get_STRING token);
++            Location.print_loc loc  (Compat.get_STRING token);
+       | _ -> raise Parsing.Parse_error
+     end;
+     preprocess lexer
+@@ -1016,7 +1016,7 @@ and preprocess_directive lexer  directive =
+           let loc = Location.curr !current_lexbuf in
+           if debug_ocpp then
+             Printf.eprintf "loc_fname = %S\n%!"  loc.loc_start.pos_fname;
+-          Format.eprintf "%aError: %s\n@." Location.print loc
++          Format.eprintf "%aError: %s\n@." Location.print_loc loc
+              (Compat.get_STRING token);
+           exit 2
+       | _ -> raise Parsing.Parse_error
+@@ -1118,7 +1118,7 @@ and preprocess_include lexer   filename =
+         local_filename
+       else
+       try
+-        Misc.find_in_path !Config.load_path filename
++        Misc.find_in_path (Load_path.get_paths ())filename
+       with Not_found ->
+         if debug_ocpp then
+           Printf.eprintf "OCPP_INCLUDE current = %S\n%!" current_filename;
+-- 
+2.11.0
+

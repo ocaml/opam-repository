@@ -1,0 +1,53 @@
+opam-version: "2.0"
+maintainer: "thomas@gazagnaire.org"
+authors: "Thomas Gazagnaire, Jon Ludlam"
+homepage: "https://github.com/mirage/ocaml-rpc"
+bug-reports: "https://github.com/mirage/ocaml-rpc/issues"
+dev-repo: "git+ssh://git@github.com/mirage/ocaml-rpc.git"
+doc: "https://mirage.github.io/ocaml-rpc/rpclib/ppx_deriving_rpc"
+tags: [
+  "org:mirage"
+  "org:xapi-project"
+]
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.03.0" & < "4.10.0"}
+  "jbuilder"
+  "rpclib" {= version}
+  "rresult"
+  "ppxlib" {< "0.9.0"}
+  "rpclib-lwt" {with-test & = version}
+  "rpclib-async" {with-test & = version}
+  "lwt" {with-test & >= "3.0.0"}
+  "async" {with-test & < "v0.13"}
+  "alcotest" {with-test}
+]
+synopsis: "ppx extension for rpclib"
+description: """
+The library provides the `[@@deriving rpc]` ppx directly
+generates the conversion functions.
+
+```ocaml
+type t = ... [@@deriving rpc]
+```
+
+will give two functions:
+
+* A function to convert values of type `t` to values of type `Rpc.t` :
+  `val rpc_of_t : t -> Rpc.t`
+
+* A function to convert values of type `Rpc.t` to values of type `t` :
+  `val t_of_rpc : Rpc.t -> (t,string) Result.result`
+
+It also supports the `@key` annotations for having different field names:
+
+```ocaml
+type t = { foo: int [@key "type"]; bar: int [@key "let"]; } [@@deriving rpc]
+```"""
+url {
+  src: "https://github.com/mirage/ocaml-rpc/archive/v6.0.0.tar.gz"
+  checksum: "md5=9d10fc413a559e1d8aa380a8b145736f"
+}

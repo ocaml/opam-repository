@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings to the GR plotting library"
+description: """
+GR is based on an implementation of a Graphical Kernel System (GKS) and OpenGL. As a self-contained system it can quickly and easily be integrated into existing applications.
+GR is characterized by its high interoperability and can be used with modern web technologies and mobile devices."""
+maintainer: ["Marcello Seri"]
+authors: ["Marcello Seri"]
+license: "ISC"
+homepage: "https://github.com/mseri/ocaml-gr"
+bug-reports: "https://github.com/mseri/ocaml-gr/issues"
+depends: [
+  "ocaml" {>= "4.06"}
+  "dune" {>= "1.11"}
+  "ctypes" {>= "0.15"}
+  "ctypes-foreign"
+  "base-unix" {with-test}
+  "owl" {with-test & >= "0.6.0" & < "0.9.0"}
+  "stdcompat" {>= "9"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & ocaml:version >= "4.07"}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mseri/ocaml-gr.git"
+doc: "https://mseri.github.io/ocaml-gr"
+post-messages: "Make sure that libGR (gr-framework.org) is installed and, in case of error, that either of the GRDIR or LIBGRPATH env variables is set"
+url {
+  src:
+    "https://github.com/mseri/ocaml-gr/releases/download/v0.0.1/gr-v0.0.1.tbz"
+  checksum: [
+    "sha256=4d290ad7cd66a1b6c542bc53165e25fe7b39f4c0dfacf61db5cdb370f92c2a94"
+    "sha512=f216ef6a8f957a3009e9df09922258769cf080f02a03c55e370293f826b6c0418104767713e58c90971cd9c1e68ed0ce4c7d641355e50a0e978513f95b384f79"
+  ]
+}

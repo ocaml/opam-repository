@@ -1,0 +1,67 @@
+opam-version: "2.0"
+maintainer: "thomas@gazagnaire.org"
+authors: [
+  "Thomas Leonard" "Magnus Skjegstad" "David Scott" "Thomas Gazagnaire"
+]
+license: "Apache-1.0+"
+homepage: "https://github.com/moby/datakit"
+doc: "https://docker.github.io/datakit/"
+bug-reports: "https://github.com/moby/datakit/issues"
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "dune"
+  "cmdliner"
+  "rresult"
+  "astring"
+  "fmt"
+  "asetmap"
+  "git" {>= "1.11.5"}
+  "uri" {>= "2.0.0"}
+  "irmin" {>= "1.4.0" & < "2.0.0"}
+  "irmin-mem" {>= "1.2.0" & < "2.0.0"}
+  "irmin-git" {>= "1.2.0" & < "2.0.0"}
+  "cstruct" {>= "2.2"}
+  "result"
+  "lwt" {>= "3.0.0"}
+  "conduit-lwt-unix" {>= "1.0.0"}
+  "mirage-flow" {< "2.0.0"}
+  "named-pipe" {>= "0.4.0"}
+  "hvsock" {>= "0.8.1"}
+  "logs" {>= "0.5.0"}
+  "win-eventlog"
+  "asl" {>= "0.10"}
+  "mtime" {>= "1.0.0"}
+  "irmin-watcher" {>= "0.2.0"}
+  "prometheus-app"
+  "protocol-9p-unix" {>= "0.11.0"}
+  "datakit-server-9p" {>= "0.12.0"}
+  "datakit-client-9p" {with-test & >= "0.12.0"}
+  "alcotest" {with-test & >= "0.8.0"}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "tests/datakit"] {with-test}
+  ["dune" "runtest" "tests/datakit-9p"] {with-test}
+]
+dev-repo: "git+https://github.com/moby/datakit.git"
+synopsis: "Orchestrate applications using a Git-like dataflow"
+description: """
+DataKit is a tool to orchestrate applications using a Git-like dataflow. It
+revisits the UNIX pipeline concept, with a modern twist: streams of
+tree-structured data instead of raw text. DataKit allows you to define complex
+build pipelines over version-controlled data.
+
+DataKit is currently used as the coordination
+layer for [HyperKit](http://github.com/docker/hyperkit), the
+hypervisor component of
+[Docker for Mac and Windows](https://blog.docker.com/2016/03/docker-for-mac-windows-beta/), and
+for the DataKitCI continuous integration system.
+"""
+url {
+  src:
+    "https://github.com/moby/datakit/releases/download/v1.0.0/datakit-v1.0.0.tbz"
+  checksum: [
+    "sha256=e5b36c9db8ce40dd828166ddeb35b197766d782fb39d1cbc90628a43c69c34d5"
+    "sha512=af3e973be41bcbda95bdf2722e3040607cbfd5cffcd026046eba027da9cabe072c0ecb4cd7edef4aedb4ee0f68e7cec5c273f666c5fd66dd7e0ee19ed5d90c0a"
+  ]
+}

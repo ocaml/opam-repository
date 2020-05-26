@@ -1,0 +1,53 @@
+opam-version: "2.0"
+authors: "Francois Berenger"
+maintainer: "unixjunkie@sdf.org"
+homepage: "https://github.com/UnixJunkie/pardi"
+bug-reports: "https://github.com/UnixJunkie/pardi/issues"
+dev-repo: "git+https://github.com/UnixJunkie/pardi.git"
+license: "GPL-1.0-or-later"
+build: ["dune" "build" "-p" name "-j" jobs]
+depends: [
+  "dune"
+  "batteries"
+  "dolog" {< "4.0.0"}
+  "parany" {>= "6.0.0" & < "10.0.0"}
+  "minicli"
+  "ocaml" {>= "4.05.0"}
+]
+synopsis: "Parallel and distributed execution of command lines, pardi!"
+description: """
+Command line tool to parallelize programs which are not parallel;
+provided that you can cut an input file into independent chunks.
+
+For example, to compress a file in parallel using 1MB chunks:
+
+$ pardi -d b:1048576 -m s -i <YOUR_BIG_FILE> -o <YOUR_BIG_FILE>.gz \
+        -w 'xz -c -9 %IN > %OUT'
+
+You can cut the input file by lines (e.g. SMI files),
+by number of bytes (for binary files),
+by a separating line verifying a regexp (quite generic)
+or by a block separating line (e.g. MOL2/SDF/PDB file formats).
+
+If processing a single record of your input file is too fine grained,
+you can play with the -c option to reach better parallelization
+(try 10,20,50,100,200,500,etc).
+
+usage:
+pardi ...
+  {-i|--input} <file>: where to read from (default=stdin)
+  {-o|--output} <file>: where to write to (default=stdout)
+  [{-n|--nprocs} <int>]: max jobs in parallel (default=all cores)
+  [{-c|--chunks} <int>]: how many chunks per job (default=1)
+  [{-d|--demux} {l|b:<int>|r:<regexp>|s:<string>}]: how to cut input 
+  file into chunks (line/bytes/regexp/sep_line; default=line)
+  {-w|--work} <string>: command to execute on each chunk
+  [{-m|--mux} {c|s|n}]: how to mux job results in output file
+  (cat/sorted_cat/null; default=cat)
+  [{-ie|--input-ext} <string>]: append file extension to work input files
+  [{-oe|--output-ext} <string>]: append file extension to work output files
+"""
+url {
+  src: "https://github.com/UnixJunkie/pardi/archive/v1.0.1.tar.gz"
+  checksum: "sha512=dd739298166765f0537f5b74680b5e59bd976d7847ac9390195cb82addc64b9271b11f07d9ceb91f62748bd96de73c6f8391204748f7b024ed659f23d03bd2a9"
+}

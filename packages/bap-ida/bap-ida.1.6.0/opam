@@ -1,0 +1,40 @@
+opam-version: "2.0"
+name: "bap-ida"
+version: "1.6.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure"
+     "--prefix=%{prefix}%"
+     "--enable-ida"
+     "--ida-path=%{conf-ida:path}%"
+     "--ida-headless=%{conf-ida:headless}%"
+]
+  [make]
+]
+install: [[make "install"]]
+remove: [
+        ["ocamlfind" "remove" "bap-ida"]
+        ["ocamlfind" "remove" "bap-plugin-ida"]
+        ["bapbundle" "remove" "ida.plugin"]
+]
+depends: [
+  "ocaml" {>= "4.04.1" & < "4.08.0"}
+  "conf-ida"
+  "bap-ida-python" {= "1.6.0"}
+  "core_kernel" {>= "v0.11" & < "v0.12"}
+  "oasis" {build & >= "0.4.7"}
+  "fileutils"
+  "re"
+  "bap-ida-plugin" {= "1.6.0"}
+]
+synopsis: "An IDA Pro integration library"
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v1.6.0.tar.gz"
+  checksum: "md5=0ccf6571613c0666a37d154c7f70af4f"
+  mirrors: "https://mirrors.aegis.cylab.cmu.edu/bap/1.6.0/v1.6.0.tar.gz"
+}

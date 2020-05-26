@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+]
+synopsis: "CoHTTP implementation for the Js_of_ocaml JavaScript compiler"
+description: """
+An implementation of an HTTP client for JavaScript, but using the
+CoHTTP types.  This lets you build HTTP clients that can compile
+natively (using one of the other Cohttp backends such as `cohttp-lwt-unix`)
+and also to native JavaScript via js_of_ocaml.
+"""
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "ocaml" {>= "4.04.1"}
+  "dune" {>= "1.1.0"}
+  "cohttp" {=version}
+  "cohttp-lwt" {=version}
+  "lwt" {>= "3.0.0"}
+  "js_of_ocaml" {>= "3.3.0" & < "3.5.0"}
+  "js_of_ocaml-ppx" {>= "3.3.0" & < "3.5.0"}
+  "js_of_ocaml-lwt" {>= "3.3.0" & < "3.5.0"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v2.3.0/cohttp-v2.3.0.tbz"
+  checksum: [
+    "sha256=f179ec35d00ecc57e8326fb11de5f6a769ee49ecd0dffacce6530f0695297125"
+    "sha512=2e49f435d6bf4ea8ed55c0c62d27aeec63cb21a97bf4be8f40f6c39fbcec1d37044a1e91d47f2156e2df18fda778f78da12d4b6e5a76775e89b9e059feab194d"
+  ]
+}

@@ -1,0 +1,69 @@
+opam-version: "2.0"
+maintainer: "ygrek@autistici.org"
+homepage: "https://ygrek.org/p/ocaml-extunix"
+dev-repo: "git://github.com/ygrek/extunix.git"
+bug-reports: "https://github.com/ygrek/extunix/issues"
+doc: "https://ygrek.org/p/ocaml-extunix/api/index.html"
+license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
+tags: ["org:ygrek"]
+authors: [ "ygrek"
+           "Sylvain Le Gall"
+           "Stéphane Glondu"
+           "Kaustuv Chaudhuri"
+           "Joshua Smith"
+           "Niki Yoshiuchi"
+           "Gerd Stolpmann"
+           "Goswin von Brederlow"
+           "Andre Nathan"
+           "Zhenya Lykhovyd"
+           "Mehdi Dogguy"
+           "Roman Vorobets"
+           "Pierre Chambart"
+           "Dmitry Grebeniuk"
+           "François Bobot"
+           "Markus W. Weissmann"
+         ]
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--%{ounit:enable}%-tests" {ocaml:version >= "4.02.0"}
+    "--prefix"
+    prefix
+  ]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: [
+  ["ocaml" "setup.ml" "-install"]
+]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "ocaml-migrate-parsetree" {build}
+  "ounit" {with-test & >= "1.0.3"}
+  "base-bytes"
+  "base-bigarray"
+  "base-unix"
+  "ocamlbuild" {build}
+]
+synopsis: "Collection of thin bindings to various low-level system API"
+description: """
+Motto: "Be to Unix, what extlib is to stdlib"
+
+ * Implement thin C bindings that directly map to underlying system API.
+ * Provide common consistent ocaml interface: naming convention, exceptions.
+ * Simple to build - no extra dependencies."""
+url {
+  src:
+    "https://ygrek.org/p/release/ocaml-extunix/ocaml-extunix-0.2.0.tar.gz"
+  checksum: [
+    "md5=8c5edb4d34d745644bd02932841261e6"
+    "sha256=16a16cdb2a6292752e02bbd6962ddcc907bd0a41fe55ed7b26e5c495bf98ead1"
+    "sha512=dd15e09c29593a7e4715ffb127662f5a104c7bc94718eca910ca62b862a11605d5b4ad3d51639699984185171c04187cada3d89fd474a214f2cea77130271335"
+  ]
+  mirrors:
+    "https://github.com/ygrek/extunix/releases/download/v0.2.0/ocaml-extunix-0.2.0.tar.gz"
+}

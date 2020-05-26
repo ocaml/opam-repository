@@ -1,0 +1,47 @@
+opam-version: "2.0"
+authors: "Jeremie Dimino <jeremie@dimino.org>"
+maintainer: "letoh"
+license: "BSD-3-Clause"
+homepage: "https://github.com/letoh/ocaml-usb"
+bug-reports: "https://github.com/letoh/ocaml-usb/issues"
+dev-repo: "git+https://github.com/letoh/ocaml-usb.git"
+
+depends: [
+  "ocaml" {>= "4.02.0"}
+  ("lwt" {>= "2.4.7" & < "4.0.0"} | "lwt_ppx")
+  "ocamlfind" {build}
+  "oasis" {build & >= "0.3.0"}
+  "ocamlbuild" {build}
+  "conf-pkg-config" {build}
+]
+
+depexts: [
+  ["libusb-1.0-0-dev"] {os-family = "debian"}
+  ["libusb"] {os-family = "arch"}
+  ["libusb-dev"] {os-family = "alpine"}
+  ["libusb1-devel"] {os-family = "rhel"}
+  ["libusb1-devel"] {os-family = "fedora"}
+  ["libusb-1_0-devel"] {os-family = "suse"}
+  ["libusb1.0-devel"] {os-family = "mageia"}
+]
+
+patches: [
+  "patches/use-lwt_ppx.patch" {lwt:version >= "4.0.0"}
+]
+
+build: [
+  ["./configure"]
+  ["./configure" "--enable-tests"] {with-test}
+  [make]
+  [make "doc"] {with-doc}
+  [make "test"] {with-test}
+]
+
+install: [make "install"]
+
+synopsis: "OCaml bindings for libusb-1.0"
+
+url {
+  src: "https://github.com/letoh/ocaml-usb/archive/v1.3.1.tar.gz"
+  checksum: "md5=395b8f1593e8cbb3e5c8472158b5331c"
+}

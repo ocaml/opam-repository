@@ -1,0 +1,55 @@
+opam-version: "2.0"
+synopsis:
+  "Official release 4.09.1, compiled in 32-bit mode for 64-bit Linux and OS X hosts"
+maintainer: "platform@lists.ocaml.org"
+authors: "Xavier Leroy and many contributors"
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/ocaml/issues"
+dev-repo: "git://github.com/ocaml/ocaml"
+depends: [
+  "ocaml" {= "4.09.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+depexts: [
+  ["gcc-multilib" "g++-multilib"] {os-family = "debian"}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "--prefix=%{prefix}%"
+    "CC=gcc -m32"
+    "AS=as --32"
+    "ASPP=gcc -m32 -c"
+    "--host" "i386-linux"
+    "PARTIALLD=ld -r -melf_i386"
+  ] {os = "linux"}
+  [
+    "./configure"
+    "--prefix=%{prefix}%"
+    "CC=gcc -Wl,-read_only_relocs,suppress -arch i386 -m32"
+    "AS=as -arch i386"
+    "ASPP=gcc -arch i386 -m32 -c"
+    "--host" "i386-apple-darwin13.2.0"
+  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "-j%{jobs}%" {os != "cygwin"} "world"]
+  [make "-j%{jobs}%" {os != "cygwin"} "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.09.1.tar.gz"
+  checksum: "sha256=3e3146e0c876d14bdd574cb543e782feb2b07a7cabd054a8f322ef40de61943a"
+}
+post-messages: [
+  "A failure in the middle of the build may be caused by build parallelism
+   (enabled by default).
+   Please file a bug report at https://github.com/ocaml/ocaml/issues"
+  {failure & jobs > 1 & os != "cygwin"}
+  "You can try installing again including --jobs=1
+   to force a sequential build instead."
+  {failure & jobs > 1 & os != "cygwin" & opam-version >= "2.0.5"}
+]

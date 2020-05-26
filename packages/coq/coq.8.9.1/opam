@@ -1,0 +1,45 @@
+opam-version: "2.0"
+maintainer: "coqdev@inria.fr"
+authors: "The Coq development team, INRIA, CNRS, and contributors."
+homepage: "https://coq.inria.fr/"
+bug-reports: "https://github.com/coq/coq/issues"
+dev-repo: "git+https://github.com/coq/coq.git"
+license: "LGPL-2.1"
+synopsis: "Formal proof management system"
+
+depends: [
+  "ocaml" {>= "4.02.3" & < "4.10"}
+  "ocamlfind" {build}
+  "camlp5"
+  "num"
+  "conf-findutils" {build}
+]
+build: [
+  [
+    "./configure"
+    "-configdir" "%{lib}%/coq/config"
+    "-prefix" prefix
+    "-mandir" man
+    "-docdir" doc
+    "-libdir" "%{lib}%/coq"
+    "-datadir" "%{share}%/coq"
+    "-camlp5dir" "%{camlp5:lib}%"
+    "-coqide" "no"
+  ]
+  [make "-j%{jobs}%"]
+  [make "-j%{jobs}%" "byte"]
+]
+install: [
+  [make "install"]
+  [make "install-byte"]
+]
+patches: ["ocaml408_compat.patch"]
+extra-files: [
+   ["coq.install" "md5=a5d0f9a35ef24aa3948a6960e657b206"]
+   ["ocaml408_compat.patch" "md5=372b00769425baabc8bdc70b7c4fa8ae"]
+]
+
+url {
+  src: "https://github.com/coq/coq/archive/V8.9.1.tar.gz"
+  checksum: "md5=b0e47c588ca498073ad35eb5627a8852"
+}

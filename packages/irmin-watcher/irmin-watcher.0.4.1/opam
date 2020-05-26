@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer:   "Thomas Gazagnaire <thomas@gazagnaire.org>"
+authors:      "Thomas Gazagnaire <thomas@gazagnaire.org>"
+homepage:     "https://github.com/mirage/irmin-watcher"
+doc:          "https://mirage.github.io/irmin-watcher/"
+dev-repo:     "git+https://github.com/mirage/irmin-watcher.git"
+bug-reports:  "https://github.com/mirage/irmin-watcher/issues"
+license:      "ISC"
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+
+run-test: ["dune" "runtest" "-p" name]
+
+depends: [
+  "ocaml"    {>= "4.02.0"}
+  "dune"     {< "2.0"}
+  "alcotest" {with-test}
+  "mtime"    {with-test & >= "1.0.0"}
+  "lwt"
+  "logs"
+  "fmt"
+  "astring"
+  "inotify"      {os = "linux"}
+  "osx-fsevents" {os = "macos" & >= "0.2.0"}
+]
+
+synopsis: "Portable Irmin watch backends using FSevents or Inotify"
+description: """
+irmin-watcher implements [Irmin's watch hooks][watch] for various OS,
+using FSevents in OSX and Inotify on Linux.
+
+irmin-watcher is distributed under the ISC license.
+
+[watch]: http://mirage.github.io/irmin/irmin/Irmin/Private/Watch/index.html#type-hook
+"""
+url {
+  src:
+    "https://github.com/mirage/irmin-watcher/releases/download/0.4.1/irmin-watcher-0.4.1.tbz"
+  checksum: [
+    "sha256=dbc96655656f9d8c0b3220fe1eee71ccc19440e4b9e13f6e5386eb2509bca401"
+    "sha512=6d3380db308114a562a474b5c2c6a0b0aa4939790f6f927b5c1f445a0c7ce74bc575f37806f28d8ec0ba99a5234c0704c588b33dfad3488be2cab373e77c4152"
+  ]
+}

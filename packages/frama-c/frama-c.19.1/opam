@@ -1,0 +1,138 @@
+opam-version: "2.0"
+synopsis: "Platform dedicated to the analysis of source code written in C"
+maintainer: "francois.bobot@cea.fr"
+authors: [
+  "Michele Alberti"
+  "Thibaud Antignac"
+  "Gergö Barany"
+  "Patrick Baudin"
+  "Lionel Blatter"
+  "François Bobot"
+  "Richard Bonichon"
+  "Quentin Bouillaguet"
+  "David Bühler"
+  "Zakaria Chihani"
+  "Loïc Correnson"
+  "Julien Crétin"
+  "Pascal Cuoq"
+  "Zaynah Dargaye"
+  "Jean-Christophe Filliâtre"
+  "Philippe Herrmann"
+  "Maxime Jacquemin"
+  "Florent Kirchner"
+  "Tristan Le Gall"
+  "Jean-Christophe Léchenet"
+  "Matthieu Lemerre"
+  "David Maison"
+  "Claude Marché"
+  "André Maroneze"
+  "Thibault Martin"
+  "Melody Méaulle"
+  "Benjamin Monate"
+  "Yannick Moy"
+  "Anne Pacalet"
+  "Valentin Perrelle"
+  "Guillaume Petiot"
+  "Virgile Prevosto"
+  "Armand Puccetti"
+  "Virgile Robles"
+  "Muriel Roger"
+  "Julien Signoles"
+  "Kostyantyn Vorobyov"
+  "Boris Yakobowski"
+]
+homepage: "http://frama-c.com/"
+license: "GNU Lesser General Public License version 2.1"
+dev-repo: "git+https://github.com/Frama-C/Frama-C-snapshot.git#latest"
+doc: "http://frama-c.com/download/user-manual-19.0-Potassium.pdf"
+bug-reports: "https://bts.frama-c.com/"
+tags: [
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "interactive theorem prover"
+  "C"
+  "plugins"
+  "abstract interpretation"
+  "slicing"
+  "weakest precondition"
+  "ACSL"
+  "dataflow analysis"
+  "runtime verification"
+]
+
+build: [
+  ["autoconf"] {pinned}
+  ["./configure" "--prefix" prefix
+                 "--disable-gui" { !conf-gtksourceview:installed |
+                                   ( !conf-gnomecanvas:installed &
+                                     !lablgtk3:installed) }
+                 "--mandir=%{man}%"
+  ]
+  [make "-j%{jobs}%"]
+  [make "-C" "doc" "download"] {with-doc}
+]
+
+install: [
+  [make "install"]
+  [make "-C" "doc" "install"] {with-doc}
+]
+
+run-test: [
+  [make "-j%{jobs}%" "PTESTS_OPTS=-error-code" "tests"]
+]
+
+depends: [
+  "ocaml" { >= "4.02.3" & ( < "4.08.0~" | >= "4.08.1" ) }
+  "ocamlgraph" { >= "1.8.8" & < "1.9~" }
+  "ocamlfind" # needed beyond build stage, used by -load-module
+  "zarith"
+  "conf-autoconf" { build }
+  ( ( "lablgtk" { >= "2.18.2" } & "conf-gnomecanvas" )
+  | ( "lablgtk3" { >= "3.0.beta4" & os!="macos" } & "lablgtk3-sourceview3" ))
+  "conf-gtksourceview"
+  ( "alt-ergo-free" | "alt-ergo" )
+  "conf-graphviz" { post }
+  "yojson"
+  "conf-time" {with-test}
+]
+
+depopts: [
+  # cannot use {build}: Frama-C must be recompiled when Coq and libraries changes.
+  # Coq: because .vo would would not be loadable by another version of Coq
+  # libraries: because we use dynamic linking
+  "coq"
+  "why3"
+  "why3-coq"
+  "mlgmpidl"
+  "apron"
+]
+
+conflicts: [
+  "why3-base" #for WP plug-in
+  "why3" { < "1.0.0" } #for WP plug-in
+  "lablgtk" { < "2.18.2" } #for ocaml >= 4.02.1
+  "frama-c-e-acsl" #avoid mixing old releases of E-ACSL, it is already
+                   #distributed with this version of Frama-C
+  "frama-c-base"   #avoid mixing old releases of Frama-C, now that only the
+                   #'frama-c' package exists
+]
+
+messages: [
+  "Why3 can be used by the WP plug-in for running additional automatic solvers"
+    {!why3:installed}
+  "Coq can be used with the WP plug-in for proving interactively proof obligations"
+    {!coq:installed}
+  "Alt-Ergo Graphical Interface can be used by the WP plug-in"
+    {!altgr-ergo:installed & alt-ergo:version <= "1.30"}
+  "Note: the package altgr-ergo could prevent the installation of newer versions of Alt-Ergo"
+    {!altgr-ergo:installed & alt-ergo:version <= "1.30" & ocaml:version >= "4.04.0"}
+  "Note: the installed package altgr-ergo could prevent the installation of newer versions of Alt-Ergo"
+    {altgr-ergo:installed & ocaml:version >= "4.04.0"}
+]
+
+url {
+  src: "https://frama-c.com/download/frama-c-19.1-Potassium.tar.gz"
+  checksum: "md5=439bfca103e6ceb726df3fc993334d57"
+}

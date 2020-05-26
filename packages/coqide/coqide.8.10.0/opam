@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "coqdev@inria.fr"
+authors: "The Coq development team, INRIA, CNRS, and contributors."
+homepage: "https://coq.inria.fr/"
+bug-reports: "https://github.com/coq/coq/issues"
+dev-repo: "git+https://github.com/coq/coq.git"
+license: "LGPL-2.1"
+synopsis: "IDE of the Coq formal proof management system"
+
+depends: [
+  "coq" {= version}
+  "lablgtk3-sourceview3" {!= "3.0.beta7"}
+  "conf-findutils" {build}
+  "conf-gnome-icon-theme3"
+]
+build: [
+  [
+    "./configure"
+    "-configdir" "%{lib}%/coq/config"
+    "-prefix" prefix
+    "-mandir" man
+    "-docdir" doc
+    "-libdir" "%{lib}%/coq"
+    "-datadir" "%{share}%/coq"
+  ]
+  [make "-j%{jobs}%" "coqide-files"]
+  [make "-j%{jobs}%" "coqide-opt"]
+]
+install: [
+  make
+  "install-ide-bin"
+  "install-ide-files"
+  "install-ide-info"
+  "install-ide-devfiles"
+]
+patches: ["fix-parallel-make.patch"]
+
+extra-files: [
+  ["coqide.install" "sha512=0c59f0c3cf3453e92c02b29aceb31090020410d2b0dd2856172cd19b1b2b58b2a1d46047fb08a9c1d4767d87934c73ae6adfcb4204b1ea6a55a85ba75b2b812d"]
+  ["fix-parallel-make.patch" "sha512=3801156db1d95bf35948599f366775afff72bbeef958e73321b1f9627220ef7ca61b402c478374f31a23db0f4394bafca5fa56c0708dfad589cad85bfa20d526"]
+]
+
+url {
+  src: "https://github.com/coq/coq/archive/V8.10.0.tar.gz"
+  checksum: "sha512=f3da7f77f5ec760d6339233f5fcb3d743092d05baa33f3f0781e6729bcb996b14c2cfc45f5000a6fc4cee10b9e7532682bddda25c5dc2616d9e7ca70306b4724"
+}

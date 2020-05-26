@@ -1,0 +1,74 @@
+opam-version: "2.0"
+maintainer:   "anil@recoil.org"
+homepage:     "https://github.com/mirage/mirage-tcpip"
+dev-repo:     "git+https://github.com/mirage/mirage-tcpip.git"
+bug-reports:  "https://github.com/mirage/mirage-tcpip/issues"
+doc:          "https://mirage.github.io/mirage-tcpip/"
+authors: [
+  "Anil Madhavapeddy" "Balraj Singh" "Richard Mortier" "Nicolas Ojeda Bar"
+  "Thomas Gazagnaire" "Vincent Bernardoff" "Magnus Skjegstad" "Mindy Preston"
+  "Thomas Leonard" "David Scott" "Gabor Pali" "Hannes Mehnert" "Haris Rotsos"
+  "Kia" "Luke Dunstan" "Pablo Polvorin" "Tim Cuthbertson" "lnmx" "pqwy" ]
+license: "ISC"
+tags: ["org:mirage"]
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "dune" "build" "-p" name "-j" jobs]
+  ["env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depopts: ["mirage-xen-ocaml"]
+depends: [
+  "dune" {>= "1.0"}
+  "dune-configurator"
+  "ocaml" {>= "4.03.0"}
+  "rresult" {>= "0.5.0"}
+  "cstruct" {>= "3.2.0"}
+  "cstruct-lwt"
+  "mirage-net-lwt" {>= "2.0.0"}
+  "mirage-clock" {>= "1.2.0" & < "3.0.0"}
+  "mirage-random" {>= "1.0.0" & < "2.0.0"}
+  "mirage-clock-lwt" {>= "1.2.0"}
+  "mirage-stack-lwt" {>= "1.3.0"}
+  "mirage-protocols" {>= "3.0.0" & < "3.1.0"}
+  "mirage-protocols-lwt" {>= "3.0.0" & < "3.1.0"}
+  "mirage-time-lwt" {>= "1.0.0"}
+  "ipaddr" {>= "3.0.0"}
+  "macaddr" {< "4.0.0"}
+  "mirage-profile" {>= "0.5"}
+  "fmt"
+  "lwt" {>= "3.0.0" & < "5.0.0"}
+  "lwt-dllist"
+  "logs" {>= "0.6.0"}
+  "duration"
+  "randomconv"
+  "ethernet" {>= "2.0.0"}
+  "mirage-flow" {with-test & >= "1.2.0" & < "2.0.0"}
+  "mirage-vnetif" {with-test & >= "0.4.0"}
+  "alcotest" {with-test & >= "0.7.0"}
+  "pcap-format" {with-test}
+  "mirage-clock-unix" {with-test & >= "1.2.0"}
+  "mirage-random-test" {with-test}
+  "arp-mirage" {with-test & >= "2.0.0"}
+  "lru" {>= "0.3.0"}
+]
+synopsis: "OCaml TCP/IP networking stack, used in MirageOS"
+description: """
+`mirage-tcpip` provides a networking stack for the [Mirage operating
+system](https://mirage.io). It provides implementations for the following module types
+(which correspond with the similarly-named protocols):
+
+* IP (via the IPv4 and IPv6 modules)
+* ICMP
+* UDP
+* TCP
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage-tcpip/releases/download/v3.7.6/tcpip-v3.7.6.tbz"
+  checksum: [
+    "sha256=5ae14a7bc5dde635c99e6d18dc030a523abdb217af5e177942e0312e6d788185"
+    "sha512=03cdff6fb6d3229d8ef23b910cd430c739324e288b7c46b23e2cc5aa3cdd7425ad7c5ab204ab7e31559cfc9952d49bef11697b3bede660c3ea5a63c801ea4a26"
+  ]
+}

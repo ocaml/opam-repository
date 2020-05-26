@@ -1,7 +1,7 @@
 opam-version: "2.0"
 synopsis: "OCaml 4.02.3 compiled with musl-gcc -static"
 description:
-  "Requires musl-gcc to be installed (apt-get install musl-tools on Debian)"
+  "Requires musl-gcc to be installed (package musl on Arch Linux, musl-tools on Debian, musl-dev on Alpine)"
 maintainer: "platform@lists.ocaml.org"
 depends: [
   "ocaml" {= "4.02.3" & post}
@@ -9,6 +9,11 @@ depends: [
   "base-bigarray" {post}
   "base-threads" {post}
   "base-ocamlbuild" {post}
+]
+depexts: [
+  ["musl-tools"] {os-family = "debian"}
+  ["musl"] {os-distribution = "arch"}
+  ["musl-dev"] {os-distribution = "alpine"}
 ]
 conflict-class: "ocaml-core-compiler"
 flags: compiler
@@ -20,14 +25,15 @@ build: [
     prefix
     "-with-debug-runtime"
     "-cc"
-    "musl-gcc -Os"
+    "musl-gcc -Os" {os-distribution != "alpine"}
+    "gcc -Os" {os-distribution = "alpine"}
     "-aspp"
-    "musl-gcc -c"
+    "musl-gcc -c" {os-distribution != "alpine"}
+    "gcc -c" {os-distribution = "alpine"}
     "-libs"
     "-static"
     "-no-curses"
     "-no-graph"
-    "-no-shared-libs"
   ]
   [make "world.opt"]
 ]

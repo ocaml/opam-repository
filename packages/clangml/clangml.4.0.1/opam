@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: ["Thierry Martinez <thierry.martinez@inria.fr>"]
+authors: ["Thierry Martinez <thierry.martinez@inria.fr>"]
+bug-reports: "https://gitlab.inria.fr/memcad/clangml"
+homepage: "https://gitlab.inria.fr/memcad/clangml"
+doc: "https://gitlab.inria.fr/memcad/clangml"
+license: "BSD"
+dev-repo: "git+https://gitlab.inria.fr/memcad/clangml"
+synopsis: "OCaml bindings for Clang API"
+description: """
+clangml provides bindings to call the Clang API from OCaml.
+"""
+depends: [
+  "conf-libclang" { < "10" }
+  "conf-ncurses"
+  "conf-zlib"
+  "dune" {>= "1.10.0"}
+  "ppxlib" {>= "0.9.0"}
+  "stdcompat" {>= "10"}
+  "override" {>= "0.1.0"}
+  "ppx_deriving" {>= "4.3"}
+  "ocaml" {>= "4.04.0"}
+  "ocamlfind" {build & >= "1.8.0"}
+  "ocamlcodoc" {with-test}
+  "pattern" {with-test & >= "0.1.0" & < "0.2.0"}
+]
+# $equivalent_version is used by clangml.4.0.1, which does not recognize
+# Clang/LLVM 9.0.1, but there is no change in API between Clang 9.0.0 and
+# Clang 9.0.1.
+build: [
+  ["./configure" "--prefix=%{prefix}%"
+    "--with-llvm-config=%{conf-libclang:config}%"
+    "--with-llvm-version=%{conf-libclang:equivalent_version}%"
+      {conf-libclang:equivalent_version != ""}]
+  ["dune" "build" "-p" name "-j" jobs]]
+run-test: [["dune" "runtest"  "-p" name "-j" jobs]]
+url {
+  src: "https://gitlab.inria.fr/memcad/clangml/-/archive/v4.0.1/clangml-v4.0.1.tar.gz"
+  checksum: "sha512=6585b26e26431942ea69b77b69f86d8582af0ef829a39244fc5d1b6ecd499e3ed6c4869d43d676b2222e3ad247c5caf370dd0f54ac850d5c1fb84e3fcd7d6cdc"
+}

@@ -1,0 +1,54 @@
+opam-version: "2.0"
+maintainer: "team AT robur dot io"
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+homepage: "https://github.com/mirage/ocaml-dns"
+doc: "https://mirage.github.io/ocaml-dns/"
+dev-repo: "git+https://github.com/mirage/ocaml-dns.git"
+bug-reports: "https://github.com/mirage/ocaml-dns/issues"
+license: "BSD2"
+
+depends: [
+  "dune" {>= "1.2.0"}
+  "ocaml" {>= "4.07.0"}
+  "dns" {= version}
+  "dns-tsig" {= version}
+  "dns-client" {= version}
+  "dns-server" {= version}
+  "dns-certify" {= version}
+  "rresult" {>= "0.6.0"}
+  "bos" {>= "0.2.0"}
+  "cmdliner" {>= "1.0.0"}
+  "fpath" {>= "0.7.2"}
+  "x509" {>= "0.8.0" & < "0.10.0"}
+  "nocrypto" {>= "0.5.4"}
+  "hex" {>= "1.4.0"}
+  "ptime" {>= "0.8.5"}
+  "mtime" {>= "1.2.0"}
+  "logs" {>= "0.6.3"}
+  "fmt" {>= "0.8.8"}
+  "ipaddr" {>= "4.0.0"}
+  "alcotest" {with-test}
+]
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+synopsis: "Unix command line utilities using uDNS"
+description: """
+'oupdate' sends a DNS update frome to a DNS server that sets 'hostname A ip'.
+For authentication via TSIG, a hmac secret needs to be provided.
+
+'ocertify' updates DNS with a certificate signing request, and polls a matching
+certificate. Best used with an letsencrypt unikernel.
+"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-dns/releases/download/v4.2.0/dns-v4.2.0.tbz"
+  checksum: [
+    "sha256=855ad12589b41e84ca5ec833452e9253ae213450d037957a7ff7941290c5daf3"
+    "sha512=4414a713fd26960e426d3eb379c085f5da576a2a4b43002620791d6e498f91b3a096c5b77e55196c528d5aa9c65a7e899a49a56d280214c1f4dc8bc5ec32b626"
+  ]
+}

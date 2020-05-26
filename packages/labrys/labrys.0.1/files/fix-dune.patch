@@ -1,0 +1,41 @@
+commit 02017d02af9a87726eda7d30bb3a959c14ea8035
+Author: Kate <kit.ty.kate@disroot.org>
+Date:   Sun Aug 4 18:47:29 2019 +0100
+
+    Fix compilation with recent dune when promoted file does not exist
+
+diff --git a/dune-project b/dune-project
+index 0b09661..5b3f898 100644
+--- a/dune-project
++++ b/dune-project
+@@ -1,2 +1,2 @@
+-(lang dune 1.0)
++(lang dune 1.10)
+ (using menhir 1.0)
+diff --git a/labrys.opam b/labrys.opam
+index ca07ca8..1d489f7 100644
+--- a/labrys.opam
++++ b/labrys.opam
+@@ -9,7 +9,7 @@ bug-reports: "https://github.com/kit-ty-kate/labrys/issues"
+ build: ["dune" "build" "-p" name "-j" jobs]
+ build-test: ["dune" "runtest" "-p" name "-j" jobs]
+ depends: [
+-  "dune" {build}
++  "dune" {>= "1.10"}
+   "menhir"
+   "base-unix"
+   "cmdliner"
+diff --git a/stdlib/dune b/stdlib/dune
+index b573796..a05d545 100644
+--- a/stdlib/dune
++++ b/stdlib/dune
+@@ -1,7 +1,7 @@
+ (rule
+   (targets Prelude.bc Prelude.csfw)
+   (deps Prelude.sfw Prelude.sfwi)
+-  (mode promote-until-clean)
++  (mode (promote (until-clean) (only *)))
+   (action (run labrys build-module --no-prelude --build-dir . Prelude)))
+ 
+ (install
+

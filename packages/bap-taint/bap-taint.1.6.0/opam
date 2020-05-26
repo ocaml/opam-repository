@@ -1,0 +1,38 @@
+opam-version: "2.0"
+name: "bap-taint"
+version: "1.6.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure" "--prefix=%{prefix}%" "--enable-taint"]
+  [make]
+]
+install: [[make "install"]]
+remove: [["ocamlfind" "remove" "bap-taint"]
+  ["ocamlfind" "remove" "bap-plugin-taint"]
+  ["ocamlfind" "remove" "bap-plugin-primus_propagate_taint"]
+  ["ocamlfind" "remove" "bap-plugin-primus_taint"]
+  ["bapbundle" "remove" "taint.plugin"]
+  ["bapbundle" "remove" "primus_propagate_taint.plugin"]
+  ["bapbundle" "remove" "primus_taint.plugin"]
+]
+
+depends: [
+  "ocaml" {>= "4.04.1" & < "4.08.0"}
+  "bap-std" {= "1.6.0"}
+  "bap-primus" {= "1.6.0"}
+]
+synopsis: "BAP Taint Analysis Framework"
+description: """
+Provides a generic library for handling program taints, and plugins
+that integrate existing and new taint analysis tools with the new
+framework."""
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v1.6.0.tar.gz"
+  checksum: "md5=0ccf6571613c0666a37d154c7f70af4f"
+  mirrors: "https://mirrors.aegis.cylab.cmu.edu/bap/1.6.0/v1.6.0.tar.gz"
+}

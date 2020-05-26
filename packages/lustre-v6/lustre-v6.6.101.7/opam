@@ -1,0 +1,39 @@
+opam-version: "2.0"
+synopsis: "The Lustre V6 Verimag compiler"
+description: """
+This package contains:
+  - lv6: the (current) name of the compiler (and interpreter via -exec)
+  - the lustre-v6 ocaml lib: allows to call the Lustre v6 interpreter from ocaml
+  - the lustre-v6 rdbg plugin: allows to debug Lustre v6 program wth rdbg.
+"""
+maintainer: "erwan.jahier@univ-grenoble-alpes.fr"
+authors: "Erwan Jahier and Pascal Raymond"
+license: "CeCILL-1.0+"
+homepage: "http://www-verimag.imag.fr/lustre-v6.html"
+bug-reports: "http://www-verimag.imag.fr/lustre-v6.html"
+depends: [
+  "ocaml" {>= "4.05"}
+  "base-unix"
+  "extlib" {build} | "extlib-compat" {build}
+  "lutils" {>= "1.49"}
+  "oasis" {build & >= "0.4.7"} | "oasis-mirage" {build & >= "0.4.7"}
+  "ocamlbuild" {build}
+  "ocamlfind"
+  "rdbg" {>= "1.184"}
+]
+build: [
+  [make "build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: [make "install"]
+post-messages:
+  "The last version can be obtained via (opam repo add) http://www-verimag.imag.fr/DIST-TOOLS/SYNCHRONE/opam-repository/"
+dev-repo:
+  "git+https://gricad-gitlab.univ-grenoble-alpes.fr/verimag/synchrone/lustre-v6.git"
+url {
+  src:"http://www-verimag.imag.fr/DIST-TOOLS/SYNCHRONE/pool/lustre-v6.6.101.7.tgz"
+  checksum: "md5=f75155f6f18b3b5ba9923bd447b35917"
+}

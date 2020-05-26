@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "Sylvain Le Gall <sylvain+ocaml@le-gall.net>"
+authors: [ "Sylvain Le Gall" ]
+license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
+homepage: "https://github.com/gildor478/ocaml-gettext"
+dev-repo: "git+https://github.com/gildor478/ocaml-gettext.git"
+bug-reports: "https://github.com/gildor478/ocaml-gettext/issues"
+doc: "https://gildor478.github.io/ocaml-gettext/"
+build: [
+  ["ocaml" "configure.ml"
+    "--with-defaultlocaledir" "%{lib}%/gettext/share/locale"
+    "--version" version]
+  ["dune" "build" "-p" name "-j" jobs
+   "@install"
+   "@doc" {with-doc}
+   "@runtest" {with-test} ]
+]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "dune" {>= "1.11.0"}
+  "camomile"
+  "base-bytes"
+  "gettext" {= version}
+  "ounit" {with-test & > "2.0.8"}
+  "fileutils" {with-test}
+]
+synopsis: "Internationalization library using camomile (i18n)"
+description:"""
+See gettext package description.
+"""
+url {
+  src:
+    "https://github.com/gildor478/ocaml-gettext/releases/download/v0.4.1/gettext-v0.4.1.tbz"
+  checksum: [
+    "sha256=a80408ff891ed22b5be7e8a5331f4b31e7b50dea482bff56abe73457aa379e5f"
+    "sha512=574530a0c0822b7e1d5772f1c58db92bb52c742432666deb1cc2291fbe603250fa61263df033eb88769c8d7e8bcbbd728c91379d0a5377cfe6026d83a9222fb8"
+  ]
+}

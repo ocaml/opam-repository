@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "Hannes Mehnert <hannes@mehnert.org>"
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+homepage: "https://github.com/mirage/arp"
+doc: "https://mirage.github.io/arp/"
+dev-repo: "git+https://github.com/mirage/arp.git"
+bug-reports: "https://github.com/mirage/arp/issues"
+license: "ISC"
+
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "dune"
+  "cstruct" {>= "2.2.0"}
+  "ipaddr" {>= "4.0.0"}
+  "macaddr" {>= "4.0.0"}
+  "logs"
+  "mirage-random" {with-test & < "2.0.0"}
+  "mirage-random-test" {with-test}
+  "bisect_ppx" {with-test}
+  "alcotest" {with-test}
+]
+conflicts: [
+  "arp-mirage" {< "1.0.0"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Address Resolution Protocol purely in OCaml"
+description: """
+ARP is an implementation of the address resolution protocol (RFC826) purely in
+OCaml.  It handles IPv4 protocol addresses and Ethernet hardware addresses only.
+"""
+url {
+  src:
+    "https://github.com/mirage/arp/releases/download/v2.1.0/arp-v2.1.0.tbz"
+  checksum: [
+    "sha256=ac2c004d500237ea2416ddf2a70b804df1aeeec894e58272aff7890410c8495d"
+    "sha512=7add4366202d671bf9e3013eedf699450611229bbd938d1dced449308c25a3afd5f6f53ec3a5969c756c95400cceb95cadb145ac04d2983db4a23e07801c86d5"
+  ]
+}

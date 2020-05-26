@@ -1,0 +1,54 @@
+opam-version: "2.0"
+maintainer:   "Thomas Gazagnaire <thomas@gazagnaire.org>"
+authors:      ["Thomas Gazagnaire <thomas@gazagnaire.org"]
+homepage:     "https://github.com/realworldocaml/mdx"
+license:      "ISC"
+dev-repo:     "git+https://github.com/realworldocaml/mdx.git"
+bug-reports:  "https://github.com/realworldocaml/mdx/issues"
+doc:          "https://realworldocaml.github.io/mdx/"
+
+build: [
+ ["dune" "subst"] {pinned}
+ ["dune" "build" "-p" name "-j" jobs]
+ ["dune" "runtest" "-p" name] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.02.3" & < "4.09.0"}
+  "dune"
+  "fmt"
+  "cppo" {build}
+  "astring"
+  "logs"
+  "cmdliner"
+  "re" {>= "1.7.2"}
+  "result"
+  "ocaml-migrate-parsetree" {>= "1.0.6"}
+  "lwt" {with-test}
+  "conf-pandoc" {with-test}
+]
+
+synopsis: "Executable code blocks inside markdown files"
+description: """
+`ocaml-mdx` allows to execute code blocks inside markdown files.
+There are (currently) two sub-commands, corresponding
+to two modes of operations: pre-processing (`ocaml-mdx pp`)
+and tests (`ocaml-mdx test`).
+
+The pre-processor mode allows to mix documentation and code,
+and to practice "literate programming" using markdown and OCaml.
+
+The test mode allows to ensure that shell scripts and OCaml fragments
+in the documentation always stays up-to-date.
+
+`ocaml-mdx` is released as two binaries called `ocaml-mdx` and `mdx` which are
+the same, mdx being the deprecated name, kept for now for compatibility.
+"""
+url {
+  src:
+    "https://github.com/realworldocaml/mdx/releases/download/1.4.0/mdx-1.4.0.tbz"
+  checksum: [
+    "sha256=66b56a6bee7165498671c5a616acd965975de5cf855c7c114d7f5237a250ebdb"
+    "sha512=679d42d54fed29e5aaeb60dc01c23da6e903b976769585da06dc06a4a643fca7836d0999f09d55f6d94125f0ca99ba27b6402f5a6651a16ba5397353d742ec3d"
+  ]
+}

@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "Client library for Prometheus monitoring"
+maintainer: "talex5@gmail.com"
+authors: ["Thomas Leonard" "David Scott"]
+license: "Apache"
+homepage: "https://github.com/mirage/prometheus"
+doc: "https://mirage.github.io/prometheus/"
+bug-reports: "https://github.com/mirage/prometheus/issues"
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "dune"
+  "astring"
+  "asetmap"
+  "fmt"
+  "re"
+  "lwt" {>= "2.5.0"}
+  "alcotest" {with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/prometheus.git"
+description: """
+To run services reliably, it is useful if they can report various metrics
+(for example, heap size, queue lengths, number of warnings logged, etc).
+
+A monitoring service can be configured to collect this data regularly.
+The data can be graphed to help understand the performance of the service over time,
+or to help debug problems quickly.
+It can also be used to send alerts if a service is down or behaving poorly.
+"""
+url {
+  src:
+    "https://github.com/mirage/prometheus/releases/download/v0.6/prometheus-v0.6.tbz"
+  checksum: [
+    "sha256=86509374e5af8ce5987535b43d8cb9cffec066e3b9b09a6ef07fa5371b878629"
+    "sha512=25976154fce5062f679694a49941a346c9da77083d16072b941cdfd7ae739f5603bee243ef55dbdd3a1ad26e51eb23c3a08cac6bd3d1fc40e3d7a9cc2bbc4ade"
+  ]
+}

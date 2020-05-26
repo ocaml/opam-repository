@@ -10,18 +10,18 @@ tags:         [ "org:mirage" ]
 build: [
   ["dune" "subst" ] {pinned}
   ["dune" "build" "-p" name "-j" jobs]
-  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & os != "macos"}
 ]
 
 depends: [
-  "dune" {build & >= "1.0"}
+  "dune" {>= "1.0"}
   "ocaml" {>= "4.05.0"}
   "cstruct" {>= "3.2.0"}
   "mirage-kv-lwt" {>= "1.0.0"}
   "lwt"
   "ptime"
   "rresult" {with-test}
-  "mirage-clock-unix" {with-test & >= "2.0.0"}
+  "mirage-clock-unix" {with-test & >= "2.0.0" & < "3.0.0"}
   "alcotest" {with-test & >= "0.7.1"}
 ]
 synopsis: "Key-value store for MirageOS backed by Unix filesystem"

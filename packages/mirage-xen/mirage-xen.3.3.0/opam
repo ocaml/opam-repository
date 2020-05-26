@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer:   "anil@recoil.org"
+authors:      "The MirageOS team"
+homepage:     "https://github.com/mirage/mirage-xen"
+bug-reports:  "https://github.com/mirage/mirage-xen/issues/"
+dev-repo:     "git+https://github.com/mirage/mirage-xen.git"
+doc:          "https://mirage.github.io/mirage-xen/"
+license:      "ISC"
+tags:         ["org:mirage"]
+
+build: [
+  [ "env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "dune" "subst" ] {pinned}
+  [ "env" "OPAM_PKG_CONFIG_PATH=%{prefix}%/lib/pkgconfig" "dune" "build" "-p" name "-j" jobs ]
+]
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "cstruct" {>= "1.0.1"}
+  "dune"
+  "lwt" {>= "2.4.3"}
+  "shared-memory-ring-lwt"
+  "xenstore" {>= "1.2.5"}
+  "xen-evtchn" {>= "0.9.9"}
+  "xen-gnt" {>= "2.0.0"}
+  "conf-pkg-config"
+  "lwt-dllist"
+  "mirage-profile" {>= "0.3"}
+  "mirage-xen-ocaml" {>= "2.6.0"}
+  "io-page-xen" {>= "2.0.0"}
+  "mirage-xen-minios" {>= "0.7.0"}
+  "logs"
+  "fmt"
+]
+conflicts: [
+  "dune" {> "1.9.0" & < "1.9.3"}
+]
+available: false
+synopsis: "Xen core platform libraries for MirageOS"
+description: """
+This package provides the MirageOS `OS` library for
+Xen targets, which handles the main loop and timers.  It also provides
+the low level C startup code and C stubs required by the OCaml code.
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage-xen/releases/download/v3.3.0/mirage-xen-v3.3.0.tbz"
+  checksum: "md5=1fc5194e257d291b98c022a18d632e2a"
+}

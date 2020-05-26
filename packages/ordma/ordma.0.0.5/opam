@@ -10,18 +10,17 @@ dev-repo:
 build: [
   ["dune" "subst"] {pinned}
   ["dune" "build" "-p" name "-j" jobs]
-  ["dune" "build" "@test" "-j" jobs] {with-test}
+  ["dune" "build" "@test" "-j" jobs] {with-test & ocaml:version < "4.10"}
 ]
 depends: [
   "ocaml" {>= "4.02.0"}
-  "dune" {build}
+  "dune"
   "lwt" {>= "2.5.1"}
   "lwt_log"
   "cmdliner" {with-test}
 ]
 depexts: [
-  ["libibverbs-dev" "librdmacm-dev"] {os-distribution = "ubuntu"}
-  ["libibverbs-dev" "librdmacm-dev"] {os-distribution = "debian"}
+  ["libibverbs-dev" "librdmacm-dev"] {os-family = "debian"}
   ["libibverbs-devel" "librdmacm-devel"] {os-distribution = "centos"}
 ]
 patches: [

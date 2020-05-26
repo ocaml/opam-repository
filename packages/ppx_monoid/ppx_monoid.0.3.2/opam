@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Syntax extension for building values of monoids"
+description: """
+This is a syntax extension for OCaml to make building values of
+monoids easier. Assumes the existence of two operations in scope for
+some type `t`:
+
+````ocaml
+empty : t
+(^^)  : t -> t -> t
+````
+
+`ppx-monoid`, triggered by the PPX extension point `monoid`,
+reinterprets the semicolon `;` to mean the monoid operation `^^` and
+the unit expression `()` to mean `empty`."""
+maintainer: ["bob.atkey@gmail.com"]
+authors: ["Robert Atkey"]
+license: "MIT"
+homepage: "https://github.com/bobatkey/ppx-monoid"
+bug-reports: "https://github.com/bobatkey/ppx-monoid/issues"
+depends: [
+  "dune" {>= "2.0"}
+  "ocaml" {>= "4.04.0"}
+  "ocaml-migrate-parsetree" {>= "1.5.0"}
+  "ppx_tools_versioned" {>= "5.2.3"}
+  "ounit" {with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/bobatkey/ppx-monoid.git"
+url {
+  src: "https://github.com/bobatkey/ppx-monoid/archive/0.3.2.tar.gz"
+  checksum: [
+    "md5=de413a86ef336834a30e9f53c6794d81"
+    "sha512=3b594411e424c2db7d3c3edf62fb1ac04f0a24b3aaf20f9df47eaa43fc696b72ec0b66ee94f824a1c5148bf93fe133c605430fe5e7ddf2df5e694ca4ec7724a8"
+  ]
+}

@@ -1,0 +1,52 @@
+synopsis: "Preprocessor-pretty-printer of OCaml"
+description:
+"""
+Camlp5 is a preprocessor and pretty-printer for OCaml programs. It also provides parsing and printing tools.
+
+As a preprocessor, it allows to:
+
+extend the syntax of OCaml,
+redefine the whole syntax of the language.
+As a pretty printer, it allows to:
+
+display OCaml programs in an elegant way,
+convert from one syntax to another,
+check the results of syntax extensions.
+Camlp5 also provides some parsing and pretty printing tools:
+
+extensible grammars
+extensible printers
+stream parsers and lexers
+pretty print module
+It works as a shell command and can also be used in the OCaml toplevel.
+"""
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+authors: ["Daniel de Rauglaudre"]
+homepage: "https://camlp5.github.io"
+license: "BSD-3-Clause"
+bug-reports: "https://github.com/camlp5/camlp5/issues"
+dev-repo: "git+https://github.com/camlp5/camlp5.git"
+doc: "https://camlp5.github.io/doc/html"
+
+depends: [
+  "ocaml"       { >= "4.08" & < "4.10.0" }
+]
+
+build: [
+  ["./configure" "--prefix" prefix "-libdir" lib "-mandir" man]
+  [make "world.opt"]
+]
+install: [make "install"]
+remove: [
+  ["sh" "-ecx" "./configure --prefix '%{prefix}%' -libdir '%{lib}%' -mandir '%{man}%' && %{make}% uninstall"]
+  [ "rm" "-rf" "%{lib}%/camlp5" ]
+  [ "rm" "-f" "%{man}%/man1/camlp5.1" "%{man}%/man1/camlp5o.1" "%{man}%/man1/camlp5o.opt.1" "%{man}%/man1/camlp5r.1" "%{man}%/man1/camlp5r.opt.1" "%{man}%/man1/camlp5sch.1" "%{man}%/man1/mkcamlp5.1" "%{man}%/man1/mkcamlp5.opt.1" "%{man}%/man1/ocpp5.1" ]
+]
+url {
+  src: "https://github.com/camlp5/camlp5/archive/rel709.tar.gz"
+  checksum: [
+    "md5=d3adfcf7ff39f20faefd620c6dadfe5c"
+    "sha512=ec2bcd63d9a8380bd6534442e2109f66a180f250e7a4e868aa4753c9d647dcfa91f8936f4638b540f30bc50fb96199c8bb4a4be697d7af9b0de13164c90fc4d4"
+  ]
+}

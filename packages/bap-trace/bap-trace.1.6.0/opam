@@ -1,0 +1,39 @@
+opam-version: "2.0"
+name: "bap-trace"
+version: "1.6.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure"
+                 "--prefix=%{prefix}%"
+                 "--mandir=%{man}%"
+                 "--enable-trace"]
+  [make]
+]
+
+install: [
+  [make "install"]
+]
+
+remove: [
+        ["ocamlfind" "remove" "bap-plugin-trace"]
+        ["bapbundle" "remove" "trace.plugin"]
+        ]
+
+depends: [
+  "ocaml" {>= "4.04.1" & < "4.08.0"}
+  "oasis" {build & >= "0.4.7"}
+  "bap-std" {= "1.6.0"}
+  "bap-traces" {= "1.6.0"}
+  "cmdliner"
+]
+synopsis: "A plugin to load and run program execution traces"
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v1.6.0.tar.gz"
+  checksum: "md5=0ccf6571613c0666a37d154c7f70af4f"
+  mirrors: "https://mirrors.aegis.cylab.cmu.edu/bap/1.6.0/v1.6.0.tar.gz"
+}

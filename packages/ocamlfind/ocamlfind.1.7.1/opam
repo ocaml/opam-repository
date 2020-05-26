@@ -15,6 +15,7 @@ build: [
     "-config"
     "%{lib}%/findlib.conf"
     "-no-custom"
+    "-no-camlp4" {!ocaml:preinstalled & ocaml:version >= "4.02.0"}
     "-no-topfind" {ocaml:preinstalled}
   ]
   [make "all"]
@@ -36,12 +37,13 @@ remove: [
     man
     "-config"
     "%{lib}%/findlib.conf"
+    "-no-camlp4" {!ocaml:preinstalled & ocaml:version >= "4.02.0"}
     "-no-topfind" {ocaml:preinstalled}
   ]
   [make "uninstall"]
   ["rm" "-f" "%{bin}%/ocaml"] {ocaml:preinstalled}
 ]
-patches: [ "termux.patch" ]
+patches: [ "termux.patch" "no-awk-check.patch" ]
 depends: [
   "ocaml" {>= "3.12.0" & < "4.07"}
   "conf-m4" {build}
@@ -59,8 +61,10 @@ extra-files: [
   ["termux.patch" "md5=d57f6e12d869926d1ec3301071e22d63"]
   ["ocamlfind.install" "md5=06f2c282ab52d93aa6adeeadd82a2543"]
   ["ocaml-stub" "md5=181f259c9e0bad9ef523e7d4abfdf87a"]
+  ["no-awk-check.patch" "md5=0378123bf1a45fccdea434c053ddb687"]
 ]
 url {
   src: "http://download.camlcity.org/download/findlib-1.7.1.tar.gz"
   checksum: "md5=108717618e724295d8a01c21ba3f7311"
 }
+depopts: ["graphics"]

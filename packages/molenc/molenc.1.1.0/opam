@@ -1,0 +1,49 @@
+opam-version: "2.0"
+authors: "Francois Berenger"
+maintainer: "unixjunkie@sdf.org"
+homepage: "https://github.com/UnixJunkie/molenc"
+bug-reports: "https://github.com/UnixJunkie/molenc/issues"
+dev-repo: "git+https://github.com/UnixJunkie/molenc.git"
+license: "BSD-3-Clause"
+build: ["dune" "build" "-p" name "-j" jobs]
+install: [
+  ["cp" "bin/molenc_type_atoms.py" "%{bin}%/molenc_type_atoms.py"]
+  # ["cp" "bin/molenc_ph4_type_atoms.py" "%{bin}%/molenc_ph4_type_atoms.py"]
+  ["cp" "bin/molenc_common.py" "%{bin}%/molenc_common.py"]
+  ["cp" "bin/molenc.sh" "%{bin}%/molenc.sh"]
+]
+depends: [
+  "dune"
+  "batteries"
+  "dolog" {< "4.0.0"}
+  "minicli"
+  "conf-rdkit"
+  "conf-python-3"
+  "ocaml" {>= "4.04.0"}
+]
+synopsis: "Molecular encoder/featurizer using rdkit and OCaml"
+description: """Chemical fingerprints are lossy encodings of molecules.
+molenc allows to encode molecules using unfolded-counted fingerprints
+(i.e. a potentially very long but sparse vector of positive integers).
+
+Currently, Faulon fingerprints are supported.
+In the future, atom pair fingerprints might be added.
+Currently, atom types are the quadruplet
+(#pi-electrons, element symbol, #HA neighbors, formal charge).
+In the future, pharmacophore features might be supported (a more abstract/fuzzy
+atom typing scheme).
+
+Bibliography:
+
+Carhart, R. E., Smith, D. H., & Venkataraghavan, R. (1985). Atom pairs as molecular features in structure-activity studies: definition and applications. Journal of Chemical Information and Computer Sciences, 25(2), 64-73.
+
+Kearsley, S. K., Sallamack, S., Fluder, E. M., Andose, J. D., Mosley, R. T., & Sheridan, R. P. (1996). Chemical similarity using physiochemical property descriptors. Journal of Chemical Information and Computer Sciences, 36(1), 118-127.
+
+Faulon, J. L., Visco, D. P., & Pophale, R. S. (2003). The signature molecular descriptor. 1. Using extended valence sequences in QSAR and QSPR studies. Journal of chemical information and computer sciences, 43(3), 707-720.
+
+OpenSMILES specification. Craig A. James et. al. v1.0 2016-05-15. http://opensmiles.org/opensmiles.html
+"""
+url {
+  src: "https://github.com/UnixJunkie/molenc/archive/v1.1.0.tar.gz"
+  checksum: "md5=c160c9701efb40ad46ce0dad6cc31fc5"
+}

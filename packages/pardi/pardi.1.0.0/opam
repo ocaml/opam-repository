@@ -1,0 +1,51 @@
+opam-version: "2.0"
+authors: "Francois Berenger"
+maintainer: "unixjunkie@sdf.org"
+homepage: "https://github.com/UnixJunkie/pardi"
+bug-reports: "https://github.com/UnixJunkie/pardi/issues"
+dev-repo: "git+https://github.com/UnixJunkie/pardi.git"
+license: "GPL-1.0-or-later"
+build: ["dune" "build" "-p" name "-j" jobs]
+depends: [
+  "dune"
+  "batteries"
+  "dolog" {< "4.0.0"}
+  "parany" {>= "6.0.0" & < "10.0.0"}
+  "minicli"
+  "ocaml" {>= "4.05.0"}
+]
+synopsis: "Parallel and distributed execution of command lines, pardi!"
+description: """
+Command line tool to parallelize programs which are not parallel;
+provided that you can cut an input file into independent chunks.
+
+For example, to compress a file in parallel using 1MB chunks:
+
+$ pardi -d b:1048576 -m s -i <YOUR_BIG_FILE> -o <YOUR_BIG_FILE>.gz \
+        -w 'xz -c -9 %IN > %OUT'
+
+You can cut the input file by lines (e.g. SMI files),
+by number of bytes (for binary files),
+by a separating line verifying a regexp (quite generic)
+or by a block separating line (e.g. MOL2/SDF/PDB file formats).
+
+If processing a single record of your input file is too fine grained,
+you can play with the -c option to reach better parallelization
+(try 10,20,50,100,200,500,etc).
+
+usage:
+pardi ...
+  {-i|--input} <file>: where to read from (default=stdin)
+  {-o|--output} <file>: where to write to (default=stdout)
+  {-n|--nprocs} <int>: max jobs in parallel (default=all cores)
+  {-c|--chunks} <int>: how many chunks per job (default=1)
+  {-d|--demux} {l|b:<int>|r:<regexp>|s:<string>}: how to cut input 
+  file into chunks (line/bytes/regexp/sep_line; default=line)
+  {-w|--work} <string>: command to execute on each chunk
+  {-m|--mux} {c|s|n}: how to mux job results in output file
+  (cat/sorted_cat/null; default=cat)
+"""
+url {
+  src: "https://github.com/UnixJunkie/pardi/archive/v1.0.0.tar.gz"
+  checksum: "sha512=de5286cc182070207525ce8424d86233bcc4d91249e2d2836d34123a823d94980acd9f2a4e532d6c67001d56b7011bf08721f67b79e290c0f62efe8558f01242"
+}

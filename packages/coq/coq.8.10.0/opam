@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer: "coqdev@inria.fr"
+authors: "The Coq development team, INRIA, CNRS, and contributors."
+homepage: "https://coq.inria.fr/"
+bug-reports: "https://github.com/coq/coq/issues"
+dev-repo: "git+https://github.com/coq/coq.git"
+license: "LGPL-2.1"
+synopsis: "Formal proof management system"
+
+depends: [
+  "ocaml" {>= "4.05.0" & < "4.10"}
+  "ocamlfind" {build}
+  "num"
+  "conf-findutils" {build}
+]
+build: [
+  [
+    "./configure"
+    "-configdir" "%{lib}%/coq/config"
+    "-prefix" prefix
+    "-mandir" man
+    "-docdir" doc
+    "-libdir" "%{lib}%/coq"
+    "-datadir" "%{share}%/coq"
+    "-coqide" "no"
+  ]
+  [make "-j%{jobs}%"]
+  [make "-j%{jobs}%" "byte"]
+]
+install: [
+  [make "install"]
+  [make "install-byte"]
+]
+patches: ["fix-parallel-make.patch"
+          "fix-meta-plugin.patch"
+         ]
+
+extra-files: [
+   ["coq.install" "sha512=b501737b4dbd22adc1c0377d744448056fb1dc493caf72c05f57c8463cf23f758373605ab3a50b9f505e4c856c41039d0bd7f81f96ed62adc6a674179523e7d2"]
+   ["fix-parallel-make.patch" "sha512=3801156db1d95bf35948599f366775afff72bbeef958e73321b1f9627220ef7ca61b402c478374f31a23db0f4394bafca5fa56c0708dfad589cad85bfa20d526"]
+   ["fix-meta-plugin.patch" "sha512=634b05c16b8776e0a7c252ac0822b1b5b3330a2ad42ef273823854f79b30d0eaceb57a4b935cf24bb88220fee1f8497210bcc16afa883be46ce292493185a815"]
+]
+
+url {
+  src: "https://github.com/coq/coq/archive/V8.10.0.tar.gz"
+  checksum: "sha512=f3da7f77f5ec760d6339233f5fcb3d743092d05baa33f3f0781e6729bcb996b14c2cfc45f5000a6fc4cee10b9e7532682bddda25c5dc2616d9e7ca70306b4724"
+}

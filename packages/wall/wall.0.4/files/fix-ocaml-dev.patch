@@ -1,0 +1,19 @@
+commit c5f3e9ffe77df07b5b2cf49c69a809a6883b6faf
+Author: Kate <kit.ty.kate@disroot.org>
+Date:   Fri May 22 13:36:09 2020 +0100
+
+    Fix compilation when using a development version of the OCaml compiler
+
+diff --git a/lib/dune b/lib/dune
+index 27194ae..c4b9936 100644
+--- a/lib/dune
++++ b/lib/dune
+@@ -11,7 +11,7 @@ let at_least_4_03 =
+     | Some j -> String.sub s i (j - i) :: split s (j + 1)
+     | None -> [String.sub s i (String.length s - i)]
+   in
+-  let v = List.map int_of_string (split version 0) in
++  let v = List.map (fun v -> try int_of_string v with Failure _ -> 0) (split version 0) in
+   v >= [4; 3]
+ 
+ let () = 

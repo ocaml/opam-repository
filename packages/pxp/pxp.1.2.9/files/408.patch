@@ -1,0 +1,42 @@
+diff -urN pxp-1.2.9/src/pxp-engine/pxp_lexing.mli pxp.1.2.9/src/pxp-engine/pxp_lexing.mli
+--- pxp-1.2.9/src/pxp-engine/pxp_lexing.mli	2017-02-28 22:21:46.000000000 +0900
++++ pxp.1.2.9/src/pxp-engine/pxp_lexing.mli	2019-09-02 10:22:20.000000000 +0900
+@@ -10,11 +10,11 @@
+ 
+ type lexbuf = Lexing.lexbuf
+ 
+-val from_channel : in_channel -> lexbuf
++val from_channel : ?with_positions:bool -> in_channel -> lexbuf
+ 
+-val from_string : string -> lexbuf
++val from_string : ?with_positions:bool -> string -> lexbuf
+ 
+-val from_function : (Bytes.t -> int -> int) -> lexbuf
++val from_function : ?with_positions:bool -> (Bytes.t -> int -> int) -> lexbuf
+ 
+ val lexeme : lexbuf -> string
+ 
+diff -urN pxp-1.2.9/tools/src/odoc/Makefile pxp.1.2.9/tools/src/odoc/Makefile
+--- pxp-1.2.9/tools/src/odoc/Makefile	2017-02-28 22:21:52.000000000 +0900
++++ pxp.1.2.9/tools/src/odoc/Makefile	2019-09-02 10:23:27.000000000 +0900
+@@ -6,6 +6,8 @@
+ OCAMLC_OPTIONS += -I +ocamldoc
+ CLEAN_LIST += chtml.ml
+ 
++PACKAGES = compiler-libs.common
++
+ .PHONY: all
+ all: chtml.cmo
+ 
+diff -urN pxp-1.2.9/tools/src/odoc/chtml_ocaml4.ml pxp.1.2.9/tools/src/odoc/chtml_ocaml4.ml
+--- pxp-1.2.9/tools/src/odoc/chtml_ocaml4.ml	2017-02-28 22:21:52.000000000 +0900
++++ pxp.1.2.9/tools/src/odoc/chtml_ocaml4.ml	2019-09-02 10:19:18.000000000 +0900
+@@ -34,7 +34,7 @@
+ open Odoc_info
+ open Module
+ 
+-module StringSet = Odoc_html.StringSet
++module StringSet = Odoc_html.String.Set
+ 
+ 
+ let word_re = Str.regexp "[ \t\r\n]+"

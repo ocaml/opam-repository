@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "dave@recoil.org"
+authors: "David Scott"
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-win-eventlog"
+doc: "https://mirage.github.io/ocaml-win-eventlog/"
+bug-reports: "https://github.com/mirage/ocaml-win-eventlog/issues"
+depends: [
+  "ocaml"
+  "dune"
+  "result"
+  "logs"
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-win-eventlog.git"
+synopsis: "Log via the Windows event log from OCaml programs"
+description: """
+A low-level example:
+
+```ocaml
+let log = Eventlog.register "Mirage.exe" in
+let category = 0 and event = 1 in
+Eventlog.report log `Success category event [|
+  "insertion string 1";
+  "insertion string 2";
+|]
+```
+"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-win-eventlog/releases/download/0.3/win-eventlog-0.3.tbz"
+  checksum: [
+    "sha256=b0e981da365546f74a027c2d8ec6a5fa9e36965337b385747f702b897f4b0543"
+    "sha512=5605ca536241ffbec31ed58c679a7d51bd4774af773aa99df7d0475019abc873eafae1700510a79a7eddee30a88f1544982b54e4c3a89de072509e21eda0e2c3"
+  ]
+}

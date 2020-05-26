@@ -1,0 +1,46 @@
+opam-version: "2.0"
+authors: "Francois Berenger"
+maintainer: "unixjunkie@sdf.org"
+homepage: "https://github.com/UnixJunkie/linwrap"
+bug-reports: "https://github.com/UnixJunkie/linwrap/issues"
+dev-repo: "git+https://github.com/UnixJunkie/linwrap.git"
+license: "BSD-3"
+build: ["dune" "build" "-p" name "-j" jobs]
+depends: [
+  "base-unix"
+  "batteries"
+  "cpm"
+  "dolog" {>= "4.0.0"}
+  "dune" {>= "1.10"}
+  "minicli"
+  "parany" {>= "6.0.0" & < "10.0.0"}
+  "conf-liblinear-tools"
+]
+synopsis: "Wrapper around liblinear-tools"
+description: """
+Only L2-regularized logistic regression is supported currently.
+Each model is trained on balanced bootstraps from the training set
+(one bootstrap for the positive class, one for the negative class).
+The size of the bootstrap is the size of the smallest (under-represented)
+class. Bagging is supported and allows to obtain better models.
+
+usage: linwrap
+  -i <filename>: training set or DB to screen
+  [-o <filename>]: predictions output file
+  [-np <int>]: ncores
+  [-c <float>]: fix C
+  [-w <float>]: fix w1
+  [-k <int>]: number of bags for bagging (default=off)
+  [-n <int>]: folds of cross validation
+  [--seed <int>]: fix random seed
+  [-p <float>]: training set portion (in [0.0:1.0])
+  [{-l|--load} <filename>]: prod. mode; use trained models
+  [{-s|--save} <filename>]: train. mode; save trained models
+  [--scan-c]: scan for best C
+  [--scan-w]: scan weight to counter class imbalance
+  [--scan-k]: scan number of bags (advice: optim. k rather than w)
+"""
+url {
+  src: "https://github.com/UnixJunkie/linwrap/archive/v0.0.1.tar.gz"
+  checksum: "md5=4456917240f47526a681d1230d53ebf8"
+}

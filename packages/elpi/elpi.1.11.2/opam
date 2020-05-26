@@ -1,0 +1,85 @@
+opam-version: "2.0"
+maintainer: "Enrico Tassi <enrico.tassi@inria.fr>"
+authors: [ "Claudio Sacerdoti Coen" "Enrico Tassi" ]
+license: "LGPL 2.1+"
+homepage: "https://github.com/LPCIC/elpi"
+doc: "https://LPCIC.github.io/elpi/"
+dev-repo: "git+https://github.com/LPCIC/elpi.git"
+bug-reports: "https://github.com/LPCIC/elpi/issues"
+
+build: [
+  ["dune" "subst"] {pinned}
+  [make "build" "DUNE_OPTS=-p %{name}% -j %{jobs}%"]
+  [make "tests" "DUNE_OPTS=-p %{name}%" "TIMEOUT=120"] {with-test & os != "macos" & os-distribution != "alpine"}
+  [make "fix-elpi.install"]
+]
+
+depends: [
+  "ocaml" {>= "4.04.0"}
+  "camlp5"
+  "ppxlib" {>= "0.12.0"}
+  "ocaml-migrate-parsetree" {>= "1.6.0"}
+  "ppx_deriving"
+  "re" {>= "1.7.2"}
+  "ANSITerminal" {with-test}
+  "cmdliner" {with-test}
+  "dune" {>= "2.2.0"}
+  "conf-time" {with-test}
+]
+synopsis: "ELPI - Embeddable λProlog Interpreter"
+description: """
+ELPI implements a variant of λProlog enriched with Constraint Handling Rules,
+a programming language well suited to manipulate syntax trees with binders.
+
+ELPI is designed to be embedded into larger applications written in OCaml as
+an extension language. It comes with an API to drive the interpreter and 
+with an FFI for defining built-in predicates and data types, as well as
+quotations and similar goodies that are handy to adapt the language to the host
+application.
+
+This package provides both a command line interpreter (elpi) and a library to
+be linked in other applications (eg by passing -package elpi to ocamlfind).
+
+The ELPI programming language has the following features:
+
+- Native support for variable binding and substitution, via an Higher Order
+  Abstract Syntax (HOAS) embedding of the object language. The programmer needs
+  not to care about De Bruijn indexes.
+
+- Native support for hypothetical context. When moving under a binder one can
+  attach to the bound variable extra information that is collected when the
+  variable gets out of scope. For example when writing a type-checker the
+  programmer needs not to care about managing the typing context.
+
+- Native support for higher order unification variables, again via HOAS.
+  Unification variables of the meta-language (λProlog) can be reused to
+  represent the unification variables of the object language. The programmer
+  does not need to care about the unification-variable assignment map and
+  cannot assign to a unification variable a term containing variables out of
+  scope, or build a circular assignment.
+
+- Native support for syntactic constraints and their meta-level handling rules.
+  The generative semantics of Prolog can be disabled by turning a goal into a
+  syntactic constraint (suspended goal). A syntactic constraint is resumed as
+  soon as relevant variables gets assigned. Syntactic constraints can be
+  manipulated by constraint handling rules (CHR).
+
+- Native support for backtracking. To ease implementation of search.
+
+- The constraint store is extensible.  The host application can declare
+  non-syntactic constraints and use custom constraint solvers to check their
+  consistency.
+
+- Clauses are graftable. The user is free to extend an existing program by
+  inserting/removing clauses, both at runtime (using implication) and at
+  "compilation" time by accumulating files.
+
+ELPI is free software released under the terms of LGPL 2.1 or above."""
+url {
+  src:
+    "https://github.com/LPCIC/elpi/releases/download/v1.11.2/elpi-v1.11.2.tbz"
+  checksum: [
+    "sha256=375ee8e482fc1dd5e19af26c7a966a70cacf8992c25d3e0dab413ecec27edb3e"
+    "sha512=fa0012bf5b9fc10c130acd5e8b062a9a7c550cb4a6f2c2636898bb75b267d81c6b22013f173908c969079694ab6b04784a02bf7861c8e8679e4f6e805fb9617b"
+  ]
+}

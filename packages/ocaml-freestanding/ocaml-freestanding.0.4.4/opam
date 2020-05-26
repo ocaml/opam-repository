@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "Martin Lucina <martin@lucina.net>"
+authors: "Martin Lucina <martin@lucina.net>"
+homepage: "https://github.com/mirage/ocaml-freestanding"
+bug-reports: "https://github.com/mirage/ocaml-freestanding/issues/"
+license: "MIT"
+tags: "org:mirage"
+dev-repo: "git+https://github.com/mirage/ocaml-freestanding.git"
+build: [make]
+install: [make "install" "PREFIX=%{prefix}%"]
+remove: [make "uninstall" "PREFIX=%{prefix}%"]
+depends: [
+  "conf-pkg-config"
+  "ocamlfind" {build}
+  "ocaml-src" {build}
+  ("solo5-bindings-hvt" | "solo5-bindings-virtio" | "solo5-bindings-muen" | "solo5-bindings-genode")
+  "ocaml" {>= "4.04.2" & < "4.08.0"}
+]
+substs: [
+  "flags/cflags.tmp"
+  "flags/libs.tmp"
+]
+conflicts: [
+  "sexplib" {= "v0.9.0"}
+  "solo5-kernel-ukvm"
+  "solo5-kernel-virtio"
+  "solo5-kernel-muen"
+]
+available: [
+  ((os = "linux" & (arch = "x86_64" | arch = "arm64"))
+  | (os = "freebsd" & arch = "x86_64")
+  | (os = "openbsd" & arch = "x86_64"))
+]
+synopsis: "Freestanding OCaml runtime"
+description:
+  "This package provides a freestanding OCaml runtime (asmrun), suitable for linking with a unikernel base layer."
+url {
+  src: "https://github.com/mirage/ocaml-freestanding/archive/v0.4.4.tar.gz"
+  checksum: "sha512=c4ea6a44dd02869ad2d5c5bb2be2c5c4cb769550302f0075d2675031e9012cf31977af155c546c8eaf9bf715d1e58e439a833d1f69e5e4710d6f9a140e3e09fe"
+}

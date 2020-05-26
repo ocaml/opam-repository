@@ -1,0 +1,54 @@
+opam-version: "2.0"
+name: "ppx_compose"
+maintainer: "Petter A. Urkedal <paurkedal@gmail.com>"
+authors: "Petter A. Urkedal <paurkedal@gmail.com>"
+license: "LGPL-3 with OCaml linking exception"
+homepage: "https://github.com/paurkedal/ppx_compose"
+bug-reports: "https://github.com/paurkedal/ppx_compose/issues"
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "dune" {>= "1.1"}
+  "ocaml-migrate-parsetree" {>= "1.5.0"}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/paurkedal/ppx_compose.git"
+synopsis: "Inlined function composition"
+description: """
+`ppx_compose` is a simple syntax extension which rewrites code containing
+function compositions into composition-free code, effectively inlining the
+composition operators.  The following two operators are supported
+
+    let (%) g f x = g (f x)
+    let (%>) f g x = g (f x)
+
+Corresponding definitions are not provided, so partial applications of `(%)`
+and `(%>)` will be undefined unless you provide the definitions.
+
+The following rewrites are done:
+
+  * A composition occurring to the left of an application is reduced by
+    applying each term of the composition from right to left to the
+    argument, ignoring associative variations.
+
+  * A composition which is not the left side of an application is first
+    turned into one by η-expansion, then the above rule applies.
+
+  * Any partially applied composition operators are passed though unchanged.
+
+E.g.
+
+    h % g % f ==> (fun x -> h (f (g x)))
+    h % (g % f) ==> (fun x -> h (f (g x)))
+    (g % f) (h % h) ==> g (f (fun x -> h (h x)))
+"""
+url {
+  src:
+    "https://github.com/paurkedal/ppx_compose/releases/download/v0.1.0/ppx_compose-v0.1.0.tbz"
+  checksum: [
+    "sha256=87f063215e9f06d4433302f492fb35c72b25f09737ba748d9df3542f562f9a7f"
+    "sha512=7c8c14f5b28c5173e74bec8176b59697cc1ec7f48ccbbab4656b083259fde6666b4399a74b13fc3605d50cb48ff4c11ff8b96fafa6ef4af5613eab5ccf5a49f1"
+  ]
+}
