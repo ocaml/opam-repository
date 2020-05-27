@@ -5,12 +5,13 @@ homepage: "https://github.com/Z3prover/z3"
 bug-reports: "https://github.com/Z3prover/z3/issues"
 license: "MIT"
 dev-repo: "git+https://github.com/Z3prover/z3.git"
+patches: ["4468.patch"]
 build: [
   [ "python2.7" "scripts/mk_make.py" "--ml" "--staticlib" ]
   [ make "-C" "build" "-j" jobs ]
 ]
 install: [
-  [ "sh" "-c" "ocamlfind install z3 build/api/ml/META -nodll build/libz3* build/api/ml/*" ]
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/* build/libz3-static.a"]
 ]
 depends: [
   "ocaml"
@@ -20,6 +21,10 @@ depends: [
   "conf-python-2-7" {build}
 ]
 synopsis: "Z3 solver"
+extra-files: [
+  ["4468.patch" "md5=05a00fdd98aecba2198393bff8484efa"]
+]
+
 url {
   src:
     "https://github.com/Z3Prover/z3/archive/z3-4.8.8.tar.gz"
