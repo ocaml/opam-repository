@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "Opam solver using 0install backend"
+description: """
+Opam's default solver is designed to maintain a set of packages
+over time, minimising disruption when installing new programs and
+finding a compromise solution across all packages.
+
+In many situations (e.g. CI, local roots or duniverse builds) this
+is not necessary, and we can get a solution much faster by using
+a different algorithm.
+
+This package uses 0install's solver algorithm with opam packages.
+"""
+maintainer: ["talex5@gmail.com"]
+authors: ["talex5@gmail.com"]
+homepage: "https://github.com/talex5/opam-0install-solver"
+doc: "https://talex5.github.io/opam-0install-solver/"
+bug-reports: "https://github.com/talex5/opam-0install-solver/issues"
+depends: [
+  "dune" {>= "2.0"}
+  "fmt"
+  "cmdliner"
+  "opam-state"
+  "ocaml" {>= "4.08.0"}
+  "0install-solver"
+  "opam-client" {with-test}
+  "opam-solver" {with-test}
+  "astring" {with-test}
+  "alcotest" {with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/talex5/opam-0install-solver.git"
+url {
+  src:
+    "https://github.com/talex5/opam-0install-solver/releases/download/v0.1/opam-0install-v0.1.tbz"
+  checksum: [
+    "sha256=c41d5cc24669819d336db883c0e57e4dd9e3117a394cce10c8d369bbdd50b50f"
+    "sha512=93bf8212bad305368c690ce721f5042f7f586f453ce5783d393de11d0d91dcb793e7174e1920d7f5093cea887ef0e7bff245b2e8a91fde6bed3f852f9cf27250"
+  ]
+}
