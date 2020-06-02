@@ -31,7 +31,9 @@ let cmd fmt =
       match Unix.close_process_in inp with
       | Unix.WEXITED 0 -> Some res
       | s -> raise (Command_failed s)
-    with e -> None in
+    with e ->
+      eprintf "command %s failed: %s\n" c (exn_to_string e);
+      None in
   ksprintf run fmt
 
 let of_opam_config () =
@@ -58,13 +60,22 @@ variables {
 
 let (/) = Filename.concat
 
+
+let index_opt str c =
+  try Some (String.index str '.')
+  with Not_found -> None
+
+let major_version ver = match index_opt ver '.' with
+  | None -> ver
+  | Some i -> String.sub ver 0 i
+
 let normalize ver =
-  let ver =
+  match major_version ver with
+  | "3" ->
     if String.length ver >= 3 then
       String.sub ver 0 3
-    else ver in
-  if ver > "3.8" then String.sub ver 0 1
-  else ver
+    else ver
+  | x -> x
 
 let brew_config ver =
   match cmd "brew --cellar" with
@@ -77,9 +88,6 @@ let brew_config ver =
 
 let macports_config ver = sprintf "llvm-config-mp-%s" ver
 
-let index_opt str c =
-  try Some (String.index str '.')
-  with Not_found -> None
 
 let configs ver =
   let ver' = match index_opt ver '.' with
@@ -88,6 +96,7 @@ let configs ver =
   let configs = [
     sprintf "llvm-config-%s" ver;
     sprintf "llvm-config-%s" ver';
+    sprintf "llvm-config-%s" (major_version ver);
     "llvm-config";
   ] in
   match "%{os}%" with
@@ -106,7 +115,7 @@ let versions_equal v v' =
   normalize v = normalize v'
 
 let locate () =
-  let versions = ["9.0"; "8.0"; "7.0"; "6.0"; "5.0"; "4.0"; "3.8"; "3.4"] in
+  let versions = ["10.0"; "9.0"; "8.0"; "7.0"; "6.0"; "5.0"; "4.0"; "3.8"; "3.4"] in
   List.fold_left (fun cfg ver ->
       match cfg with
       | Some _ -> cfg
