@@ -13,14 +13,14 @@ flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
   ["./configure" "--prefix=%{prefix}%" "--enable-flambda"]
-    {os != "openbsd" & os != "freebsd" & os != "macos"}
+    {os != "openbsd" & os != "macos"}
   [
     "./configure"
     "--prefix=%{prefix}%"
     "--enable-flambda"
     "CC=cc"
     "ASPP=cc -c"
-  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+  ] {os = "openbsd" | os = "macos"}
   [make "-j%{jobs}%" {os != "cygwin"} "world"]
   [make "-j%{jobs}%" {os != "cygwin"} "world.opt"]
 ]
