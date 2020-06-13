@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Binding for the Secure, Reliable, Transport protocol library"
+description: """
+Secure Reliable Transport (SRT) is an open source transport technology
+that optimizes streaming performance across unpredictable networks, such
+as the Internet.
+This package provides OCaml bindings to the C implementation library.
+"""
+maintainer: ["The Savonet Team <savonet-users@lists.sourceforge.net>"]
+authors: ["The Savonet Team <savonet-users@lists.sourceforge.net>"]
+license: "GPL-2.0"
+homepage: "https://github.com/savonet/ocaml-srt"
+bug-reports: "https://github.com/savonet/ocaml-srt/issues"
+depends: [
+  "dune" {> "2.0"}
+  "dune-configurator"
+  "ctypes"
+  "posix-socket"
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/savonet/ocaml-srt.git"
+depexts: [
+  ["srt-devel"] {os-distribution = "centos"}
+  ["srt-devel"] {os-distribution = "fedora"}
+  ["srt-devel"] {os-family = "suse"}
+  ["libsrt-dev"] {os-family = "debian"}
+  ["srt"] {os = "macos" & os-distribution = "homebrew"}
+]
+url {
+  src: "https://github.com/savonet/ocaml-srt/archive/v0.1.1.tar.gz"
+  checksum: [
+    "md5=5209317de47f1cfd4e201790ad2f295a"
+    "sha512=3216b8e2c84438da1fd600a5503436cc1e9a1f6675b6d3b91eb459055c482b0838803ab5bfa4366ee2a20249f17f2573bae16de1fa925efa6db557ed3f3cb910"
+  ]
+}
