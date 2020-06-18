@@ -1,0 +1,52 @@
+opam-version: "2.0"
+maintainer: "coqdev@inria.fr"
+authors: "The Coq development team, INRIA, CNRS, and contributors."
+homepage: "https://coq.inria.fr/"
+bug-reports: "https://github.com/coq/coq/issues"
+dev-repo: "git+https://github.com/coq/coq.git"
+license: "LGPL-2.1-only"
+synopsis: "Formal proof management system"
+description: """
+The Coq proof assistant provides a formal language to write
+mathematical definitions, executable algorithms, and theorems, together
+with an environment for semi-interactive development of machine-checked
+proofs. Typical applications include the certification of properties of programming
+languages (e.g., the CompCert compiler certification project and the
+Bedrock verified low-level programming library), the formalization of
+mathematics (e.g., the full formalization of the Feit-Thompson theorem
+and homotopy type theory) and teaching.
+"""
+
+depends: [
+  "ocaml" {>= "4.05.0" & < "4.10"}
+  "ocamlfind" {build}
+  "num"
+  "conf-findutils" {build}
+]
+build: [
+  [
+    "./configure"
+    "-configdir" "%{lib}%/coq/config"
+    "-prefix" prefix
+    "-mandir" man
+    "-docdir" doc
+    "-libdir" "%{lib}%/coq"
+    "-datadir" "%{share}%/coq"
+    "-coqide" "no"
+  ]
+  [make "-j%{jobs}%"]
+  [make "-j%{jobs}%" "byte"]
+]
+install: [
+  [make "install"]
+  [make "install-byte"]
+]
+
+extra-files: [
+   ["coq.install" "sha512=b501737b4dbd22adc1c0377d744448056fb1dc493caf72c05f57c8463cf23f758373605ab3a50b9f505e4c856c41039d0bd7f81f96ed62adc6a674179523e7d2"]
+]
+
+url {
+  src: "https://github.com/coq/coq/archive/V8.11.0.tar.gz"
+  checksum: "sha512=db7c3da4bab268cb729bcf9f03f5cd3bbb7a3b5b7094fe2b110189e54e436f9883640db88643d09cec5dc169c209a51661238e41b8de3035ff7ea8561c794c89"
+}

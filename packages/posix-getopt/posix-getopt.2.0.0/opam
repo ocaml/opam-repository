@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "Bindings for posix getopt/getopt_long"
+description:
+  "posix-getopt provides a simple interface for the POSIX getopt and its extensions, getopt_long and getopt_long_only."
+maintainer: ["romain.beauxis@gmail.com"]
+authors: ["Romain Beauxis"]
+license: "MIT"
+homepage: "https://github.com/savonet/ocaml-posix"
+bug-reports: "https://github.com/savonet/ocaml-posix/issues"
+depends: [
+  "dune" {> "2.5"}
+  "dune-configurator"
+  "ounit2" {with-test}
+  "posix-uname" {with-test & = version}
+  "ctypes"
+  "posix-base" {= version}
+  "unix-errno"
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/savonet/ocaml-posix.git"
+available: os != "win32" & os != "bsd"
+url {
+  src: "https://github.com/savonet/ocaml-posix/archive/v2.0.0.tar.gz"
+  checksum: [
+    "md5=2c186aa5161b72208a870d5710fb6208"
+    "sha512=d583c3d386865eab7575fc4f1976c17294bad2ee5037327cb5c3075965788170e652b7b9b9f660ef25f71558553fbcc47734b971e3c9f41627cc573d75d2fb54"
+  ]
+}

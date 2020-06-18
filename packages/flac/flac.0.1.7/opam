@@ -1,0 +1,49 @@
+opam-version: "2.0"
+maintainer: "Romain Beauxis <toots@rastageeks.org>"
+authors: "The Savonet Team <savonet-users@lists.sourceforge.net>"
+homepage: "https://github.com/savonet/ocaml-flac"
+build: [
+  ["./bootstrap"] {dev}
+  ["./configure" "--prefix" prefix] {os != "macos"}
+  [
+    "./configure"
+    "CFLAGS=-I/usr/local/include"
+    "LDFLAGS=-L/usr/local/lib"
+    "OCAMLFLAGS=-ccopt -I/usr/local/include -cclib -L/usr/local/lib"
+    "--prefix"
+    prefix
+  ] {os = "macos"}
+  [make "clean"] {dev}
+  [make]
+]
+install: [
+  [make "install"]
+]
+depends: [
+  "ocaml" {>= "4.03"}
+  "ocamlfind" {build}
+  "ogg"
+]
+depexts: [
+  ["flac-dev"] {os-distribution = "alpine"}
+  ["flac"] {os-distribution = "archlinux"}
+  ["flac-devel"] {os-distribution = "centos"}
+  ["flac-devel"] {os-distribution = "fedora"}
+  ["flac-devel"] {os-family = "suse"}
+  ["libflac-dev"] {os-family = "debian"}
+  ["flac"] {os-distribution = "nixos"}
+  ["flac"] {os = "macos" & os-distribution = "homebrew"}
+  ["flac"] {os = "freebsd"}
+]
+bug-reports: "https://github.com/savonet/ocaml-flac/issues"
+dev-repo: "git+https://github.com/savonet/ocaml-flac.git"
+synopsis:
+  "Interface for the Free Lossless Audio Codec otherwise known as FLAC"
+url {
+  src:
+    "https://github.com/savonet/ocaml-flac/releases/download/v0.1.7/ocaml-flac-0.1.7.tar.gz"
+  checksum: [
+    "md5=86b769274b6d831778bc24bda2233db0"
+    "sha512=b49dd9b9c3851d4720e6832773564a53802814b71106a41647a06bcad8414382a9d739b0440fb9e7d8caf24ffaccfacfe727d1a8bf4be22d8532b40264fe05e6"
+  ]
+}

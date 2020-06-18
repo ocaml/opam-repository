@@ -1,0 +1,58 @@
+opam-version: "2.0"
+synopsis: "Formal analysis for the Electrod formal pivot language"
+description: """
+Electrod is a model finder inspired by Kodkod. It takes as input a
+model expressed in a mixture of relational first-order logic (RFOL)
+over bounded domains and linear temporal logic (LTL) over an unbounded
+time horizon. Then it compiles the model to a problem for a solver (currently
+the NuSMV and nuXmv tools) to produce example or counter-example traces.
+Electrod is primarily meant to be used as a backend for the Electrum formal method and tool."""
+maintainer: ["David Chemouil <david.chemouil+git@onera.fr>"]
+authors: ["David Chemouil" "Julien Brunel"]
+license: "MPL-2.0"
+homepage: "https://github.com/grayswandyr/electrod"
+doc: "https://grayswandyr.github.io/electrod/api"
+bug-reports: "https://github.com/grayswandyr/electrod/issues"
+depends: [
+  "ocaml" {>= "4.05.0"}
+  "dune" {>= "2.0"}
+  "dune-build-info"
+  "cmdliner"
+  "containers" {>= "2.8"}
+  "fmt" {>= "0.8.7"}
+  "gen"
+  "hashcons"
+  "logs"
+  "mdx" {with-test}
+  "menhir" {< "20200525"}
+  "mtime"
+  "ppx_deriving"
+  "printbox"
+  "iter"
+  "stdcompat"
+  "stdlib-shims"
+  "visitors" {>= "20190513"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/grayswandyr/electrod.git"
+url {
+  src:
+    "https://github.com/grayswandyr/electrod/releases/download/0.6/electrod-0.6.tbz"
+  checksum: [
+    "sha256=545020556bdc1517867791ccbbf4a00623d911663daa26e6d57dc66e7652f269"
+    "sha512=2921be5e844e408f1d3208c7d9b310d3ef3b050d37ab0b449b9fd9722be54167eacc08b957b595cab58dedb28c43f327238a30a360ac0ae45d724bd1d8bd664c"
+  ]
+}

@@ -1,0 +1,44 @@
+opam-version: "2.0"
+name: "libdash"
+version: "0.1"
+synopsis: "Bindings to the dash shell's parser"
+maintainer: "Michael Greenberg <michael.greenberg@pomona.edu>"
+authors: "Michael Greenberg <michael.greenberg@pomona.edu>"
+license: "BSD"
+homepage: "https://github.com/mgree/libdash"
+bug-reports: "https://github.com/mgree/libdash/issues"
+depends: [
+  "ocaml" {>= "4.0.7"}
+  "ocamlfind" {>= "1.8.0"}
+  "ctypes" {>= "0.11.5"}
+  "ctypes-foreign" {>= "0.4.0"}
+  "conf-autoconf" {build}
+  "conf-libtool" {build}
+]
+build: [
+  ["libtoolize"] {os != "macos"}
+  ["glibtoolize"] {os = "macos"}
+  ["aclocal"]
+  ["autoheader"]
+  ["automake" "--add-missing"]
+  ["autoconf"]
+  ["mkdir" "_build"]
+  ["./configure" "--prefix=%{build}%/_build"]
+  [make]
+  [make "install"] # into _build
+  [make "-C" "ocaml" "all"]
+  ["./mk_dot_install.sh"]
+  ["./ldconfig.sh"] # fix up .so files if ldconfig didn't do it
+  [make "-C" "ocaml" "test"] {with-test}
+]
+# disabled for now---succeeds on macOS but fails on Linux :(
+#install: [
+#  ["opam-installer" "--prefix=%{prefix}%" "libdash.install"]
+#  [make "-C" "test" "test"] {with-test}
+#]
+dev-repo: "git+https:///github.com/mgree/libdash"
+url {
+  src: "https://github.com/mgree/libdash/archive/v0.1.tar.gz"
+  checksum: "md5=ea26777aa9a7776c1b2f940110cc354b"
+}
+

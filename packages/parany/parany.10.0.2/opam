@@ -1,0 +1,48 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+authors: "Francois Berenger"
+license: "LGPL-2.0-or-later"
+homepage: "https://github.com/UnixJunkie/parany"
+bug-reports: "https://github.com/UnixJunkie/parany/issues"
+dev-repo: "git+https://github.com/UnixJunkie/parany.git"
+depends: [
+  "base-unix"
+  "cpu"
+  "dune" {>= "1.6.0"}
+  "ocaml"
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+# the test exe doesn't run in the CI env. of the opam-repository
+# probably because processes are limited to one core, I guess
+# ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Parallelize any computation"
+description: """
+Generalized map reduce for parallel computers (not distributed computing).
+Can process in parallel an infinite stream of elements.
+
+Can process a very large file in parallel on a multicore computer;
+provided there is a way to cut your file into independent blocks
+(the 'demux' function).
+The processing function is called 'work'.
+The function gathering the results is called 'mux'.
+The number of processors running your computation in parallel is called
+'nprocs'.
+The chunk size (number of items) processed by one call to the 'work' function
+is called 'csize'.
+
+There is a minimalist Parmap module, if you want to switch
+to/from Parmap easily.
+
+Read the corresponding ocamldoc before using.
+
+USING THIS LIBRARY IN A MISSION CRITICAL, LONG-RUNNING SOFTWARE
+THAT IS NEVER SUPPOSED TO CRASH IS NOT ADVIZED.
+WHILE THIS LIBRARY IS HIGH PERFORMANCE, IT IS ALSO DANGEROUS.
+USE AT YOUR OWN RISKS.
+"""
+url {
+  src: "https://github.com/UnixJunkie/parany/archive/v10.0.2.tar.gz"
+  checksum: "md5=68eea09ef6c0aa09a00257d3f85edea6"
+}

@@ -2,7 +2,7 @@ opam-version: "2.0"
 synopsis:
   "Official release 4.09.0, compiled with musl-gcc -static and with flambda activated"
 description:
-  "Requires musl-gcc to be installed (package musl on Arch Linux or musl-tools on Debian)"
+  "Requires musl-gcc to be installed (package musl on Arch Linux, musl-tools on Debian, musl-dev on Alpine)"
 maintainer: "platform@lists.ocaml.org"
 authors: "Xavier Leroy and many contributors"
 homepage: "https://ocaml.org"
@@ -16,7 +16,8 @@ depends: [
 ]
 depexts: [
   ["musl-tools"] {os-family = "debian"}
-  ["musl"] {os-distribution = "archlinux"}
+  ["musl"] {os-distribution = "arch"}
+  ["musl-dev"] {os-distribution = "alpine"}
 ]
 conflict-class: "ocaml-core-compiler"
 flags: compiler
@@ -27,8 +28,9 @@ build: [
   [
     "./configure"
     "--prefix=%{prefix}%"
-    "CC=musl-gcc -Os"
-    "ASPP=musl-gcc -c"
+    "CC=musl-gcc" {os-distribution != "alpine"}
+    "CFLAGS=-Os"
+    "ASPP=musl-gcc -c" {os-distribution != "alpine"}
     "--enable-flambda"
     "LIBS=-static"
   ] {os = "openbsd" | os = "freebsd" | os = "macos" | os = "linux"}
