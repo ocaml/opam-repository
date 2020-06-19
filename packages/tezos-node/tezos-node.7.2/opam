@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "tezos-tooling" { with-test & = version }
+  "dune" { >= "1.11" }
+  "tezos-rpc-http-server" { = version }
+  "tezos-validator" { = version }
+  "tezos-embedded-protocol-genesis-carthagenet" { = version }
+  "tezos-embedded-protocol-000-Ps9mPmXa" { = version }
+  "tezos-embedded-protocol-001-PtCJ7pwo" { = version }
+  "tezos-embedded-protocol-002-PsYLVpVv" { = version }
+  "tezos-embedded-protocol-003-PsddFKi3" { = version }
+  "tezos-embedded-protocol-004-Pt24m4xi" { = version }
+  "tezos-embedded-protocol-005-PsBABY5H" { = version }
+  "tezos-embedded-protocol-005-PsBabyM1" { = version }
+  "tezos-embedded-protocol-006-PsCARTHA" { = version }
+  "tezos-mempool-006-PsCARTHA" { = version }
+  "tls"
+]
+depopts: [
+  "tezos-embedded-protocol-genesis" { = version }
+  "tezos-embedded-protocol-demo-noops" { = version }
+  "tezos-embedded-protocol-demo-counter" { = version }
+  "tezos-embedded-protocol-alpha" { = version }
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/bin_node/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: `tezos-node` binary"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v7.2/tezos-v7.2.tar.bz2"
+  checksum: [
+    "sha256=abb52ad63345943d20f3edc4c3507474af94c001c8bf58138f47341942036cec"
+    "sha512=c823ca801cbc4005f5fc6ea5236d93569410c034da3ed32939ef64a0f2c19a34444fac12e13c72e5a1e15a401b655e58ffdbbb66ce0516e5968f621677b96117"
+  ]
+}
