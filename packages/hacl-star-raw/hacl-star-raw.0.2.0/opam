@@ -1,0 +1,32 @@
+opam-version: "2.0"
+synopsis: "Auto-generated low-level OCaml bindings for EverCrypt/HACL*"
+description: """
+This package contains a snapshot of the EverCrypt crypto provider and
+the HACL* library, along with automatically generated Ctypes bindings.
+For a higher-level idiomatic API see the `hacl-star` package, of
+which `hacl-star-raw` is a dependency."""
+maintainer: "Victor Dumitrescu <victor.dumitrescu@nomadic-labs.com>"
+authors: "Victor Dumitrescu <victor.dumitrescu@nomadic-labs.com>"
+license: "Apache-2.0"
+homepage: "https://hacl-star.github.io/"
+bug-reports: "https://github.com/project-everest/hacl-star/issues"
+depends: [
+  "ocaml" {>= "4.05.0"}
+  "ocamlfind" {build}
+  "ctypes"
+  "ctypes-foreign"
+]
+build: [
+  ["sh" "-exc" "cd raw && ./configure"]
+  [make "-C" "raw"]
+]
+install: [make "-C" "raw" "install-hacl-star-raw"]
+dev-repo: "git+https://github.com/project-everest/hacl-star.git"
+url {
+  src:
+    "https://github.com/project-everest/hacl-star/releases/download/ocaml-v0.2.0/hacl-star.0.2.0.tar.gz"
+  checksum: [
+    "md5=19b589ab741a2294da216128ed8d913d"
+    "sha512=a50560d0aa975ec41713d03cc5dd4668953d6de21d7e3cbcd6212b75ea18c92f0d7c0f564391b5be705867d93ff14c594a87e429bb0ed24e338f77c0ee623491"
+  ]
+}
