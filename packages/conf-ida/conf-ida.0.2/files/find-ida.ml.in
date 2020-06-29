@@ -1,4 +1,4 @@
-#load "unix.cma"
+(* #load "unix.cma" *)
 
 open Printf
 
@@ -13,6 +13,8 @@ let os = match "%{os}%" with
   | s -> Other s
 
 let (/) = Filename.concat
+
+let search_timeout = 100
 
 let getenv_opt var =
   try Some (Sys.getenv var)
@@ -56,18 +58,19 @@ let exn_to_string = function
   | Command_failed s -> sprintf "%s" (process_status_to_string s)
   | e -> Printexc.to_string e
 
-let cmd fmt =
-  let run c =
-    try
-      let inp = Unix.open_process_in c in
-      let res = read_all inp in
-      match Unix.close_process_in inp with
-      | Unix.WEXITED 0 -> Some res
-      | s -> raise (Command_failed s)
-    with e ->
-      eprintf "command %s failed: %s\n" c (exn_to_string e);
-      None in
-  ksprintf run fmt
+let run c =
+  try
+    let inp = Unix.open_process_in c in
+    let res = read_all inp in
+    match Unix.close_process_in inp with
+    | Unix.WEXITED 0 -> Some res
+    | s -> raise (Command_failed s)
+  with e ->
+    eprintf "command %s failed: %s\n" c (exn_to_string e);
+    None
+
+let cmd  fmt = ksprintf run fmt
+let cmd' fmt = ksprintf (fun c -> ignore @@ run c) fmt
 
 let find_map xs ~f =
   let rec loop = function
@@ -84,8 +87,8 @@ let which_ida64 () = find_map known_names ~f:(cmd "which %s64")
 
 let find_ida64 path =
   cmd
-    "find %s -executable -type f -name \"ida*64\" 2>/dev/null | sort -n -r"
-    path |> function
+    "timeout %d find %s -executable -type f -name \"ida*64\" 2>/dev/null | sort -n -r"
+    search_timeout path |> function
   | None -> None
   | Some idas ->
     match split idas with
@@ -108,16 +111,20 @@ let locate_linux () =
   | x -> x
 
 let locate_macos () =
+  let filename = "conf-ida.results" in
   find_map known_names ~f:(fun name ->
-      match cmd "mdfind -name %s | sort -n -r" name with
+      cmd' "mdfind -name %s 2> /dev/null > %s &" name filename;
+      cmd' "sleep %d" search_timeout;
+      cmd' "kill $! 2> /dev/null";
+      match cmd "cat %s | sort -n -r" filename with
       | None -> None
       | Some result ->
-         let pathes = split result in
-         try
-           let path =
-             List.find (fun p -> Filename.basename p = name ^ ".app") pathes in
-           Some (sprintf "%s/Contents/MacOS/" path)
-         with Not_found -> None)
+        let pathes = split result in
+        try
+          let path =
+            List.find (fun p -> Filename.basename p = name ^ ".app") pathes in
+          Some (sprintf "%s/Contents/MacOS/" path)
+        with Not_found -> None)
 
 let rec find fs =
   match fs with
