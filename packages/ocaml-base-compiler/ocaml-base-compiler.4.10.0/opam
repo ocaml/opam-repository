@@ -11,6 +11,15 @@ depends: [
   "base-bigarray" {post}
   "base-threads" {post}
 ]
+depopts: [
+  "base-flambda"
+  "base-afl"
+  "base-unsafe-string"
+  "base-no-flat-float-array"
+  "base-frame-pointers"
+  "base-spacetime"
+  "base-no-nativecode"
+]
 conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
@@ -21,6 +30,14 @@ build: [
     "-C"
     "CC=cc" {os = "openbsd" | os = "freebsd" | os = "macos"}
     "ASPP=cc -c" {os = "openbsd" | os = "freebsd" | os = "macos"}
+    "--enable-flambda" {base-flambda:installed}
+    "--with-afl" {base-afl:installed}
+    "--disable-force-safe-string" {base-unsafe-string:installed}
+    "DEFAULT_STRING=unsafe" {base-unsafe-string:installed}
+    "--disable-flat-float-array" {base-no-flat-float-array:installed}
+    "--enable-frame-pointers" {base-frame-pointers:installed}
+    "--enable-spacetime" {base-spacetime:installed}
+    "--disable-native-compiler" {base-no-nativecode:installed}
   ]
   [make "-j%{jobs}%" {os != "cygwin"} "world"]
   [make "-j%{jobs}%" {os != "cygwin"} "world.opt"]
