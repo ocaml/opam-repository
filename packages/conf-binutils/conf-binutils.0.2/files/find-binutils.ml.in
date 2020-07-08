@@ -140,10 +140,6 @@ let of_opam_config var () = match var with
   | "" -> None
   | x  -> Some x
 
-let is_some = function
-  | Some _ -> true
-  | None -> false
-
 let rec first_success = function
   | [] -> None
   | f :: fs ->  match f () with
@@ -151,13 +147,16 @@ let rec first_success = function
     | r -> r
 
 let find_objdump () =
-  first_success
-    [of_opam_config "%{objdump-path}%";
-     of_env "OBJDUMP_PATH";]
+  first_success [
+    of_opam_config "%{objdump-path}%";
+    of_env "OBJDUMP_PATH";
+  ]
 
 let find_cppfilt () =
-  first_success [of_opam_config "%{cxxfilt-path}%";
-                 of_env "CXXFILT_PATH";]
+  first_success [
+    of_opam_config "%{cxxfilt-path}%";
+    of_env "CXXFILT_PATH";
+  ]
 
 let () =
   try
