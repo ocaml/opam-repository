@@ -1,14 +1,25 @@
 open Printf
+open StdLabels
 
-
-type t = {
-  objdump  : string option;
-  cxxfilt  : string option;
-  objdumps : string list;
-  cxxfilts : string list;
+type file = {
+  path : string;
+  dgst : string;
 }
 
+type tool = {
+  test  : string -> bool;
+  main  : file option;
+  files : file list;
+}
+
+module Digests = Set.Make(String)
+module Vars = Map.Make(String)
+
+type t = tool Vars.t
+
 let (/) = Filename.concat
+
+let digest path = Digest.to_hex (Digest.file path)
 
 let read_all ch =
   let buf = Buffer.create 16 in
@@ -31,7 +42,7 @@ let split_on_char sep s =
 
 let split ~on str =
   List.map String.trim (split_on_char on str) |>
-  List.filter (fun s -> s <> "")
+  List.filter ~f:(fun s -> s <> "")
 
 exception Command_failed of Unix.process_status
 
@@ -59,16 +70,9 @@ let cmd fmt =
       None in
   ksprintf run fmt
 
-let split_results fmt =
-  let run c =
-    match cmd "%s" c with
-    | None -> []
-    | Some s -> split ~on:'\n' s in
-  ksprintf run fmt
-
-let string_of_list xs =
-  List.fold_left (fun acc x ->
-      sprintf "%s\"%s\"; " acc x) "[" xs ^ "]"
+let string_of_files xs =
+  List.fold_left xs ~f:(fun s {path} ->
+      sprintf "%s\"%s\"; " s path) ~init:"[" ^ "]"
 
 let is_none = function
   | None -> true
@@ -78,57 +82,81 @@ let failed_to_find cmd =
   eprintf "%s not found\n" cmd;
   exit 1
 
-let write {objdump; objdumps; cxxfilt; cxxfilts;} =
-  if is_none objdump then failed_to_find "objdump";
-  if is_none cxxfilt then failed_to_find "c++filt";
-  let digest path = Digest.to_hex (Digest.file path) in
-  let depends = function
-    | None -> ""
-    | Some file ->
-      sprintf "[ %S %S ]" file (digest file) in
-  let get x = match x with
-    | None -> ""
-    | Some x -> x in
-  let file_depends =
-    let deps = String.concat " " [depends objdump; depends cxxfilt] in
-    if deps = "" then ""
-    else sprintf "file-depends: [ %s ]" deps in
+let dedup main files =
+  fst @@
+  List.fold_left files
+    ~init:([], Digests.add main.dgst Digests.empty)
+    ~f:(fun ((files, digests) as acc) ({dgst} as file) ->
+        if Digests.mem dgst digests
+        then acc
+        else file :: files, Digests.add dgst digests)
+
+let dependencies ~init files =
+  List.fold_left files ~init ~f:(fun depends {path; dgst} ->
+      sprintf " [ %S %S ] " path dgst :: depends)
+
+let write t =
+  let deps, vars =
+    Vars.fold (fun name {main; files} (deps, vars) ->
+        let main, files = match main, files with
+          | None, [] -> failed_to_find name
+          | None, main :: files -> main, files
+          | Some main, files -> main, files in
+        let files = dedup main files in
+        let deps = dependencies ~init:deps (main :: files) in
+        let main = sprintf "%s: %S" name main.path in
+        let files = sprintf "%ss: %S" name (string_of_files files) in
+        deps, main :: files :: vars) t ([], [])  in
   let oc = open_out "%{_:name}%.config" in
+  let deps = String.concat "\n" deps in
+  let vars = String.concat "\n" vars in
   fprintf oc {|
 opam-version: "2.0"
-%s
+file-depends: [ %s ]
 variables {
-  cxxfilt: %S
-  cxxfilts: %S
-  objdump: %S
-  objdumps: %S
+%s
 }
-|} file_depends
-    (get cxxfilt) (string_of_list cxxfilts)
-    (get objdump) (string_of_list objdumps);
+|} deps vars;
   close_out oc
-
-let which name () = cmd "which %s" name
 
 let of_env var () =
   try Some (Sys.getenv var)
   with Not_found -> None
 
-let cellar () = cmd "brew --cellar"
-
-let find_in_cellar name () =
-  match cmd "brew --cellar" with
-  | None -> None
-  | Some cellar ->
-    match cmd "find %s/binutils -name %s" cellar name with
-    | None -> None
-    | Some s -> match split ~on:'\n' s with
-      | [] -> None
-      | x :: _ -> Some x
-
 let of_opam_config var () = match var with
   | "" -> None
   | x  -> Some x
+
+let match_files path files test =
+  Array.fold_left files ~init:[] ~f:(fun acc file ->
+      if test file then
+        let path = path / file in
+        {path; dgst = digest path} :: acc
+      else acc)
+
+let update t path  =
+  if Sys.is_directory path then
+    let files = Sys.readdir path in
+    Vars.fold (fun name tool t ->
+        let files = match_files path files tool.test in
+        Vars.add name {tool with files = tool.files @ files} t) t t
+  else t
+
+let collect t pathes = List.fold_left pathes ~f:update ~init:t
+
+let collect_leaf_folders path =
+  let collect_folders path =
+    Sys.readdir path |>
+    Array.fold_left ~init:[] ~f:(fun acc d ->
+        let path' = path / d in
+        if Sys.is_directory path' then path' :: acc
+        else acc) in
+  let rec read acc path =
+    match collect_folders path with
+    | [] -> path :: acc
+    | subdirs -> List.fold_left subdirs ~f:read ~init:acc in
+  collect_folders path |>
+  List.fold_left ~init:[] ~f:read
 
 let rec first_success = function
   | [] -> None
@@ -148,86 +176,53 @@ let find_cxxfilt () =
     of_env "CXXFILT_PATH";
   ]
 
+let is_dir p = Sys.file_exists p && Sys.is_directory p
+
 let all_pathes () =
   match of_env "PATH" () with
   | None -> []
-  | Some r -> split r ~on:':'
-
-let filter_objdumps objs =
-  let has_prefix str pref =
-    let len = String.length pref in
-    len <= String.length str &&
-    String.(sub str 0 len = pref) in
-  List.fold_left (fun acc obj ->
-      let file = Filename.basename obj in
-      if file = "objdump" || file = "gobjdump" || has_prefix file "llvm"
-      then acc
-      else
-      if Filename.check_suffix file "-objdump" then
-        Filename.chop_suffix file "-objdump" :: acc
-      else acc) [] objs
+  | Some r -> List.filter ~f:is_dir (split r ~on:':')
 
 let has_prefix str pref =
   let len = String.length pref in
   len <= String.length str &&
   String.(sub str 0 len = pref)
 
-let collect t pathes =
-  let is_known fullpath = function
-    | None -> false
-    | Some x -> x = fullpath in
-  let is_objdump path file =
-    Filename.check_suffix file "objdump" &&
-    not (is_known (path/file) t.objdump) &&
-    not (has_prefix file "llvm") in
-  let is_cxxfilt path file =
-    not (is_known (path/file) t.cxxfilt) &&
-    Filename.check_suffix file "c++filt" in
-  let find t path =
-    if Sys.file_exists path && Sys.is_directory path then
-      Sys.readdir path |>
-      Array.fold_left (fun t file ->
-          if is_objdump path file then
-            {t with objdumps = path / file :: t.objdumps}
-          else if is_cxxfilt path file then
-            {t with cxxfilts = path / file :: t.cxxfilts}
-          else t) t
-    else t in
-  List.fold_left find t pathes
+let add_var name ~file ~test t =
+  let main = match file with
+    | None -> None
+    | Some path -> Some {path; dgst = digest path }  in
+  Vars.add name {test; main; files = []} t
+
+let is_objdump file =
+  Filename.check_suffix "objdump" file &&
+  not (has_prefix file "llvm")
+
+let is_cxxfilt file = Filename.check_suffix file "c++filt"
+
+let t =
+  add_var "objdump"
+    ~file:(find_objdump ())
+    ~test:is_objdump
+    Vars.empty |>
+  add_var "cxxfilt"
+    ~file:(find_cxxfilt ())
+    ~test:is_cxxfilt
 
 let () =
   try
-    match "%{os}%" with
-    | "linux" ->
-      let objdump = first_success [
-          find_objdump;
-          which "objdump"] in
-      let cxxfilt = first_success [
-          find_cxxfilt;
-          which "c++filt"] in
-      let t = collect
-          {objdump; cxxfilt; objdumps=[]; cxxfilts=[]}
-          (all_pathes ()) in
-      write t
-    | "macos" ->
-      let objdump = first_success [
-          find_objdump;
-          which "gobjdump";
-          find_in_cellar "gobjdump"; ] in
-      let cxxfilt = first_success [
-          find_cxxfilt;
-          which "c++filt";
-          find_in_cellar "c++filt"; ] in
-      let pathes = match cellar () with
-        | None -> all_pathes ()
-        | Some cellar -> cellar :: all_pathes () in
-      let t = collect
-          {objdump; cxxfilt; objdumps=[]; cxxfilts=[]}
-          pathes in
-      write t
-    | s ->
-      eprintf "unsupported OS %s\n" s;
-      exit 1
+    let pathes = match "%{os}%" with
+      | "linux" -> all_pathes ()
+      | "macos" ->
+        let pathes = match cmd "brew --cellar" with
+          | None -> all_pathes ()
+          | Some cellar ->
+            collect_leaf_folders cellar @ all_pathes () in
+        pathes
+      | s ->
+        eprintf "unsupported OS %s\n" s;
+        exit 1 in
+    write @@ collect t pathes
   with e ->
     eprintf "build failed: %s\n" (Printexc.to_string e);
     exit 1
