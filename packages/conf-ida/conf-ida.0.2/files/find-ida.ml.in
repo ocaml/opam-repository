@@ -109,10 +109,9 @@ let run c =
 let cmd fmt = ksprintf run fmt
 
 let known_names = ["ida"; "idaq";]
+let known_names64 = List.map known_names ~f:(fun x -> x ^ "64")
 
 let which_ida64 () = List.find_map known_names ~f:(cmd "which %s64")
-
-let known_names = known_names @ List.map known_names ~f:(fun x -> x ^ "64")
 
 let is_dir x = Sys.file_exists x && Sys.is_directory x
 
@@ -121,23 +120,23 @@ let all_pathes () =
   | None -> []
   | Some r -> List.filter ~f:is_dir (split r ~on:':')
 
-let contains_ida path =
+let contains_ida64 path =
   Sys.readdir path |>
-  Array.exists ~f:(fun file -> List.mem ~set:known_names file)
+  Array.exists ~f:(fun file -> List.mem ~set:known_names64 file)
 
 let find_at_home () =
   match getenv_opt "HOME" with
   | None -> None
   | Some home ->
     Sys.readdir home |>
-    Array.find ~f:(fun p -> contains_ida @@ home / p)
+    Array.find ~f:(fun p -> contains_ida64 @@ home / p)
 
 let is_some = function
   | None -> false
   | Some _ -> true
 
 let locate_linux () =
-  match List.find_opt ~f:contains_ida @@ all_pathes () with
+  match List.find_opt ~f:contains_ida64 @@ all_pathes () with
   | None -> find_at_home ()
   | Some _ as x -> x
 
@@ -145,6 +144,12 @@ let has_prefix str pref =
   let len = String.length pref in
   len <= String.length str &&
   String.(sub str 0 len = pref)
+
+let rec first_success = function
+  | [] -> None
+  | f :: fs -> match f () with
+    | None -> first_success fs
+    | x -> x
 
 let find_app path () =
   if not (is_dir path) then None
@@ -162,22 +167,15 @@ let find_app path () =
       if Sys.file_exists path' then Some path'
       else None
 
-let rec first_success = function
-  | [] -> None
-  | f :: fs -> match f () with
-    | None -> first_success fs
-    | x -> x
-
 let locate_macos () =
   let home = match getenv_opt "HOME" with
     | None -> ""
     | Some home -> home in
-  let places = [
+  first_success [
     find_app "/Applications";
     find_app @@ home / "Applications";
     find_app home;
-  ] in
-  first_success places
+  ]
 
 let locate () =
   match os with
