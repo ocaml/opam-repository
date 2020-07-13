@@ -1,7 +1,6 @@
 open Printf
 open StdLabels
 
-
 module Array = struct
   include Array
 
@@ -35,7 +34,6 @@ module List = struct
         | None -> loop tl
         | x -> x in
     loop xs
-
 end
 
 
@@ -50,8 +48,6 @@ let os = match "%{os}%" with
   | s -> Other s
 
 let (/) = Filename.concat
-
-let search_timeout = 100
 
 let getenv_opt var =
   try Some (Sys.getenv var)
@@ -111,8 +107,7 @@ let cmd fmt = ksprintf run fmt
 let known_names = ["ida"; "idaq";]
 let known_names64 = List.map known_names ~f:(fun x -> x ^ "64")
 
-let which_ida64 () = List.find_map known_names ~f:(cmd "which %s64")
-
+let which_ida64 () = List.find_map known_names64 ~f:(cmd "which %s")
 let is_dir x = Sys.file_exists x && Sys.is_directory x
 
 let all_pathes () =
@@ -147,7 +142,8 @@ let has_prefix str pref =
 
 let rec first_success = function
   | [] -> None
-  | f :: fs -> match f () with
+  | f :: fs ->
+    match f () with
     | None -> first_success fs
     | x -> x
 
