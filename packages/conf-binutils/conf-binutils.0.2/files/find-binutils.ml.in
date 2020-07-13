@@ -144,19 +144,20 @@ let update t path  =
 
 let collect t pathes = List.fold_left pathes ~f:update ~init:t
 
-let collect_leaf_folders path =
-  let collect_folders path =
-    Sys.readdir path |>
-    Array.fold_left ~init:[] ~f:(fun acc d ->
-        let path' = path / d in
-        if Sys.is_directory path' then path' :: acc
-        else acc) in
-  let rec read acc path =
-    match collect_folders path with
-    | [] -> path :: acc
-    | subdirs -> List.fold_left subdirs ~f:read ~init:acc in
-  collect_folders path |>
-  List.fold_left ~init:[] ~f:read
+let search t path =
+  let rec loop t path =
+    if Sys.is_directory path
+    then
+      Sys.readdir path |>
+      Array.fold_left ~init:t ~f:(fun t file -> loop t @@ path / file)
+    else
+      Vars.fold (fun name tool t ->
+          if tool.test (Filename.basename path)
+          then
+            let file = {path; dgst = digest path} in
+            Vars.add name {tool with files = tool.files @ [file]} t
+          else t) t t in
+  loop t path
 
 let rec first_success = function
   | [] -> None
@@ -195,7 +196,7 @@ let add_var name ~file ~test t =
   Vars.add name {test; main; files = []} t
 
 let is_objdump file =
-  Filename.check_suffix "objdump" file &&
+  Filename.check_suffix file "objdump" &&
   not (has_prefix file "llvm")
 
 let is_cxxfilt file = Filename.check_suffix file "c++filt"
@@ -211,18 +212,16 @@ let t =
 
 let () =
   try
-    let pathes = match "%{os}%" with
-      | "linux" -> all_pathes ()
-      | "macos" ->
-        let pathes = match cmd "brew --cellar" with
-          | None -> all_pathes ()
-          | Some cellar ->
-            collect_leaf_folders cellar @ all_pathes () in
-        pathes
-      | s ->
-        eprintf "unsupported OS %s\n" s;
-        exit 1 in
-    write @@ collect t pathes
+    match "%{os}%" with
+    | "linux" -> write @@ collect t @@ all_pathes ()
+    | "macos" ->
+      let t = match cmd "brew --cellar" with
+        | None -> t
+        | Some cellar -> search t cellar in
+      write @@ collect t @@ all_pathes ()
+    | s ->
+      eprintf "unsupported OS %s\n" s;
+      exit 1
   with e ->
     eprintf "build failed: %s\n" (Printexc.to_string e);
     exit 1
