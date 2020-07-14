@@ -111,8 +111,9 @@ let which_ida64 () = List.find_map known_names64 ~f:(cmd "which %s")
 let is_dir x = Sys.file_exists x && Sys.is_directory x
 
 let contains_ida64 path =
-  Sys.readdir path |>
-  Array.exists ~f:(fun file -> List.mem ~set:known_names64 file)
+  Sys.is_directory path &&
+  Array.exists (Sys.readdir path)
+    ~f:(fun file -> List.mem ~set:known_names64 file)
 
 let find_at_home () =
   match getenv_opt "HOME" with
