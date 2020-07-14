@@ -120,7 +120,10 @@ let find_at_home () =
   | None -> None
   | Some home ->
     Sys.readdir home |>
-    Array.find ~f:(fun p -> contains_ida64 @@ home / p)
+    Array.find_map ~f:(fun p ->
+        let path = home / p in
+        if contains_ida64 path then Some path
+        else None)
 
 let is_some = function
   | None -> false
