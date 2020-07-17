@@ -10,7 +10,8 @@ find_llvm_config () {
         fi
         for llvm_config in \
             llvm-config-${version} llvm-config-${version}.0 \
-            llvm-config${version}0 llvm-config-mp-$version \
+            llvm-config${version}0 llvm-config${version} \
+            llvm-config-mp-$version \
             llvm-config-mp-${version}.0 $brew_llvm_config \
             /usr/lib64/llvm/${version}/bin/llvm-config \
             /usr/lib/llvm/${version}/bin/llvm-config \
