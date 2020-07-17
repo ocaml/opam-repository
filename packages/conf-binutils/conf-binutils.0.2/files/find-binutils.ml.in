@@ -1,25 +1,6 @@
+#load "unix.cma"
+
 open Printf
-open StdLabels
-
-type file = {
-  path : string;
-  dgst : string;
-}
-
-type tool = {
-  test  : string -> bool;
-  main  : file option;
-  files : file list;
-}
-
-module Digests = Set.Make(String)
-module Vars = Map.Make(String)
-
-type t = tool Vars.t
-
-let (/) = Filename.concat
-
-let digest path = Digest.to_hex (Digest.file path)
 
 let read_all ch =
   let buf = Buffer.create 16 in
@@ -40,9 +21,9 @@ let split_on_char sep s =
   done;
   String.sub s 0 !j :: !r
 
-let split ~on str =
-  List.map String.trim (split_on_char on str) |>
-  List.filter ~f:(fun s -> s <> "")
+let split str =
+  List.map String.trim (split_on_char '\n' str) |>
+  List.filter (fun s -> s <> "")
 
 exception Command_failed of Unix.process_status
 
@@ -70,9 +51,16 @@ let cmd fmt =
       None in
   ksprintf run fmt
 
-let string_of_files xs =
-  List.fold_left xs ~f:(fun s {path} ->
-      sprintf "%s\"%s\"; " s path) ~init:"[" ^ "]"
+let split_results fmt =
+  let run c =
+    match cmd "%s" c with
+    | None -> []
+    | Some s -> split s in
+  ksprintf run fmt
+
+let string_of_targets targets =
+  List.fold_left (fun acc x ->
+      sprintf "%s\"%s\"; " acc x) "[" targets ^ "]"
 
 let is_none = function
   | None -> true
@@ -82,143 +70,74 @@ let failed_to_find cmd =
   eprintf "%s not found\n" cmd;
   exit 1
 
-let dedup main files =
-  fst @@
-  List.fold_left files
-    ~init:([], Digests.add main.dgst Digests.empty)
-    ~f:(fun ((files, digests) as acc) ({dgst} as file) ->
-        if Digests.mem dgst digests
-        then acc
-        else file :: files, Digests.add dgst digests)
-
-let dependencies ~init files =
-  List.fold_left files ~init ~f:(fun depends {path; dgst} ->
-      sprintf " [ %S %S ] " path dgst :: depends)
-
-let write t =
-  let deps, vars =
-    Vars.fold (fun name {main; files} (deps, vars) ->
-        let main, files = match main, files with
-          | None, [] -> failed_to_find name
-          | None, main :: files -> main, files
-          | Some main, files -> main, files in
-        let files = dedup main files in
-        let deps = dependencies ~init:deps (main :: files) in
-        let main = sprintf "%s: %S" name main.path in
-        let files = sprintf "%ss: %S" name (string_of_files files) in
-        deps, main :: files :: vars) t ([], [])  in
+let write objdump cxxfilt targets =
+  if is_none objdump then failed_to_find "objdump";
+  if is_none cxxfilt then failed_to_find "cxxfilt";
+  let digest path = Digest.to_hex (Digest.file path) in
+  let depends = function
+    | None -> ""
+    | Some file ->
+      sprintf "[ %S %S ]" file (digest file) in
+  let get x = match x with
+    | None -> ""
+    | Some x -> x in
+  let file_depends =
+    let deps = String.concat " " [depends objdump; depends cxxfilt] in
+    if deps = "" then ""
+    else sprintf "file-depends: [ %s ]" deps in
+  let targets = string_of_targets targets in
   let oc = open_out "%{_:name}%.config" in
-  let deps = String.concat "\n" deps in
-  let vars = String.concat "\n" vars in
+  let cxxfilt = get cxxfilt in
+  let objdump = get objdump in
   fprintf oc {|
 opam-version: "2.0"
-file-depends: [ %s ]
-variables {
 %s
+variables {
+  cxxfilt: %S
+  objdump: %S
+  targets: %S
 }
-|} deps vars;
+|} file_depends cxxfilt objdump targets;
   close_out oc
 
-let of_env var () =
-  try Some (Sys.getenv var)
-  with Not_found -> None
+let collect_objdumps () =
+  let find where =
+    split_results
+      "find %s -name \"*objdump\" -executable -type f" where in
+  find "/bin" @ find "/usr"
 
-let of_opam_config var () = match var with
-  | "" -> None
-  | x  -> Some x
+let collect_targets objdumps =
+  let has_prefix str pref =
+    let len = String.length pref in
+    len <= String.length str &&
+    String.(sub str 0 len = pref) in
+  List.fold_left (fun acc obj ->
+      let file = Filename.basename obj in
+      if file = "objdump" || file = "gobjdump" || has_prefix file "llvm"
+      then acc
+      else
+      if Filename.check_suffix file "-objdump" then
+        Filename.chop_suffix file "-objdump" :: acc
+      else acc) [] objdumps
 
-let match_files path files test =
-  Array.fold_left files ~init:[] ~f:(fun acc file ->
-      if test file then
-        let path = path / file in
-        {path; dgst = digest path} :: acc
-      else acc)
-
-let update t path  =
-  if Sys.is_directory path then
-    let files = Sys.readdir path in
-    Vars.fold (fun name tool t ->
-        let files = match_files path files tool.test in
-        Vars.add name {tool with files = tool.files @ files} t) t t
-  else t
-
-let collect t pathes = List.fold_left pathes ~f:update ~init:t
-
-let search t path =
-  let rec loop t path =
-    if Sys.is_directory path
-    then
-      Sys.readdir path |>
-      Array.fold_left ~init:t ~f:(fun t file -> loop t @@ path / file)
-    else
-      Vars.fold (fun name tool t ->
-          if tool.test (Filename.basename path)
-          then
-            let file = {path; dgst = digest path} in
-            Vars.add name {tool with files = tool.files @ [file]} t
-          else t) t t in
-  loop t path
-
-let rec first_success = function
-  | [] -> None
-  | f :: fs ->  match f () with
-    | None -> first_success fs
-    | r -> r
-
-let find_objdump () =
-  first_success [
-    of_opam_config "%{objdump-path}%";
-    of_env "OBJDUMP_PATH";
-  ]
-
-let find_cxxfilt () =
-  first_success [
-    of_opam_config "%{cxxfilt-path}%";
-    of_env "CXXFILT_PATH";
-  ]
-
-let is_dir p = Sys.file_exists p && Sys.is_directory p
-
-let all_pathes () =
-  match of_env "PATH" () with
-  | None -> []
-  | Some r -> List.filter ~f:is_dir (split r ~on:':')
-
-let has_prefix str pref =
-  let len = String.length pref in
-  len <= String.length str &&
-  String.(sub str 0 len = pref)
-
-let add_var name ~file ~test t =
-  let main = match file with
-    | None -> None
-    | Some path -> Some {path; dgst = digest path }  in
-  Vars.add name {test; main; files = []} t
-
-let is_objdump file =
-  Filename.check_suffix file "objdump" &&
-  not (has_prefix file "llvm")
-
-let is_cxxfilt file = Filename.check_suffix file "c++filt"
-
-let t =
-  add_var "objdump"
-    ~file:(find_objdump ())
-    ~test:is_objdump
-    Vars.empty |>
-  add_var "cxxfilt"
-    ~file:(find_cxxfilt ())
-    ~test:is_cxxfilt
+let which = cmd "which %s"
 
 let () =
   try
     match "%{os}%" with
-    | "linux" -> write @@ collect t @@ all_pathes ()
+    | "linux" ->
+      let objdump = which "objdump" in
+      let cxxfilt = which "c++filt" in
+      let objdumps = collect_objdumps () in
+      let targets = collect_targets objdumps in
+      write objdump cxxfilt targets
     | "macos" ->
-      let t = match cmd "brew --cellar" with
-        | None -> t
-        | Some cellar -> search t cellar in
-      write @@ collect t @@ all_pathes ()
+      let objdump= which "gobjdump" in
+      let cxxfilt = which "c++filt" in
+      let objdumps = split_results "mdfind -name objdump" in
+      let objdumps = List.filter (fun x -> not (Sys.is_directory x)) objdumps in
+      let targets = collect_targets objdumps in
+      write objdump cxxfilt targets
     | s ->
       eprintf "unsupported OS %s\n" s;
       exit 1
