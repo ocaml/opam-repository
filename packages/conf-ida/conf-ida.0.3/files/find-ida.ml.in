@@ -55,19 +55,17 @@ let getenv_opt var =
 
 let headless = os = Linux && getenv_opt "DISPLAY" = None
 
-let read_all ch =
-  let buf = Buffer.create 16 in
-  let rec loop () =
-    match input_char ch with
-    | ch -> Buffer.add_char buf ch; loop ()
-    | exception End_of_file -> String.trim (Buffer.contents buf) in
-  loop ()
+let input_all ch =
+  let buf = Buffer.create 4096 in
+  let rec read () = Buffer.add_channel buf ch 4096; read () in
+  try read ()
+  with End_of_file -> String.trim @@ Buffer.contents buf
 
 let split_on_char sep s =
   let r = ref [] in
   let j = ref (String.length s) in
   for i = String.length s - 1 downto 0 do
-    if String.get s i = sep then begin
+    if s.[i] = sep then begin
       r := String.sub s (i + 1) (!j - i - 1) :: !r;
       j := i
     end
@@ -94,7 +92,7 @@ let exn_to_string = function
 let run c =
   try
     let inp = Unix.open_process_in c in
-    let res = read_all inp in
+    let res = input_all inp in
     match Unix.close_process_in inp with
     | Unix.WEXITED 0 -> Some res
     | s -> raise (Command_failed s)
@@ -124,10 +122,6 @@ let find_at_home () =
         let path = home / p in
         if contains_ida64 path then Some path
         else None)
-
-let is_some = function
-  | None -> false
-  | Some _ -> true
 
 let locate_linux () = find_at_home ()
 
