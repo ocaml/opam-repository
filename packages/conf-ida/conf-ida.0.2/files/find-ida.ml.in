@@ -1,41 +1,6 @@
+#load "unix.cma"
+
 open Printf
-open StdLabels
-
-module Array = struct
-  include Array
-
-  let find t ~f =
-    let length = length t in
-    let rec loop i =
-      if i >= length then None
-      else if f t.(i) then Some t.(i)
-      else loop (i + 1) in
-    loop 0
-
-  let find_map t ~f =
-    let length = length t in
-    let rec loop i =
-      if i >= length then None
-      else
-        match f t.(i) with
-        | None -> loop (i + 1)
-        | Some _ as res -> res in
-    loop 0
-end
-
-module List = struct
-  include List
-
-  let find_map xs ~f =
-    let rec loop = function
-      | [] -> None
-      | hd :: tl ->
-        match f hd with
-        | None -> loop tl
-        | x -> x in
-    loop xs
-end
-
 
 type sys =
   | MacOs
@@ -74,9 +39,9 @@ let split_on_char sep s =
   done;
   String.sub s 0 !j :: !r
 
-let split ~on str =
-  List.map ~f:String.trim (split_on_char on str) |>
-  List.filter ~f:(fun s -> s <> "")
+let split str =
+  List.map String.trim (split_on_char '\n' str) |>
+  List.filter (fun s -> s <> "")
 
 exception Command_failed of Unix.process_status
 
@@ -91,88 +56,81 @@ let exn_to_string = function
   | Command_failed s -> sprintf "%s" (process_status_to_string s)
   | e -> Printexc.to_string e
 
-let run c =
-  try
-    let inp = Unix.open_process_in c in
-    let res = read_all inp in
-    match Unix.close_process_in inp with
-    | Unix.WEXITED 0 -> Some res
-    | s -> raise (Command_failed s)
-  with e ->
-    eprintf "command %s failed: %s\n" c (exn_to_string e);
-    None
+let cmd fmt =
+  let run c =
+    try
+      let inp = Unix.open_process_in c in
+      let res = read_all inp in
+      match Unix.close_process_in inp with
+      | Unix.WEXITED 0 -> Some res
+      | s -> raise (Command_failed s)
+    with e ->
+      eprintf "command %s failed: %s\n" c (exn_to_string e);
+      None in
+  ksprintf run fmt
 
-let cmd fmt = ksprintf run fmt
+let find_map xs ~f =
+  let rec loop = function
+    | [] -> None
+    | hd :: tl ->
+      match f hd with
+      | None -> loop tl
+      | x -> x in
+  loop xs
 
-let known_names = ["ida"; "idaq";]
-let known_names64 = List.map known_names ~f:(fun x -> x ^ "64")
+let known_names = ["ida"; "idaq"]
 
-let which_ida64 () = List.find_map known_names64 ~f:(cmd "which %s")
-let is_dir x = Sys.file_exists x && Sys.is_directory x
+let which_ida64 () = find_map known_names ~f:(cmd "which %s64")
 
-let contains_ida64 path =
-  Sys.is_directory path &&
-  Array.exists (Sys.readdir path)
-    ~f:(fun file -> List.mem ~set:known_names64 file)
+let find_ida64 path =
+  cmd
+    "find %s -executable -type f -name \"ida*64\" 2>/dev/null | sort -n -r"
+    path |> function
+  | None -> None
+  | Some idas ->
+    match split idas with
+    | [] -> None
+    | idas ->
+      let known = List.map (fun x -> x ^ "64") known_names in
+      find_map idas ~f:(fun file ->
+          if List.mem (Filename.basename file) known then
+            Some file
+          else None)
 
 let find_at_home () =
   match getenv_opt "HOME" with
   | None -> None
-  | Some home ->
-    Sys.readdir home |>
-    Array.find_map ~f:(fun p ->
-        let path = home / p in
-        if contains_ida64 path then Some path
-        else None)
+  | Some home -> find_ida64 home
 
-let is_some = function
-  | None -> false
-  | Some _ -> true
+let locate_linux () =
+  match find_at_home () with
+  | None -> find_ida64 "/"
+  | x -> x
 
-let locate_linux () = find_at_home ()
+let locate_macos () =
+  find_map known_names ~f:(fun name ->
+      match cmd "mdfind -name %s | sort -n -r" name with
+      | None -> None
+      | Some result ->
+         let pathes = split result in
+         try
+           let path =
+             List.find (fun p -> Filename.basename p = name ^ ".app") pathes in
+           Some (sprintf "%s/Contents/MacOS/" path)
+         with Not_found -> None)
 
-let has_prefix str pref =
-  let len = String.length pref in
-  len <= String.length str &&
-  String.(sub str 0 len = pref)
-
-let rec first_success = function
+let rec find fs =
+  match fs with
   | [] -> None
   | f :: fs ->
     match f () with
-    | None -> first_success fs
+    | None -> find fs
     | x -> x
-
-let find_app path () =
-  if not (is_dir path) then None
-  else
-    Sys.readdir path |>
-    Array.find ~f:(fun name ->
-        Sys.is_directory (path / name) &&
-        Filename.check_suffix name ".app" &&
-        List.exists known_names ~f:(fun known ->
-            has_prefix (String.lowercase_ascii name) known))
-    |> function
-    | None -> None
-    | Some dir ->
-      let path' = path / dir / "Contents/MacOS/" in
-      if Sys.file_exists path' then Some path'
-      else None
-
-let locate_macos () =
-  let home = match getenv_opt "HOME" with
-    | None -> ""
-    | Some home -> home in
-  first_success [
-    find_app "/Applications";
-    find_app @@ home / "Applications";
-    find_app home;
-  ]
 
 let locate () =
   match os with
-  | MacOs -> first_success [which_ida64; locate_macos]
-  | Linux -> first_success [which_ida64; locate_linux]
+  | MacOs -> find [which_ida64; locate_macos]
+  | Linux -> find [which_ida64; locate_linux]
   | Other system ->
     eprintf
       "warning: we don't know how to find programs on %s!\n" system;
@@ -205,7 +163,7 @@ let of_env () = getenv_opt "IDA_PATH"
 
 let () =
   try
-    match first_success [ of_config; of_env; locate; ] with
+    match find [ of_config; of_env; locate; ] with
     | Some path -> write path
     | None ->
       eprintf "failed to locate IDA Pro\n";

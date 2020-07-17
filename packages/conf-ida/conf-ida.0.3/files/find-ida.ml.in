@@ -1,0 +1,215 @@
+open Printf
+open StdLabels
+
+module Array = struct
+  include Array
+
+  let find t ~f =
+    let length = length t in
+    let rec loop i =
+      if i >= length then None
+      else if f t.(i) then Some t.(i)
+      else loop (i + 1) in
+    loop 0
+
+  let find_map t ~f =
+    let length = length t in
+    let rec loop i =
+      if i >= length then None
+      else
+        match f t.(i) with
+        | None -> loop (i + 1)
+        | Some _ as res -> res in
+    loop 0
+end
+
+module List = struct
+  include List
+
+  let find_map xs ~f =
+    let rec loop = function
+      | [] -> None
+      | hd :: tl ->
+        match f hd with
+        | None -> loop tl
+        | x -> x in
+    loop xs
+end
+
+
+type sys =
+  | MacOs
+  | Linux
+  | Other of string
+
+let os = match "%{os}%" with
+  | "macos" -> MacOs
+  | "linux" -> Linux
+  | s -> Other s
+
+let (/) = Filename.concat
+
+let getenv_opt var =
+  try Some (Sys.getenv var)
+  with Not_found -> None
+
+let headless = os = Linux && getenv_opt "DISPLAY" = None
+
+let read_all ch =
+  let buf = Buffer.create 16 in
+  let rec loop () =
+    match input_char ch with
+    | ch -> Buffer.add_char buf ch; loop ()
+    | exception End_of_file -> String.trim (Buffer.contents buf) in
+  loop ()
+
+let split_on_char sep s =
+  let r = ref [] in
+  let j = ref (String.length s) in
+  for i = String.length s - 1 downto 0 do
+    if String.get s i = sep then begin
+      r := String.sub s (i + 1) (!j - i - 1) :: !r;
+      j := i
+    end
+  done;
+  String.sub s 0 !j :: !r
+
+let split ~on str =
+  List.map ~f:String.trim (split_on_char on str) |>
+  List.filter ~f:(fun s -> s <> "")
+
+exception Command_failed of Unix.process_status
+
+let process_status_to_string s =
+  let open Unix in
+  match s with
+  | WEXITED i -> sprintf "exit status %d" 1
+  | WSTOPPED i -> sprintf "proccess was stopped by signal %d" i
+  | WSIGNALED i -> sprintf "proccess was killed by signal %d" i
+
+let exn_to_string = function
+  | Command_failed s -> sprintf "%s" (process_status_to_string s)
+  | e -> Printexc.to_string e
+
+let run c =
+  try
+    let inp = Unix.open_process_in c in
+    let res = read_all inp in
+    match Unix.close_process_in inp with
+    | Unix.WEXITED 0 -> Some res
+    | s -> raise (Command_failed s)
+  with e ->
+    eprintf "command %s failed: %s\n" c (exn_to_string e);
+    None
+
+let cmd fmt = ksprintf run fmt
+
+let known_names = ["ida"; "idaq";]
+let known_names64 = List.map known_names ~f:(fun x -> x ^ "64")
+
+let which_ida64 () = List.find_map known_names64 ~f:(cmd "which %s")
+let is_dir x = Sys.file_exists x && Sys.is_directory x
+
+let contains_ida64 path =
+  Sys.is_directory path &&
+  Array.exists (Sys.readdir path)
+    ~f:(fun file -> List.mem ~set:known_names64 file)
+
+let find_at_home () =
+  match getenv_opt "HOME" with
+  | None -> None
+  | Some home ->
+    Sys.readdir home |>
+    Array.find_map ~f:(fun p ->
+        let path = home / p in
+        if contains_ida64 path then Some path
+        else None)
+
+let is_some = function
+  | None -> false
+  | Some _ -> true
+
+let locate_linux () = find_at_home ()
+
+let has_prefix str pref =
+  let len = String.length pref in
+  len <= String.length str &&
+  String.(sub str 0 len = pref)
+
+let rec first_success = function
+  | [] -> None
+  | f :: fs ->
+    match f () with
+    | None -> first_success fs
+    | x -> x
+
+let find_app path () =
+  if not (is_dir path) then None
+  else
+    Sys.readdir path |>
+    Array.find ~f:(fun name ->
+        Sys.is_directory (path / name) &&
+        Filename.check_suffix name ".app" &&
+        List.exists known_names ~f:(fun known ->
+            has_prefix (String.lowercase_ascii name) known))
+    |> function
+    | None -> None
+    | Some dir ->
+      let path' = path / dir / "Contents/MacOS/" in
+      if Sys.file_exists path' then Some path'
+      else None
+
+let locate_macos () =
+  let home = match getenv_opt "HOME" with
+    | None -> ""
+    | Some home -> home in
+  first_success [
+    find_app "/Applications";
+    find_app @@ home / "Applications";
+    find_app home;
+  ]
+
+let locate () =
+  match os with
+  | MacOs -> first_success [which_ida64; locate_macos]
+  | Linux -> first_success [which_ida64; locate_linux]
+  | Other system ->
+    eprintf
+      "warning: we don't know how to find programs on %s!\n" system;
+    exit 1
+
+let write path =
+  let dir, file_depends =
+    if Sys.is_directory path then path, ""
+    else
+      Filename.dirname path,
+      sprintf "file-depends: [ [ %S %S ] ]\n"
+        path (Digest.to_hex (Digest.file path)) in
+  let oc = open_out "%{_:name}%.config" in
+  fprintf oc {|
+opam-version: "2.0"
+%s
+variables {
+  path: %S
+  headless: %b
+}
+|} file_depends dir headless;
+  close_out oc
+
+let of_config () =
+  let path = "%{ida-path}%" in
+  if path = "" then None
+  else Some path
+
+let of_env () = getenv_opt "IDA_PATH"
+
+let () =
+  try
+    match first_success [ of_config; of_env; locate; ] with
+    | Some path -> write path
+    | None ->
+      eprintf "failed to locate IDA Pro\n";
+      exit 1
+  with e ->
+    eprintf "build failed: %s\n" (Printexc.to_string e);
+    exit 1
