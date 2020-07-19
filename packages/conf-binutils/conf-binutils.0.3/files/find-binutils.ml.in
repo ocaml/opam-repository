@@ -1,0 +1,221 @@
+open Printf
+open StdLabels
+
+type file = {
+  path : string;
+  dgst : string;
+}
+
+type tool = {
+  test  : string -> bool;
+  main  : file option;
+  files : file list;
+}
+
+module Digests = Set.Make(String)
+module Names = Map.Make(String)
+
+type t = tool Names.t
+
+let (/) = Filename.concat
+
+let digest path = Digest.to_hex (Digest.file path)
+
+let input_all ch =
+  let buf = Buffer.create 4096 in
+  let rec read () = Buffer.add_channel buf ch 4096; read () in
+  try read ()
+  with End_of_file -> String.trim @@ Buffer.contents buf
+
+let split_on_char sep s =
+  let r = ref [] in
+  let j = ref (String.length s) in
+  for i = String.length s - 1 downto 0 do
+    if s.[i] = sep then begin
+      r := String.sub s (i + 1) (!j - i - 1) :: !r;
+      j := i
+    end
+  done;
+  String.sub s 0 !j :: !r
+
+let split ~on str =
+  List.map String.trim (split_on_char on str) |>
+  List.filter ~f:(fun s -> s <> "")
+
+exception Command_failed of Unix.process_status
+
+let process_status_to_string s =
+  let open Unix in
+  match s with
+  | WEXITED i -> sprintf "exit status %d" 1
+  | WSTOPPED i -> sprintf "proccess was stopped by signal %d" i
+  | WSIGNALED i -> sprintf "proccess was killed by signal %d" i
+
+let exn_to_string = function
+  | Command_failed s -> sprintf "%s" (process_status_to_string s)
+  | e -> Printexc.to_string e
+
+let cmd fmt =
+  let run c =
+    try
+      let inp = Unix.open_process_in c in
+      let res = input_all inp in
+      match Unix.close_process_in inp with
+      | Unix.WEXITED 0 -> Some res
+      | s -> raise (Command_failed s)
+    with e ->
+      eprintf "command %s failed: %s\n" c (exn_to_string e);
+      None in
+  ksprintf run fmt
+
+let string_of_files xs =
+  List.fold_left xs ~f:(fun s {path} ->
+      sprintf "%s\"%s\"; " s path) ~init:"[" ^ "]"
+
+let is_none = function
+  | None -> true
+  | _ -> false
+
+let failed_to_find cmd =
+  eprintf "%s not found\n" cmd;
+  exit 1
+
+let dedup main files =
+  fst @@
+  List.fold_left files
+    ~init:([], Digests.add main.dgst Digests.empty)
+    ~f:(fun ((files, digests) as acc) ({dgst} as file) ->
+        if Digests.mem dgst digests
+        then acc
+        else file :: files, Digests.add dgst digests)
+
+let dependencies ~init files =
+  List.fold_left files ~init ~f:(fun depends {path; dgst} ->
+      sprintf " [ %S %S ] " path dgst :: depends)
+
+let write t =
+  let deps, vars =
+    Names.fold (fun name {main; files} (deps, vars) ->
+        let main, files = match main, files with
+          | None, [] -> failed_to_find name
+          | None, main :: files -> main, files
+          | Some main, files -> main, files in
+        let files = dedup main files in
+        let files = main :: files in
+        let deps = dependencies ~init:deps files in
+        let files = sprintf "%s: %S" name (string_of_files files) in
+        deps, files :: vars) t ([], [])  in
+  let oc = open_out "%{_:name}%.config" in
+  let deps = String.concat "\n" deps in
+  let vars = String.concat "\n" vars in
+  fprintf oc {|
+opam-version: "2.0"
+file-depends: [ %s ]
+variables {
+%s
+}
+|} deps vars;
+  close_out oc
+
+let of_env var () =
+  try Some (Sys.getenv var)
+  with Not_found -> None
+
+let of_opam_config var () = match var with
+  | "" -> None
+  | x  -> Some x
+
+let match_files path files test =
+  Array.fold_left files ~init:[] ~f:(fun acc file ->
+      if test file then
+        let path = path / file in
+        {path; dgst = digest path} :: acc
+      else acc)
+
+let update t path  =
+  if Sys.is_directory path then
+    let files = Sys.readdir path in
+    Names.fold (fun name tool t ->
+        let files = match_files path files tool.test in
+        Names.add name {tool with files = tool.files @ files} t) t t
+  else t
+
+let collect t paths = List.fold_left paths ~f:update ~init:t
+
+let search t path =
+  let rec loop t path =
+    if Sys.is_directory path
+    then
+      Sys.readdir path |>
+      Array.fold_left ~init:t ~f:(fun t file -> loop t @@ path / file)
+    else
+      Names.fold (fun name tool t ->
+          if tool.test (Filename.basename path)
+          then
+            let file = {path; dgst = digest path} in
+            Names.add name {tool with files = tool.files @ [file]} t
+          else t) t t in
+  loop t path
+
+let rec first_success = function
+  | [] -> None
+  | f :: fs -> match f () with
+    | None -> first_success fs
+    | r -> r
+
+let is_dir p = Sys.file_exists p && Sys.is_directory p
+
+let all_paths () =
+  match of_env "PATH" () with
+  | None -> []
+  | Some r -> List.filter ~f:is_dir (split r ~on:':')
+
+let has_prefix str pref =
+  let len = String.length pref in
+  len <= String.length str &&
+  String.sub str 0 len = pref
+
+let is_llvm_tool file = has_prefix file "llvm"
+
+let check ~suffix file =
+  Filename.check_suffix file suffix &&
+  not (is_llvm_tool file)
+
+let add_var name ?(opam="") ?(env="") ~suffix t =
+  let main =
+    match first_success [of_opam_config opam; of_env env] with
+    | None -> None
+    | Some path -> Some {path; dgst = digest path } in
+  Names.add name {test = check ~suffix; main; files = []} t
+
+let t =
+  add_var "objdumps"
+    ~opam:"%{objdump-path}%"
+    ~env:"OBJDUMP_PATH"
+    ~suffix:"objdump"
+    Names.empty |>
+  add_var "cxxfilts"
+    ~opam:"%{cxxfilt-path}%"
+    ~env:"CXXFILT_PATH"
+    ~suffix:"c++filt" |>
+  add_var "readelfs"
+    ~opam:"%{readelf-path}%"
+    ~env:"READELF_PATH"
+    ~suffix:"readelf"
+
+
+let () =
+  try
+    match "%{os}%" with
+    | "linux" -> write @@ collect t @@ all_paths ()
+    | "macos" ->
+      let t = match cmd "brew --cellar" with
+        | None -> t
+        | Some cellar -> search t cellar in
+      write @@ collect t @@ all_paths ()
+    | s ->
+      eprintf "unsupported OS %s\n" s;
+      exit 1
+  with e ->
+    eprintf "build failed: %s\n" (Printexc.to_string e);
+    exit 1
