@@ -117,11 +117,6 @@ let ida6 = "idaq"
 let ida7 = "ida"
 let idas = [ ida7; ida6; ]
 
-let known_names =
-  List.rev @@
-  List.fold_left idas ~init:[]
-    ~f:(fun acc ida -> ida :: name64 ida :: acc)
-
 let which name () = cmd "which %s" name
 
 let which_ida64 () =
@@ -129,33 +124,39 @@ let which_ida64 () =
 
 let is_dir x = Sys.file_exists x && Sys.is_directory x
 
-let contains_ida64 path =
-  Array.exists (Sys.readdir path)
-    ~f:(fun file ->
-        List.exists idas ~f:(fun ida -> file = name64 ida))
+let contains name path =
+  Array.exists (Sys.readdir path) ~f:(fun file -> file = name)
 
 let readdir path =
-  try
-    Sys.readdir path
+  try Sys.readdir path
   with Sys_error _ -> [| |]
 
-let find path test_dir =
+let folders path =
+  try
+    Sys.readdir path |>
+    Array.fold_left ~init:[] ~f:(fun acc p ->
+        let path' = path / p in
+        if is_dir path' then path' :: acc
+        else acc)
+  with Sys_error _ -> []
+
+let find path tests =
   let rec loop n path =
     if n = depth then None
     else
-      readdir path |>
-      Array.find_map ~f:(fun p ->
-          let path' = path / p in
-          if is_dir path' then
-            if test_dir path' then Some path'
-            else loop (n + 1) path'
-          else None) in
+      let dirs = folders path in
+      List.find_map tests ~f:(fun test ->
+          List.find_opt dirs ~f:test) |> function
+      | Some p -> Some p
+      | None -> List.find_map dirs ~f:(loop (n + 1)) in
   loop 0 path
 
 let find_at_home () =
   match getenv_opt "HOME" with
   | None -> None
-  | Some home -> find home contains_ida64
+  | Some home ->
+    find home @@
+    List.map idas ~f:(fun ida -> contains (name64 ida))
 
 let locate_linux () = find_at_home ()
 
@@ -164,33 +165,29 @@ let has_prefix str pref =
   len <= String.length str &&
   String.(sub str 0 len = pref)
 
-let find_app path appname () =
-  let is_ida_app path =
-    let name = Filename.basename path in
-    Filename.check_suffix name ".app" &&
-    has_prefix name appname in
-  match find path is_ida_app with
+let is_app appname path =
+  let name = Filename.basename path in
+  Filename.check_suffix name ".app" &&
+  has_prefix name appname
+
+let find_app path tests () =
+  match find path tests with
   | None -> None
   | Some path ->
     let path' = path / "Contents/MacOS/" in
     if Sys.file_exists path' then Some path'
     else None
 
-let is_some = function
-  | Some _ -> true
-  | None -> false
-
 let locate_macos () =
   let home = match getenv_opt "HOME" with
     | None -> ""
     | Some home -> home in
-  let find_app path () =
-    List.find_map known_names
-      ~f:(fun name -> find_app path name ()) in
+  let tests = List.fold_left idas ~init:[] ~f:(fun tests ida ->
+      is_app ida :: is_app (name64 ida) :: tests) |> List.rev in
   first_success [
-    find_app "/Applications";
-    find_app (home / "Applications");
-    find_app home;
+    find_app "/Applications" tests;
+    find_app (home / "Applications") tests;
+    find_app home tests;
   ]
 
 let locate () =
