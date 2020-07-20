@@ -104,15 +104,27 @@ let run c =
 
 let cmd fmt = ksprintf run fmt
 
-let known_names = ["ida"; "idaq";]
-let known_names64 = List.map known_names ~f:(fun x -> x ^ "64")
+let rec first_success = function
+  | [] -> None
+  | f :: fs -> match f () with
+    | None -> first_success fs
+    | x -> x
 
-let which_ida64 () = List.find_map known_names64 ~f:(cmd "which %s")
+let name64 x = x ^ "64"
+
+let ida6 = "idaq"
+let ida7 = "ida"
+let idas = [ ida7; ida6; ]
+
+let which name () = cmd "which %s" name
+
+let which_ida64 () =
+  first_success @@ List.map idas ~f:(fun t -> which (name64 t))
+
 let is_dir x = Sys.file_exists x && Sys.is_directory x
 
 let contains_ida64 path =
-  Array.exists (Sys.readdir path)
-    ~f:(fun file -> List.mem ~set:known_names64 file)
+  Array.exists (Sys.readdir path) ~f:(fun file -> List.mem ~set:idas file)
 
 let readdir path =
   try
@@ -144,18 +156,12 @@ let has_prefix str pref =
   len <= String.length str &&
   String.(sub str 0 len = pref)
 
-let rec first_success = function
-  | [] -> None
-  | f :: fs -> match f () with
-    | None -> first_success fs
-    | x -> x
-
-let find_app ?(depth=1) path () =
-  let is_ida64_app path =
+let find_app ?(depth=1) path appname () =
+  let is_ida_app path =
     let name = Filename.basename path in
-    List.exists known_names64 ~f:(fun name' ->
-        name = name' ^ ".app") in
-  match find path is_ida64_app with
+    Filename.check_suffix name ".app" &&
+    name = appname in
+  match find path is_ida_app with
   | None -> None
   | Some path ->
     let path' = path / "Contents/MacOS/" in
@@ -166,11 +172,18 @@ let locate_macos () =
   let home = match getenv_opt "HOME" with
     | None -> ""
     | Some home -> home in
-  first_success [
-    find_app "/Applications";
-    find_app @@ home / "Applications";
-    find_app home;
-  ]
+  let find name () =
+    first_success [
+      find_app "/Applications" name;
+      find_app (home / "Applications") name;
+      find_app home name;
+    ] in
+  let find ida () =
+    first_success [
+      find (name64 ida);
+      find ida;
+    ] in
+  first_success @@ List.map idas ~f:find
 
 let locate () =
   match os with
