@@ -153,8 +153,8 @@ let rec first_success = function
 let find_app ?(depth=1) path () =
   let is_ida64_app path =
     let name = Filename.basename path in
-    Filename.check_suffix name "64.app" &&
-    has_prefix (String.lowercase_ascii name) "ida" in
+    List.exists known_names64 ~f:(fun name' ->
+        name = name' ^ ".app") in
   match find path is_ida64_app with
   | None -> None
   | Some path ->
