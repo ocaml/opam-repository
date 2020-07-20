@@ -119,7 +119,7 @@ let readdir path =
     Sys.readdir path
   with Sys_error _ -> [| |]
 
-let find path ~depth test_dir =
+let find path test_dir =
   let rec loop n path =
     if n = depth then None
     else
@@ -135,7 +135,7 @@ let find path ~depth test_dir =
 let find_at_home () =
   match getenv_opt "HOME" with
   | None -> None
-  | Some home -> find home ~depth contains_ida64
+  | Some home -> find home contains_ida64
 
 let locate_linux () = find_at_home ()
 
@@ -155,7 +155,7 @@ let find_app ?(depth=1) path () =
     let name = Filename.basename path in
     Filename.check_suffix name ".app" &&
     has_prefix (String.lowercase_ascii name) "ida" in
-  match find path ~depth is_ida_app with
+  match find path is_ida_app with
   | None -> None
   | Some path ->
     let path' = path / "Contents/MacOS/" in
@@ -168,8 +168,8 @@ let locate_macos () =
     | Some home -> home in
   first_success [
     find_app "/Applications";
-    find_app ~depth @@ home / "Applications";
-    find_app ~depth home;
+    find_app @@ home / "Applications";
+    find_app home;
   ]
 
 let locate () =
