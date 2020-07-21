@@ -141,7 +141,7 @@ let readdir max path =
       | Some "." | Some ".." -> read paths n dir
       | Some p -> read (path / p :: paths) (n + 1) dir in
   match opendir path with
-  | None -> []
+  | None -> printf "failed to open %s\n" path; []
   | Some dir ->
     let paths = read [] 0 dir in
     Unix.closedir dir;
@@ -151,24 +151,26 @@ let find path test_dir =
   let find_ida paths =
     List.find_opt paths
       ~f:(fun path -> is_dir path && test_dir path) in
-  let rec loop depth entries path =
+  let rec read depth entries path =
     if depth > max_depth || entries > max_paths
     then None, entries
     else
       let paths = readdir (max_paths - entries) path in
+      let entries = entries + List.length paths in
       match find_ida paths with
       | Some _ as ida -> ida, entries
-      | None ->
-        List.fold_left paths
-          ~init:(None,entries + List.length paths)
-          ~f:(fun (path,entries) p ->
-              match path with
-              | Some _ -> path,entries
-              | None ->
-                if is_dir p
-                then loop (depth + 1) entries p
-                else path,entries) in
-  fst @@ loop 0 0 path
+      | None -> traverse depth entries paths
+  and traverse depth entries paths =
+    List.fold_left paths
+      ~init:(None,entries)
+      ~f:(fun (result,entries) path ->
+          match result with
+          | Some _ -> result,entries
+          | None ->
+            if is_dir path
+            then read (depth + 1) entries path
+            else result,entries) in
+  fst @@ read 0 0 path
 
 let find_at_home () = match getenv_opt "HOME" with
   | None -> None
