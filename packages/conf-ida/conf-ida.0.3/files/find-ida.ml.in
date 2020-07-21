@@ -37,7 +37,7 @@ module List = struct
 end
 
 let max_depth = 4
-let total = 1024
+let max_paths = 1024
 
 type sys =
   | MacOs
@@ -110,36 +110,33 @@ let rec first_success = function
     | None -> first_success fs
     | x -> x
 
-let name64 x = x ^ "64"
 
-let ida6 = "idaq"
-let ida7 = "ida"
-let idas = [ ida7; ida6; ]
+let ida = [ "ida64"; "idaq64"]
+let ida_apps = ["ida64.app"; "ida.app"]
 
 let which name () = cmd "which %s" name
 
 let which_ida64 () =
-  first_success @@ List.map idas ~f:(fun ida -> which (name64 ida))
+  first_success @@ List.map idas ~f:which
 
 let is_dir x = Sys.file_exists x && Sys.is_directory x
 
 let contains_ida64 path =
   Array.exists (Sys.readdir path) ~f:(fun file ->
-      List.exists idas ~f:(fun ida ->
-          file = name64 ida))
+      List.exists idas ~f:(List.mem file idas))
 
 let folders path =
   try
     Sys.readdir path |>
     Array.fold_left ~init:[] ~f:(fun acc p ->
-        let path' = path / p in
-        if is_dir path' then path' :: acc
+        let path = path / p in
+        if is_dir path then path :: acc
         else acc)
   with Sys_error _ -> []
 
 let find path test =
   let rec loop depth entries path =
-    if depth = max_depth || entries >= total then None
+    if depth > max_depth || entries > max_paths then None
     else
       let dirs = folders path in
       match List.find_opt dirs ~f:test with
@@ -160,20 +157,15 @@ let has_prefix str pref =
   len <= String.length str &&
   String.(sub str 0 len = pref)
 
-let is_app path =
-  let check appname =
-    let name = Filename.basename path in
-    Filename.check_suffix name ".app" &&
-    has_prefix name appname in
-  List.exists idas ~f:(fun ida ->
-      check (name64 ida) || check ida)
+let is_ida_app path =
+  List.exists ida_apps ~f:(Filename.check_suffix path)
 
 let find_app path () =
-  match find path is_app with
+  match find path is_ida_app with
   | None -> None
   | Some path ->
-    let path' = path / "Contents/MacOS/" in
-    if Sys.file_exists path' then Some path'
+    let path = path / "Contents/MacOS/" in
+    if is_dir path then Some path
     else None
 
 let locate_macos () =
