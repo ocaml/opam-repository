@@ -111,7 +111,7 @@ let rec first_success = function
     | x -> x
 
 
-let ida = [ "ida64"; "idaq64"]
+let idas = [ "ida64"; "idaq64"]
 let ida_apps = ["ida64.app"; "ida.app"]
 
 let which name () = cmd "which %s" name
@@ -122,8 +122,8 @@ let which_ida64 () =
 let is_dir x = Sys.file_exists x && Sys.is_directory x
 
 let contains_ida64 path =
-  Array.exists (Sys.readdir path) ~f:(fun file ->
-      List.exists idas ~f:(List.mem file idas))
+  Array.exists (Sys.readdir path)
+    ~f:(fun file -> List.mem ~set:idas file)
 
 let folders path =
   try
