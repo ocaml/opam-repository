@@ -34,11 +34,10 @@ module List = struct
         | None -> loop tl
         | x -> x in
     loop xs
-
 end
 
-let depth = 4
-
+let max_depth = 4
+let total = 1024
 
 type sys =
   | MacOs
@@ -124,12 +123,10 @@ let which_ida64 () =
 
 let is_dir x = Sys.file_exists x && Sys.is_directory x
 
-let contains name path =
-  Array.exists (Sys.readdir path) ~f:(fun file -> file = name)
-
-let readdir path =
-  try Sys.readdir path
-  with Sys_error _ -> [| |]
+let contains_ida64 path =
+  Array.exists (Sys.readdir path) ~f:(fun file ->
+      List.exists idas ~f:(fun ida ->
+          file = name64 ida))
 
 let folders path =
   try
@@ -140,23 +137,21 @@ let folders path =
         else acc)
   with Sys_error _ -> []
 
-let find path tests =
-  let rec loop n path =
-    if n = depth then None
+let find path test =
+  let rec loop depth entries path =
+    if depth = max_depth || entries >= total then None
     else
       let dirs = folders path in
-      List.find_map tests ~f:(fun test ->
-          List.find_opt dirs ~f:test) |> function
-      | Some p -> Some p
-      | None -> List.find_map dirs ~f:(loop (n + 1)) in
-  loop 0 path
+      match List.find_opt dirs ~f:test with
+      | None ->
+        List.find_map dirs
+          ~f:(loop (depth + 1) (entries + List.length dirs))
+      | found -> found in
+  loop 0 0 path
 
-let find_at_home () =
-  match getenv_opt "HOME" with
+let find_at_home () = match getenv_opt "HOME" with
   | None -> None
-  | Some home ->
-    find home @@
-    List.map idas ~f:(fun ida -> contains (name64 ida))
+  | Some home -> find home contains_ida64
 
 let locate_linux () = find_at_home ()
 
@@ -165,13 +160,16 @@ let has_prefix str pref =
   len <= String.length str &&
   String.(sub str 0 len = pref)
 
-let is_app appname path =
-  let name = Filename.basename path in
-  Filename.check_suffix name ".app" &&
-  has_prefix name appname
+let is_app path =
+  let check appname =
+    let name = Filename.basename path in
+    Filename.check_suffix name ".app" &&
+    has_prefix name appname in
+  List.exists idas ~f:(fun ida ->
+      check (name64 ida) || check ida)
 
-let find_app path tests () =
-  match find path tests with
+let find_app path () =
+  match find path is_app with
   | None -> None
   | Some path ->
     let path' = path / "Contents/MacOS/" in
@@ -182,12 +180,10 @@ let locate_macos () =
   let home = match getenv_opt "HOME" with
     | None -> ""
     | Some home -> home in
-  let tests = List.fold_left idas ~init:[] ~f:(fun tests ida ->
-      is_app ida :: is_app (name64 ida) :: tests) |> List.rev in
   first_success [
-    find_app "/Applications" tests;
-    find_app (home / "Applications") tests;
-    find_app home tests;
+    find_app "/Applications";
+    find_app (home / "Applications");
+    find_app home;
   ]
 
 let locate () =
