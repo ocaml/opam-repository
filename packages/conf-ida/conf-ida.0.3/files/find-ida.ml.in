@@ -112,7 +112,7 @@ let rec first_success = function
 
 
 let idas = [ "ida64"; "idaq64"]
-let ida_apps = ["ida64.app"; "ida.app"]
+let ida_apps = ["ida64.app"; "ida.app"; "idaq64.app"; "idaq.app"]
 
 let which name () = cmd "which %s" name
 
@@ -125,26 +125,50 @@ let contains_ida64 path =
   Array.exists (Sys.readdir path)
     ~f:(fun file -> List.mem ~set:idas file)
 
-let folders path =
-  try
-    Sys.readdir path |>
-    Array.fold_left ~init:[] ~f:(fun acc p ->
-        let path = path / p in
-        if is_dir path then path :: acc
-        else acc)
-  with Sys_error _ -> []
+let opendir path =
+  try Some (Unix.opendir path)
+  with Unix.Unix_error _ -> None
 
-let find path test =
+let next dir =
+  try Some (Unix.readdir dir)
+  with End_of_file -> None
+
+let readdir max path =
+  let rec read paths n dir =
+    if n > max then paths
+    else match next dir with
+      | None -> paths
+      | Some "." | Some ".." -> read paths n dir
+      | Some p -> read (path / p :: paths) (n + 1) dir in
+  match opendir path with
+  | None -> []
+  | Some dir ->
+    let paths = read [] 0 dir in
+    Unix.closedir dir;
+    paths
+
+let find path test_dir =
+  let find_ida paths =
+    List.find_opt paths
+      ~f:(fun path -> is_dir path && test_dir path) in
   let rec loop depth entries path =
-    if depth > max_depth || entries > max_paths then None
+    if depth > max_depth || entries > max_paths
+    then None, entries
     else
-      let dirs = folders path in
-      match List.find_opt dirs ~f:test with
+      let paths = readdir (max_paths - entries) path in
+      match find_ida paths with
+      | Some _ as ida -> ida, entries
       | None ->
-        List.find_map dirs
-          ~f:(loop (depth + 1) (entries + List.length dirs))
-      | found -> found in
-  loop 0 0 path
+        List.fold_left paths
+          ~init:(None,entries + List.length paths)
+          ~f:(fun (path,entries) p ->
+              match path with
+              | Some _ -> path,entries
+              | None ->
+                if is_dir p
+                then loop (depth + 1) entries p
+                else path,entries) in
+  fst @@ loop 0 0 path
 
 let find_at_home () = match getenv_opt "HOME" with
   | None -> None
