@@ -138,30 +138,24 @@ let is_some = function
   | Some _ -> true
 
 let find path test =
-  let is_current p = p = Filename.current_dir_name in
   let is_parent  p = p = Filename.parent_dir_name in
-  let is_hidden p = String.length p > 1 && p.[0] = '.' in
+  let is_hidden p = String.length p > 0 && p.[0] = '.' in
   let leave dir result entries =
     Unix.closedir dir;
     result,entries in
   let rec read depth entries current dir =
     if depth > max_depth || entries > max_paths
-    then
-      leave dir None entries
+    then leave dir None entries
     else
       match next dir with
       | None -> leave dir None entries
-      | Some entry when
-          is_parent entry ||
-          is_current entry ||
-          is_hidden entry ->
+      | Some entry when is_parent entry || is_hidden entry ->
         read depth entries current dir
       | Some entry when is_dir (current / entry) ->
         let entries = entries + 1 in
         let path = current / entry in
         if test path
-        then
-          leave dir (Some path) entries
+        then leave dir (Some path) entries
         else
           begin
             match opendir path with
@@ -172,8 +166,7 @@ let find path test =
               then leave dir found entries
               else read depth entries current dir
           end
-      | Some e ->
-        read depth (entries + 1) current dir in
+      | Some e -> read depth (entries + 1) current dir in
   match opendir path with
   | None -> None
   | Some dir -> fst @@ read 0 0 path dir
