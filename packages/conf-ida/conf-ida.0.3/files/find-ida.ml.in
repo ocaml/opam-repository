@@ -144,7 +144,6 @@ let find path test =
     Unix.closedir dir;
     result,entries in
   let rec read depth entries path dir =
-    printf "path %s\n" path;
     if depth > max_depth || entries > max_paths
     then
       let () = printf "out of fuel %s\n" path in
@@ -155,6 +154,7 @@ let find path test =
       | Some entry when is_parent entry || is_current entry ->
         read depth entries path dir
       | Some entry when is_dir (path / entry) ->
+        printf "path %s\n" path;
         let entries = entries + 1 in
         let path = path / entry in
         if test path
@@ -172,7 +172,9 @@ let find path test =
               then leave dir found entries
               else read depth entries path dir
           end
-      | Some _ -> read depth (entries + 1) path dir in
+      | Some e ->
+        printf "path' %s\n" (path /e);
+        read depth (entries + 1) path dir in
   match opendir path with
   | None -> None
   | Some dir -> fst @@ read 0 0 path dir
