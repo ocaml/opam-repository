@@ -140,30 +140,30 @@ let is_some = function
 let find path test =
   let is_current p = p = Filename.current_dir_name in
   let is_parent  p = p = Filename.parent_dir_name in
+  let is_hidden p = String.length p > 1 && p.[0] = '.' in
   let leave dir result entries =
     Unix.closedir dir;
     result,entries in
   let rec read depth entries current dir =
     if depth > max_depth || entries > max_paths
     then
-      let () = printf "out of fuel %s\n" current in
       leave dir None entries
     else
       match next dir with
       | None -> leave dir None entries
-      | Some entry when is_parent entry || is_current entry ->
+      | Some entry when
+          is_parent entry ||
+          is_current entry ||
+          is_hidden entry ->
         read depth entries current dir
       | Some entry when is_dir (current / entry) ->
-        printf "path %s\n" (current / entry);
         let entries = entries + 1 in
         let path = current / entry in
         if test path
         then
-          let () = printf "tested %s\n" path in
           leave dir (Some path) entries
         else
           begin
-            printf "test  failed for %s\n" path;
             match opendir path with
             | None -> read depth entries current dir
             | Some subdir ->
@@ -173,7 +173,6 @@ let find path test =
               else read depth entries current dir
           end
       | Some e ->
-        printf "path' %s\n" (current /e);
         read depth (entries + 1) current dir in
   match opendir path with
   | None -> None
