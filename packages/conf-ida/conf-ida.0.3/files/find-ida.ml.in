@@ -133,44 +133,44 @@ let next dir =
   try Some (Unix.readdir dir)
   with End_of_file -> None
 
-let readdir max path =
-  let rec read paths n dir =
-    if n > max then paths
-    else match next dir with
-      | None -> paths
-      | Some "." | Some ".." -> read paths n dir
-      | Some p -> read (path / p :: paths) (n + 1) dir in
-  match opendir path with
-  | None -> printf "failed to open %s\n" path; []
-  | Some dir ->
-    let paths = read [] 0 dir in
-    Unix.closedir dir;
-    paths
+let is_some = function
+  | None -> false
+  | Some _ -> true
 
-let find path test_dir =
-  let find_ida paths =
-    List.find_opt paths
-      ~f:(fun path -> is_dir path && test_dir path) in
-  let rec read depth entries path =
+let find path test =
+  let is_current p = p = Filename.current_dir_name in
+  let is_parent  p = p = Filename.parent_dir_name in
+  let leave dir result entries =
+    Unix.closedir dir;
+    result,entries in
+  let rec read depth entries path dir =
     if depth > max_depth || entries > max_paths
-    then None, entries
+    then leave dir None entries
     else
-      let paths = readdir (max_paths - entries) path in
-      let entries = entries + List.length paths in
-      match find_ida paths with
-      | Some _ as ida -> ida, entries
-      | None -> traverse depth entries paths
-  and traverse depth entries paths =
-    List.fold_left paths
-      ~init:(None,entries)
-      ~f:(fun (result,entries) path ->
-          match result with
-          | Some _ -> result,entries
-          | None ->
-            if is_dir path
-            then read (depth + 1) entries path
-            else result,entries) in
-  fst @@ read 0 0 path
+      match next dir with
+      | None -> leave dir None entries
+      | Some entry when is_parent entry || is_current entry ->
+        read depth entries path dir
+      | Some entry when is_dir (path / entry) ->
+        let entries = entries + 1 in
+        let path = path / entry in
+        if test path
+        then leave dir (Some path) entries
+        else
+          begin
+            match opendir path with
+            | None -> read depth entries path dir
+            | Some subdir ->
+              let found, entries = read (depth + 1) entries path subdir in
+              if is_some found
+              then leave dir found entries
+              else read depth entries path dir
+          end
+      | Some _ -> read depth (entries + 1) path dir in
+  match opendir path with
+  | None -> None
+  | Some dir -> fst @@ read 0 0 path dir
+
 
 let find_at_home () = match getenv_opt "HOME" with
   | None -> None
