@@ -16,8 +16,7 @@ module Array = struct
     let length = length t in
     let rec loop i =
       if i >= length then None
-      else
-        match f t.(i) with
+      else match f t.(i) with
         | None -> loop (i + 1)
         | Some _ as res -> res in
     loop 0
@@ -146,8 +145,7 @@ let find path test =
   let rec read depth entries current dir =
     if depth > max_depth || entries > max_paths
     then leave dir None entries
-    else
-      match next dir with
+    else match next dir with
       | None -> leave dir None entries
       | Some entry when is_parent entry || is_hidden entry ->
         read depth entries current dir
@@ -156,9 +154,7 @@ let find path test =
         let path = current / entry in
         if test path
         then leave dir (Some path) entries
-        else
-          begin
-            match opendir path with
+        else begin match opendir path with
             | None -> read depth entries current dir
             | Some subdir ->
               let found, entries = read (depth + 1) entries path subdir in
