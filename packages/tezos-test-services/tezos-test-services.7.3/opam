@@ -6,19 +6,17 @@ bug-reports: "https://gitlab.com/tezos/tezos/issues"
 dev-repo: "git+https://gitlab.com/tezos/tezos.git"
 license: "MIT"
 depends: [
-  "tezos-tooling" { with-test & = version }
+  "tezos-tooling" { with-test }
   "dune" { >= "1.11" }
-  "tezos-base" { = version }
-  "lwt-watcher"
-   "tezos-test-services" { with-test & = version }
-   "alcotest-lwt" { with-test & = "0.8.5" }
+  "tezos-base"
+  "alcotest-lwt"
 ]
 build: [
   ["dune" "build" "-p" name "-j" jobs]
-  ["mv" "src/lib_requester/%{name}%.install" "./"]
+  ["mv" "src/lib_test_services/%{name}%.install" "./"]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos: generic resource fetching service"
+synopsis: "Tezos: Alcotest-based test services"
 
 url {
   src: "https://gitlab.com/tezos/tezos/-/archive/v7.3/tezos-v7.3.tar.bz2"
