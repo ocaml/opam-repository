@@ -1,0 +1,246 @@
+open Printf
+open StdLabels
+
+module Array = struct
+  include Array
+
+  let find t ~f =
+    let length = length t in
+    let rec loop i =
+      if i >= length then None
+      else if f t.(i) then Some t.(i)
+      else loop (i + 1) in
+    loop 0
+
+  let find_map t ~f =
+    let length = length t in
+    let rec loop i =
+      if i >= length then None
+      else match f t.(i) with
+        | None -> loop (i + 1)
+        | Some _ as res -> res in
+    loop 0
+end
+
+module List = struct
+  include List
+
+  let find_map xs ~f =
+    let rec loop = function
+      | [] -> None
+      | hd :: tl ->
+        match f hd with
+        | None -> loop tl
+        | x -> x in
+    loop xs
+end
+
+let max_depth = 4
+let max_paths = 1024
+
+type sys =
+  | MacOs
+  | Linux
+  | Other of string
+
+let os = match "%{os}%" with
+  | "macos" -> MacOs
+  | "linux" -> Linux
+  | s -> Other s
+
+let (/) = Filename.concat
+
+let getenv_opt var =
+  try Some (Sys.getenv var)
+  with Not_found -> None
+
+let headless = os = Linux && getenv_opt "DISPLAY" = None
+
+let input_all ch =
+  let buf = Buffer.create 4096 in
+  let rec read () = Buffer.add_channel buf ch 4096; read () in
+  try read ()
+  with End_of_file -> String.trim @@ Buffer.contents buf
+
+let split_on_char sep s =
+  let r = ref [] in
+  let j = ref (String.length s) in
+  for i = String.length s - 1 downto 0 do
+    if s.[i] = sep then begin
+      r := String.sub s (i + 1) (!j - i - 1) :: !r;
+      j := i
+    end
+  done;
+  String.sub s 0 !j :: !r
+
+let split ~on str =
+  List.map ~f:String.trim (split_on_char on str) |>
+  List.filter ~f:(fun s -> s <> "")
+
+exception Command_failed of Unix.process_status
+
+let process_status_to_string s =
+  let open Unix in
+  match s with
+  | WEXITED i -> sprintf "exit status %d" 1
+  | WSTOPPED i -> sprintf "proccess was stopped by signal %d" i
+  | WSIGNALED i -> sprintf "proccess was killed by signal %d" i
+
+let exn_to_string = function
+  | Command_failed s -> sprintf "%s" (process_status_to_string s)
+  | e -> Printexc.to_string e
+
+let run c =
+  try
+    let inp = Unix.open_process_in c in
+    let res = input_all inp in
+    match Unix.close_process_in inp with
+    | Unix.WEXITED 0 -> Some res
+    | s -> raise (Command_failed s)
+  with e ->
+    eprintf "command %s failed: %s\n" c (exn_to_string e);
+    None
+
+let cmd fmt = ksprintf run fmt
+
+let rec first_success = function
+  | [] -> None
+  | f :: fs -> match f () with
+    | None -> first_success fs
+    | x -> x
+
+
+let idas = [ "ida64"; "idaq64"]
+let ida_apps = ["ida64.app"; "ida.app"; "idaq64.app"; "idaq.app"]
+
+let which name () = cmd "which %s" name
+
+let which_ida64 () =
+  first_success @@ List.map idas ~f:which
+
+let is_dir x = Sys.file_exists x && Sys.is_directory x
+
+let contains_ida64 path =
+  Array.exists (Sys.readdir path)
+    ~f:(fun file -> List.mem ~set:idas file)
+
+let opendir path =
+  try Some (Unix.opendir path)
+  with Unix.Unix_error _ -> None
+
+let next dir =
+  try Some (Unix.readdir dir)
+  with End_of_file -> None
+
+let is_some = function
+  | None -> false
+  | Some _ -> true
+
+let find path test =
+  let is_parent  p = p = Filename.parent_dir_name in
+  let is_hidden p = String.length p > 0 && p.[0] = '.' in
+  let leave dir result entries =
+    Unix.closedir dir;
+    result,entries in
+  let rec read depth entries current dir =
+    if depth > max_depth || entries > max_paths
+    then leave dir None entries
+    else match next dir with
+      | None -> leave dir None entries
+      | Some entry when is_parent entry || is_hidden entry ->
+        read depth entries current dir
+      | Some entry when is_dir (current / entry) ->
+        let entries = entries + 1 in
+        let path = current / entry in
+        if test path
+        then leave dir (Some path) entries
+        else begin match opendir path with
+            | None -> read depth entries current dir
+            | Some subdir ->
+              let found, entries = read (depth + 1) entries path subdir in
+              if is_some found
+              then leave dir found entries
+              else read depth entries current dir
+          end
+      | Some e -> read depth (entries + 1) current dir in
+  match opendir path with
+  | None -> None
+  | Some dir -> fst @@ read 0 0 path dir
+
+
+let find_at_home () = match getenv_opt "HOME" with
+  | None -> None
+  | Some home -> find home contains_ida64
+
+let locate_linux () = find_at_home ()
+
+let has_prefix str pref =
+  let len = String.length pref in
+  len <= String.length str &&
+  String.(sub str 0 len = pref)
+
+let is_ida_app path =
+  List.exists ida_apps ~f:(Filename.check_suffix path)
+
+let find_app path () =
+  match find path is_ida_app with
+  | None -> None
+  | Some path ->
+    let path = path / "Contents/MacOS/" in
+    if is_dir path then Some path
+    else None
+
+let locate_macos () =
+  let home = match getenv_opt "HOME" with
+    | None -> ""
+    | Some home -> home in
+  first_success [
+    find_app "/Applications";
+    find_app (home / "Applications");
+    find_app home;
+  ]
+
+let locate () =
+  match os with
+  | MacOs -> first_success [which_ida64; locate_macos]
+  | Linux -> first_success [which_ida64; locate_linux]
+  | Other system ->
+    eprintf
+      "warning: we don't know how to find programs on %s!\n" system;
+    exit 1
+
+let write path =
+  let dir, file_depends =
+    if Sys.is_directory path then path, ""
+    else
+      Filename.dirname path,
+      sprintf "file-depends: [ [ %S %S ] ]\n"
+        path (Digest.to_hex (Digest.file path)) in
+  let oc = open_out "%{_:name}%.config" in
+  fprintf oc {|
+opam-version: "2.0"
+%s
+variables {
+  path: %S
+  headless: %b
+}
+|} file_depends dir headless;
+  close_out oc
+
+let of_config () =
+  let path = "%{ida-path}%" in
+  if path = "" then None
+  else Some path
+
+let of_env () = getenv_opt "IDA_PATH"
+
+let () =
+  try
+    match first_success [ of_config; of_env; locate; ] with
+    | Some path -> write path
+    | None ->
+      eprintf "failed to locate IDA Pro\n";
+      exit 1
+  with e ->
+    eprintf "build failed: %s\n" (Printexc.to_string e);
+    exit 1
