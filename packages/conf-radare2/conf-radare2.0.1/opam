@@ -11,13 +11,20 @@ build: [
   ["ocaml" "unix.cma" "find-radare2.ml"]
 ]
 depends: [
-   "ocaml"
+   "ocaml" {>= "4.02"}
    "base-unix"
    "conf-which" {build}
 ]
 substs: [ "find-radare2.ml" ]
 flags: [ conf ]
 
-depexts: [ "radare2" ]
+depexts: [
+  ["radare2"] {os-family = "debian"}
+  ["radare2"] {os-distribution = "fedora"}
+  ["radare2"] {os-distribution = "arch"}
+  ["radare2"] {os-distribution = "alpine"}
+  ["radare2"] {os-distribution = "gentoo"}
+  ["radare2"] {os-distribution = "homebrew" & os = "macos"}
+]
 
 synopsis: "Checks that radare2 is installed"
