@@ -1,0 +1,79 @@
+opam-version: "2.0"
+synopsis: "PPX Rewriters for Ocaml, written using Camlp5"
+description: """
+This is a collection of PPX rewriters, re-implementing those based on ppxlib
+and other libraries, but instead based on Camlp5.  Included is also a collection
+of support libraries for writing new PPX rewriters.  Included are:
+
+pa_assert: ppx_assert
+pa_ppx.deriving, pa_ppx.deriving_plugins (enum, eq, fold, iter, make, map, ord, sexp, show, yojson):
+  ppx_deriving, plugins, ppx_sexp_conv, ppx_deriving_yojson
+pa_ppx.expect_test: ppx_expect_test
+pa_ppx.here: ppx_here
+pa_ppx.import: ppx_import
+pa_ppx.inline_test: ppx_inline_test
+
+pa_ppx.undo_deriving: pa_ppx.deriving expands [@@deriving ...] into code; this rewriter undoes that.
+pa_ppx.unmatched_vala: expands to match-cases (support library for camlp5-based PPX rewriters)
+pa_ppx.hashrecons: support for writing AST rewriters that automatically fills in hash-consing boilerplate
+pa_dock: implements doc-comment extraction for camlp5 preprocessors
+
+Many of the reimplementations in fact offer significant enhanced
+function, described in the pa_ppx documentation.  In addition, there
+is an extensive test-suite, much of it slightly modified versions of
+the tests for the respective PPX rewriters."""
+maintainer: "Chet Murthy <chetsky@gmail.com>"
+authors: ["Chet Murthy"]
+license: "BSD-3-Clause"
+homepage: "https://github.com/chetmurthy/pa_ppx"
+doc: "https://github.com/chetmurthy/pa_ppx/doc"
+bug-reports: "https://github.com/chetmurthy/pa_ppx/issues"
+depends: [
+  "ocaml" {>= "4.10.0" & < "4.12.0"}
+  "camlp5" {= "8.00~alpha02"}
+  "not-ocamlfind" {>= "0.01"}
+  "pcre" {>= "7.4.3"}
+  "yojson" {>= "1.7.0"}
+  "bos" {>= "0.2.0"}
+  "ppx_deriving_protobuf" {>= "2.7"}
+  "uint" {>= "2.0.1"}
+  "ounit2" {>= "2.2.3"}
+  "ppx_import" {>= "1.7.1"}
+  "ppx_deriving_yojson" {>= "3.5.2"}
+  "ppx_here" {>= "v0.13.0"}
+  "ppx_sexp_conv" {>= "v0.13.0"}
+  "expect_test_helpers" {>= "v0.13.0"}
+]
+build: [make "all"]
+install: [make "install"]
+depexts: [
+  [
+    "libstring-shellquote-perl"
+    "libipc-system-simple-perl"
+  ] {os-family = "debian"}
+  [
+    "perl-string-shellquote"
+    "perl-ipc-system-simple"
+  ] {os-distribution = "alpine"}
+  [
+    "perl-String-ShellQuote"
+    "perl-IPC-System-Simple"
+  ] {os-distribution = "centos"}
+  [
+    "perl-String-ShellQuote"
+    "perl-IPC-System-Simple"
+  ] {os-family = "suse"}
+  [
+    "perl-String-ShellQuote"
+    "perl-IPC-System-Simple"
+  ] {os-family = "fedora"}
+]
+
+dev-repo: "git+https://github.com/chetmurthy/pa_ppx.git"
+url {
+  src: "https://github.com/chetmurthy/pa_ppx/archive/0.02.tar.gz"
+  checksum: [
+    "md5=7a51da8db0b779a2d9ab435b29c67dbe"
+    "sha512=dd51aa98ab894b4f1512beb1511c7b6ef5e401481a75966321e88683bd374346d01d89302b04e95430b1ee69c65b60142d96847022ae9ed5977e3295f0fe7218"
+  ]
+}
