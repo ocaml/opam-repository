@@ -1,0 +1,63 @@
+diff --git a/configure b/configure
+index 8ad5742..4036166 100755
+--- a/configure
++++ b/configure
+@@ -158,6 +158,10 @@ fi
+ 
+ if test $tk_x11 = no; then
+   has_tk=true
++  # May still need to read headers
++  if test -z "$tk_defs"; then
++    tk_x11_include="-I/usr/local/include"
++  fi
+ else
+ #  tk_x11_include=`cat $where/Makefile.config | grep '^X11_INCLUDES=' | sed -e 's/^X11_INCLUDES=//'`
+ #  tk_x11_libs=`cat $where/Makefile.config | grep '^X11_LIBS=' | sed -e 's/^X11_LIBS=//'`
+@@ -172,7 +176,7 @@ export cc cclibs
+ 
+ if test $has_tk = true; then
+   tcl_version=''
+-  tcl_version=`sh ./runtest $tk_defs $tk_x11_include tclversion.c`
++  tcl_version=`sh ./runtest $tk_defs tclversion.c`
+   for tk_incs in \
+     "-I/usr/local/include" \
+     "-I/opt/local/include" \
+@@ -191,8 +195,8 @@ if test $has_tk = true; then
+     "-I/usr/local/include/tcl8.2 -I/usr/local/include/tk8.2" \
+     "-I/usr/include/tcl8.2 -I/usr/include/tk8.2"
+   do if test -z "$tcl_version"; then
+-    tk_defs="$tk_incs"
+-    tcl_version=`sh ./runtest $tk_defs $tk_x11_include tclversion.c`
++    tk_defs="$tk_incs $tk_x11_include"
++    tcl_version=`sh ./runtest $tk_defs tclversion.c`
+   fi; done
+   if test -n "$tcl_version" && test "x$tcl_version" != "xnone"; then
+     inf "tcl.h and tk.h version $tcl_version found with \"$tk_defs\"."
+@@ -218,12 +222,7 @@ system=`cat $where/Makefile.config | grep '^SYSTEM=' | sed -e 's/^SYSTEM=//'`
+ 
+ if test $has_tk = true && test -z "$tk_libs"; then
+   tklibdir=""
+-  if test -n "$tk_defs"; then
+-    tkinclude="$tk_defs"
+-  else
+-    tkinclude="$tk_x11_include"
+-  fi
+-  case "$tkinclude" in
++  case "$tk_defs" in
+   -I/opt/local/include*) tklibdir="/opt/local/lib" ;;
+   -I/usr/local/include*) tklibdir="/usr/local/lib" ;;
+   -I/sw/include*) tklibdir="/sw/lib" ;;
+@@ -292,11 +291,10 @@ if test $has_tk = true; then
+ fi
+ 
+ if test $has_tk = true; then
++  echo "TK_DEFS=$tk_defs" >> Makefile
+   if test $tk_x11 = yes; then
+-    echo "TK_DEFS=$tk_defs "'$(X11_INCLUDES)' >> Makefile
+-    echo "TK_LINK=$tk_libs "'$(X11_LINK)' >> Makefile
++    echo "TK_LINK=$tk_libs $tk_x11_libs" >> Makefile
+   else
+-    echo "TK_DEFS=$tk_defs" >> Makefile
+     echo "TK_LINK=$tk_libs" >> Makefile
+   fi
+   otherlibraries="$otherlibraries labltk"
