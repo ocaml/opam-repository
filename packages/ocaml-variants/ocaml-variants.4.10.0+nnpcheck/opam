@@ -15,13 +15,14 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
-  ["./configure" "--prefix=%{prefix}%" "--enable-frame-pointers"]
+  ["./configure" "--prefix=%{prefix}%" "--enable-frame-pointers" "--disable-naked-pointers"]
     {os != "openbsd" & os != "freebsd" & os != "macos"}
   [
     "./configure"
     "--prefix=%{prefix}%"
     "CC=cc"
     "ASPP=cc -c"
+    "--disable-naked-pointers"
   ] {os = "openbsd" | os = "freebsd" | os = "macos"}
   [make "-j%{jobs}%" {os != "cygwin"} "world"]
   [make "-j%{jobs}%" {os != "cygwin"} "world.opt"]
