@@ -1,0 +1,39 @@
+diff --git a/src/dune_engine/build_system.ml b/src/dune_engine/build_system.ml
+index 673db468..d641fe17 100644
+--- a/src/dune_engine/build_system.ml
++++ b/src/dune_engine/build_system.ml
+@@ -1187,7 +1187,7 @@ end = struct
+       | Non_memoized : 'a Build.t -> 'a t
+       | Memoized : Rule.t -> Action.t t
+ 
+-    let build (type a) (t : a t) =
++    let build (type a) (t : a t) : a Build.t =
+       match t with
+       | Non_memoized build -> build
+       | Memoized rule -> rule.action.build
+@@ -1209,9 +1209,9 @@ end = struct
+         (fun rule ->
+           evaluate_and_discover_dynamic_deps_unmemoized (Memoized rule))
+ 
+-    let evaluate_and_discover_dynamic_deps (type a) (t : a t) =
+-      match t with
+-      | Non_memoized _ -> evaluate_and_discover_dynamic_deps_unmemoized t
++    let evaluate_and_discover_dynamic_deps : type a. a t -> (a * _) Fiber.t =
++      function
++      | Non_memoized _ as t -> evaluate_and_discover_dynamic_deps_unmemoized t
+       | Memoized rule -> Memo.exec memo rule
+ 
+     let evaluate t =
+diff --git a/src/dune_rules/obj_dir.ml b/src/dune_rules/obj_dir.ml
+index fffb58de..a0b7c691 100644
+--- a/src/dune_rules/obj_dir.ml
++++ b/src/dune_rules/obj_dir.ml
+@@ -279,7 +279,7 @@ module Module = struct
+     | Local_as_path _ -> Path.relative dir name
+     | External _ -> Path.relative dir name
+ 
+-  let path_of_build (type path) (t : path t) (dir : path) =
++  let path_of_build (type path) (t : path t) (dir : path) : Path.t =
+     match t with
+     | Local _ -> Path.build dir
+     | Local_as_path _ -> dir
