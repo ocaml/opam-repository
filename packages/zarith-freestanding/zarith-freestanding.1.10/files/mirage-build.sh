@@ -1,6 +1,7 @@
 #!/bin/sh -eux
 
-PREFIX=`opam config var prefix`
+PREFIX=$1
+MAKE=$2
 PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig"
 export PKG_CONFIG_PATH
 
@@ -11,8 +12,4 @@ LDFLAGS="$(pkg-config --libs gmp-freestanding)" \
 CC=cc \
 ./configure -nodynlink -gmp
 
-if [ `uname -s` = "FreeBSD" ] || [ `uname -s` = "OpenBSD" ]; then
-    gmake
-else
-    make
-fi
+$MAKE

@@ -1,6 +1,6 @@
 #!/bin/sh -eux
 
-PREFIX=`opam config var prefix`
+PREFIX=$1
 
 rm -f "$PREFIX/lib/zarith/libzarith-freestanding.a"
 

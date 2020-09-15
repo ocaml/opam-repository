@@ -1,6 +1,6 @@
 #!/bin/sh -eux
 
-PREFIX=`opam config var prefix`
+PREFIX=$1
 PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig"
 export PKG_CONFIG_PATH
 
