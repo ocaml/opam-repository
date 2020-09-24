@@ -25,6 +25,11 @@ depends: [
   "odoc" {with-doc & >= "1.5.1"}
 ]
 dev-repo: "git+https://gitlab.inria.fr/memcad/clangml"
+build: [
+  ["./configure" "--prefix=%{prefix}%" "--with-llvm-config=%{conf-libclang:config}%"]
+  ["dune" "build" "-p" name "-j" jobs "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}]]
 url {
   src: "https://gitlab.inria.fr/memcad/clangml/-/archive/v4.3.0/clangml-v4.3.0.tar.gz"
   checksum: "sha512=7868e961ad68fdf86eae0b91cc55fde61f88e4f8fb4d095b3bcbd6dca62b4be818342d4f23f78ce693b8d064c81d4e3ecc3cb0224e7159f3906d987d5427d550"
