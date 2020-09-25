@@ -7,10 +7,15 @@ doc: "https://LPCIC.github.io/elpi/"
 dev-repo: "git+https://github.com/LPCIC/elpi.git"
 bug-reports: "https://github.com/LPCIC/elpi/issues"
 
+patches: [
+  "elpi-v1.11.4.patch" {os = "win32"}
+  "0001-backport-to-the-released-version.patch"
+]
+
 build: [
   ["dune" "subst"] {pinned}
   [make "build" "DUNE_OPTS=-p %{name}% -j %{jobs}%"]
-  [make "tests" "DUNE_OPTS=-p %{name}%" "TIMEOUT=120"] {with-test & os != "macos" & os-distribution != "alpine" & os-distribution != "freebsd"}
+  [make "tests" "DUNE_OPTS=-p %{name}%" "TIMEOUT=900"] {with-test & os != "macos" & os-distribution != "alpine" & os-distribution != "freebsd"}
   [make "fix-elpi.install"]
 ]
 
