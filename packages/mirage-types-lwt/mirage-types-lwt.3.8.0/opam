@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer:   ["anil@recoil.org" "thomas@gazagnaire.org"]
+authors:      "The MirageOS team"
+homepage:     "https://github.com/mirage/mirage"
+bug-reports:  "https://github.com/mirage/mirage/issues/"
+dev-repo:     "git+https://github.com/mirage/mirage.git"
+license:      "ISC"
+tags:         ["org:mirage" "org:xapi-project"]
+
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depends:   [
+  "ocaml" {>= "4.06.0"}
+  "dune" {>= "1.1.0"}
+  "mirage-types" {= version}
+]
+
+synopsis: "Lwt module type definitions for MirageOS applications"
+description: """
+The purpose of this library is to provide concrete types
+for several that are left abstract in `mirage-types`:
+
+- `type 'a io = 'a Lwt.t`
+- `type page_aligned_buffer = Io_page.t`
+- `type buffer = Cstruct.t`
+- `type macaddr = Macaddr.t`
+- `type ipv4addr = Ipaddr.V4.t`
+"""
+post-messages: [
+ "This package will be retired in MirageOS 4.0. Please use individual signatures (mirage-net / mirage-clock / etc.) instead."
+]
+url {
+  src:
+    "https://github.com/mirage/mirage/releases/download/v3.8.0/mirage-v3.8.0.tbz"
+  checksum: [
+    "sha256=39f6057cef0482ea990c106ca9bd352424f31005930ccf70f9f31dffb33a63a3"
+    "sha512=6d893111c701165e0abb3284506aa8010c7ae8577f3b26ad523239adc77698bfa9c4f041c3b80bdda77508db461b45f2860132d4c44b8da95f472aa68ce7c009"
+  ]
+}

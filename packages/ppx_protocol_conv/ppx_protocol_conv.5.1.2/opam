@@ -1,0 +1,43 @@
+opam-version: "2.0"
+maintainer: "Anders Fugmann <anders@fugmann.net>"
+authors: "Anders Fugmann"
+homepage: "https://github.com/andersfugmann/ppx_protocol_conv"
+dev-repo: "git+https://github.com/andersfugmann/ppx_protocol_conv"
+bug-reports: "https://github.com/andersfugmann/ppx_protocol_conv/issues"
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.04"}
+  "base" {>= "v0.14.0" }
+  "dune" {>= "1.2"}
+  "ppxlib" {>= "0.9.0" & < "0.15.0"}
+  "ppx_sexp_conv" {with-test}
+  "sexplib" {with-test}
+  "alcotest" {with-test & >= "0.8.0"}
+]
+synopsis:
+  "Ppx for generating serialisation and de-serialisation functions of ocaml types"
+description: """
+Ppx_protocol_conv generates code to serialize and de-serialize
+types. The ppx itself does not contain any protocol specific code,
+but relies on 'drivers' that defines serialisation and
+de-serialisation of basic types and structures.
+
+Pre-defined drivers are available in separate packages:
+ppx_protocol_conv_json (Yojson.Safe.json)
+ppx_protocol_conv_jsonm (Ezjson.value)
+ppx_protocol_conv_msgpack (Msgpck.t)
+ppx_protocol_conv_xml-light (Xml.xml)
+ppx_protocol_conv_xmlm (Xmlm.node)
+ppx_protocol_conv_yaml (Yaml.value)"""
+url {
+  src:
+    "https://github.com/andersfugmann/ppx_protocol_conv/archive/5.1.2.tar.gz"
+  checksum: [
+    "md5=b13fbc761c2aa3729b23a1362f140a18"
+    "sha512=95d8dabb38d7fe3f7a0ff2b4c17547ec5d2e30c4b83d1f166444ad8fa91ef02ee86ee855ef40bedc86a42ab35b2665a5001af9e2521dc7a648aa8b38c4143765"
+  ]
+}

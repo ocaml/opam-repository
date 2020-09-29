@@ -1,0 +1,48 @@
+opam-version: "2.0"
+maintainer: "team AT robur dot io"
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+homepage: "https://github.com/mirage/ocaml-dns"
+doc: "https://mirage.github.io/ocaml-dns/"
+dev-repo: "git+https://github.com/mirage/ocaml-dns.git"
+bug-reports: "https://github.com/mirage/ocaml-dns/issues"
+license: "BSD-2-Clause"
+
+depends: [
+  "dune" {>= "1.2.0"}
+  "ocaml" {>= "4.07.0"}
+  "dns" {= version}
+  "ipaddr" {>= "4.0.0"}
+  "lwt" {>= "4.2.1"}
+  "mirage-stack" {>= "2.0.0"}
+]
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+synopsis: "An opinionated Domain Name System (DNS) library"
+description: """
+µDNS supports most of the domain name system used in the wild.  It adheres to
+strict conventions.  Failing early and hard.  It is mostly implemented in the
+pure fragment of OCaml (no mutation, isolated IO, no exceptions).
+
+Legacy resource record types are not dealt with, and there is no plan to support
+`ISDN`, `MAILA`, `MAILB`, `WKS`, `MB`, `NULL`, `HINFO`, ... .  `AXFR` is only
+handled via TCP connections.  The only resource class supported is `IN` (the
+Internet).  In a similar vein, wildcard records are _not_ supported, and it is
+unlikely they'll ever be in this library.  Truncated hmac in `TSIG` are not
+supported (always the full length of the hash algorithm is used).
+
+Please read [the blog article](https://hannes.nqsb.io/Posts/DNS) for a more
+detailed overview.
+"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-dns/releases/download/v4.6.1/dns-v4.6.1.tbz"
+  checksum: [
+    "sha256=ed9996591a7705af7c2a22c1785c4c8723ac853b085af83cf8518728324a5d5b"
+    "sha512=10f1352646c5836254d66f5b0052ebdf7bf295ab3bec32907f4e08b134155276be4c9a28309ae0dcf04dd53aa5ddb483d1eaa074f1616c2b360d425feed4e105"
+  ]
+}

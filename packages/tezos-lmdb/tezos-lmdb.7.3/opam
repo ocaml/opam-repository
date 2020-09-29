@@ -1,0 +1,28 @@
+opam-version: "2.0"
+authors: "Vincent Bernardoff <vb@luminar.eu.org>"
+maintainer: "contact@tezos.com"
+license: "ISC"
+synopsis: "Legacy Tezos OCaml binding to LMDB (Consider ocaml-lmdb instead)"
+homepage: "https://gitlab.com/tezos/tezos"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+build: [
+  ["dune" "build" "-j" jobs "-p" name "@install"]
+  ["mv" "vendors/ocaml-lmdb/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "tezos-tooling" { with-test & = version }
+  "dune" {>= "1.11"}
+  "rresult" {>= "0.5.0"}
+  "cstruct" {with-test & >= "3.2.1"}
+  "alcotest" {with-test & >= "0.8.1"}
+]
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v7.3/tezos-v7.3.tar.bz2"
+  checksum: [
+    "sha256=898faf36eae39567c23b8cfc8df1fc6075ae420c02f857f0abc1c7817209a09e"
+    "sha512=1bf5e15c7e7a9d39d1e1b7eee4cd1d50b99c6c4d196fa109f4978e74012a6f60d84aae54b66e1c767661e9f41d22b4ccbab69f023ba5e094274385516139d941"
+  ]
+}

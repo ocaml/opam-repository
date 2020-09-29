@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "Romain Beauxis <toots@rastageeks.org>"
+authors: "The Savonet Team <savonet-users@lists.sourceforge.net>"
+homepage: "https://github.com/savonet/ocaml-ffmpeg"
+bug-reports: "https://github.com/savonet/ocaml-ffmpeg/issues"
+synopsis:
+  "Bindings for the ffmpeg library which provides functions for decoding audio and video files"
+depends: [
+  "ocaml" {>= "4.05.0"}
+  "ocamlfind" {build}
+  "conf-pkg-config" {build}
+  "conf-autoconf" {dev & build}
+  "base-bigarray"
+  "base-threads"
+]
+build: [
+  ["./bootstrap"] {dev}
+  ["./configure" "--prefix" prefix]
+  [make "clean"] {dev}
+  [make]
+]
+install: [make "install"]
+depexts: [
+  ["libavutil-dev" "libswscale-dev" "libavformat-dev" "libavcodec-dev" "libavdevice-dev" "libswresample-dev"]
+    {os-distribution = "debian"}
+  ["libavutil-dev" "libswscale-dev" "libavformat-dev" "libavcodec-dev" "libavdevice-dev" "libswresample-dev"]
+    {os-distribution = "ubuntu"}
+  ["ffmpeg-dev"] {os-distribution = "alpine"}
+  ["ffmpeg"] {os-distribution = "arch"}
+  ["ffmpeg-devel"] {os-distribution = "centos"}
+  ["ffmpeg-devel"] {os-distribution = "fedora"}
+  ["ffmpeg-devel"] {os-family = "suse"}
+  ["ffmpeg"] {os-distribution = "nixos"}
+  ["ffmpeg"] {os = "macos" & os-distribution = "homebrew"}
+]
+dev-repo: "git+https://github.com/savonet/ocaml-ffmpeg.git"
+url {
+  src:
+    "https://github.com/savonet/ocaml-ffmpeg/releases/download/v0.4.2/ocaml-ffmpeg-0.4.2.tar.gz"
+  checksum: [
+    "md5=058068a916ff50167b23ef5fc0384f9c"
+    "sha512=7c845462e52520ccc617033c758e4a75461bf56e9cafdf6ec5811c4385502ce3d868a5fdb52e82e1cfc5f483bdf2246c3ddd5ec7967de681961411604cb63e7e"
+  ]
+}

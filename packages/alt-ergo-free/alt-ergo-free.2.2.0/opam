@@ -1,0 +1,80 @@
+opam-version: "2.0"
+name: "alt-ergo-free"
+version: "2.2.0"
+
+maintainer: "alt-ergo@ocamlpro.com"
+authors: "Alt-Ergo developers"
+license: "Apache-2.0"
+homepage: "http://alt-ergo.ocamlpro.com/"
+dev-repo: "git+https://github.com/OCamlPro/alt-ergo.git"
+bug-reports: "https://github.com/OCamlPro/alt-ergo/issues"
+
+build:
+[
+  ["autoconf"]
+  ["./configure" "-prefix" "%{prefix}%"]
+	[make]
+]
+
+install:
+[
+	[make "install" "MANDIR=%{man}%"]
+]
+
+remove: [
+        ["autoconf"]
+        ["./configure" "-prefix" "%{prefix}%"]
+	[make "uninstall" "MANDIR=%{man}%"]
+]
+
+depends: [
+  "ocaml" {>= "4.04.0"}
+  "num"
+  "zarith"
+  "camlzip"
+  "ocplib-simplex" {>= "0.4"}
+  "psmt2-frontend" {= "0.1" }
+  "menhir"
+  "conf-autoconf" {build}
+]
+depopts: [
+        "lablgtk"
+        "conf-gtksourceview"
+]
+
+conflicts: [
+	"alt-ergo" {< "2.0.0" }
+	"altgr-ergo" {< "2.0.0" }
+	"satML-plugin" {< "2.0.0" }
+	"profiler-plugin" {< "2.0.0" }
+	"fm-simplex-plugin" {< "2.0.0" }
+]
+
+synopsis: "Alt-Ergo, an SMT Solver for Software Verification"
+description: """
+Alt-Ergo is an automatic prover of mathematical formulas used behind software verification tools such as Frama-C, SPARK, Why3, Atelier-B and Caveat.
+
+Usage of the command-line:
+
+```alt-ergo [options] <file.why>```
+
+Usage of the GUI:
+
+```altgr-ergo [options] <file.why>```
+
+Usage of the satML plugin; an alternative SAT solver based on miniSAT:
+
+```alt-ergo -sat-plugin satML-plugin.cmxs [other-options] <file.why>```
+
+Usage of the FM-Simplex plugin, an alternative to Fourier-Motzkin algorithm for linear integer arithmetic
+
+```alt-ergo -inequalities-plugin fm-simplex-plugin.cmxs [other-options] <file.why>```
+
+Usage of the command-line with FPA reasoning:
+
+```alt-ergo -use-fpa -prelude fpa-theory-2017-01-04-16h00.why [other-options] <file.why>```"""
+url {
+  src:
+    "https://alt-ergo.ocamlpro.com/http/alt-ergo-free-2.2.0/alt-ergo-free-2.2.0.tar.gz"
+  checksum: "md5=f82f4711a1fb92d9f065a534bf121a47"
+}

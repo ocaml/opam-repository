@@ -1,0 +1,154 @@
+opam-version: "2.0"
+name: "frama-c"
+synopsis: "Platform dedicated to the analysis of source code written in C"
+description:"""
+Frama-C gathers several analysis techniques in a single collaborative
+framework, based on analyzers (called "plug-ins") that can build upon the
+results computed by other analyzers in the framework.
+Thanks to this approach, Frama-C provides sophisticated tools, including:
+- an analyzer based on abstract interpretation (Eva plug-in);
+- a program proof framework based on weakest precondition calculus (WP plug-in);
+- a program slicer (Slicing plug-in);
+- a tool for verification of temporal (LTL) properties (Aoraï plug-in);
+- a runtime verification tool (E-ACSL plug-in);
+- several tools for code base exploration and dependency analysis
+  (plug-ins From, Impact, Metrics, Occurrence, Scope, etc.).
+These plug-ins communicate between each other via the Frama-C API
+and via ACSL (ANSI/ISO C Specification Language) properties.
+"""
+version: "21.0"
+maintainer: "francois.bobot@cea.fr"
+authors: [
+  "Michele Alberti"
+  "Thibaud Antignac"
+  "Gergö Barany"
+  "Patrick Baudin"
+  "Allan Blanchard"
+  "Lionel Blatter"
+  "François Bobot"
+  "Richard Bonichon"
+  "Quentin Bouillaguet"
+  "David Bühler"
+  "Zakaria Chihani"
+  "Loïc Correnson"
+  "Julien Crétin"
+  "Pascal Cuoq"
+  "Zaynah Dargaye"
+  "Basile Desloges"
+  "Jean-Christophe Filliâtre"
+  "Philippe Herrmann"
+  "Maxime Jacquemin"
+  "Florent Kirchner"
+  "Tristan Le Gall"
+  "Jean-Christophe Léchenet"
+  "Matthieu Lemerre"
+  "Dara Ly"
+  "David Maison"
+  "Claude Marché"
+  "André Maroneze"
+  "Thibault Martin"
+  "Fonenantsoa Maurica"
+  "Melody Méaulle"
+  "Benjamin Monate"
+  "Yannick Moy"
+  "Anne Pacalet"
+  "Valentin Perrelle"
+  "Guillaume Petiot"
+  "Virgile Prevosto"
+  "Armand Puccetti"
+  "Virgile Robles"
+  "Muriel Roger"
+  "Julien Signoles"
+  "Kostyantyn Vorobyov"
+  "Boris Yakobowski"
+]
+homepage: "http://frama-c.com/"
+license: "GNU Lesser General Public License version 2.1"
+dev-repo: "git+https://git.frama-c.com/pub/frama-c.git"
+doc: "http://frama-c.com/download/user-manual-21.0-Scandium.pdf"
+bug-reports: "https://bts.frama-c.com/"
+tags: [
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "interactive theorem prover"
+  "C"
+  "plugins"
+  "abstract interpretation"
+  "slicing"
+  "weakest precondition"
+  "ACSL"
+  "dataflow analysis"
+  "runtime verification"
+]
+
+build: [
+  ["autoconf"] {pinned}
+  ["./configure" "--prefix" prefix
+                 "--disable-gui" { !conf-gtksourceview:installed |
+                                   ( !conf-gnomecanvas:installed &
+                                     !lablgtk3:installed) }
+                 "--mandir=%{man}%"
+  ]
+  [make "-j%{jobs}%"]
+  [make "-C" "doc" "download"] {with-doc}
+]
+
+install: [
+  [make "install"]
+  [make "-C" "doc" "install"] {with-doc}
+]
+
+run-test: [
+  [make "-j%{jobs}%" "PTESTS_OPTS=-error-code" "tests"]
+]
+
+depends: [
+  "ocaml" { >= "4.05.0" & ( < "4.08.0~" | >= "4.08.1" ) }
+  "ocamlgraph" { >= "1.8.8" & < "1.9~" }
+  "ocamlfind" # needed beyond build stage, used by -load-module
+  "zarith"
+  "conf-autoconf" { build }
+  ( ( "lablgtk" { >= "2.18.2" } & "conf-gnomecanvas" & "conf-gtksourceview" )
+    | ( "lablgtk3" { >= "3.0.beta4" & os!="macos" }
+        & "lablgtk3-sourceview3" & "conf-gtksourceview3" ) )
+  ( "alt-ergo-free" | "alt-ergo" )
+  "conf-graphviz" { post }
+  "yojson"
+  "why3" { >= "1.3.1" }
+  "conf-time" {with-test}
+]
+
+depopts: [
+  # cannot use {build}: Frama-C must be recompiled when Coq and libraries changes.
+  # Coq: because .vo would would not be loadable by another version of Coq
+  # libraries: because we use dynamic linking
+  "coq"
+  "mlgmpidl"
+  "apron"
+  "zmq"
+  "ppx_deriving"
+  "ppx_deriving_yojson"
+]
+
+conflicts: [
+  "lablgtk" { < "2.18.2" } #for ocaml >= 4.02.1
+  "frama-c-e-acsl" #avoid mixing old releases of E-ACSL, it is already
+                   #distributed with this version of Frama-C
+  "frama-c-base"   #avoid mixing old releases of Frama-C, now that only the
+                   #'frama-c' package exists
+]
+
+messages: [
+  "The Frama-C/Wp now uses Why-3 for all provers (Cf. deprecated -wp-prover native:alt-ergo)"
+  {alt-ergo:installed}
+  "The Frama-C/Wp native support for Coq is now deprecated (use TIP or Why-3 instead)."
+  {coq:installed}
+  "WARNING: There is a known issue with OCaml 4.05.0 and ocamlfind 1.8.1 (https://github.com/ocaml/opam-repository/issues/10925) when upgrading from a previous ocamlfind. If the compilation of Frama-C fails, try downgrading ocamlfind to 1.8.0 or upgrading OCaml to > 4.05.0." { ocaml:version = "4.05.0" & ocamlfind:version = "1.8.1" }
+]
+
+url {
+  src: "https://git.frama-c.com/pub/frama-c/-/wikis/downloads/frama-c-21.0-Scandium.tar.gz"
+  checksum: "md5=28cd898221136be33377c55c872c2fdb"
+}
