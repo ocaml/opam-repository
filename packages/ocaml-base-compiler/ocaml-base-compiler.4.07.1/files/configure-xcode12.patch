@@ -1,0 +1,25 @@
+diff --git a/configure b/configure
+index 1316b3c1e..052a20876 100755
+--- a/configure
++++ b/configure
+@@ -454,8 +454,11 @@ case "$ocamlversion" in
+        *) gcc_warnings="-Wall";;
+ esac
+ 
++origcc="$cc"
++
+ case "$ccfamily" in
+   clang-*)
++    cc="$cc -Wno-implicit-function-declaration";
+     common_cflags="-O2 -fno-strict-aliasing -fwrapv";
+     internal_cflags="$gcc_warnings";;
+   gcc-[012]-*)
+@@ -2054,7 +2057,7 @@ fi
+ 
+ cclibs="$cclibs $mathlib"
+ 
+-config CC "$cc"
++config CC "$origcc"
+ config CPP "$cpp"
+ config CFLAGS "$common_cflags $internal_cflags"
+ config CPPFLAGS "$common_cppflags $internal_cppflags"
