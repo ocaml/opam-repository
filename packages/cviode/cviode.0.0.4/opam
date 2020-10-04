@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "Marcello Seri <m.seri@rug.nl>"
+authors: [ "Marcello Seri <m.seri@rug.nl>" ]
+license: "MIT"
+homepage: "https://github.com/mseri/ocaml-cviode"
+dev-repo: "git+https://github.com/mseri/ocaml-cviode.git"
+bug-reports: "https://github.com/mseri/ocaml-cviode/issues"
+doc: "https://mseri.github.io/ocaml-cviode/"
+tags: [ "ODE" "scientific-computing"  ]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "@doc"] {with-doc}
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.06.0"}
+  "dune" {>= "2.0.0"}
+  "owl" {>= "0.8.0" & < "0.9.0"}
+  "owl-ode" {>= "0.3.0" & < "0.4.0"}
+  "owl-plplot" {with-test}
+  "stdcompat" {>= "7" & with-test}
+]
+synopsis: "Contact variational integrators - native ocaml version"
+description: """
+This is a collection of geometric solvers for initial value problems derived from contact Lagrangians.
+The provided solvers concern Lagrangians of the form
+$$                                         
+L(x, \\dot{x}, z, t) = \\frac12|\\dot{x}|^2 + g_1(x)g_2(z) + h(z) + f(t)x
+$$
+For further information refer to _Vermeeren, Bravetti, Seri: Contact Variational Integrators (2019)_.
+"""
+x-commit-hash: "d29748591aac5f82eabddedb3999a4f91a50f2ae"
+url {
+  src:
+    "https://github.com/mseri/ocaml-cviode/releases/download/0.0.4/cviode-0.0.4.tbz"
+  checksum: [
+    "sha256=89bf0d36db1951ba238f412d59065342f832f77968bbad688ab29e8420e88dba"
+    "sha512=1cc90434d167e7a22632aee1cc0273ce36293112a233503fdc428315713a5dadf834fa29ef90f48918fb19562b06c1ba8f2b601eed206f11388b95491e83d8b5"
+  ]
+}
