@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "Detect root CA certificates from the operating system"
+description: """
+TLS requires a set of root anchors (Certificate Authorities) to
+authenticate servers. This library exposes this list so that it can be
+registered with ocaml-tls.
+"""
+maintainer: ["Etienne Millon <me@emillon.org>"]
+authors: ["Etienne Millon <me@emillon.org>"]
+license: "ISC"
+homepage: "https://github.com/mirage/ca-certs"
+doc: "https://mirage.github.io/ca-certs/doc"
+bug-reports: "https://github.com/mirage/ca-certs/issues"
+depends: [
+  "dune" {>= "2.0"}
+  "bos"
+  "fpath"
+  "rresult"
+  "ptime"
+  "mirage-crypto"
+  "x509" {>= "0.11.0"}
+  "ocaml" {>= "4.07.0"}
+  "lwt" {with-test}
+  "tls" {with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mirage/ca-certs.git"
+tags: ["org:mirage"]
+depexts: [
+  ["ca_root_nss"] {os = "freebsd"}
+]
+x-commit-hash: "5bc9f3f4c94679cfa9fc13fbc2ede742beeda54f"
+url {
+  src:
+    "https://github.com/mirage/ca-certs/releases/download/v0.1.0/ca-certs-v0.1.0.tbz"
+  checksum: [
+    "sha256=535c05f1b0081a0cd071a32052286919723e80d5cdc2f6a5b892dcd30db545e8"
+    "sha512=d8b6545b83374feb4a693f31c8c2a087e7cb4e64ba47df5b4912b4251c49f06f4b2f33f10c02dd5aca4d26af2b8ce6087426eda489ad60f8f41e6c2696ef48be"
+  ]
+}
