@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "tezos-tooling" { with-test & = version }
+  "dune" { >= "1.11" }
+  "tezos-rpc-http-server" { = version }
+  "tezos-validator" { = version }
+  "tezos-embedded-protocol-genesis-carthagenet" { = version }
+  "tezos-embedded-protocol-000-Ps9mPmXa" { = version }
+  "tezos-embedded-protocol-006-PsCARTHA" { = version }
+  "tezos-embedded-protocol-007-PsDELPH1" { = version }
+  "tezos-mempool-006-PsCARTHA" { = version }
+  "tezos-mempool-007-PsDELPH1" { = version }
+  "cmdliner"
+  "tls"
+]
+depopts: [
+  "tezos-embedded-protocol-001-PtCJ7pwo" { = version }
+  "tezos-embedded-protocol-002-PsYLVpVv" { = version }
+  "tezos-embedded-protocol-003-PsddFKi3" { = version }
+  "tezos-embedded-protocol-004-Pt24m4xi" { = version }
+  "tezos-embedded-protocol-005-PsBABY5H" { = version }
+  "tezos-embedded-protocol-005-PsBabyM1" { = version }
+  "tezos-embedded-protocol-demo-counter" { = version }
+  "tezos-embedded-protocol-alpha" { = version }
+  "tezos-embedded-protocol-demo-noops" { = version }
+  "tezos-embedded-protocol-genesis" { = version }
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/bin_node/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: `tezos-node` binary"
+
+url {
+  src: "https://gitlab.com/nomadic-labs/tezos/-/archive/6611863b170ea8b8596b360edf1de47bd48ea589/tezos-6611863b170ea8b8596b360edf1de47bd48ea589.tar.bz2"
+  checksum: [
+    "sha256=e79be0cbc00dfdd53a9cbf3d2cab980f9b323c9f625a4b4ef09640c29985a468"
+    "sha512=9ae57bd701f8d2e02a25b860a3077f2b4164e224d00fafafc72c5fd173c7246a5bb3a5451ffa8323593ad42cd009ed6ce5b8a1c2b195968dd0310e86af4284cb"
+  ]
+}

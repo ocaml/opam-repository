@@ -1,0 +1,27 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "tezos-tooling" { with-test & = version }
+  "dune" { >= "1.11" }
+  "tezos-embedded-protocol-006-PsCARTHA" { = version }
+  "tezos-shell" { = version }
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/proto_006_PsCARTHA/lib_mempool/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos/Protocol: mempool-filters"
+
+url {
+  src: "https://gitlab.com/nomadic-labs/tezos/-/archive/6611863b170ea8b8596b360edf1de47bd48ea589/tezos-6611863b170ea8b8596b360edf1de47bd48ea589.tar.bz2"
+  checksum: [
+    "sha256=e79be0cbc00dfdd53a9cbf3d2cab980f9b323c9f625a4b4ef09640c29985a468"
+    "sha512=9ae57bd701f8d2e02a25b860a3077f2b4164e224d00fafafc72c5fd173c7246a5bb3a5451ffa8323593ad42cd009ed6ce5b8a1c2b195968dd0310e86af4284cb"
+  ]
+}
