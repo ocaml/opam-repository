@@ -1,0 +1,74 @@
+opam-version: "2.0"
+synopsis: "Official OCaml release 4.11.1"
+maintainer: "platform@lists.ocaml.org"
+authors: "Xavier Leroy and many contributors"
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/ocaml/issues"
+dev-repo: "git://github.com/ocaml/ocaml"
+depends: [
+  "ocaml" {= "4.11.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "--prefix=%{prefix}%"
+    "-C"
+    "--with-afl" {ocaml-options-afl:installed}
+    "--disable-native-compiler" {ocaml-options-bytecode-only:installed}
+    "--disable-force-safe-string" {ocaml-options-default-unsafe-string:installed}
+    "DEFAULT_STRING=unsafe" {ocaml-options-default-unsafe-string:installed}
+    "--disable-flat-float-array" {ocaml-options-no-flat-float-array:installed}
+    "--enable-flambda" {ocaml-options-flambda:installed}
+    "--enable-frame-pointers" {ocaml-options-fp:installed}
+    "--enable-spacetime" {ocaml-options-spacetime:installed}
+    "CC=cc" {!ocaml-options-32bit:installed & !ocaml-options-musl:installed & (os="openbsd"|os="freebsd"|os="macos")}
+    "CC=musl-gcc" {ocaml-options-musl:installed & os-distribution!="alpine"}
+    "CFLAGS=-Os" {ocaml-options-musl:installed}
+    "CC=gcc -m32" {ocaml-options-32bit:installed & os="linux"}
+    "CC=gcc -Wl,-read_only_relocs,suppress -arch i386 -m32" {ocaml-options-32bit:installed & os="macos"}
+    "ASPP=cc -c" {!ocaml-options-32bit:installed & !ocaml-options-musl:installed & (os="openbsd"|os="freebsd"|os="macos")}
+    "ASPP=musl-gcc -c" {ocaml-options-musl:installed & os-distribution!="alpine"}
+    "ASPP=gcc -m32 -c" {ocaml-options-32bit:installed & os="linux"}
+    "ASPP=gcc -arch i386 -m32 -c" {ocaml-options-32bit:installed & os="macos"}
+    "AS=as --32" {ocaml-options-32bit:installed & os="linux"}
+    "AS=as -arch i386" {ocaml-options-32bit:installed & os="macos"}
+    "--host=i386-linux" {ocaml-options-32bit:installed & os="linux"}
+    "--host=i386-apple-darwin13.2.0" {ocaml-options-32bit:installed & os="macos"}
+    "LIBS=-static" {ocaml-options-static:installed}
+  ]
+  [make "-j%{jobs}%" {os != "cygwin"} "world"]
+  [make "-j%{jobs}%" {os != "cygwin"} "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.11.1.tar.gz"
+  checksum: "sha256=cd3cd55d465028b161c8c33bafc14ee6ae1d91b5efe51098350f8e8a5f454baf"
+}
+extra-files: ["ocaml-compiler.install" "md5=3e969b841df1f51ca448e6e6295cb451"]
+post-messages: [
+  "A failure in the middle of the build may be caused by build parallelism
+   (enabled by default).
+   Please file a bug report at https://github.com/ocaml/ocaml/issues"
+  {failure & jobs > 1 & os != "cygwin"}
+  "You can try installing again including --jobs=1
+   to force a sequential build instead."
+  {failure & jobs > 1 & os != "cygwin" & opam-version >= "2.0.5"}
+]
+depopts: [
+  "ocaml-options-32bit"
+  "ocaml-options-afl"
+  "ocaml-options-bytecode-only"
+  "ocaml-options-default-unsafe-string"
+  "ocaml-options-no-flat-float-array"
+  "ocaml-options-flambda"
+  "ocaml-options-fp"
+  "ocaml-options-musl"
+  "ocaml-options-static"
+  "ocaml-options-spacetime"
+]
