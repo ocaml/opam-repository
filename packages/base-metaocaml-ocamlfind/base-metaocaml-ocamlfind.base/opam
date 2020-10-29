@@ -1,0 +1,30 @@
+opam-version: "2.0"
+maintainer: "yallop@gmail.com"
+authors: ["Jeremy Yallop"]
+depopts: ["ocamlfind"]
+homepage: "https://github.com/ocaml/opam-repository/tree/master/packages/base-metaocaml-ocamlfind/base-metaocaml-ocamlfind.base"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+install: [
+  ["mkdir" "-p" "%{lib}%/findlib.conf.d/"] {ocamlfind:installed}
+  ["ocamlfind" "install" "metaocaml" "META"] {ocamlfind:installed}
+  ["cp" "metaocaml.native.conf" "%{lib}%/findlib.conf.d/metaocaml.conf"]
+    {ocamlfind:installed & (ocaml:compiler = "4.04.0+BER" | ocaml:compiler = "4.07.1+BER" | ocaml:compiler = "4.11.1+BER")}
+  ["cp" "metaocaml.conf" "%{lib}%/findlib.conf.d/metaocaml.conf"]
+    {ocamlfind:installed & ocaml:compiler != "4.04.0+BER" & ocaml:compiler != "4.07.1+BER" & ocaml:compiler != "4.11.1+BER"}
+]
+remove: [
+  [ "rm" "-f" "%{lib}%/findlib.conf.d/metaocaml.conf" ]
+  ["ocamlfind" "remove" "metaocaml"] {ocamlfind:installed}
+]
+synopsis: "Findlib toolchain configuration for MetaOCaml"
+depends: [
+  "ocaml"
+  "ocaml-variants"
+    {= "4.01.0+BER" | = "4.02.1+BER" | = "4.02.1+modular-implicits-ber" | = "4.04.0+BER" | = "4.07.1+BER" | = "4.11.1+BER"}
+]
+flags: light-uninstall
+extra-files: [
+  ["metaocaml.native.conf" "md5=2dc60223831dd583abab63220c6ed6ff"]
+  ["metaocaml.conf" "md5=c3e36877739c3147e3efecd5c3698473"]
+  ["META" "md5=e450da6f2b87c1291ea23d6a396bffa5"]
+]
