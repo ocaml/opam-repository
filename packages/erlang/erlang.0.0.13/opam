@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "Libraries to manipulate Erlang sources"
+description: """
+erlang is a  a set of libraries designed to facilitate manipulating
+ Standard Erlang and Core Erlang sources.
+
+ It provides a lexer/parser, a concrete AST, and a printer for Standard Erlang
+ in its current version.
+"""
+maintainer: ["Leandro Ostera <leandro@ostera.io>"]
+authors: ["Leandro Ostera <leandro@ostera.io>"]
+license: "Apache-2.0"
+homepage: "https://github.com/AbstractMachinesLab/caramel"
+bug-reports: "https://github.com/AbstractMachinesLab/caramel/issues"
+depends: [
+  "dune" {>= "2.7" & >= "2.7"}
+  "ocaml" {>= "4.11.1"}
+  "cmdliner"
+  "menhir"
+  "ppx_sexp_conv"
+  "sexplib"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+run-test: ["dune" "runtest" "./erlang/tests" "-p" name]
+dev-repo: "git+https://github.com/AbstractMachinesLab/caramel.git"
+x-commit-hash: "a6b130c6327ae68dfb5508602aaff1e8eb4780cf"
+url {
+  src:
+    "https://github.com/AbstractMachinesLab/caramel/releases/download/v0.0.13/erlang-v0.0.13.tbz"
+  checksum: [
+    "sha256=35e50d5f3b987fda9a48bb172a32e433bcd3cb1a0238bbdec6ca1cd44a06373b"
+    "sha512=505aa734c28a0c27e964863e836aa946ef5e5efbe35ee2bbe08e10ba5187290a8e4920ee1f14555abd0b1887a4545d824936191bdc75df8dc748fb1a3531a8e2"
+  ]
+}
