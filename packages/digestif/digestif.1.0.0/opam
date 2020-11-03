@@ -1,0 +1,71 @@
+opam-version: "2.0"
+maintainer:   [ "Eyyüb Sari <eyyub.sari@epitech.eu>"
+                "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+authors:      [ "Eyyüb Sari <eyyub.sari@epitech.eu>"
+                "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+homepage:     "https://github.com/mirage/digestif"
+bug-reports:  "https://github.com/mirage/digestif/issues"
+dev-repo:     "git+https://github.com/mirage/digestif.git"
+doc:          "https://mirage.github.io/digestif/"
+license:      "MIT"
+synopsis:     "Hashes implementations (SHA*, RIPEMD160, BLAKE2* and MD5)"
+description: """
+Digestif is a toolbox to provide hashes implementations in C and OCaml.
+
+It uses the linking trick and user can decide at the end to use the C implementation or the OCaml implementation.
+
+We provides implementation of:
+ * MD5
+ * SHA1
+ * SHA224
+ * SHA256
+ * SHA384
+ * SHA512
+ * BLAKE2B
+ * BLAKE2S
+ * RIPEMD160
+"""
+
+build: [
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "./install/install.ml" ]
+  [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
+]
+install:  [
+  [ "dune" "install" "-p" name ] {with-test}
+  [ "./test/test_runes.ml" ] {with-test}
+]
+
+depends: [
+  "ocaml"          {>= "4.03.0"}
+  "dune"           {>= "2.6.0"}
+  "conf-pkg-config" {build}
+  "eqaf"
+  "base-bytes"
+  "bigarray-compat"
+  "stdlib-shims"
+  "fmt"            {with-test}
+  "alcotest"       {with-test}
+  "bos"            {with-test}
+  "astring"        {with-test}
+  "fpath"          {with-test}
+  "rresult"        {with-test}
+  "ocamlfind"      {with-test}
+]
+depopts: [
+  "ocaml-freestanding"
+]
+
+conflicts: [
+  "mirage-xen" {< "6.0.0"}
+  "ocaml-freestanding" {< "0.6.0"}
+]
+x-commit-hash: "f7e043938d9bb6fda9865086074e60929095cd9e"
+url {
+  src:
+    "https://github.com/mirage/digestif/releases/download/v1.0.0/digestif-v1.0.0.tbz"
+  checksum: [
+    "sha256=29450c1fecb93b3c5c19588f8abcbf4891ddf1f84a1bbd3fb860e96994472884"
+    "sha512=30f4e2ea85a0aa50dbafb7c52d55b49f5612fbeeaa4ed8bfbd1610848a8f397c4cd1589fe0bd7ab3f165974697151279d56c37bae44c7f29a2d5a514af9d4942"
+  ]
+}
