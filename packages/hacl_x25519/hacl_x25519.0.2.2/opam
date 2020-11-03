@@ -1,0 +1,61 @@
+opam-version: "2.0"
+synopsis:
+  "Primitives for Elliptic Curve Cryptography taken from Project Everest"
+description: """
+This is an implementation of the X25519 key exchange algorithm, using code from
+Project Everest.
+
+Cryptographic primitives should not be used in end applications, they are better
+used as part of a cryptographic library.
+"""
+maintainer: ["Etienne Millon <me@emillon.org>"]
+authors: [
+  "Etienne Millon <me@emillon.org>" "INRIA and Microsoft Corporation"
+]
+license: "MIT"
+homepage: "https://github.com/mirage/hacl"
+doc: "https://mirage.github.io/hacl/doc"
+bug-reports: "https://github.com/mirage/hacl/issues"
+depends: [
+  "dune" {>= "2.6"}
+  "benchmark" {with-test}
+  "cstruct" {>= "3.5.0"}
+  "eqaf"
+  "hex" {with-test}
+  "alcotest" {with-test}
+  "ocaml"
+  "conf-pkg-config" {build}
+  "ppx_blob" {with-test}
+  "ppx_deriving_yojson" {with-test}
+  "stdlib-shims" {with-test}
+  "yojson" {with-test & >= "1.6.0"}
+]
+depopts: ["ocaml-freestanding"]
+conflicts: [
+  "mirage-xen" {< "6.0.0"}
+  "ocaml-freestanding" {< "0.6.0"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mirage/hacl.git"
+x-commit-hash: "de63ba4271e04993cc4fb4a8610a758bf1cbe2dd"
+url {
+  src:
+    "https://github.com/mirage/hacl/releases/download/v0.2.2/hacl_x25519-v0.2.2.tbz"
+  checksum: [
+    "sha256=816754a8e8f9739d0e6d98ced6e50b026a28d59232445c5051a66e4332cc572d"
+    "sha512=9a0fb07af4af999a12cb65f3bc15487c5999ddf6fff0a923cf4b8087a15933632266be55ec01cff3b15d354c9e526d906a7e15aee84c743f58f8cdfe899b110d"
+  ]
+}
