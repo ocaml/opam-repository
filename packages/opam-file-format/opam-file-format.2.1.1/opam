@@ -13,10 +13,11 @@ depopts: [
   "dune" {> "1.11.4"}
 ]
 build: [
-  [make "byte" {!ocaml-native} "all" {ocaml-native}] {!dune:installed}
+  [make "byte" {!ocaml-native} "all" {ocaml-native}]
+    {!dune:installed | dune:version < "2.0.0"}
   ["dune" "build" "-p" name "-j" jobs "@install" "@doc" {with-doc}]
-    {dune:installed}
-  ["dune" "runtest" "-p" name "-j" jobs] {with-test & dune:installed}
+    {dune:installed & dune:version >= "2.0.0"}
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & dune:installed & dune:version >= "2.0.0"}
 ]
 install: [make "install" "PREFIX=%{prefix}%"] {!dune:installed}
 dev-repo: "git+https://github.com/ocaml/opam-file-format"
