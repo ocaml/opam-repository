@@ -25,4 +25,4 @@ in Europe -- we would like to stress that even the *collection* of
 the metadata contained in opam-repository is licensed under CC0 and
 thus the simple act of cloning opam-repository is perfectly legal.
 
-[1]: https://github.com/kit-ty-kate/opam-health-check
+[1]: https://github.com/ocurrent/opam-health-check
