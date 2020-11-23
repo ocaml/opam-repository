@@ -7,19 +7,13 @@ homepage: "https://opam.ocaml.org"
 bug-reports: "https://github.com/ocaml/opam-file-format/issues"
 depends: [
   "ocaml"
+  "dune" {>= "2.0"}
   "alcotest" {with-test}
 ]
-depopts: [
-  "dune" {>= "2.0.0"}
-]
 build: [
-  [make "byte" {!ocaml-native} "all" {ocaml-native}]
-    {!dune:installed | dune:version < "2.0.0"}
   ["dune" "build" "-p" name "-j" jobs "@install" "@doc" {with-doc}]
-    {dune:installed & dune:version >= "2.0.0"}
-  ["dune" "runtest" "-p" name "-j" jobs] {with-test & dune:installed & dune:version >= "2.0.0"}
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-install: [make "install" "PREFIX=%{prefix}%"] {!dune:installed | dune:version < "2.0.0"}
 dev-repo: "git+https://github.com/ocaml/opam-file-format"
 url {
   src: "https://github.com/ocaml/opam-file-format/archive/2.1.1.tar.gz"
