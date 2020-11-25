@@ -1,0 +1,59 @@
+opam-version: "2.0"
+maintainer: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
+authors: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
+license: "ISC"
+homepage: "https://github.com/mirage/charrua"
+bug-reports: "https://github.com/mirage/charrua/issues"
+dev-repo: "git+https://github.com/mirage/charrua.git"
+doc: "https://mirage.github.io/charrua/"
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depends: [
+  "ocaml"         {>= "4.06.0"}
+  "dune"          {>= "1.4.0"}
+  "ppx_sexp_conv" {>= "v0.9.0"}
+  "menhir"        {build}
+  "charrua"       {= version}
+  "cstruct"       {>= "3.0.1"}
+  "sexplib"
+  "ipaddr"        {>= "5.0.0"}
+  "macaddr"       {>= "4.0.0"}
+  "ipaddr-sexp"
+  "macaddr-sexp"
+  "cstruct-unix"  {with-test}
+]
+synopsis: "DHCP server"
+description: """
+Charrua-server consists of a single `Dhcp_server` module used for constructing DHCP
+servers.
+
+[dhcp](https://github.com/mirage/mirage-skeleton/tree/master/applications/dhcp)
+is a Mirage DHCP unikernel server based on charrua, included as a part of the MirageOS unikernel example and starting-point repository.
+
+#### Features
+
+* `Dhcp_server` supports a stripped down ISC dhcpd.conf, so you can probably just
+  use your old `dhcpd.conf`. It also supports manual configuration building in
+  OCaml.
+* Logic/sequencing is agnostic of IO and platform, so it can run on Unix as a
+  process, as a Mirage unikernel or anything else.
+* All DHCP options are supported at the time of this writing.
+* Code is purely applicative.
+* It's in OCaml, so it's pretty cool.
+
+The name `charrua` is a reference to the, now extinct, semi-nomadic people of
+southern South America.
+"""
+url {
+  src:
+    "https://github.com/mirage/charrua/releases/download/v1.3.0/charrua-v1.3.0.tbz"
+  checksum: [
+    "sha256=b9f59f45d2eae1253de1f7b4d42f5f2d772949b55f963a04eae40086b1936afc"
+    "sha512=426868b9cc4b861fa5e48d59d03891799cd0c4cca67adc2bcb665176c2ea47c93677868fcb2d78706eedb4aabcc0582f8b3bfe9c8f3829d4a6d5a181871eadb4"
+  ]
+}
