@@ -6,25 +6,18 @@ bug-reports: "https://github.com/ergl/crdt-ml/issues"
 license: "GPL-3.0-only"
 dev-repo: "git+https://github.com/ergl/crdt-ml.git"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests" {with-test}]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
-  ["ocaml" "setup.ml" "-build"] {with-test}
   ["ocaml" "setup.ml" "-test"] {with-test}
   ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-remove: [
-  ["ocamlfind" "remove" "crdt"]
-  ["ocamlfind" "remove" "crdt_immutable"]
-  ["ocamlfind" "remove" "crdt_mutable"]
-  ["ocamlfind" "remove" "crdt_util"]
-]
 depends: [
   "ocaml" {>= "4.02.0"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
   "qtest" {with-test}
+  "ounit" {with-test}
 ]
 synopsis: "CRDTs - Conflict-Free Replicated Data Types for OCaml"
 description: """
