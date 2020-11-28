@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "sudo-woodo3@protonmail.com"
+authors: ["Alessandro Cheli"]
+homepage: "https://github.com/0x0f0f0f/gobba"
+bug-reports: "https://github.com/0x0f0f0f/gobba/issues"
+dev-repo: "git+https://github.com/0x0f0f0f/gobba.git"
+license: "MIT"
+synopsis: "A simple, didactical, purely functional programming language"
+description: "A simple, didactical, purely functional programming language written for the programming 2 course at the University of Pisa, extended with a simple parser made with Menhir and ocamllex"
+doc: "https://0x0f0f0f.github.io/gobba"
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["sh" "-c" "GOBBA_EXAMPLES=$(realpath ./examples/) dune runtest -p %{name}% -j %{jobs}%"] {with-test}
+]
+
+conflicts: "gobba" {!= "transition"}
+
+depends: [
+    "dune" {>= "2.0"}
+    "ocaml" {>= "4.05.0"}
+    "ANSITerminal"
+    "ocamline" {>= "1.2"}
+    "linenoise" {>= "1.3.0"}
+    "menhir"
+    "ppx_deriving"
+    "cmdliner"
+    "owl"
+    "owl-base"
+    "alcotest" {with-test & >= "0.8.5"}
+    "bisect_ppx" {with-test >= "1.4.1"}
+]
+url {
+  src: "https://github.com/0x0f0f0f/gobba/archive/0.4.2.tar.gz"
+  checksum: [
+    "md5=10ba85585b0be85888b38a4eb88918cb"
+    "sha512=8c22dd9c6bad580c9fa62321664d1fa8c6b29d6ac015c82eb454bd4516b7412863529d94fca35f8016d00b77b9ac7d5ae8a307cdcd6210ad6ec0498d17fb3660"
+  ]
+}
