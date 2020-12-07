@@ -7,6 +7,9 @@ homepage: "https://coq.inria.fr/"
 bug-reports: "https://github.com/coq/coq/issues"
 dev-repo: "git+https://github.com/coq/coq.git"
 license: "LGPL-2.1"
+depopts: [
+  "coq-native"
+]
 build: [
   [
     "./configure"
@@ -19,6 +22,7 @@ build: [
     "-usecamlp5"
     "-camlp5dir" "%{camlp5:lib}%"
     "-coqide" "no"
+    "-native-compiler" "yes" {coq-native:installed} "no" {!coq-native:installed}
   ]
   [make "-j%{jobs}%"]
   [make "-j%{jobs}%" "byte"]
@@ -58,7 +62,7 @@ depends: [
   "num"
   "conf-findutils" {build}
 ]
-synopsis: "Formal proof management system."
+synopsis: "Formal proof management system"
 flags: light-uninstall
 extra-files: ["coq.install" "md5=b85e0eb533d6836c15581f0e5cb0ebc2"]
 url {
