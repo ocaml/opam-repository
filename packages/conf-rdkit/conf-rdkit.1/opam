@@ -1,0 +1,38 @@
+opam-version: "2.0"
+authors: "https://github.com/rdkit/rdkit/graphs/contributors"
+homepage: "http://www.rdkit.org/"
+maintainer: "unixjunkie@sdf.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "BSD-3-Clause"
+build: [
+  ["sh" "-c" "c++ test.cpp -o test -I/usr/local/include/rdkit -L/usr/local/lib -lRDKitRDGeneral -DSWIG"] {os = "macos"}
+  ["sh" "-c" "c++ test.cpp -o test -I/usr/include/rdkit -lRDKitRDGeneral -DSWIG || c++ test.cpp -o test -I/usr/include/rdkit -lRDGeneral -DSWIG"] {os = "linux"}
+  ["./test"]
+]
+depexts: [
+  ["librdkit-dev" "python-rdkit"] {os-distribution = "debian" & os-version < "11"}
+  ["librdkit-dev" "python3-rdkit"] {os-distribution = "debian" & os-version >= "11"}
+  ["librdkit-dev" "python-rdkit"] {os-distribution = "ubuntu" & os-version < "20.04"}
+  ["librdkit-dev" "python3-rdkit"] {os-distribution = "ubuntu" & os-version >= "20.04"}
+  ["librdkit-dev" "python3-rdkit"] {(os-family = "debian" | os-family = "ubuntu") & os-distribution != "debian" & os-distribution != "ubuntu"}
+  ["rdkit-devel" "python3-rdkit"] {os-distribution = "fedora"}
+]
+x-ci-accept-failures: [ # RDKit does not exist by default on these distributions
+  "alpine-3.12"
+  "archlinux"
+  "centos-7"
+  "centos-8"
+  "opensuse-15.2"
+  "oraclelinux-7"
+  "oraclelinux-8"
+]
+post-messages:
+    "This package requires rdkit to be installed. If you are using homebrew, you might want to try:
+    'brew tap rdkit/rdkit; pip3 install numpy; brew install --HEAD rdkit --with-python3 --with-inchi'"
+    {failure & os = "macos"}
+synopsis: "Virtual package relying on rdkit library installation"
+description: """
+This package can only install if the rdkit devel library is installed
+on the system."""
+extra-files: ["test.cpp" "md5=8079a0c593690540fbcb2f848f5b43d5"]
+flags: conf
