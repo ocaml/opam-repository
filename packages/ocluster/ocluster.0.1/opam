@@ -1,0 +1,67 @@
+opam-version: "2.0"
+synopsis: "Distribute build jobs to workers"
+description: """
+OCluster manages a pool of build workers.
+A build scheduler service accepts build jobs from clients and distributes them to worker machines using Cap'n Proto.
+Workers register themselves by connecting to the scheduler (and workers do not need to be able to accept incoming network connections).
+
+The scheduler can manage multiple pools (e.g. `linux-x86_64` and `linux-arm32`).
+Clients say which pool should handle their requests.
+At the moment, two build types are provided: building a Dockerfile, or building an OBuilder spec.
+In either case, the build may done in the context of some Git commit.
+The scheduler tries to schedule similar builds on the same machine, to benefit from caching."""
+maintainer: ["talex5@gmail.com"]
+authors: ["talex5@gmail.com"]
+homepage: "https://github.com/ocurrent/ocluster"
+bug-reports: "https://github.com/ocurrent/ocluster/issues"
+depends: [
+  "dune" {>= "2.5"}
+  "prometheus"
+  "ppx_sexp_conv"
+  "dune-build-info"
+  "ocluster-api" {= version}
+  "lwt"
+  "capnp-rpc-lwt"
+  "capnp-rpc-net"
+  "capnp-rpc-unix" {>= "0.9.0"}
+  "logs"
+  "fmt"
+  "conf-libev" {os != "win32"}
+  "digestif"
+  "fpath"
+  "lwt-dllist"
+  "prometheus-app" {>= "1.0"}
+  "cohttp-lwt-unix"
+  "sqlite3"
+  "obuilder"
+  "psq"
+  "mirage-crypto" {>= "0.8.5"}
+  "ocaml" {>= "4.10.0"}
+  "current_ocluster" {= version & with-test}
+  "alcotest" {>= "1.0.0" & with-test}
+  "alcotest-lwt" {>= "1.0.1" & with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocurrent/ocluster.git"
+x-commit-hash: "2b6f1a5834e23441be711abf4a8d77ae1525604b"
+url {
+  src:
+    "https://github.com/ocurrent/ocluster/releases/download/v0.1/current_ocluster-v0.1.tbz"
+  checksum: [
+    "sha256=bb303471ffc41350e2a3ce157c1beeffb5aec9799b63118be7c4b8d8c7258a1d"
+    "sha512=9c5ab2cc7474f9e13bad2b492c766b4ad7db70436da1343ac805145fe4421fcb9d13053f39e77338167bc529d19e7ea2081411ecaa37ef0ac93fbc69a0a01326"
+  ]
+}
