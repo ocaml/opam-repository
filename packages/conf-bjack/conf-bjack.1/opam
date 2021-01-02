@@ -1,0 +1,21 @@
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+homepage: "https://jackaudio.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: "jack dev team"
+license: "BSD"
+build: ["sh" "-c" "pkg-config --exists jack && pkg-config --exists samplerate"]
+depends: [
+  "conf-pkg-config" {build}
+]
+depexts: [
+  ["jack-dev"] {os-distribution = "alpine"}
+  ["jack-audio-connection-kit-devel" "libsamplerate-devel"] {os-distribution = "centos" | os-distribution = "fedora" | os-family = "suse"}
+  ["libjack-dev" "libsamplerate-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["jack" "samplerate"] {os-distribution = "nixos"}
+  ["jack" "libsamplerate"] {os-family = "arch" | os = "freebsd" | os = "macos" & os-distribution = "homebrew"}
+]
+synopsis: "Virtual package relying on bjack"
+description:
+  "This package can only install if the bjack library is installed on the system."
+flags: conf
