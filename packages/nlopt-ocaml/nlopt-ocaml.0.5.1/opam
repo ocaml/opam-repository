@@ -10,21 +10,19 @@ build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
-remove: [["ocamlfind" "remove" "nlopt"]]
 depends: [
   "ocaml" {>= "3.12"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "oasis" {build}
+  "conf-nlopt"
 ]
-depexts: [
-  ["libnlopt0" "libnlopt-dev"] {os-family = "debian"}
-  ["nlopt"] {os = "macos" & os-distribution = "homebrew"}
+x-ci-accept-failures: [
+  "centos-7" # Too old.. NLopt-devel only has libnlopt_cxx
 ]
 install: ["ocaml" "setup.ml" "-install"]
 synopsis: "OCaml bindings to the NLOpt optimization library"
-flags: light-uninstall
 url {
-  src: "https://bitbucket.org/mkur/nlopt-ocaml/get/release-0.5.1.tar.gz"
-  checksum: "md5=39d0bcd8d52686c0430b9cfd7a882335"
+  src: "https://github.com/mkur/nlopt-ocaml/archive/release-0.5.1.tar.gz"
+  checksum: "md5=cae1d5923a12ca414aacc39bb7a8c360"
 }
