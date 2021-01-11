@@ -1,0 +1,58 @@
+opam-version: "2.0"
+maintainer: "team AT robur dot io"
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+homepage: "https://github.com/mirage/ocaml-dns"
+doc: "https://mirage.github.io/ocaml-dns/"
+dev-repo: "git+https://github.com/mirage/ocaml-dns.git"
+bug-reports: "https://github.com/mirage/ocaml-dns/issues"
+license: "BSD-2-Clause"
+
+depends: [
+  "dune" {>= "1.2.0"}
+  "ocaml" {>= "4.08.0"}
+  "dns" {= version}
+  "dns-tsig" {= version}
+  "dns-client" {= version}
+  "dns-server" {= version}
+  "dns-certify" {= version}
+  "rresult" {>= "0.6.0"}
+  "bos" {>= "0.2.0"}
+  "cmdliner" {>= "1.0.0"}
+  "fpath" {>= "0.7.2"}
+  "x509" {>= "0.10.0"}
+  "mirage-crypto" {>= "0.8.0"}
+  "mirage-crypto-pk" {>= "0.8.0"}
+  "mirage-crypto-rng" {>= "0.8.0"}
+  "hex" {>= "1.4.0"}
+  "ptime" {>= "0.8.5"}
+  "mtime" {>= "1.2.0"}
+  "logs" {>= "0.6.3"}
+  "fmt" {>= "0.8.8"}
+  "ipaddr" {>= "4.0.0"}
+  "lwt" {>= "4.0.0"}
+  "randomconv"
+  "alcotest" {with-test}
+]
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+synopsis: "Unix command line utilities using uDNS"
+description: """
+'oupdate' sends a DNS update frome to a DNS server that sets 'hostname A ip'.
+For authentication via TSIG, a hmac secret needs to be provided.
+
+'ocertify' updates DNS with a certificate signing request, and polls a matching
+certificate. Best used with an letsencrypt unikernel.
+"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-dns/releases/download/v4.6.3/dns-v4.6.3.tbz"
+  checksum: [
+    "sha256=be69bc317369409fc4dfbab1120ced7510313888105a4d13071b962a07e1fd3c"
+    "sha512=32082237c7ae922edc63822fe0f6447fb83b9fb40546a196cda4904078b4129e601b4413c95b7c51e012f27c654324e18619ab8aed53969ff07fded13378c2c6"
+  ]
+}
