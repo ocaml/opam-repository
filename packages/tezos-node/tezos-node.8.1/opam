@@ -1,0 +1,61 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "2.0" }
+  "tezos-rpc-http-server" { = version }
+  "tezos-validator" { = version }
+  "tezos-embedded-protocol-genesis-carthagenet" { = version }
+  "tezos-embedded-protocol-000-Ps9mPmXa" { = version }
+  "tezos-embedded-protocol-007-PsDELPH1" { = version }
+  "tezos-embedded-protocol-008-PtEdoTez" { = version }
+  "tezos-mempool-007-PsDELPH1" { = version }
+  "tezos-mempool-008-PtEdoTez" { = version }
+  "cmdliner"
+  "tls"
+]
+depopts: [
+  "tezos-embedded-protocol-001-PtCJ7pwo"
+  "tezos-embedded-protocol-002-PsYLVpVv"
+  "tezos-embedded-protocol-003-PsddFKi3"
+  "tezos-embedded-protocol-004-Pt24m4xi"
+  "tezos-embedded-protocol-005-PsBABY5H"
+  "tezos-embedded-protocol-005-PsBabyM1"
+  "tezos-embedded-protocol-006-PsCARTHA"
+  "tezos-embedded-protocol-demo-counter"
+  "tezos-embedded-protocol-alpha"
+  "tezos-embedded-protocol-demo-noops"
+  "tezos-embedded-protocol-genesis"
+]
+conflicts: [
+  "tezos-embedded-protocol-001-PtCJ7pwo" { != version }
+  "tezos-embedded-protocol-002-PsYLVpVv" { != version }
+  "tezos-embedded-protocol-003-PsddFKi3" { != version }
+  "tezos-embedded-protocol-004-Pt24m4xi" { != version }
+  "tezos-embedded-protocol-005-PsBABY5H" { != version }
+  "tezos-embedded-protocol-005-PsBabyM1" { != version }
+  "tezos-embedded-protocol-006-PsCARTHA" { != version }
+  "tezos-embedded-protocol-demo-counter" { != version }
+  "tezos-embedded-protocol-alpha" { != version }
+  "tezos-embedded-protocol-demo-noops" { != version }
+  "tezos-embedded-protocol-genesis" { != version }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/bin_node/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: `tezos-node` binary"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v8.1/tezos-v8.1.tar.bz2"
+  checksum: [
+    "sha256=a86de0cc02108a4d2defb67b3774c4ba9c645280908e3695d465e194bbd9dad9"
+    "sha512=160db2ec0a5b083cfdca9dd7ec3525b17ae28a3781d3507de4d0e08b3514c9e21ba975f2d15d0d9041ed27b4d71681b8bbaade3fba2499bc79b8504a745ab8d3"
+  ]
+}
