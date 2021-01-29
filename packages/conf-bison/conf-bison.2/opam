@@ -14,7 +14,10 @@ authors: [
   "Alex Rozenman"
   "Paul Eggert"
 ]
-build: [ "bison" "--help" ]
+build: [
+  ["bison" "--version"] {os-family != "homebrew"}
+  ["sh" "-c" "\"$(brew --prefix bison)/bin/bison\" --version"] {os-family = "homebrew"}
+]
 install: [
   # Note: Mac homebrew installs bison to a path not in PATH, so symlink it in the opam switch bin folder.
   # This affects only the current opam switch and is thus least invasive.
@@ -44,5 +47,5 @@ depexts: [
 ]
 synopsis: "Virtual package relying on GNU bison"
 description: "This package can only install if GNU bison is installed on the system."
-# Not technically a conf package for homebrew (has an install setp)
+# Not technically a conf package for homebrew (has an install step)
 # flags: conf

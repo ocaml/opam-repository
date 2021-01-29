@@ -4,7 +4,10 @@ homepage: "https://github.com/westes/flex"
 bug-reports: "https://github.com/westes/flex/issues"
 license: "https://github.com/westes/flex/blob/master/COPYING"
 authors: "The Flex Project"
-build: [ "flex" "--help" ]
+build: [
+  ["flex" "--version"] {os-family != "homebrew"}
+  ["sh" "-c" "\"$(brew --prefix flex)/bin/flex\" --version"] {os-family = "homebrew"}
+]
 install: [
   # Note: Mac homebrew installs flex to a path not in PATH, so symlink it in the opam switch bin folder
   # This affects only the current opam switch and is thus least invasive.
@@ -33,5 +36,5 @@ depexts: [
 ]
 synopsis: "Virtual package relying on GNU flex"
 description: "This package can only install if GNU flex is installed on the system."
-# Not technically a conf package for homebrew (has an install setp)
+# Not technically a conf package for homebrew (has an install step)
 # flags: conf
