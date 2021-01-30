@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "David Sheets <sheets@alum.mit.edu>"
+authors: ["The OpenSSL Project"]
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+homepage: "https://www.openssl.org/"
+license: "Apache-1.0"
+build: [
+  ["pkg-config" "--print-errors" "--exists" "openssl"]
+    {os != "freebsd" & os != "openbsd" & os != "netbsd" # libssl is provided by base system on BSDs
+     os-distribution != "homebrew" & os-distribution != "macports" & os-distribution != "nixos"}
+  ["sh" "-c" "env \"PKG_CONFIG_PATH=$(brew --prefix openssl)/lib/pkgconfig:$PKG_CONFIG_PATH" pkg-config --print-errors --exists openssl"] {os-distribution = "homebrew"}
+  ["sh" "-c" "env \"PKG_CONFIG_PATH=$HOME/.nix-profile/lib/pkgconfig:$PKG_CONFIG_PATH" pkg-config --print-errors --exists openssl"] {os-distribution = "nixos"}
+  ["sh" "-c" "env \"PKG_CONFIG_PATH=/opt/local/lib/pkgconfig:$PKG_CONFIG_PATH" pkg-config --print-errors --exists openssl"] {os-distribution = "macports"}
+]
+install: [
+  ["mkdir" "-p" "%{lib}%/pkgconfig"]
+  ["sh" "-c" "ln -s \"$(brew --prefix openssl)/lib/pkgconfig/openssl.pc" '%{lib}%/pkgconfig/openssl.pc'"] {os-distribution = "homebrew"}
+  ["sh" "-c" "ln -s \"$HOME/.nix-profile/lib/pkgconfig/openssl.pc" '%{lib}%/pkgconfig/openssl.pc'"] {os-distribution = "nixos"}
+  ["ln" "-s" "/opt/local/lib/pkgconfig/openssl.pc" "%{lib}%/pkgconfig/openssl.pc"] {os-distribution = "macports"}
+]
+depends: [
+  "conf-pkg-config" {build}
+]
+depexts: [
+  ["libssl-dev"] {os-family = "debian"}
+  ["libssl-dev"] {os-family = "ubuntu"}
+  ["openssl-devel"] {os-distribution = "centos"}
+  ["openssl-devel"] {os-distribution = "ol"}
+  ["openssl-devel"] {os-distribution = "fedora"}
+  ["libopenssl-devel"] {os-family = "suse"}
+  ["libressl-dev"] {os-family = "alpine"}
+  ["openssl"] {os-family = "arch"}
+  ["openssl"] {os-distribution = "homebrew"}
+  ["openssl"] {os-distribution = "macports"}
+  ["openssl"] {os-distribution = "nixos"}
+]
+synopsis: "Virtual package relying on an OpenSSL library system installation"
+description:
+  "This package can only install if the OpenSSL library is installed on the system."
+flags: conf
