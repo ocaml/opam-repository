@@ -4,7 +4,6 @@ authors: ["The OpenSSL Project"]
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 homepage: "https://www.openssl.org/"
 license: "Apache-1.0"
-setenv: [PKG_CONFIG_PATH = "%{lib}%/pkgconfig"]
 build: [
   ["pkg-config" "--print-errors" "--exists" "openssl"]
     {os != "freebsd" & os != "openbsd" & os != "netbsd" # libssl is provided by base system on BSDs
@@ -14,7 +13,6 @@ build: [
   ["sh" "-c" "env \"PKG_CONFIG_PATH=/opt/local/lib/pkgconfig:$PKG_CONFIG_PATH\" pkg-config --print-errors --exists openssl"] {os-distribution = "macports"}
 ]
 install: [
-  ["mkdir" "-p" "%{lib}%/pkgconfig"]
   ["sh" "-c" "ln -s \"$(brew --prefix openssl)/lib/pkgconfig/openssl.pc\" '%{lib}%/pkgconfig/openssl.pc'"] {os-distribution = "homebrew"}
   ["sh" "-c" "ln -s \"$HOME/.nix-profile/lib/pkgconfig/openssl.pc\" '%{lib}%/pkgconfig/openssl.pc'"] {os-distribution = "nixos"}
   ["ln" "-s" "/opt/local/lib/pkgconfig/openssl.pc" "%{lib}%/pkgconfig/openssl.pc"] {os-distribution = "macports"}
