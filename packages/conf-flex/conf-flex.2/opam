@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "7895506+MSoegtropIMC@users.noreply.github.com"
+homepage: "https://github.com/westes/flex"
+bug-reports: "https://github.com/westes/flex/issues"
+license: "https://github.com/westes/flex/blob/master/COPYING"
+authors: "The Flex Project"
+build: [
+  ["flex" "--version"] {os-family != "homebrew"}
+  ["sh" "-c" "\"$(brew --prefix flex)/bin/flex\" --version"] {os-family = "homebrew"}
+]
+install: [
+  # Note: Mac homebrew installs flex to a path not in PATH, so symlink it in the opam switch bin folder
+  # This affects only the current opam switch and is thus least invasive.
+  ["sh" "-c" "ln -s \"$(brew --prefix flex)/bin/flex\" \"%{bin}%/flex\""] {os-family = "homebrew"}
+]
+depexts: [
+  # The list of supported os-family names can be derived from the opam sources (thanks Enrico)
+  #   https://github.com/ocaml/opam/blob/6aefe95e60084e63d01b1c7c028b6b77de1f839f/src/state/opamSysInteract.ml#L84-L123
+  # The package name for many Linux/BSD/macOS/cygwin/msys platforms can be searched here (thanks Théo)
+  #   https://repology.org specifically https://repology.org/project/flex/versions
+  #   Not listed above but supported by opam are suse, oraclelinix, ol, rhel
+  # On macOS flex seems to be installed by default, but the homebrew and macports package is listed anyway
+  [ "flex" ] {os-family = "alpine"}
+  [ "flex" ] {os-family = "amzn"}
+  [ "flex" ] {os-family = "arch"}
+  [ "flex" ] {os-family = "archlinux"}
+  [ "flex" ] {os-family = "centos"}
+  [ "flex" ] {os-family = "debian"}
+  [ "flex" ] {os-family = "fedora"}
+  [ "sys-devel/flex" ] {os-family = "gentoo"}
+  [ "flex" ] {os-family = "homebrew"}
+  [ "flex" ] {os-family = "macports"}
+  [ "flex" ] {os-family = "mageia"}
+  [ "flex" ] {os-family = "opensuse"}
+  [ "textproc/flex" ] {os-family = "bsd" & os-distribution = "freebsd"}
+]
+synopsis: "Virtual package relying on GNU flex"
+description: "This package can only install if GNU flex is installed on the system."
+# Not technically a conf package for homebrew (has an install step)
+# flags: conf
