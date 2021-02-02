@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+homepage: "https://pypi.org/project/PyYAML/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: "PyYAML dev team"
+license: "MIT"
+build: [
+  ["sh" "-c" "echo 'import yaml' > test.py"]
+  ["python3" "test.py"]
+]
+depends: [
+  "conf-python-3" {build}
+]
+depexts: [
+  ["python3-yaml"] {os-family = "debian"}
+  ["python3-yaml"] {os-family = "ubuntu"}
+  ["python3-pyyaml"] {os-distribution = "fedora"}
+  ["epel-release" "python36-PyYAML"] {os-distribution = "centos" & os-version < "8"}
+  ["python3-pyyaml"] {os-distribution = "centos" & os-version >= "8"}
+  ["python3-pyyaml"] {os-distribution = "ol" & os-version >= "8"}
+  ["python3-PyYAML"] {os-family = "suse"}
+  ["python-yaml"] {os-family = "arch"}
+  ["py3-yaml"] {os-family = "alpine"}
+  ["dev-python/pyyaml"] {os-family = "gentoo"}
+  # Couldn't find the package on macos
+  ["py-pyyaml-include"] {os = "freebsd"}
+  ["py-yaml"] {os = "openbsd"}
+  ["py-yaml"] {os = "netbsd"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7" # Does not have the package by default
+]
+synopsis: "Virtual package relying on PyYAML"
+description:
+  "This package can only install if the PyYAML python3 library is installed on the system."
+flags: conf
