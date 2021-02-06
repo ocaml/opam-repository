@@ -1,24 +1,32 @@
 opam-version: "2.0"
 maintainer: "zachshipko@gmail.com"
 homepage: "https://www.openimageio.org"
-authors: "OpenImageIO"
+authors: "OpenImageIO devs"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-license: "MIT"
+license: "BSD 3-Clause"
 build: [
-  ["pkg-config" "--atleast-version=2" "OpenImageIO"]
+  ["sh" "-c" "pkg-config --atleast-version=2 --print-errors OpenImageIO || c++ -E test.cpp"]
 ]
-depends: ["conf-pkg-config" {build}]
+depends: [
+  "conf-pkg-config" {build}
+]
 depexts: [
   ["libopenimageio-dev"] {os-family = "debian"}
+  ["libopenimageio-dev"] {os-family = "ubuntu"}
   ["OpenImageIO-devel"] {os-distribution = "fedora"}
   ["OpenImageIO-devel" "epel-release"] {os-distribution = "centos"}
+  ["OpenImageIO-devel"] {os-distribution = "ol"}
   ["OpenImageIO-devel"] {os-family = "suse"}
-  ["openimageio-dev"] {os-distribution = "alpine"}
+  ["openimageio-dev"] {os-family = "alpine"}
+  ["openimageio"] {os-family = "arch"}
   ["openimageio"] {os = "macos" & os-distribution = "homebrew"}
   ["openimageio"] {os = "macos" & os-distribution = "macports"}
+  ["openimageio"] {os = "freebsd"}
+  ["openimageio"] {os = "openbsd"}
+  ["openimageio"] {os = "netbsd"}
 ]
 synopsis: "Virtual package relying on OpenImageIO development package installation"
 description: """
-This package can only install if OpenImageIO is available on the system.
+This package can only install if the OpenImageIO library is available on the system.
 """
 flags: conf
