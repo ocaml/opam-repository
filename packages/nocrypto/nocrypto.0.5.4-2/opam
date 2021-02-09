@@ -15,31 +15,26 @@ build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
                 "--freestanding" "%{mirage-solo5:installed}%"]
 
 depends: [
-  "ocaml" {>= "4.02.0"}
+  "ocaml" {>= "4.02.0" & != "4.08.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "topkg" {build}
+  "topkg" {build & >="0.9.1"}
   "cpuid" {build}
-  "ocb-stubblr" {build}
-  "ppx_deriving"
+  "ocb-stubblr" {build & >= "0.1.0"}
+  "ppx_deriving"  {>= "4.2"}
   "ppx_sexp_conv" {>= "113.33.01" & != "v0.11.0" & < "v0.15"}
   "ounit" {with-test}
   "cstruct" {>= "3.0.0"}
   "cstruct-lwt"
   "zarith"
   "lwt"
-  "sexplib" {< "v0.15"}
-  "mirage-no-xen" | ("mirage-xen" {< "6.0.0"} & "zarith-xen")
-  "mirage-no-solo5" | ("mirage-solo5" & "zarith-freestanding")
+  "sexplib" {!= "v0.9.0" & < "v0.15"}
+  ("mirage-no-xen" |
+    ("mirage-xen" {>="2.2.0" & < "6.0.0"}
+    & "zarith-xen"))
+  ("mirage-no-solo5" | ("mirage-solo5" & "zarith-freestanding"))
 ]
 depopts: [ "mirage-entropy" ]
-conflicts: [
-  "topkg" {<"0.9.1"}
-  "ocb-stubblr" {<"0.1.0"}
-  "mirage-xen" {<"2.2.0"}
-  "sexplib" {="v0.9.0"}
-  "ocaml" {= "4.08.0"}
-]
 
 patches: [
     "0001-add-missing-runtime-dependencies-in-_tags.patch"

@@ -28,25 +28,20 @@ depends: [
   "ocamlbuild" {build}
   "cstruct" {>= "1.6.0" & < "3.0.0"}
   "zarith"
-  "sexplib" {< "v0.11.0"}
+  "sexplib" {!= "v0.9.0" & < "v0.11.0"}
   "ppx_deriving"
   "ppx_sexp_conv" {>= "113.33.01" & < "v0.11.0"}
-  "mirage-no-xen" |
-  ("mirage-xen" {< "6.0.0"} & "mirage-entropy-xen" & "zarith-xen")
+  ("mirage-no-xen" |
+    ("mirage-xen" {>="2.2.0" & < "6.0.0"}
+    & "mirage-entropy-xen" {>= "0.3.0"}
+    & "zarith-xen"))
   "ounit" {with-test}
 ]
 depopts: [
   "lwt"
 ]
-
-conflicts: [
-  "mirage-xen" {<"2.2.0"}
-  "mirage-entropy-xen" {<"0.3.0"}
-  "sexplib" {="v0.9.0"}
-]
-
 tags: [ "org:mirage" ]
-synopsis: "Small functional-style crypto library."
+synopsis: "Small functional-style crypto library"
 description: """
 Ciphers: AES, 3DES, RC4.
 Hashes: MD5, SHA1, SHA2.
