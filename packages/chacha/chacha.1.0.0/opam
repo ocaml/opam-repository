@@ -1,0 +1,44 @@
+opam-version: "2.0"
+homepage:     "https://github.com/abeaumont/ocaml-chacha"
+dev-repo:     "git+https://github.com/abeaumont/ocaml-chacha.git"
+bug-reports:  "https://github.com/abeaumont/ocaml-chacha/issues"
+doc:          "https://abeaumont.github.io/ocaml-chacha/"
+authors:      "Alfredo Beaumont <alfredo.beaumont@gmail.com>"
+maintainer:   "Alfredo Beaumont <alfredo.beaumont@gmail.com>"
+license:      "BSD2"
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "conf-pkg-config" {build}
+  "dune" {>= "1.8.0"}
+  "cstruct" {>= "3.2.0"}
+  "mirage-crypto"
+  "ocaml" {>= "4.02.0"}
+  "alcotest" {with-test}
+]
+depopts: [
+  "ocaml-freestanding"
+  "mirage-xen-posix"
+]
+conflicts: [
+  "mirage-xen-posix" {<"3.1.0"}
+  "ocaml-freestanding" {< "0.4.1"}
+]
+synopsis: "The Chacha functions, in OCaml"
+description: """
+An OCaml implementation of [ChaCha](https://cr.yp.to/chacha/chacha-20080120.pdf) functions,
+both ChaCha20 and the reduced ChaCha8 and ChaCha12 functions.
+The hot loop is implemented in C for efficiency reasons.
+"""
+url {
+  src:
+    "https://github.com/abeaumont/ocaml-chacha/releases/download/1.0.0/chacha-1.0.0.tbz"
+  checksum: [
+    "sha256=b7c74e310403a637b441bb8e8634886b7c675ee5dcc4c5532c435afebc1d800e"
+    "sha512=8970b66083f28ddbb5da65c0b59323a9821b790dbaecd49f4a2a2f18025a674e3493292699626b13e414c4d09fdad3a2f25783a3ca0c15ab9b678a69485858eb"
+  ]
+}

@@ -1,0 +1,30 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+synopsis: "OCaml runtime compiled for the MirageOS Xen backend"
+authors: "The MirageOS team"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/mirage-platform"
+bug-reports: "https://github.com/mirage/mirage-platform/issues/"
+depends: [
+  "ocaml" {>= "4.04.2" & < "4.12.0"}
+  "mirage-xen-posix" {>= "2.6.0"}
+  "conf-pkg-config"
+  "ocamlfind" {build}
+  "ocaml-src"
+]
+substs: [
+  "xen-ocaml/flags/cflags.tmp"
+  "xen-ocaml/flags/libs.tmp"
+  ]
+available: os = "linux"
+build: [make "xen-ocaml-build" "PREFIX=%{prefix}%"]
+install: [make "xen-ocaml-install" "PREFIX=%{prefix}%"]
+dev-repo: "git+https://github.com/mirage/mirage-platform.git"
+url {
+  src: "https://github.com/mirage/mirage-platform/archive/3.3.3.tar.gz"
+  checksum: "md5=4e60e7db0dcdbf89aa86857891e9f0ee"
+}
+conflicts: [
+  "mirage-xen" {>= "6.0.0"}
+]
+flags: deprecated

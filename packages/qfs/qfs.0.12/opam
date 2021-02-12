@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "Ahrefs Pte Ltd <github@ahrefs.com>"
+authors: [ "Ahrefs Pte Ltd <github@ahrefs.com>" ]
+license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
+homepage: "https://github.com/ahrefs/ocaml-qfs"
+dev-repo: "git://github.com/ahrefs/ocaml-qfs.git"
+bug-reports: "https://github.com/ahrefs/ocaml-qfs/issues"
+tags: [ "org:ahrefs" "clib:stdc" "clib:qfs"  ]
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests" {with-test}]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+depends: [
+  "ocaml" {>= "4.06.0"}
+  "base-bytes"
+  "base-unix"
+  "extlib" | "extlib-compat"
+  "lwt" {>= "3.4.6"}
+  "lwt_ppx"
+  "ocamlbuild" {build}
+  "ocamlfind" {build & >= "1.5"}
+  "conf-boost"
+]
+x-ci-accept-failures: ["debian-unstable"]
+post-messages: [
+  "
+  This package requires QFS development files installed, consult https://quantcast.github.io/qfs/
+  and https://github.com/quantcast/qfs/wiki/Developer-Documentation on how to build manually.
+
+  Tentative instructions for Debian : https://gist.githubusercontent.com/ygrek/7bb217d6ab7b25a765b7/raw
+  "
+  {failure}
+]
+synopsis: "Bindings to libqfs - client library to access QFS"
+description: "QFS is a distributed fault-tolerant filesystem by Quantcast"
+url {
+  src: "https://github.com/ahrefs/ocaml-qfs/releases/download/0.12/ocaml-qfs-0.12.tar.gz"
+  checksum: [
+    "md5=edf23bf63e056b028c932d57caa2637d"
+    "sha256=079eaca881ed68c1025f985543d6b97212cc676ac3cc054f24835681615503f9"
+    "sha512=9ca633ec7f05bf7be11203dd843cebded1ef89789fe5810bce1489bc65179c281d1a27c4aff0c3934ff36337b2b24dccdf3a45b38839fe5c2eb1d6b293d958c7"
+  ]
+}

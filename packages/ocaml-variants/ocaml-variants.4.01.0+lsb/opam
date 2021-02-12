@@ -19,6 +19,13 @@ setenv: [
   [CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"]
 ]
 build: [
+  [
+    "sed"
+    "-ib"
+    "-e"
+    "s/opts=\"\"/opts=\"-Wno-implicit-function-declaration\"/"
+    "config/auto-aux/hasgot"
+  ] {os = "macos"}
   ["sed" "-i" "-e" "s/lcurses/lncurses/" "configure"]
   [
     "sed"
@@ -60,3 +67,4 @@ url {
   src: "http://caml.inria.fr/pub/distrib/ocaml-4.01/ocaml-4.01.0.tar.gz"
   checksum: "md5=04dfdd7da189462a4f10ec6530359cef"
 }
+available: !(os = "macos" & arch = "arm64")

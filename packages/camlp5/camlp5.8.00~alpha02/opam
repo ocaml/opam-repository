@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis: "Preprocessor-pretty-printer of OCaml"
+description: """
+Camlp5 is a preprocessor and pretty-printer for OCaml programs. It also provides parsing and printing tools.
+
+As a preprocessor, it allows to:
+
+extend the syntax of OCaml,
+redefine the whole syntax of the language.
+As a pretty printer, it allows to:
+
+display OCaml programs in an elegant way,
+convert from one syntax to another,
+check the results of syntax extensions.
+Camlp5 also provides some parsing and pretty printing tools:
+
+extensible grammars
+extensible printers
+stream parsers and lexers
+pretty print module
+It works as a shell command and can also be used in the OCaml toplevel."""
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+authors: ["Daniel de Rauglaudre" "Chet Murthy"]
+license: "BSD-3-Clause"
+homepage: "https://camlp5.github.io"
+doc: "https://camlp5.github.io/doc/html"
+bug-reports: "https://github.com/camlp5/camlp5/issues"
+depends: [
+  "ocaml" {>= "4.02" & <= "4.11.0" & != "4.10.1" & != "4.10.2" }
+  "conf-perl"
+  "conf-perl-ipc-system-simple"
+  "conf-perl-string-shellquote"
+]
+build: [
+  ["./configure" "--prefix" prefix "-libdir" lib "-mandir" man]
+  [make "world.opt"]
+]
+install: [make "install"]
+
+post-messages:
+  "To use mkcamlp5 and mkcamlp5.opt properly you will require Perl module which contains 'IPC/System/Simple.pm'. We currently don't know the right way to specify this dependecy on BSD and MacOS systems. You can use https://github.com/camlp5/camlp5/issues/66 for discussion."
+    { os = "macos" | os = "freebsd" | os = "openbsd" }
+
+dev-repo: "git+https://github.com/camlp5/camlp5.git"
+url {
+  src: "https://github.com/camlp5/camlp5/archive/rel8.00+alpha02.tar.gz"
+  checksum: [
+    "md5=49b601db7a7b13f43bde8eec5d74bd28"
+    "sha512=2b5ca5bf870c43461675e6049bccf31cedd9b168ddaedb6aeb441a1589ddf87ac867842a7a4c5c8280bb42b9ea41b3b098740a46f3d35a3ff0563566a89a3acd"
+  ]
+}

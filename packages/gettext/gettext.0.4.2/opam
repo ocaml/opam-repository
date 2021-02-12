@@ -1,0 +1,43 @@
+opam-version: "2.0"
+maintainer: "Sylvain Le Gall <sylvain+ocaml@le-gall.net>"
+authors: [ "Sylvain Le Gall" ]
+license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
+homepage: "https://github.com/gildor478/ocaml-gettext"
+dev-repo: "git+https://github.com/gildor478/ocaml-gettext.git"
+bug-reports: "https://github.com/gildor478/ocaml-gettext/issues"
+doc: "https://gildor478.github.io/ocaml-gettext/"
+build: [
+  ["ocaml" "configure.ml"
+    "--with-defaultlocaledir" "%{lib}%/gettext/share/locale"
+    "--version" version]
+  ["dune" "build" "-p" name "-j" jobs
+   "@install"
+   "@doc" {with-doc}
+   "@runtest" {with-test} ]
+]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "dune" {>= "1.11.0"}
+  "cppo" {build}
+  "fileutils"
+  "base-bytes"
+  "ounit" {with-test & > "2.0.8"}
+]
+synopsis: "Internationalization library (i18n)"
+description:"""
+This library enables string translation in OCaml. The API is based on GNU
+gettext. It comes with a tool to extract strings which need to be translated
+from OCaml source files.
+
+This enables OCaml program to output string in the native language of
+the user, if a corresponding translation file of the English strings is
+provided.
+"""
+url {
+  src:
+    "https://github.com/gildor478/ocaml-gettext/releases/download/v0.4.2/gettext-v0.4.2.tbz"
+  checksum: [
+    "sha256=8b672c7c521b8ac753c6a90925243cdd367dd5202e7c1e5d1a2507b11ad5d6a7"
+    "sha512=72bad53ce15ccc5113e4cfdc76b56c633926bb3702623964e006a99d21a758e7d47f0b9b67bebffe8b9a0c5f4d018cb7d4ae665568dfab52070ed355d5f9d31b"
+  ]
+}

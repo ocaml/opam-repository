@@ -1,0 +1,29 @@
+opam-version: "2.0"
+synopsis: "Alba compiler"
+maintainer: "Helmut Brandl <helmut.brandl@gmx.net>"
+authors: "Helmut Brandl <helmut.brandl@gmx.net>"
+homepage: "http://albatross-lang.sourceforge.net"
+license: "GPLv2"
+dev-repo: "git+https://github.com/hbr/albatross.git"
+bug-reports: "http://github.com/hbr/albatross"
+build: [
+  # [make "test_alba"] {with-test}
+  ["dune" "build" "@install" "-p" name "-j" jobs]
+  ["dune" "build" "@runtest" "-p" name] {with-test}
+  ["dune" "build" "@doc" "-p" name] {with-doc}
+]
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "linenoise"
+  "menhir" {build}
+  "dune" {>= "1.8.0"}
+  "odoc" {with-doc}
+  "js_of_ocaml" {build}
+  "js_of_ocaml-ppx"
+  "ppx_inline_test" {build & < "v0.15"} (* is needed for building the libraries
+                                           otherwise it does not compile *)
+]
+url {
+    src: "https://github.com/hbr/albatross/archive/0.4.1.tar.gz"
+    checksum: "md5=5cf58d4ed4eacbe6f330e9d2378ef5c6"
+}

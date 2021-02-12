@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis:
+  "A tool to manipulate and validate Scribble-style multiparty protocols"
+description:
+  "A toolkit to manipulate Scribble-style multiparty protocols, based on classical multiparty session type theory. The toolkit provides means to define global protocols, project to local protocols, convert local protocols to a CFSM representation, and generate OCaml code for protocol implementations."
+maintainer: ["Francisco Ferreira"]
+authors: ["Francisco Ferreira" "Fangyi Zhou" "Simon Castellan"]
+license: "GPL-3.0-or-later"
+homepage: "https://nuscr.github.io/nuscr/"
+doc: "https://nuscr.github.io/nuscr/docs/"
+bug-reports: "https://github.com/nuscr/nuscr/issues"
+depends: [
+  "menhir" {build & >= "20190924"}
+  "ppx_deriving" {>= "4.4"}
+  "dune" {>= "1.11.4"}
+  "base" {>= "v0.12.0" & < "v0.15"}
+  "stdio" {>= "v0.12.0" & < "v0.15"}
+  "ppx_sexp_conv" {>= "v0.12.0" & < "v0.15"}
+  "ppx_inline_test" {with-test & < "v0.15"}
+  "odoc" {with-doc}
+  "ocamlgraph" {>= "1.8.8"}
+  "ppxlib" {>= "0.9.0" & < "0.14.0"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/nuscr/nuscr.git"
+url {
+  src:
+    "https://github.com/nuscr/nuscr/releases/download/1.1.0/nuscr-web-1.1.0.tbz"
+  checksum: [
+    "sha256=c71f537d6eff636e6feee070f348543acefcc7da29f727cabad1fb45944ec8ab"
+    "sha512=340005de60705cd64ca580e6a9450c033f032b1ee2e75635cd5d35c0471cd4add2d501c87ad4877ba620ea01b801eb000053d3a21c34019e279c3d2a77aff556"
+  ]
+}

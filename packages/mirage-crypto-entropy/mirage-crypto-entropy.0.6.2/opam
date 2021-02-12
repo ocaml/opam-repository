@@ -1,0 +1,42 @@
+opam-version: "2.0"
+homepage:     "https://github.com/mirage/mirage-crypto"
+dev-repo:     "git+https://github.com/mirage/mirage-crypto.git"
+bug-reports:  "https://github.com/mirage/mirage-crypto/issues"
+doc:          "https://mirage.github.io/mirage-crypto/doc"
+maintainer:   "Hannes Mehnert <hannes@mehnert.org>"
+license:      "BSD2"
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "dune" {>= "1.7.0"}
+  "ocaml" {>= "4.07.0"}
+  "cstruct" {>= "4.0.0"}
+  "mirage-runtime" {>= "3.7.0" & < "3.8.0"}
+  "lwt" {>= "4.0.0"}
+  "mirage-crypto" {=version}
+  "mirage-crypto-rng" {=version}
+  "mirage-unix" {with-test & >= "3.0.0"}
+]
+tags: [ "org:mirage"]
+available: [
+  arch = "x86_64" | arch = "arm64"
+]
+synopsis: "Entropy source for MirageOS unikernels"
+description: """
+Mirage-crypto-entropy implements various entropy sources for MirageOS unikernels:
+- timer based ones (see [whirlwind RNG paper](https://www.ieee-security.org/TC/SP2014/papers/Not-So-RandomNumbersinVirtualizedLinuxandtheWhirlwindRNG.pdf))
+- rdseed and rdrand (x86/x86-64 only)
+"""
+authors: ["Hannes Mehnert" "David Kaloper" "Anil Madhavapeddy" "Dave Scott"]
+url {
+  src:
+    "https://github.com/mirage/mirage-crypto/releases/download/v0.6.2/mirage-crypto-v0.6.2.tbz"
+  checksum: [
+    "sha256=e2284dc0f8d37110f4713b87145a26a2bbce3e43f14be51e88de18db5922b823"
+    "sha512=2c9808261aec8498921e4dce2d66214e10dfe65e2c3729c081731d6c44abc0e990233e5398c9c2d31a97d1a40bdd38920c54817f572d3b592f4257ce85b331da"
+  ]
+}

@@ -13,6 +13,13 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
+  [
+    "sed"
+    "-ib"
+    "-e"
+    "s/opts=\"\"/opts=\"-Wno-implicit-function-declaration\"/"
+    "config/auto-aux/hasgot"
+  ] {os = "macos"}
   ["./configure" "-prefix" prefix]
     {os != "openbsd" & os != "freebsd" & os != "macos"}
   ["./configure" "-prefix" prefix "-cc" "cc" "-aspp" "cc -c"]
@@ -31,3 +38,4 @@ extra-source "freebsd10-armv6-natdynlink.patch" {
     "https://github.com/andrewray/mirage-fpga/releases/download/v0.1/freebsd10-armv6-natdynlink.patch"
   checksum: "md5=44062e1512c4ad6152845ce309034273"
 }
+available: !(os = "macos" & arch = "arm64")

@@ -1,7 +1,7 @@
 opam-version: "2.0"
 synopsis: "OCaml 4.02.3 compiled with musl-gcc -static"
 description:
-  "Requires musl-gcc to be installed (apt-get install musl-tools on Debian)"
+  "Requires musl-gcc to be installed (package musl on Arch Linux, musl-tools on Debian, musl-dev on Alpine)"
 maintainer: "platform@lists.ocaml.org"
 depends: [
   "ocaml" {= "4.02.3" & post}
@@ -10,19 +10,33 @@ depends: [
   "base-threads" {post}
   "base-ocamlbuild" {post}
 ]
+depexts: [
+  ["musl-tools"] {os-family = "debian"}
+  ["musl"] {os-distribution = "arch"}
+  ["musl-dev"] {os-distribution = "alpine"}
+]
 conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
+  [
+    "sed"
+    "-ib"
+    "-e"
+    "s/opts=\"\"/opts=\"-Wno-implicit-function-declaration\"/"
+    "config/auto-aux/hasgot"
+  ] {os = "macos"}
   [
     "./configure"
     "-prefix"
     prefix
     "-with-debug-runtime"
     "-cc"
-    "musl-gcc -Os"
+    "musl-gcc -Os" {os-distribution != "alpine"}
+    "gcc -Os" {os-distribution = "alpine"}
     "-aspp"
-    "musl-gcc -c"
+    "musl-gcc -c" {os-distribution != "alpine"}
+    "gcc -c" {os-distribution = "alpine"}
     "-libs"
     "-static"
     "-no-curses"
@@ -35,3 +49,6 @@ url {
   src: "http://caml.inria.fr/pub/distrib/ocaml-4.02/ocaml-4.02.3.tar.gz"
   checksum: "md5=ef1a324608c97031cbd92a442d685ab7"
 }
+patches: ["fix-gcc10.patch"]
+extra-files: [ ["fix-gcc10.patch" "md5=4516183897da9033f49dd291fa198b8c"] ]
+available: !(os = "macos" & arch = "arm64")

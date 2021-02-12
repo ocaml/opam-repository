@@ -1,0 +1,27 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "tezos-tooling" { with-test & = version }
+  "dune" { >= "1.11" }
+  "tezos-client-005-PsBabyM1" { = version }
+  "tezos-client-commands" { = version }
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/proto_005_PsBabyM1/lib_client_commands/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos/Protocol: 005_PsBabyM1 (protocol-specific commands for `tezos-client`)"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v7.3/tezos-v7.3.tar.bz2"
+  checksum: [
+    "sha256=898faf36eae39567c23b8cfc8df1fc6075ae420c02f857f0abc1c7817209a09e"
+    "sha512=1bf5e15c7e7a9d39d1e1b7eee4cd1d50b99c6c4d196fa109f4978e74012a6f60d84aae54b66e1c767661e9f41d22b4ccbab69f023ba5e094274385516139d941"
+  ]
+}

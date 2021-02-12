@@ -12,6 +12,13 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
+  [
+    "sed"
+    "-ib"
+    "-e"
+    "s/opts=\"\"/opts=\"-Wno-implicit-function-declaration\"/"
+    "config/auto-aux/hasgot"
+  ] {os = "macos"}
   ["./configure" "-prefix" prefix "-with-debug-runtime" "-flambda" "-lto"]
     {os != "openbsd" & os != "freebsd" & os != "macos"}
   [
@@ -35,3 +42,6 @@ url {
     "https://github.com/well-typed-lightbulbs/ocaml-esp32/archive/4.06.1+lto.tar.gz"
   checksum: "md5=6a59dedfb4d6194b2272d861df86cd17"
 }
+patches: ["fix-gcc10.patch"]
+extra-files: [ ["fix-gcc10.patch" "md5=171b510547baa777839b2ad50608a3ee"] ]
+available: !(os = "macos" & arch = "arm64")

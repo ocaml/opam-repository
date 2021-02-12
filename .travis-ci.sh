@@ -7,6 +7,7 @@ export OPAMVERBOSE=yes
 # display info about OS distribution and version
 case $TRAVIS_OS_NAME in
 osx) sw_vers ;;
+freebsd) uname -a ;;
 *) cat /etc/*-release
    lsb_release -a
    uname -a
@@ -46,13 +47,6 @@ cat pullreq.diff | sed -E -n -e 's,\+\+\+ b/packages/[^/]*/([^/]*)/.*,\1,p' | so
 echo To Build:
 cat tobuild.txt
 
-function build_switch {
-  rm -rf ~/.opam
-  echo "build switch: $OPAM_SWITCH"
-  opam init . --comp=$OPAM_SWITCH
-  eval `opam config env`
-}
-
 function build_one {
   pkg=$1
   echo "build one: $pkg"
@@ -88,12 +82,13 @@ function build_one {
       osx)
         brew remove $depext
         ;;
+      freebsd)
+        pkg remove -ay $depext
+        ;;
       esac
     fi
   fi
 }
-
-build_switch
 
 echo OCaml version
 ocaml -version

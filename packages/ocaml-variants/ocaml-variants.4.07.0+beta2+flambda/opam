@@ -11,6 +11,13 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
+  [
+    "sed"
+    "-ib"
+    "-e"
+    "s/opts=\"\"/opts=\"-Wno-implicit-function-declaration\"/"
+    "config/auto-aux/hasgot"
+  ] {os = "macos"}
   ["./configure" "-prefix" prefix "-with-debug-runtime" "-flambda"]
     {os != "openbsd" & os != "freebsd" & os != "macos"}
   [
@@ -41,3 +48,6 @@ post-messages: [
    to force a sequential build instead."
   {failure & jobs > 1 & os != "cygwin" & opam-version >= "2.0.5"}
 ]
+patches: ["fix-gcc10.patch"]
+extra-files: [ ["fix-gcc10.patch" "md5=b054fa6b6651763edc8e16b6bc4c58f6"] ]
+available: !(os = "macos" & arch = "arm64")

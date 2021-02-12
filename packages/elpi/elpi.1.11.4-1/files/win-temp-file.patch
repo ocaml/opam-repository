@@ -1,0 +1,32 @@
+--- ./ppxfindcache/ppxfindcache.useppx.ml
++++ ./ppxfindcache/ppxfindcache.useppx.ml
+@@ -6,7 +6,7 @@
+   flush_all ();
+   if in_cache cachefile then begin
+     let tmp = Filename.temp_file "" ".ppfindcache" in
+-    let tmpfd = Unix.(openfile tmp [O_WRONLY] 00600) in
++    let tmpfd = Unix.(openfile tmp [O_WRONLY;O_SHARE_DELETE] 0o600) in
+     Unix.dup2 tmpfd Unix.stdout;
+     Printf.printf "%s#1 \"%s\"\n%!" sha file;
+     let argv = Array.concat [ [|Sys.executable_name;file|] ; ppx_args ] in
+@@ -14,7 +14,12 @@
+     flush_all ();
+     Unix.close tmpfd;
+     let o = open_out cachefile in
+-    let text = read_file (open_in tmp) in
++    let text =
++      let ch = open_in tmp in
++      let r = read_file ch in
++      close_in_noerr ch;
++      r
++    in
+     let text = Re.(Str.global_replace (Str.regexp_string "Ppx_deriving_runtime") "Ppx_deriving_runtime_proxy" text) in
+     output_fix o text 0 (String.length text);
+     output_char o '\n';
+@@ -22,4 +27,4 @@
+     Sys.remove tmp;
+   end;
+   exit 0
+-;;
+\ No newline at end of file
++;;

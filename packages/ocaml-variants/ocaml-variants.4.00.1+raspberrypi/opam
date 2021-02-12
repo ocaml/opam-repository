@@ -12,6 +12,13 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
+  [
+    "sed"
+    "-ib"
+    "-e"
+    "s/opts=\"\"/opts=\"-Wno-implicit-function-declaration\"/"
+    "config/auto-aux/hasgot"
+  ] {os = "macos"}
   ["./configure" "-prefix" prefix]
   [make "world" "world.opt"]
 ]
@@ -26,3 +33,4 @@ extra-source "dc0776f55108a20dad5a9c06188545dc08dbf462.patch" {
     "https://github.com/avsm/ocaml/commit/dc0776f55108a20dad5a9c06188545dc08dbf462.patch"
   checksum: "md5=84843356ceefd4b6dde7a7b74d48a769"
 }
+available: !(os = "macos" & arch = "arm64")

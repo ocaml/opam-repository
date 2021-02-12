@@ -1,0 +1,36 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings for Clang API"
+description: """
+clangml provides bindings to call the Clang API from OCaml.
+"""
+maintainer: ["Thierry Martinez <thierry.martinez@inria.fr>"]
+authors: ["Thierry Martinez <thierry.martinez@inria.fr>"]
+license: "BSD-2-Clause"
+homepage: "https://memcad.gitlabpages.inria.fr/clangml/"
+doc: "https://memcad.gitlabpages.inria.fr/clangml/doc/clangml/index.html"
+bug-reports: "https://gitlab.inria.fr/memcad/clangml/issues"
+depends: [
+  "conf-libclang"
+  "conf-ncurses"
+  "conf-zlib"
+  "dune" {>= "1.11.0"}
+  "stdcompat" {>= "13"}
+  "ocaml" {>= "4.03.0" & < "4.12.0"}
+  "ocamlfind" {build & >= "1.8.0"}
+  "ocamlcodoc" {with-test & >= "1.0.1"}
+  "pattern" {with-test & >= "0.2.0"}
+  "metapp" {>= "0.2.0" & < "0.3.0"}
+  "metaquot" {>= "0.2.0" & < "0.3.0"}
+  "refl" {>= "0.2.0" & < "0.3.0"}
+  "odoc" {with-doc & >= "1.5.1"}
+]
+dev-repo: "git+https://gitlab.inria.fr/memcad/clangml"
+build: [
+  ["./configure" "--prefix=%{prefix}%" "--with-llvm-config=%{conf-libclang:config}%"]
+  ["dune" "build" "-p" name "-j" jobs "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}]]
+url {
+  src: "https://gitlab.inria.fr/memcad/clangml/-/archive/v4.2.0/clangml-v4.2.0.tar.gz"
+  checksum: "sha512=67957797a1d97072c001056f60f831c1cb4942435f07fc36e3dad6696c6a2dd3fdb5ba1d7ffc50a54b1dda31b2c13d117ec9fa80ca43cfd3ea2856a5110ba9f9"
+}

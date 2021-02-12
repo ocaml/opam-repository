@@ -1,0 +1,38 @@
+opam-version: "2.0"
+authors: "The GNOME Project et al."
+maintainer: "Cédric Le Moigne <cedlemo@gmx.com>"
+homepage: "https://gitlab.gnome.org/GNOME/gobject-introspection"
+dev-repo: "git+https://gitlab.gnome.org/GNOME/gobject-introspection.git"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "various"
+build: [["pkg-config" "gobject-introspection-1.0"]]
+depexts: [
+  ["libgirepository1.0-dev"] {os-family = "debian"}
+  ["gobject-introspection-devel"] {os-distribution = "fedora"}
+  ["gobject-introspection-devel"] {os-distribution = "centos"}
+  ["gobject-introspection-dev"] {os-distribution = "alpine"}
+  ["gobject-introspection-devel"] {os-family = "suse"}
+  ["gobject-introspection"] {os = "macos" & os-distribution = "homebrew"}
+  ["gobject-introspection"] {os = "macos" & os-distribution = "macports"}
+]
+post-messages: [
+  "This package requires gobject-introspection development files installed on your system"
+    {failure}
+  """
+To solve pkg-config issues, you may need to do
+'export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig' (macports)
+or 'export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig' (homebrew)
+and retry"""
+    {failure & os = "macos"}
+]
+synopsis: "Virtual package relying on a system gobject-introspection installation"
+depends: ["conf-pkg-config" {build}]
+flags: conf
+url {
+  src:
+    "https://github.com/cedlemo/conf-gobject-introspection/archive/1.0.tar.gz"
+  checksum: [
+    "md5=9d9b95994aa167f9362fcb22ef63336b"
+    "sha512=532ffac7e3c62695ff97db675fbbcb435285003e30863f1028987b07128d075f692d8353f6c74da23a2e4f104454d34518a79211daedf3248a4f074ffdfa0caf"
+  ]
+}

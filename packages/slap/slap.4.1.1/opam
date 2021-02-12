@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "abe@sf.ecei.tohoku.ac.jp"
+authors: [ "Akinori ABE <abe@sf.ecei.tohoku.ac.jp>" ]
+license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
+homepage: "http://akabe.github.io/slap/"
+dev-repo: "git+https://github.com/akabe/slap.git"
+bug-reports: "https://github.com/akabe/slap/issues"
+build: [
+  [
+    "ocaml"
+    "setup.ml"
+    "-configure"
+    "--prefix"
+    prefix
+    "--disable-ppx" {ocaml:version < "4.02"}
+  ]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+depends: [
+  "ocaml" {>= "3.12" & < "4.12"}
+  "base-bigarray"
+  "base-bytes"
+  "ocamlfind" {build & >= "1.5.0"}
+  "lacaml" {>= "8.0.0" & < "10.0.0"}
+  "cppo" {build & >= "1.1.0"}
+]
+depopts: [
+  "ounit" {with-test}
+]
+synopsis:
+  "A linear algebra library with static size checking for matrix operations"
+description: """
+Sized Linear Algebra Package (SLAP) is a wrapper of Lacaml, a binding of two
+widely used linear algebra libraries BLAS and LAPACK for FORTRAN. This
+guarantees statically (i.e, at compile time) consistency (with respect to
+dimensions) of most high-level matrix (and vector) operations. For example,
+addition of two- and three-dimensional vectors causes type error at compile
+time, and dynamic errors like exceptions do not happen."""
+url {
+  src: "https://github.com/akabe/slap/archive/v4.1.1.tar.gz"
+  checksum: "md5=a982b3ef7e0a137d8f583a30065d8443"
+}

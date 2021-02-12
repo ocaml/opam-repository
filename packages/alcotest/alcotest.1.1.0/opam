@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "Alcotest is a lightweight and colourful test framework"
+description: """
+Alcotest exposes simple interface to perform unit tests. It exposes
+a simple TESTABLE module type, a check function to assert test
+predicates and a run function to perform a list of unit -> unit
+test callbacks.
+
+Alcotest provides a quiet and colorful output where only faulty runs
+are fully displayed at the end of the run (with the full logs ready to
+inspect), with a simple (yet expressive) query language to select the
+tests to run.
+"""
+maintainer: ["thomas@gazagnaire.org"]
+authors: ["Thomas Gazagnaire"]
+license: "ISC"
+homepage: "https://github.com/mirage/alcotest"
+doc: "https://mirage.github.io/alcotest"
+bug-reports: "https://github.com/mirage/alcotest/issues"
+depends: [
+  "dune" {>= "2.0"}
+  "ocaml" {>= "4.03.0"}
+  "fmt" {>= "0.8.6"}
+  "astring"
+  "cmdliner"
+  "uuidm"
+  "re"
+  "stdlib-shims"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mirage/alcotest.git"
+url {
+  src:
+    "https://github.com/mirage/alcotest/releases/download/1.1.0/alcotest-lwt-1.1.0.tbz"
+  checksum: [
+    "sha256=212827a49abf4008581c0da53e7ec78a9d639b415380dcb1fdeeb23f3ff083e2"
+    "sha512=c47d04b3c7100af703b470b93ff9fe9fe22790415370b6d5972736f46a5c83901717d67caf0c4115d01020d3078dc7f3063838578174921cab352546dad00148"
+  ]
+}

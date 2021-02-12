@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "Liang Wang <ryanrhymes@gmail.com>"
+authors: [ "Liang Wang" ]
+homepage: "https://github.com/xianyi/OpenBLAS"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "BSD-3-Clause"
+build: [
+  ["sh" "-exc" "cc $CFLAGS -I/usr/include/openblas test.c -lopenblas"]
+    {os-distribution = "fedora" | os-distribution = "centos" | os-family = "suse"}
+  [
+    "sh"
+    "-exc"
+    "cc $CFLAGS -I/usr/local/opt/openblas/include test.c -L/usr/local/opt/openblas/lib -lopenblas"
+  ] {os = "macos" & os-distribution = "homebrew"}
+  ["sh" "-exc" "cc $CFLAGS test.c -lcblas"]
+    {os-family = "arch"}
+  ["sh" "-exc" "cc $CFLAGS -I/usr/local/include -L/usr/local/lib test.c -lopenblas"]
+    {os = "freebsd"}
+  ["sh" "-exc" "x86_64-w64-mingw32-gcc $CFLAGS test.c -lopenblas"]
+    {os = "win32" & os-distribution = "cygwinports"}
+  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"]
+    {os-distribution != "fedora" & os-distribution != "centos" & os-family != "suse" & os != "macos" & os-family != "arch" & os != "freebsd" & os != "win32"}
+]
+depexts: [
+  ["libc-dev" "openblas-dev"] {os-distribution = "alpine"}
+  ["epel-release" "openblas-devel"] {os-distribution = "centos"}
+  ["libopenblas-dev" "liblapacke-dev"] {os-family = "debian"}
+  ["openblas-devel"] {os-distribution = "fedora"}
+  ["openblas-devel"] {os-family = "suse"}
+  ["openblas" "lapacke" "cblas"] {os-distribution = "arch"}
+  ["openblas"] {os = "macos" & os-distribution = "homebrew"}
+  ["openblas"] {os = "freebsd"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7"
+  "oraclelinux-8"
+]
+synopsis: "Virtual package to install OpenBLAS and LAPACKE"
+description:
+  "The package prepares OpenBLAS (CBLAS) and LAPACKE backend for Owl (OCaml numerical library). It can only be installed if OpenBLAS and LAPACKE are installed on the system."
+extra-files: ["test.c" "md5=dcf8ee02542457dde43e1e4917897416"]
+flags: conf

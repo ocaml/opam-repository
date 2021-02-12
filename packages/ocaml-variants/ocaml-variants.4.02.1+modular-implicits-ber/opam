@@ -14,6 +14,13 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
+  [
+    "sed"
+    "-ib"
+    "-e"
+    "s/opts=\"\"/opts=\"-Wno-implicit-function-declaration\"/"
+    "config/auto-aux/hasgot"
+  ] {os = "macos"}
   ["./configure" "-prefix" "%{prefix}%"]
     {os != "openbsd" & os != "freebsd" & os != "macos"}
   ["./configure" "-prefix" "%{prefix}%" "-cc" "cc" "-aspp" "cc -c"]
@@ -26,5 +33,8 @@ install: [
 ]
 url {
   src: "https://github.com/yallop/ocaml/archive/modular-implicits-ber.tar.gz"
-  checksum: "md5=67d777c7ee15fecf1124547c1122d171"
+  checksum: "md5=092638ee80c1a982b341b66edcc15c18"
 }
+patches: ["fix-gcc10.patch"]
+extra-files: [ ["fix-gcc10.patch" "md5=4afa0ebb0a06b65e95e4906e1dced628"] ]
+available: !(os = "macos" & arch = "arm64")

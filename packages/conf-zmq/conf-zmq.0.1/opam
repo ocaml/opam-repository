@@ -5,16 +5,23 @@ homepage: "http://zeromq.org/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "LGPL-2.0-or-later"
 build: [
-  ["cc" "test.c" "-I/usr/local/include" "-L/usr/local/lib" "-lzmq"]
+  ["cc" "test.c" 
+    "-I/usr/local/include" {os-distribution != "macports"}
+    "-L/usr/local/lib" {os-distribution != "macports"}
+    "-I/opt/local/include" {os-distribution = "macports"}
+    "-L/opt/local/lib" {os-distribution = "macports"}
+    "-lzmq"]
 ]
 depexts: [
   ["libzmq3-dev"] {os-family = "debian"}
   ["zeromq"] {os = "macos" & os-distribution = "homebrew"}
+  ["zmq"] {os = "macos" & os-distribution = "macports"}
   ["zeromq-dev"] {os-distribution = "alpine"}
   ["epel-release" "zeromq-devel"] {os-distribution = "centos"}
   ["zeromq"] {os-distribution = "arch"}
   ["zeromq-devel"] {os-distribution = "fedora"}
   ["zeromq-devel"] {os-family = "suse"}
+  ["libzmq4"] {os = "freebsd"}
 ]
 synopsis: "Virtual package relying on zmq library installation"
 description: """

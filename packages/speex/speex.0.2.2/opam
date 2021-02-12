@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "Romain Beauxis <toots@rastageeks.org>"
+authors: "The Savonet Team <savonet-users@lists.sourceforge.net>"
+homepage: "https://github.com/savonet/ocaml-speex"
+build: [
+  ["./bootstrap"] {dev}
+  ["./configure" "--prefix" prefix] {os != "macos"}
+  [
+    "./configure"
+    "CFLAGS=-I/usr/local/include"
+    "LDFLAGS=-L/usr/local/lib"
+    "OCAMLFLAGS=-ccopt -I/usr/local/include -cclib -L/usr/local/lib"
+    "--prefix"
+    prefix
+  ] {os = "macos"}
+  [make "clean"] {dev}
+  [make]
+]
+install: [
+  [make "install"]
+]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "ogg" {< "0.6.0"}
+  "conf-libspeex" {build}
+  "conf-pkg-config" {build}
+]
+bug-reports: "https://github.com/savonet/ocaml-speex/issues"
+dev-repo: "git+https://github.com/savonet/ocaml-speex.git"
+synopsis:
+  "Bindings for the speex library to decode audio files in speex format"
+url {
+  src:
+    "https://github.com/savonet/ocaml-speex/releases/download/v0.2.2/ocaml-speex-0.2.2.tar.gz"
+  checksum: [
+    "md5=bf53a53741452014a7721b5ed8907dac"
+    "sha512=6a7e28f474347dafae7598fd3643fd26cac0d048a5b5072b5924b40a736a2dfc76b55ea036729117d5dc65e8dc4a04b689d28d826c37a7c63aa7419800537270"
+  ]
+}

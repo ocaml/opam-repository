@@ -1,0 +1,60 @@
+open Printf
+
+exception Command_failed of Unix.process_status
+
+let process_status_to_string s =
+  let open Unix in
+  match s with
+  | WEXITED i -> sprintf "exit status %d" 1
+  | WSTOPPED i -> sprintf "proccess was stopped by signal %d" i
+  | WSIGNALED i -> sprintf "proccess was killed by signal %d" i
+
+let exn_to_string = function
+  | Command_failed s -> sprintf "%s" (process_status_to_string s)
+  | e -> Printexc.to_string e
+
+let input_all ch =
+  let buf = Buffer.create 4096 in
+  let rec read () = Buffer.add_channel buf ch 4096; read () in
+  try read ()
+  with End_of_file -> String.trim @@ Buffer.contents buf
+
+let run c =
+  try
+    let inp = Unix.open_process_in c in
+    let res = input_all inp in
+    match Unix.close_process_in inp with
+    | Unix.WEXITED 0 -> Some res
+    | s -> raise (Command_failed s)
+  with e ->
+    eprintf "command %s failed: %s\n" c (exn_to_string e);
+    None
+
+let cmd fmt = ksprintf run fmt
+
+let which name = cmd "which %s" name
+
+let write path =
+  let file_depends =
+    sprintf "file-depends: [ [ %S %S ] ]\n"
+      path (Digest.to_hex (Digest.file path)) in
+  let oc = open_out "%{_:name}%.config" in
+  fprintf oc {|
+opam-version: "2.0"
+%s
+variables {
+  path: %S
+}
+|} file_depends path;
+  close_out oc
+
+let () =
+  try
+    match which "radare2" with
+    | Some path -> write path
+    | None ->
+      eprintf "failed to locate radare2\n";
+      exit 1
+  with e ->
+    eprintf "build failed: %s\n" (Printexc.to_string e);
+    exit 1

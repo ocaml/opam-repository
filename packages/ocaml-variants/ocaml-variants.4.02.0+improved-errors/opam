@@ -12,6 +12,13 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
+  [
+    "sed"
+    "-ib"
+    "-e"
+    "s/opts=\"\"/opts=\"-Wno-implicit-function-declaration\"/"
+    "config/auto-aux/hasgot"
+  ] {os = "macos"}
   ["./configure" "-prefix" "%{prefix}%"]
     {os != "openbsd" & os != "freebsd" & os != "macos"}
   ["./configure" "-prefix" "%{prefix}%" "-cc" "cc" "-aspp" "cc -c"]
@@ -30,3 +37,4 @@ extra-source "improved-error.patch" {
     "https://gist.githubusercontent.com/andrewray/1928825fea090e50c0de/raw/e121b5cd176cdf6b882bc402276235b1c0a71b69/improved-error.patch"
   checksum: "md5=047e4294cf4a00448985cabb7b75fba6"
 }
+available: !(os = "macos" & arch = "arm64")

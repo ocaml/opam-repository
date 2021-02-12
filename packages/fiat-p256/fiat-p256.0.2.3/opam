@@ -1,0 +1,67 @@
+opam-version: "2.0"
+synopsis: "Primitives for Elliptic Curve Cryptography taken from Fiat"
+description: """
+This is an implementation of the ECDH over P-256 key exchange algorithm, using
+code from Fiat (<https://github.com/mit-plv/fiat-crypto>).
+
+Cryptographic primitives should not be used in end applications, they are better
+used as part of a cryptographic library.
+"""
+maintainer: ["Etienne Millon <me@emillon.org>"]
+authors: [
+  "Etienne Millon <me@emillon.org>"
+  "Andres Erbsen <andreser@mit.edu>"
+  "Google Inc."
+  "Jade Philipoom <jadep@mit.edu> <jade.philipoom@gmail.com>"
+  "Massachusetts Institute of Technology"
+]
+license: "MIT"
+homepage: "https://github.com/mirage/fiat"
+doc: "https://mirage.github.io/fiat/doc"
+bug-reports: "https://github.com/mirage/fiat/issues"
+depends: [
+  "dune" {>= "2.6"}
+  "alcotest" {with-test}
+  "asn1-combinators" {with-test}
+  "benchmark" {with-test}
+  "bigarray-compat"
+  "cstruct" {>= "3.5.0"}
+  "dune-configurator"
+  "eqaf" {>= "0.5"}
+  "hex"
+  "conf-pkg-config" {build}
+  "ppx_deriving_yojson" {with-test}
+  "rresult" {with-test}
+  "stdlib-shims" {with-test}
+  "yojson" {with-test & >= "1.6.0"}
+]
+depopts: ["ocaml-freestanding"]
+conflicts: [
+  "mirage-xen" {< "6.0.0"}
+  "ocaml-freestanding" {< "0.4.1"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mirage/fiat.git"
+tags: ["org:mirage"]
+x-commit-hash: "2aa8fe30f42de85437ce799af4a2efa2eecca3d8"
+url {
+  src:
+    "https://github.com/mirage/fiat/releases/download/v0.2.3/fiat-p256-v0.2.3.tbz"
+  checksum: [
+    "sha256=c20d1b1395f59b111ca6a75c55b4edfb864215daf7484910bc89c2953474b0e0"
+    "sha512=9d679c865820294e87f479a2e46aa6278b5e9e1106776067ce0e71e4263850d4d07b38b7da65c49c4a5f4cedd74af92fcb3f3188065b12b58041a4729b296652"
+  ]
+}

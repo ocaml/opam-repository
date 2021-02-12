@@ -12,6 +12,13 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
+  [
+    "sed"
+    "-ib"
+    "-e"
+    "s/opts=\"\"/opts=\"-Wno-implicit-function-declaration\"/"
+    "config/auto-aux/hasgot"
+  ] {os = "macos"}
   ["sed" "-i" "-e" "s/struct sigaltstack/stack_t/" "asmrun/signals_asm.c"]
   ["./configure" "-prefix" prefix]
     {os != "openbsd" & os != "freebsd" & os != "macos"}
@@ -29,3 +36,4 @@ url {
   src: "https://caml.inria.fr/pub/distrib/ocaml-3.10/ocaml-3.10.0.tar.gz"
   checksum: "md5=5ec0b860730925f738d91ca96d692406"
 }
+available: !(os = "macos" & arch = "arm64")

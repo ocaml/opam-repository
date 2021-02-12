@@ -1,0 +1,41 @@
+opam-version: "2.0"
+
+synopsis: "Partitioning OCaml codes"
+description:
+"""
+Asak provides functions to parse, type-check and identify similar OCaml codes.
+These functions are then used to partition codes implementing the same function and help to detect code duplication.
+"""
+
+maintainer: ["alexandre@moine.me"]
+authors: ["Alexandre Moine"]
+license: "MIT"
+
+homepage: "https://github.com/nobrakal/asak"
+doc: "https://nobrakal.github.io/asak/asak/index.html"
+bug-reports: "https://github.com/nobrakal/asak/issues"
+dev-repo: "git+https://github.com/nobrakal/asak.git"
+
+depends: [
+  "ocaml"    {>= "4.05" & < "4.10"}
+  "cmdliner" {>= "1.0.0"}
+  "dune"     {> "1.5"}
+  "cppo"     {build & >= "1.6.0"}
+  "odoc"     {with-doc  & >= "1.2.0"}
+  "alcotest" {with-test & >= "0.8.0"}
+]
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
+]
+
+url {
+  src: "https://github.com/nobrakal/asak/archive/0.2.tar.gz"
+  checksum: [
+    "md5=dcf2006b1fb818261aab8fb7b4387b10"
+    "sha512=8ee28c765f5d5bf7f4caae9a8f806501f5563f17360ad3c9e1b78bbb849697ae53d0165a6e5eb38a061c92547f2f9863ae0e693fea7f76cecf1557ac1ccba2c2"
+  ]
+}

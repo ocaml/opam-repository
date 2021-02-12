@@ -7,11 +7,14 @@ dev-repo: "git+https://github.com/coq/coq.git"
 license: "LGPL-2.1"
 
 depends: [
-  "ocaml" {>= "4.02.3"}
+  "ocaml" {>= "4.02.3" & < "4.10"}
   "ocamlfind" {build}
-  "camlp5"
+  "camlp5" {< "8"}
   "num"
   "conf-findutils" {build}
+]
+depopts: [
+  "coq-native"
 ]
 build: [
   [
@@ -22,8 +25,9 @@ build: [
     "-docdir" doc
     "-libdir" "%{lib}%/coq"
     "-datadir" "%{share}%/coq"
-    "-camlp5dir" "%{lib}%/camlp5"
+    "-camlp5dir" "%{camlp5:lib}%"
     "-coqide" "no"
+    "-native-compiler" "yes" {coq-native:installed} "no" {!coq-native:installed}
   ]
   [make "-j%{jobs}%"]
   [make "-j%{jobs}%" "byte"]
@@ -56,7 +60,7 @@ remove: [
   "%{share}%/emacs/site-lisp/gallina-syntax.el"
   ]
 ]
-synopsis: "Formal proof management system."
+synopsis: "Formal proof management system"
 flags: light-uninstall
 extra-files: ["coq.install" "md5=6e8ff2905b5508b143a8acb16e3b5150"]
 url {

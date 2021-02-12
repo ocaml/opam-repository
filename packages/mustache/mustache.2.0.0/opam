@@ -8,12 +8,9 @@ bug-reports: "https://github.com/rgrinberg/ocaml-mustache/issues"
 dev-repo: "git+https://github.com/rgrinberg/ocaml-mustache.git"
 build: [
   ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests" {with-test & ocaml:version < "4.06"}]
   ["ocaml" "setup.ml" "-build"]
-  ["oasis" "setup"] {with-test}
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
-  ["ocaml" "setup.ml" "-build"] {with-test}
-  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test & ocaml:version < "4.06"}
   ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
@@ -23,11 +20,12 @@ remove: [
 ]
 
 depends: [
-  "ocaml" {>= "4.01.0"}
+  "ocaml" {>= "4.01.0" & <"4.06.0"}
   "ocamlfind" {build}
   "oasis" {build & >= "0.4.0"}
   "ezjsonm" {>= "0.4.0"}
   "ocamlbuild" {build}
+  "ounit" {with-test}
 ]
 synopsis: "Mustache logic-less templates in OCaml"
 description: "Manual for mustache: http://mustache.github.io/mustache.5.html"

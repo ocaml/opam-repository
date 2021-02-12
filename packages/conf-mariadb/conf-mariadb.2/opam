@@ -6,17 +6,28 @@ bug-reports: "https://jira.mariadb.org/projects/MDEV/issues"
 dev-repo: "git+https://github.com/MariaDB/server.git"
 license: "GPL-2.0-only"
 build: [
-  ["pkg-config" "mariadb"] {os != "macos" & os-distribution != "alpine"}
-  ["pkg-config" "libmariadb"] {os = "macos" | os-distribution = "alpine"}
+  ["sh" "-exc" "pkg-config --exists libmariadb || pkg-config --exists mariadb"] # libmariadb is a newer library name
 ]
 depends: [
   "conf-pkg-config" {build}
 ]
 depexts: [
-  ["libmariadbclient-dev"] {os-family = "debian"}
-  ["mariadb-devel"] {os-distribution = "centos"}
+  ["libmariadbclient-dev"] {os-family = "debian" & os-distribution != "ubuntu"}
+  ["libmariadbclient-dev"] {os-family = "ubuntu"}
+  ["libmariadbclient-dev"] {os-distribution = "ubuntu" & os-version >= "18.04"}
+  ["mariadb-connector-c-dev"] {os-family = "alpine"}
+  ["mariadb-connector-c-devel"] {os-distribution = "centos" & os-version >= "8"}
+  ["mariadb-connector-c-devel"] {os-distribution = "fedora"}
+  ["mariadb-connector-c-devel"] {os-distribution = "ol" & os-version >= "8"}
+  ["libmariadb-devel"] {os-family = "suse"}
+  ["mariadb-libs"] {os-family = "arch"}
   ["mariadb-connector-c"] {os = "macos" & os-distribution = "homebrew"}
-  ["mariadb-connector-c-dev"] {os-distribution = "alpine"}
+  ["mariadb-connector-c"] {os = "freebsd"}
+]
+x-ci-accept-failures: [
+  "centos-7"
+  "oraclelinux-7"
+  "ubuntu-16.04"
 ]
 synopsis:
   "Virtual package relying on a libmariadbclient system installation"

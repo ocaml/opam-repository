@@ -1,0 +1,14 @@
+diff --git a/init.c b/init.c
+index 5fcd03e..a49c613 100644
+--- a/init.c
++++ b/init.c
+@@ -80,8 +80,7 @@ value caml_mpi_init(value arguments)
+   MPI_Init(&argc, &argv);
+   /* Register an error handler */
+ #if MPI_VERSION >= 2
+-  MPI_Comm_create_errhandler(
+-	  (MPI_Handler_function *)caml_mpi_error_handler, &hdlr);
++  MPI_Comm_create_errhandler(caml_mpi_error_handler, &hdlr);
+   MPI_Comm_set_errhandler(MPI_COMM_WORLD, hdlr);
+ #else
+   MPI_Errhandler_create((MPI_Handler_function *)caml_mpi_error_handler, &hdlr);

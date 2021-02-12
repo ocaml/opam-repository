@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+authors: ["Francois Berenger"]
+homepage: "https://github.com/UnixJunkie/odnnr"
+bug-reports: "https://github.com/UnixJunkie/odnnr/issues"
+dev-repo: "git+https://github.com/UnixJunkie/odnnr.git"
+license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
+install: ["R" "CMD" "BATCH" "install_keras.r"]
+build: ["dune" "build" "-p" name "-j" jobs]
+depends: [
+  "ocaml"
+  "conf-r"
+  "dune" {>= "1.11.0"}
+  "dolog" {>= "4.0.0" & < "5.0.0"}
+  "batteries"
+  "minicli" {>= "5.0.0"}
+  "parany" {>= "11.0.0"}
+  "cpm"
+  "conf-gnuplot"
+]
+x-ci-accept-failures: ["debian-unstable"]
+synopsis: "Regressor using a Deep Neural Network"
+description: """
+Some OCaml functions to drive the Deep Learning R 'keras' package;
+but only for training a regressor using a multi-layer perceptron.
+This package really fires up and talks to an R interpreter.
+
+Bibliography:
+=============
+Deep Learning with R. François Chollet with J. J. Allaire.
+January 2018, ISBN 9781617295546.
+"""
+post-messages:
+  """
+Please interact with R to install required dependencies in user-space:
+R
+install.packages('keras', repos='http://cran.r-project.org')
+library(keras)
+install_keras(method = 'conda', tensorflow = 'cpu')""" {failure}
+extra-files: [
+  ["install_keras.r" "md5=b07326eec56b36df7a2aba08b29264e5"]
+]
+url {
+  src: "https://github.com/UnixJunkie/odnnr/archive/v2.0.0.tar.gz"
+  checksum: "md5=9fc50b3ca9df085018f041ec341879b9"
+}

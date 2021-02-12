@@ -1,0 +1,38 @@
+opam-version: "2.0"
+homepage: "https://github.com/LaurentMazare/ocaml-torch"
+maintainer: "lmazare@gmail.com"
+bug-reports: "https://github.com/LaurentMazare/ocaml-torch/issues"
+authors: [
+  "Laurent Mazare"
+]
+install: [
+  [
+    "sh"
+    "-c"
+    "test -d %{lib}%/libtorch/lib/libtorch.so || ( unzip libtorch-linux.zip && mv -f libtorch %{lib}%/ )"
+  ] { os = "linux" }
+  [
+    "sh"
+    "-c"
+    "test -d %{lib}%/libtorch/lib/libtorch.so || ( unzip libtorch-macos.zip && mv -f libtorch %{lib}%/ && tar xzf mklml-macos.tgz && mv -f mklml_mac_2019.0.1.20181227/lib/libmklml.dylib %{lib}%/libtorch/lib/ && mv -f mklml_mac_2019.0.1.20181227/lib/libiomp5.dylib %{lib}%/libtorch/lib/ )"
+  ] { os = "macos" }
+]
+depexts: [
+  ["libomp"] {os-distribution = "homebrew" & os = "macos"}
+]
+synopsis: "LibTorch library package"
+description: """
+This is used by the torch package to trigger the install of the
+libtorch library."""
+extra-source "libtorch-linux.zip" {
+  src: "https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.4.0%2Bcpu.zip"
+  checksum: "md5=85d577aa6dcdc0282cc53769b7e5141a"
+}
+extra-source "libtorch-macos.zip" {
+  src: "https://download.pytorch.org/libtorch/cpu/libtorch-macos-1.4.0.zip"
+  checksum: "md5=c25de4edbadaaa33c13e56b1f938d1c6"
+}
+extra-source "mklml-macos.tgz" {
+  src: "https://github.com/intel/mkl-dnn/releases/download/v0.17.2/mklml_mac_2019.0.1.20181227.tgz"
+  checksum: "md5=a8b4b158dc8e7aad13c0d594a9a8d241"
+}

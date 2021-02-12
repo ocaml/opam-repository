@@ -1,0 +1,30 @@
+opam-version: "2.0"
+synopsis: "Alba compiler"
+maintainer: "Helmut Brandl <helmut.brandl@gmx.net>"
+authors: "Helmut Brandl <helmut.brandl@gmx.net>"
+homepage: "http://albatross-lang.sourceforge.net"
+license: "GPLv2"
+dev-repo: "git+https://github.com/hbr/albatross.git"
+bug-reports: "http://github.com/hbr/albatross"
+build: [
+  # [make "test_alba"] recommended to delete (camelus test)
+  ["dune" "build" "@install" "-p" name "-j" jobs]
+  ["dune" "build" "@runtest" "-p" name] {with-test}
+  ["dune" "build" "@doc" "-p" name]     {with-doc}
+  # ["sh" "./.copy_docu.sh"] recommended to delete (camelus test)
+]
+depends: [
+  "ocaml"            {>= "4.08.0"}
+  "dune"             {>= "1.10.0"}
+  "linenoise"
+  "js_of_ocaml-ppx"
+  "menhir"           {build}
+  "js_of_ocaml"      {build}
+  "ppx_inline_test"  {build & < "v0.15"} (* is needed for building the libraries,
+                                            otherwise it does not compile *)
+  "odoc"             {with-doc}
+]
+url {
+    src: "https://github.com/hbr/albatross/archive/0.4.2.tar.gz"
+    checksum: "md5=64367c393f80ca784f88d07155da4fb0"
+}

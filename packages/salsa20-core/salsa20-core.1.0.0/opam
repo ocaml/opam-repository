@@ -1,0 +1,43 @@
+opam-version: "2.0"
+name:         "salsa20-core"
+homepage:     "https://github.com/abeaumont/ocaml-salsa20-core"
+dev-repo:     "git+https://github.com/abeaumont/ocaml-salsa20-core.git"
+bug-reports:  "https://github.com/abeaumont/ocaml-salsa20-core/issues"
+doc:          "https://abeaumont.github.io/ocaml-salsa20-core/"
+maintainer:   "Alfredo Beaumont <alfredo.beaumont@gmail.com>"
+license:      "BSD2"
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "conf-pkg-config" {build}
+  "dune" {>= "1.3.0"}
+  "cstruct" {>= "3.2.0"}
+  "ocaml" {>= "4.02.0"}
+  "alcotest" {with-test}
+]
+depopts: [
+  "ocaml-freestanding"
+  "mirage-xen-posix"
+]
+conflicts: [
+  "mirage-xen-posix" {<"3.1.0"}
+  "ocaml-freestanding" {< "0.4.1"}
+]
+synopsis: "The Salsa20 core functions, in OCaml"
+description: """
+An OCaml implementation of [Salsa20 Core](http://cr.yp.to/salsa20.html) functions, both Salsa20/20 Core and the reduced Salsa20/8 Core and Salsa20/12 Core functions.
+The hot loop is implemented in C for efficiency reasons.
+"""
+authors: "Alfredo Beaumont <alfredo.beaumont@gmail.com>"
+url {
+  src:
+    "https://github.com/abeaumont/ocaml-salsa20-core/releases/download/1.0.0/salsa20-core-1.0.0.tbz"
+  checksum: [
+    "sha256=cf1abb67a59f204d2a25b4edefacb3c5ecd528199f50b8f8dd4ec7904eb3880b"
+    "sha512=b4eff10f221bdab56d86d57472bd9871c2579a75152c91ef0db033e471a37ccfd344591df788155315a7c533ce79d6fc96fb9db0241daffa4541c0530a270c39"
+  ]
+}

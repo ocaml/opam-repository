@@ -8,6 +8,9 @@ license: "LGPL-2.1"
 patches: [ "0001_make_install_static_plug.patch"
            "0002_alpine_linux.patch"
          ]
+depopts: [
+  "coq-native"
+]
 build: [
   [
     "./configure"
@@ -17,8 +20,9 @@ build: [
     "-docdir" doc
     "-libdir" "%{lib}%/coq"
     "-datadir" "%{share}%/coq"
-    "-camlp5dir" "%{lib}%/camlp5"
+    "-camlp5dir" "%{camlp5:lib}%"
     "-coqide" "no"
+    "-native-compiler" "yes" {coq-native:installed} "no" {!coq-native:installed}
   ]
   [make "-j1"]
   [make "-j1" "byte"]
@@ -52,13 +56,13 @@ remove: [
   ]
 ]
 depends: [
-  "ocaml" {>= "4.02.3"}
+  "ocaml" {>= "4.02.3" & < "4.10"}
   "ocamlfind" {build}
-  "camlp5"
+  "camlp5" {< "8"}
   "num"
   "conf-findutils" {build}
 ]
-synopsis: "Formal proof management system."
+synopsis: "Formal proof management system"
 flags: light-uninstall
 extra-files: [
   ["coq.install" "md5=b85e0eb533d6836c15581f0e5cb0ebc2"]

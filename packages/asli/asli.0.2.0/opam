@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "Interpreter for Arm's Architecture Specification Language (ASL)"
+description: """
+Interpreter for the language ASL that Arm uses to write their ISA specifications.
+
+Currently supports reading/typechecking the specification,
+interactive execution of ASL statements and expressions,
+executing opcodes one at a time,
+loading ELF files and executing Arm binaries."""
+maintainer: "Alastair Reid <alastair.d.reid@gmail.com>"
+authors: "Alastair Reid"
+license: "BSD-3-Clause"
+homepage: "https://github.com/alastairreid/asl-interpreter"
+bug-reports: "https://github.com/alastairreid/asl-interpreter/issues"
+depends: [
+  "dune" {>= "2.5"}
+  "ocaml" {>= "4.09"}
+  "menhir" {build}
+  "ott" {< "0.31" & build}
+  "linenoise"
+  "pprint"
+  "zarith"
+  "z3" {>= "4.8.7"}
+  "alcotest" {with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/alastairreid/asl-interpreter.git"
+url {
+  src: "https://github.com/alastairreid/asl-interpreter/archive/0.2.0.tar.gz"
+  checksum: [
+    "md5=f4581fd209256823fa4d569ac96c8cee"
+    "sha512=fd4a74294beb9eeeafa80c9224b5dc30f5e5ebde4d53fa601929d283b6ca72154de313874321774914f738ac6f0d640e59452f7d03cb1db7b3a019b48b82e0d4"
+  ]
+}

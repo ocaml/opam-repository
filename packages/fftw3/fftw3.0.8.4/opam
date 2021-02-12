@@ -1,0 +1,36 @@
+opam-version: "2.0"
+authors: ["Christophe Troestler <Christophe.Troestler@umons.ac.be>"]
+maintainer: "Christophe.Troestler@umons.ac.be"
+license: "LGPL-2.1 with OCaml linking exception"
+homepage: "https://github.com/Chris00/fftw-ocaml"
+dev-repo: "git+https://github.com/Chris00/fftw-ocaml.git"
+bug-reports: "https://github.com/Chris00/fftw-ocaml/issues"
+doc: "https://Chris00.github.io/fftw-ocaml/doc"
+tags: ["FFT"]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs] {os != "macos"}
+  ["env" "FFTW3_CFLAGS=-I /usr/local/include -L /usr/local/lib -I /usr/local/include -L /usr/local/lib"
+   "dune" "build" "-p" name "-j" jobs
+  ] {os = "macos"}
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "dune" {>= "1.1"}
+  "dune-configurator"
+  "cppo" {build}
+  "lacaml" {with-test & os = "linux"}
+  "conf-fftw3"
+]
+synopsis: "Binding to the Fast Fourier Transform library FFTW"
+description: """
+Library binding the seminal library FFTW."""
+url {
+  src:
+    "https://github.com/Chris00/fftw-ocaml/releases/download/0.8.4/fftw3-0.8.4.tbz"
+  checksum: [
+    "sha256=da86156cec40266f37ca1cc43eb4404e93121353df2458577eef764360f47001"
+    "sha512=10f2a09758e104b471dd55490963a9d14cdd99f930ddf74877d1d79cba20c7282d364e2fc790ebca9d0e501be3f904bade3e1e2da7ef71c2ce04ede779ee8277"
+  ]
+}

@@ -12,6 +12,13 @@ conflict-class: "ocaml-core-compiler"
 flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
+  [
+    "sed"
+    "-ib"
+    "-e"
+    "s/opts=\"\"/opts=\"-Wno-implicit-function-declaration\"/"
+    "config/auto-aux/hasgot"
+  ] {os = "macos"}
   ["./configure" "-prefix" prefix "-no-tk"]
     {os != "openbsd" & os != "freebsd" & os != "macos"}
   ["./configure" "-prefix" prefix "-no-tk" "-cc" "cc" "-aspp" "cc -c"]
@@ -30,3 +37,4 @@ url {
   src: "https://github.com/metaocaml/ber-metaocaml/archive/ber-N100.tar.gz"
   checksum: "md5=5bfe2ec41fdfb2d467f56d47e2f70b94"
 }
+available: !(os = "macos" & arch = "arm64")

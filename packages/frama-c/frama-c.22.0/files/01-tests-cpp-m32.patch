@@ -1,0 +1,45 @@
+---
+ tests/syntax/cpp-command.c                   | 2 +-
+ tests/syntax/oracle/cpp-command.0.res.oracle | 2 +-
+ tests/syntax/oracle/cpp-command.1.res.oracle | 2 +-
+ tests/syntax/oracle/cpp-command.4.res.oracle | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tests/syntax/cpp-command.c b/tests/syntax/cpp-command.c
+index 3b58590a2b..7fc8bf5cf2 100644
+--- a/tests/syntax/cpp-command.c
++++ b/tests/syntax/cpp-command.c
+@@ -1,5 +1,5 @@
+ /* run.config*
+-   FILTER: sed "s:/[^ ]*/cpp-command\.[^ ]*\.i:TMPDIR/FILE.i:g; s:$PWD/::"
++   FILTER: sed "s:/[^ ]*/cpp-command\.[^ ]*\.i:TMPDIR/FILE.i:g; s:$PWD/::; s: -m32::"
+    OPT: -no-autoload-plugins -cpp-frama-c-compliant -cpp-command "echo [\$(basename '%1') \$(basename '%1') \$(basename '%i') \$(basename '%input')] ['%2' '%2' '%o' '%output'] ['%args']"
+    OPT: -no-autoload-plugins -cpp-frama-c-compliant -cpp-command "echo %%1 = \$(basename '%1') %%2 = '%2' %%args = '%args'"
+    OPT: -no-autoload-plugins -cpp-frama-c-compliant -cpp-command "printf \"%s\n\" \"using \\% has no effect : \$(basename \"\%input\")\""
+diff --git a/tests/syntax/oracle/cpp-command.0.res.oracle b/tests/syntax/oracle/cpp-command.0.res.oracle
+index 258383ae1d..52bfebffa2 100644
+--- a/tests/syntax/oracle/cpp-command.0.res.oracle
++++ b/tests/syntax/oracle/cpp-command.0.res.oracle
+@@ -1,2 +1,2 @@
+ [kernel] Parsing tests/syntax/cpp-command.c (with preprocessing)
+-[cpp-command.c cpp-command.c cpp-command.c cpp-command.c] [TMPDIR/FILE.i TMPDIR/FILE.i TMPDIR/FILE.i TMPDIR/FILE.i] [ -I./share/libc -D__FRAMAC__ -D__FC_MACHDEP_X86_32 -dD -nostdinc -m32]
++[cpp-command.c cpp-command.c cpp-command.c cpp-command.c] [TMPDIR/FILE.i TMPDIR/FILE.i TMPDIR/FILE.i TMPDIR/FILE.i] [ -I./share/libc -D__FRAMAC__ -D__FC_MACHDEP_X86_32 -dD -nostdinc]
+diff --git a/tests/syntax/oracle/cpp-command.1.res.oracle b/tests/syntax/oracle/cpp-command.1.res.oracle
+index c53f5fd858..9fa845eca3 100644
+--- a/tests/syntax/oracle/cpp-command.1.res.oracle
++++ b/tests/syntax/oracle/cpp-command.1.res.oracle
+@@ -1,2 +1,2 @@
+ [kernel] Parsing tests/syntax/cpp-command.c (with preprocessing)
+-%1 = cpp-command.c %2 = TMPDIR/FILE.i %args =  -I./share/libc -D__FRAMAC__ -D__FC_MACHDEP_X86_32 -dD -nostdinc -m32
++%1 = cpp-command.c %2 = TMPDIR/FILE.i %args =  -I./share/libc -D__FRAMAC__ -D__FC_MACHDEP_X86_32 -dD -nostdinc
+diff --git a/tests/syntax/oracle/cpp-command.4.res.oracle b/tests/syntax/oracle/cpp-command.4.res.oracle
+index db826509fc..2008e719f9 100644
+--- a/tests/syntax/oracle/cpp-command.4.res.oracle
++++ b/tests/syntax/oracle/cpp-command.4.res.oracle
+@@ -1,2 +1,2 @@
+ [kernel] Preprocessing command:
+-  gcc -E -C -I.  -I./share/libc -D__FRAMAC__ -D__FC_MACHDEP_X86_32 -dD -nostdinc -m32 'tests/syntax/cpp-command.c' -o 'TMPDIR/FILE.i'
++  gcc -E -C -I.  -I./share/libc -D__FRAMAC__ -D__FC_MACHDEP_X86_32 -dD -nostdinc 'tests/syntax/cpp-command.c' -o 'TMPDIR/FILE.i'
+-- 
+2.26.2
+

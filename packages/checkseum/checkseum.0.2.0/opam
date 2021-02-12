@@ -1,0 +1,58 @@
+opam-version: "2.0"
+name:         "checkseum"
+maintainer:   [ "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+authors:      [ "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+homepage:     "https://github.com/mirage/checkseum"
+bug-reports:  "https://github.com/mirage/checkseum/issues"
+dev-repo:     "git+https://github.com/mirage/checkseum.git"
+doc:          "https://mirage.github.io/checkseum/"
+license:      "MIT"
+synopsis:     "Adler-32, CRC32 and CRC32-C implementation in C and OCaml"
+description: """
+Checkseum is a library to provide implementation of Adler-32, CRC32 and CRC32-C
+in C and OCaml.
+
+This library use the linking trick to choose between the C implementation
+(checkseum.c) or the OCaml implementation (checkseum.ocaml). This library is on
+top of optint to get the best representation of an int32. """
+
+build: [
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "sh" "-exc" "echo \"xen_linkopts = \\\"-l:laolao/xen/liblaolao_xen_stubs.a\\\"\" >> _build/default/META.checkseum"]
+  [ "sh" "-exc" "echo \"freestanding_linkopts = \\\"-l:laolao/freestanding/liblaolao_freestanding_stubs.a\\\"\" >> _build/default/META.checkseum"]
+  [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
+]
+
+depends: [
+  "ocaml"         {>= "4.07.0"}
+  "dune"          {>= "2.0.0" & < "2.6"}
+  "dune-configurator"
+  "optint"        {>= "0.0.4"}
+  "base-bytes"
+  "bigarray-compat"
+  "alcotest"      {with-test}
+  "bos"           {with-test}
+  "astring"       {with-test}
+  "fmt"           {with-test}
+  "fpath"         {with-test}
+  "rresult"       {with-test}
+  "ocamlfind"     {with-test}
+]
+
+depopts: [
+  "ocaml-freestanding"
+  "mirage-xen-posix"
+]
+
+conflicts: [
+  "mirage-xen-posix" {< "3.1.0"}
+  "ocaml-freestanding" {< "0.4.3"}
+]
+url {
+  src:
+    "https://github.com/mirage/checkseum/releases/download/v0.2.0/checkseum-v0.2.0.tbz"
+  checksum: [
+    "sha256=6b9369913ed8de0f3de2b946abd439ab0efa3693ebdf6573c0392f2d12b8da70"
+    "sha512=63e3bdb03996551d127a7233590d7f36783e18659bbdf455ac0d6ed55798374122661e1da25b45ea0f5468d3876f617b1aac0699858f04f94137579726d5d323"
+  ]
+}

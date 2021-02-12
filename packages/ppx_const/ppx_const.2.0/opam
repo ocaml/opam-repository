@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Compile-time \"if\" statement for conditional inclusion of code"
+description: """
+This is a ppx extension which adds `if#const` and `match#const` constructs to
+OCaml. They behave like normal `if` and `match`, but conditions are evaluated
+at compile time and AST sections not selected are excluded from the program
+completely. In conjunction with ppx_getenv, this can be used for conditional
+compilation of code.
+"""
+maintainer: ["Andi McClure <andi.m.mcclure@gmail.com>"]
+authors: ["Andi McClure <andi.m.mcclure@gmail.com>"]
+license: "Creative Commons Zero"
+tags: ["syntax"]
+homepage: "https://github.com/mcclure/ppx_const"
+bug-reports: "https://github.com/mcclure/ppx_const/issues"
+depends: [
+  "dune" {>= "2.0"}
+  "ocaml" {>= "4.04.0"}
+  "ppxlib" {>= "0.9.0" & < "0.18.0"}
+  "ounit2" {with-test}
+  "ppx_getenv" {with-test & >= "2.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mcclure/ppx_const.git"
+url {
+  src: "https://github.com/mcclure/ppx_const/archive/ppx_const-2.0.tar.gz"
+  checksum: [
+    "md5=043067f1255e1c00412a4e2ede89329c"
+    "sha512=15852104aaf1587dd14b84df209eab513cda9c2a8f4c381a56ada3bb81100dace7514b9913b8e043acb8eebbd045a1baf1cd5cb7d9c53f5c04d3209afa617f69"
+  ]
+}

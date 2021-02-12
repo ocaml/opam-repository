@@ -1,0 +1,42 @@
+opam-version: "2.0"
+homepage:     "https://github.com/mirage/mirage-crypto"
+dev-repo:     "git+https://github.com/mirage/mirage-crypto.git"
+bug-reports:  "https://github.com/mirage/mirage-crypto/issues"
+doc:          "https://mirage.github.io/mirage-crypto/doc"
+authors:      ["David Kaloper <dk505@cam.ac.uk>" "Hannes Mehnert <hannes@mehnert.org>" ]
+maintainer:   "Hannes Mehnert <hannes@mehnert.org>"
+license:      "ISC"
+synopsis:     "Simple public-key cryptography for the modern age"
+
+build: [ ["dune" "subst"] {pinned}
+         ["dune" "build" "-p" name "-j" jobs ]
+         ["dune" "runtest" "-p" name "-j" jobs] {with-test} ]
+
+depends: [
+  "conf-gmp-powm-sec" {build}
+  "ocaml" {>= "4.07.0"}
+  "dune" {>= "1.7"}
+  "ounit" {with-test}
+  "randomconv" {with-test & >= "0.1.3"}
+  "cstruct" {>="3.2.0"}
+  "mirage-crypto" {=version}
+  "mirage-crypto-rng" {=version}
+  "sexplib" {< "v0.15"}
+  "ppx_sexp_conv" {< "v0.15"}
+  "zarith" {>= "1.4"}
+  "eqaf" {>= "0.5"}
+  "rresult" {>= "0.6.0"}
+  ("mirage-no-xen" | "zarith-xen")
+  ("mirage-no-solo5" | "zarith-freestanding")
+]
+description: """
+Mirage-crypto-pk provides public-key cryptography (RSA, DSA, DH).
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage-crypto/releases/download/v0.6.1/mirage-crypto-v0.6.1.tbz"
+  checksum: [
+    "sha256=dd99b67fc30dc0144cb7bfdd4d1c783f42d5a7ba847ce31c132712872f66f7b1"
+    "sha512=351354a044d6c8e24c26389eeb8cb174d2506f8e8bef5795078ca80b6e9a0b56a5c306a0c8279d6d947c3c871b9d9fd8a6311b18fc77a54d031deec29582ffc3"
+  ]
+}

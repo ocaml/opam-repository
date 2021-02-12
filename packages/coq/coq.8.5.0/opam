@@ -5,34 +5,33 @@ homepage: "http://coq.inria.fr/"
 bug-reports: "https://coq.inria.fr/bugs/"
 dev-repo: "git+https://github.com/coq/coq.git"
 license: "LGPL-2.0-only"
+depopts: [
+  "coq-native"
+]
 build: [
   [
     "./configure"
-    "-configdir"
-    "%{lib}%/coq/config"
-    "-mandir"
-    man
-    "-prefix"
-    prefix
+    "-configdir" "%{lib}%/coq/config"
+    "-mandir" man
+    "-prefix" prefix
     "-usecamlp5"
-    "-camlp5dir"
-    "%{lib}%/camlp5"
-    "-coqide"
-    "no"
+    "-camlp5dir" "%{camlp5:lib}%"
+    "-coqide" "no"
     "-debug"
+    "-native-compiler" "yes" {coq-native:installed} "no" {!coq-native:installed}
   ]
   [make "-j%{jobs}%"]
 ]
 remove: ["rm" "-R" "%{lib}%/coq"]
 depends: [
   "ocaml" {< "4.06.0"}
-  "camlp5"
+  "camlp5" {< "8"}
   "num"
   "conf-findutils" {build}
 ]
 patches: ["ephemeron-rename.patch"]
 install: [make "install"]
-synopsis: "Formal proof management system."
+synopsis: "Formal proof management system"
 flags: light-uninstall
 extra-files: [
   ["ephemeron-rename.patch" "md5=9fa070d977a9f672ef1909babb5a4776"]

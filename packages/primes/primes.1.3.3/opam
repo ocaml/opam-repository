@@ -1,6 +1,4 @@
 opam-version: "2.0"
-name: "primes"
-version: "1.3.3"
 maintainer: "Kit Freddura <kitfreddura@gmail.com>"
 authors: "Kit Freddura <kitfreddura@gmail.com>"
 license: "MIT"
@@ -8,15 +6,12 @@ dev-repo: "git+https://github.com/KitFreddura/OCaml-Primes.git"
 homepage: "https://github.com/KitFreddura/OCaml-Primes"
 bug-reports: "https://github.com/KitFreddura/OCaml-Primes/issues/new"
 build: [
-  ["mkdir" "%{prefix}%/lib/primes"]
+  ["ocamlfind" "ocamlc" "-bin-annot" "-c" "-linkpkg" "-package" "zarith" "primes.mli"]
+  ["ocamlfind" "ocamlmklib" "-o" "primes" "primes.ml" "-linkpkg" "-package" "zarith,core,gen"]
 ]
 install: [
-["ocamlfind" "ocamlc" "-c" "-linkpkg" "-package" "zarith" "primes.mli"]
-["ocamlfind" "ocamlc" "-o" "primes.cma" "primes.ml" "-linkpkg" "-package" "zarith,core,gen" "-thread"]
-["ocamlfind" "ocamlopt" "-o" "primes.cmxa" "primes.ml" "-linkpkg" "-package" "zarith,core,gen" "-thread"]
-["ocamlfind" "install" "primes" "META" "primes.cma" "primes.cmxa" "primes.cmo" "primes.cmi" "primes.mli" "primes.o" "primes.cmx"]
+  ["ocamlfind" "install" "primes" "META" "primes.cma" "primes.cmxa" "primes.cmo" "primes.cmi" "primes.mli" "primes.o" "primes.cmx" "primes.cmti"]
 ]
-remove: ["ocamlfind" "remove" "primes"]
 depends: [
   "ocaml" {>= "4.02"}
   "ocamlfind" {build}
@@ -27,7 +22,6 @@ depends: [
 synopsis: "A small library for dealing with primes."
 description:
   "Primes is a library for finding and testing prime numbers in OCaml, see the .mli file for interface details. Please check out the git for issues, concerns, suggestions or if you wish to contribute!"
-flags: light-uninstall
 url {
   src: "https://github.com/KitFreddura/OCaml-Primes/archive/1.3.3.tar.gz"
   checksum: "md5=b800e1b03154facc0045d5947cfd2a7f"
