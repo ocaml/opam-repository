@@ -23,11 +23,6 @@ build: [
   [make "opt"] {ocaml:native}
 ]
 install: [
-  [make "install"]
-  ["install" "-m" "0755" "ocaml-stub" "%{bin}%/ocaml"] {ocaml:preinstalled}
-]
-remove: [
-  ["ocamlfind" "remove" "bytes"]
   [
     "./configure"
     "-bindir"
@@ -38,11 +33,12 @@ remove: [
     man
     "-config"
     "%{lib}%/findlib.conf"
+    "-no-custom"
     "-no-camlp4" {!ocaml:preinstalled & ocaml:version >= "4.02.0"}
     "-no-topfind" {ocaml:preinstalled}
   ]
-  [make "uninstall"]
-  ["rm" "-f" "%{bin}%/ocaml"] {ocaml:preinstalled}
+  [make "install"]
+  ["install" "-m" "0755" "ocaml-stub" "%{bin}%/ocaml"] {ocaml:preinstalled}
 ]
 depends: [
   "ocaml" {>= "3.12.0" & < "4.07"}
