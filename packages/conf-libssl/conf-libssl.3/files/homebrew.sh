@@ -15,8 +15,11 @@ install)
     echo "Usage: $0 install <libdir>"
     exit 1
   fi
-  for file in $(ls "$brew_pkg_config"/*.pc); do
-    ln -s "$file" "$2/pkgconfig/$file"
+  cd "$brew_pkg_config"
+  for file in $(ls *.pc); do
+    if test -f "$file"; then
+      ln -s "$brew_pkg_config/$file" "$2/pkgconfig/$file"
+    fi
   done;;
 *)
   echo "Usage: $0 <check|install>"
