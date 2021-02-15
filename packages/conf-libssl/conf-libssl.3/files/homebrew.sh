@@ -16,7 +16,7 @@ install)
     exit 1
   fi
   for file in $(ls "$brew_pkg_config"/*.pc); do
-    ln -s "$brew_pkg_config/$file" "$2/pkgconfig/$file"
+    ln -s "$file" "$2/pkgconfig/$file"
   done;;
 *)
   echo "Usage: $0 <check|install>"
