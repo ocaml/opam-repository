@@ -1,5 +1,8 @@
 #!/bin/sh -ex
 
+# check the openssl installation
+# and symlink the homebrew pkg-config files for openssl to the opam local pkgconfig directory
+
 brew_pkg_config=$(brew --prefix openssl)/lib/pkgconfig
 
 case "$1" in
