@@ -7,15 +7,11 @@ license: "Apache-1.0"
 build: [
   ["pkg-config" "--print-errors" "--exists" "openssl"]
     {os != "freebsd" & os != "openbsd" & os != "netbsd" & # libssl is provided by base system on BSDs
-     os-distribution != "homebrew" & os-distribution != "macports" & os-distribution != "nixos"}
-  ["sh" "-c" "env \"PKG_CONFIG_PATH=$(brew --prefix openssl)/lib/pkgconfig:$PKG_CONFIG_PATH\" pkg-config --print-errors --exists openssl"] {os-distribution = "homebrew"}
-  ["sh" "-c" "env \"PKG_CONFIG_PATH=$HOME/.nix-profile/lib/pkgconfig:$PKG_CONFIG_PATH\" pkg-config --print-errors --exists openssl"] {os-distribution = "nixos"}
-  ["sh" "-c" "env \"PKG_CONFIG_PATH=/opt/local/lib/pkgconfig:$PKG_CONFIG_PATH\" pkg-config --print-errors --exists openssl"] {os-distribution = "macports"}
+     os-distribution != "homebrew"}
+  ["./homebrew.sh" "check"] {os-distribution = "homebrew"}
 ]
 install: [
-  ["sh" "-c" "ln -s \"$(brew --prefix openssl)/lib/pkgconfig/openssl.pc\" '%{lib}%/pkgconfig/openssl.pc'"] {os-distribution = "homebrew"}
-  ["sh" "-c" "ln -s \"$HOME/.nix-profile/lib/pkgconfig/openssl.pc\" '%{lib}%/pkgconfig/openssl.pc'"] {os-distribution = "nixos"}
-  ["ln" "-s" "/opt/local/lib/pkgconfig/openssl.pc" "%{lib}%/pkgconfig/openssl.pc"] {os-distribution = "macports"}
+  ["./homebrew.sh" "install" lib] {os-distribution = "homebrew"}
 ]
 depends: [
   "conf-pkg-config" {build}
