@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings for Clang API"
+description: """
+clangml provides bindings to call the Clang API from OCaml.
+"""
+maintainer: ["Thierry Martinez <thierry.martinez@inria.fr>"]
+authors: ["Thierry Martinez <thierry.martinez@inria.fr>"]
+license: "BSD-2-Clause"
+homepage: "https://memcad.gitlabpages.inria.fr/clangml/"
+doc: "https://memcad.gitlabpages.inria.fr/clangml/doc/clangml/index.html"
+bug-reports: "https://gitlab.inria.fr/memcad/clangml/issues"
+depends: [
+  "conf-libclang"
+  "conf-ncurses"
+  "conf-zlib"
+  "dune" {>= "1.11.0"}
+  "stdcompat" {>= "13"}
+  "ocaml" {>= "4.08.0"}
+  "ocamlfind" {build & >= "1.8.0"}
+  "ocamlcodoc" {with-test & >= "1.0.1"}
+  "pattern" {with-test & >= "0.2.0"}
+  "metapp" {>= "0.4.0"}
+  "metaquot" {>= "0.4.0"}
+  "refl" {>= "0.4.0"}
+  "odoc" {with-doc & >= "1.5.1"}
+]
+x-ci-accept-failures: [
+   "centos-7" # GCC does not support --std=c++14
+]
+available: arch != "arm32" & arch != "ppc64" # Compiler segfaults on those architectures
+dev-repo: "git+https://gitlab.inria.fr/memcad/clangml"
+build: [
+  ["./configure" "--prefix=%{prefix}%" "--with-llvm-config=%{conf-libclang:config}%"]
+  ["dune" "build" "-p" name "-j" jobs "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}]]
+url {
+  src: "https://gitlab.inria.fr/memcad/clangml/-/archive/v4.4.0/clangml-v4.4.0.tar.gz"
+  checksum: "sha512=cb58a5fa327c779340460a1f77df55bdef226afc124fbfed8da2b8cd684d4a58d9efa6cd3442bc1890e25150b089e4c2baa613144a93bcab64d8512f28dd36b2"
+}
