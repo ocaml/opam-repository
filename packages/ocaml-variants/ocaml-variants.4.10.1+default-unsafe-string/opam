@@ -30,8 +30,8 @@ build: [
     "ASPP=cc -c"
     "DEFAULT_STRING=unsafe"
   ] {os = "openbsd" | os = "freebsd" | os = "macos"}
-  [make "-j%{jobs}%" {os != "cygwin"} "world"]
-  [make "-j%{jobs}%" {os != "cygwin"} "world.opt"]
+  [make "-j%{jobs}%" "world"]
+  [make "-j%{jobs}%" "world.opt"]
 ]
 install: [make "install"]
 url {
@@ -42,9 +42,9 @@ post-messages: [
   "A failure in the middle of the build may be caused by build parallelism
    (enabled by default).
    Please file a bug report at https://github.com/ocaml/ocaml/issues"
-  {failure & jobs > 1 & os != "cygwin"}
+  {failure & jobs > 1}
   "You can try installing again including --jobs=1
    to force a sequential build instead."
-  {failure & jobs > 1 & os != "cygwin" & opam-version >= "2.0.5"}
+  {failure & jobs > 1 & opam-version >= "2.0.5"}
 ]
 available: !(os = "macos" & arch = "arm64")
