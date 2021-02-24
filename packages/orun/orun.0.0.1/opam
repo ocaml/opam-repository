@@ -6,23 +6,20 @@ license: "MIT"
 homepage: "https://github.com/ocaml-bench/orun"
 bug-reports: "https://github.com/ocaml-bench/orun/issues"
 dev-repo: "git+https://github.com/shakthimaan/orun"
-depends:
-  [ "ocaml" {> "4.07"}
-    "dune" {>= "1.2"}
-    "re"
-    "cmdliner"
-    "yojson"
+depends: [
+  "ocaml" {>= "4.07"}
+  "dune" {>= "1.2"}
+  "conf-libdw" {build}
+  "re"
+  "cmdliner"
+  "yojson"
 ]
 depexts: [
-  ["libdw-dev"] {os-family = "debian" | os-family = "ubuntu"}
-  ["elfutils-devel"] {os-distribution = "centos" | os-distribution = "fedora" | os-distribution = "ol"}
-  ["libdw-devel"] {os-family = "suse"}
-  ["linux-headers"] {os-distribution = "alpine"}
-  ["elfutils-dev"] {os-distribution = "alpine"}
+  ["linux-headers"] {os-family = "alpine"}
 ]
 build: [
   ["ocaml-update-c" "wait4.c"] {ocaml:update-c}
-  ["dune" "build" "-p" name]
+  ["dune" "build" "-p" name "-j" jobs]
 ]
 description: """
 The orun utility executes the benchmarks for
