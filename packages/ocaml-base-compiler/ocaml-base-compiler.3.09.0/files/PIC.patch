@@ -1,0 +1,44 @@
+From 74e79341aaaacea4399c76b8ad9798e2187c7ec9 Mon Sep 17 00:00:00 2001
+From: Xavier Leroy <xavier.leroy@inria.fr>
+Date: Sat, 17 Dec 2005 17:05:26 +0000
+Subject: [PATCH] Back-port PIC related changes from 3.09.1
+
+ - x86_64: do not define ARCH_CODE32 if compiling for a shared library (PR#3869)
+ - Non-PC-relative reference (PR#3924)
+---
+ asmrun/amd64.S | 2 +-
+ configure      | 5 ++++-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/asmrun/amd64.S b/asmrun/amd64.S
+index b1f204f44..5fd5440cf 100644
+--- a/asmrun/amd64.S
++++ b/asmrun/amd64.S
+@@ -52,7 +52,7 @@ FUNCTION(caml_call_gc)
+         pushq   %rdi
+         pushq   %rbx
+         pushq   %rax
+-        movq    %rsp, caml_gc_regs
++        movq    %rsp, caml_gc_regs(%rip)
+     /* Save floating-point registers */
+         subq    $(16*8), %rsp
+         movlpd  %xmm0, 0*8(%rsp)
+diff --git a/configure b/configure
+index b68154a01..ccafdf57f 100755
+--- a/configure
++++ b/configure
+@@ -293,7 +293,10 @@ case "$bytecc,$host" in
+   gcc*,x86_64-*-linux*)
+     bytecccompopts="-fno-defer-pop $gcc_warnings"
+     # Tell gcc that we can use 32-bit code addresses for threaded code
+-    echo "#define ARCH_CODE32" >> m.h;;
++    # unless we are compiled for a shared library (-fPIC option)
++    echo "#ifndef __PIC__" >> m.h
++    echo "#  define ARCH_CODE32" >> m.h
++    echo "#endif" >> m.h;;
+   gcc*)
+     bytecccompopts="-fno-defer-pop $gcc_warnings";;
+ esac
+-- 
+2.27.0
+

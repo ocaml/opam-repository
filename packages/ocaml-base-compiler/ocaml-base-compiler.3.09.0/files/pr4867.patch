@@ -1,0 +1,75 @@
+From 02ac5a0e93a72c61397ab7c74817083da871ea82 Mon Sep 17 00:00:00 2001
+From: Xavier Leroy <xavier.leroy@inria.fr>
+Date: Fri, 18 Sep 2009 13:49:21 +0000
+Subject: [PATCH] PR#4867, PR#4760: make Lswitch generate PIC code acceptable
+ for MacOS X
+
+git-svn-id: http://caml.inria.fr/svn/ocaml/version/3.11@9342 f963ae5c-01c2-4b8c-9fe0-0dff7051ff02
+---
+ asmcomp/amd64/emit.mlp | 28 ++++++++++++++++++++++++----
+ asmcomp/amd64/proc.ml  |  1 +
+ 2 files changed, 25 insertions(+), 4 deletions(-)
+
+diff --git a/asmcomp/amd64/emit.mlp b/asmcomp/amd64/emit.mlp
+index a5ef1dcdd..b6f3dc4af 100644
+--- a/asmcomp/amd64/emit.mlp
++++ b/asmcomp/amd64/emit.mlp
+@@ -23,6 +23,12 @@ open Mach
+ open Linearize
+ open Emitaux
+ 
++let macosx =
++  match Config.system with
++  | "macosx" -> true
++  | _ -> false
++
++
+ (* Tradeoff between code size and code speed *)
+ 
+ let fastcode_flag = ref true
+@@ -534,12 +540,26 @@ let emit_instr fallthrough i =
+             end
+     | Lswitch jumptbl ->
+         let lbl = new_label() in
+-        `	jmp	*{emit_label lbl}(, {emit_reg i.arg.(0)}, 8)\n`;
+-        `	.section .rodata\n`;
+-        emit_align 8;
++        (* rax and rdx are clobbered by the Lswitch,
++           meaning that no variable that is live across the Lswitch
++           is assigned to rax or rdx.  However, the argument to Lswitch
++           can still be assigned to one of these two registers, so
++           we must be careful not to clobber it before use. *)
++        let (tmp1, tmp2) =
++          if i.arg.(0).loc = Reg 0 (* rax *)
++          then (phys_reg 4 (*rdx*), phys_reg 0 (*rax*))
++          else (phys_reg 0 (*rax*), phys_reg 4 (*rdx*)) in
++        `	leaq	{emit_label lbl}(%rip), {emit_reg tmp1}\n`;
++        `	movslq	({emit_reg tmp1}, {emit_reg i.arg.(0)}, 4), {emit_reg tmp2}\n`;
++        `	addq	{emit_reg tmp2}, {emit_reg tmp1}\n`;
++        `	jmp	*{emit_reg tmp1}\n`;
++        if macosx
++        then `	.const\n`
++        else `	.section .rodata\n`;
++        emit_align 4;
+         `{emit_label lbl}:`;
+         for i = 0 to Array.length jumptbl - 1 do
+-          `	.quad	{emit_label jumptbl.(i)}\n`
++          `	.long	{emit_label jumptbl.(i)} - {emit_label lbl}\n`
+         done;
+         `	.text\n`
+     | Lsetuptrap lbl ->
+diff --git a/asmcomp/amd64/proc.ml b/asmcomp/amd64/proc.ml
+index 856e4655a..bda821f8a 100644
+--- a/asmcomp/amd64/proc.ml
++++ b/asmcomp/amd64/proc.ml
+@@ -169,6 +169,7 @@ let destroyed_at_oper = function
+   | Iop(Istore(Single, _)) -> [| rxmm15 |]
+   | Iop(Ialloc _ | Iintop(Icomp _) | Iintop_imm((Idiv|Imod|Icomp _), _))
+         -> [| rax |]
++  | Iswitch(_, _) -> [| rax; rdx |]
+   | _ -> [||]
+ 
+ let destroyed_at_raise = all_phys_regs
+-- 
+2.27.0
+
