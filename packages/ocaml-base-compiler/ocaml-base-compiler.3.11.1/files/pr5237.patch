@@ -1,0 +1,64 @@
+From d7d13be2aa34a4812e56a3b2ef3ec60bfc4341c0 Mon Sep 17 00:00:00 2001
+From: Xavier Leroy <xavier.leroy@inria.fr>
+Date: Sun, 13 Mar 2011 13:33:17 +0000
+Subject: [PATCH] PR#5237: incorrect .size directives generated for x86-32 and
+ x86-64
+
+git-svn-id: http://caml.inria.fr/svn/ocaml/version/3.12@10980 f963ae5c-01c2-4b8c-9fe0-0dff7051ff02
+---
+ asmcomp/amd64/emit.mlp | 13 +++++++------
+ asmcomp/i386/emit.mlp  |  6 +++---
+ 2 files changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/asmcomp/amd64/emit.mlp b/asmcomp/amd64/emit.mlp
+index 08745799b..80e71cce1 100644
+--- a/asmcomp/amd64/emit.mlp
++++ b/asmcomp/amd64/emit.mlp
+@@ -679,17 +679,18 @@ let fundecl fundecl =
+   emit_all true fundecl.fun_body;
+   List.iter emit_call_gc !call_gc_sites;
+   emit_call_bound_errors ();
++  begin match Config.system with
++    "linux" | "gnu" ->
++      `	.type	{emit_symbol fundecl.fun_name},@function\n`;
++      `	.size	{emit_symbol fundecl.fun_name},.-{emit_symbol fundecl.fun_name}\n`
++    | _ -> ()
++  end;
+   if !float_constants <> [] then begin
+     if macosx
+     then `	.literal8\n`
+     else `	.section	.rodata.cst8,\"a\",@progbits\n`;
+     List.iter emit_float_constant !float_constants
+-  end;
+-  match Config.system with
+-    "linux" | "gnu" ->
+-      `	.type	{emit_symbol fundecl.fun_name},@function\n`;
+-      `	.size	{emit_symbol fundecl.fun_name},.-{emit_symbol fundecl.fun_name}\n`
+-  | _ -> ()
++  end
+ 
+ (* Emission of data *)
+ 
+diff --git a/asmcomp/i386/emit.mlp b/asmcomp/i386/emit.mlp
+index 75881201e..d78a28a82 100644
+--- a/asmcomp/i386/emit.mlp
++++ b/asmcomp/i386/emit.mlp
+@@ -905,12 +905,12 @@ let fundecl fundecl =
+   emit_all true fundecl.fun_body;
+   List.iter emit_call_gc !call_gc_sites;
+   emit_call_bound_errors ();
+-  List.iter emit_float_constant !float_constants;
+-  match Config.system with
++  begin match Config.system with
+     "linux_elf" | "bsd_elf" | "gnu" ->
+       `	.type	{emit_symbol fundecl.fun_name},@function\n`;
+       `	.size	{emit_symbol fundecl.fun_name},.-{emit_symbol fundecl.fun_name}\n`
+-  | _ -> ()
++  | _ -> () end;
++  List.iter emit_float_constant !float_constants
+ 
+ 
+ (* Emission of data *)
+-- 
+2.27.0
+
