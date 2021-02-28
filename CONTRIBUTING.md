@@ -46,8 +46,19 @@ Information about creating new packages and adding them to repository
 is available in
 [opam's manual](https://opam.ocaml.org/doc/Packaging.html).
 
-The following is a tutorial on the steps to be followed to make your
-package available in opam.ocaml.org:
+The following is a tutorial that provides a step-by-step procedure to
+make a `hello` package available in opam.ocaml.org. The top-level
+sources contain the following files with the opam file having the same
+name of the project.
+
+```
+$ ls hello/
+
+src/
+dune
+dune-project
+hello.opam
+```
 
 A quick summary of the steps to be followed are listed below:
 
