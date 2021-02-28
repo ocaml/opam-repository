@@ -1,0 +1,210 @@
+From 3d664fd9695159460337bf0764808aefc8fb5cdf Mon Sep 17 00:00:00 2001
+From: Xavier Leroy <xavier.leroy@inria.fr>
+Date: Sat, 17 Dec 2005 17:05:26 +0000
+Subject: [PATCH] Back-port PIC related changes from 3.09-3.11
+
+ - x86_64: do not define ARCH_CODE32 if compiling for a shared library (PR#3869)
+ - Ajout production de code relogeable (option -fPIC)
+ - Produce position-independent code by default.  This makes it easier to embed Caml code in a shared library.
+ - Lswitch did not generate relocatable code with -fPIC option (PR#3924)
+ - Non-PC-relative reference (PR#3924)
+ - PR#4867, PR#4760: make Lswitch generate PIC code acceptable for MacOS X
+---
+ asmcomp/amd64/arch.ml      |  8 +++++++-
+ asmcomp/amd64/emit.mlp     | 38 +++++++++++++++++++++++++++++++-------
+ asmcomp/amd64/proc.ml      |  1 +
+ asmcomp/amd64/reload.ml    |  9 +++++++--
+ asmcomp/amd64/selection.ml |  2 +-
+ asmrun/amd64.S             |  2 +-
+ configure                  |  5 ++++-
+ 7 files changed, 52 insertions(+), 13 deletions(-)
+
+diff --git a/asmcomp/amd64/arch.ml b/asmcomp/amd64/arch.ml
+index 5d3005349..3e8f4b111 100644
+--- a/asmcomp/amd64/arch.ml
++++ b/asmcomp/amd64/arch.ml
+@@ -14,7 +14,13 @@
+ 
+ (* Machine-specific command-line options *)
+ 
+-let command_line_options = []
++let pic_code = ref true
++
++let command_line_options =
++  [ "-fPIC", Arg.Set pic_code,
++      " Generate position-independent machine code (default)";
++    "-fno-PIC", Arg.Clear pic_code,
++      " Generate position-dependent machine code" ]
+ 
+ (* Specific operations for the AMD64 processor *)
+ 
+diff --git a/asmcomp/amd64/emit.mlp b/asmcomp/amd64/emit.mlp
+index a3ceedadc..e3049aa8d 100644
+--- a/asmcomp/amd64/emit.mlp
++++ b/asmcomp/amd64/emit.mlp
+@@ -12,7 +12,7 @@
+ 
+ (* $Id$ *)
+ 
+-(* Emission of Intel 386 assembly code *)
++(* Emission of x86-64 (AMD 64) assembly code *)
+ 
+ open Misc
+ open Cmm
+@@ -23,6 +23,12 @@ open Mach
+ open Linearize
+ open Emitaux
+ 
++let macosx =
++  match Config.system with
++  | "macosx" -> true
++  | _ -> false
++
++
+ (* Tradeoff between code size and code speed *)
+ 
+ let fastcode_flag = ref true
+@@ -312,7 +318,10 @@ let emit_instr fallthrough i =
+           `	movlpd	{emit_label lbl}(%rip), {emit_reg i.res.(0)}\n`
+         end
+     | Lop(Iconst_symbol s) ->
+-        `	movq	${emit_symbol s}, {emit_reg i.res.(0)}\n`
++        if !pic_code then
++          `	leaq	{emit_symbol s}(%rip), {emit_reg i.res.(0)}\n`
++        else
++          `	movq	${emit_symbol s}, {emit_reg i.res.(0)}\n`
+     | Lop(Icall_ind) ->
+         `	call	*{emit_reg i.arg.(0)}\n`;
+         record_frame i.live
+@@ -331,7 +340,7 @@ let emit_instr fallthrough i =
+         end
+     | Lop(Iextcall(s, alloc)) ->
+         if alloc then begin
+-          `	movq	${emit_symbol s}, %rax\n`;
++          `	leaq	{emit_symbol s}(%rip), %rax\n`;
+           `	call	{emit_symbol "caml_c_call"}\n`;
+           record_frame i.live
+         end else begin
+@@ -471,6 +480,7 @@ let emit_instr fallthrough i =
+     | Lop(Ispecific(Istore_int(n, addr))) ->
+         `	movq	${emit_nativeint n}, {emit_addressing addr i.arg 0}\n`
+     | Lop(Ispecific(Istore_symbol(s, addr))) ->
++        assert (not !pic_code);
+         `	movq	${emit_symbol s}, {emit_addressing addr i.arg 0}\n`
+     | Lop(Ispecific(Ioffset_loc(n, addr))) ->
+         `	addq	${emit_int n}, {emit_addressing addr i.arg 0}\n`
+@@ -531,12 +541,26 @@ let emit_instr fallthrough i =
+             end
+     | Lswitch jumptbl ->
+         let lbl = new_label() in
+-        `	jmp	*{emit_label lbl}(, {emit_reg i.arg.(0)}, 8)\n`;
+-        `	.section .rodata\n`;
+-        emit_align 8;
++        (* rax and rdx are clobbered by the Lswitch,
++           meaning that no variable that is live across the Lswitch
++           is assigned to rax or rdx.  However, the argument to Lswitch
++           can still be assigned to one of these two registers, so
++           we must be careful not to clobber it before use. *)
++        let (tmp1, tmp2) =
++          if i.arg.(0).loc = Reg 0 (* rax *)
++          then (phys_reg 4 (*rdx*), phys_reg 0 (*rax*))
++          else (phys_reg 0 (*rax*), phys_reg 4 (*rdx*)) in
++        `	leaq	{emit_label lbl}(%rip), {emit_reg tmp1}\n`;
++        `	movslq	({emit_reg tmp1}, {emit_reg i.arg.(0)}, 4), {emit_reg tmp2}\n`;
++        `	addq	{emit_reg tmp2}, {emit_reg tmp1}\n`;
++        `	jmp	*{emit_reg tmp1}\n`;
++        if macosx
++        then `	.const\n`
++        else `	.section .rodata\n`;
++        emit_align 4;
+         `{emit_label lbl}:`;
+         for i = 0 to Array.length jumptbl - 1 do
+-          `	.quad	{emit_label jumptbl.(i)}\n`
++          `	.long	{emit_label jumptbl.(i)} - {emit_label lbl}\n`
+         done;
+         `	.text\n`
+     | Lsetuptrap lbl ->
+diff --git a/asmcomp/amd64/proc.ml b/asmcomp/amd64/proc.ml
+index 856e4655a..bda821f8a 100644
+--- a/asmcomp/amd64/proc.ml
++++ b/asmcomp/amd64/proc.ml
+@@ -169,6 +169,7 @@ let destroyed_at_oper = function
+   | Iop(Istore(Single, _)) -> [| rxmm15 |]
+   | Iop(Ialloc _ | Iintop(Icomp _) | Iintop_imm((Idiv|Imod|Icomp _), _))
+         -> [| rax |]
++  | Iswitch(_, _) -> [| rax; rdx |]
+   | _ -> [||]
+ 
+ let destroyed_at_raise = all_phys_regs
+diff --git a/asmcomp/amd64/reload.ml b/asmcomp/amd64/reload.ml
+index f18604442..44c1d97fb 100644
+--- a/asmcomp/amd64/reload.ml
++++ b/asmcomp/amd64/reload.ml
+@@ -26,7 +26,8 @@ open Mach
+                              or S       R
+      Iconst_int                 S
+      Iconst_float               R
+-     Iconst_symbol              S
++     Iconst_symbol (not PIC)    S
++     Iconst_symbol (PIC)        R
+      Icall_ind                          R
+      Itailcall_ind                      R
+      Iload                      R       R       R
+@@ -72,7 +73,11 @@ method reload_operation op arg res =
+       (* This add will be turned into a lea; args and results must be
+          in registers *)
+       super#reload_operation op arg res
+-  | Iconst_int _ | Iconst_symbol _
++  | Iconst_symbol _ ->
++      if !pic_code
++      then super#reload_operation op arg res
++      else (arg, res)
++  | Iconst_int _
+   | Iintop(Idiv | Imod | Ilsl | Ilsr | Iasr)
+   | Iintop_imm(_, _) ->
+       (* The argument(s) and results can be either in register or on stack *)
+diff --git a/asmcomp/amd64/selection.ml b/asmcomp/amd64/selection.ml
+index acd79f141..b38a1b8cd 100644
+--- a/asmcomp/amd64/selection.ml
++++ b/asmcomp/amd64/selection.ml
+@@ -144,7 +144,7 @@ method select_store addr exp =
+       (Ispecific(Istore_int(Nativeint.of_int n, addr)), Ctuple [])
+   | Cconst_natpointer n when self#is_immediate_natint n ->
+       (Ispecific(Istore_int(n, addr)), Ctuple [])
+-  | Cconst_symbol s ->
++  | Cconst_symbol s when not !pic_code ->
+       (Ispecific(Istore_symbol(s, addr)), Ctuple [])
+   | _ ->
+       super#select_store addr exp
+diff --git a/asmrun/amd64.S b/asmrun/amd64.S
+index b1f204f44..5fd5440cf 100644
+--- a/asmrun/amd64.S
++++ b/asmrun/amd64.S
+@@ -52,7 +52,7 @@ FUNCTION(caml_call_gc)
+         pushq   %rdi
+         pushq   %rbx
+         pushq   %rax
+-        movq    %rsp, caml_gc_regs
++        movq    %rsp, caml_gc_regs(%rip)
+     /* Save floating-point registers */
+         subq    $(16*8), %rsp
+         movlpd  %xmm0, 0*8(%rsp)
+diff --git a/configure b/configure
+index a387a6780..1c219e0d0 100755
+--- a/configure
++++ b/configure
+@@ -296,7 +296,10 @@ case "$bytecc,$host" in
+   gcc*,x86_64-*-linux*)
+     bytecccompopts="-fno-defer-pop $gcc_warnings"
+     # Tell gcc that we can use 32-bit code addresses for threaded code
+-    echo "#define ARCH_CODE32" >> m.h;;
++    # unless we are compiled for a shared library (-fPIC option)
++    echo "#ifndef __PIC__" >> m.h
++    echo "#  define ARCH_CODE32" >> m.h
++    echo "#endif" >> m.h;;
+   gcc*)
+     bytecccompopts="-fno-defer-pop $gcc_warnings";;
+ esac
+-- 
+2.27.0
+
