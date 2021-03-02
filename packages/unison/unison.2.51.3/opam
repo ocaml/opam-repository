@@ -7,12 +7,16 @@ authors: [
 homepage: "https://www.cis.upenn.edu/~bcpierce/unison/"
 bug-reports: "mailto:unison-users@yahoogroups.com "
 dev-repo: "git://github.com/bcpierce00/unison.git"
-build: ["dune" "build" "-p" name "-j" jobs]
+build: [
+  ["sh" "-c" "echo 'opam-version: \"2.0\"' > unison.opam"]
+  ["dune" "build" "-p" name "-j" jobs]
+]
 depends: [
-  "ocaml" {>= "4.03"}
+  "ocaml" {>= "4.03" & < "4.12"}
   "dune" {>= "1.3"}
   "lablgtk" {>= "2.18.6"}
 ]
+available: os-family != "alpine" # uses glibc-only macros
 synopsis: "File-synchronization tool for Unix and Windows"
 description: """
 Unison is a file-synchronization tool for Unix and Windows. It allows
