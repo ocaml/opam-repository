@@ -1,0 +1,103 @@
+From 1e0307ff682b106adbbf7c6df967de205fb96760 Mon Sep 17 00:00:00 2001
+From: Xavier Leroy <xavier.leroy@inria.fr>
+Date: Fri, 18 Sep 2009 13:49:21 +0000
+Subject: [PATCH] PR#4867, PR#4760: make Lswitch generate PIC code acceptable
+ for MacOS X
+
+git-svn-id: http://caml.inria.fr/svn/ocaml/version/3.11@9342 f963ae5c-01c2-4b8c-9fe0-0dff7051ff02
+---
+ asmcomp/amd64/emit.mlp | 47 +++++++++++++++++++++---------------------
+ asmcomp/amd64/proc.ml  |  3 +--
+ 2 files changed, 25 insertions(+), 25 deletions(-)
+
+diff --git a/asmcomp/amd64/emit.mlp b/asmcomp/amd64/emit.mlp
+index 7b5565b49..1084b3241 100644
+--- a/asmcomp/amd64/emit.mlp
++++ b/asmcomp/amd64/emit.mlp
+@@ -23,6 +23,12 @@ open Mach
+ open Linearize
+ open Emitaux
+ 
++let macosx =
++  match Config.system with
++  | "macosx" -> true
++  | _ -> false
++
++
+ (* Tradeoff between code size and code speed *)
+ 
+ let fastcode_flag = ref true
+@@ -548,31 +554,26 @@ let emit_instr fallthrough i =
+             end
+     | Lswitch jumptbl ->
+         let lbl = new_label() in
+-        if !pic_code then begin
+-          (* PR#4424: r11 is known to be clobbered by the Lswitch,
+-             meaning that no variable that is live across the Lswitch
+-             is assigned to r11.  However, the argument to Lswitch
+-             can still be assigned to r11, so we need to special-case 
+-             this situation. *)
+-          if i.arg.(0).loc = Reg 9 (* ie r11, cf amd64/proc.ml *) then begin
+-            `	salq	$3, %r11\n`;
+-            `	pushq	%r11\n`;
+-            `	leaq	{emit_label lbl}(%rip), %r11\n`;
+-            `	addq	0(%rsp), %r11\n`;
+-            `	addq	$8, %rsp\n`;
+-            `	jmp	*(%r11)\n`
+-          end else begin
+-            `	leaq	{emit_label lbl}(%rip), %r11\n`;
+-            `	jmp	*(%r11, {emit_reg i.arg.(0)}, 8)\n`
+-          end
+-        end else begin
+-          `	jmp	*{emit_label lbl}(, {emit_reg i.arg.(0)}, 8)\n`
+-        end;
+-        `	.section .rodata\n`;
+-        emit_align 8;
++        (* rax and rdx are clobbered by the Lswitch,
++           meaning that no variable that is live across the Lswitch
++           is assigned to rax or rdx.  However, the argument to Lswitch
++           can still be assigned to one of these two registers, so
++           we must be careful not to clobber it before use. *)
++        let (tmp1, tmp2) =
++          if i.arg.(0).loc = Reg 0 (* rax *)
++          then (phys_reg 4 (*rdx*), phys_reg 0 (*rax*))
++          else (phys_reg 0 (*rax*), phys_reg 4 (*rdx*)) in
++        `	leaq	{emit_label lbl}(%rip), {emit_reg tmp1}\n`;
++        `	movslq	({emit_reg tmp1}, {emit_reg i.arg.(0)}, 4), {emit_reg tmp2}\n`;
++        `	addq	{emit_reg tmp2}, {emit_reg tmp1}\n`;
++        `	jmp	*{emit_reg tmp1}\n`;
++        if macosx
++        then `	.const\n`
++        else `	.section .rodata\n`;
++        emit_align 4;
+         `{emit_label lbl}:`;
+         for i = 0 to Array.length jumptbl - 1 do
+-          `	.quad	{emit_label jumptbl.(i)}\n`
++          `	.long	{emit_label jumptbl.(i)} - {emit_label lbl}\n`
+         done;
+         `	.text\n`
+     | Lsetuptrap lbl ->
+diff --git a/asmcomp/amd64/proc.ml b/asmcomp/amd64/proc.ml
+index 0e274b4f4..bda821f8a 100644
+--- a/asmcomp/amd64/proc.ml
++++ b/asmcomp/amd64/proc.ml
+@@ -92,7 +92,6 @@ let phys_reg n =
+ let rax = phys_reg 0
+ let rcx = phys_reg 5
+ let rdx = phys_reg 4
+-let r11 = phys_reg 9
+ let rxmm15 = phys_reg 115
+ 
+ let stack_slot slot ty =
+@@ -170,7 +169,7 @@ let destroyed_at_oper = function
+   | Iop(Istore(Single, _)) -> [| rxmm15 |]
+   | Iop(Ialloc _ | Iintop(Icomp _) | Iintop_imm((Idiv|Imod|Icomp _), _))
+         -> [| rax |]
+-  | Iswitch(_, _) when !pic_code -> [| r11 |]
++  | Iswitch(_, _) -> [| rax; rdx |]
+   | _ -> [||]
+ 
+ let destroyed_at_raise = all_phys_regs
+-- 
+2.27.0
+
