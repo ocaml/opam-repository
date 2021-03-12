@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings for Google's LevelDB library"
+description:
+  "These bindings expose nearly the full LevelDB C++ API, including: iterators, snapshots, batch updates and support for custom comparators. Blocking functions release the OCaml runtime system, allowing to run them in parallel with other OCaml code and to perform multiple LevelDB operations in parallel."
+maintainer: ["OCamlPro <contact@ocamlpro.com>"]
+authors: ["<mfp@acm.org>"]
+license: "BSD-3-Clause"
+homepage: "https://github.com/ocamlpro/leveldb"
+bug-reports: "https://github.com/ocamlpro/leveldb/issues"
+depends: [
+  "ocaml" {>= "4.06"}
+  "dune" {>= "2.7"}
+  "ounit2" {with-test}
+  "odoc" {with-doc}
+  "conf-leveldb"
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocamlpro/leveldb.git"
+depexts: [
+  [["debian"] ["libsnappy-dev"]]
+  [["debian"] ["libleveldb-dev"]]
+  [["ubuntu"] ["libsnappy-dev"]]
+]
+url {
+  src: "https://github.com/OCamlPro/leveldb/archive/1.3.0.tar.gz"
+  checksum: [
+    "sha256=450012d02faf264d2197ad30db1be3e3db6483c81b35871932f9211ca625cd34"
+    "sha512=430088b27f731a23034d9d1a298e37545fef26a5f1ef9bddbaf5362b2131f4328c570ada8a8702055beaa7503c84ad7e778bd1a7dd09a06803588494243a4d16"
+  ]
+}
