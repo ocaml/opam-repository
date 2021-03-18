@@ -1,0 +1,56 @@
+opam-version: "2.0"
+synopsis: "Easy OCaml bindings for JavaScript libraries"
+description: """
+
+gen_js_api aims at simplifying the creation of OCaml bindings for
+JavaScript libraries.  Authors of bindings write OCaml signatures for
+JavaScript libraries and the tool generates the actual binding code
+with a combination of implicit conventions and explicit annotations.
+
+gen_js_api is to be used with the js_of_ocaml compiler.
+ """
+maintainer: ["Alain Frisch <alain.frisch@lexifi.com>"]
+authors: [
+  "Alain Frisch <alain.frisch@lexifi.com>"
+  "Sebastien Briais <sebastien.briais@lexifi.com>"
+]
+license: "MIT"
+homepage: "https://github.com/LexiFi/gen_js_api"
+bug-reports: "https://github.com/LexiFi/gen_js_api/issues"
+depends: [
+  "dune" {>= "2.0"}
+  "ocaml" {>= "4.08"}
+  "ppxlib" {>= "0.9"}
+  "ocaml-migrate-parsetree" {>= "1.6.0" & < "2.0.0"}
+  "js_of_ocaml-compiler" {with-test}
+  "conf-npm" {with-test}
+  "ojs"
+]
+conflicts: [
+  "js_of_ocaml-compiler" {< "3.0.0"}
+]
+x-ci-accept-failures: [
+  "ubuntu-16.04" # npm is too old for the tests
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/LexiFi/gen_js_api.git"
+url {
+  src: "https://github.com/LexiFi/gen_js_api/archive/v1.0.7.tar.gz"
+  checksum: [
+    "md5=a9e7bf3e65a7b3e6ebefd2bee35d4adf"
+    "sha512=cacb5bbdfb255aa2dae498b8168d7e18ade890b0c63fc29684b1493531ba671cac981f59ac86991783b75c117c86900241669bf92070ca9c4749947a243018d5"
+  ]
+}
