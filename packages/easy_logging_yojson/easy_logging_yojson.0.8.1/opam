@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Configuration loader for easy_logging with yojson backend"
+description: """\
+Provides deserialisation of logging configuration
+(loggers instantation and handlers parameters) from json,
+using ppx_deriving_yojson.
+
+-------
+
+     Logging infrastructure inspired by the Python logging module.
+The aim of this module is to provide a quick and easy to use logging
+infrastructure.
+
+It has the following features :
+   * one line logger creation
+   * log messages printf style, or [string] or [string lazy_t]
+   * tree logging architecture for light configuration
+   * handlers associated to each logger will format, filter and treat the message independantly.
+   * use the infrastructure with your own handlers with the [MakeLogging] functor.
+   * use tags to add contextual information to log messages"""
+maintainer: "mathiasmillet@gmail.com"
+authors: "Mathias Millet"
+license: "MPL-2.0"
+homepage: "https://sapristi.github.io/easy_logging/"
+bug-reports: "https://github.com/sapristi/easy_logging/issues"
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "dune" {>= "1.8"}
+  "ppx_deriving" {>= "4.0"}
+  "ppx_deriving_yojson"
+  "easy_logging" {= version}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs "conf_loader_modules/yojson"]
+    {with-test}
+]
+dev-repo: "git+https://github.com/sapristi/easy_logging.git"
+url {
+  src: "https://github.com/sapristi/easy_logging/archive/v0.8.1.tar.gz"
+  checksum: [
+    "md5=8d5dca598561d4922d20a00fade0a1da"
+    "sha512=f310cd2a9f3f64942baf32287267ddfe3212bcc5aa5a62c7b269809f586e2247d2d1adc4bd52cc3a9a7e6f769b9de090f8386a1bc764612ec91bf2a7d886ef0b"
+  ]
+}
