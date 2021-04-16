@@ -1,0 +1,48 @@
+opam-version: "2.0"
+maintainer: "team AT robur dot io"
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+homepage: "https://github.com/mirage/ocaml-dns"
+doc: "https://mirage.github.io/ocaml-dns/"
+dev-repo: "git+https://github.com/mirage/ocaml-dns.git"
+bug-reports: "https://github.com/mirage/ocaml-dns/issues"
+license: "BSD-2-Clause"
+
+depends: [
+  "dune" {>= "1.2.0"}
+  "ocaml" {>= "4.07.0"}
+  "dns" {= version}
+  "ipaddr" {>= "4.0.0"}
+  "lwt" {>= "4.2.1"}
+  "mirage-stack" {>= "2.2.0"}
+]
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+synopsis: "An opinionated Domain Name System (DNS) library"
+description: """
+µDNS supports most of the domain name system used in the wild.  It adheres to
+strict conventions.  Failing early and hard.  It is mostly implemented in the
+pure fragment of OCaml (no mutation, isolated IO, no exceptions).
+
+Legacy resource record types are not dealt with, and there is no plan to support
+`ISDN`, `MAILA`, `MAILB`, `WKS`, `MB`, `NULL`, `HINFO`, ... .  `AXFR` is only
+handled via TCP connections.  The only resource class supported is `IN` (the
+Internet).  Truncated hmac in `TSIG` are not supported (always the full length
+of the hash algorithm is used).
+
+Please read [the blog article](https://hannes.nqsb.io/Posts/DNS) for a more
+detailed overview.
+"""
+x-commit-hash: "29168a8c464796fda77b50d721176f122ee724ae"
+url {
+  src:
+    "https://github.com/mirage/ocaml-dns/releases/download/v5.0.0/dns-v5.0.0.tbz"
+  checksum: [
+    "sha256=ef93435407955a46e51e3be857a1b00a6765ec3b673d4a859a9536c7e3365111"
+    "sha512=083da787d0a0e08eefe1f7cee290fa9c0e3faab6bf8162b9241c6280a3f98b91f63dc3f9c22fccb4f9dc5d51e29e03830cc146bc12e308260e2fdf1de41e3416"
+  ]
+}
