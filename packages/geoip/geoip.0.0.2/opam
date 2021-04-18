@@ -8,7 +8,7 @@ dev-repo: "git://github.com/ygrek/ocaml-geoip.git"
 tags: ["org:ygrek"]
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
-  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-build" "-cflags" conf-libgeoip:cflags]
   ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 remove: [["ocamlfind" "remove" "geoip"]]
@@ -16,12 +16,7 @@ depends: [
   "ocaml" {< "4.06.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
-]
-depexts: [
-  ["libgeoip-dev"] {os-family = "debian"}
-  ["geoip"] {os = "macos" & os-distribution = "homebrew"}
-  ["geoip-dev"] {os-distribution = "alpine"}
-  ["GeoIP-devel"] {os-distribution = "centos"}
+  "conf-libgeoip" {build}
 ]
 install: ["ocaml" "setup.ml" "-install"]
 synopsis: "Bindings to GeoIP database library."
