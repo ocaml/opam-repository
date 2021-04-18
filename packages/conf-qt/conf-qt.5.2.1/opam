@@ -1,9 +1,11 @@
 opam-version: "2.0"
-authors:      "kakadu.hafanana@gmail.com"
-maintainer:   "kakadu.hafanana@gmail.com"
+authors:      "Kakadu@pm.me kakadu.hafanana@gmail.com"
+maintainer:   "Kakadu"
+license:      "LGPL-2.1-or-later"
 homepage:     "http://kakadu.github.io/lablqml/"
 bug-reports:  "https://github.com/kakadu/lablqml/issues"
 dev-repo: "git+https://github.com/Kakadu/lablqml.git"
+
 
 #setenv: [ PATH += "/usr/lib64/qt5/bin:/usr/lib/qt5/bin"] #{ os-distribution = "alpine" | os-distribution = "centos" | os-distribution = "fedora" }
 
@@ -12,14 +14,14 @@ build: [
     ["qmake" "--version"]
     ["which" "moc"]
     ["moc" "--version"]
-    ["sh" "-exc" "echo \"Your Qt version is `qmake -query QT_VERSION`\"" ] 
+    ["sh" "-exc" "echo \"Your Qt version is `qmake -query QT_VERSION`\"" ]
     ["sh" "-exc" "min=\"5.2.1\"         cur=`qmake -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`; [ \"$res\" = \"$min\" ]"
     ]
 ]
 
 # It currently doesn't compile on MacOS because I don't know how to get mac-specific build command
 # (the syntax similar to depexts seems to be not supported).
-# In general, we need to add extra PATH (Mac only) variable in manner like 
+# In general, we need to add extra PATH (Mac only) variable in manner like
 #       "$(brew --cellar qt)/$(brew list --versions qt | tr ' ' '\n' | tail -1)/bin"
 # to make `qmake` available. But currently I don't know how to express it in opam recipe
 
@@ -29,9 +31,13 @@ post-messages:
 depexts: [
   ["qt5"] {os = "macos" & os-distribution = "homebrew"}
   ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"]
-    {os-family = "debian"}
+    {os-family = "debian" & os-distribution != "ubuntu"}
+  ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"]
+    { os-distribution = "ubuntu" & os-version < "21.04" }
+  ["qtbase5-dev" "qtdeclarative5-dev" "qt5-qmake"]
+    { os-distribution = "ubuntu" & os-version >= "21.04" }
 
-  # to set right paths for qt5 automatically we should 
+  # to set right paths for qt5 automatically we should
   #   1) add `@edge http://nl.alpinelinux.org/alpine/edge/testing` to `/etc/apk/repositories`
   #   2) perform installation via `apk add qtchooser@edge`
   # but this repo is not shipped by default on CI
