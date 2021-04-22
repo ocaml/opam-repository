@@ -1,0 +1,66 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "2.0" }
+
+  "tezos-client-genesis-carthagenet" { = version }
+  "tezos-client-000-Ps9mPmXa" { = version }
+  "tezos-client-008-PtEdo2Zk-commands-registration" { = version }
+  "tezos-baking-008-PtEdo2Zk-commands" { = version }
+  "tezos-client-009-PsFLoren-commands-registration" { = version }
+  "tezos-baking-009-PsFLoren-commands" { = version }
+
+  "tezos-node" { with-test & = version }
+  "tezos-protocol-compiler" { with-test & = version }
+  "tezos-client-alpha-commands-registration" { with-test & = version }
+]
+depopts: [
+  "tezos-client-genesis"
+  "tezos-client-demo-counter"
+  "tezos-client-alpha-commands-registration"
+  "tezos-baking-alpha-commands"
+
+  "tezos-client-001-PtCJ7pwo-commands"
+  "tezos-client-002-PsYLVpVv-commands"
+  "tezos-client-003-PsddFKi3-commands"
+  "tezos-client-004-Pt24m4xi-commands"
+  "tezos-client-005-PsBabyM1-commands"
+  "tezos-client-006-PsCARTHA-commands"
+  "tezos-client-007-PsDELPH1-commands-registration"
+  "tezos-baking-007-PsDELPH1-commands"
+]
+conflicts: [
+  "tezos-client-genesis" { != version }
+  "tezos-client-demo-counter" { != version }
+  "tezos-client-alpha-commands-registration" { != version }
+  "tezos-baking-alpha-commands" { != version }
+
+  "tezos-client-001-PtCJ7pwo-commands" { != version }
+  "tezos-client-002-PsYLVpVv-commands" { != version }
+  "tezos-client-003-PsddFKi3-commands" { != version }
+  "tezos-client-004-Pt24m4xi-commands" { != version }
+  "tezos-client-005-PsBabyM1-commands" { != version }
+  "tezos-client-006-PsCARTHA-commands" { != version }
+  "tezos-client-007-PsDELPH1-commands-registration" { != version }
+  "tezos-baking-007-PsDELPH1-commands" { != version }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/bin_client/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: `tezos-client` binary"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v9.0/tezos-v9.0.tar.bz2"
+  checksum: [
+    "sha256=aaa9fcc32b85ad7d2cf35549b40e55f72345f2fc67bd1ce8822e375b3f50a623"
+    "sha512=3e9bb9c205a017940d5c538a8194a836a4cbc591fc48c26e8884abc2204d0283cd19a2ca7dbf9d476994e5443f2c21389d91ef7fec5febd0ac43fab77bb3159e"
+  ]
+}
