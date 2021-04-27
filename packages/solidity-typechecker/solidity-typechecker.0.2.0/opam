@@ -1,0 +1,56 @@
+opam-version: "2.0"
+license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
+synopsis: "The ocaml-solidity project"
+description: """
+
+Ocaml-solidity provides a Solidity parser and typechecker
+"""
+authors: [
+  "David Declerck <david.declerck@ocamlpro.com>"
+  "Steven De Oliveira <steven.de-oliveira@ocamlpro.com>"
+]
+maintainer: [
+  "David Declerck <david.declerck@ocamlpro.com>"
+  "Steven De Oliveira <steven.de-oliveira@ocamlpro.com>"
+]
+homepage: "https://github.com/OcamlPro/ocaml-solidity"
+doc: "https://OCamlPro.github.io/ocaml-solidity/sphinx"
+bug-reports: "https://github.com/OCamlPro/ocaml-solidity/issues"
+dev-repo: "git+https://github.com/OcamlPro/ocaml-solidity.git"
+tags: "org:OCamlPro"
+build: [
+  ["dune" "subst"] {dev}
+  ["sh" "-c" "./scripts/before.sh build '%{name}%'"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["sh" "-c" "./scripts/after.sh build '%{name}%'"]
+]
+install: [
+  ["sh" "-c" "./scripts/before.sh install '%{name}%'"]
+]
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.6.0"}
+  "uutf" {>= "1"}
+  "solidity-parser" {= version}
+  "solidity-common" {= version}
+  "ez_hash" {= version}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
+]
+
+url {
+    src: "https://github.com/OCamlPro/ocaml-solidity/archive/v0.2.0.tar.gz"
+    checksum: [ "sha256=d5d0f31101413c9a36d6a37973aa03fde788644808f34dbff0220ee45c17ece4" ]
+}
