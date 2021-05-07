@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "User service implementations for Sihl"
+description:
+  "Modules for user management and password reset workflows with support for PostgreSQL and MariaDB."
+maintainer: ["josef@oxidizing.io"]
+authors: ["Josef Erben" "Aron Erben" "Miko Nieminen"]
+license: "MIT"
+homepage: "https://github.com/oxidizing/sihl"
+doc: "https://oxidizing.github.io/sihl/"
+bug-reports: "https://github.com/oxidizing/sihl/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.08.0"}
+  "sihl" {= version}
+  "sihl-token" {= version & with-test}
+  "alcotest-lwt" {>= "1.4.0" & with-test}
+  "caqti-driver-postgresql" {>= "1.5.1" & with-test}
+  "caqti-driver-mariadb" {>= "1.5.1" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/oxidizing/sihl.git"
+url {
+  src: "https://github.com/oxidizing/sihl/archive/1.0.0-rc1.tar.gz"
+  checksum: [
+    "md5=3dd7fcf3b9f0cf99c1ce0ceed278aef6"
+    "sha512=aeb289a71186b7b0b429d3869bb4eab632eec5ab403353dc13d8a18c5b04af5fda7c2a74bacf98364a8e0b1b3e843fb5a0b28a0c38652bed2e9432ee6659b53a"
+  ]
+}
