@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "A single-consumer single-producer queue on a block device"
+description: """
+This is a simple queue containing variable-length items stored on a
+          disk, in the style of Xen shared-memory-ring."""
+maintainer: "jonathan.ludlam@citrix.com"
+authors: ["David Scott" "Jon Ludlam" "Si Beaumont" "Pau Ruiz Safont"]
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/shared-block-ring"
+bug-reports: "https://github.com/mirage/shared-block-ring/issues/"
+depends: [
+  "ocaml" {>= "4.06.0"}
+  "bisect_ppx" {dev & >= "2.5.0"}
+  "cmdliner"
+  "cstruct" {>= "3.0.0"}
+  "dune" {>= "2.7.0"}
+  "duration"
+  "io-page"
+  "io-page-unix" {>= "2.0.0"}
+  "logs"
+  "lwt"
+  "lwt_log"
+  "mirage-block" {>= "2.0.1"}
+  "mirage-block-unix"
+  "mirage-clock" {>= "3.0.0"}
+  "mirage-clock-unix" {with-test}
+  "mirage-time" {>= "2.0.1"}
+  "mirage-time-unix"
+  "ounit2" {with-test}
+  "ppx_cstruct"
+  "ppx_sexp_conv" {>= "v0.12.0"}
+  "result"
+  "rresult"
+  "sexplib"
+  "sexplib0"
+  "conf-libev" {with-test} # to help tests not blow up select (used by lwt)
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/shared-block-ring.git"
+x-commit-hash: "1c22e3abdc45514cad188d7984dc0d985fb21f25"
+url {
+  src:
+    "https://github.com/mirage/shared-block-ring/releases/download/3.0.0/shared-block-ring-3.0.0.tbz"
+  checksum: [
+    "sha256=e8fc63805afee9d3a7f954edcea9faff8b990ae3f616ebd6ef87fd42624873ec"
+    "sha512=3d2d75c9b1cad3031de9ba6aa7e1ba2fa5e0040f25bbdb95fd5192ddf3fc1d6659e806dcc53e0eb7c78ef64dec6ceca63686e8d5c79c3a5379e66d977973de19"
+  ]
+}
