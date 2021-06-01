@@ -1,0 +1,58 @@
+x-commit-hash: "283b30f7c4d5a8c0e6c8f18469eb0936b0265f2f"
+opam-version: "2.0"
+synopsis: "Jsonxt - JSON parsers for files, strings and more"
+description: """\
+Jsonxt provides a number of JSON parsers and writers for
+RFC 8259 compliant JSON as well as non-standard extensions
+introduced by Yojson.  Features include
+
+* RFC 8259 compliant when in strict and basic mode
+* Performance focused especially for files and strings
+* Support for standard and extended JSON tree types:
+  * Strict follows a strict interpretation of RFC 8259 with all
+    numbers represented as floats.
+  * Basic extends the strict type to include convenience types while maintaining
+    RFC compliance.  This is compatible with yojson's Basic type
+  * Extended adds additional non-standard types including tuples and variants
+    and is not RFC compliant. This is compatible with yojson's Safe type
+* A number of different parsers including
+  * A standard JSON tree parser for various sources including string, file and channel
+  * A Stream parser that returns a stream of raw JSON tokens.
+  * A monad based parser compatible with async
+* Writers including
+  * File and string writers
+  * A monad based writer that is compatible with async
+  * A stream writer that converts a stream of JSON tokens
+* Support for streaming JSON via Stream.t
+* Standard interfaces including Yojson compatibility"""
+maintainer: "Steve Bleazard <stevebleazard@googlemail.com>"
+authors: "Steve Bleazard <stevebleazard@googlemail.com>"
+license: "MIT"
+homepage: "https://github.com/stevebleazard/ocaml-jsonxt"
+doc: "https://stevebleazard.github.io/ocaml-jsonxt/"
+bug-reports: "https://github.com/stevebleazard/ocaml-jsonxt/issues"
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "dune" {>= "2.0"}
+  "alcotest" {with-test}
+  "cmdliner" {with-test}
+  "core_kernel" {with-test}
+  "fmt" {with-test}
+  "ppx_sexp_conv" {with-test}
+]
+available: arch != "ppc64"
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "-p" name "-j" jobs "@runtest"] {with-test}
+  ["dune" "build" "-p" name "-j" jobs "@doc"] {with-doc}
+]
+dev-repo: "git+https://github.com/stevebleazard/ocaml-jsonxt.git"
+url {
+  src:
+    "https://github.com/stevebleazard/ocaml-jsonxt/releases/download/v1.0.0/jsonxt-v1.0.0.tbz"
+  checksum: [
+    "sha256=6373a974e0ab81202b55356a3ce99710089146af20904626cc85d3ddcf447184"
+    "sha512=8cb80b701507e451e5abc2c7fe00c806a07d2fc205090dcce7501a4fd09ab3850cb227cdeb368ce698fefe811142508383b35f0549932944c55d77f9804133ae"
+  ]
+}
