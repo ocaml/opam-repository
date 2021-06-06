@@ -15,7 +15,7 @@ build: [
     ["which" "moc"]
     ["moc" "--version"]
     ["sh" "-exc" "echo \"Your Qt version is `qmake -query QT_VERSION`\"" ]
-    ["sh" "-exc" "min=\"5.2.1\"         cur=`qmake -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`; [ \"$res\" = \"$min\" ]"
+    ["sh" "-exc" "min=\"%{PKG:version}%\"         cur=`qmake -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`; [ \"$res\" = \"$min\" ]"
     ]
 ]
 
@@ -30,21 +30,34 @@ post-messages:
     {os = "macos"}
 depexts: [
   ["qt5"] {os = "macos" & os-distribution = "homebrew"}
-  ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"]
-    {os-family = "debian" & os-distribution != "ubuntu"}
+  ["qtdeclarative5-dev" "qt5-qmake"]
+    { os-family = "debian" & os-distribution != "ubuntu" }
+  ["qt5-default"]
+    { os-distribution = "debian" & os-version <= "10" }
   ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"]
     { os-distribution = "ubuntu" & os-version < "21.04" }
   ["qtbase5-dev" "qtdeclarative5-dev" "qt5-qmake"]
     { os-distribution = "ubuntu" & os-version >= "21.04" }
+  ["qt5-qmake"]
+    { os-distribution = "oracle" }
+  ["qt5-base" ]
+    { os-family = "arch" }
 
   # to set right paths for qt5 automatically we should
   #   1) add `@edge http://nl.alpinelinux.org/alpine/edge/testing` to `/etc/apk/repositories`
   #   2) perform installation via `apk add qtchooser@edge`
   # but this repo is not shipped by default on CI
-  ["qt5-qtbase-dev" "qt5-qtdeclarative-dev"] {os-distribution = "alpine"}
-  ["qt-devel" "qt5-qtbase-devel" "qt5-qtdeclarative-devel"] {os-distribution = "centos"}
-  ["qtchooser" "qt5-qtbase-devel" "qt5-qtdeclarative-devel"] {os-distribution = "fedora"}
-  ["libqt5-qtbase-common-devel" "libqt5-qtbase-devel" "libqt5-qtdeclarative-devel" ] {os-family = "suse" }
+  ["qt5-qtbase-dev" "qt5-qtdeclarative-dev"]
+    { os-distribution = "alpine" }
+
+  # TODO: this packages provide `qmake-qt5` executable and I have no idea how to make
+  # `qmake` be a symlink to there
+  ["qt-devel" "qt5-qtbase-devel" "qt5-qtdeclarative-devel"]
+    { os-distribution = "centos" }
+  ["qtchooser" "qt5-qtbase-devel" "qt5-qtdeclarative-devel" "qmake-qt5"]
+    { os-distribution = "fedora" }
+  ["libqt5-qtbase-common-devel" "libqt5-qtbase-devel" "libqt5-qtdeclarative-devel" ]
+    { os-family = "suse" }
 ]
 synopsis: "Installation of Qt5 using APT packages or from source"
 flags: conf
