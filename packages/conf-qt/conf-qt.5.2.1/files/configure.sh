@@ -16,7 +16,7 @@ fi
 QMAKE=qmake$SUFFIX
 
 which $QMAKE || exit 1
-qmake --version || exit 1
+$QMAKE --version || exit 1
 #echo "Your Qt version is `qmake -query QT_VERSION`"
 
 cur=`$QMAKE -query QT_VERSION`;
