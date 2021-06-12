@@ -1,13 +1,14 @@
 #!/bin/sh
 set -x
 
-OS=unknown
 MAKE=make
+OS=unknown
+
 if [ "$#" -ge 2 ]; then
-  OS=$1
-  MAKE=$2
+  MAKE=$1
+  OS=$2
 else
-  echo "Usage: $0 OS make [OS-family] [OS-distrubution]" >&2
+  echo "Usage: $0 make OS [OS-family] [OS-distribution]" >&2
   exit 1
 fi
 
