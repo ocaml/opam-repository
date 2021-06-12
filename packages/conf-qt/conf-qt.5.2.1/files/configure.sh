@@ -19,7 +19,7 @@ which $QMAKE || exit 1
 qmake --version || exit 1
 #echo "Your Qt version is `qmake -query QT_VERSION`"
 
-cur=`qmake -query QT_VERSION`;
+cur=`$QMAKE -query QT_VERSION`;
 res=`printf "$MINVERSION\\n$cur\\n" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`;
 echo $res
 if [ "$res" = "$MINVERSION" ]; then
