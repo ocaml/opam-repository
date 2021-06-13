@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "4.10.2 release with specific featres for ReScript development"
+maintainer: "bob.hongbo.zhang@foxmail.com"
+authors: "Xavier Leroy and many contributors"
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git://github.com/ocaml/ocaml"
+depends: [
+  "ocaml" {= "4.10.2" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "--prefix=%{prefix}%" "--enable-flambda"]
+    {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "./configure"
+    "--prefix=%{prefix}%"
+    "CC=cc"
+    "ASPP=cc -c"
+    "--enable-flambda"
+  ] {os = "openbsd" | os = "freebsd" | os = "macos"}
+  [make "-j%{jobs}%" "world"]
+  [make "-j%{jobs}%" "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.10.2.tar.gz"
+  checksum: "sha256=7aa26e0d70f36f0338df92cf5aaeb2704f3443bfe910a3d02a5dca9162f1d866"
+}
+patches:["add-conditional-compilation.patch"]
+extra-files:[["add-conditional-compilation.patch" "md5=7f32529556c09e554bc766e9c17cd44f"]]
+post-messages: [
+  "A failure in the middle of the build may be caused by build parallelism
+   (enabled by default).
+   Please file a bug report at https://github.com/ocaml/opam-repository/issues"
+  {failure & jobs > 1}
+  "You can try installing again including --jobs=1
+   to force a sequential build instead."
+  {failure & jobs > 1 & opam-version >= "2.0.5"}
+]
