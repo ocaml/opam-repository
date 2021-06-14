@@ -46,9 +46,11 @@ Information about creating new packages and adding them to repository
 is available in
 [opam's manual](https://opam.ocaml.org/doc/Packaging.html).
 
-The following is a tutorial that provides a step-by-step procedure to
-make a `hello` package available in opam.ocaml.org. The top-level
-sources contain the following files with the opam file having the same
+If you are using `dune` and hosting your git repository on `github` you can use the following tutorial that provides a step-by-step procedure to
+make a `hello` package available in opam.ocaml.org.
+If you are not using `dune` or hosting your project on `github` you can still use `opam-publish` as described by the manual page linked above.
+
+The top-level sources contain the following files with the opam file having the same
 name of the project.
 
 ```
@@ -201,23 +203,16 @@ $ dune-release opam pkg
 
 * `dune-release opam submit`
 
-Before you can submit the package to opam.ocaml.org, you need to first
-fork `github.com/ocaml/opam-repository` to your GitHub account, and
-also clone your copy locally to your system.
-
-```
-$ git clone git@github.com:guest/opam-repository
-```
-
 The `~/.config/dune/release.yml` file should then be updated with your
-opam repository settings as indicated below:
+opam repository settings as indicated below (in particular, change `<username>` by your local username and `<github-user>` by your own github username):
 
 ```
 $ cat ~/.config/dune/release.yml
 
-user: guest
-remote: git@github.com:guest/opam-repository
-local: /home/guest/opam-repository/
+user: <username>
+remote: git@github.com:<github-username>/opam-repository.git
+local: /home/<username>/.cache/dune/opam-repository/
+```
 ```
 
 You can now submit your package to be included to opam.ocaml.org using
