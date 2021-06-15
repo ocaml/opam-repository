@@ -213,7 +213,6 @@ user: <username>
 remote: git@github.com:<github-username>/opam-repository.git
 local: /home/<username>/.cache/dune/opam-repository/
 ```
-```
 
 You can now submit your package to be included to opam.ocaml.org using
 the following command, which will create a new pull request to
