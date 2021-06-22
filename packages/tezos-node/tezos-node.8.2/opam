@@ -1,0 +1,63 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "2.0" }
+  "tezos-rpc-http-server" { = version }
+  "tezos-validator" { = version }
+  "tezos-embedded-protocol-genesis-carthagenet" { = version }
+  "tezos-embedded-protocol-000-Ps9mPmXa" { = version }
+  "tezos-embedded-protocol-007-PsDELPH1" { = version }
+  "tezos-embedded-protocol-008-PtEdo2Zk" { = version }
+  "tezos-protocol-plugin-007-PsDELPH1-registerer" { = version }
+  "tezos-protocol-plugin-008-PtEdo2Zk-registerer" { = version }
+  "cmdliner"
+  "tls"
+]
+depopts: [
+  "tezos-embedded-protocol-001-PtCJ7pwo"
+  "tezos-embedded-protocol-002-PsYLVpVv"
+  "tezos-embedded-protocol-003-PsddFKi3"
+  "tezos-embedded-protocol-004-Pt24m4xi"
+  "tezos-embedded-protocol-005-PsBABY5H"
+  "tezos-embedded-protocol-005-PsBabyM1"
+  "tezos-embedded-protocol-006-PsCARTHA"
+  "tezos-embedded-protocol-008-PtEdoTez"
+  "tezos-embedded-protocol-demo-counter"
+  "tezos-embedded-protocol-alpha"
+  "tezos-embedded-protocol-demo-noops"
+  "tezos-embedded-protocol-genesis"
+]
+conflicts: [
+  "tezos-embedded-protocol-001-PtCJ7pwo" { != version }
+  "tezos-embedded-protocol-002-PsYLVpVv" { != version }
+  "tezos-embedded-protocol-003-PsddFKi3" { != version }
+  "tezos-embedded-protocol-004-Pt24m4xi" { != version }
+  "tezos-embedded-protocol-005-PsBABY5H" { != version }
+  "tezos-embedded-protocol-005-PsBabyM1" { != version }
+  "tezos-embedded-protocol-006-PsCARTHA" { != version }
+  "tezos-embedded-protocol-008-PtEdoTez" { != version }
+  "tezos-embedded-protocol-demo-counter" { != version }
+  "tezos-embedded-protocol-alpha" { != version }
+  "tezos-embedded-protocol-demo-noops" { != version }
+  "tezos-embedded-protocol-genesis" { != version }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/bin_node/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: `tezos-node` binary"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v8.2/tezos-v8.2.tar.bz2"
+  checksum: [
+    "sha256=6b3e3089524d177f0ace38f5053145b22f050e9ba7020548c6052b221b33c3af"
+    "sha512=eca32c8c8cad1f17887769e984ff6fd3c839bebdde43df1e435d31e0ff64acc17d3695a8f73e094422197aadcd461967860584a868099b4464b18bb51829cc73"
+  ]
+}

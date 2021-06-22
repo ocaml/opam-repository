@@ -1,0 +1,56 @@
+opam-version: "2.0"
+maintainer: "Xavier Leroy <xavier.leroy@inria.fr>"
+authors: [
+  "Antoine Miné"
+  "Xavier Leroy"
+  "Pascal Cuoq"
+]
+homepage: "https://github.com/ocaml/Zarith"
+bug-reports: "https://github.com/ocaml/Zarith/issues"
+dev-repo: "git+https://github.com/ocaml/Zarith.git"
+build: [
+  ["./configure"] {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "sh"
+    "-exc"
+    "LDFLAGS=\"$LDFLAGS -L/usr/local/lib\" CFLAGS=\"$CFLAGS -I/usr/local/include\" ./configure"
+  ] {os = "openbsd" | os = "freebsd"}
+  [
+    "sh"
+    "-exc"
+    "LDFLAGS=\"$LDFLAGS -L/opt/local/lib -L/usr/local/lib\" CFLAGS=\"$CFLAGS -I/opt/local/include -I/usr/local/include\" ./configure"
+  ] {os = "macos" & os-distribution != "homebrew"}
+  [
+    "sh"
+    "-exc"
+    "LDFLAGS=\"$LDFLAGS -L/opt/local/lib -L/usr/local/lib\" CFLAGS=\"$CFLAGS -I/opt/local/include -I/usr/local/include\" ./configure"
+  ] {os = "macos" & os-distribution = "homebrew" & arch = "x86_64" }
+  [
+    "sh"
+    "-exc"
+    "LDFLAGS=\"$LDFLAGS -L/opt/homebrew/lib\" CFLAGS=\"$CFLAGS -I/opt/homebrew/include\" ./configure"
+  ] {os = "macos" & os-distribution = "homebrew" & arch = "arm64" }
+  [make]
+]
+install: [
+  [make "install"]
+]
+depends: [
+  "ocaml"     {>= "4.04.0"}
+  "ocamlfind"
+  "conf-gmp"
+]
+synopsis:
+  "Implements arithmetic and logical operations over arbitrary-precision integers"
+description: """
+The Zarith library implements arithmetic and logical operations over
+arbitrary-precision integers. It uses GMP to efficiently implement
+arithmetic over big integers. Small integers are represented as Caml
+unboxed integers, for speed and space economy."""
+url {
+  src: "https://github.com/ocaml/Zarith/archive/release-1.12.tar.gz"
+  checksum: [
+    "md5=bf368f3d9e20b6b446d54681afc05a04"
+    "sha512=8075573ae65579a2606b37dd1b213032a07d220d28c733f9288ae80d36f8a2cc4d91632806df2503c130ea9658dc207ee3a64347c21aa53969050a208f5b2bb4"
+  ]
+}

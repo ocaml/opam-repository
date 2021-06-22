@@ -1,0 +1,71 @@
+opam-version: "2.0"
+maintainer: "dev@ocsigen.org"
+synopsis: "A full-featured and extensible Web server"
+description: "Ocsigen Server implements most features of the HTTP protocol, and has a very powerful extension mechanism that makes it very easy to plug your own OCaml modules for generating pages. Many extensions are already implemented, like a reverse proxy, content compression, access control, authentication, etc."
+authors: "dev@ocsigen.org"
+homepage: "http://ocsigen.org/ocsigenserver/"
+bug-reports: "https://github.com/ocsigen/ocsigenserver/issues/"
+license: "LGPL-2.1 with OCaml linking exception"
+dev-repo: "git+https://github.com/ocsigen/ocsigenserver.git"
+build: [
+  [
+    "sh"
+    "configure"
+    "--prefix"
+    "%{prefix}%"
+    "--ocsigen-user"
+    "%{user}%"
+    "--ocsigen-group"
+    "%{group}%"
+    "--commandpipe"
+    "%{lib}%/ocsigenserver/var/run/ocsigenserver_command"
+    "--logdir"
+    "%{lib}%/ocsigenserver/var/log/ocsigenserver"
+    "--mandir"
+    "%{man}%/man1"
+    "--docdir"
+    "%{lib}%/ocsigenserver/share/doc/ocsigenserver"
+    "--commandpipe"
+    "%{lib}%/ocsigenserver/var/run/ocsigenserver_command"
+    "--staticpagesdir"
+    "%{lib}%/ocsigenserver/var/www"
+    "--datadir"
+    "%{lib}%/ocsigenserver/var/lib/ocsigenserver"
+    "--sysconfdir"
+    "%{lib}%/ocsigenserver/etc/ocsigenserver"
+  ]
+  [make]
+]
+install: [make "install"]
+depends: [
+  "ocaml" {>= "4.08"}
+  "ocamlfind"
+  "base-unix"
+  "base-threads"
+  "react"
+  "ssl" {>= "0.5.8"}
+  "lwt" {>= "3.0.0"}
+  "lwt_ssl"
+  "lwt_react"
+  "lwt_log"
+  "ocamlnet" {>= "4.0.2"}
+  "pcre"
+  "cryptokit"
+  "tyxml" {>= "4.0.0"}
+  "dbm" | "sqlite3" | "pgocaml"
+  "ipaddr" {>= "2.1"}
+  "xml-light"
+  "conf-which"
+]
+depopts: "camlzip"
+conflicts: [
+  "camlzip" {< "1.04"}
+  "pgocaml" {< "2.2"}
+]
+url {
+  src: "https://github.com/ocsigen/ocsigenserver/archive/2.18.0.tar.gz"
+  checksum: [
+    "md5=9109ed904ea98377a4b1765402d66fc6"
+    "sha512=6e55596161eab2b39e6f04466615410785950aa5ee851d129294af846549aaad157f715416115f67feb7d617151c3c6c05540ef4de1ee3c97c1972578b0a85b0"
+  ]
+}

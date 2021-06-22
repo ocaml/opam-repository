@@ -1,6 +1,10 @@
 opam-version: "2.0"
 synopsis: "Official 4.01.0 release"
 maintainer: "platform@lists.ocaml.org"
+authors: ["Xavier Leroy" "Damien Doligez" "Alain Frisch" "Jacques Garrigue" "Didier Rémy" "Jérôme Vouillon"]
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git+https://github.com/ocaml/ocaml.git#4.01"
 depends: [
   "ocaml" {= "4.01.0" & post}
   "base-unix" {post}
@@ -35,7 +39,10 @@ build: [
   [make "world.opt"]
 ]
 install: [make "install"]
-patches: "bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
+patches: [
+  "bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
+  "fix-gcc10.patch"
+]
 url {
   src: "http://caml.inria.fr/pub/distrib/ocaml-4.01/ocaml-4.01.0.tar.gz"
   checksum: "md5=04dfdd7da189462a4f10ec6530359cef"
@@ -45,4 +52,5 @@ extra-source "bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff" {
     "https://github.com/jeremiedimino/ocaml/compare/bd7fa181cb64742c3b6cbb8ee13436554eb18cd7...fix-clang-build.diff"
   checksum: "md5=faccda3b3ab092fa9ac7d5d4d8beb004"
 }
-available: !(os = "macos" & arch = "arm64")
+extra-files: ["fix-gcc10.patch" "md5=a5ee5f90499987223ca8c13896fa2c4c"]
+available: arch != "arm64" & arch != "ppc64"

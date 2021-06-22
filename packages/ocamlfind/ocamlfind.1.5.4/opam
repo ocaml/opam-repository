@@ -21,8 +21,12 @@ build: [
   [make "all"]
   [make "opt"]
 ]
-remove: [
-  ["ocamlfind" "remove" "bytes"]
+depends: [
+  "ocaml" {>= "3.12.0" & < "4.07"}
+  "conf-m4" {build}
+  "num" {= "0"}
+]
+install: [
   [
     "./configure"
     "-bindir"
@@ -33,18 +37,11 @@ remove: [
     man
     "-config"
     "%{lib}%/findlib.conf"
-    "-no-custom"
     "-no-camlp4" {!ocaml:preinstalled & ocaml:version >= "4.02.0"}
     "-no-topfind" {ocaml:preinstalled}
   ]
-  [make "uninstall"]
+  [make "install"]
 ]
-depends: [
-  "ocaml" {>= "3.12.0" & < "4.07"}
-  "conf-m4" {build}
-  "num" {= "0"}
-]
-install: [make "install"]
 synopsis: "A library manager for OCaml"
 description: """
 Findlib is a library manager for OCaml. It provides a convention how

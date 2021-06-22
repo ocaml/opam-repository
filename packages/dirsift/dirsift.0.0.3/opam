@@ -1,0 +1,56 @@
+opam-version: "2.0"
+synopsis: "Search for directories"
+description: """
+```
+dirsift -t TYPE [PATH]
+```
+
+Subdirectories of PATH which satisfy specified TYPE requirements are listed
+
+PATH defaults to `.` if unspecified
+
+TYPE can be one of
+- `git`
+  - Directory contains `.git` subdirectory
+- `not-git`
+- `hidden`
+  - Name of directory begins with `.`
+- `not-hidden`
+- `hot`
+  - Directory contains >=1 file last modified within past 7 days (7 x 24 hours)
+  - User configurable
+- `warm`
+  - Directory contains >=1 file last modified within past 30 days (30 x 24 hours), but not `hot`
+  - User configurable
+- `cold`
+  - Directory is neither `hot` nor `warm`
+
+If multiple `-t TYPE` are specified, they are connected by `and` (conjunction),
+i.e. directory must satisfy all TYPE requirements to be listed
+"""
+maintainer: "Darren Ldl <darrenldldev@gmail.com>"
+authors: "Darren Ldl"
+license: "MIT"
+homepage: "https://github.com/darrenldl/dirsift"
+bug-reports: "https://github.com/darrenldl/dirsift/issues"
+dev-repo: "git+https://github.com/darrenldl/dirsift"
+depends: [
+  "ocaml" {>= "4.08.1"}
+  "dune" {>= "2.7.0"}
+  "containers" {>= "3.0"}
+  "fileutils"
+  "cmdliner"
+  "toml" {>= "6.0.0" & < "7.0.0"}
+  "timere" {< "0.2.1"}
+  "timere-parse"
+  "dune-build-info"
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+url {
+  src:
+    "https://github.com/darrenldl/dirsift/releases/download/v0.0.3/v0.0.3.tar.gz"
+  checksum:
+    "sha256=f41ac2707da59e1758264f2fe84106265d5e607a50817afa8edaa6bd01b9c673"
+}

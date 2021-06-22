@@ -1,0 +1,32 @@
+opam-version: "2.0"
+maintainer: "Thierry Martinez <martinez@nsup.org>"
+authors: "The LLVM team"
+homepage: "http://llvm.org"
+bug-reports: "https://llvm.org/bugs/"
+license: "MIT"
+build: [
+  ["bash" "-ex" "configure.sh" version]
+]
+depexts: [
+  ["llvm"] {os = "macos"}
+  ["glibc=2.33" "llvm" "clang"] {os-distribution = "arch"} # needs GLIBC_2.33
+  ["libclang-dev" "llvm-dev"] {os-family = "debian"}
+  ["clang-dev" "llvm-dev" "clang-static"] {os-distribution = "alpine"}
+  ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
+    {os-distribution = "centos"}
+  ["clang-devel" "llvm-devel" "zlib-devel" "redhat-rpm-config"]
+    {os-distribution = "fedora"}
+  ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
+    {os-distribution = "ol" & os-version >= "8"}
+  ["llvm-clang-devel"] {os-family = "suse"}
+  ["devel/llvm11"] {os = "freebsd"}
+  ["sys-devel/clang"] {os-distribution = "gentoo"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7" # clang-devel is not available
+]
+extra-files: [[
+  "configure.sh" "sha512=a192170b242769ffd1421a495e63354ddbb60bd810d8039d95e0cf7517b931d4fccfdd9d709977a9af16ee2b6c112023fbacf22f4bd67edec7ca9794c04c85f4"
+]]
+synopsis: "Virtual package relying on the installation of llvm and clang libraries (any version)"
+flags: conf

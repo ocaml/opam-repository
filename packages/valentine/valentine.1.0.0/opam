@@ -6,15 +6,17 @@ bug-reports: "https://github.com/fxfactorial/valentine/issues"
 license: "BSD-3-Clause"
 dev-repo: "git+https://github.com/fxfactorial/valentine.git"
 build: [
+  ["sh" "-c" "cat _oasis | grep -v '^PostBuildCommand:$' | grep -v '^  sh install_man.sh$' > _oasis.new"]
+  ["mv" "_oasis.new" "_oasis"]
   ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests" {with-test}]
   ["ocaml" "setup.ml" "-build"]
-  ["oasis" "setup"] {with-test}
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
-  ["ocaml" "setup.ml" "-build"] {with-test}
   ["ocaml" "setup.ml" "-test"] {with-test}
 ]
-install: ["ocaml" "setup.ml" "-install"]
+install: [
+  ["sh" "./install_man.sh"]
+  ["ocaml" "setup.ml" "-install"]
+]
 remove: ["ocaml" "%{etc}%/valentine/_oasis_remove_.ml" "%{etc}%/valentine"]
 depends: [
   "ocaml" {>= "4.02.0"}

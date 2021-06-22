@@ -1,0 +1,48 @@
+opam-version: "2.0"
+maintainer: "louis.gesbert@ocamlpro.com"
+synopsis:
+  "Lightweight completion and documentation browsing for OCaml libraries"
+description: """
+This package includes
+* The `ocp-index` library and command-line tool
+* `ocp-grep`, a tool that finds uses of a given (qualified) identifier in a source tree
+* bindings for emacs and vim (sublime text also [available](https://github.com/whitequark/sublime-ocp-index/))
+
+To automatically configure your editors, install this with package `user-setup`.
+"""
+authors: [
+  "Louis Gesbert"
+  "Gabriel Radanne"
+]
+homepage: "http://www.typerex.org/ocp-index.html"
+bug-reports: "https://github.com/OCamlPro/ocp-index/issues"
+license: ["LGPL-2.1-only with OCaml-LGPL-linking-exception" "GPL-3.0-only"]
+tags: [ "org:ocamlpro" "org:typerex" ]
+dev-repo: "git+https://github.com/OCamlPro/ocp-index.git"
+build: ["dune" "build" "-p" name "-j" jobs]
+depends: [
+  "ocaml" {>= "4.02.0" & < "4.13"}
+  "cppo" {build}
+  "dune" {>= "1.0"}
+  "ocp-indent" {>= "1.4.2"}
+  "re" {>= "1.9.0"}
+  "cmdliner"
+  "odoc" {with-test}
+]
+post-messages:
+  "This package requires additional configuration for use in editors. Either install package 'user-setup', or manually:
+
+* for Emacs, add these lines to ~/.emacs:
+  (add-to-list 'load-path \"%{prefix}%/share/emacs/site-lisp\")
+  (require 'ocp-index)
+
+* for Vim, add the following line to ~/.vimrc:
+  set rtp+=%{share}%/ocp-index/vim
+" {success & !user-setup:installed}
+url {
+  src: "https://github.com/OCamlPro/ocp-index/archive/1.2.2.tar.gz"
+  checksum: [
+    "md5=f8850fe552b1a8d29d5e4cf9a2d8a54a"
+    "sha512=2165da986f65b5aeac83abd3bed9b8d9a8d2d7e54ef8a7a6d051c0a2ccb6d8ce8ff37104037f8c8a4c9c9accbe2c6fced497cdbd6ea14ff063fabba9c5e54260"
+  ]
+}

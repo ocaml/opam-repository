@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis:
+  "Official release 4.11.2, compiled with musl-gcc and with flambda activated"
+description:
+  "Requires musl-gcc to be installed (package musl on Arch Linux or musl-tools on Debian)"
+maintainer: "platform@lists.ocaml.org"
+authors: "Xavier Leroy and many contributors"
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git://github.com/ocaml/ocaml"
+depends: [
+  "ocaml" {= "4.11.2" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+depexts: [
+  ["musl-tools"] {os-family = "debian"}
+  ["musl"] {os-distribution = "arch"}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "--prefix=%{prefix}%"]
+    {os != "openbsd" & os != "freebsd" & os != "macos" & os != "linux"}
+  [
+    "./configure"
+    "--prefix=%{prefix}%"
+    "CC=musl-gcc -Os"
+    "ASPP=musl-gcc -c"
+    "--enable-flambda"
+  ] {os = "openbsd" | os = "freebsd" | os = "macos" | os = "linux"}
+  [make "-j%{jobs}%" "world"]
+  [make "-j%{jobs}%" "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.11.2.tar.gz"
+  checksum: "sha256=044a2a68f6cfa3d2349257770a340ced14c3940fb4d78414dda0e59e4ff0aa09"
+}
+post-messages: [
+  "A failure in the middle of the build may be caused by build parallelism
+   (enabled by default).
+   Please file a bug report at https://github.com/ocaml/opam-repository/issues"
+  {failure & jobs > 1}
+  "You can try installing again including --jobs=1
+   to force a sequential build instead."
+  {failure & jobs > 1 & opam-version >= "2.0.5"}
+]
+available: !(os = "macos" & arch = "arm64")

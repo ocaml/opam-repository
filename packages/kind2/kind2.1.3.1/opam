@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis:
+  "Multi-engine, parallel, SMT-based automatic model checker for safety properties of Lustre programs"
+description:
+  "Kind 2 is an open-source, multi-engine, SMT-based automatic model checker for safety properties of finite-state or infinite-state synchronous reactive systems expressed as in an extension of the Lustre language. In its basic configuration it takes as input a Lustre file annotated with properties to be proven invariant, and outputs for each property either a confirmation or a counterexample, i.e., a sequence inputs that falsifies the property. More advanced features include contract-based compositional verification, proof generation for proven properties, and contract-based test generation."
+maintainer: ["Daniel Larraz <daniel-larraz@uiowa.edu>"]
+authors: ["The Kind 2 development team"]
+license: "Apache-2.0"
+homepage: "https://kind2-mc.github.io/kind2"
+doc: "https://kind.cs.uiowa.edu/kind2_user_doc"
+bug-reports: "https://github.com/kind2-mc/kind2/issues"
+depends: [
+  "ocaml" {>= "4.07"}
+  "dune" {>= "2.0"}
+  "dune-build-info"
+  "menhir"
+  "num"
+  "odoc" {with-doc}
+  "ounit2" {with-test}
+  "z3" {< "4.8.9" & with-test}
+  "yojson"
+  "zmq"
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/kind2-mc/kind2.git"
+url {
+  src: "https://github.com/kind2-mc/kind2/archive/v1.3.1.tar.gz"
+  checksum: [
+    "md5=c17079ff685f44491155105d4d9dc127"
+    "sha512=d021ec286d12521c123f7d4c8d661d308f165933d4aed4758f0de28895c1ccad5d32a1608553e9837b7f780a696b80901a4548bd2589a7e6973d1fcde492b01d"
+  ]
+}

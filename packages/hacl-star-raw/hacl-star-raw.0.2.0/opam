@@ -13,9 +13,15 @@ bug-reports: "https://github.com/project-everest/hacl-star/issues"
 depends: [
   "ocaml" {>= "4.05.0"}
   "ocamlfind" {build}
-  "ctypes"
+  "ctypes" {< "0.18.0"}
   "ctypes-foreign"
+  "conf-which" {build}
 ]
+x-ci-accept-failures: [
+  "centos-7" # Default C compiler is too old
+  "oraclelinux-7" # Default C compiler is too old
+]
+available: [ os-family != "bsd" & arch != "ppc64" & arch != "ppc32" & arch != "x86_32" ]
 build: [
   ["sh" "-exc" "cd raw && ./configure"]
   [make "-C" "raw"]

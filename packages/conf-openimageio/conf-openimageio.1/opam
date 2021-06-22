@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "zachshipko@gmail.com"
+homepage: "https://www.openimageio.org"
+authors: "OpenImageIO devs"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "BSD 3-Clause"
+build: [
+  ["sh" "-c" "pkg-config --atleast-version=2 --print-errors OpenImageIO || c++ -E test.cpp"]
+]
+depends: [
+  "conf-pkg-config" {build}
+]
+depexts: [
+  ["libopenexr-dev"] {os-distribution = "debian" & os-version >= "11"}
+  ["libopenimageio-dev"] {os-family = "debian"}
+  ["libopenimageio-dev"] {os-family = "ubuntu"}
+  ["OpenImageIO-devel"] {os-distribution = "fedora"}
+  ["OpenImageIO-devel" "epel-release"] {os-distribution = "centos"}
+  ["OpenImageIO-devel"] {os-family = "suse"}
+  ["openimageio-dev@testing" "boost1.76-filesystem@edge" "boost1.76-thread@edge"] {os-family = "alpine"}
+  ["openimageio"] {os-family = "arch"}
+  ["openimageio"] {os = "macos" & os-distribution = "homebrew"}
+  ["openimageio"] {os = "macos" & os-distribution = "macports"}
+  ["openimageio"] {os = "freebsd"}
+  ["openimageio"] {os = "openbsd"}
+  ["openimageio"] {os = "netbsd"}
+]
+x-ci-accept-failures: [
+  "centos-7" # too old
+  "opensuse-15.2" # too old
+  "ubuntu-16.04" # too old
+  "ubuntu-18.04" # too old
+  "oraclelinux-7" # not available
+  "oraclelinux-8" # not available
+]
+synopsis: "Virtual package relying on OpenImageIO development package installation"
+description: """
+This package can only install if the OpenImageIO library is available on the system.
+"""
+flags: conf

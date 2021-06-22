@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "A library of assorted structured data interchange languages"
+maintainer: "james woodyatt <jhw@conjury.org>"
+authors: "james woodyatt <jhw@conjury.org>"
+homepage: "https://bitbucket.org/jhw/orsetto/"
+bug-reports: "https://conjury.atlassian.net/browse/ORS"
+dev-repo: "git+https://bitbucket.org/jhw/orsetto"
+tags: [ "org:conjury.org" ]
+license: "BSD-2-Clause"
+depends: [
+    "ocaml" { >= "4.08.1" }
+    "conjury" { build & >= "2.0.1" }
+    "omake" { build & >= "0.10.3" }
+    "uucd" { build & = "13.0.0" }
+    "ounit2" { build & with-test & >= "2.2" }
+]
+build: [
+    [ "omake" "--verbose" "--configure" "MODE=release" ] { !dev }
+    [ "omake" "test" ] { with-test }
+]
+install: [
+    [ "omake" "--verbose" "install" ] { !dev }
+    [ "omake" "--verbose" "install" "MODE=develop" ] { dev }
+]
+url {
+    src: "https://bitbucket.org/jhw/orsetto/get/r1.1.tar.gz"
+    checksum: "md5=533153cd4a9fe8093d3b98afc1073bc8"
+}
+extra-source "ucd.all.grouped.zip" {
+    src: "http://www.unicode.org/Public/13.0.0/ucdxml/ucd.all.grouped.zip"
+    checksum: "md5=aaee1834a93d6e6d9899abdfd7fb8b2e"
+}
+extra-source "NormalizationTest.txt" {
+    src: "http://www.unicode.org/Public/13.0.0/ucd/NormalizationTest.txt"
+    checksum: "md5=d35954dfb8db3f627045db92c59fac3e"
+}
+extra-source "PropertyAliases.txt" {
+    src: "https://www.unicode.org/Public/13.0.0/ucd/PropertyAliases.txt"
+    checksum: "md5=4c375150e27e4ad93e980133dc0d3a3f"
+}
+extra-source "PropertyValueAliases.txt" {
+    src: "https://www.unicode.org/Public/13.0.0/ucd/PropertyValueAliases.txt"
+    checksum: "md5=f7f16e77648cc32011ba899092ccffb5"
+}

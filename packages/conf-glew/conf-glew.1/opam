@@ -8,12 +8,28 @@ authors: [
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 homepage: "http://glew.sourceforge.net/"
 license: "modified BSD"
-build: [["pkg-config" "glew"]]
-depends: ["conf-pkg-config" {build}]
+build: ["pkg-config" "--print-errors" "--exists" "glew"]
+depends: [
+  "conf-pkg-config" {build}
+]
 depexts: [
   ["libglew-dev"] {os-family = "debian"}
+  ["libglew-dev"] {os-family = "ubuntu"}
   ["libglew-devel"] {os-distribution = "mageia"}
   ["glew-devel"] {os-distribution = "fedora"}
+  ["glew-devel"] {os-distribution = "centos"}
+  ["glu-devel" "glew-devel"] {os-family = "suse"}
+  ["glew-dev"] {os-family = "alpine"}
+  ["glew"] {os-family = "arch"}
+  ["glew"] {os-family = "freebsd"}
+  ["glew"] {os-family = "openbsd"}
+  ["glew"] {os-family = "netbsd"}
+  ["glew"] {os = "macos" & os-distribution = "homebrew"}
+  ["glew"] {os = "macos" & os-distribution = "macports"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7" # not available
+  "oraclelinux-8" # not available
 ]
 synopsis: "Virtual package relying on a GLEW system installation"
 description:

@@ -1,25 +1,39 @@
 opam-version: "2.0"
-authors:      "kakadu.hafanana@gmail.com"
-maintainer:   "kakadu.hafanana@gmail.com"
+authors:      "Kakadu@pm.me kakadu.hafanana@gmail.com"
+maintainer:   "Kakadu"
+license:      "LGPL-2.1-or-later"
 homepage:     "http://kakadu.github.io/lablqml/"
 bug-reports:  "https://github.com/kakadu/lablqml/issues"
 dev-repo: "git+https://github.com/Kakadu/lablqml.git"
 
+
 #setenv: [ PATH += "/usr/lib64/qt5/bin:/usr/lib/qt5/bin"] #{ os-distribution = "alpine" | os-distribution = "centos" | os-distribution = "fedora" }
 
 build: [
-    ["which" "qmake"]
-    ["qmake" "--version"]
-    ["which" "moc"]
-    ["moc" "--version"]
-    ["sh" "-exc" "echo \"Your Qt version is `qmake -query QT_VERSION`\"" ] 
-    ["sh" "-exc" "min=\"5.2.1\"         cur=`qmake -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`; [ \"$res\" = \"$min\" ]"
-    ]
+  # there executables are called without prefixes: moc, qmake
+  ["which" "qmake"]
+    { os="macos" | os-family="debian" | os-distribution = "arch"  }
+  ["qmake" "--version"]
+    { os="macos" | os-family="debian" | os-distribution = "arch"  }
+  ["sh" "-exc" "echo \"Your Qt version is `qmake -query QT_VERSION`\"" ]
+    { os="macos" | os-family="debian" | os-distribution = "arch"  }
+  ["sh" "-exc" "min=\"%{version}%\"         cur=`qmake -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`; [ \"$res\" = \"$min\" ]" ]
+    { os="macos" | os-family="debian" | os-distribution = "arch" }
+
+  # there executables prefixes are required: moc-qt5, qmake-qt5
+  ["which" "qmake-qt5"]
+    { os!="macos" & os-family != "debian" & os-distribution != "arch"  }
+  ["qmake-qt5" "--version"]
+    { os!="macos" & os-family != "debian" & os-distribution != "arch" }
+  ["sh" "-exc" "echo \"Your Qt version is `qmake-qt5 -query QT_VERSION`\"" ]
+    { os!="macos" & os-family != "debian" & os-distribution != "arch" }
+  ["sh" "-exc" "min=\"%{version}%\"         cur=`qmake-qt5 -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`; [ \"$res\" = \"$min\" ]" ]
+    { os!="macos" & os-family != "debian" & os-distribution != "arch" }
 ]
 
 # It currently doesn't compile on MacOS because I don't know how to get mac-specific build command
 # (the syntax similar to depexts seems to be not supported).
-# In general, we need to add extra PATH (Mac only) variable in manner like 
+# In general, we need to add extra PATH (Mac only) variable in manner like
 #       "$(brew --cellar qt)/$(brew list --versions qt | tr ' ' '\n' | tail -1)/bin"
 # to make `qmake` available. But currently I don't know how to express it in opam recipe
 
@@ -28,17 +42,37 @@ post-messages:
     {os = "macos"}
 depexts: [
   ["qt5"] {os = "macos" & os-distribution = "homebrew"}
+  ["qtdeclarative5-dev" "qt5-qmake"]
+    { os-family = "debian" & os-distribution != "ubuntu" }
+  ["qt5-default"]
+    { os-distribution = "debian" & os-version <= "10" }
   ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"]
-    {os-family = "debian"}
+    { os-distribution = "ubuntu" & os-version < "21.04" }
+  ["qtbase5-dev" "qtdeclarative5-dev" "qt5-qmake"]
+    { os-distribution = "ubuntu" & os-version >= "21.04" }
+  ["qt5-qmake"]
+    { os-distribution = "oracle" }
+  ["qt5-base" ]
+    { os-distribution = "arch" }
 
-  # to set right paths for qt5 automatically we should 
+  # to set right paths for qt5 automatically we should
   #   1) add `@edge http://nl.alpinelinux.org/alpine/edge/testing` to `/etc/apk/repositories`
   #   2) perform installation via `apk add qtchooser@edge`
   # but this repo is not shipped by default on CI
-  ["qt5-qtbase-dev" "qt5-qtdeclarative-dev"] {os-distribution = "alpine"}
-  ["qt-devel" "qt5-qtbase-devel" "qt5-qtdeclarative-devel"] {os-distribution = "centos"}
-  ["qtchooser" "qt5-qtbase-devel" "qt5-qtdeclarative-devel"] {os-distribution = "fedora"}
-  ["libqt5-qtbase-common-devel" "libqt5-qtbase-devel" "libqt5-qtdeclarative-devel" ] {os-family = "suse" }
+  ["qt5-qtbase-dev" "qt5-qtdeclarative-dev"]
+    { os-distribution = "alpine" }
+
+  # TODO: this packages provide `qmake-qt5` executable and I have no idea how to make
+  # `qmake` be a symlink to there
+  [ "qt5-qtbase-devel" "qt5-qtdeclarative-devel"]
+    { os-distribution = "centos" }
+  [ "qt-devel" ]
+    { os-distribution = "centos" & os-version <= "7" }
+  [ "qt5-qtbase-devel" "qt5-qtdeclarative-devel" #"qmake-qt5"
+  ]
+    { os-family = "fedora" }
+  ["libqt5-qtbase-common-devel" "libqt5-qtbase-devel" "libqt5-qtdeclarative-devel" ]
+    { os-family = "suse" }
 ]
 synopsis: "Installation of Qt5 using APT packages or from source"
 flags: conf

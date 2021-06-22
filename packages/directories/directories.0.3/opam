@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis:
+  "An OCaml library that provides configuration, cache and data paths (and more!) following the suitable conventions on Linux, macOS and Windows"
+description: """
+directories is an OCaml library that provides configuration, cache and data paths (and more!) following the suitable conventions on Linux, macOS and Windows.
+It is inspired by similar libraries for other languages such as directories-jvm.
+The following conventions are used:
+- XDG Base Directory Specification and xdg-user-dirs on Linux
+- Known Folders on Windows
+- Standard Directories on macOS.
+"""
+maintainer: ["OCamlPro <contact@ocamlpro.com>"]
+authors: ["OCamlPro <contact@ocamlpro.com>"]
+license: "ISC"
+homepage: "https://github.com/ocamlpro/directories"
+bug-reports: "https://github.com/ocamlpro/directories/issues"
+depends: [
+  "dune" {>= "2.1"}
+  "ocaml" {>= "4.07.0"}
+  "ctypes" {>= "0.17.1" & (os = "win32" | os = "cygwin")}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocamlpro/directories.git"
+url {
+  src: "https://github.com/OCamlPro/directories/archive/0.3.tar.gz"
+  checksum: [
+    "sha256=9b37d1d43e3b06f3b68ebe57651ea2cf5a9db6d5bdb1a0afe65786bcdcc8bf11"
+    "sha512=9d1634a0c44dd74dc3005154ebbc22c39bb0c3e1477f3e67c9fc49cc32059ac0f496816c06785f204f60ee67136c998f526ba0c9bf4232d040ff30bd89411fb3"
+  ]
+}

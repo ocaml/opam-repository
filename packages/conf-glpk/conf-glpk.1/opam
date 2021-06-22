@@ -5,16 +5,23 @@ bug-reports: "mailto:bug-glpk@gnu.org"
 authors: ["Andrew Makhorin" "GNU"]
 license: "GPL-3.0-or-later"
 build: [
-  ["cc" "-c" "-l:libglpk.a"]
+  ["sh" "-c" "echo '#include <glpk.h>' > test.c"]
+  ["cc" "-E" "test.c"]
 ]
 depexts: [
   ["libglpk-dev"] {os-family = "debian"}
-  ["glpk"] {os-distribution = "fedora"}
-  ["glpk"] {os-distribution = "centos"}
-  ["glpk"] {os-distribution = "rhel"}
-  ["glpk"] {os-family = "suse"}
-  ["glpk"] {os-distribution = "arch"}
-  ["glpk"] {os-distribution = "homebrew"}
+  ["libglpk-dev"] {os-family = "ubuntu"}
+  ["glpk-dev@testing"] {os-family = "alpine"}
+  ["glpk-devel"] {os-distribution = "fedora"}
+  ["epel-release" "glpk-devel"] {os-distribution = "centos"}
+  ["glpk-devel"] {os-distribution = "rhel"}
+  ["glpk-devel"] {os-family = "suse"}
+  ["glpk"] {os-family = "arch"}
+  ["glpk"] {os = "macos" & os-distribution = "homebrew"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7" # package not present by default
+  "oraclelinux-8" # package not present by default
 ]
 synopsis: "Virtual package for GLPK (GNU Linear Programming Kit)"
 description: """

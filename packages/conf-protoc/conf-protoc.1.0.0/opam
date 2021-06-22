@@ -9,15 +9,20 @@ build: [ "protoc" "--version" ]
 
 depexts: [
   ["libprotobuf-dev" "protobuf-compiler"]   {os-family = "debian"}
+  ["libprotobuf-dev" "protobuf-compiler"]   {os-family = "ubuntu"}
   ["libprotobuf-devel" "protobuf-compiler"] {os-distribution = "mageia"}
   ["protobuf-devel" "protobuf-compiler"]    {os-distribution = "centos"}
   ["protobuf-devel" "protobuf-compiler"]    {os-distribution = "fedora"}
   ["protobuf-devel" "protobuf-compiler"]    {os-distribution = "rhel"}
-  ["protobuf" "protobuf-dev"]               {os-distribution = "alpine"}
-  ["protobuf"]                              {os-distribution = "arch"}
+  ["protobuf" "protobuf-dev"]               {os-family = "alpine"}
+  ["protobuf"]                              {os-family = "arch"}
   ["protobuf-devel"]                        {os-family = "suse"}
   ["protobuf"]                              {os = "freebsd"}
   ["protobuf"]                              {os = "macos" & os-distribution = "homebrew"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7" # Package not available by default
+  "oraclelinux-8" # Package not available by default
 ]
 
 available: (os-distribution != "ubuntu" | os-version >= "18.04") & (os-distribution != "centos" | os-version >= "8")

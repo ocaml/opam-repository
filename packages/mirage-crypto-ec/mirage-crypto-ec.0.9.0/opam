@@ -1,0 +1,65 @@
+opam-version: "2.0"
+synopsis: "Elliptic Curve Cryptography with primitives taken from Fiat"
+description: """
+An implementation of key exchange (ECDH) and digital signature (ECDSA/EdDSA)
+algorithms using code from Fiat (<https://github.com/mit-plv/fiat-crypto>).
+
+The curves P224 (SECP224R1), P256 (SECP256R1), P384 (SECP384R1),
+P521 (SECP521R1), and 25519 (X25519, Ed25519) are implemented by this package.
+"""
+maintainer: "Hannes Mehnert <hannes@mehnert.org>"
+authors: [
+  "Hannes Mehnert <hannes@mehnert.org>"
+  "Nathan Rebours <nathan.p.rebours@gmail.com>"
+  "Clément Pascutto <clement@tarides.com>"
+  "Etienne Millon <me@emillon.org>"
+# and from the fiat-crypto AUTHORS file
+  "Andres Erbsen <andreser@mit.edu>"
+  "Google Inc."
+  "Jade Philipoom <jadep@mit.edu> <jade.philipoom@gmail.com>"
+  "Massachusetts Institute of Technology"
+  "Zoe Paraskevopoulou <zoe.paraskevopoulou@gmail.com>"
+]
+license: "MIT"
+homepage: "https://github.com/mirage/mirage-crypto"
+doc: "https://mirage.github.io/mirage-crypto/doc"
+bug-reports: "https://github.com/mirage/mirage-crypto/issues"
+depends: [
+  "conf-pkg-config" {build}
+  "dune" {>= "2.6"}
+  "ocaml" {>= "4.08.0"}
+  "cstruct" {>= "3.5.0"}
+  "dune-configurator"
+  "eqaf" {>= "0.7"}
+  "mirage-crypto" {=version}
+  "mirage-crypto-rng" {=version}
+  "mirage-crypto-pk" {with-test & =version}
+  "hex" {with-test}
+  "alcotest" {with-test}
+  "asn1-combinators" {with-test & >= "0.2.5"}
+  "ppx_deriving_yojson" {with-test}
+  "ppx_deriving" {with-test}
+  "yojson" {with-test & >= "1.6.0"}
+]
+depopts: ["ocaml-freestanding"]
+conflicts: [
+  "mirage-xen" {< "6.0.0"}
+  "ocaml-freestanding" {< "0.4.1"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/mirage-crypto.git"
+tags: ["org:mirage"]
+x-commit-hash: "3013c5286f563743e2f5c13da068a6bdf90cd805"
+url {
+  src:
+    "https://github.com/mirage/mirage-crypto/releases/download/v0.9.0/mirage-crypto-v0.9.0.tbz"
+  checksum: [
+    "sha256=716684f8a70031f16115e3c84d42141c75fb1e688b7a699bbd09166176ed5217"
+    "sha512=7eb56f28583567824b32bf33635b15c39dd684a047455b2cc6a5f768c52ccbe6d8eac80308fac80d78c8f678b0132059fdbc219a252de6ecfd53c26c717a9a3a"
+  ]
+}
+available: false

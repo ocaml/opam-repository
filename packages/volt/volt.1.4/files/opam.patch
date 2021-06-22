@@ -1,0 +1,21 @@
+--- volt-1.4/Makefile	2019-12-17 18:43:40.000000000 +0200
++++ volt-1.4.patched/Makefile	2021-02-13 00:23:46.000000000 +0200
+@@ -32,7 +32,7 @@
+ 
+ PROJECT_NAME=bolt
+ PROJECT_NAME_=volt
+-OCAMLBUILD=$(PATH_OCAML_PREFIX)/bin/ocamlbuild
++OCAMLBUILD=ocamlbuild
+ OCAMLBUILD_ENV=WARNINGS=$(WARNINGS) PATH_OCAML_PREFIX=$(PATH_OCAML_PREFIX)
+ OCAMLBUILD_FLAGS=-classic-display -no-links
+ MODULES_ODOCL=$(PROJECT_NAME).odocl
+@@ -103,7 +103,7 @@
+ 
+ generate: FORCE
+ 	echo '$(PROJECT_NAME).cma' > $(PROJECT_NAME).itarget
+-	(test -x $(PATH_OCAML_PREFIX)/bin/ocamlopt && echo '$(PROJECT_NAME).cmxa' >> $(PROJECT_NAME).itarget) || true
+-	(test -x $(PATH_OCAML_PREFIX)/bin/ocamljava && echo '$(PROJECT_NAME).cmjo' >> $(PROJECT_NAME).itarget) || true
++	(which ocamlopt && echo '$(PROJECT_NAME).cmxa' >> $(PROJECT_NAME).itarget) || true
++	(which ocamljava && echo '$(PROJECT_NAME).cmjo' >> $(PROJECT_NAME).itarget) || true
+ 
+ FORCE:

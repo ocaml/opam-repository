@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "Official release 4.11.2"
+maintainer: "platform@lists.ocaml.org"
+authors: "Xavier Leroy and many contributors"
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git://github.com/ocaml/ocaml"
+depends: [
+  "ocaml" {= "4.11.2" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "--prefix=%{prefix}%"
+    "-C"
+    "CC=cc" {os = "openbsd" | os = "macos"}
+    "ASPP=cc -c" {os = "openbsd" | os = "macos"}
+  ]
+  [make "-j%{jobs}%" "world"]
+  [make "-j%{jobs}%" "world.opt"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.11.2.tar.gz"
+  checksum: "sha256=044a2a68f6cfa3d2349257770a340ced14c3940fb4d78414dda0e59e4ff0aa09"
+}
+extra-files: ["ocaml-base-compiler.install" "md5=3e969b841df1f51ca448e6e6295cb451"]
+post-messages: [
+  "A failure in the middle of the build may be caused by build parallelism
+   (enabled by default).
+   Please file a bug report at https://github.com/ocaml/opam-repository/issues"
+  {failure & jobs > 1}
+  "You can try installing again including --jobs=1
+   to force a sequential build instead."
+  {failure & jobs > 1 & opam-version >= "2.0.5"}
+]
+available: !(os = "macos" & arch = "arm64")
