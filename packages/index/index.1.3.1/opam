@@ -1,0 +1,57 @@
+opam-version: "2.0"
+maintainer:   "Clement Pascutto"
+authors:      [
+   "Craig Ferguson <craig@tarides.com>"
+   "Thomas Gazagnaire <thomas@tarides.com>"
+   "Ioana Cristescu <ioana@tarides.com>"
+   "Clément Pascutto <clement@tarides.com>"
+]
+license:      "MIT"
+homepage:     "https://github.com/mirage/index"
+bug-reports:  "https://github.com/mirage/index/issues"
+dev-repo:     "git+https://github.com/mirage/index.git"
+doc:          "https://mirage.github.io/index/"
+
+build: [
+ ["dune" "subst"] {dev}
+ ["dune" "build" "-p" name "-j" jobs]
+ ["dune" "runtest" "-p" name] {with-test}
+]
+
+depends: [
+  "ocaml"   {>= "4.08.0"}
+  "dune"    {>= "2.7.0"}
+  "repr"    {>= "0.2.0"}
+  "ppx_repr"
+  "fmt" {>= "0.8.5"}
+  "logs" {>= "0.7.0"}
+  "mtime"   {>= "1.1.0"}
+  "cmdliner"
+  "progress" {>= "0.1.1"}
+  "semaphore-compat" {>= "1.0.1"}
+  "jsonm"
+  "stdlib-shims"
+  "alcotest" {with-test}
+  "crowbar"  {with-test & >= "0.2"}
+  "re"       {with-test}
+]
+synopsis: "A platform-agnostic multi-level index for OCaml"
+description:"""
+Index is a scalable implementation of persistent indices in OCaml.
+
+It takes an arbitrary IO implementation and user-supplied content
+types and supplies a standard key-value interface for persistent
+storage. Index provides instance sharing: each OCaml
+run-time can share a common singleton instance.
+
+Index supports multiple-reader/single-writer access. Concurrent access
+is safely managed using lock files."""
+url {
+  src:
+    "https://github.com/mirage/index/releases/download/1.3.1/index-1.3.1.tbz"
+  checksum: [
+    "sha256=c9c662fd314ba06465a12a6362a1f91421d63f77b28930880cb112127e629ee2"
+    "sha512=db22d6f986f9ea92c2b6c677c956cdbb8cab4cec57e2828f13560ebe6167a08d1f33332cf8a1a2cdc72cea77a3786d43365181d3fc0a90572fce6212f242836a"
+  ]
+}
+x-commit-hash: "f528c18f806380df14cf0f306d2879792c7174d6"

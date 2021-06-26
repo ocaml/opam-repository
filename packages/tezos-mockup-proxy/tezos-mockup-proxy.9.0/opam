@@ -1,0 +1,30 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "2.0" }
+  "tezos-client-base"
+  "tezos-rpc-http-client"
+  "tezos-protocol-environment"
+  "tezos-shell-services"
+  "resto-cohttp-self-serving-client" { >= "0.6" & < "0.7" }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/lib_mockup_proxy/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: local RPCs"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v9.0/tezos-v9.0.tar.bz2"
+  checksum: [
+    "sha256=aaa9fcc32b85ad7d2cf35549b40e55f72345f2fc67bd1ce8822e375b3f50a623"
+    "sha512=3e9bb9c205a017940d5c538a8194a836a4cbc591fc48c26e8884abc2204d0283cd19a2ca7dbf9d476994e5443f2c21389d91ef7fec5febd0ac43fab77bb3159e"
+  ]
+}

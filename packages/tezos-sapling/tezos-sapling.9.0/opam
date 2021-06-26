@@ -1,0 +1,30 @@
+opam-version: "2.0"
+authors: [ "Nomadic Labs <contact@nomadic-labs.com>" ]
+maintainer: "Nomadic Labs <contact@nomadic-labs.com>"
+homepage: "https://gitlab.com/tezos/tezos"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" {>= "2.0"}
+  "data-encoding" { >= "0.3" & < "0.4" }
+  "tezos-crypto" { = version }
+  "tezos-test-services" { with-test & = version }
+  "alcotest-lwt" { with-test & >= "1.1.0" }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  [ "dune" "build" "-j" jobs "-p" name "@install" ]
+  ["mv" "src/lib_sapling/%{name}%.install" "./"]
+#  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+#  requires the "zcash-params" files
+]
+synopsis: "OCaml library for the Sapling protocol, using librustzcash"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v9.0/tezos-v9.0.tar.bz2"
+  checksum: [
+    "sha256=aaa9fcc32b85ad7d2cf35549b40e55f72345f2fc67bd1ce8822e375b3f50a623"
+    "sha512=3e9bb9c205a017940d5c538a8194a836a4cbc591fc48c26e8884abc2204d0283cd19a2ca7dbf9d476994e5443f2c21389d91ef7fec5febd0ac43fab77bb3159e"
+  ]
+}
