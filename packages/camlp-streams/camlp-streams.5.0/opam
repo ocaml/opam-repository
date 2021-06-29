@@ -1,0 +1,57 @@
+opam-version: "2.0"
+synopsis: "The Stream and Genlex libraries for use with Camlp4 and Camlp5"
+description: """
+
+This package provides two library modules:
+- Stream: imperative streams, with in-place update and memoization
+  of the latest element produced.
+- Genlex: a small parameterized lexical analyzer producing streams
+  of tokens from streams of characters.
+
+The two modules are designed for use with Camlp4 and Camlp5:
+- The stream patterns and stream expressions of Camlp4/Camlp5 consume
+  and produce data of type 'a Stream.t.
+- The Genlex tokenizer can be used as a simple lexical analyzer for
+  Camlp4/Camlp5-generated parsers.
+
+The Stream module can also be used by hand-written recursive-descent
+parsers, but is not very convenient for this purpose.
+
+The Stream and Genlex modules have been part of the OCaml standard library
+for a long time, and have been distributed as part of the core OCaml system.
+They will be removed from the OCaml standard library at some future point,
+but will be maintained and distributed separately in this camlpstreams package.
+"""
+maintainer: [
+  "Florian Angeletti <florian.angeletti@inria.fr>"
+  "Xavier Leroy <xavier.leroy@college-de-france.fr>"
+]
+authors: ["Daniel de Rauglaudre" "Xavier Leroy"]
+homepage: "https://github.com/ocaml/camlp-streams"
+bug-reports: "https://github.com/ocaml/camlp-streams/issues"
+depends: [
+  "ocaml" {>= "4.05.0"}
+  "dune" {>= "2.0"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml/camlp-streams.git"
+url {
+  src: "https://github.com/ocaml/camlp-streams/archive/refs/tags/v5.0.tar.gz"
+  checksum: [
+    "md5=40474d189cdcc062c0554922139ddb9c"
+    "sha512=35bf71dad88684ab5404a0959e4cf3176329fda36d1f959b7f03301bcbde947c95712d36cc61fab44b24a9c434722bf6e2fa3c80b4633e1d9daa6bfc0f53b8ef"
+  ]
+}
