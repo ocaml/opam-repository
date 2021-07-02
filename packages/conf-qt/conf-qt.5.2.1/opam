@@ -9,26 +9,12 @@ dev-repo: "git+https://github.com/Kakadu/lablqml.git"
 
 #setenv: [ PATH += "/usr/lib64/qt5/bin:/usr/lib/qt5/bin"] #{ os-distribution = "alpine" | os-distribution = "centos" | os-distribution = "fedora" }
 
+extra-files: [ "configure.sh" "md5=78ed05ba24ce4c1f929276bdefef8818" ]
 build: [
-  # there executables are called without prefixes: moc, qmake
-  ["which" "qmake"]
+  ["sh" "-ex" "./configure.sh" "%{version}%" ]
     { os="macos" | os-family="debian" | os-distribution = "arch"  }
-  ["qmake" "--version"]
-    { os="macos" | os-family="debian" | os-distribution = "arch"  }
-  ["sh" "-exc" "echo \"Your Qt version is `qmake -query QT_VERSION`\"" ]
-    { os="macos" | os-family="debian" | os-distribution = "arch"  }
-  ["sh" "-exc" "min=\"%{version}%\"         cur=`qmake -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`; [ \"$res\" = \"$min\" ]" ]
-    { os="macos" | os-family="debian" | os-distribution = "arch" }
-
-  # there executables prefixes are required: moc-qt5, qmake-qt5
-  ["which" "qmake-qt5"]
+  ["sh" "-ex" "./configure.sh" "%{version}%" "-qt5" ]
     { os!="macos" & os-family != "debian" & os-distribution != "arch"  }
-  ["qmake-qt5" "--version"]
-    { os!="macos" & os-family != "debian" & os-distribution != "arch" }
-  ["sh" "-exc" "echo \"Your Qt version is `qmake-qt5 -query QT_VERSION`\"" ]
-    { os!="macos" & os-family != "debian" & os-distribution != "arch" }
-  ["sh" "-exc" "min=\"%{version}%\"         cur=`qmake-qt5 -query QT_VERSION`; res=`printf \"$min\\n$cur\\n\" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -n | head -n 1`; [ \"$res\" = \"$min\" ]" ]
-    { os!="macos" & os-family != "debian" & os-distribution != "arch" }
 ]
 
 # It currently doesn't compile on MacOS because I don't know how to get mac-specific build command
@@ -52,7 +38,7 @@ depexts: [
     { os-distribution = "ubuntu" & os-version >= "21.04" }
   ["qt5-qmake"]
     { os-distribution = "oracle" }
-  ["qt5-base" ]
+  ["qt5-base" "qt5-declarative"]
     { os-distribution = "arch" }
 
   # to set right paths for qt5 automatically we should
