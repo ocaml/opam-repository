@@ -1,0 +1,33 @@
+opam-version: "2.0"
+maintainer: "simon@aestheticintegration.com"
+authors: "MSR"
+homepage: "https://github.com/Z3prover/z3"
+bug-reports: "https://github.com/Z3prover/z3/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Z3prover/z3.git"
+build: [
+  [ "python2.7" "scripts/mk_make.py" "--ml" "--staticlib" ]
+  [ make "-C" "build" "-j" jobs ]
+]
+
+install: [
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/* build/libz3-static.a"]
+  [ "cp" "build/z3" "%{bin}%/z3"]
+]
+
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "zarith"
+  "conf-gmp"
+  "conf-python-2-7" {build}
+]
+synopsis: "Z3 solver"
+url {
+  src:
+    "https://github.com/Z3Prover/z3/releases/download/z3-4.8.11/z3-solver-4.8.11.0.tar.gz"
+  checksum: [
+    "sha256=32bedf5cb5ce663d56ec08a0fe29fc4aa5b9d17180d1bc926d00723305655653"
+    "sha512=6430688915c8b507c6b09e98a9ef67710b13e308145be4c4d7ee51cb2829ecbbcda31f8ea4623875a0d0363a02ff742f9100ac53ba8b8b9d7c53a3695ead01c3"
+  ]
+}
