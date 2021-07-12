@@ -4,9 +4,12 @@ homepage: "http://www.mpfr.org/"
 authors: "http://www.mpfr.org/credit.html"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "LGPL-2.0-or-later"
-build: ["pkg-config" "--print-errors" "--exists" "mpfr"]
+build: [
+  "sh" "-exc" "pkg-config --print-errors --exists mpfr || cc test.c -lgmp -lmpfr"
+]
 depends: [
   "conf-pkg-config" {build}
+  "conf-gmp" {build}
 ]
 depexts: [
   ["libmpfr-dev"] {os-family = "debian"}
@@ -25,4 +28,5 @@ depexts: [
 synopsis: "Virtual package relying on library MPFR installation"
 description:
   "This package can only install if the MPFR library is installed on the system."
+extra-files: ["test.c" "md5=ac7e04b5e22a41cb3c028180d1b811d6"]
 flags: conf
