@@ -1,0 +1,71 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "2.5" }
+  "tezos-rpc-http-server" { = version }
+  "tezos-validator" { = version }
+  "tezos-embedded-protocol-genesis-carthagenet" { = version }
+  "tezos-embedded-protocol-000-Ps9mPmXa" { = version }
+  "tezos-protocol-plugin-009-PsFLoren-registerer" { = version }
+  "tezos-protocol-plugin-010-PtGRANAD-registerer" { = version }
+  "cmdliner"
+  "tls" { >= "0.10" }
+]
+depopts: [
+  "tezos-embedded-protocol-001-PtCJ7pwo"
+  "tezos-embedded-protocol-002-PsYLVpVv"
+  "tezos-embedded-protocol-003-PsddFKi3"
+  "tezos-embedded-protocol-004-Pt24m4xi"
+  "tezos-embedded-protocol-005-PsBABY5H"
+  "tezos-embedded-protocol-005-PsBabyM1"
+  "tezos-embedded-protocol-006-PsCARTHA"
+  "tezos-embedded-protocol-007-PsDELPH1"
+  "tezos-protocol-plugin-007-PsDELPH1-registerer"
+  "tezos-embedded-protocol-008-PtEdoTez"
+  "tezos-embedded-protocol-008-PtEdo2Zk"
+  "tezos-protocol-plugin-008-PtEdo2Zk-registerer"
+  "tezos-embedded-protocol-demo-counter"
+  "tezos-embedded-protocol-alpha"
+  "tezos-protocol-plugin-alpha-registerer"
+  "tezos-embedded-protocol-demo-noops"
+  "tezos-embedded-protocol-genesis"
+]
+conflicts: [
+  "tezos-embedded-protocol-001-PtCJ7pwo" { != version }
+  "tezos-embedded-protocol-002-PsYLVpVv" { != version }
+  "tezos-embedded-protocol-003-PsddFKi3" { != version }
+  "tezos-embedded-protocol-004-Pt24m4xi" { != version }
+  "tezos-embedded-protocol-005-PsBABY5H" { != version }
+  "tezos-embedded-protocol-005-PsBabyM1" { != version }
+  "tezos-embedded-protocol-006-PsCARTHA" { != version }
+  "tezos-embedded-protocol-007-PsDELPH1" { != version }
+  "tezos-protocol-plugin-007-PsDELPH1-registerer" { != version }
+  "tezos-embedded-protocol-008-PtEdoTez" { != version }
+  "tezos-embedded-protocol-008-PtEdo2Zk" { != version }
+  "tezos-protocol-plugin-008-PtEdo2Zk-registerer" { != version }
+  "tezos-embedded-protocol-demo-counter" { != version }
+  "tezos-embedded-protocol-alpha" { != version }
+  "tezos-protocol-plugin-alpha-registerer" { != version }
+  "tezos-embedded-protocol-demo-noops" { != version }
+  "tezos-embedded-protocol-genesis" { != version }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/bin_node/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: `tezos-node` binary"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v9.4/tezos-v9.4.tar.bz2"
+  checksum: [
+    "sha256=9beaaa8f0c630e89e282182db7997f346a9078ee4aab642cb3407313c81ba328"
+    "sha512=41a74ab17d2cc81d584b66d8528c3f9f37b3b2d31ce41b1e8478f31446b2f0b8393a23b7cda1f9889c1bf7a76fd9a36590a51a7c954fd3083cd0f15e3bddcd4a"
+  ]
+}

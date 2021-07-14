@@ -1,0 +1,58 @@
+opam-version: "2.0"
+maintainer: "Thomas Gazagnaire <thomas@gazagnaire.org>"
+authors: ["Daniel Bünzli" "Thomas Gazagnaire" "Nathan Rebours"]
+homepage: "https://github.com/ocamllabs/dune-release"
+license: "ISC"
+dev-repo: "git+https://github.com/ocamllabs/dune-release.git"
+bug-reports: "https://github.com/ocamllabs/dune-release/issues"
+doc: "https://ocamllabs.github.io/dune-release/"
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "clean"] {with-test}
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.06.0"}
+  "dune" {>= "2.4.0"}
+  "curly"
+  "fmt" {>= "0.8.5"}
+  "bos"
+  "cmdliner"
+  "re"
+  "astring"
+  "opam-file-format" {>= "2.1.1"}
+  "opam-format" {>= "2.1.0~beta"}
+  "opam-state" {>= "2.1.0~beta"}
+  "opam-core" {>= "2.1.0~beta"}
+  "rresult"
+  "logs"
+  "odoc"
+  "alcotest" {with-test}
+  "mdx" {with-test & >= "1.6.0"}
+  "yojson" {>= "1.6.0"}
+]
+
+x-ci-accept-failures: [
+  "centos-7" # tests require a newer version of git
+  "oraclelinux-7" # tests require a newer version of git
+]
+
+synopsis: "Release dune packages in opam"
+description: """
+`dune-release` is a tool to streamline the release of Dune packages in
+[opam](https://opam.ocaml.org). It supports projects built
+with [Dune](https://github.com/ocaml/dune) and hosted on
+[GitHub](https://github.com).
+"""
+url {
+  src:
+    "https://github.com/ocamllabs/dune-release/releases/download/1.5.0/dune-release-1.5.0.tbz"
+  checksum: [
+    "sha256=fb0e9f0c3469790eb3982e5f54876ed99d41927adcf8782bb478b5a93f53ced3"
+    "sha512=d6feb92dfc383db2775546f5b2fb5356923e86529af708519b975a5b0805acc33cbfdea909c3f21d8d923cfe555ca7171bd9a7ea4b535fa7fe824ac1cbed5ea2"
+  ]
+}
+x-commit-hash: "8036ace015b4fd1a87b1c3382992ff7bc361a348"
