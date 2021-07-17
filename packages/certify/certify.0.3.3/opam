@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer:  ["maintenance@identity-function.com"]
+homepage:     "https://github.com/yomimono/ocaml-certify"
+dev-repo:     "git+https://github.com/yomimono/ocaml-certify.git"
+bug-reports:  "https://github.com/yomimono/ocaml-certify/issues"
+doc:          "https://yomimono.github.io/ocaml-certify/doc"
+synopsis:     "CLI utilities for simple X509 certificate manipulation"
+license:      "ISC"
+authors: [
+  "Mindy Preston"
+]
+tags: ["org:mirage"]
+
+build: [
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "sh" "-c" "env \"CERTDIR=$(mktemp -d)\" \"KEYDIR=$(mktemp -d)\" ./test/test.sh" ] {with-test}
+]
+depends: [
+  "dune" {>= "1.0"}
+  "mirage-crypto-pk"
+  "mirage-crypto-rng"
+  "x509" {>= "0.12.1"}
+  "cstruct" {>= "3.2.0"}
+  "ptime"
+  "ocaml" {>= "4.07.0"}
+  "cmdliner" {>= "1.0.0"}
+  "conf-openssl" {with-test}
+]
+description: """
+`certify` is a small selection of useful utilities for manipulating X509 certificates and public keys.  It uses the mirleft organization's x509, tls, and nocrypto libraries.
+
+Three subcommands to `certify` are provided:
+* `certify csr`: make a certificate signing request
+* `certify selfsign`: make a self-signed certificate
+* `certify sign`: sign a certificate
+"""
+url {
+  src:
+    "https://github.com/yomimono/ocaml-certify/releases/download/v0.3.3/certify-v0.3.3.tbz"
+  checksum: [
+    "sha256=86252719dcbb7af84589727193663b7c082ceaaa5c4382faae383952fb2e8459"
+    "sha512=fa15cca647ecc14c6efd17fdb4609cb1987826d515bf7c96e0aff34f8ade0c114aaf9e0f47c8d16bb29c358445884fe5e82b2d260140517c0ffb893a7e55937f"
+  ]
+}
