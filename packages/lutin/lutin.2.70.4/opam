@@ -17,6 +17,8 @@ depends: [
   "ocaml" {>= "4.05" & < "4.12"}
   "base-bigarray"
   "conf-gmp"
+  "conf-mpfr"
+  "conf-m4" {build}
   "conf-perl" {build}
   "base-unix" {build}
   "num"
@@ -28,26 +30,12 @@ depends: [
   "oasis" {build & >= "0.4.7"} | "oasis-mirage" {build & >= "0.4.7"}
   "ocamlbuild" {build}
   "ocamlfind"
-  "rdbg" {>= "1.184"}
+  "rdbg" {>= "1.184"  & <= "1.184.1" }
 ]
-build: [
-  ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
-  [make "build"]
-  ["oasis" "setup"] {with-test}
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
-  ["ocaml" "setup.ml" "-build"] {with-test}
-  ["ocaml" "setup.ml" "-test"] {with-test}
-  ["ocaml" "setup.ml" "-doc"] {with-doc}
-]
+build: [ make ]
 install: [make "install"]
 post-messages:
   "The last version can be obtained via (opam repo add) http://www-verimag.imag.fr/DIST-TOOLS/SYNCHRONE/opam-repository/"
-depexts: [
-  ["perl" "gmp-dev" "mpfr-dev" "m4"] {os-distribution = "alpine"}
-  ["perl" "gmp-devel" "mpfr-devel" "m4"] {os-distribution = "centos"}
-  ["perl" "libgmp-dev" "libmpfr-dev" "m4"] {os-family = "debian"}
-]
 dev-repo:
   "git+https://gricad-gitlab.univ-grenoble-alpes.fr/verimag/synchrone/lutin.git"
 url {
