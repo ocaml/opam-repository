@@ -1,0 +1,56 @@
+opam-version: "2.0"
+license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
+synopsis:
+  "OCaml binding to the TON-SDK and the Graphql API for Free TON blockchain"
+description: """
+
+The freeton_ocaml_sdk library is a binding to the TON-SDK Rust library
+and the GraphQL API of the FreeTON blockchain. It can be used to build
+application to query the account states, transactions and other blockchain
+data. to deploy and call smart contracts.
+
+The FreeTON blockchain is the open-source version of the Telegram Open
+Network. FreeTON is one of the only blockchains with dynamic sharding
+for unlimited scalability and immediate finality for real-time
+applications. It also uses Proof-of-Stake with delegation through
+smart contracts. Smart contracts are written in dialects of Solidity
+and C++ with asynchonous external calls.
+
+"""
+authors: ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+maintainer: ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+homepage: "https://ocamlpro.github.io/freeton_ocaml_sdk"
+doc: "https://ocamlpro.github.io/freeton_ocaml_sdk/sphinx"
+bug-reports: "https://github.com/ocamlpro/freeton_ocaml_sdk/issues"
+dev-repo: "git+https://github.com/ocamlpro/freeton_ocaml_sdk.git"
+tags: "org:ocamlpro"
+build: [
+  ["dune" "subst"] {dev}
+  ["sh" "-c" "./scripts/before.sh build '%{name}%'"]
+  ["dune" "build" "-p" name "-j" jobs "@install" "@doc" {with-doc}]
+  ["sh" "-c" "./scripts/after.sh build '%{name}%'"]
+]
+install: [
+  ["sh" "-c" "./scripts/before.sh install '%{name}%'"]
+]
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.6.0"}
+  "zarith" {> "1"}
+  "ez_api" {}
+  "cohttp-lwt-unix" {}
+  "ppx_deriving_encoding" {}
+  "conf-rust-2018" {}
+  "conf-libssl" {}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
+]
+conflicts: [ "ocplib-json-typed" ]
+
+
+url {
+    src: "https://github.com/ocamlpro/freeton_ocaml_sdk/archive/v0.2.0.tar.gz"
+    checksum: [ "sha256=6400927797a3c00c48567ddd534c9cc442564b353fb9d6198b564db723cf06f6" ]
+}
