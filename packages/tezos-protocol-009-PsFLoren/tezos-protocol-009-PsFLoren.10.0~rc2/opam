@@ -1,0 +1,33 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "2.0" }
+  "tezos-protocol-compiler" { = version }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  [
+    "%{tezos-protocol-compiler:lib}%/replace"
+    "%{tezos-protocol-compiler:lib}%/dune_protocol.template"
+    "dune"
+    "%{tezos-protocol-compiler:lib}%/final_protocol_versions"
+    "009_PsFLoren"
+  ]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/proto_009_PsFLoren/lib_protocol/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos/Protocol: economic-protocol definition"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v10.0-rc2/tezos-v10.0-rc2.tar.bz2"
+  checksum: [
+    "sha256=be35232f26170ebfe4e0a7d8deed5dbf36669c0219d0e9155a3a559f93008109"
+    "sha512=ea7272fce2956f94d335f55ba3091df30e5e9ea56d80a59d16f370ddb82a0c4424ae1c5a58041eee74bcd3a7b884657c98ab37ab7b8a3c1e2b24d33fb6e3511b"
+  ]
+}
