@@ -8,21 +8,20 @@ bug-reports: "https://gitlab.com/tezos/nomadic-labs/issues"
 dev-repo: "git+https://gitlab.com/nomadic-labs/tezos.git"
 license: "MIT"
 depends: [
-  "conf-rust" {build}
-  "dune" {build & >= "1.7"}
+  "dune" { >= "2.5" }
   "hex"
-  "ctypes"
   "ctypes-foreign"
-  "data-encoding" { >= "0.3" & < "0.4" }
   "tezos-crypto" { = version }
-  "tezos-stdlib" { = version }
-  "tezos-error-monad" { = version }
   "tezos-test-services" { with-test & = version }
   "alcotest-lwt" { with-test & >= "1.1.0" }
 ]
-build: [[ "dune" "build" "-j" jobs "-p" name "@install" ]]
+build: [
   ["rm" "-r" "vendors"]
-run-test: [[ "dune" "runtest" "-p" name "-j" jobs ]]
+  [ "dune" "build" "-j" jobs "-p" name "@install" ]
+  ["mv" "src/lib_sapling/%{name}%.install" "./"]
+#  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+#  requires the "zcash-params" files
+]
 
 url {
   src: "https://gitlab.com/tezos/tezos/-/archive/v10.0-rc2/tezos-v10.0-rc2.tar.bz2"
