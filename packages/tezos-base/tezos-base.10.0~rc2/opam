@@ -6,18 +6,13 @@ bug-reports: "https://gitlab.com/tezos/tezos/issues"
 dev-repo: "git+https://gitlab.com/tezos/tezos.git"
 license: "MIT"
 depends: [
-  "dune" { >= "2.0" }
-  "tezos-stdlib" { = version }
+  "dune" { >= "2.5" }
   "tezos-crypto" { = version }
   "bls12-381-unix"
   "tezos-hacl-glue-unix" { = version }
-  "data-encoding" { >= "0.3" & < "0.4" }
-  "tezos-error-monad" { = version }
-  "tezos-event-logging" { = version }
   "tezos-micheline" { = version }
-  "tezos-rpc" { = version }
   "ptime" { >= "0.8.4" }
-  "ezjsonm" { >= "0.5.0" }
+  "ezjsonm" { >= "1.1.0" }
   "ipaddr" {>= "5.0.0" & < "6.0.0"}
   "tezos-test-helpers" { with-test & = version }
   "qcheck-alcotest" { with-test }
@@ -26,7 +21,7 @@ build: [
   ["rm" "-r" "vendors"]
   ["dune" "build" "-p" name "-j" jobs]
   ["mv" "src/lib_base/%{name}%.install" "./"]
-  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "runtest" "-p" name "-j" jobs] { with-test & ( arch = "x86_64" | arch = "arm64" ) }
 ]
 synopsis: "Tezos: meta-package and pervasive type definitions for Tezos"
 
