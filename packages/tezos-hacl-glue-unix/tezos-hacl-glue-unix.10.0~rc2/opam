@@ -6,16 +6,18 @@ bug-reports: "https://gitlab.com/tezos/tezos/issues"
 dev-repo: "git+https://gitlab.com/tezos/tezos.git"
 license: "MIT"
 depends: [
-  "dune" { >= "1.11" }
+  "dune" { >= "2.5" }
   "hacl-star"
   "tezos-hacl-glue" { = version }
 ]
 conflicts: [
   "hacl_x25519"
 ]
-build: [["dune" "build" "-p" name "-j" jobs]]
-  ["mv" "src/lib_hacl_glue/unix/%{name}%.install" "./"]
+build: [
   ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/lib_hacl_glue/unix/%{name}%.install" "./"]
+]
 synopsis: "Tezos: thin layer of glue around hacl-star (unix implementation)"
 
 url {
