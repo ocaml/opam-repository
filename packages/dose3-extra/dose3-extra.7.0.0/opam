@@ -1,0 +1,76 @@
+opam-version: "2.0"
+synopsis: "Dose-extra libraries and tools (part of Mancoosi tools)"
+description: """\
+The dose-extra suite provides libraries for handling package meta-data, and various
+ tools for analyzing package relationships in a large package repository.
+  - dose-builddebcheck checks, given a collection of source package stanzas
+    and a collection of binary package stanzas of Debian packages, whether
+    the build-dependencies of each source package can be satisfied by the
+    binary packages.
+  - dose-distcheck checks for every package of a distribution whether it
+    is possible to satisfy its dependencies and conflicts within this
+    distribution.
+  - ceve, a general metadata parser supporting different input formats
+    (Debian, rpm, and others) and different output formats.
+  - dose-outdated, a Debian-specific tool for finding packages that are not
+    installable with respect to a package repository, and that can only be
+    made installable again by fixing the package itself.
+  - dose-challenged, a Debian-specific tool for checking which packages
+    will certainly become uninstallable when some existing package is upgraded
+    to a newer version.
+  - dose-deb-coinstall, a Debian-specific tool for checking whether a set of
+    packages can be installed all together."""
+maintainer: [
+  "Pietro Abate" "Johannes Schauer Marin Rodrigues" "Ralf Treinen"
+]
+authors: [
+  "Pietro Abate"
+  "Ralf Treinen"
+  "Jaap Boender"
+  "Johannes Schauer Marin Rodrigues"
+  "Roberto Di Cosmo"
+  "Felipe Garay"
+  "Stefano Zacchiroli"
+  "Jakub Zwolakowski"
+  "Olivier Rosello"
+]
+license: "LGPL-3.0-or-later with OCaml-LGPL-linking-exception"
+homepage: "http://www.mancoosi.org/software/"
+doc: "https://irill.gitlab.io/dose3"
+bug-reports: "https://gitlab.com/irill/dose3/issues/"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.03"}
+  "dose3" {= version}
+  "extlib" {>= "1.7.8"}
+  "camlbz2" {>= "0.7.0"}
+  "camlzip" {>= "1.08"}
+  "parmap" {>= "1.1"}
+  "ounit" {with-test}
+  "conf-python-3" {with-test}
+  "conf-python3-yaml" {with-test}
+  "conf-dpkg" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://gitlab.com/irill/dose3.git"
+url {
+  src: "https://gitlab.com/irill/dose3/-/archive/7.0.0/dose3-7.0.0.tar.gz"
+  checksum: [
+    "md5=bc99cbcea8fca29dca3ebbee54be45e1"
+    "sha512=98dc4bd28e9f4aa8384be71b31783ae1afac577ea587118b8457b554ffe302c98e83d0098971e6b81803ee5c4f2befe3a98ef196d6b0da8feb4121e982ad5c2f"
+  ]
+}

@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "David Allsopp <david.allsopp@metastack.com>"
+homepage: "https://github.com/ocaml/opam-repository"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+build: ["./configure" "-sitelib" "%{ocaml-secondary-compiler:share}%/lib" "-no-camlp4"]
+dev-repo: "git+https://github.com/ocaml/ocamlfind.git"
+license: "MIT"
+install: [
+  [make "install-meta"]
+  ["mkdir" "-p" "%{lib}%/findlib.conf.d/"]
+  ["cp" "ocaml-secondary-compiler.conf" "%{lib}%/findlib.conf.d/"]
+  ["mkdir" "-p" "%{ocaml-secondary-compiler:share}%/lib/ocaml"]
+  ["cp" "META" "%{ocaml-secondary-compiler:share}%/lib/ocaml"]
+]
+depends: [
+  "ocaml-secondary-compiler"
+  "ocamlfind" {= version}
+]
+synopsis: "Adds support for ocaml-secondary-compiler to ocamlfind"
+description: """
+Exposes the compiler built by the ocaml-secondary-compielr package via
+-toolchain secondary. A virtual package called ocaml is also installed to
+locate the binary directory via `ocamlfind -toolchain secondary query ocaml`."""
+authors: ["Gerd Stolpmann <gerd@gerd-stolpmann.de>" "David Allsopp <david.allsopp@metastack.com>"]
+substs: ["META" "ocaml-secondary-compiler.conf"]
+extra-files: [
+  ["META.in" "md5=8c6ea8a0158a33ed87e6c38a7d686d49"]
+  ["ocaml-secondary-compiler.conf.in" "md5=367a7bb68e2e1e65a31356421ddc809c"]
+]
+url {
+  src: "http://download.camlcity.org/download/findlib-1.9.1.tar.gz"
+  checksum: [
+    "md5=65e6dc9b305ccbed1267275fe180f538"
+    "sha512=83a05f3e310fa7cabb0475c5525f7a87c1b6bc2dc5e39f094cabfb5d944a826a5581844ba00ec1a48dd96184eb9de3c4d1055cdddee2b83c700a2de5a6dc6f84"
+  ]
+}
