@@ -6,10 +6,12 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "LGPL-2.0-or-later"
 build: [
   ["cc" "test.c" 
-    "-I/usr/local/include" {os-distribution != "macports"}
-    "-L/usr/local/lib" {os-distribution != "macports"}
     "-I/opt/local/include" {os-distribution = "macports"}
     "-L/opt/local/lib" {os-distribution = "macports"}
+    "-I/opt/homebrew/include" {os-distribution = "homebrew" & arch = "arm64"}
+    "-L/opt/homebrew/lib" {os-distribution = "homebrew" & arch = "arm64"}
+    "-I/usr/local/include" {os-distribution != "macports" & (os-distribution != "homebrew" | arch != "arm64") }
+    "-L/usr/local/lib" {os-distribution != "macports" & (os-distribution != "homebrew" | arch != "arm64") }
     "-lzmq"]
 ]
 depexts: [
