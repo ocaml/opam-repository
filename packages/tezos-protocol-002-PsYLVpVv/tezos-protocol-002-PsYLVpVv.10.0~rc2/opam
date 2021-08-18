@@ -8,13 +8,13 @@ license: "MIT"
 depends: [
   "dune" { >= "2.0" }
   "tezos-protocol-compiler" { = version }
-  "alcotest-lwt" { with-test & >= "1.1.0" }
-  "tezos-stdlib-unix" { with-test & = version }
-  "tezos-protocol-environment" { with-test & = version }
-  "tezos-shell-services" { with-test & = version }
 ]
 build: [
   ["rm" "-r" "vendors"]
+  [
+    "sed" "-i.back" "-e" "s/-nostdlib//g"
+    "%{build}%/src/proto_002_PsYLVpVv/lib_protocol/dune.inc"
+  ]
   ["dune" "build" "-p" name "-j" jobs]
   ["mv" "src/proto_002_PsYLVpVv/lib_protocol/%{name}%.install" "./"]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
