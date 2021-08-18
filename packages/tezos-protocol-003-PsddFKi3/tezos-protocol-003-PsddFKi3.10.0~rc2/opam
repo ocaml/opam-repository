@@ -6,21 +6,14 @@ bug-reports: "https://gitlab.com/tezos/tezos/issues"
 dev-repo: "git+https://gitlab.com/tezos/tezos.git"
 license: "MIT"
 depends: [
-  "dune" { >= "2.0" }
+  "dune" { >= "2.5" }
   "tezos-protocol-compiler" { = version }
-  "alcotest-lwt" { with-test & >= "1.1.0" }
-  "tezos-stdlib-unix" { with-test & = version }
-  "tezos-protocol-environment" { with-test & = version }
-  "tezos-shell-services" { with-test & = version }
 ]
 build: [
   ["rm" "-r" "vendors"]
   [
-    "%{tezos-protocol-compiler:lib}%/replace"
-    "%{tezos-protocol-compiler:lib}%/dune_protocol.template"
-    "dune"
-    "%{tezos-protocol-compiler:lib}%/final_protocol_versions"
-    "003_PsddFKi3"
+    "sed" "-i.back" "-e" "s/-nostdlib//g"
+    "%{build}%/src/proto_003_PsddFKi3/lib_protocol/dune.inc"
   ]
   ["dune" "build" "-p" name "-j" jobs]
   ["mv" "src/proto_003_PsddFKi3/lib_protocol/%{name}%.install" "./"]
