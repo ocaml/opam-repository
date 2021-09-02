@@ -18,12 +18,12 @@ Recently, Owl has implemented algorithmic differentiation which essentially make
 build: [
   [ "dune" "subst" ] {dev}
   [ "dune" "build" "-p" name "-j" jobs ]
-  [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
+#  [ "dune" "runtest" "-p" name "-j" jobs ] {with-test} # non-deterministic
 ]
 
 depends: [
   "ocaml" {>= "4.10.0"}
-  "alcotest" {with-test}
+#  "alcotest" {with-test}
   "base" {build & < "v0.15"}
   "base-bigarray"
   "conf-openblas" {>= "0.2.0"}
@@ -36,6 +36,7 @@ depends: [
   "stdlib-shims"
   "npy"
 ]
+available: arch != "arm64" & arch != "arm32" & arch != "s390x"
 url {
   src: "https://github.com/owlbarn/owl/releases/download/0.9.0/owl-0.9.0.tbz"
   checksum: [
