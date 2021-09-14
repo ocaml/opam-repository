@@ -1,0 +1,26 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "2.5" }
+  "tezos-baking-alpha" { = version }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/proto_alpha/lib_delegate/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos/Protocol: protocol-specific commands for baking"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2"
+  checksum: [
+    "sha256=6b33e0549574c89a63538c94ce5555dd141e3c0fb5d934abff07d702fa3244d2"
+    "sha512=681a197baabec6e2f806871d43490382243207518f8fcf932741cd314d8717e46db2b6a5adc222f8726083a5dd911083b4931b7e878ab815f8f1a32763d1bf93"
+  ]
+}
