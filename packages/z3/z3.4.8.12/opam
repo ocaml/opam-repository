@@ -1,0 +1,37 @@
+opam-version: "2.0"
+maintainer: "simon@aestheticintegration.com"
+authors: "MSR"
+homepage: "https://github.com/Z3prover/z3"
+bug-reports: "https://github.com/Z3prover/z3/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Z3prover/z3.git"
+build: [
+  [ "python2.7" "scripts/mk_make.py" "--ml" "--staticlib" ]
+  [ make "-C" "build" "-j" jobs ]
+]
+
+install: [
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/* build/libz3-static.a"]
+  [ "cp" "build/z3" "%{bin}%/z3"]
+]
+
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "zarith"
+  "conf-gmp"
+  "conf-python-2-7" {build}
+]
+x-ci-accept-failures: [
+  "centos-7"  "oraclelinux-7" # C compiler is too old
+  "oraclelinux-8" # Does not ship python 2.7
+]
+synopsis: "Z3 solver"
+url {
+  src:
+    "https://github.com/Z3Prover/z3/archive/refs/tags/z3-4.8.12.tar.gz"
+  checksum: [
+    "sha256=e3aaefde68b839299cbc988178529535e66048398f7d083b40c69fe0da55f8b7"
+    "sha512=0b377923bdaffaca1846aa2abd61003bbecadfcdfc908ed3097d0aac8f32028ac39d93fb4a9c2e2c2bfffbdbee80aa415875f17de6c2ee2ae8e2b7921f788c6e"
+  ]
+}
