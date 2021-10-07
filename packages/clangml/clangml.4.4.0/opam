@@ -27,8 +27,12 @@ depends: [
 ]
 x-ci-accept-failures: [
    "centos-7" # GCC does not support --std=c++14
+   "archlinux" # LLVM not detected
+   "oraclelinux-7" # LLVM not detected
+   "fedora-34" # LLVM 12.0.1 not supported
+   "macos-homebrew" # LLVM 12.0.1 not supported
 ]
-available: arch != "arm32" & arch != "ppc64" & os-distribution != "arch" & os-distribution != "centos" & os-distribution != "ol" & os-distribution != "fedora" & os != "macos" # Compiler segfaults on those architectures / LLVM version not supported on these distributions
+available: arch != "arm32" & arch != "ppc64" # Compiler segfaults on those architectures
 dev-repo: "git+https://gitlab.inria.fr/memcad/clangml"
 build: [
   ["./configure" "--prefix=%{prefix}%" "--with-llvm-config=%{conf-libclang:config}%"]
