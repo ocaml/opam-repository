@@ -5,8 +5,10 @@ license: "MIT"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 homepage: "https://www.csie.ntu.edu.tw/~cjlin/libsvm/"
 flags: conf
-build: ["which" "svm-train" "svm-predict"]
-depends: ["conf-which" {build}]
+build: [
+  ["bash" "-c" "command -v svm-train   2>&1 > /dev/null"]
+  ["bash" "-c" "command -v svm-predict 2>&1 > /dev/null"]
+]
 depexts: [
   ["libsvm-tools"] {os-family = "debian"}
   ["libsvm-tools"] {os-distribution = "fedora"}
@@ -18,5 +20,5 @@ depexts: [
 synopsis: "Virtual package relying on libsvm-tools installation"
 description: """
 This package can only install if the svm-train and svm-predict
-executables are installed on the system.
+commands are available on the system.
 """
