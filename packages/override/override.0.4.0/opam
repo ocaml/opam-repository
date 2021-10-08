@@ -11,16 +11,17 @@ homepage: "https://github.com/thierry-martinez/override"
 doc: "https://github.com/thierry-martinez/override"
 bug-reports: "https://github.com/thierry-martinez/override"
 depends: [
+  "dune" {>= "2.9"}
   "ocaml" {>= "4.08.0"}
   "ppxlib" {>= "0.23.0"}
-  "dune" {>= "1.11.0"}
   "stdcompat" {>= "9"}
-  "metapp" {>= "0.2.0"}
-  "metaquot" {>= "0.2.0"}
+  "metapp" {>= "0.4.2"}
+  "metaquot" {>= "0.4.0"}
   "refl" {>= "0.1.0"}
+  "odoc" {with-doc}
 ]
 build: [
-  ["dune" "subst"] {pinned}
+  ["dune" "subst"] {dev}
   [
     "dune"
     "build"
@@ -28,13 +29,15 @@ build: [
     name
     "-j"
     jobs
+    "--promote-install-files=false"
     "@install"
     "@runtest" {with-test}
     "@doc" {with-doc}
   ]
+  ["dune" "install" "-p" name "--create-install-files" name]
 ]
 dev-repo: "git+https://github.com/thierry-martinez/override"
 url {
   src: "https://github.com/thierry-martinez/override/archive/refs/tags/v0.4.0.tar.gz"
-  checksum: "sha512=a0d514e889aa72c98f8906a24997c207a376723da900880e48f7d4a25029dea3dc4211dd2d64dc27be1099eb655cf7f3f2e0cf8bcf4c57efdb9baa3e066fcf80"
+  checksum: "sha512=b2c468df584473b19a542b47ed1d4f4f684f89032d2feffb3fb52208fb1b945a5166df11d167392a1c3512623dba00dd2d923b6e34825d3e30cf7085532506e3"
 }
