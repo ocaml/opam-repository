@@ -1,0 +1,54 @@
+opam-version: "2.0"
+maintainer: "Petter A. Urkedal <paurkedal@gmail.com>"
+authors: "Petter A. Urkedal <paurkedal@gmail.com>"
+license: "LGPL-3 with OCaml linking exception"
+homepage: "https://github.com/paurkedal/ppx_compose"
+bug-reports: "https://github.com/paurkedal/ppx_compose/issues"
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "dune" {>= "1.1"}
+  "ppxlib"
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/paurkedal/ppx_compose.git"
+synopsis: "Inlined function composition"
+description: """
+`ppx_compose` is a simple syntax extension which rewrites code containing
+function compositions into composition-free code, effectively inlining the
+composition operators.  The following two operators are supported
+
+    let (%) g f x = g (f x)
+    let (%>) f g x = g (f x)
+
+Corresponding definitions are not provided, so partial applications of `(%)`
+and `(%>)` will be undefined unless you provide the definitions.
+
+The following rewrites are done:
+
+  * A composition occurring to the left of an application is reduced by
+    applying each term of the composition from right to left to the
+    argument, ignoring associative variations.
+
+  * A composition which is not the left side of an application is first
+    turned into one by η-expansion, then the above rule applies.
+
+  * Any partially applied composition operators are passed though unchanged.
+
+E.g.
+
+    h % g % f ==> (fun x -> h (f (g x)))
+    h % (g % f) ==> (fun x -> h (f (g x)))
+    (g % f) (h % h) ==> g (f (fun x -> h (h x)))
+"""
+url {
+  src:
+    "https://github.com/paurkedal/ppx_compose/releases/download/v0.2.0/ppx_compose-v0.2.0.tbz"
+  checksum: [
+    "sha256=d334bb345ba87d7b7aec4e81d41d4a4949673e807dc7168578f21bbaac40c42e"
+    "sha512=9e79f0f6dc7b902e689da940bd8e7cc5691880c352f27e1f8c27b5d1c0bfd65235d594592b6bb1e259a8064669c1a034131364620ad1009477d1ffa9dbc818b7"
+  ]
+}
+x-commit-hash: "df971b5671ff3571d4414c4378e63e24535cc195"
