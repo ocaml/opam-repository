@@ -37,7 +37,7 @@ for version in default 12 11 10 9 8 7 6 5 4 3; do
     if [ "$llvm_version" = "12.0.1" ]; then
         clangml440_compatible_version=12.0.0 # clangml.4.4.0 does not recognize 12.0.1
     else
-        clangml440_compatible_version="$llvm_version"
+        clangml440_compatible_version="" # rely on clangml's ./configure autodetection
     fi
 
     LLVM_CFLAGS="$($llvm_config --cflags)"
