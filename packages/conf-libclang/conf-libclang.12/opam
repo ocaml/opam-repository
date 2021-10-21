@@ -8,8 +8,11 @@ build: [
   ["bash" "-ex" "configure.sh" version]
 ]
 depexts: [
-  ["llvm"] {os = "macos"}
-  ["glibc=2.33" "llvm" "clang"] {os-distribution = "arch"} # needs GLIBC_2.33
+  # Brew already has a package for llvm@13
+  ["llvm@12"] {os = "macos"}
+  # LLVM package depends on libffi on arch, but mirrors used by opam CI seem not
+  # to know it.
+  ["libffi" "llvm" "clang"] {os-distribution = "arch"}
   ["libclang-dev" "llvm-dev"] {os-family = "debian"}
   ["clang-dev" "llvm-dev" "clang-static"] {os-distribution = "alpine"}
   ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
@@ -26,7 +29,7 @@ x-ci-accept-failures: [
   "oraclelinux-7" # clang-devel is not available
 ]
 extra-files: [[
-  "configure.sh" "sha512=0237ec1078edf2218258b86d98beaad2cac9cf97698bbe486d92542b860d5b7228904128eed24462448436b7f2f58c8bfe359aa00b2acc366f66ced2345f9d6a"
+  "configure.sh" "sha512=46358a4f18a53c87947355ed4d72c57ed85a7f2965564fa75592abab0dddaad2eb1b6f0940228e4230516fa043a772da44cbd176f2b274a07364bfae2cbae268"
 ]]
 synopsis: "Virtual package relying on the installation of llvm and clang libraries (<= 12.0.x)"
 flags: conf

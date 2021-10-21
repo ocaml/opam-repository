@@ -11,7 +11,7 @@ for version in default 12 11 10 9 8 7 6 5 4 3; do
     if [ "$version" = default ]; then
         llvm_config=llvm-config
         llvm_version="$($llvm_config --version)" || continue
-        if [ $(printf "$llvm_version\n13" | sort | head -n1) = 13 ]; then
+        if [ $(printf "${llvm_version%%.*}\n13" | sort -n | head -n1) = 13 ]; then
             continue
         fi
     else
