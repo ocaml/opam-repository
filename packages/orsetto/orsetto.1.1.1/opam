@@ -1,0 +1,73 @@
+opam-version: "2.0"
+synopsis: "A library of assorted structured data interchange languages"
+maintainer: "james woodyatt <jhw@conjury.org>"
+authors: "james woodyatt <jhw@conjury.org>"
+homepage: "https://bitbucket.org/jhw/orsetto/"
+bug-reports: "https://conjury.atlassian.net/browse/ORS"
+dev-repo: "git+https://bitbucket.org/jhw/orsetto"
+description: """
+Orsetto is a standalone library comprising a core toolkit...
+
+    - Core functional data structures and processes.
+    - Unicode transport, normalization, parsing and formatting.
+    - General purpose packet format encoder-decoder processes.
+
+...used to implement streaming parsers and formatters for a useful variety of
+structured data interchange languages...
+
+    - JavaScript Object Notation (JSON).
+    - Concise Binary Object Representation (CBOR).
+    - DjB's 64-bit Temps Atomique International (TAI64).
+    - Base-64 and Base-32 binary data encodings.
+    - Uniform Resource Identifier (URI).
+
+...and other languages as need and opportunity arise.
+"""
+tags: [
+    "org:conjury.org"
+    "unicode"
+    "data-interchange"
+    "parser-combinators"
+    "serialization"
+    "json"
+    "cbor"
+    "uri"
+    "url"
+    "tai64"
+]
+license: "BSD-2-Clause"
+depends: [
+    "ocaml" { >= "4.08.1" }
+    "conjury" { build & >= "2.0.1" & < "3.0~" }
+    "omake" { build & >= "0.10.3" }
+    "uucd" { build & = "14.0.0" }
+    "ounit2" { build & with-test & >= "2.2" }
+]
+build: [
+    [ "omake" "--verbose" "--configure" "MODE=release" ] { !dev }
+    [ "omake" "test" ] { with-test }
+]
+install: [
+    [ "omake" "--verbose" "install" ] { !dev }
+    [ "omake" "--verbose" "install" "MODE=develop" ] { dev }
+]
+url {
+    src: "https://bitbucket.org/jhw/orsetto/get/r1.1.1.tar.gz"
+    checksum: "md5=7346293aa013c2a8974c6fb7c521166a"
+}
+extra-source "ucd.all.grouped.zip" {
+    src: "http://www.unicode.org/Public/14.0.0/ucdxml/ucd.all.grouped.zip"
+    checksum: "md5=880dd1b9e456ecc730e3e3a7bd8e5bb2"
+}
+extra-source "NormalizationTest.txt" {
+    src: "http://www.unicode.org/Public/14.0.0/ucd/NormalizationTest.txt"
+    checksum: "md5=a8d2fc5e2a897e0e1aa95aeaed978b8b"
+}
+extra-source "PropertyAliases.txt" {
+    src: "https://www.unicode.org/Public/14.0.0/ucd/PropertyAliases.txt"
+    checksum: "md5=e75e12a04cc5ccb1a62c1223bedacd79"
+}
+extra-source "PropertyValueAliases.txt" {
+    src: "https://www.unicode.org/Public/14.0.0/ucd/PropertyValueAliases.txt"
+    checksum: "md5=ba38069572608b969637ef0f2ea39bb2"
+}
