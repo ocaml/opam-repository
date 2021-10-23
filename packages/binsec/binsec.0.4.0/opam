@@ -1,0 +1,89 @@
+opam-version: "2.0"
+synopsis: "Semantic analysis of binary executables"
+description: """
+
+BINSEC aims at developing an open-source platform filling the gap between formal
+methods over executable code and binary-level security analyses currently used
+in the security industry.
+
+The project targets the following applicative domains:
+
+    vulnerability analyses
+    malware comprehension
+    code protection
+    binary-level verification
+
+BINSEC is developed at CEA List in scientfic collaboration with Verimag and LORIA.
+
+An overview of some BINSEC features can be found in our SSPREW'17 tutorial."""
+maintainer: ["BINSEC <binsec@saxifrage.saclay.cea.fr>"]
+authors: [
+  "Adel Djoudi"
+  "Benjamin Farinier"
+  "Frédéric Recoules"
+  "Josselin Feist"
+  "Lesly-Ann Daniel"
+  "Manh-Dung Nguyen"
+  "Mathilde Ollivier"
+  "Matthieu Lemerre"
+  "Olivier Nicole"
+  "Richard Bonichon"
+  "Robin David"
+  "Ta Thanh Dinh"
+  "Yaëlle Vinçont"
+  "Guillaume Girol"
+]
+license: "LGPL-2.1-or-later"
+tags: [
+  "binary code analysis"
+  "symbolic execution"
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "plugins"
+  "abstract interpretation"
+  "dataflow analysis"
+  "linking"
+  "disassembly"
+]
+homepage: "https://binsec.github.io"
+bug-reports: "mailto:binsec@saxifrage.saclay.cea.fr"
+depends: [
+  "dune" {>= "2.8"}
+  "ocaml" {build & >= "4.08" & < "4.13"}
+  "ocamlfind" {build}
+  "menhir" {build}
+  "ocamlgraph" {>= "1.8.5"}
+  "zarith" {>= "1.4"}
+  "dune-site"
+  "ounit2" {with-test & >= "2"}
+  "qcheck" {with-test & >= "0.7"}
+  "odoc" {with-doc}
+]
+depopts: ["unisim_archisec"]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/binsec/binsec.git"
+available: [ arch = "x86_64" | arch = "ppc64" | arch = "arm64" | arch = "sparc64" ]
+url {
+  src:
+    "https://github.com/binsec/binsec/releases/download/0.4.0/binsec-0.4.0.tbz"
+  checksum: [
+    "sha256=a1738594d97e26019135f53efc6abbe56fd1847721954a0cc31e4eb24385a041"
+    "sha512=d0a82d3e98ee7a417b6aa7b143875ce2b52bd4f4acc5e04895c2ec6fb6088d5a925112c4c7d3ff91956a5cd4268baf95e850cf755ea7a6f0a6dbc12d500f4537"
+  ]
+}
+x-commit-hash: "31f16ee8c5d6ea44bac4b5ba3e22f6671f814d8c"
