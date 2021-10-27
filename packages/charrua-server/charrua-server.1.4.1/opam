@@ -1,0 +1,60 @@
+opam-version: "2.0"
+synopsis: "DHCP server"
+description: """\
+Charrua-server consists of a single `Dhcp_server` module used for constructing DHCP
+servers.
+
+[dhcp](https://github.com/mirage/mirage-skeleton/tree/master/applications/dhcp)
+is a Mirage DHCP unikernel server based on charrua, included as a part of the MirageOS unikernel example and starting-point repository.
+
+#### Features
+
+* `Dhcp_server` supports a stripped down ISC dhcpd.conf, so you can probably just
+  use your old `dhcpd.conf`. It also supports manual configuration building in
+  OCaml.
+* Logic/sequencing is agnostic of IO and platform, so it can run on Unix as a
+  process, as a Mirage unikernel or anything else.
+* All DHCP options are supported at the time of this writing.
+* Code is purely applicative.
+* It's in OCaml, so it's pretty cool.
+
+The name `charrua` is a reference to the, now extinct, semi-nomadic people of
+southern South America."""
+maintainer: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
+authors: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
+license: "ISC"
+homepage: "https://github.com/mirage/charrua"
+doc: "https://mirage.github.io/charrua/"
+bug-reports: "https://github.com/mirage/charrua/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "1.4.0"}
+  "ppx_sexp_conv" {>= "v0.9.0"}
+  "menhir" {build & >= "20180523"}
+  "charrua" {= version}
+  "cstruct" {>= "6.0.0"}
+  "sexplib"
+  "ipaddr" {>= "5.0.0"}
+  "macaddr" {>= "4.0.0"}
+  "ipaddr-sexp"
+  "macaddr-sexp"
+  "cstruct-unix" {with-test}
+  "ppx_cstruct" {>= "6.0.0" & with-test}
+  "tcpip" {>= "6.1.0" & with-test}
+  "alcotest" {with-test & >= "1.4.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/charrua.git"
+url {
+  src:
+    "https://github.com/mirage/charrua/releases/download/v1.4.1/charrua-v1.4.1.tbz"
+  checksum: [
+    "sha256=39545b2b8c70df937fcb701b4d80aa52cf95a89ab96fed8e4422e52e9a97f979"
+    "sha512=6e399ab93f7306df1a96fb6690545de241cac2db93540d42c6ae08d9ba149a83061cb21a7bd7a2735fe7a8363c21a55773acbf969484c675e956257888a67f4f"
+  ]
+}
+x-commit-hash: "f0e7ecfc09bc87b00ee77812e7e181b9995a2e87"
