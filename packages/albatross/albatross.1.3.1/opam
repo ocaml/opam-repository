@@ -5,7 +5,7 @@ homepage: "https://github.com/roburio/albatross"
 dev-repo: "git+https://github.com/roburio/albatross.git"
 bug-reports: "https://github.com/roburio/albatross/issues"
 license: "ISC"
-
+available: os != "macos"
 depends: [
   "ocaml" {>= "4.10.0"}
   "dune"
@@ -43,9 +43,8 @@ build: [
   ["dune" "subst"] {dev}
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
-  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
   ["sh" "-ex" "packaging/FreeBSD/create_package.sh"] {os = "freebsd"}
-  ["sh" "-ex" "packaging/debian/create_package.sh"] {os-family = "debian"}
+  ["sh" "-ex" "packaging/debian/create_package.sh"] {os-family = "debian" | os-family = "ubuntu"}
 ]
 synopsis: "Albatross - orchestrate and manage MirageOS unikernels with Solo5"
 description: """
@@ -55,7 +54,7 @@ by albatross are network interfaces of kind `tap`, which are connected to
 already existing bridges, block devices, memory, and CPU. Each unikernel is
 pinned (`cpuset` / `taskset`) to a specific core.
 """
-depexts: ["linux-headers"] {os-distribution = "alpine"}
+depexts: ["linux-headers"] {os-family = "alpine"}
 url {
   src:
     "https://github.com/roburio/albatross/releases/download/v1.3.1/albatross-v1.3.1.tbz"
