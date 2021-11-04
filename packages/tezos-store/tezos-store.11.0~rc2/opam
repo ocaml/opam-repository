@@ -1,0 +1,39 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "2.5" }
+  "index" { >= "1.3.0" }
+  "camlzip" { = "1.10" }
+  "tar-unix" { = "1.1.0" }
+  "ringo-lwt" { = "0.5" }
+  "digestif" {>= "0.7.3"}
+  "tezos-legacy-store" { = version }
+  "alcotest-lwt" { with-test & >= "1.1.0" }
+  "tezos-embedded-protocol-demo-noops" { with-test & = version }
+  "tezos-embedded-protocol-000-Ps9mPmXa" { with-test & = version }
+  "tezos-embedded-protocol-005-PsBabyM1" { with-test & = version }
+  "tezos-embedded-protocol-006-PsCARTHA" { with-test & = version }
+  "tezos-embedded-protocol-genesis" { with-test & = version }
+  "tezos-protocol-plugin-alpha" { with-test & = version }
+  "tezos-protocol-alpha-parameters" { with-test & = version }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/lib_store/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: store for `tezos-node`"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v11.0-rc2/tezos-v11.0-rc2.tar.bz2"
+  checksum: [
+    "sha256=d43bb36a37c1a1ed46994e566a74cd1e1a6005d67097f6bbeab85dcdd8cb7645"
+    "sha512=ca3bb9de4157e28302801dc4dd2900e6b536178c3194cd05093cd9817f39a082bf047661c75ed16bf360bbc6f859a9c73cee39666691252809fb32c3dd425711"
+  ]
+}
