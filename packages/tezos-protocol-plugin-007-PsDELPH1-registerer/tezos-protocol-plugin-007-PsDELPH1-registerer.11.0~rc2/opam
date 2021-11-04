@@ -1,0 +1,28 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "2.5" }
+  "tezos-embedded-protocol-007-PsDELPH1" { = version }
+  "tezos-protocol-plugin-007-PsDELPH1" { = version }
+  "tezos-shell" { = version }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/proto_007_PsDELPH1/lib_plugin/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos/Protocol: protocol plugin registerer"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v11.0-rc2/tezos-v11.0-rc2.tar.bz2"
+  checksum: [
+    "sha256=d43bb36a37c1a1ed46994e566a74cd1e1a6005d67097f6bbeab85dcdd8cb7645"
+    "sha512=ca3bb9de4157e28302801dc4dd2900e6b536178c3194cd05093cd9817f39a082bf047661c75ed16bf360bbc6f859a9c73cee39666691252809fb32c3dd425711"
+  ]
+}
