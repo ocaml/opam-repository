@@ -1,0 +1,49 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "2.5" }
+  "tezos-client-base-unix" { = version }
+  "tezos-signer-services" { = version }
+]
+depopts: [
+  "tezos-client-alpha"
+  "tezos-client-005-PsBabyM1"
+  "tezos-client-006-PsCARTHA"
+  "tezos-client-007-PsDELPH1"
+  "tezos-client-008-PtEdo2Zk"
+  "tezos-client-009-PsFLoren"
+  "tezos-client-010-PtGRANAD"
+  "tezos-client-011-PtHangz2"
+  "tezos-client-alpha"
+]
+conflicts: [
+  "tezos-client-alpha" { != version }
+  "tezos-client-005-PsBabyM1" { != version }
+  "tezos-client-006-PsCARTHA" { != version }
+  "tezos-client-007-PsDELPH1" { != version }
+  "tezos-client-008-PtEdo2Zk" { != version }
+  "tezos-client-009-PsFLoren" { != version }
+  "tezos-client-010-PtGRANAD" { != version }
+  "tezos-client-011-PtHangz2" { != version }
+  "tezos-client-alpha" { != version }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/bin_codec/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: `tezos-codec` binary to encode and decode values"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v11.0-rc2/tezos-v11.0-rc2.tar.bz2"
+  checksum: [
+    "sha256=d43bb36a37c1a1ed46994e566a74cd1e1a6005d67097f6bbeab85dcdd8cb7645"
+    "sha512=ca3bb9de4157e28302801dc4dd2900e6b536178c3194cd05093cd9817f39a082bf047661c75ed16bf360bbc6f859a9c73cee39666691252809fb32c3dd425711"
+  ]
+}
