@@ -1,0 +1,50 @@
+From 78638407b23633fe0f364321945b151929c93a99 Mon Sep 17 00:00:00 2001
+From: Marek Kubica <marek@tarides.com>
+Date: Fri, 5 Nov 2021 10:27:00 +0100
+Subject: [PATCH] Specify a message in the git tests
+
+The ancient git version in CentOS 7 (1.8.3.1) has a but where despite
+`--allow-empty-message` it will not accept `-m ''` so to fix this we set
+a (boring) message to commit.
+---
+ tests/bin/version-from-tag/run.t | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tests/bin/version-from-tag/run.t b/tests/bin/version-from-tag/run.t
+index 494314ad..00234733 100644
+--- a/tests/bin/version-from-tag/run.t
++++ b/tests/bin/version-from-tag/run.t
+@@ -29,7 +29,7 @@ We need to set up a git project with two commits to test trying to tag different
+ 
+   $ git init 2> /dev/null > /dev/null
+   $ git add whatever.opam dune-project .gitignore CHANGES.md README.md LICENSE
+-  $ git commit -m "" --allow-empty-message --quiet
++  $ git commit -m "Testing" --quiet
+ 
+ Creating a `git tag` manually since the project might be using this workflow
+ 
+@@ -39,21 +39,21 @@ Creating a `git tag` manually since the project might be using this workflow
+ 
+ Also, while not the preferred way, unannotated tags should be possible as well
+ 
+-  $ git commit --allow-empty -m '' --allow-empty-message --quiet
++  $ git commit --allow-empty -m "Testing" --quiet
+   $ git tag 42.0
+   $ dune-release distrib --dry-run | grep "Archive _build/"
+   [+] Archive _build/whatever-42.0.tbz
+ 
+ It should also properly map back tags to releases
+ 
+-  $ git commit --allow-empty -m '' --allow-empty-message --quiet
++  $ git commit --allow-empty -m "Testing" --quiet
+   $ git tag -a 1337.0_beta1 -m 'Release 1337~beta1'
+   $ dune-release distrib --dry-run | grep "Archive _build/"
+   [+] Archive _build/whatever-1337.0~beta1.tbz
+ 
+ Also, specifying the tag manually should work
+ 
+-  $ git commit --allow-empty -m '' --allow-empty-message --quiet
++  $ git commit --allow-empty -m 'Testing' --quiet
+   $ dune-release tag -y 9000_alpha3
+   [-] Using tag "9000_alpha3"
+   [+] Tagged HEAD with version 9000_alpha3
