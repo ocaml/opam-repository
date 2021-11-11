@@ -7,11 +7,11 @@ clean_tempdir () {
 }
 
 shopt -s nullglob
-for version in default 12 11 10 9 8 7 6 5 4 3; do
+for version in default 13 12 11 10 9 8 7 6 5 4 3; do
     if [ "$version" = default ]; then
         llvm_config=llvm-config
         llvm_version="$($llvm_config --version)" || continue
-        if [ $(printf "${llvm_version%%.*}\n13" | sort -n | head -n1) = 13 ]; then
+        if [ $(printf "${llvm_version%%.*}\n14" | sort -n | head -n1) = 14 ]; then
             continue
         fi
     else
@@ -32,12 +32,6 @@ for version in default 12 11 10 9 8 7 6 5 4 3; do
         if [ -z "$llvm_version" ]; then
             continue
         fi
-    fi
-
-    if [ "$llvm_version" = "12.0.1" ]; then
-        clangml440_configure_options="--with-llvm-version=12.0.0" # clangml.4.4.0 does not recognize 12.0.1
-    else
-        clangml440_configure_options="" # rely on clangml's ./configure autodetection
     fi
 
     LLVM_CFLAGS="$($llvm_config --cflags)"
@@ -87,10 +81,9 @@ EOF
     
     echo "config: \"$llvm_config\"" >> conf-libclang.config
     echo "version: \"$llvm_version\"" >> conf-libclang.config
-    echo "clangml440_configure_options: \"$clangml440_configure_options\"" >> conf-libclang.config
     exit 0
 done
 
-echo "Error: No usable version of LLVM <=12.0.x found."
+echo "Error: No usable version of LLVM <=13.0.x found."
 exit 1
 

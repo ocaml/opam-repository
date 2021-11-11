@@ -10,7 +10,7 @@ homepage: "https://memcad.gitlabpages.inria.fr/clangml/"
 doc: "https://memcad.gitlabpages.inria.fr/clangml/doc/clangml/index.html"
 bug-reports: "https://gitlab.inria.fr/memcad/clangml/issues"
 depends: [
-  "conf-libclang"
+  "conf-libclang" {<= "12"}
   "conf-ncurses"
   "conf-zlib"
   "dune" {>= "1.11.0"}
@@ -35,7 +35,7 @@ x-ci-accept-failures: [
 available: arch != "arm32" & arch != "ppc64" # Compiler segfaults on those architectures
 dev-repo: "git+https://gitlab.inria.fr/memcad/clangml"
 build: [
-  ["./configure" "--prefix=%{prefix}%" "--with-llvm-config=%{conf-libclang:config}%"]
+  ["./configure" "--prefix=%{prefix}%" "--with-llvm-config=%{conf-libclang:config}%" conf-libclang:clangml440_configure_options]
   ["dune" "build" "-p" name "-j" jobs "@install"
     "@runtest" {with-test}
     "@doc" {with-doc}]]
