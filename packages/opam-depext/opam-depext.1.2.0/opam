@@ -19,27 +19,13 @@ bug-reports: "https://github.com/ocaml/opam-depext/issues"
 depends: [
   "ocaml" {>= "4.00"}
   "base-unix"
-  "cmdliner" {>= "0.9.8" & dev}
-  "ocamlfind" {dev}
 ]
 available: opam-version >= "2.0.0~beta5"
 post-messages: [
-  "opam-depext is deprecated when used with opam >= 2.1. Please use opam install directly instead" {opam-version >= "2.1"}
+  "opam-depext is unnecessary when used with opam >= 2.1. Please use opam install directly instead" {opam-version >= "2.1"}
 ]
 flags: plugin
-build: [
-  [make] {!dev}
-  [
-    "ocamlfind"
-    "%{ocaml:native?ocamlopt:ocamlc}%"
-    "-package"
-    "unix,cmdliner"
-    "-linkpkg"
-    "-o"
-    "opam-depext"
-    "depext.ml"
-  ] {dev}
-]
+build: make
 dev-repo: "git+https://github.com/ocaml/opam-depext.git#2.0"
 url {
   src:
