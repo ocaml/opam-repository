@@ -1,0 +1,65 @@
+opam-version: "2.0"
+maintainer: "Reynir Björnsson <reynir@reynir.dk>"
+authors: ["Reynir Björnsson <reynir@reynir.dk>"]
+homepage: "https://github.com/roburio/builder-web"
+dev-repo: "git+https://github.com/roburio/builder-web.git"
+bug-reports: "https://github.com/roburio/builder-web/issues"
+license: "ISC"
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["sh" "-ex" "packaging/FreeBSD/create_package.sh"] {os = "freebsd"}
+  ["sh" "-ex" "packaging/debian/create_package.sh"] {os-family = "debian"}
+]
+
+depends: [
+  "ocaml" {>= "4.10.0"}
+  "dune" {>= "2.7.0"}
+  "builder" {>= "0.2.0"}
+  "dream" {>= "1.0.0~alpha2"}
+  "cstruct" {>= "6.0.0"}
+  "bos"
+  "hex"
+  "caqti"
+  "caqti-lwt"
+  "caqti-driver-sqlite3"
+  "pbkdf"
+  "mirage-crypto-rng"
+  "scrypt-kdf"
+  "alcotest" {with-test}
+  "opam-core"
+  "opam-format"
+  "metrics"
+  "metrics-lwt"
+  "metrics-influx"
+  "metrics-rusage"
+  "ipaddr"
+  "tyxml"
+  "ptime"
+  "duration"
+  "mirage-crypto"
+  "asn1-combinators"
+  "logs"
+  "cmdliner"
+  "uri"
+  "fmt" {>= "0.8.7"}
+  "omd"
+]
+
+synopsis: "Web interface for builder"
+description: """
+Builder-web takes in submissions of builds, typically from [builder](https://github.com/roburio/builder/), and displays the produced artifacts in a way that makes it easy to compare checksums and build status.
+Produced binaries can be downloaded and executed.
+[builds.robur.coop](https://builds.robur.coop/) itself runs builder-web.
+"""
+url {
+  src:
+    "https://github.com/roburio/builder-web/releases/download/v0.1.0/builder-web-v0.1.0.tbz"
+  checksum: [
+    "sha256=1bca14aa4a9a3471ce422c6ad8d98553a4fa0a1b373e8224a49c6fa8702b1e65"
+    "sha512=c7085e454b6a9cdf37eea746ef592ebbd3ab795e28579b46a5d539097a550786f52759ab81c8bbb6fd36fc1f304a40c089a9715984bddda47e6716340a29ced5"
+  ]
+}
+x-commit-hash: "fb9391fe613a8bdf188afb26ac0f621728657047"
