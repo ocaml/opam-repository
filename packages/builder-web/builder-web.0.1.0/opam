@@ -1,0 +1,66 @@
+opam-version: "2.0"
+maintainer: "Reynir Björnsson <reynir@reynir.dk>"
+authors: ["Reynir Björnsson <reynir@reynir.dk>"]
+homepage: "https://github.com/roburio/builder-web"
+dev-repo: "git+https://github.com/roburio/builder-web.git"
+bug-reports: "https://github.com/roburio/builder-web/issues"
+license: "ISC"
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["sh" "-ex" "packaging/FreeBSD/create_package.sh"] {os = "freebsd"}
+  ["sh" "-ex" "packaging/debian/create_package.sh"] {os-family = "debian"}
+]
+
+depends: [
+  "ocaml" {>= "4.10.0"}
+  "dune" {>= "2.7.0"}
+  "builder" {>= "0.2.0"}
+  "dream" {>= "1.0.0~alpha2"}
+  "cstruct" {>= "6.0.0"}
+  "bos"
+  "hex"
+  "lwt" {>= "5.3.0"}
+  "caqti"
+  "caqti-lwt"
+  "caqti-driver-sqlite3"
+  "pbkdf"
+  "mirage-crypto-rng"
+  "scrypt-kdf"
+  "alcotest" {with-test}
+  "opam-core"
+  "opam-format" {>= "2.1.0"}
+  "metrics" {>= "0.3.0"}
+  "metrics-lwt" {>= "0.3.0"}
+  "metrics-influx" {>= "0.3.0"}
+  "metrics-rusage" {>= "0.3.0"}
+  "ipaddr"
+  "tyxml" {>= "4.3.0"}
+  "ptime"
+  "duration"
+  "mirage-crypto"
+  "asn1-combinators"
+  "logs"
+  "cmdliner"
+  "uri"
+  "fmt" {>= "0.8.7"}
+  "omd"
+]
+
+synopsis: "Web interface for builder"
+description: """
+Builder-web takes in submissions of builds, typically from [builder](https://github.com/roburio/builder/), and displays the produced artifacts in a way that makes it easy to compare checksums and build status.
+Produced binaries can be downloaded and executed.
+[builds.robur.coop](https://builds.robur.coop/) itself runs builder-web.
+"""
+url {
+  src:
+    "https://github.com/roburio/builder-web/releases/download/v0.1.0/builder-web-v0.1.0.tbz"
+  checksum: [
+    "sha256=aaf4964cb2f82bfd260cf501e5dd16629193c8f761b9bc7556bdf1e904dbfa19"
+    "sha512=f5dadeccead601f0b230d8bdd4ddde842ce4e353dcf38eb317e33d4a8ee9adda9aaae642277c75b460331ace8075bdc41ce0130ab045c97410a5f40aa3ea384c"
+  ]
+}
+x-commit-hash: "294a46df866347c2bc3c7f834f6de61182d61554"
