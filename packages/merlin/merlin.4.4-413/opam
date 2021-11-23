@@ -8,9 +8,8 @@ license:      "MIT"
 build: [
   ["dune" "subst"] {dev}
   ["dune" "build" "-p" name "-j" jobs]
-  ["dune" "runtest" "-p" "merlin,dot-merlin-reader" "-j" jobs] {with-test}
+  ["dune" "runtest" "-p" "merlin,dot-merlin-reader" "-j" "1"] {with-test}
 ]
-flags: avoid-version
 depends: [
   "ocaml" {>= "4.13" & < "4.14"}
   "dune" {>= "2.9.0"}
@@ -42,7 +41,7 @@ Also run the following line in vim to index the documentation:
 Quick setup for EMACS
 -------------------
 Add opam emacs directory to your load-path by appending this to your .emacs:
-  (let ((opam-share (ignore-errors (car (process-lines \"opam\" \"config\" \"var\" \"share\")))))
+  (let ((opam-share (ignore-errors (car (process-lines \"opam\" \"var\" \"share\")))))
    (when (and opam-share (file-directory-p opam-share))
     ;; Register Merlin
     (add-to-list 'load-path (expand-file-name \"emacs/site-lisp\" opam-share))
@@ -67,8 +66,12 @@ See https://github.com/OCamlPro/opam-user-setup
 "
   {success & !user-setup:installed}
 ]
-x-commit-hash: "ba8ec63cf40b8999238c4639d111ca3bdb1e34cf"
 url {
-  src: "git+https://github.com/kit-ty-kate/merlin.git#4.13"
+  src:
+    "https://github.com/ocaml/merlin/releases/download/v4.4-413/merlin-4.4-413.tbz"
+  checksum: [
+    "sha256=609edc65b23b6ead83f98af0c90180e5c8f98b0619a9257828f9f18b9f8095c6"
+    "sha512=b0bf3c7d72dfc7c70e22d60afca5b7fee71a35127839181fdb46e1e15a230e58765960548c545bbef4fdab180291c738cacb724b9ecf284eee5640ebef07c4ff"
+  ]
 }
-available: false # preview packages are not meant to be used indefinitely
+x-commit-hash: "7607238326a9352cbee9ecf612669e28ae9fa36e"
