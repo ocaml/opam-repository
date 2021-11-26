@@ -1,6 +1,9 @@
 opam-version: "2.0"
-synopsis: "LSP Server for OCaml"
-description: "An LSP server for OCaml."
+synopsis: "LSP protocol implementation in OCaml"
+description: """
+Implementation of the LSP protocol in OCaml. It is designed to be as portable as
+possible and does not make any assumptions about IO.
+"""
 maintainer: ["Rudi Grinberg <me@rgrinerg.com>"]
 authors: [
   "Andrey Popp <8mayday@gmail.com>"
@@ -17,34 +20,38 @@ authors: [
 license: "ISC"
 homepage: "https://github.com/ocaml/ocaml-lsp"
 bug-reports: "https://github.com/ocaml/ocaml-lsp/issues"
-flags: avoid-version
 depends: [
   "dune" {>= "2.9"}
+  "jsonrpc" {= version}
   "yojson"
-  "re" {>= "1.5.0"}
   "ppx_yojson_conv_lib" {>= "v0.14"}
-  "dune-build-info"
-  "dot-merlin-reader"
-  "pp" {>= "1.1.2"}
+  "pp"
   "csexp" {>= "1.5"}
-  "result" {>= "1.5"}
-  "ocamlformat-rpc-lib" {>= "0.18.0" & < "0.20.0"}
+  "uutf"
   "odoc" {with-doc}
-  "ocaml" {>= "4.13" & < "4.14"}
+  "ocaml" {>= "4.12"}
 ]
 dev-repo: "git+https://github.com/ocaml/ocaml-lsp.git"
 build: [
   ["dune" "subst"] {dev}
+  ["ocaml" "unix.cma" "unvendor.ml"]
   [
     "dune"
     "build"
+    "-p"
+    name
     "-j"
     jobs
-    "ocaml-lsp-server.install"
-    "--release"
+    "@install"
+    "@doc" {with-doc}
   ]
 ]
 url {
-  src: "git+https://github.com/kit-ty-kate/ocaml-lsp.git#413"
+  src:
+    "https://github.com/ocaml/ocaml-lsp/releases/download/1.9.1/jsonrpc-1.9.1.tbz"
+  checksum: [
+    "sha256=cf1cdb257d4ef1ed1a05e951264b11c7dc7d3066bf448111cb17c67be56ddcee"
+    "sha512=1f073db86a8d44e5a4501f0d5c233f07f2dd4e8dd6abb918ef50846031af63e4ab9b408fffd9b32d1a7e9e5c7343c9b6ce97b07effed8359f7b610818f78e967"
+  ]
 }
-available: false # preview packages are not meant to be used indefinitely
+x-commit-hash: "435d22d25561b36010e4c6c07d52e413d4063bdf"
