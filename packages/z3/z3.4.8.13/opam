@@ -9,12 +9,14 @@ depexts: [
   ["python3-distutils"] {os-family = "debian"}
 ]
 build: [
-  [ "python3" "scripts/mk_make.py" "--ml"]
+  [ "python3" "scripts/mk_make.py" "--ml" "--staticlib" ] {os != "macos"}
+  [ "python3" "scripts/mk_make.py" "--ml" ]                {os = "macos"}
   [ make "-C" "build" "-j" jobs ]
 ]
 
 install: [
-  [ "sh" "-c" "ocamlfind install z3 build/api/ml/* -dll build/libz3.*"]
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/* build/libz3.a"]     {os != "macos"}
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/* -dll build/libz3.*"] {os = "macos"}
   [ "cp" "build/z3" "%{bin}%/z3"]
 ]
 
