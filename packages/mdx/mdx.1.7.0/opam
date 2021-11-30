@@ -8,17 +8,18 @@ bug-reports:  "https://github.com/realworldocaml/mdx/issues"
 doc:          "https://realworldocaml.github.io/mdx/"
 
 build: [
- ["dune" "subst"] {pinned}
+ ["dune" "subst"] {dev}
  ["dune" "build" "-p" name "-j" jobs]
- ["dune" "runtest" "-p" name] {with-test}
+ ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
 
 depends: [
   "ocaml" {>= "4.02.3" & < "4.12.0"}
   "dune" {>= "2.0"}
-  "ocamlfind"
-  "fmt"
-  "cppo" {build}
+  "dune" {with-test & < "2.8.0"}
+  "ocamlfind" {>= "1.7.2"}
+  "fmt" {>= "0.8.5"}
+  "cppo" {build & >= "1.1.0"}
   "astring"
   "logs"
   "cmdliner" {>= "1.0.0"}

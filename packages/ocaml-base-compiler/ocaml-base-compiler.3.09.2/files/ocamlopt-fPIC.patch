@@ -1,0 +1,34 @@
+From a61bcb0f6c4863e3f6cb184d1a620413cf71ac05 Mon Sep 17 00:00:00 2001
+From: Xavier Leroy <xavier.leroy@inria.fr>
+Date: Mon, 1 Jan 2007 13:07:35 +0000
+Subject: [PATCH 2/3] Produce position-independent code by default.  This makes
+ it easier to embed Caml code in a shared library.
+
+git-svn-id: http://caml.inria.fr/svn/ocaml/trunk@7784 f963ae5c-01c2-4b8c-9fe0-0dff7051ff02
+---
+ asmcomp/amd64/arch.ml | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/asmcomp/amd64/arch.ml b/asmcomp/amd64/arch.ml
+index d9b174bc0..3e8f4b111 100644
+--- a/asmcomp/amd64/arch.ml
++++ b/asmcomp/amd64/arch.ml
+@@ -14,11 +14,13 @@
+ 
+ (* Machine-specific command-line options *)
+ 
+-let pic_code = ref false
++let pic_code = ref true
+ 
+ let command_line_options =
+   [ "-fPIC", Arg.Set pic_code,
+-      " Generate position-independent machine code" ]
++      " Generate position-independent machine code (default)";
++    "-fno-PIC", Arg.Clear pic_code,
++      " Generate position-dependent machine code" ]
+ 
+ (* Specific operations for the AMD64 processor *)
+ 
+-- 
+2.27.0
+

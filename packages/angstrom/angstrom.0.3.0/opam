@@ -1,5 +1,4 @@
 opam-version: "2.0"
-name: "angstrom"
 maintainer: "Spiros Eliopoulos <spiros@inhabitedtype.com>"
 authors: [ "Spiros Eliopoulos <spiros@inhabitedtype.com>" ]
 license: "BSD-3-Clause"
@@ -11,27 +10,23 @@ build: [
     "ocaml"
     "setup.ml"
     "-configure"
-    "--prefix"
-    prefix
+    "--prefix" prefix
     "--%{base-unix:enable}%-unix"
     "--%{lwt:enable}%-lwt"
     "--%{async:enable}%-async"
+    "--enable-tests" {with-test}
   ]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
-  ["ocaml" "setup.ml" "-build"] {with-test}
   ["ocaml" "setup.ml" "-test"] {with-test}
 ]
 install: ["ocaml" "setup.ml" "-install"]
-remove: [
-  ["ocamlfind" "remove" "angstrom"]
-]
 depends: [
   "ocaml" {>= "4.02.0" & < "4.06.0"}
   "alcotest" {with-test & >= "0.6.0" & < "0.8.0"}
   "cstruct" {>= "0.7.0"}
   "ocplib-endian" {>= "0.6"}
   "ocamlfind" {build}
+  "ocamlbuild" {build}
   "result"
 ]
 depopts: [
@@ -39,7 +34,9 @@ depopts: [
   "base-unix"
   "lwt"
 ]
-conflicts: ["async" {>= "v0.10.0"}]
+conflicts: [
+  "async" {>= "v0.10.0"}
+]
 synopsis: "Parser combinators built for speed and memory-efficiency"
 description: """
 Angstrom is a parser-combinator library that makes it easy to write efficient,
@@ -49,7 +46,6 @@ incremental input through buffered and unbuffered interfaces. Both interfaces
 give the user total control over the blocking behavior of their application,
 with the unbuffered interface enabling zero-copy IO. Parsers are backtracking
 by default and support unbounded lookahead."""
-flags: light-uninstall
 url {
   src: "https://github.com/inhabitedtype/angstrom/archive/0.3.0.tar.gz"
   checksum: "md5=a9c1dddae30b589ca5f00dd7efe6be9a"

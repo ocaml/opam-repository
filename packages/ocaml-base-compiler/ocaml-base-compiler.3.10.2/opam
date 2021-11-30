@@ -1,6 +1,11 @@
 opam-version: "2.0"
 synopsis: "Official 3.10.2 release"
 maintainer: "platform@lists.ocaml.org"
+license: "QPL-1.0 AND LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+authors: ["Xavier Leroy" "Damien Doligez" "Jacques Garrigue" "Didier Rémy" "Jérôme Vouillon"]
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git+https://github.com/ocaml/ocaml.git#3.10"
 depends: [
   "ocaml" {= "3.10.2" & post}
   "base-unix" {post}
@@ -31,8 +36,10 @@ install: [
   ["mkdir" "-p" "%{prefix}%/lib/ocaml/compiler-libs"]
   ["cp" "-r" "typing" "parsing" "utils" "%{prefix}%/lib/ocaml/compiler-libs/"]
 ]
+patches: ["pr4867.patch"]
 url {
   src: "http://caml.inria.fr/pub/distrib/ocaml-3.10/ocaml-3.10.2.tar.gz"
   checksum: "md5=52c795592c90ecb15c2c4754f04eeff4"
 }
-available: !(os = "macos" & arch = "arm64")
+extra-files: ["pr4867.patch" "md5=3875e5e32cfa8b639785e0963e9eb7c4"]
+available: arch != "arm64" & arch != "arm32" & arch != "ppc64"

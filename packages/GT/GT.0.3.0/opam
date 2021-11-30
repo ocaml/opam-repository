@@ -1,6 +1,5 @@
 opam-version: "2.0"
 
-name: "GT"
 synopsis: "Generic programming with extensible transformations"
 description: """
 Yet another library for generic programming. Provides syntax extensions
@@ -14,7 +13,6 @@ During desing of a library of these kind there many possible
 design decision and in many cases we decided to implement
 the decision opposite to the one used in `visitors`.
 """
-version: "0.3.0"
 
 maintainer: "kakadu.hafanana@gmail.com"
 authors: ["https://github.com/dboulytchev" "https://github.com/Kakadu"]
@@ -25,8 +23,9 @@ depends: [
   "ocaml"      { >= "4.10.0" }    
     # 4.10 is required only because camlp5 has a few glitches in old compilers 
     # because a few features are not properly backported (and probably will never be)
-  "camlp5"     { >= "8" | = "8.00~alpha04" | = "8.00~alpha05" }
+  "camlp5"     { >= "8.00~alpha01" & < "8.00" }
   "ocamlfind"  { build }
+  "conf-m4"    { build }
   "dune"       { > "2.7" }
   "ocamlgraph"
   "ppxlib"     {>= "0.9.0" & <= "0.13.0" }
@@ -34,10 +33,10 @@ depends: [
 ]
 
 build: [
-  ["dune" "subst"] {pinned}
+  ["dune" "subst"] {dev}
   ["dune" "build" "-p" "GT,GT-p5" "-j" jobs]
 ]
-install: [make "install"]
+install: ["dune" "install" "-p" "GT,GT-p5"]
 
 dev-repo: "git+https://github.com/JetBrains-Research/GT.git"
 url {

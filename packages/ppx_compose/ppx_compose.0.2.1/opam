@@ -1,0 +1,54 @@
+opam-version: "2.0"
+maintainer: "Petter A. Urkedal <paurkedal@gmail.com>"
+authors: "Petter A. Urkedal <paurkedal@gmail.com>"
+license: "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
+homepage: "https://github.com/paurkedal/ppx_compose"
+bug-reports: "https://github.com/paurkedal/ppx_compose/issues"
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "dune" {>= "1.1"}
+  "ppxlib"
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/paurkedal/ppx_compose.git"
+synopsis: "Inlined function composition"
+description: """
+`ppx_compose` is a simple syntax extension which rewrites code containing
+function compositions into composition-free code, effectively inlining the
+composition operators.  The following two operators are supported
+
+    let (%) g f x = g (f x)
+    let (%>) f g x = g (f x)
+
+Corresponding definitions are not provided, so partial applications of `(%)`
+and `(%>)` will be undefined unless you provide the definitions.
+
+The following rewrites are done:
+
+  * A composition occurring to the left of an application is reduced by
+    applying each term of the composition from right to left to the
+    argument, ignoring associative variations.
+
+  * A composition which is not the left side of an application is first
+    turned into one by η-expansion, then the above rule applies.
+
+  * Any partially applied composition operators are passed though unchanged.
+
+E.g.
+
+    h % g % f ==> (fun x -> h (f (g x)))
+    h % (g % f) ==> (fun x -> h (f (g x)))
+    (g % f) (h % h) ==> g (f (fun x -> h (h x)))
+"""
+url {
+  src:
+    "https://github.com/paurkedal/ppx_compose/releases/download/v0.2.1/ppx_compose-v0.2.1.tbz"
+  checksum: [
+    "sha256=414f72a7659f2e85cf87ddcbf9981f793aa78ea3a607c35a8237e5ee305811b3"
+    "sha512=d69bfab88b4d4949bc5189724f954f33e1c2fa36d9fcf1dded351d379c241345533bf12bf493b26acbbcb6bd726674c22c934f037ec0b2820b6a5f99cfbc9ba3"
+  ]
+}
+x-commit-hash: "e2d9f5316742fff0f365ec264daa65d8c2a2c9a2"

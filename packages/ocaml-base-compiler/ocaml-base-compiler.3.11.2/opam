@@ -1,6 +1,11 @@
 opam-version: "2.0"
 synopsis: "Official 3.11.2 release"
 maintainer: "platform@lists.ocaml.org"
+license: "QPL-1.0 AND LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+authors: ["Xavier Leroy" "Damien Doligez" "Jacques Garrigue" "Didier Rémy" "Jérôme Vouillon"]
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git+https://github.com/ocaml/ocaml.git#3.11"
 depends: [
   "ocaml" {= "3.11.2" & post}
   "base-unix" {post}
@@ -31,13 +36,10 @@ install: [
   ["mkdir" "-p" "%{prefix}%/lib/ocaml/compiler-libs"]
   ["cp" "-r" "typing" "parsing" "utils" "%{prefix}%/lib/ocaml/compiler-libs/"]
 ]
-patches: "3.11.2_binutils.patch"
+patches: ["pr5237.patch"]
 url {
   src: "http://caml.inria.fr/pub/distrib/ocaml-3.11/ocaml-3.11.2.tar.gz"
   checksum: "md5=9d0611245122ffbc8263735cae1da7fb"
 }
-extra-source "3.11.2_binutils.patch" {
-  src: "http://www.ocamlpro.com/patches/3.11.2_binutils.patch"
-  checksum: "md5=041f12c823520d687a7bbbce10cd57e3"
-}
-available: !(os = "macos" & arch = "arm64")
+extra-files: ["pr5237.patch" "md5=ed296f21546aaea6cf62e6dc4ac2e28f"]
+available: arch != "arm64" & arch != "arm32" & arch != "ppc64"

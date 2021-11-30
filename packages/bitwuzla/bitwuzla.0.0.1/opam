@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "SMT solver for QF_AUFBVFP"
+description: """
+
+OCaml binding for the SMT solver Bitwuzla.
+
+Bitwuzla is a Satisfiability Modulo Theories (SMT) solver for the theories of fixed-size bit-vectors, arrays and uninterpreted functions and their combinations. Its name is derived from an Austrian dialect expression that can be translated as “someone who tinkers with bits”."""
+maintainer: ["Frédéric Recoules <frederic.recoules@cea.fr>"]
+authors: ["Frédéric Recoules"]
+license: "MIT"
+tags: ["SMT solver" "SMT-COMP 2020" "QF_AUFBVFP"]
+homepage: "https://bitwuzla.github.io"
+doc: "https://bitwuzla.github.io/docs/ocaml/"
+bug-reports: "https://github.com/bitwuzla/ocaml-bitwuzla/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.08"}
+  "conf-git" {build}
+  "conf-gcc" {build}
+  "conf-g++" {build}
+  "conf-gmp"
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+]
+depopts: ["zarith"]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/bitwuzla/ocaml-bitwuzla.git"
+x-commit-hash: "e070b27a7d44df3e74b4f3447122afe5f016e344"
+url {
+  src:
+    "https://github.com/bitwuzla/ocaml-bitwuzla/releases/download/0.0.1/bitwuzla-0.0.1.tbz"
+  checksum: [
+    "sha256=2c486dbb38240297ddf18b118c5df552acf748630e0d63f6e12ce96f6ad42645"
+    "sha512=7cd047a5d64444077381222d8c3190689b6b6160ed2fa2520eafc3e1ed267cfb9b2aa4580ae5b6b3d1294aa55fa08a76c2098adff51098beb4535a37c6175dc4"
+  ]
+}
+available: [ os = "linux" & (os-distribution != "ol" & os-distribution != "centos" | os-version >= 8) ]

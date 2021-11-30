@@ -11,7 +11,7 @@ doc: "https://0x0f0f0f.github.io/gobba"
 
 build: [
   ["dune" "build" "-p" name "-j" jobs]
-  ["sh" "-c" "GOBBA_EXAMPLES=$(realpath ./examples/) dune runtest -p %{name}% -j %{jobs}%"] {with-test}
+  ["sh" "-c" "GOBBA_EXAMPLES=$(realpath ./examples/) dune runtest -p %{name}% -j %{jobs}%"] {with-test & arch != "x86_32" & arch != "arm32"}
 ]
 
 depends: [
@@ -23,7 +23,7 @@ depends: [
     "ppx_deriving"
     "cmdliner"
     "alcotest" {with-test & >= "0.8.5"}
-    "bisect_ppx" {with-test >= "1.4.1"}
+    "bisect_ppx" {with-test >= "1.4.1" & < "2.6.0"}
 ]
 url {
   src:

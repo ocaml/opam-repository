@@ -6,20 +6,24 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "MIT"
 extra-files: ["test.rs" "md5=639e04c270fef8589636e0416761a67b"]
 build: [
-  ["which" "cargo"]
-  ["which" "rustc"]
+  ["cargo" "--version"]
   ["rustc" "--edition" "2018" "test.rs"]
 ]
-depends: ["conf-which" {build}]
 depexts: [
-  ["cargo"] {os-distribution = "centos"}
+  ["cargo"] {os-distribution = "centos" & os-version >= "8"}
+  ["cargo"] {os-distribution = "ol" & os-version >= "8"}
   ["cargo"] {os-distribution = "fedora"}
   ["cargo"] {os-family = "suse"}
   ["cargo"] {os-family = "debian"}
+  ["cargo"] {os-family = "ubuntu"}
   ["cargo"] {os-distribution = "nixos"}
-  ["cargo"] {os-distribution = "alpine"}
-  ["rust"] {os-distribution = "arch"}
+  ["cargo"] {os-family = "alpine"}
+  ["rust"] {os-family = "arch"}
   ["rust"] {os = "macos" & os-distribution = "homebrew"}
+]
+x-ci-accept-failures: [
+  "centos-7" # does not have cargo by default
+  "oraclelinux-7" # does not have cargo by default
 ]
 synopsis: "Virtual package relying on cargo (rust build system)"
 description:

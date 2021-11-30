@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis: "Opam solver using 0install backend using the CUDF interface"
+description: """
+Opam's default solver is designed to maintain a set of packages
+over time, minimising disruption when installing new programs and
+finding a compromise solution across all packages.
+
+In many situations (e.g. CI, local roots or duniverse builds) this
+is not necessary, and we can get a solution much faster by using
+a different algorithm.
+
+This package uses 0install's solver algorithm with opam packages using
+the CUDF interface.
+"""
+maintainer: ["talex5@gmail.com"]
+authors: ["talex5@gmail.com"]
+license: "ISC"
+homepage: "https://github.com/ocaml-opam/opam-0install-solver"
+doc: "https://ocaml-opam.github.io/opam-0install-solver/"
+bug-reports: "https://github.com/ocaml-opam/opam-0install-solver/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "cudf"
+  "ocaml" {>= "4.08.0"}
+  "0install-solver"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-opam/opam-0install-solver.git"
+url {
+  src:
+    "https://github.com/ocaml-opam/opam-0install-solver/releases/download/v0.4.2/opam-0install-cudf-v0.4.2.tbz"
+  checksum: [
+    "sha256=b95717ca5b377357bcbabab3374c189f6edda3a1d8229a139910d10421519583"
+    "sha512=d818f9ad62888a5bcb5e22db394b2a310afd22fbc313a3b16f5488ab5b19c4f05bb9ddee82a2f2842f5bd034f703175db4d5ad963d57514647793c2a1da70680"
+  ]
+}
+x-commit-hash: "eb08da5434a8c8227af39927b99b5cc15e82c053"

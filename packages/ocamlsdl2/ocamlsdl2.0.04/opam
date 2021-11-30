@@ -1,0 +1,50 @@
+opam-version: "2.0"
+maintainer: "monnier.florent@gmail.com"
+authors: [
+  "Florent Monnier"
+  "Piotr Mardziel"
+  "David Cadé"
+  "Guillaume Munch-Maccagnoni"
+]
+license: "restrictionless Zlib"
+homepage: "https://github.com/fccm/OCamlSDL2"
+bug-reports: "https://github.com/fccm/OCamlSDL2/issues"
+dev-repo: "git+https://github.com/fccm/OCamlSDL2.git"
+doc: "https://fccm.github.io/OCamlSDL2/"
+tags: [
+  "bindings" "graphics" "audio" "multimedia" "opengl"
+  "cross-platform"
+]
+synopsis: "Interface to the SDL2 library"
+description: """
+An OCaml interface to the SDL2 multimedia library for Linux, MacOS and Windows.
+
+SDL2 homepage: https://www.libsdl.org/
+
+This version of the bindings is known to work with SDL2 versions
+2.0.9 and 2.0.10
+"""
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "ocamlfind" {build}
+  "conf-sdl2"
+]
+build: [
+  ["cp" "src/Makefile.config.unix" "src/Makefile.config"] {"%{os}%" != "win32"}
+  ["cp" "src/Makefile.config.win32" "src/Makefile.config"] {"%{os}%" = "win32"}
+  [make "-C" "src" "gen"]
+  [make "-C" "src" "dep"]
+  [make "-C" "src" "opt"]
+  [make "-C" "src" "byte"]
+]
+install: [
+  [make "-C" "src" "findinstall"]
+  [make "-C" "src" "findinstall_h"]
+]
+url {
+  src: "https://github.com/fccm/OCamlSDL2/archive/v0.04.tar.gz"
+  checksum: [
+    "md5=558ed0f7b9ca3dfed2c67a4ec5b821db"
+    "sha256=a48d64d1e53619519e8a16260b06536a59159337561f048281fd9c71b4d113e3"
+  ]
+}

@@ -11,8 +11,8 @@ dev-repo: "git+https://github.com/mmottl/gsl-ocaml.git"
 bug-reports: "https://github.com/mmottl/gsl-ocaml/issues"
 
 build: [
-  ["jbuilder" "subst" "-p" name]{pinned}
-  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "subst" "-p" name] {dev}
+  ["jbuilder" "build" "-p" name "-j" "1"] # race condition
 ]
 
 depends: [
@@ -24,6 +24,7 @@ depends: [
   "configurator" {build & < "v0.13"}
   "jbuilder" {>= "1.0+beta10"}
 ]
+available: arch != "arm32"
 synopsis: "GSL - Bindings to the GNU Scientific Library"
 description: """
 gsl-ocaml interfaces the GSL (GNU Scientific Library), providing many of the

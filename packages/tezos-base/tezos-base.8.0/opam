@@ -1,0 +1,31 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "2.0" }
+  "tezos-crypto" { = version }
+  "tezos-micheline" { = version }
+  "ptime" { >= "0.8.4" }
+  "ezjsonm" { >= "0.5.0" }
+  "ipaddr" {>= "5.0.0" & < "6.0.0"}
+  "crowbar" { with-test }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/lib_base/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] { with-test & ( arch = "x86_64" | arch = "arm64" ) }
+]
+synopsis: "Tezos: meta-package and pervasive type definitions for Tezos"
+
+url {
+  src: "https://gitlab.com/nomadic-labs/tezos/-/archive/v8.0/tezos-v8.0.tar.bz2"
+  checksum: [
+    "sha256=82b83e450c68c091af43da456fb5dce141f355a1a6c1b0a178d26153599138a5"
+    "sha512=6bc82c18c47987a3b2031c5e6cf005e21ec7fbf0ee83070a957e7b0456c053aa6356a0b4e620ef5d85f73d64aedcc58e8d7095906f400254b3b620cc631a4822"
+  ]
+}

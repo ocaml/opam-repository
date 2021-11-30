@@ -1,0 +1,50 @@
+opam-version: "2.0"
+
+synopsis: "Generic programming with extensible transformations"
+description: """
+Yet another library for generic programming. Provides syntax extensions
+both for camlp5 and PPX which allow decoration of type declarations with
+following compile-time code generation. Provides the way for creating
+plugins (compiled separately from the library) for enchancing supported
+type transformations.
+
+Strongly remids the `visitors` library from François Pottier.
+During desing of a library of these kind there many possible
+design decision and in many cases we decided to implement
+the decision opposite to the one used in `visitors`.
+"""
+
+maintainer: "kakadu@pm.me"
+authors: ["https://github.com/dboulytchev" "https://github.com/Kakadu"]
+homepage: "https://github.com/JetBrains-Research/GT"
+bug-reports: "https://github.com/JetBrains-Research/GT/issues"
+
+depends: [
+  "ocaml"      { >= "4.10.0" & < "4.12" }
+    # 4.10 is required only because camlp5 has a few glitches in old compilers
+    # because a few features are not properly backported (and probably will never be)
+  "camlp5"     { >= "8.00" }
+  "ocamlfind"  { build }
+  "conf-m4"    { build }
+  "dune"       { >= "2.7.1" }
+  "ocamlgraph"
+  "ppxlib"     {>= "0.18.0" & < "0.21.0" }
+  "ocaml-migrate-parsetree" { >= "2.1.0" }
+  "base"
+  "ppx_expect" {with-test}
+]
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" "GT,GT-p5" "-j" jobs]
+]
+install: ["dune" "install" "-p" "GT,GT-p5"]
+
+dev-repo: "git+https://github.com/JetBrains-Research/GT.git"
+url {
+  src: "https://github.com/Kakadu/GT/archive/v0.4.0.zip"
+  checksum: [
+    "sha256=4b4d220fc64f2d508a77d229c61ec199308f4f6182c19543c96842749bb9ac3c"
+    "sha512=f295b48b23016743111867b746c97cfedccd6f32497a0a5df454fcd7f66338404604fbdfaad44210f34b56a4aca0a3f96de5cc6427191468a567128850d380c4"
+  ]
+}

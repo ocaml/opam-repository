@@ -1,0 +1,30 @@
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+homepage: "http://www.plplot.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: "Plplot dev team"
+license: "LGPL-2.1-or-later"
+build: ["sh" "-exc" "pkg-config --exists plplot || pkg-config --exists plplotd"]
+depends: [
+  "conf-pkg-config" {build}
+]
+depexts: [
+  ["libplplot-dev" "libshp-dev"] {os-family = "debian"}
+  ["plplot"] {os = "macos" & os-distribution = "homebrew"}
+  ["plplot-devel"] {os-family = "rhel"}
+  ["plplot-devel"] {os-distribution = "fedora"}
+  ["plplot-devel"] {os-family = "suse"}
+  ["plplot-devel" "epel-release"] {os-distribution = "centos"}
+  ["plplot"] {os-distribution = "nixos"}
+]
+x-ci-accept-failures: [
+  # plplot is not available on these platforms
+  "alpine-3.12"
+  "archlinux"
+  "oraclelinux-7"
+  "oraclelinux-8"
+]
+synopsis: "Virtual package relying on plplot"
+description:
+  "This package can only install if the plplot library is installed on the system."
+flags: conf

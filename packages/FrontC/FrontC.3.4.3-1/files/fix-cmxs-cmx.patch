@@ -1,0 +1,31 @@
+diff --git a/Makefile.head b/Makefile.head
+index 88e5b65..5f9969f 100644
+--- a/Makefile.head
++++ b/Makefile.head
+@@ -100,8 +100,9 @@ $(1)_CMIX = $$(patsubst %.cmx,%.cmi,$$($(1)_CMX))
+ _DEPS += $$(patsubst %.cmx,$(DEP_DIR)/%.d,$$($(1)_CMX)) \
+ 	 $$(patsubst %.mly,$(DEP_DIR)/%.mli.d,$$($(1)_MLYX))
+ _PRE_DEPS += $$($(1)_MLX)
+-_DIST_CLEAN += $(1).cmxa $(1).a $$($(1)_CMIX)
++_DIST_CLEAN += $(1).cmxa $(1).cmxs $(1).a $$($(1)_CMIX)
+ _CLEAN += $$($(1)_CMX) \
++	$(1).cmxa $(1).cmxs \
+ 	$$(patsubst %.cmx,%.o,$$($(1)_CMX)) \
+ 	$$(patsubst %.mll,%.ml,$$($(1)_MLLX)) \
+ 	$$(patsubst %.mly,%.ml,$$($(1)_MLYX)) \
+@@ -113,12 +114,12 @@ _INSTALL += _install_$(1)_CMXA _install_$(1)_CMXS
+ $(1).cmxa: $$($(1)_CMX)
+ 	$$(OCAMLOPT) -a $$($(1)_LDFLAGS) $$(OCAMLOPT_LDFLAGS) -o $$@ $$($(1)_CMX) $$(OCAMLOPT_LIBS)
+ 
+-$(1).cmxs: $$($(1).cmxa)
+-	$$(OCAMLOPT) -shared -linkall $$($(1).cmxa) -o $$@
++$(1).cmxs: $(1).cmxa $(1).a
++	$$(OCAMLOPT) -shared -linkall $(1).cmxa -o $$@
+ 
+ _install_$(1)_CMXA:
+ 	install -d $(OCAML_SITE)/FrontC
+-	install $(1).cmxa $(1).a $$($(1)_CMIX) $(OCAML_SITE)/FrontC
++	install $(1).cmxa $(1).a $$($(1)_CMX) $$($(1)_CMIX) $(OCAML_SITE)/FrontC
+ 
+ _install_$(1)_CMXS:
+ 	install -d $(OCAML_SITE)/FrontC

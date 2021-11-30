@@ -26,17 +26,16 @@ homepage: "https://camlp5.github.io"
 doc: "https://camlp5.github.io/doc/html"
 bug-reports: "https://github.com/camlp5/camlp5/issues"
 depends: [
-  "ocaml" {>= "4.02" & <= "4.11.0"}
+  "ocaml" {>= "4.02" & <= "4.11.0" & != "4.10.1" & != "4.10.2" }
   "conf-perl"
+  "conf-perl-ipc-system-simple"
+  "conf-perl-string-shellquote"
 ]
 build: [
   ["./configure" "--prefix" prefix "-libdir" lib "-mandir" man]
   [make "world.opt"]
 ]
 install: [make "install"]
-depexts:
-  ["libstring-shellquote-perl" "libipc-system-simple-perl"]
-    {os-family = "debian"}
 
 post-messages:
   "To use mkcamlp5 and mkcamlp5.opt properly you will require Perl module which contains 'IPC/System/Simple.pm'. We currently don't know the right way to specify this dependecy on BSD and MacOS systems. You can use https://github.com/camlp5/camlp5/issues/66 for discussion."

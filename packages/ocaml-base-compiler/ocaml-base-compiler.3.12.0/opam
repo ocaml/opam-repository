@@ -1,6 +1,11 @@
 opam-version: "2.0"
 synopsis: "Official 3.12.0 release"
 maintainer: "platform@lists.ocaml.org"
+license: "QPL-1.0 AND LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+authors: ["Xavier Leroy" "Damien Doligez" "Alain Frisch" "Jacques Garrigue" "Didier Rémy" "Jérôme Vouillon"]
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git+https://github.com/ocaml/ocaml.git#3.12"
 depends: [
   "ocaml" {= "3.12.0" & post}
   "base-unix" {post}
@@ -31,13 +36,13 @@ install: [
   ["mkdir" "-p" "%{prefix}%/lib/ocaml/compiler-libs"]
   ["cp" "-r" "typing" "parsing" "utils" "%{prefix}%/lib/ocaml/compiler-libs/"]
 ]
-patches: "file_download.php?file_id=418&type=bug"
+patches: "fix-binutils.patch" {os != "win32"}
 url {
   src: "http://caml.inria.fr/pub/distrib/ocaml-3.12/ocaml-3.12.0.tar.gz"
   checksum: "md5=3ba7cc65123c3579f14e7c726d3ee782"
 }
-extra-source "file_download.php?file_id=418&type=bug" {
-  src: "http://caml.inria.fr/mantis/file_download.php?file_id=418&type=bug"
+extra-source "fix-binutils.patch" {
+  src: "https://gist.githubusercontent.com/vicuna/864c7c8a5c03917ca1482d8fbba12d36/raw/fa7664cecc98d7d5d97ee6d8fb035c2e229bff57/0007-Fix-ocamlopt-w.r.t.-binutils-2.21.patch"
   checksum: "md5=8c664a0a346424ea2ec6fc6f713170c6"
 }
-available: !(os = "macos" & arch = "arm64")
+available: arch != "arm64" & arch != "arm32" & arch != "ppc64"

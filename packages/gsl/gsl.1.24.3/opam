@@ -1,9 +1,9 @@
 opam-version: "2.0"
 build: [
-  ["dune" "subst"] {pinned}
-  ["dune" "build" "-p" name "-j" jobs]
-  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
-  ["dune" "build" "-p" name "@doc"] {with-doc}
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" "1"] # Parallel build disabled due to race-condition
+  ["dune" "runtest" "-p" name "-j" "1"] {with-test}
+  ["dune" "build" "-p" name "@doc" "-j" "1"] {with-doc}
 ]
 maintainer: ["Markus Mottl <markus.mottl@gmail.com>"]
 authors: [
@@ -13,7 +13,7 @@ authors: [
 bug-reports: "https://github.com/mmottl/gsl-ocaml/issues"
 homepage: "https://mmottl.github.io/gsl-ocaml"
 doc: "https://mmottl.github.io/gsl-ocaml/api"
-license: "GPL-3+"
+license: "GPL-3.0-or-later"
 dev-repo: "git+https://github.com/mmottl/gsl-ocaml.git"
 synopsis: "GSL - Bindings to the GNU Scientific Library"
 description: """
@@ -28,6 +28,7 @@ depends: [
   "conf-gsl" {build}
   "conf-pkg-config" {build}
 ]
+available: arch != "arm32"
 url {
   src:
     "https://github.com/mmottl/gsl-ocaml/releases/download/1.24.3/gsl-1.24.3.tbz"

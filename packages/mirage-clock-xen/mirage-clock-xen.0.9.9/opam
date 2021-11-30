@@ -7,7 +7,11 @@ tags: [
 build: [make "xen-build"]
 remove: ["ocamlfind" "remove" "mirage-clock-xen"]
 depends: ["ocaml" "ocamlfind" "cstruct" "ocamlbuild" {build}]
-dev-repo: "git://github.com/mirage/mirage-clock"
+conflicts: [
+  "mirage-clock" # overwrites the mirage-clock library
+  "mirage-clock-unix" {< "1.0.0"} # also overwrites the mirage-clock library (same source)
+]
+dev-repo: "git+https://github.com/mirage/mirage-clock"
 install: [make "xen-install"]
 synopsis: "A Mirage-compatible Clock library for Xen"
 flags: light-uninstall

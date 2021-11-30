@@ -2,10 +2,10 @@ opam-version: "2.0"
 synopsis: "OCaml 4.08.1 Secondary Switch Compiler"
 maintainer: "platform@lists.ocaml.org"
 authors: "Xavier Leroy and many contributors"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
 homepage: "https://ocaml.org"
-bug-reports: "https://github.com/ocaml/ocaml/issues"
-dev-repo: "git://github.com/ocaml/ocaml"
-depends: "ocaml" {< "4.08.0"}
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git+https://github.com/ocaml/ocaml"
 build: [
   [
     "./configure"
@@ -28,16 +28,18 @@ url {
 extra-files: [
   ["0001-Don-t-build-manpages-for-stdlib-docs.patch" "md5=6caa580fe6031c109d2dc96b19bd40cd"]
   ["0001-Fix-failure-to-install-tools-links.patch" "md5=e973762c0b3d62b0b25a26468086fae3"]
+  ["fix-gcc10.patch" "md5=17ecd696a8f5647a4c543280599f6974"]
 ]
 patches: [
   "0001-Don-t-build-manpages-for-stdlib-docs.patch"
   "0001-Fix-failure-to-install-tools-links.patch"
+  "fix-gcc10.patch"
 ]
-
+available: !(os = "macos" & arch = "arm64")
 post-messages: [
   "A failure in the middle of the build may be caused by build parallelism
    (enabled by default).
-   Please file a bug report at https://github.com/ocaml/ocaml/issues"
+   Please file a bug report at https://github.com/ocaml/opam-repository/issues"
   {failure & jobs > 1 & os != "cygwin"}
   "You can try installing again including --jobs=1
    to force a sequential build instead."

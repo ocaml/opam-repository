@@ -1,0 +1,56 @@
+opam-version: "2.0"
+synopsis: "Client library for Prometheus monitoring"
+description: """\
+Applications can enable metric reporting using the `prometheus-app` opam package.
+This depends on cohttp and can serve the metrics collected above over HTTP.
+
+The `prometheus-app.unix` ocamlfind library provides the `Prometheus_unix` module,
+which includes a cmdliner option and pre-configured web-server.
+See the `examples/example.ml` program for an example, which can be run as:
+
+```shell
+$ dune exec -- examples/example.exe --listen-prometheus=9090
+If run with the option --listen-prometheus=9090, this program serves metrics at
+http://localhost:9090/metrics
+Tick!
+Tick!
+...
+```
+
+Unikernels can use `Prometheus_app` instead of `Prometheus_unix` to avoid the `Unix` dependency."""
+maintainer: "talex5@gmail.com"
+authors: ["Thomas Leonard" "David Scott"]
+license: "Apache-2.0"
+homepage: "https://github.com/mirage/prometheus"
+doc: "https://mirage.github.io/prometheus/"
+bug-reports: "https://github.com/mirage/prometheus/issues"
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "dune" {>= "1.0"}
+  "prometheus" {= version}
+  "fmt"
+  "re" {>= "1.5.0"}
+  "cohttp" {>= "1.0.0"}
+  "cohttp-lwt"
+  "cohttp-lwt-unix"
+  "lwt" {>= "2.5.0"}
+  "cmdliner"
+  "alcotest" {with-test}
+  "asetmap"
+  "astring"
+  "logs" {>= "0.6.0"}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/prometheus.git"
+x-commit-hash: "4a85699fa5e37975484fc99bdf3ff944a315a1ed"
+url {
+  src:
+    "https://github.com/mirage/prometheus/releases/download/v1.1/prometheus-v1.1.tbz"
+  checksum: [
+    "sha256=fbcf8bb28c02bfe4f61d2494bc2b70fdedd62f2b41fd1343e6f73d583bf599e4"
+    "sha512=9cf49689f6d33138cf41eca585e0d15bd17f670a3334b8235a52cc6c210fdc763fb967b19a91a110759a206aa9223cca1c7064e0eb2e2e6d3d13957ec7a38201"
+  ]
+}

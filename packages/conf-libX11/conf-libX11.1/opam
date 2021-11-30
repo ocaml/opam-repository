@@ -8,7 +8,7 @@ build: [
   ["pkg-config" "x11"] {os != "macos"}
   [
     "sh" "-exc"
-    """PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig" pkg-config --libs x11"""
+    """PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/X11/share/pkgconfig" pkg-config --libs x11"""
   ] {os = "macos"}
 ]
 depends: ["conf-pkg-config" {build}]
@@ -16,9 +16,12 @@ depexts: [
   ["libx11-dev"] {os-family = "debian"}
   ["libX11-devel"] {os-distribution = "centos" | os-distribution = "oraclelinux" | os-distribution = "fedora" | os-distribution = "opensuse"}
   ["libx11-dev"] {os-distribution = "alpine"}
-  ["libx11`"] {os-distribution = "arch"}
+  ["libx11"] {os-distribution = "arch"}
   ["libX11-dev"] {os-distribution = "cygwin"}
+  ["xquartz"] {os = "macos" & os-distribution = "homebrew"}
+  ["xorg-libX11"] {os = "macos" & os-distribution = "macports"}
 ]
 synopsis: "Virtual package relying on an Xlib system installation"
 description:
   "This package can only install if Xlib (libX11) is installed on the system."
+flags: conf
