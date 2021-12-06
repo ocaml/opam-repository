@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings for kqueue event notification interface"
+maintainer: ["Anurag Soni <anurag@sonianurag.com>"]
+authors: ["Anurag Soni"]
+license: "BSD-3-clause"
+tags: ["kqueue"]
+homepage: "https://github.com/anuragsoni/kqueue-ml"
+doc: "https://anuragsoni.github.io/kqueue-ml"
+bug-reports: "https://github.com/anuragsoni/kqueue-ml/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ppx_optcomp"
+  "ppx_expect" {with-test}
+  "ocaml" {>= "4.12"}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "ppxlib" {< "0.14.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/anuragsoni/kqueue-ml.git"
+url {
+  src:
+    "https://github.com/anuragsoni/kqueue-ml/releases/download/0.2.0/kqueue-0.2.0.tbz"
+  checksum: [
+    "sha256=6f2fff9c0996c49377a552ae7b4bc573e5a80ec6a16855d18987b738e15eecd1"
+    "sha512=89052481b225648f90f5cee77f1462c3d86c5d951c8aeaf16004e2390684477c5b572664399ae97476eff3c86448a6ccfb339159f38dc58a378df87fca23df53"
+  ]
+}
+x-commit-hash: "f1f229fef735d79c0e3cd719a2c79c43ee9edb77"
