@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "Kate <kit.ty.kate@disroot.org>"
+authors: [
+  "whitequark <whitequark@whitequark.org>"
+  "The LLVM team"
+]
+license: "MIT"
+doc: "http://llvm.moe/ocaml"
+bug-reports: "http://llvm.org/bugs/"
+dev-repo: "git+http://llvm.org/git/llvm.git"
+homepage: "http://llvm.moe"
+install: [
+  ["bash" "-ex" "install.sh" "%{conf-llvm:config}%" lib "%{conf-cmake:cmd}%" make]
+]
+depends: [
+  "ocaml" {>= "4.00.0"}
+  "ctypes" {>= "0.4"}
+  "ounit" {with-test}
+  "ocamlfind" {build}
+  "conf-llvm" {build & = version}
+  "conf-python-3" {build}
+  "conf-cmake" {build}
+]
+patches: [
+  "fix-shared.patch"
+  "add-cmt-for-llvm-13.patch"
+]
+synopsis: "The OCaml bindings distributed with LLVM"
+description: "Note: LLVM should be installed first."
+extra-files: [
+  ["link-META.patch" "md5=53dc8e72917585d235b9bbb3e06eed2b"]
+  ["install.sh" "md5=fb51c3d8bc987acac39927c2abd84bcd"]
+  ["fix-shared.patch" "md5=dce86b1db352332968ceb6d042b408a8"]
+  ["add-cmt-for-llvm-13.patch" "md5=248ec7d17ebd1592fc99848016d9452b"]
+  ["META.patch" "md5=4c3cf99d06d2044e2ce5a853e5a16d5e"]
+]
+url {
+  src: "https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/llvm-13.0.0.src.tar.xz"
+  checksum: "sha256=408d11708643ea826f519ff79761fcdfc12d641a2510229eec459e72f8163020"
+}

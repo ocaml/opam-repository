@@ -10,19 +10,20 @@ doc:          "https://realworldocaml.github.io/mdx/"
 build: [
  ["dune" "subst"] {dev}
  ["dune" "build" "-p" name "-j" jobs]
- ["dune" "runtest" "-p" name] {with-test}
+ ["dune" "runtest" "-p" name] {with-test & ocaml:version < "4.08"}
 ]
 
 depends: [
   "ocaml" {>= "4.02.3" & < "4.09.0"}
   "dune"
-  "fmt"
-  "cppo" {build}
+  "fmt" {>= "0.8.5"}
+  "cppo" {build & >= "1.1.0"}
   "astring"
   "logs"
-  "cmdliner"
+  "cmdliner" {>= "1.0.0"}
   "re" {>= "1.7.2"}
   "result"
+  "ocamlfind" {>= "1.7.2"}
   "ocaml-migrate-parsetree" {>= "1.0.6" & < "2.0.0"}
   "lwt" {with-test}
   "conf-pandoc" {with-test}

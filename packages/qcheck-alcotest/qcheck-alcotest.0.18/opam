@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "simon.cruanes.2007@m4x.org"
+homepage: "https://github.com/c-cube/qcheck/"
+license: "BSD-2-Clause"
+synopsis: "Alcotest backend for qcheck"
+doc: ["http://c-cube.github.io/qcheck/"]
+tags: [
+  "test"
+  "quickcheck"
+  "qcheck"
+  "alcotest"
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "dune" { >= "2.2" }
+  "base-bytes"
+  "base-unix"
+  "qcheck-core" { = version }
+  "alcotest" { ! with-test | (>= "1.4" & < "1.5") } # Tests snapshot Alcotest output, so need a fixed minor version
+  "odoc" {with-doc}
+  "ocaml" {>= "4.08.0"}
+]
+dev-repo: "git+https://github.com/c-cube/qcheck.git"
+bug-reports: "https://github.com/c-cube/qcheck/issues"
+authors: "the qcheck contributors"
+url {
+  src: "https://github.com/c-cube/qcheck/archive/v0.18.tar.gz"
+  checksum: [
+    "md5=a830f187d3eed60eba960c8d626035a4"
+    "sha512=08da783ca991dcee26f88b8d6db2fcf2589d3e753ce355d5e3c8944b58ce43b444c6cde054971a557d7d345b4386e6e976111d4c537840a1269c7e361340fcfe"
+  ]
+}

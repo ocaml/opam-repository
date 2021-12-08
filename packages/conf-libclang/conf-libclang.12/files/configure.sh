@@ -1,10 +1,20 @@
 #!/bin/bash -ex
 
-find_llvm_config () {
-    # Locate llvm-config (taken from conf-llvm's configure.sh file)
+clean_tempdir () {
+    rm -f "$tempdir/test_libclang.c" "$tempdir/test_libclang.o" \
+       "$tempdir/test_libclang"
+    rmdir "$tempdir"
+}
 
-    shopt -s nullglob
-    for version in 12 11 10 9 8 7 6 5 4 3; do
+shopt -s nullglob
+for version in default 12 11 10 9 8 7 6 5 4 3; do
+    if [ "$version" = default ]; then
+        llvm_config=llvm-config
+        llvm_version="$($llvm_config --version)" || continue
+        if [ $(printf "${llvm_version%%.*}\n13" | sort -n | head -n1) = 13 ]; then
+            continue
+        fi
+    else
         if hash brew 2>/dev/null; then
            brew_llvm_config="$(brew --cellar)"/llvm*/${version}*/bin/llvm-config
         fi
@@ -15,44 +25,39 @@ find_llvm_config () {
             llvm-config-mp-$version \
             llvm-config-mp-${version}.0 $brew_llvm_config \
             /usr/lib64/llvm/${version}/bin/llvm-config \
-            /usr/lib/llvm/${version}/bin/llvm-config \
-            llvm-config; do
-            llvm_version="`$llvm_config --version`" || continue
-            return
+            /usr/lib/llvm/${version}/bin/llvm-config; do
+            llvm_version="$($llvm_config --version)" || continue
+            break
         done
-    done
+        if [ -z "$llvm_version" ]; then
+            continue
+        fi
+    fi
 
-    echo "Error: LLVM is not installed."
-    exit 1
-}
+    if [ "$llvm_version" = "12.0.1" ]; then
+        clangml440_configure_options="--with-llvm-version=12.0.0" # clangml.4.4.0 does not recognize 12.0.1
+    else
+        clangml440_configure_options="" # rely on clangml's ./configure autodetection
+    fi
 
-find_llvm_config
+    LLVM_CFLAGS="$($llvm_config --cflags)"
+    LLVM_LDFLAGS="$($llvm_config --ldflags)"
+    LLVM_LIBDIR="$($llvm_config --libdir)"
+    
+    # These filters enable compilation with gcc.
+    # Filter -Wstring-conversion for OpenSUSE
+    LLVM_CFLAGS="$(echo $LLVM_CFLAGS | sed 's/-Wstring-conversion //')"
+    
+    # Filter -Werror=unguarded-availability-new and -Wcovered-switch-default
+    # (which appear with LLVM 7)
+    LLVM_CFLAGS="$(echo $LLVM_CFLAGS | sed 's/-Werror=unguarded-availability-new //')"
+    LLVM_CFLAGS="$(echo $LLVM_CFLAGS | sed 's/-Wcovered-switch-default //')"
+    
+    # Filter "-Wdelete-non-virtual-dtor" (warning only)
+    LLVM_CFLAGS="$(echo $LLVM_CFLAGS | sed 's/-Wdelete-non-virtual-dtor //')"
 
-LLVM_CFLAGS="`\"$llvm_config\" --cflags`"
-LLVM_LDFLAGS="`\"$llvm_config\" --ldflags`"
-LLVM_LIBDIR="`\"$llvm_config\" --libdir`"
-
-# These filters enable compilation with gcc.
-# Filter -Wstring-conversion for OpenSUSE
-LLVM_CFLAGS="`echo $LLVM_CFLAGS | sed s/-Wstring-conversion\\ //`"
-
-# Filter -Werror=unguarded-availability-new and -Wcovered-switch-default
-# (which appear with LLVM 7)
-LLVM_CFLAGS="`echo $LLVM_CFLAGS | sed s/-Werror=unguarded-availability-new\\ //`"
-LLVM_CFLAGS="`echo $LLVM_CFLAGS | sed s/-Wcovered-switch-default\\ //`"
-
-# Filter "-Wdelete-non-virtual-dtor" (warning only)
-LLVM_CFLAGS="`echo $LLVM_CFLAGS | sed s/-Wdelete-non-virtual-dtor\\ //`"
-
-tempdir="`mktemp -d`"
-
-clean_tempdir () {
-    rm -f "$tempdir/test_libclang.c" "$tempdir/test_libclang.o" \
-       "$tempdir/test_libclang"
-    rmdir "$tempdir"
-}
-
-cat >"$tempdir/test_libclang.c" <<EOF
+    tempdir="$(mktemp -d)"        
+    cat >"$tempdir/test_libclang.c" <<EOF
 #include <clang-c/Index.h>
 #include <stdlib.h>
 
@@ -64,17 +69,28 @@ main(int argc, char *argv[])
   return EXIT_SUCCESS;
 }
 EOF
-CC=cc
-"$CC" -o "$tempdir/test_libclang.o" -c $LLVM_CFLAGS \
-    "$tempdir/test_libclang.c" || \
-    ( clean_tempdir; echo "Error: cannot compile libclang test."; exit 1 )
-"$CC" -o "$tempdir/test_libclang" \
-    $LLVM_LDFLAGS "$tempdir/test_libclang.o" \
-    "-lclang" "-Wl,-rpath,$LLVM_LIBDIR" || \
-    ( clean_tempdir; echo "Error: cannot link libclang test."; exit 1 )
-"$tempdir/test_libclang" || \
-    ( clean_tempdir; echo "Error: cannot execute libclang test."; exit 1 )
-clean_tempdir
 
-echo "config: \"$llvm_config\"" >> conf-libclang.config
-echo "version: \"$llvm_version\"" >> conf-libclang.config
+    CC=cc
+    if "$CC" -o "$tempdir/test_libclang.o" -c $LLVM_CFLAGS \
+        "$tempdir/test_libclang.c" &&
+      "$CC" -o "$tempdir/test_libclang" \
+          $LLVM_LDFLAGS "$tempdir/test_libclang.o" \
+          "-lclang" "-Wl,-rpath,$LLVM_LIBDIR" &&
+      "$tempdir/test_libclang"; then
+        true
+    else
+        clean_tempdir
+        continue
+    fi
+
+    clean_tempdir
+    
+    echo "config: \"$llvm_config\"" >> conf-libclang.config
+    echo "version: \"$llvm_version\"" >> conf-libclang.config
+    echo "clangml440_configure_options: \"$clangml440_configure_options\"" >> conf-libclang.config
+    exit 0
+done
+
+echo "Error: No usable version of LLVM <=12.0.x found."
+exit 1
+

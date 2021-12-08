@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <cblas.h>
 #include <lapacke.h>
 
