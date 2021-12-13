@@ -1,0 +1,38 @@
+opam-version: "2.0"
+synopsis: "Preprocessor for Ocf library"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "GPL-3.0-only"
+homepage: "https://zoggy.frama.io/ocf/"
+doc: "https://zoggy.frama.io/ocf/doc.html"
+bug-reports: "https://framagit.org/zoggy/ocf/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocf" {= version}
+  "ppxlib" {>= "0.23.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/ocf.git"
+url {
+  src: "https://framagit.org/zoggy/ocf/-/archive/0.8.0/ocf-0.8.0.tar.gz"
+  checksum: [
+    "md5=bb91b5331d9ace68ccbd5be7f775a4fe"
+    "sha512=b9b1ce82ff370222b74429b28748c99b5b78c657e8c8b273d404ba9c17df2cd48274aad4d16b4748ecdbd1402cb8fad4136122cdf617b8ca1d6256a09efe2161"
+  ]
+}
