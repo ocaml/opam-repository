@@ -1,0 +1,26 @@
+name: Get package revdeps
+inputs:
+  package:
+    required: true
+  cache_key:
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Store package revdeps
+      uses: actions/cache@v2
+      id: cache_revdeps
+      with:
+        path: ${{ inputs.package }}.revdeps
+        key: ${{ inputs.cache_key }}-${{ inputs.package }}
+
+    - name: Get package revdeps
+      id: revdeps
+      shell: sh
+      if: ${{ !steps.cache_revdeps.outputs.cache-hit }}
+      env:
+        OCAMLCLI: ''
+      run: |
+        REVDEPS=`(opam list -s --color=never --depends-on ${{ inputs.package }} --coinstallable-with ${{ inputs.package }} --installable --all-versions --recursive --depopts && opam list -s --color=never --depends-on ${{ inputs.package }} --coinstallable-with ${{ inputs.package }} --installable --all-versions --with-test --depopts) | sort -u | grep -v ${{ inputs.package }} | while read i; do echo "\"$i\""; done | paste -sd ',' -`
+        echo "${{ inputs.package }} revdeps: [$REVDEPS]"
+        echo "[$REVDEPS]" > ${{ inputs.package }}.revdeps

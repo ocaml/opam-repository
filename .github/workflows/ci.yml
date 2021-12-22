@@ -1,0 +1,250 @@
+name: CI
+on:
+  pull_request:
+
+jobs:
+  cancel_previous_run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
+
+  config:
+    runs-on: ubuntu-latest
+    outputs:
+      default_compiler: '4.13.1'
+      default_opam: 'opam-2.1'
+      compilers: |
+        ["4.02","4.03","4.04","4.05","4.06","4.07",
+         "4.08","4.09","4.10","4.11","4.12","4.13"]
+      distributions: |
+        ["alpine:3.13","alpine:3.14",
+         "archlinux",
+         "centos:7","centos:8",
+         "debian:testing","debian:unstable",
+         "fedora:34",
+         "oraclelinux:7","oraclelinux:8",
+         "ubuntu:18.04","ubuntu:20.04","ubuntu:21.04"]
+      extras: |
+        ["afl", "flambda", "flambda+fp", "fp", "nnp",
+         "nnpchecker", "no-flat-float-array"] 
+      opam_versions: |
+        ["opam-2.0", "opam-2.1"]
+      packages: ${{ steps.packages.outputs.packages }}
+      cache_key: v1-opam-${{ github.run_id }}
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v1
+      - name: List packages to be tested
+        id: packages
+        run: |
+          ./.github/scripts/packages.sh
+
+  compilers:
+    runs-on: ubuntu-latest
+    needs: config
+    strategy:
+      fail-fast: false
+      matrix:
+        opam:  ${{ fromJson(needs.config.outputs.opam_versions) }}
+        compiler: ${{ fromJson(needs.config.outputs.compilers) }}
+        package: ${{ fromJson(needs.config.outputs.packages) }}
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v1
+      - name: Install OCaml
+        uses: ./.github/install-ocaml
+        with:
+          compiler: ${{ matrix.compiler }}
+      - name: Check if ${{ matrix.package }} is installable
+        id: installable
+        uses: ./.github/check-installable
+        with:
+          opam: ${{ matrix.opam }}
+          package: ${{ matrix.package }}
+      - name: Install ${{ matrix.package }}
+        if: steps.installable.outputs.installable
+        uses: ./.github/install-package
+        with:
+          opam: ${{ matrix.opam }}
+          package: ${{ matrix.package }}
+      - name: Install ${{ matrix.package }} with tests
+        if: steps.installable.outputs.installable
+        uses: ./.github/install-package
+        with:
+          opam: ${{ matrix.opam }}
+          package: ${{ matrix.package }}
+          env: |
+            {"OPAMWITHTEST": "1"}
+      - name: Get ${{ matrix.package }} revdeps
+        id: revdeps
+        if: startsWith(needs.config.outputs.default_compiler, matrix.compiler) && matrix.opam == needs.config.outputs.default_opam
+        uses: ./.github/package-revdeps
+        with:
+          package: ${{ matrix.package }}
+          cache_key: ${{ needs.config.outputs.cache_key }}
+
+  revdeps_config:
+    runs-on: ubuntu-latest
+    needs: [config, compilers]
+    outputs:
+      revdeps_config: ${{ steps.revdeps_config.outputs.revdeps_config }}
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v1
+      - name: Export revdeps config
+        id: revdeps_config
+        uses: ./.github/revdeps-config
+        with:
+          packages: ${{ needs.config.outputs.packages }}
+          cache_key: ${{ needs.config.outputs.cache_key }}
+
+  revdeps:
+    runs-on: ubuntu-latest
+    needs: [config, revdeps_config]
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.revdeps_config.outputs.revdeps_config) }}
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v1
+      - name: Install OCaml
+        uses: ./.github/install-ocaml
+        with:
+          compiler: ${{ needs.config.outputs.default_compiler }}
+      - name: Check if ${{ matrix.revdep }} is installable
+        id: installable
+        uses: ./.github/check-installable
+        with:
+          opam: ${{ needs.config.outputs.default_opam }}
+          package: ${{ matrix.revdep }}
+      - name: Install ${{ matrix.revdep }}
+        if: steps.installable.outputs.installable
+        uses: ./.github/install-package
+        with:
+          opam: ${{ needs.config.outputs.default_opam }}
+          package: ${{ matrix.revdep }}
+
+  distributions:
+    runs-on: ubuntu-latest
+    needs: config
+    container:
+      image: ${{ matrix.distribution }}
+    strategy:
+      fail-fast: false
+      matrix:
+        opam:  ${{ fromJson(needs.config.outputs.opam_versions) }}
+        distribution: ${{ fromJson(needs.config.outputs.distributions) }}
+        package: ${{ fromJson(needs.config.outputs.packages) }}
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v1
+      - name: Install system packages
+        uses: ./.github/install-system-packages
+        with:
+          distribution: ${{ matrix.distribution }}
+      - name: Install OCaml
+        uses: ./.github/install-ocaml
+        with:
+          compiler: ${{ matrix.compiler }}
+      - name: Check if ${{ matrix.package }} is installable
+        id: installable
+        uses: ./.github/check-installable
+        with:
+          opam: ${{ matrix.opam }}
+          package: ${{ matrix.package }}
+      - name: Install ${{ matrix.package }}
+        if: steps.installable.outputs.installable
+        uses: ./.github/install-package
+        with:
+          opam: ${{ matrix.opam }}
+          package: ${{ matrix.package }}
+      - name: Install ${{ matrix.package }} with tests
+        if: steps.installable.outputs.installable
+        uses: ./.github/install-package
+        with:
+          opam: ${{ matrix.opam }}
+          package: ${{ matrix.package }}
+          env: |
+            {"OPAMWITHTEST": "1"}
+
+  macos:
+    runs-on: macos-latest
+    needs: config
+    strategy:
+      fail-fast: false
+      matrix:
+        opam:  ${{ fromJson(needs.config.outputs.opam_versions) }}
+        package: ${{ fromJson(needs.config.outputs.packages) }}
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v1
+      - name: Install OCaml
+        uses: ./.github/install-ocaml
+        with:
+          compiler: ${{ matrix.compiler }}
+      - name: Check if ${{ matrix.package }} is installable
+        id: installable
+        uses: ./.github/check-installable
+        with:
+          opam: ${{ matrix.opam }}
+          package: ${{ matrix.package }}
+      - name: Install ${{ matrix.package }}
+        if: steps.installable.outputs.installable
+        uses: ./.github/install-package
+        with:
+          opam: ${{ matrix.opam }}
+          package: ${{ matrix.package }}
+      - name: Install ${{ matrix.package }} with tests
+        if: steps.installable.outputs.installable
+        uses: ./.github/install-package
+        with:
+          opam: ${{ matrix.opam }}
+          package: ${{ matrix.package }}
+          env: |
+            {"OPAMWITHTEST": "1"}
+
+  extras:
+    runs-on: ubuntu-latest
+    needs: config
+    strategy:
+      fail-fast: false
+      matrix:
+        extra: ${{ fromJson(needs.config.outputs.extras) }}
+        package: ${{ fromJson(needs.config.outputs.packages) }}
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v1
+      - name: Compute OCaml options
+        id: ocaml_options
+        run: |
+          OCAML_OPTIONS=`echo "${{ matrix.extra }}" | tr '+' '\n' | while read i; do echo "ocaml-option-$i"; done | paste -sd ',' -`
+          echo "OCaml options: $OCAML_OPTIONS"
+          echo "##[set-output name=ocaml_options]$OCAML_OPTIONS" 
+      - name: Install OCaml
+        uses: ./.github/install-ocaml
+        with:
+          compiler: 'ocaml-variants.${{ needs.config.outputs.default_compiler }}+options,${{ steps.ocaml_options.outputs.ocaml_options }}'
+      - name: Check if ${{ matrix.package }} is installable
+        id: installable
+        uses: ./.github/check-installable
+        with:
+          opam: ${{ needs.config.outputs.default_opam }}
+          package: ${{ matrix.package }}
+      - name: Install ${{ matrix.package }}
+        if: steps.installable.outputs.installable
+        uses: ./.github/install-package
+        with:
+          opam: ${{ needs.config.outputs.default_opam }}
+          package: ${{ matrix.package }}
+      - name: Install ${{ matrix.package }} with tests
+        if: steps.installable.outputs.installable
+        uses: ./.github/install-package
+        with:
+          opam: ${{ needs.config.outputs.default_opam }}
+          package: ${{ matrix.package }}
+          env: |
+            {"OPAMWITHTEST": "1"}

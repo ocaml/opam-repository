@@ -1,0 +1,35 @@
+name: Install System Packages
+inputs:
+  distribution:
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Install debian system packages
+      if: startsWith(inputs.distribution, 'debian') || startsWith(inputs.distribution, 'ubuntu')
+      shell: sh
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        apt-get update
+        apt-get install -qq -yy curl darcs gcc git m4 make mercurial patch rsync sudo unzip bzip2
+    - name: Install alpine system packages
+      if: startsWith(inputs.distribution, 'alpine')
+      shell: sh
+      run: |
+        apk add build-base coreutils curl libgcc libstdc++ musl patch unzip bzip2 mercurial git rsync tar
+    - name: Install yum-based system packages
+      if: startsWith(inputs.distribution, 'centos') || startsWith(inputs.distribution, 'fedora') || startsWith(inputs.distribution, 'oraclelinux')
+      shell: sh
+      run: |
+        yum install -y curl diffutils gcc gcc-c++ tar git m4 make mercurial patch rsync sudo unzip gzip bzip2
+    - name: Install opensuse system packages
+      if: startsWith(inputs.distribution, 'opensuse')
+      shell: sh
+      run: |
+        zypper install -y curl diffutils gcc gcc-c++ tar git m4 make mercurial patch rsync sudo unzip gzip bzip2 which
+    - name: Install archlinux system packages
+      if: startsWith(inputs.distribution, 'archlinux')
+      shell: sh
+      run: |
+        pacman -Sy --noconfirm base-devel unzip git rsync

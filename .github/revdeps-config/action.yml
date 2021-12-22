@@ -1,0 +1,38 @@
+name: Get revdeps configl
+inputs:
+  packages:
+    required: true
+  cache_key:
+    required: true
+outputs:
+  revdeps_config:
+    description: "Revdeps config"
+    value: ${{ steps.revdeps_config.outputs.result }}
+runs:
+  using: composite
+  steps:
+    - name: Setup node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+    - name: Install @action/cache
+      shell: sh
+      run: npm install @actions/cache
+    - name: Collect revdeps
+      id: revdeps_config
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const cache = require('@actions/cache');
+          const fs = require('fs');
+
+          let config = [];
+          const packages = JSON.parse('${{ inputs.packages }}');
+          await Promise.all(packages.map(async (package) => {
+            await cache.restoreCache([`${package}.revdeps`], `${{ inputs.cache_key }}-${package}`);
+            const revdeps = JSON.parse(fs.readFileSync(`${package}.revdeps`));
+            revdeps.forEach((revdep) => config.push({package, revdep}));
+          }));
+
+          console.log(`Revdeps config: ${JSON.stringify(config, null, 2)}`);
+          return config;
