@@ -1,0 +1,56 @@
+opam-version: "2.0"
+license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
+synopsis: "A set of two complementary packages for fulltext searches"
+description: """\
+ocp-search is a tool to grep a pre-indexed set of sources.
+ez_search is a library to search a pre-indexed set of files.
+"""
+authors: ["Fabrice Le Fessant <fabrice.le_fessant@origin-labs.com>"]
+maintainer: ["Fabrice Le Fessant <fabrice.le_fessant@origin-labs.com>"]
+homepage: "https://ocamlpro.github.io/ez_search"
+doc: "https://ocamlpro.github.io/ez_search/sphinx"
+bug-reports: "https://github.com/ocamlpro/ez_search/issues"
+dev-repo: "git+https://github.com/ocamlpro/ez_search.git"
+tags: "org:ocamlpro"
+build: [
+  ["dune" "subst"] {dev}
+  ["sh" "-c" "./scripts/before.sh build '%{name}%'"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["sh" "-c" "./scripts/after.sh build '%{name}%'"]
+]
+install: [
+  ["sh" "-c" "./scripts/before.sh install '%{name}%'"]
+]
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "dune" {>= "2.7.0"}
+  "re" {>= "1.8.0" & < "2.0.0"}
+  "parmap" {>= "1.2.3" & < "2.0.0"}
+  "ez_file" {>= "0.2"}
+  "ez_cmdliner" {>= "0.2"}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
+]
+conflicts: [ "base-domains" ]
+available: arch = "x86_64"
+x-ci-accept-failures: [
+  "centos-7"
+  "oraclelinux-7"
+]
+
+url {
+    src: "https://github.com/ocamlpro/ez_search/archive/v0.2.1.tar.gz"
+    checksum: [ "sha256=87359e074b5740359d910adf267a84fc432db92e6f92a648dadc6e8159584522" ]
+}
