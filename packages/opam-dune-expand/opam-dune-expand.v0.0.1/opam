@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "Plugin to view ppx-expanded OCaml source files"
+description:
+  "opam-dune-expand is an opam plugin that allows users to view the expanded output of PPXs on their source files."
+maintainer: "kirang@comp.nus.edu.sg"
+authors: "Kiran Gopinathan"
+license: "GPL-3.0+"
+homepage: "https://gitlab.com/gopiandcode/dune-expand"
+bug-reports: "https://gitlab.com/gopiandcode/dune-expand/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "sexplib" {>= "~"}
+  "ppx_sexp_conv" {>= "~"}
+  "ppx_deriving" {>= "~"}
+  "core" {>= "~"}
+  "cmdliner" {>= "~"}
+  "ocaml" {>= "4.08.0"}
+  "odoc" {with-doc}
+]
+flags: plugin
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://gitlab.com/gopiandcode/dune-expand.git"
+url {
+  src:
+    "https://gitlab.com/gopiandcode/dune-expand/-/archive/v0.0.1/dune-expand-v0.0.1.tar.gz"
+  checksum: [
+    "md5=5e2580623b16d3be4cb6a8427a1ae3db"
+    "sha512=85f77e08f03f08144f9ef2073972d1558af674565a8d5f23069099d4ca22e8fb4ec9bae9f8e0ded798818f7dd6b019ac513cfb23a8ecdbb5cd83971a8ce5bad0"
+  ]
+}
