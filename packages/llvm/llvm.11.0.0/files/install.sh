@@ -20,6 +20,7 @@ function llvm_install {
         -DBUILD_SHARED_LIBS=`[ $1 = "shared" ] && echo TRUE || echo FALSE` \
         -DLLVM_OCAML_OUT_OF_TREE=TRUE \
         -DLLVM_OCAML_INSTALL_PATH="${libdir}" \
+        -DLLVM_OCAML_EXTERNAL_LLVM_LIBS="`"$llvm_config" --libs`" \
         ..
     $make ocaml_all
     "$cmake" -P bindings/ocaml/cmake_install.cmake
