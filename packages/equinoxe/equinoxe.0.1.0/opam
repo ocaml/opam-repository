@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "An OCaml wrapper for the Equinix API"
+description: "Equinoxe is an OCaml wrapper for the Equinix API."
+maintainer: ["Étienne Marais <etienne@maiste.fr>"]
+authors: ["Étienne Marais <etienne@maiste.fr>"]
+license: "MIT"
+homepage: "https://github.com/maiste/equinoxe"
+doc: "maiste.github.io/equinoxe"
+bug-reports: "https://github.com/maiste/equinoxe/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08.0"}
+  "odoc" {with-doc}
+  "ezjsonm" {>= "1.3.0"}
+  "alcotest" {with-test}
+  "alcotest-lwt" {with-test}
+  "cmdliner"
+  "piaf"
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/maiste/equinoxe.git"
+url {
+  src:
+    "https://github.com/maiste/equinoxe/releases/download/0.1.0/equinoxe-0.1.0.tbz"
+  checksum: [
+    "sha256=710fa08a721574200985f74397e463b71833e021ad58a59bf21cb924b373f020"
+    "sha512=908de3e96b1fec555209d1bb2d9e8205fa3886b8e674fdc8e26722f898c3f9f3283bb1da3ca0338caa25ada266f5f1c0563287fef9e5d42ee78f8ca3b796060d"
+  ]
+}
+x-commit-hash: "8a5be72ac4bb237dc5af409f728cc40e03d295b7"
