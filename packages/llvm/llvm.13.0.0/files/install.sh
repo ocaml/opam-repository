@@ -7,7 +7,7 @@ make="$4"
 action="$5"
 
 function filter_experimental_targets {
-    sed 's/AVR//g' | sed 's/Nios2//g' | xargs
+    sed 's/AVR//g' | sed 's/M68k//g' | sed 's/Nios2//g' | xargs
 }
 
 function llvm_build {
