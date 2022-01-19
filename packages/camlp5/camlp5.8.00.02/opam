@@ -28,8 +28,16 @@ bug-reports: "https://github.com/camlp5/camlp5/issues"
 depends: [
   "ocaml" {>= "4.02" & < "4.14.0"}
   "conf-perl"
-  "conf-perl-ipc-system-simple"
-  "conf-perl-string-shellquote"
+  "conf-perl-ipc-system-simple" {
+    with-test
+  & os-distribution != "homebrew"
+  & os-distribution != "macports"
+  }
+  "conf-perl-string-shellquote" {
+    with-test
+  & os-distribution != "homebrew"
+  & os-distribution != "macports"
+  }
   "conf-diffutils" { with-test & os-distribution = "alpine" }
   "pcre" { with-test }
   "ounit" { with-test }
@@ -40,8 +48,18 @@ build: [
   ["./configure" "--prefix" prefix "-libdir" lib "-mandir" man]
   [make "-j%{jobs}%" "DEBUG=-g" "world.opt"]
   [make "-j%{jobs}%" "DEBUG=-g" "all"]
-  [make "-C" "testsuite" "clean" "all-tests"] { with-test & ocaml:version >= "4.10.0" }
-  [make "-C" "test" "clean" "all"] {with-test & ocaml:version >= "4.10.0" }
+  [make "-C" "testsuite" "clean" "all-tests"] {
+    with-test
+  & ocaml:version >= "4.10.0"
+  & os-distribution != "homebrew"
+  & os-distribution != "macports"
+  }
+  [make "-C" "test" "clean" "all"] {
+    with-test
+  & ocaml:version >= "4.10.0"
+  & os-distribution != "homebrew"
+  & os-distribution != "macports"
+  }
 ]
 install: [make "install"]
 
