@@ -1,0 +1,62 @@
+opam-version: "2.0"
+synopsis: "Release dune packages in opam"
+description: """
+`dune-release` is a tool to streamline the release of Dune packages in
+[opam](https://opam.ocaml.org). It supports projects built
+with [Dune](https://github.com/ocaml/dune) and hosted on
+[GitHub](https://github.com)."""
+maintainer: ["Nathan Rebours <nathan.p.rebours@gmail.com>"]
+authors: [
+  "Daniel Bünzli"
+  "Thomas Gazagnaire"
+  "Nathan Rebours"
+  "Guillaume Petiot"
+  "Sonja Heinze"
+]
+license: "ISC"
+homepage: "https://github.com/ocamllabs/dune-release"
+bug-reports: "https://github.com/ocamllabs/dune-release/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.06.0"}
+  "curly"
+  "fmt" {>= "0.8.7"}
+  "fpath" {>= "0.7.3"}
+  "bos"
+  "cmdliner"
+  "re" {>= "1.7.2"}
+  "astring"
+  "opam-file-format" {>= "2.1.1"}
+  "opam-format" {>= "2.1.0~beta"}
+  "opam-state" {>= "2.1.0~beta"}
+  "opam-core" {>= "2.1.0~beta"}
+  "rresult"
+  "logs"
+  "odoc"
+  "alcotest" {with-test}
+  "yojson" {>= "1.6"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & !(os-distribution = "centos" & os-version < "8") & !(os-distribution = "ol" & os-version < "8")} # Disable the tests on distributions that have old versions of git
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocamllabs/dune-release.git"
+url {
+  src:
+    "https://github.com/ocamllabs/dune-release/releases/download/1.5.2/dune-release-1.5.2.tbz"
+  checksum: [
+    "sha256=fdfd7177cfab32d5e3674f2ae76e2cd1db851a4a7c682eccf185aaf07ff8cbe4"
+    "sha512=248f29dd5e5f8b978d07802c47c267c9619f326df562331a6f13ad94ba6596ad98e2fedc8600ff3148606cec5384d6e013fc191bdef05dad04b88eb4d9941d80"
+  ]
+}
+x-commit-hash: "9f88c693d03238fcf94c3bbf04af3f8be9859675"

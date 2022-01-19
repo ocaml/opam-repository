@@ -1,0 +1,38 @@
+opam-version: "2.0"
+synopsis: "A library for printing OCaml values with sharing"
+maintainer: ["frederic.bour@lakaban.net"]
+authors: ["Frédéric Bour"]
+license: "MIT"
+homepage: "https://github.com/let-def/cmon"
+bug-reports: "https://github.com/let-def/cmon/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "pprint" {>= "20171003"}
+  "grenier" {>= "0.13"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/let-def/cmon.git"
+url {
+  src: "https://github.com/let-def/cmon/releases/download/v0.1/cmon-0.1.tbz"
+  checksum: [
+    "sha256=1791fd1a44ceec7f2fd3e31d7af966ff64b0ac5a9e7c4b072df11777d0c2bfde"
+    "sha512=4c892b3202d1c97279a60414ca1f0db77906fd6a05303232e2063af95fb44cdb0bb73bc36b7756a65dd9cc48761d99357dc536d5cff33b992b344ac0ddba63d4"
+  ]
+}
+x-commit-hash: "63da89839c9279beb87aeaa9eef7202240365308"

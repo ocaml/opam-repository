@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis: "Using Xmldiff on DOM"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "GPL-3.0-only"
+homepage: "https://zoggy.frama.io/xmldiff/"
+doc: "https://zoggy.frama.io/xmldiff/refdoc/index.html"
+bug-reports: "https://framagit.org/zoggy/xmldiff/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "xmldiff" {= version}
+  "js_of_ocaml" {>= "3.11.0"}
+  "js_of_ocaml-ppx" {>= "3.11.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/xmldiff.git"
+url {
+  src:
+    "https://framagit.org/zoggy/xmldiff/-/archive/0.7.0/xmldiff-0.7.0.tar.bz2"
+  checksum: [
+    "md5=7658a876b2c6c8b022e7017a1c69305c"
+    "sha512=5ebf60e0315e0f5afff99026b92b81bd724bc21a4992630d5e0f4c981365970bc064e3f2071d3eb792e5aaa2134b1a07f419c4f173a7e3a21b71540486a2f4d3"
+  ]
+}

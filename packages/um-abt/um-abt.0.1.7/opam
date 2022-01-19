@@ -1,0 +1,56 @@
+opam-version: "2.0"
+synopsis:
+  "An OCaml library implementing unifiable abstract binding trees (UABTs)"
+description: """
+um-abt provides an abstract binding tree (ABT) library following the
+   principles of Robert Harper's 'Practical Foundations for Programming
+   Languages'.
+
+   The library uses immutable pointers to represent variable binding and extends
+   ABTs with unification, providing unifiable abstract binding trees (UABTs)."""
+maintainer: ["shon.feder@gmail.com"]
+authors: ["Shon Feder"]
+license: "MIT"
+homepage: "https://github.com/shonfeder/um-abt"
+doc: "https://shonfeder.github.io/um-abt"
+bug-reports: "https://github.com/shonfeder/um-abt/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "logs" {>= "0.7.0"}
+  "sexplib" {>= "v0.14.0"}
+  "ppx_expect" {>= "v0.14.1"}
+  "ppx_deriving" {>= "5.2.1"}
+  "ppx_sexp_conv" {>= "v0.14.3"}
+  "logs-ppx" {>= "0.2.0"}
+  "qcheck" {with-test & >= "0.17"}
+  "bos" {with-test & >= "0.2.0"}
+  "mdx" {with-test & >= "1.10.1"}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/shonfeder/um-abt.git"
+url {
+  src:
+    "https://github.com/shonfeder/um-abt/releases/download/v0.1.7/um-abt-v0.1.7.tbz"
+  checksum: [
+    "sha256=9472873b4f485ff1c169d950488133c79efb4b00b757526bfb14a2f043a0480f"
+    "sha512=e3ea3990177778ae109082bea0b952b760b4fc9a243f0321367d2927061e3766c0d99679c5e4b13f89532b22ad4993c34f91b625ec40e07f113b9812521f91f4"
+  ]
+}
+x-commit-hash: "2b3860b8f9217b04e7cb0645ede7726988c3735b"

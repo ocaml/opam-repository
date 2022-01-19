@@ -1,0 +1,37 @@
+opam-version: "2.0"
+synopsis: "Stog plugin to block commands executing ocaml code"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "GPL-3.0-only"
+homepage: "https://www.good-eris.net/stog/"
+doc: "https://www.good-eris.net/stog/doc.html"
+bug-reports: "https://framagit.org/zoggy/stog/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "stog" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/stog.git"
+url {
+  src: "https://framagit.org/zoggy/stog/-/archive/0.20.0/stog-0.20.0.tar.gz"
+  checksum: [
+    "md5=2b0da8498e2e425cdbc44ff7ecb2a097"
+    "sha512=ae11b868e2a6d5e92ffffdde04f25ae1595e4bd7c9a6447327764327f17d2641713f01374f14ec9fd52e0ca7e0feb9d85c4fc5913aa49b4d1d73c52427d4263e"
+  ]
+}

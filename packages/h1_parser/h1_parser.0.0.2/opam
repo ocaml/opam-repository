@@ -20,6 +20,9 @@ depends: [
   "ppx_assert" {with-test}
   "odoc" {with-doc}
 ]
+conflicts: [
+  "cohttp" {with-test & >= "5.0.0"}
+]
 build: [
   ["dune" "subst"] {dev}
   [
@@ -30,7 +33,7 @@ build: [
     "-j"
     jobs
     "@install"
-    "@runtest" {with-test}
+    "@runtest" {with-test & cohttp:version < "5.0.0"}
     "@doc" {with-doc}
   ]
 ]
