@@ -1,0 +1,62 @@
+opam-version: "2.0"
+synopsis: "Compression support for cohttp-lwt client using decompress"
+description: """
+The library interface tries to stay somewhat close to
+[dream-encoding](https://github.com/tmattio/dream-encoding).
+
+Usage example:
+```ocaml
+let get_with_compression_support ?headers uri =
+  let headers = Clz_cohttp.update_headers headers in
+  let open Lwt.Syntax in
+  let* resp, body = Cohttp_lwt_unix.Client.get ~headers uri in
+  let status = Cohttp_lwt.Response.status resp in
+  let* () = if status <> `OK then Cohttp_lwt.Body.drain_body body else Lwt.return_unit in
+  match status with
+  | `OK ->
+    let body = Clz_cohttp.decompress (resp, body) in
+    Lwt.return body
+  | _ -> Lwt.fail_with "Not Ok"
+```"""
+maintainer: ["marcello.seri@gmail.com"]
+authors: ["Marcello Seri"]
+license: "MIT"
+homepage: "https://github.com/mseri/ocaml-clz"
+doc: "https://mseri.github.io/ocaml-clz"
+bug-reports: "https://github.com/mseri/ocaml-clz/issues"
+depends: [
+  "dune" {>= "2.0"}
+  "ocaml" {>= "4.08"}
+  "bigstringaf" {>= "0.2.0"}
+  "cohttp-lwt" {>= "2.5.0"}
+  "lwt" {>= "5.3.0"}
+  "decompress" {>= "1.4.0"}
+  "ptime" {>= "0.8.0"}
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mseri/ocaml-clz.git"
+url {
+  src:
+    "https://github.com/mseri/ocaml-clz/releases/download/0.1.0/clz-0.1.0.tbz"
+  checksum: [
+    "sha256=98e87ae5b0283d866e5a888db59b5d63311c0c683faa0d3bea181cf28ac3c622"
+    "sha512=0fcf11ca574c387102ea642dd124236823eb3f751f93637059ee6ceddb431dda05177d78a467d78b8e7a9210797d97b34322fd941cd7a677d1ac65d1da5068a2"
+  ]
+}
+x-commit-hash: "37a83cc59710850ca3f27dc8e9910bd07a1c0d01"

@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis:
+  "Base library for developing OCaml web apps based on websockets and js_of_ocaml"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "GPL-3.0-only"
+tags: ["javascript" "web" "components"]
+homepage: "http://zoggy.frama.io/ojs-base/"
+doc: "http://zoggy.frama.io/ojs-base/refdoc/"
+bug-reports: "https://framagit.org/zoggy/ojs-base/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.12.0"}
+  "js_of_ocaml" {>= "3.9.0"}
+  "js_of_ocaml-ppx" {>= "3.9.0"}
+  "lwt" {>= "5.4.0"}
+  "lwt_ppx" {>= "2.0.2"}
+  "ppx_deriving_yojson" {>= "3.6.1"}
+  "websocket" {>= "2.14"}
+  "websocket-lwt-unix" {>= "2.14"}
+  "xtmpl" {>= "0.19.0"}
+  "xtmpl_ppx" {>= "0.19.0"}
+  "yojson" {>= "1.7.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/ojs-base.git"
+url {
+  src:
+    "https://framagit.org/zoggy/ojs-base/-/archive/0.7.0/ojs-base-0.7.0.tar.bz2"
+  checksum: [
+    "md5=85b8a0746e9be8c20cf082f2573b5895"
+    "sha512=ec707820ff69ddbf9c631cf6a1c8748e82346daded1a4f73c5702128d07858f915e62d529e5fec01e99263f33eefb1586067341c058535806e0092b9d040644a"
+  ]
+}
