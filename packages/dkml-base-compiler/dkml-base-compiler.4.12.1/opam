@@ -1,0 +1,116 @@
+opam-version: "2.0"
+name: "dkml-base-compiler"
+version: "4.12.1"
+synopsis: "OCaml cross-compiler and libraries from the DKML distribution that works with at least Win32 and macOS"
+description:
+  """The DKML distribution of the OCaml bytecode and native compiler, Stdlib and the other OCaml libraries (str, unix, bigarray, etc.).
+A cross-compiler for macOS x86_64 to macOS arm64 is included; for build consistency the regular OCaml compiler will be for x86_64 regardless of whether the build machine is Apple Silicon.
+Sometime in 2022 you will no longer need this package for Win32 and can instead use the fully-supported Windows version of ocaml-base-compiler.
+Install with something like: opam switch create ocaml-4.12.1 '--formula="dkml-base-compiler" {>= "4.12.1" & < "4.13.0~"}'"""
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-compiler"
+bug-reports: "https://github.com/diskuv/dkml-compiler/issues"
+depends: [
+  "ocaml" {= "4.12.1" & post}
+
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+depopts: [
+  "dkml-option-32bit"
+]
+build-env: [
+  [DKML_VER = "0.4.0"]
+]
+conflict-class: "ocaml-core-compiler"
+flags: [ compiler avoid-version hidden-version ]
+build: [
+  # OCaml source code
+  ["install" "-d" "dl/ocaml/flexdll"]
+  ["tar" "xCfz" "dl/ocaml"          "dl/ocaml.tar.gz"   "--strip-components=1"]
+  ["tar" "xCfz" "dl/ocaml/flexdll"  "dl/flexdll.tar.gz" "--strip-components=1"]
+
+  # Create a DKMLDIR. Its structure mimics a git submodule setup.
+  #   <dkmldir>/.dkmlroot
+  ["install" "-d" "dkmldir"]
+  ["sh" "-c" "printf 'dkml_root_version=%s\\n' \"$DKML_VER\" > dkmldir/.dkmlroot"]
+
+  #   <dkmldir>/vendor/dkml-runtime-common/
+  ["install" "-d" "dkmldir/vendor/dkml-runtime-common"]
+  ["tar" "xCfz" "dkmldir/vendor/dkml-runtime-common" "dl/dkml-runtime-common.tar.gz" "--strip-components=1"]
+
+  #   <dkmldir>/vendor/dkml-compiler/
+  ["install" "-d" "dkmldir/vendor/dkml-compiler/src"]
+  ["sh" "-eufc" "tar cCf src/ - . | tar xCf dkmldir/vendor/dkml-compiler/src/ -"]
+]
+install: [
+  # Run r-c-ocaml-1-setup.sh
+  [
+    "env" "TOPDIR=dkmldir/vendor/dkml-runtime-common/all/emptytop"
+      "dkmldir/vendor/dkml-compiler/src/r-c-ocaml-1-setup.sh"
+      "-d" "dkmldir"
+      "-t" "%{prefix}%"
+      "-f" "src-ocaml"
+      "-g" "%{_:share}%/mlcross"
+      "-v" "dl/ocaml"
+      #   Host architectures
+      "-ewindows_x86"     { os = "win32" & dkml-option-32bit:installed }
+      "-ewindows_x86_64"  { os = "win32" & !dkml-option-32bit:installed }
+      "-elinux_x86"       { os = "linux" & dkml-option-32bit:installed }
+      "-elinux_x86_64"    { os = "linux" & !dkml-option-32bit:installed }
+      "-edarwin_x86_64"   { os = "macos" }
+      #   Target architectures (if cross-compiling)
+      "-adarwin_arm64=vendor/dkml-compiler/src/standard-compiler-env-to-ocaml-configure-env.sh" { os = "macos" }
+      #     TODO: Would be nice to bundle the 3 Android cross-compilers here since they are already supported
+      #     by DKML, but I (jonahbeckford@) doubt there is an Android NDK available on the Opam hosts.
+      #     Confer: https://github.com/diskuv/diskuv-ocaml-ghmirror/runs/4831077050
+      #     Perhaps the Android NDK should just be downloaded via an 'android-option-ndk23' package? That would give control of the NDK version.
+      # "-aandroid_arm64v8a=vendor/dkml-compiler/src/ci/github-actions-ci-to-ocaml-configure-env.sh;android_x86_64=vendor/dkml-compiler/src/ci/github-actions-ci-to-ocaml-configure-env.sh"] { os = "linux" & !dkml-option-32bit:installed }
+      # "-aandroid_arm32v7a=vendor/dkml-compiler/src/ci/github-actions-ci-to-ocaml-configure-env.sh" { os = "linux" & dkml-option-32bit:installed }
+      "-k" "vendor/dkml-compiler/src/standard-compiler-env-to-ocaml-configure-env.sh"
+  ]
+
+  # Run r-c-ocaml-2-build_host-noargs.sh
+  [
+    "sh" "-eufc"
+    """
+    cd '%{prefix}%'
+    share/dkml/repro/100co/vendor/dkml-compiler/src/r-c-ocaml-2-build_host-noargs.sh
+    """
+  ]
+
+  # Run r-c-ocaml-3-build_cross-noargs.sh (typically a no-op unless we are cross-compiling)
+  [
+    "sh" "-eufc"
+    """
+    cd '%{prefix}%'
+    share/dkml/repro/100co/vendor/dkml-compiler/src/r-c-ocaml-3-build_cross-noargs.sh
+    """
+  ]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-component-ocamlcompiler.git"
+url {
+  src: "https://github.com/diskuv/dkml-compiler/archive/refs/tags/v4.12.1.tar.gz"
+  checksum: [
+    "md5=ab26b4b3debeeee2cee440d4a6971749"
+    "sha256=f27b8726b9fe9c7ed3f12e189f776b8029a62f04e401eca5a709618c33d3e9d4"
+  ]
+}
+extra-source "dl/ocaml.tar.gz" {
+  src: "https://github.com/ocaml/ocaml/archive/4.12.1.tar.gz"
+  checksum: "sha256=f5a48a90557cb47ace7b1590fcab1362a1af38629a218350f69c225c57e96a41"
+}
+extra-source "dl/flexdll.tar.gz" {
+  src: "https://github.com/alainfrisch/flexdll/archive/0.39.tar.gz"
+  checksum: "sha256=51a6ef2e67ff475c33a76b3dc86401a0f286c9a3339ee8145053ea02d2fb5974"
+}
+extra-source "dl/dkml-runtime-common.tar.gz" {
+  # dkml-runtime-common can be less or equal to DKML_VER
+  src: "https://github.com/diskuv/dkml-runtime-common/archive/refs/tags/v0.4.0-prerel19_r3.tar.gz"
+  checksum: [
+    "sha256=a50c553bfc22ce914dbdd581e785c03266c91c3404d38c9bb6cc11c2f8a96723"
+  ]
+}
