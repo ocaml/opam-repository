@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "An OCaml library for Binary Decision Diagrams (BDDs)"
+description: """
+The mlbdd library provides a simple, easy-to-use, easy-to-extend implementation of binary decision diagrams (BDDs) in OCaml.
+It is well tested and well documented. The library itself has no dependencies and is thus easy to include in applications that might,
+for example, be compiled with js_of_ocaml or other tools that rely on pure OCaml.
+It is also easier to integrate with existing projects due to its lack of dependencies.
+Critically, this BDD implementation uses a garbage-collection-aware hashing scheme, so that unused nodes can be collected.
+Additionally, this implementation uses complement edges to significantly improve performance over the simplest BDD implementations.
+"""
+maintainer: ["Arlen Cox <arlencox@gmail.com>"]
+authors: ["Arlen Cox <arlencox@gmail.com>"]
+license: "MIT"
+homepage: "https://github.com/arlencox/mlbdd"
+bug-reports: "https://github.com/arlencox/mlbdd/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ounit2" {with-test}
+  "ocaml" {>= "4.04.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/arlencox/mlbdd.git"
+url {
+  src: "https://github.com/arlencox/mlbdd/archive/v0.7.3.tar.gz"
+  checksum: [
+    "md5=6cf89d1cf763e89687f3b45ac80bd614"
+    "sha512=81987d086a2370e6c53eb9f549edf9d863aa915b7723714c3147b30dec9c2b763d54df0de8c4919412bd7e9942f6cc9558db855c186f1b3844f904419e09c7a3"
+  ]
+}
