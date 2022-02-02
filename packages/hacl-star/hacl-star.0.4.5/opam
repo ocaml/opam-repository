@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "OCaml API for EverCrypt/HACL*"
+description: """
+Documentation for this library can be found
+[here](https://hacl-star.github.io/ocaml_doc/hacl-star/index.html).
+"""
+maintainer: "Victor Dumitrescu <victor.dumitrescu@nomadic-labs.com>"
+authors: [ "Project Everest" ]
+license: "Apache-2.0"
+homepage: "https://hacl-star.github.io/"
+doc: "https://hacl-star.github.io/ocaml_doc"
+bug-reports: "https://github.com/project-everest/hacl-star/issues"
+depends: [
+  "ocaml" { >= "4.08.0" }
+  "dune" {>= "1.2"}
+  "hacl-star-raw" {= version}
+  "zarith"
+  "cppo" {build}
+  "odoc" {with-doc}
+]
+available: [
+  arch != "ppc64" & arch != "ppc32" &
+  (os = "freebsd" | os-family != "bsd")
+]
+build: [
+  [
+    "dune" "build" "-p" name "-j" jobs
+    "@doc" {with-doc}
+  ]
+]
+run-test: [
+  ["dune" "runtest" "-p" name "-j" jobs] {ocaml:version >= "4.08"}
+]
+dev-repo: "git+https://github.com/project-everest/hacl-star.git"
+url {
+  src:
+    "https://github.com/project-everest/hacl-star/releases/download/ocaml-v0.4.5/hacl-star.0.4.5.tar.gz"
+  checksum: [
+    "md5=fdcd7a590913428d5d3142872d7089a0"
+    "sha256=47bf253f804ec369b2fbc76c892ba89275fde17d7444d291d5eb5c179a05e174"
+    "sha512=1f2c144852566464ef72caeb21567b125fa9eb395d9e25b64bb110f116e75b7befdb3e3e190dd8a3f59c74b36d70bb4eb6dcd7ba62061fd91b4c263de0f29c4f"
+  ]
+}
