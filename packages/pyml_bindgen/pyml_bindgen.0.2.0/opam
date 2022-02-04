@@ -1,0 +1,54 @@
+opam-version: "2.0"
+synopsis: "Generate pyml bindings from OCaml value specifications"
+maintainer: "Ryan M. Moore"
+authors: "Ryan M. Moore"
+license: "MIT"
+homepage: "https://github.com/mooreryan/ocaml_python_bindgen"
+doc: "https://mooreryan.github.io/ocaml_python_bindgen/"
+bug-reports: "https://github.com/mooreryan/ocaml_python_bindgen/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "angstrom" {>= "0.15.0"}
+  "base" {>= "v0.12"}
+  "cmdliner" {>= "1.0"}
+  "ppx_let" {>= "v0.12"}
+  "ppx_sexp_conv" {>= "v0.12"}
+  "ppx_string" {>= "v0.12"}
+  "re2" {>= "v0.12"}
+  "stdio" {>= "v0.12"}
+  "ocaml" {>= "4.08.0"}
+  "conf-python-3-dev" {>= "1" & with-test}
+  "core_kernel" {>= "v0.12" & with-test}
+  "ocamlformat" {>= "0.20.0" & < "0.21.0" & with-test}
+  "ppx_assert" {>= "v0.12" & with-test}
+  "ppx_inline_test" {>= "v0.12" & with-test}
+  "ppx_expect" {>= "v0.12" & with-test}
+  "pyml" {with-test}
+  "bisect_ppx" {dev}
+  "core" {>= "v0.12" & dev}
+  "core_bench" {>= "v0.12" & dev}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install" {arch != "x86_32"}
+    "@runtest" {with-test & arch != "x86_32"}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mooreryan/ocaml_python_bindgen.git"
+url {
+  src:
+    "https://github.com/mooreryan/ocaml_python_bindgen/archive/0.2.0.tar.gz"
+  checksum: [
+    "md5=4d65d6e7e749ed6cfe16072f1dbf3dfe"
+    "sha512=a1c0c6067f5f782f79f51d75721040d65582270fb9cd223c2ff85cb8e80c28dc44fc850768618b24a1bbf76a9715ffbac55f01848088ddf98cb94285fbdd7187"
+  ]
+}
