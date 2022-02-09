@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis: "Effect-based direct-style IO mainloop for OCaml"
+description: "Selects an appropriate Eio backend for the current platform."
+maintainer: ["anil@recoil.org"]
+authors: ["Anil Madhavapeddy" "Thomas Leonard"]
+license: "ISC"
+homepage: "https://github.com/ocaml-multicore/eio"
+doc: "https://ocaml-multicore.github.io/eio/"
+bug-reports: "https://github.com/ocaml-multicore/eio/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "eio_linux" {= version & os = "linux"}
+  "eio_luv" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/ocaml-multicore/eio.git"
+url {
+  src:
+    "https://github.com/ocaml-multicore/eio/releases/download/v0.1/eio_main-0.1.tbz"
+  checksum: [
+    "sha256=671bedef03a2646d13f6e18b6e18c3509be7688fa19b4c48c9f0656959716878"
+    "sha512=8aa4993576bd716c0a3df70bb7cc55507ab6f810b38bdb8d66d0d5a6b5853eb80d705b106a6d55cfc31d39a18f938ef0f107968a4eb2f40e0a80887c66a8764c"
+  ]
+}
+x-commit-hash: "ba1fbbe60b94500c79556585134ffbe0dd1ec2fa"
