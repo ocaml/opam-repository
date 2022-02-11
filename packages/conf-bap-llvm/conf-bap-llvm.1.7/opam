@@ -1,0 +1,50 @@
+opam-version: "2.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+homepage: "http://llvm.org"
+authors: "The LLVM Team"
+bug-reports: "https://llvm.org/bugs/"
+license: "BSD"
+build: [
+  ["ocaml" "unix.cma" "find-llvm.ml"]
+]
+depends: [
+  "ocaml" {>= "4.09.0"}
+  "base-unix"
+  "conf-which" {build}
+]
+depexts: [
+
+  # debian
+  ["llvm-7-dev"] {os-distribution = "debian" & os-version < "11"}
+  ["llvm-9-dev"] {os-distribution = "debian" & os-version >= "11"}
+
+  # ubuntu
+  ["llvm-3.8-dev"] {os-distribution = "ubuntu" & os-version = "14.04"} #trusty
+  ["llvm-8-dev"]   {os-distribution = "ubuntu" & os-version = "16.04"} #xenial
+  ["llvm-9-dev"]   {os-distribution = "ubuntu" & os-version = "18.04"} #bionic
+  ["llvm-10-dev"]  {os-distribution = "ubuntu" & os-version = "20.04"} #focal
+
+  # fedora
+  ["llvm-devel" "llvm-static"] {os-distribution = "fedora"}
+
+  # macos
+  ["llvm-6.0"] {os = "macos" & os-distribution = "macports"}
+  ["llvm@9"]   {os = "macos" & os-distribution = "homebrew"}
+
+  #alpine
+  ["llvm-dev" "llvm-static"] {os-distribution = "alpine"}
+]
+
+substs: [ "find-llvm.ml" ]
+flags: [ conf ]
+
+synopsis: "Checks if a supported version of LLVM is installed"
+description: """
+The supported LLVM versions range from 6.0 to 12.0, bounds including.
+
+A preferred `llvm-config` can be choosen by setting opam config variable:
+```
+opam config set llvm-config your-llvm-config
+```
+OR by setting the `LLVM_CONFIG` environment variable before installation.
+"""
