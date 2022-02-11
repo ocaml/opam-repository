@@ -1,0 +1,60 @@
+opam-version: "2.0"
+synopsis: "Implementation of miniKanren relational (logic) EDSL"
+description: """
+The family of miniKanren derivatives has many implementations. This
+one is typed embedding to OCaml. The original implementation for
+this is in scheme and can be found at https://github.com/michaelballantyne/faster-miniKanren .
+
+Features:
+1) disequality constraints
+2) relational standard library: lists, nats
+"""
+maintainer: ["Dmitrii Kosarev Kakadu@pm.me"]
+authors: [
+  "Dmitrii Boulytchev https://github.com/dboulytchev"
+  "Dmitrii Kosarev https://github.com/Kakadu"
+  "Evgenii Moiseenko https://github.com/eupp"
+  "Petr Lozov https://github.com/Lozov-Petr"
+  "JetBrains Research https://research.jetbrains.org"
+]
+license: "LGPL-2.1"
+homepage: "https://github.com/JetBrains-Research/OCanren"
+bug-reports: "https://github.com/JetBrains-Research/OCanren/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "ocaml" {>= "4.10"}
+  "dune-configurator"
+  "ocamlfind"
+  "camlp5"
+  "logger-p5"
+  "GT" {>= "0.5"}
+  "benchmark" {with-test}
+  "ocamlformat" {with-test & <= "0.20"}
+  "ppx_inline_test"
+  "mtime"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/JetBrains-Research/OCanren.git"
+url {
+  src:
+    "https://github.com/JetBrains-Research/OCanren/releases/download/0.3.0-alpha1/OCanren-ppx-0.3.0-alpha1.tbz"
+  checksum: [
+    "sha256=c19286b1c1973bd8e647e204bd78699049aa1678eea73a1cc6da29efac4b5482"
+    "sha512=09b2e4b47e38c90488523b08436a399b2df2910bc1d696565ad26f9330ba980dfd6cef81f0a11c42e7b990ad965a346ff499ab562c8fe5e33e969bc6a1690552"
+  ]
+}
+x-commit-hash: "4df8639aa959477d8869f3d6c2d7b4519649ac0c"

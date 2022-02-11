@@ -1,0 +1,65 @@
+opam-version: "2.0"
+synopsis:
+  "Implementation of miniKanren relational (logic) EDSL: PPX extensions"
+description: """
+PPX rewriters for writing relational programs more conveniently.
+
+1) `ppx_fresh` -- a clone of original miniKanren syntax
+
+  fresh (x...) goal
+
+expands into
+
+  Fresh.numeral (fun x ... -> goal)
+
+2) `ppx_distrib` for easier generation of type-safe wrappers: distrib functor, etc...
+
+  [%%distrib
+    type t = fully_abstract_typee
+    type ground = ...
+  ]
+
+3) `ppx_repr` for test. Expands `REPR(expr)` to `(string_of_expr expr, expr)`
+"""
+maintainer: ["Dmitrii Kosarev Kakadu@pm.me"]
+authors: [
+  "Dmitrii Kosarev https://github.com/Kakadu"
+  "JetBrains Research https://research.jetbrains.org"
+]
+license: "LGPL-2.1"
+homepage: "https://github.com/JetBrains-Research/OCanren"
+bug-reports: "https://github.com/JetBrains-Research/OCanren/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "ocaml" {>= "4.10"}
+  "dune-configurator"
+  "ppxlib" {>= "0.22" & <= "0.24"}
+  "base"
+  "ppx_inline_test"
+  "ppx_expect"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/JetBrains-Research/OCanren.git"
+url {
+  src:
+    "https://github.com/JetBrains-Research/OCanren/releases/download/0.3.0-alpha1/OCanren-ppx-0.3.0-alpha1.tbz"
+  checksum: [
+    "sha256=c19286b1c1973bd8e647e204bd78699049aa1678eea73a1cc6da29efac4b5482"
+    "sha512=09b2e4b47e38c90488523b08436a399b2df2910bc1d696565ad26f9330ba980dfd6cef81f0a11c42e7b990ad965a346ff499ab562c8fe5e33e969bc6a1690552"
+  ]
+}
+x-commit-hash: "4df8639aa959477d8869f3d6c2d7b4519649ac0c"
