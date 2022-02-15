@@ -10,7 +10,8 @@ doc:          "https://mirage.github.io/irmin/"
 build: [
  ["dune" "subst"] {dev}
  ["dune" "build" "-p" name "-j" jobs]
- ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+ # Tests disabled on 32-bit platforms as the Dune build fails in CI:
+ ["dune" "runtest" "-p" name "-j" jobs] {with-test & arch != "arm32" & arch != "x86_32"}
 ]
 
 depends: [
@@ -32,14 +33,7 @@ depends: [
   "mtime"      {with-test & >= "1.0.0"}
   "alcotest"   {with-test}
 ]
-available: [
-  # temporary disable until ocaml-git works properly
-  arch != "s390x"
-
-  # Disabled on 32-bit platforms as the Dune build fails in CI:
-  & arch != "arm32"
-  & arch != "x86_32"
-]
+available: [ arch != "s390x" ] # temporary disable until ocaml-git works properly
 
 synopsis: "Git backend for Irmin"
 description: """
