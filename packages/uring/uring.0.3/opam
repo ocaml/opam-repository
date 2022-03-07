@@ -1,0 +1,58 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings for Linux io_uring"
+description:
+  "Bindings to the Linux io_uring kernel IO interfaces. See https://github.com/ocaml-multicore/eio for a higher-level API using this."
+maintainer: ["anil@recoil.org"]
+authors: ["Anil Madhavapeddy" "Sadiq Jaffer" "Thomas Leonard"]
+license: "(ISC AND MIT)"
+homepage: "https://github.com/ocaml-multicore/ocaml-uring"
+doc: "https://ocaml-multicore.github.io/ocaml-uring/"
+bug-reports: "https://github.com/ocaml-multicore/ocaml-uring/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "cstruct" {>= "6.0.1"}
+  "ocaml" {>= "4.12.0"}
+  "dune-configurator"
+  "lwt" {with-test & >= "5.0.0"}
+  "notty" {>= "0.2.2" & with-test}
+  "bechamel-notty" {>= "0.1.0" & with-test}
+  "bechamel" {>= "0.1.0" & with-test}
+  "logs" {with-test & >= "0.5.0"}
+  "cmdliner" {with-test & >= "1.1.0"}
+  "fmt" {>= "0.8.10"}
+  "optint" {>= "0.1.0"}
+  "alcotest" {>= "1.4.0" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+x-ci-accept-failures: [
+  "oraclelinux-7"
+  "centos-7"
+]
+dev-repo: "git+https://github.com/ocaml-multicore/ocaml-uring.git"
+depexts: [
+  ["linux-headers"] {os-distribution = "alpine"}
+]
+available: [os = "linux"]
+url {
+  src:
+    "https://github.com/ocaml-multicore/ocaml-uring/releases/download/v0.3/uring-0.3.tbz"
+  checksum: [
+    "sha256=47c225fce95ad34dd38c35f30724f7d8111afd4370d301985abc720747c6d746"
+    "sha512=af093ea00aa57d02a32f27708a3a6ebc9e3b6d509ecbe0c88b0ba85ec57a23131c51c5009b40a3ef4a63568ad9d2793bff73e7cf7ba149b9ea5ce12b41d2aafa"
+  ]
+}
+x-commit-hash: "bbde1d78e62bdc0dbeda23e2bb96dd07d0e34daf"
