@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis: "Freestanding OCaml compiler"
+description:
+  "This package provides a freestanding OCaml cross-compiler for ARM64, suitable for linking with a unikernel base layer."
+maintainer: "Martin Lucina <martin@lucina.net>"
+authors: "Martin Lucina <martin@lucina.net>"
+license: "MIT"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/ocaml-freestanding"
+bug-reports: "https://github.com/mirage/ocaml-freestanding/issues/"
+depends: [
+  "ocamlfind" {build}
+  "ocaml-src" {build}
+  "ocaml" {>= "4.12.1" & < "4.15.0"}
+  "solo5" {>= "0.7.0"}
+  "solo5-cross-aarch64" {>= "0.7.0"}
+]
+conflicts: [
+  "ocaml-freestanding"
+  "sexplib" {= "v0.9.0"}
+  "solo5-kernel-ukvm"
+  "solo5-kernel-virtio"
+  "solo5-kernel-muen"
+]
+available:
+  os = "linux" & (arch = "x86_64" | arch = "arm64") |
+  os = "freebsd" & arch = "x86_64" |
+  os = "openbsd" & arch = "x86_64"
+build: [
+  [
+    "./configure.sh"
+    "--prefix=%{prefix}%"
+    "--target=aarch64-solo5-none-static"
+    "--ocaml-configure-option=--disable-flat-float-array"
+      {ocaml-option-no-flat-float-array:installed}
+    "--ocaml-configure-option=--enable-flambda"
+      {ocaml-option-flambda:installed}
+    "--ocaml-configure-option=--disable-naked-pointers"
+      {ocaml-option-nnp:installed}
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [make "install"]
+dev-repo: "git+https://github.com/mirage/ocaml-freestanding.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-freestanding/releases/download/v0.7.1/ocaml-freestanding-0.7.1.tar.gz"
+  checksum: [
+    "md5=5703f57f98599fc37ab178a3812a6d85"
+    "sha512=4435620374c48b084426bfe0c6ff72ef0328a89b6f4fa433558121b60c74f6077fa80cdf1162c28a635d7d7819bd161d7e81501c84e6a40e932bc6c86f51bf95"
+  ]
+}
