@@ -5,27 +5,37 @@ license:      "LGPL-2.1-or-later"
 homepage:     "http://kakadu.github.io/lablqml/"
 bug-reports:  "https://github.com/kakadu/lablqml/issues"
 dev-repo: "git+https://github.com/Kakadu/lablqml.git"
+synopsis: "Installation of Qt5 using system packages or from source"
+flags: conf
 
-
+# TODO: There is a `setenv` syntax that should patch the environment for dependencies of this package
+# At the moment it is reserved only for compiler packages, and it's usage gives a warning.
+# But in principle it could simplyfy the life of user of installed Qt
 #setenv: [ PATH += "/usr/lib64/qt5/bin:/usr/lib/qt5/bin"] #{ os-distribution = "alpine" | os-distribution = "centos" | os-distribution = "fedora" }
+setenv: [
+  [ PKG_CONFIG_PATH += "/usr/local/opt/qt@5/lib/pkgconfig" ] 
+] #{ os="macos" }
 
-extra-files: [ "configure.sh" "md5=78ed05ba24ce4c1f929276bdefef8818" ]
+extra-files: [
+  "configure.sh"
+  "sha256=ec07b7ce43a2a17ef77ef322eba303f6fdc80bc907ca46791cabf73fb0cf81c3"
+]
+
 build: [
+  ["sh" "-exc" "PATH=/usr/local/opt/qt@5/bin:$PATH sh ./configure.sh %{version}%" ]
+    { os="macos" }
   ["sh" "-ex" "./configure.sh" "%{version}%" ]
-    { os="macos" | os-family="debian" | os-distribution = "arch"  }
+    { os-family="debian" | os-distribution = "arch"  }
   ["sh" "-ex" "./configure.sh" "%{version}%" "-qt5" ]
     { os!="macos" & os-family != "debian" & os-distribution != "arch"  }
 ]
 
-# It currently doesn't compile on MacOS because I don't know how to get mac-specific build command
-# (the syntax similar to depexts seems to be not supported).
-# In general, we need to add extra PATH (Mac only) variable in manner like
-#       "$(brew --cellar qt)/$(brew list --versions qt | tr ' ' '\n' | tail -1)/bin"
-# to make `qmake` available. But currently I don't know how to express it in opam recipe
-
 post-messages:
-  "It's recommended to set PKG_CONFIG_PATH to /usr/local/opt/qt/lib/pkgconfig to enable pkg-config. Also you may need to execute `brew link --force` to symlink everything properly. https://github.com/Kakadu/lablqml/issues/21#issuecomment-319489574 "
+  "It's recommended to set PKG_CONFIG_PATH to /usr/local/opt/qt@5/lib/pkg-config to enable pkg-config. Also you may need to execute `brew link --force` to symlink everything properly. https://github.com/Kakadu/lablqml/issues/21#issuecomment-319489574 "
     {os = "macos"}
+
+#depends: [ "conf-pkg-config"] # CI gave me: Error: An unexpected error occurred during the `brew link` step
+
 depexts: [
   ["qt5"] {os = "macos" & os-distribution = "homebrew"}
   ["qtdeclarative5-dev" "qt5-qmake"]
@@ -60,5 +70,3 @@ depexts: [
   ["libqt5-qtbase-common-devel" "libqt5-qtbase-devel" "libqt5-qtdeclarative-devel" ]
     { os-family = "suse" }
 ]
-synopsis: "Installation of Qt5 using APT packages or from source"
-flags: conf
