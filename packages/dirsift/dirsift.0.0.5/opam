@@ -1,0 +1,65 @@
+opam-version: "2.0"
+synopsis: "Search for directories by type"
+description: """
+```
+dirsift -t TYPE [PATH]
+```
+
+Subdirectories of PATH which satisfy specified TYPE requirements are listed
+
+PATH defaults to `.` if unspecified
+
+TYPE can be one of
+- `git`
+  - Directory identified as git repository
+- `not-git`
+- `borg`
+  - Directory identified as BorgBackup backup program repository
+- `not-borg`
+- `restic`
+  - Directory identified as Restic backup program repository
+- `not-restic`
+- `hidden`
+  - Name of directory begins with `.`
+- `not-hidden`
+- `hot`
+  - Directory contains >=1 file last modified within past 7 days (7 x 24 hours)
+  - User configurable
+- `warm`
+  - Directory contains >=1 file last modified within past 30 days (30 x 24 hours), but not `hot`
+  - User configurable
+- `cold`
+  - Directory is neither `hot` nor `warm`
+- `empty`
+- `not-empty`
+
+If multiple `-t TYPE` are specified, they are connected by `and` (conjunction),
+i.e. directory must satisfy all TYPE requirements to be listed
+"""
+maintainer: "Darren Ldl <darrenldldev@gmail.com>"
+authors: "Darren Ldl"
+license: "MIT"
+homepage: "https://github.com/darrenldl/dirsift"
+bug-reports: "https://github.com/darrenldl/dirsift/issues"
+dev-repo: "git+https://github.com/darrenldl/dirsift"
+depends: [
+  "ocaml" {>= "4.08.1"}
+  "dune" {>= "2.7.0"}
+  "containers" {>= "3.4"}
+  "fileutils"
+  "cmdliner"
+  "otoml" {>= "0.9.1"}
+  "timedesc" {>= "0.5.1" & < "0.6.0"}
+  "timere" {>= "0.6.0"}
+  "timere-parse" {>= "0.0.5"}
+  "dune-build-info"
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+url {
+  src:
+    "https://github.com/darrenldl/dirsift/releases/download/v0.0.5/v0.0.5.tar.gz"
+  checksum:
+    "sha256=2d75af27a10ae570f503dd7ab26892ab50a00cb63faeb971dada3d25f6f36f80"
+}

@@ -1,0 +1,63 @@
+opam-version: "2.0"
+synopsis: "A library to build and run distributed scientific workflows"
+description: """
+
+bistro is an OCaml library to build and run computations represented
+by a collection of interdependent scripts or OCaml functions, as is
+often found in data analysis.
+
+Features:
+- build complex and composable workflows declaratively
+- simple and lightweight wrapping of new components
+- resume-on-failure: if something fails, fix it and the workflow will
+  restart from where it stopped
+- parallel workflow execution
+- development-friendly: when a script is modified, bistro
+  automatically finds out what needs to be recomputed
+- automatic naming of generated files
+- static typing: detect file format errors at compile time
+"""
+maintainer: ["philippe.veber@gmail.com"]
+authors: ["Philippe Veber"]
+license: "CeCILL-B"
+homepage: "https://github.com/pveber/bistro/"
+bug-reports: "https://github.com/pveber/bistro/issues"
+depends: [
+  "base64" {>= "3.0.0"}
+  "bos"
+  "dune" {> "1.11"}
+  "core" {>= "v0.12.0" & < "v0.15"}
+  "lwt" {>= "3.2.0"}
+  "lwt_react"
+  "ocamlgraph" {>= "1.8.7"}
+  "ocaml" {>= "4.08.0"}
+  "ppxlib" {>= "0.23.0"}
+  "ppx_sexp_conv"
+  "rresult"
+  "sexplib" {>= "113.24.00"}
+  "tyxml" {>= "4.3.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/pveber/bistro.git"
+url {
+  src:
+    "https://github.com/pveber/bistro/releases/download/v0.6.0/bistro-0.6.0.tbz"
+  checksum: [
+    "sha256=146177faaaa9117a8e2bf0fd60cb658662c0aa992f35beb246e6fd0766050e66"
+    "sha512=553fe0c20f236316449b077a47e6e12626d193ba1916e9da233e5526dd39090e8677277e1c79baace3bdc940cb009f25431730a8efc00ae4ed9cc42a0add9609"
+  ]
+}
+x-commit-hash: "953ce0ac42a90ca11e953b9859abb51c0d074d2c"

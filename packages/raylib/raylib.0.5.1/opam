@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings for raylib"
+description: "OCaml bindings for raylib"
+maintainer: ["tobiasjammer@gmail.com"]
+authors: ["Tobias Mock"]
+license: "MIT"
+homepage: "https://github.com/tjammer/raylib-ocaml"
+bug-reports: "https://github.com/tjammer/raylib-ocaml/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "dune-configurator"
+  "ctypes" {>= "0.14"}
+  "integers" {>= "0.5"}
+  "ppx_cstubs" {>= "0.6"}
+  "conf-mesa" {os = "linux" | os-family = "bsd"}
+  "conf-libxcursor" {os = "linux" | os-family = "bsd"}
+  "conf-libxi" {os = "linux" | os-family = "bsd"}
+  "conf-libxinerama" {os = "linux" | os-family = "bsd"}
+  "conf-libxrandr" {os = "linux" | os-family = "bsd"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/tjammer/raylib-ocaml.git"
+available: [arch != "arm32" & arch != "ppc64"]
+x-ci-accept-failures: [
+  "centos-7" # C compiler is too old
+  "oraclelinux-7" # C compiler is too old
+]
+url {
+  src:
+    "https://github.com/tjammer/raylib-ocaml/releases/download/0.5.1/raylib-0.5.1.tbz"
+  checksum: [
+    "sha256=eec4635d39a680a26570d3498a4f683a5c2cbe0dc6b38110a578e2a8d0d08149"
+    "sha512=19d63c3681ab0c84bbb0ec39e9dd8a4d98874f51271a6179c66bf2af3613e4932f57e9d14b91b501ca38c8c0f0b31aa41794269577ea3ff61a0d223b7a71a3cc"
+  ]
+}
+x-commit-hash: "7cec56a732645e53c901109b987d8c7fb3f2c271"

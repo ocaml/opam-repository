@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Identify type of your file (such as the MIME type)"
+description: """\
+Conan is a re-implementation in OCaml of the file command.
+The library is system-agnostic and can be used with MirageOS."""
+maintainer: "Romain Calascibetta <romain.calascibetta@gmail.com>"
+authors: "Romain Calascibetta <romain.calascibetta@gmail.com>"
+license: "BSD-2-Clause"
+homepage: "https://github.com/mirage/conan"
+doc: "https://mirage.github.io/conan/"
+bug-reports: "https://github.com/mirage/conan/issues"
+depends: [
+  "ocaml"          {>= "4.08.0"}
+  "conan"          {= version}
+  "conan-database" {= version}
+  "conan-unix"     {= version}
+  "dune"           {>= "2.9.0"}
+  "dune-site"
+  "alcotest"       {with-test}
+  "crowbar"        {with-test}
+  "fmt"            {with-test}
+  "rresult"        {with-test}
+  "mirage"              {with-test & >= "3.7.0" & < "4.0"}
+  "mirage-unix"         {with-test}
+  "mirage-bootvar-unix" {with-test}
+  "mirage-console-unix" {with-test}
+  "mirage-clock-unix"   {with-test}
+  "mirage-logs"         {with-test}
+  "mirage-types"        {with-test}
+  "mirage-types-lwt"    {with-test}
+  "mirage-runtime"      {with-test & < "4.0"}
+]
+conflicts: ["ocaml-option-flambda"]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "install" "--create-install-files" name]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/conan.git"
+url {
+  src:
+    "https://github.com/mirage/conan/releases/download/v0.0.1/conan-cli-v0.0.1.tbz"
+  checksum: [
+    "sha256=625185d23c980636b90d245eae4e48d41ffcb14d6a2712c57c40e2bfd0102ff7"
+    "sha512=2b8592f7df6cc369039a1b40eff951e5006099350b347d2f92af270e5eb7ff74de0ed21d595a1e7e7955aa1ad65432d24288a468641c6340a12e40e7be21ac0e"
+  ]
+}
+x-commit-hash: "595b8f0dc6b6ce856a45403d4945b9369162c296"

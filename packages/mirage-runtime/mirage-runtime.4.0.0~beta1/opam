@@ -1,0 +1,45 @@
+opam-version: "2.0"
+maintainer:   ["anil@recoil.org" "thomas@gazagnaire.org"]
+authors:      ["Thomas Gazagnaire" "Anil Madhavapeddy" "Gabriel Radanne"
+               "Mindy Preston" "Thomas Leonard" "Nicolas Ojeda Bar"
+               "Dave Scott" "David Kaloper" "Hannes Mehnert" "Richard Mortier"]
+homepage:     "https://github.com/mirage/mirage"
+bug-reports:  "https://github.com/mirage/mirage/issues/"
+dev-repo:     "git+https://github.com/mirage/mirage.git"
+license:      "ISC"
+tags:         ["org:mirage" "org:xapi-project"]
+doc:          "https://mirage.github.io/mirage/"
+
+# Beta releases should be explicitely installed
+available: opam-version >= "2.1.0"
+flags: [ avoid-version ]
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.8.0"}
+  "ipaddr"             {>= "5.0.0"}
+  "functoria-runtime"  {= version}
+  "fmt" {>= "0.8.4"}
+  "logs"
+  "lwt" {>= "4.0.0"}
+  "alcotest" {with-test}
+]
+synopsis: "The base MirageOS runtime library, part of every MirageOS unikernel"
+description: """
+A bundle of useful runtime functions for applications built with MirageOS
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage/releases/download/v4.0.0_beta1/mirage-4.0.0.beta1.tbz"
+  checksum: [
+    "sha256=3d3ea9d35a475210eb9212b43a9e9516ec977f53365053402977b964255a3fec"
+    "sha512=4889e143d9c4e4082e23fbccc577e73b4849b8b4e01d42d58a1a1bf2b7f55a4ae2d00cd39ff2fafc4067d37c8e0bc8df26257e1d50127e026e61a23682df0589"
+  ]
+}
+x-commit-hash: "e3550ff28408f079f4ca010d1a63b9265164ea7b"

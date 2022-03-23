@@ -40,8 +40,16 @@ build: [
   ["./configure" "--prefix" prefix "-libdir" lib "-mandir" man]
   [make "-j%{jobs}%" "DEBUG=-g" "world.opt"]
   [make "-j%{jobs}%" "DEBUG=-g" "all"]
-  [make "-C" "testsuite" "clean" "all-tests"] { with-test & ocaml:version >= "4.10.0" }
-  [make "-C" "test" "clean" "all"] {with-test & ocaml:version >= "4.10.0" }
+  [make "-C" "testsuite" "clean" "all-tests"] {
+    with-test
+  & ocaml:version >= "4.10.0"
+  & os-distribution != "homebrew"
+  }
+  [make "-C" "test" "clean" "all"] {
+    with-test
+  & ocaml:version >= "4.10.0"
+  & os-distribution != "homebrew"
+  }
 ]
 install: [make "install"]
 

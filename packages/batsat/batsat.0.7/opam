@@ -1,0 +1,32 @@
+opam-version: "2.0"
+license: "MIT"
+synopsis: "OCaml bindings for batsat, a SAT solver in rust"
+maintainer: "simon.cruanes.2007@m4x.org"
+build: [
+  ["./build_rust.sh"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+# TODO: add dependency on cargo?
+depends: [
+  "ocaml" { >= "4.07.0" }
+  "dune" {>= "2.6" }
+  "odoc" {with-doc}
+  "containers" {with-test}
+  "conf-rust-2018" {build}
+]
+conflicts: [ "base-domains" ]
+available: arch != "arm32"
+tags: [ "minisat" "solver" "SAT" ]
+homepage: "https://github.com/c-cube/batsat-ocaml/"
+dev-repo: "git+https://github.com/c-cube/batsat-ocaml.git"
+bug-reports: "https://github.com/c-cube/batsat-ocaml/issues"
+authors: "simon.cruanes.2007@m4x.org"
+url {
+  src: "https://github.com/c-cube/batsat-ocaml/archive/v0.7.tar.gz"
+  checksum: [
+    "md5=46ea02d95f95e48980394848d09a411f"
+    "sha512=b355a36dc2440247de3c4375c168d5bfb113d725c23b78831e3064e2ede1770177ac60b936e180610e19419fdceb850409c159155f681a4e58ac13da1c532268"
+  ]
+}

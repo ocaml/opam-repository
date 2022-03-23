@@ -1,0 +1,55 @@
+opam-version: "2.0"
+maintainer: "coqdev@inria.fr"
+authors: "The Coq development team, INRIA, CNRS, and contributors."
+homepage: "https://coq.inria.fr/"
+bug-reports: "https://github.com/coq/coq/issues"
+dev-repo: "git+https://github.com/coq/coq.git"
+license: "LGPL-2.1-only"
+synopsis: "Formal proof management system"
+description: """
+The Coq proof assistant provides a formal language to write
+mathematical definitions, executable algorithms, and theorems, together
+with an environment for semi-interactive development of machine-checked
+proofs. Typical applications include the certification of properties of programming
+languages (e.g., the CompCert compiler certification project and the
+Bedrock verified low-level programming library), the formalization of
+mathematics (e.g., the full formalization of the Feit-Thompson theorem
+and homotopy type theory) and teaching.
+"""
+
+depopts: [
+  "coq-native"
+]
+depends: [
+  "ocaml" {>= "4.05.0"}
+  "ocamlfind" {build}
+  "dune" {>= "2.5.1"}
+  "conf-findutils" {build}
+  "zarith" {>= "1.10"}
+]
+conflicts: [
+  "base-nnp"
+  "ocaml-option-nnpchecker"
+]
+build: [
+  [
+    "./configure"
+    "-configdir" "%{lib}%/coq/config"
+    "-prefix" prefix
+    "-mandir" man
+    "-docdir" "%{doc}%/coq"
+    "-libdir" "%{lib}%/coq"
+    "-datadir" "%{share}%/coq"
+    "-coqide" "no"
+    "-native-compiler" "yes" {coq-native:installed} "no" {!coq-native:installed}
+  ]
+  [ make "COQ_USE_DUNE=" "-j%{jobs}%" ]
+]
+install: [
+  [ make "COQ_USE_DUNE=" "install" ]
+]
+
+url {
+  src: "https://github.com/coq/coq/archive/refs/tags/V8.15.0.tar.gz"
+  checksum: "sha256=73466e61f229b23b4daffdd964be72bd7a110963b9d84bd4a86bb05c5dc19ef3"
+}
