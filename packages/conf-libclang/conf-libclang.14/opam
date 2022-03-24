@@ -1,0 +1,35 @@
+opam-version: "2.0"
+maintainer: "Thierry Martinez <martinez@nsup.org>"
+authors: "The LLVM team"
+homepage: "http://llvm.org"
+bug-reports: "https://llvm.org/bugs/"
+license: "MIT"
+build: [
+  ["bash" "-ex" "configure.sh" version]
+]
+depexts: [
+  ["llvm"] {os = "macos"}
+  ["llvm" "clang"] {os-distribution = "arch"}
+  ["libclang-dev" "llvm-dev"] {os-family = "debian"}
+  ["clang-dev" "llvm-dev" "clang-static"] {os-distribution = "alpine"}
+  ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
+    {os-distribution = "centos"}
+  ["clang-devel" "llvm-devel" "zlib-devel" "redhat-rpm-config"]
+    {os-distribution = "fedora"}
+  ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
+    {os-distribution = "ol" & os-version >= "8"}
+  ["llvm-clang-devel"] {os-family = "suse"}
+  ["devel/llvm13"] {os = "freebsd"}
+  ["sys-devel/clang"] {os-distribution = "gentoo"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7" # clang-devel is not available
+  "alpine-3.13" # unavailable system package 'llvm-dev'
+  "alpine-3.14" # unavailable system package 'llvm-dev'
+  "opensuse-15.3" # unavailable system package 'llvm-clang-devel'
+]
+extra-files: [[
+  "configure.sh" "sha512=d1c17388e1523e84a363ab348149caff13bea715d110b0d1ee021855ba1d3049862f6646ae763b144d98b71b3405c320683f7ad67dbe255db49f80ee5c2e4a9f"
+]]
+synopsis: "Virtual package relying on the installation of llvm and clang libraries (<= 14.0.x)"
+flags: conf
