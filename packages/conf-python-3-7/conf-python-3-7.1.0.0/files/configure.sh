@@ -5,3 +5,4 @@ for version in 3.10 3.9 3.8 3.7; do
         exit 0
     fi
 done
+exit 1
