@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "thierry.martinez@inria.fr"
+homepage: "https://www.python.org/download/releases/3.7"
+authors: "Python Software Foundation"
+license: "PSF-2.0"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+build: ["bash" "-ex" "configure.sh"]
+depexts: [
+  ["python3.7"]
+    {os-distribution = "ubuntu" & os-version < "20.04"}
+  ["python3"] {os-family = "debian"
+    & !(os-distribution = "ubuntu" & os-version < "20.04")}
+  ["python3"] {os-distribution = "nixos"}
+  ["python3"] {os-distribution = "alpine"}
+  ["python37" "epel-release"] {os-distribution = "centos"}
+  ["python3"] {os-distribution = "fedora"}
+  ["python38"] {os-distribution = "ol"} # No python37 package
+  ["python"] {os-distribution = "arch"}
+  ["python3"] {os-family = "suse"}
+  ["dev-lang/python:3.7"] {os-distribution = "gentoo"}
+  ["python3"] {os = "openbsd"}
+  ["lang/python37"] {os = "netbsd"}
+  ["lang/python37"] {os = "freebsd"}
+  ["python37"] {os-distribution = "macports" & os = "macos"}
+  ["python@3"] {os-distribution = "homebrew" & os = "macos"}
+  ["system:python3"] {os-distribution = "cygwinports"}
+]
+x-ci-accept-failures: [
+  "opensuse-15.3" # python >=3.7 not packaged
+]
+synopsis: "Virtual package relying on Python >=3.7 installation"
+description: """
+This package can only install if a Python interpreter >=3.7 is available
+on the system.
+If a minor version needs to be specified for your operating system, then
+python-3.7 will be used.
+"""
+extra-files: [
+  ["test.py" "sha512=a9d993b9380d636fc2aff8af6bae1078ad14a2af4e510b7c437d5f1e01cd125b7f12e15fb8f0e0c4536d2f7d6aa0d36aafdf2f9da828ac7686df6dc782fa1a23"]
+  ["configure.sh" "sha512=d2dc0f2a0867aa04ffbaf28fd8fdac745036454cc4dbeb56d59344dfab80c09e8c30ff57a311667880164164e44aa9efd917cfdeed330fb5f224ee201a841206"]]
+flags: conf
