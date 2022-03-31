@@ -13,9 +13,13 @@ depends: [
 conflicts: ["base-num"]
 build: make
 install: [
-  make
-  "install" {!ocaml:preinstalled}
-  "findlib-install" {ocaml:preinstalled}
+  ["ocamlfind" "remove" "num"]
+  ["ocamlfind" "remove" "num-top"]
+  [
+    make
+    "install" {!ocaml:preinstalled}
+    "findlib-install" {ocaml:preinstalled}
+  ]
 ]
 dev-repo: "git+https://github.com/ocaml/num.git"
 url {
@@ -25,14 +29,3 @@ url {
     "sha512=0cc9be8ad95704bb683b4bf6698bada1ee9a40dc05924b72adc7b969685c33eeb68ccf174cc09f6a228c48c18fe94af06f28bebc086a24973a066da620db8e6f"
   ]
 }
-post-messages: [
-  "Installation failure with the message 'The installation of num failed at \"make findlib-install\"'
-is due to a known packaging bug with the num package. As a workaround run the following two commands,
-then try to reinstall the target package again:
-
-  ocamlfind remove num
-  ocamlfind remove num-top
-
-See https://github.com/ocaml/opam-repository/issues/14646 for details."
-  {failure}
-]
