@@ -13,9 +13,13 @@ build: [
   [make]
 ]
 install: [
-  make
-  "install" {!ocaml:preinstalled}
-  "findlib-install" {ocaml:preinstalled}
+  ["ocamlfind" "remove" "num"]
+  ["ocamlfind" "remove" "num-top"]
+  [
+    make
+    "install" {!ocaml:preinstalled}
+    "findlib-install" {ocaml:preinstalled}
+  ]
 ]
 depends: [
   "ocaml" {>= "4.06.0"}
@@ -32,14 +36,3 @@ url {
   src: "https://github.com/ocaml/num/archive/v1.3.tar.gz"
   checksum: "md5=f074e12325e84ebc883b37e5db10403d"
 }
-post-messages: [
-  "Installation failure with the message 'The installation of num failed at \"make findlib-install\"'
-is due to a known packaging bug with the num package. As a workaround run the following two commands,
-then try to reinstall the target package again:
-
-  ocamlfind remove num
-  ocamlfind remove num-top
-
-See https://github.com/ocaml/opam-repository/issues/14646 for details."
-  {failure}
-]
