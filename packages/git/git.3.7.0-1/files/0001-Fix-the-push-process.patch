@@ -1,0 +1,25 @@
+From 573ae4a09460a1018dd09de80be5018b760b79c2 Mon Sep 17 00:00:00 2001
+From: Romain Calascibetta <romain.calascibetta@gmail.com>
+Date: Wed, 6 Apr 2022 18:50:33 +0200
+Subject: [PATCH] Fix the push process with a copy of illegal shared bigarray
+
+---
+ src/git/sync.ml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/git/sync.ml b/src/git/sync.ml
+index be1e7a00c..0dbc27511 100644
+--- a/src/git/sync.ml
++++ b/src/git/sync.ml
+@@ -177,7 +177,7 @@ struct
+           | `Blob -> `C
+           | `Tag -> `D
+         in
+-        let raw = Bigstringaf.sub buffer ~off ~len in
++        let raw = Bigstringaf.copy buffer ~off ~len in
+         Lwt.return (Carton.Dec.v ~kind raw)
+     | None -> Lwt.fail Not_found
+ 
+-- 
+2.35.0
+
