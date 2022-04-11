@@ -1,0 +1,28 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: ["Tezos devteam"]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "2.9" }
+  "tezos-error-monad" { = version }
+  "resto" { >= "0.6" & < "0.7" }
+  "resto-directory" { >= "0.6" & < "0.7" }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["mv" "src/lib_rpc/%{name}%.install" "./"]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: library of auto-documented RPCs (service and hierarchy descriptions)"
+
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v12.3/tezos-v12.3.tar.bz2"
+  checksum: [
+    "sha256=296bb5674bc6050afe6330326fbdd0dfc2255d414bfd6b79cc7666ac6b39316d"
+    "sha512=c061cd300a9410300851158d77bf8e56ca3c568b0b1161b38305e5b2efdcd9c746d391f832fdb2826f9a1d6babce10a9b764a4b04f5df42699f7314b9863123a"
+  ]
+}
