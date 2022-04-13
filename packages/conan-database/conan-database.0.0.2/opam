@@ -1,0 +1,33 @@
+opam-version: "2.0"
+synopsis: "A database of decision trees to recognize MIME type"
+maintainer: "Romain Calascibetta <romain.calascibetta@gmail.com>"
+authors: "Romain Calascibetta <romain.calascibetta@gmail.com>"
+license: "BSD-2-Clause"
+homepage: "https://github.com/dinosaure/conan"
+doc: "https://dinosaure.github.io/conan/"
+bug-reports: "https://github.com/dinosaure/conan/issues"
+depends: [
+  "dune"       {>= "2.9.0"}
+  "conan"      {= version}
+  "alcotest"   {with-test}
+  "crowbar"    {with-test}
+  "fmt"        {with-test}
+  "rresult"    {with-test}
+]
+conflicts: ["ocaml-option-flambda"]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "install" "--create-install-files" name]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/dinosaure/conan.git"
+url {
+  src:
+    "https://github.com/mirage/conan/releases/download/v0.0.2/conan-cli-0.0.2.tbz"
+  checksum: [
+    "sha256=27974c6a24196088d9ec2a26e83d1e174a608a0745f68a435ebcd1abb22da385"
+    "sha512=58bd758ecb1d328fe25c141f4500eb6c14b2ffc1feee4a097b57ae48ab6eee1db8ea52cee06ba90fc06e03dba76e35465d8f38a5779040cb013f2b7367cc97ef"
+  ]
+}
+x-commit-hash: "0b874402fb3fc97a816911f51080299313a198ea"
