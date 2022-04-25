@@ -1,0 +1,57 @@
+opam-version: "2.0"
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+synopsis: "BER-N111 MetaOCaml"
+maintainer: "yallop@gmail.com"
+authors: [
+  "Xavier Leroy"
+  "Damien Doligez"
+  "Alain Frisch"
+  "Jacques Garrigue"
+  "Didier Rémy"
+  "Jérôme Vouillon"
+  "Oleg Kiselyov"
+]
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git+https://github.com/metaocaml/ber-metaocaml.git#ber-n111"
+homepage: "http://okmij.org/ftp/ML/MetaOCaml.html"
+depends: [
+  "ocaml" {= "4.11.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-metaocaml-ocamlfind" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  ["./configure" "-prefix" "%{prefix}%" "--enable-flambda"]
+    {os != "openbsd" & os != "macos"}
+  ["./configure" "-prefix" "%{prefix}%" "CC=cc" "ASPP=cc -c" "--enable-flambda"]
+    {os = "openbsd" | os = "macos"}
+  [make "world.opt"]
+  [make "-C" "ber-metaocaml-111" "all"]
+]
+install: [
+  [make "-i" "install"]
+  [make "-C" "ber-metaocaml-111" "install" "install.opt"]
+]
+url {
+  src: "https://github.com/metaocaml/ber-metaocaml/archive/ber-n111.tar.gz"
+  checksum: "md5=3362d3bab70e662defc92d493effe5e1"
+}
+post-messages: [
+  "A failure in the middle of the build may be caused by build parallelism
+   (enabled by default).
+   Please file a bug report at https://github.com/ocaml/opam-repository/issues"
+  {failure & jobs > 1}
+  "You can try installing again including --jobs=1
+   to force a sequential build instead."
+  {failure & jobs > 1 & opam-version >= "2.0.5"}
+]
+available: !(os = "macos" & arch = "arm64")
+patches: ["alt-signal-stack.patch"]
+extra-source "alt-signal-stack.patch" {
+  src: "https://github.com/ocaml/ocaml/commit/dd28ac0cf4365bd0ea1bcc374cbc5e95a6f39bea.patch"
+  checksum: "sha256=7563fcc6f931b5b20269ac2b3f14a0f336fe87dbdb6b2c6a0de181aed019a39d"
+}
