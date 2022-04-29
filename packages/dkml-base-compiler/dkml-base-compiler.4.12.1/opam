@@ -18,7 +18,7 @@ depends: [
   "base-threads" {post}
 ]
 depopts: [
-  "dkml-option-32bit"
+  "ocaml-option-32bit"
 ]
 build-env: [
   [DKML_VER = "0.4.0"]
@@ -55,10 +55,10 @@ install: [
       "-g" "%{_:share}%/mlcross"
       "-v" "dl/ocaml"
       #   Host architectures
-      "-ewindows_x86"     { os = "win32" & dkml-option-32bit:installed }
-      "-ewindows_x86_64"  { os = "win32" & !dkml-option-32bit:installed }
-      "-elinux_x86"       { os = "linux" & dkml-option-32bit:installed }
-      "-elinux_x86_64"    { os = "linux" & !dkml-option-32bit:installed }
+      "-ewindows_x86"     { os = "win32" & (arch = "x86_32" |  ocaml-option-32bit:installed) }
+      "-ewindows_x86_64"  { os = "win32" & (arch = "x86_64" & !ocaml-option-32bit:installed) }
+      "-elinux_x86"       { os = "linux" & (arch = "x86_32" |  ocaml-option-32bit:installed) }
+      "-elinux_x86_64"    { os = "linux" & (arch = "x86_64" & !ocaml-option-32bit:installed) }
       "-edarwin_x86_64"   { os = "macos" }
       #   Target architectures (if cross-compiling)
       "-adarwin_arm64=vendor/dkml-compiler/src/standard-compiler-env-to-ocaml-configure-env.sh" { os = "macos" }
@@ -66,8 +66,8 @@ install: [
       #     by DKML, but I (jonahbeckford@) doubt there is an Android NDK available on the Opam hosts.
       #     Confer: https://github.com/diskuv/diskuv-ocaml-ghmirror/runs/4831077050
       #     Perhaps the Android NDK should just be downloaded via an 'android-option-ndk23' package? That would give control of the NDK version.
-      # "-aandroid_arm64v8a=vendor/dkml-compiler/src/ci/github-actions-ci-to-ocaml-configure-env.sh;android_x86_64=vendor/dkml-compiler/src/ci/github-actions-ci-to-ocaml-configure-env.sh"] { os = "linux" & !dkml-option-32bit:installed }
-      # "-aandroid_arm32v7a=vendor/dkml-compiler/src/ci/github-actions-ci-to-ocaml-configure-env.sh" { os = "linux" & dkml-option-32bit:installed }
+      # "-aandroid_arm64v8a=vendor/dkml-compiler/src/ci/github-actions-ci-to-ocaml-configure-env.sh;android_x86_64=vendor/dkml-compiler/src/ci/github-actions-ci-to-ocaml-configure-env.sh"] { os = "linux" & !ocaml-option-32bit:installed }
+      # "-aandroid_arm32v7a=vendor/dkml-compiler/src/ci/github-actions-ci-to-ocaml-configure-env.sh" { os = "linux" & ocaml-option-32bit:installed }
       "-k" "vendor/dkml-compiler/src/standard-compiler-env-to-ocaml-configure-env.sh"
   ]
 
