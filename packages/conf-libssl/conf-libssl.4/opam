@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "David Sheets <sheets@alum.mit.edu>"
+authors: ["The OpenSSL Project"]
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+homepage: "https://www.openssl.org/"
+license: "Apache-1.0"
+build: [
+  ["pkg-config" "--print-errors" "--exists" "openssl"]
+    {os != "freebsd" & os != "openbsd" & os != "netbsd" & # libssl is provided by base system on BSDs
+     os-distribution != "homebrew"}
+  ["sh" "-ex" "./homebrew.sh" "check"] {os-distribution = "homebrew"}
+]
+install: [
+  ["sh" "-ex" "./homebrew.sh" "install" lib] {os-distribution = "homebrew"}
+]
+depends: [
+  "conf-pkg-config" {build}
+]
+depexts: [
+  ["libssl-dev"] {os-family = "debian"}
+  ["libssl-dev"] {os-family = "ubuntu"}
+  ["openssl-devel"] {os-distribution = "centos"}
+  ["openssl-devel"] {os-distribution = "ol"}
+  ["openssl-devel"] {os-distribution = "fedora"}
+  ["libopenssl-devel"] {os-family = "suse"}
+  ["openssl-dev"] {os-family = "alpine"}
+  ["openssl"] {os-family = "arch"}
+  ["openssl"] {os-distribution = "homebrew"}
+  ["openssl"] {os-distribution = "macports"}
+  ["openssl"] {os-distribution = "nixos"}
+  ["openssl"] {os = "win32" & os-distribution = "cygwinports"}
+]
+synopsis: "Virtual package relying on an OpenSSL library system installation"
+description:
+  "This package can only install if the OpenSSL library is installed on the system."
+flags: conf
