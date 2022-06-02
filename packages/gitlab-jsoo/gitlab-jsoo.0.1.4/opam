@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Gitlab APIv4 OCaml library"
+description: """
+This library provides an OCaml interface to the
+[Gitlab APIv4](https://docs.gitlab.com/ee/api/) (JSON).
+This library installs the JavaScript version, which uses [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."""
+maintainer: ["Tim McGilchrist <timmcgil@gmail.com>"]
+authors: ["Tim McGilchrist"]
+license: "BSD-3-clause"
+homepage: "https://github.com/tmcgilchrist/ocaml-gitlab"
+doc: "https://tmcgilchrist.github.io/ocaml-gitlab/"
+bug-reports: "https://github.com/tmcgilchrist/ocaml-gitlab/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08.0"}
+  "gitlab" {= version}
+  "cohttp" {>= "4.0"}
+  "cohttp-lwt-jsoo" {>= "4.0"}
+  "js_of_ocaml-lwt" {>= "3.4.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/tmcgilchrist/ocaml-gitlab.git"
+available: [ arch != "x86_32" & arch != "arm32" & arch != "ppc32" ]
+url {
+  src:
+    "https://github.com/tmcgilchrist/ocaml-gitlab/releases/download/0.1.4/gitlab-0.1.4.tbz"
+  checksum: [
+    "sha256=1e92f13c458e3d934e5c78f1276dc3d85f03e82de10e783a7f73c6e9e93ce478"
+    "sha512=40dc0b0667a458cc6d019226d16e1b05bedc83eb30fd44093201033a964200a59e0a40a903d1e6f09db630c4dcbd75ef5f40a93748c3108f8bce9a32226794ae"
+  ]
+}
+x-commit-hash: "a37103cf06b96d7d72f257fc001868bbca44513a"
