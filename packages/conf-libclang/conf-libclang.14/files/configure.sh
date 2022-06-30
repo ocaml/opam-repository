@@ -6,17 +6,35 @@ clean_tempdir () {
     rmdir "$tempdir"
 }
 
+maximum_version=14
+
 shopt -s nullglob
-for version in default 14 13 12 11 10 9 8 7 6 5 4 3; do
+for version in default $(seq $maximum_version -1 3); do
     if [ "$version" = default ]; then
-        llvm_config=llvm-config
-        llvm_version="$($llvm_config --version)" || continue
-        if [ $(printf "${llvm_version%%.*}\n14" | sort -n | head -n1) = 14 ]; then
-            continue
-        fi
+        for kind in system brew none; do
+            case $kind in
+            system)
+                llvm_config=$(command -v llvm-config) || continue
+                ;;
+            brew)
+                llvm_config="$(brew --prefix)/opt/llvm/bin/llvm-config" || continue
+                ;;
+            none)
+                continue
+                ;;
+            esac
+            llvm_version="$($llvm_config --version)" || continue
+            next_version=$((maximum_version + 1))
+            if [\
+                $(printf "${llvm_version%%.*}\n$next_version" | sort -n | head -n1)\
+                    = $next_version ]; then
+                continue
+            fi
+            break
+        done
     else
         if hash brew 2>/dev/null; then
-           brew_llvm_config="$(brew --cellar)"/llvm*/${version}*/bin/llvm-config
+           brew_llvm_config="$(brew --cellar llvm)"/${version}*/bin/llvm-config
         fi
         for llvm_config in \
             llvm-config-${version} llvm-config-${version}.0 \
@@ -78,12 +96,31 @@ EOF
     fi
 
     clean_tempdir
-    
-    echo "config: \"$llvm_config\"" >> conf-libclang.config
-    echo "version: \"$llvm_version\"" >> conf-libclang.config
+    checksum=
+    for hasher in \
+        "sha512:sha512sum" \
+        "sha512:shasum -a 512" \
+        "md5:md5sum" \
+        "md5:md5 -q"; do
+        hasher_output=$(${hasher#*:} "$llvm_config") || continue
+        checksum="${hasher%%:*}=${hasher_output%% *}"
+        break
+    done
+    if [ -z "$checksum" ]; then
+        echo "Error: Unable to find a hasher"
+        exit 1
+    fi
+    cat >"conf-libclang.config" <<EOF
+opam-version: "2.0"
+file-depends: [ "$llvm_config" "$checksum" ]
+variables {
+    config: "$llvm_config"
+    version: "$llvm_version"
+}
+EOF
     exit 0
 done
 
-echo "Error: No usable version of LLVM <=13.0.x found."
+echo "Error: No usable version of LLVM <=14.0.x found."
 exit 1
 
