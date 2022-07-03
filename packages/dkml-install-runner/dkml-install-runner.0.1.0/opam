@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "Runner executable for Diskuv OCaml (DKML) installation"
+description:
+  "The runner executable is responsible for loading and running all DKML installation components."
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-install-api"
+bug-reports: "https://github.com/diskuv/dkml-install-api/issues"
+depends: [
+  "alcotest" {>= "1.4.0" & with-test}
+  "odoc" {>= "1.5.3" & with-doc}
+  "dkml-install" {= version}
+  "dune" {>= "2.9" & >= "2.9"}
+  "ppx_expect" {>= "v0.14.1"}
+  "astring" {>= "0.8.5"}
+  "bos" {>= "0.2.0"}
+  "cmdliner" {= "1.0.4"}
+  "fmt" {>= "0.8.9"}
+  "logs" {>= "0.7.0"}
+  "diskuvbox" {>= "0.1.0"}
+]
+dev-repo: "git+https://github.com/diskuv/dkml-install-api.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+url {
+  src: "https://github.com/diskuv/dkml-install-api/archive/v0.1.0.tar.gz"
+  checksum: [
+    "md5=946a6c2f04cc071b005bf91d0d0e4638"
+    "sha512=c4368e426c97fc6029f5dd4e95435201b126bdabf4bcba96d9d7a95b65939dc2e25f5dbb3b5037e91480f06c2c503f00e1ca1645387e423cc3a0cf9dc5722aca"
+  ]
+}
