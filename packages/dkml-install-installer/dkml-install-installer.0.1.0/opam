@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "Build tools for DKML installers"
+description:
+  "Build-time executables that can generate Dune include files which will compile essential end-user executables."
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-install-api"
+bug-reports: "https://github.com/diskuv/dkml-install-api/issues"
+depends: [
+  "alcotest" {>= "1.4.0" & with-test}
+  "odoc" {>= "1.5.3" & with-doc}
+  "dkml-install" {= version}
+  "dkml-install-runner" {= version}
+  "dune" {>= "2.9"}
+  "astring" {>= "0.8.5"}
+  "bos" {>= "0.2.0"}
+  "cmdliner" {= "1.0.4"}
+  "fmt" {>= "0.8.9"}
+  "logs" {>= "0.7.0"}
+  "crunch" {>= "3.2.0"}
+]
+dev-repo: "git+https://github.com/diskuv/dkml-install-api.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+url {
+  src: "https://github.com/diskuv/dkml-install-api/archive/v0.1.0.tar.gz"
+  checksum: [
+    "md5=758b8f4a4cb870ef8e41f4b3856aa3eb"
+    "sha512=08c59e148f025ce468e94be52ef5f8ba4995b8017e993968206f135b8f7431e08ae48dbba91ce5ae83b7b118d09ec968013cccbd5fa15b1e3e81f60894e90c11"
+  ]
+}
