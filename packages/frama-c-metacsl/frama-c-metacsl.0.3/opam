@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis: "MetACSL plugin of Frama-C for writing pervasives properties"
+description:"""
+MetACSL let users write properties that need to be checked at particular
+contexts (e.g. each time a location is written to inside a given set
+of functions). It will then generate all the corresponding ACSL
+annotations, leaving it to analysis plug-ins (e.g. WP) to prove the
+resulting clauses.
+"""
+maintainer: "virgile.prevosto@cea.fr"
+authors: [
+  "Virgile Robles"
+]
+homepage: "https://frama-c.com/"
+license: "LGPL-2.1-only"
+dev-repo: "git+https://git.frama-c.com/pub/meta.git"
+bug-reports: "https://git.frama-c.com/pub/meta/-/issues"
+tags: [
+  "program verification"
+  "formal specification"
+  "ACSL"
+  "MetACSL"
+]
+
+url {
+  src: "https://git.frama-c.com/pub/meta/uploads/9d6ad7136916ce78965434dde5a62567/frama-c-metacsl-0.3.tar.gz"
+  checksum: ["md5=967ffd6ab144b426269417b65eb928c3"
+             "sha256=3b0fd8a37e4b71f6a2c4fe7c6599498480a87ae646028e1e53abf90dde224ee5"
+             "sha512=dbfd459ce2b51cb5325c8e8bcf2f28629d192017285369cf8144a13326c598503997da11764163c42585cfeb2a3ffdf59f13f5cf8e7f15fb2fc8f3c59c6fe82e"]
+}
+
+build: [
+  ["autoconf"] {dev}
+  ["./configure"]
+  [make "-j%{jobs}%"]
+]
+
+install: [
+  [make "install"]
+]
+
+depends: [
+  "ocaml" { >= "4.08.1" }
+  "frama-c" { >= "25.0" & < "26.0~" }
+  "why3" { >= "1.5.0" }
+  "conf-autoconf" {dev}
+]
+
+depopts: [ "conf-swi-prolog" ]
+
+messages: [ "Note that if you wish to use the deduction features of MetAcsl, you must install the conf-swi-prolog package (and swi-prolog itself)" {!conf-swi-prolog:installed} ]
