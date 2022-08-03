@@ -27,7 +27,6 @@ function llvm_build {
         -DLLVM_OCAML_OUT_OF_TREE=TRUE \
         -DLLVM_OCAML_INSTALL_PATH="${libdir}" \
         -DLLVM_OCAML_EXTERNAL_LLVM_LIBS="`"$llvm_config" --libs`" \
-        -DLLVM_INCLUDE_BENCHMARKS=FALSE \
         ..
     $make ocaml_all
 
