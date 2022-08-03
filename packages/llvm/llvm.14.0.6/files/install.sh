@@ -11,7 +11,7 @@ function filter_experimental_targets {
 }
 
 function llvm_build {
-    cd llvm-14.0.6.src
+    cd llvm
 
     # Copy the required Common LLVM CMake modules to the source tree
     cp ../cmake/Modules/* cmake/
@@ -35,7 +35,7 @@ function llvm_build {
 }
 
 function llvm_install {
-  cd llvm-14.0.6.src
+  cd llvm
   if test -d "build-$1"; then
     cd "build-$1"
 
