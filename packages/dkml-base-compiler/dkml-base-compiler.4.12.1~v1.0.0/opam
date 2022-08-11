@@ -19,6 +19,54 @@ depends: [
 conflict-class: "ocaml-core-compiler"
 flags: [ compiler avoid-version ]
 build: [
+  # Homebrew's bundle tap, needed for reproducible build auditing in drc's crossplatform-functions.sh.
+  #
+  # The Opam sandbox will stop Homebrew from auto-installing its own tap. In particular 'brew bundle ...'
+  # is automatically installed per https://github.com/Homebrew/homebrew-bundle/tree/4756e4c4cf95485c5ea4da27375946c1dac2c71d#installation,
+  # and it is an "official" tap per
+  # https://github.com/Homebrew/brew/blob/master/Library/Homebrew/official_taps.rb#L11-L18 .
+  #
+  # So our solution is to:
+  # a) Use extra-source:[] to download a Git tarball without tripping over the sandbox firewall
+  # b) Recreate a local file git repository
+  # c) Use the next build:[] steps to let Homebrew know about the bundle tap
+  #
+  # Test with: brew untap homebrew/bundle
+  ["install" "-d" "dl/homebrew-bundle"] {os = "macos"}
+  ["tar" "xCfz" "dl/homebrew-bundle" "dl/homebrew-bundle.tar.gz" "--strip-components=1"] {os = "macos"}
+  ["sh" "-c" """#!/bin/sh
+    set -eufx
+    if command -v brew; then
+      eval $(brew shellenv)
+      HOMEBREW_BREW_FILE="$(command -v brew)"
+      HOMEBREW_LIBRARY="${HOMEBREW_REPOSITORY}/Library"
+      HOMEBREW_PATH="$PATH"
+      HOMEBREW_CACHE="$PWD/dl/homebrew-cache"
+      export HOMEBREW_BREW_FILE HOMEBREW_PATH HOMEBREW_CACHE
+
+      # Clone the Library which contains the Taps/
+      # (and also Homebrew/ which is all the core scripts).
+      # * [-a] will copy and continue even if there are errors (like dangling symlinks).
+      install -d dl/homebrew
+      cp -a "$HOMEBREW_LIBRARY" dl/homebrew/ || true
+      HOMEBREW_LIBRARY="$PWD/dl/homebrew/Library"
+      export HOMEBREW_LIBRARY
+
+      # Install the tap manually by copying it. If we had used
+      # 'brew tap homebrew/bundle [URL]' or more specifically
+      # '/bin/bash "${HOMEBREW_LIBRARY}/Homebrew/brew.sh" tap homebrew/bundle [URL]'
+      # then brew would try to update its own configuration repository to say the tap was installed.
+      # It would fail with 'error: could not lock config file .git/config: Operation not permitted'
+      # because we are in a sandbox. We would have to ignore that error even though the tap was installed.
+      # too many sandbox permissions, even with a file:// URL).
+      install -d "${HOMEBREW_LIBRARY}/Taps/homebrew"
+      cp -rp dl/homebrew-bundle "${HOMEBREW_LIBRARY}/Taps/homebrew/"
+
+      /bin/bash "${HOMEBREW_LIBRARY}/Homebrew/brew.sh" bundle dump
+      test -e Brewfile
+    fi
+   """] {os = "macos"}
+
   # OCaml source code
   ["install" "-d" "dl/ocaml/flexdll"]
   ["tar" "xCfz" "dl/ocaml"          "dl/ocaml.tar.gz"   "--strip-components=1"]
@@ -43,6 +91,7 @@ install: [
   # Run r-c-ocaml-1-setup.sh
   [
     "env" "TOPDIR=dkmldir/vendor/drc/all/emptytop"
+      "DKML_REPRODUCIBLE_SYSTEM_BREWFILE=%{_:build}%/Brewfile"
       "dkmldir/vendor/dkml-compiler/src/r-c-ocaml-1-setup.sh"
       "-d" "dkmldir"
       "-t" "%{prefix}%"
@@ -91,16 +140,24 @@ extra-source "dl/flexdll.tar.gz" {
   src: "https://github.com/alainfrisch/flexdll/archive/0.39.tar.gz"
   checksum: "sha256=51a6ef2e67ff475c33a76b3dc86401a0f286c9a3339ee8145053ea02d2fb5974"
 }
-extra-source "dl/dkml-runtime-common.tar.gz" {
-  src: "https://github.com/diskuv/dkml-runtime-common/archive/refs/tags/v0.4.0.tar.gz"
+extra-source "dl/homebrew-bundle.tar.gz" {
+  src: "https://github.com/Homebrew/homebrew-bundle/archive/4756e4c4cf95485c5ea4da27375946c1dac2c71d.tar.gz"
   checksum: [
-    "sha256=8793c636e14b630722ba59145aa1d895fddbb151de4b7f515cefb8942ec2f917"
+    "sha256=10c024ca7871cea36b4c27b2601971d3fa6cba6f37855613baf0026d0f555e76"
+  ]
+}
+extra-source "dl/dkml-runtime-common.tar.gz" {
+  # This violates the v1.0.0 versioning, but this future patch is needed to allow the 'bundle'
+  # brew tap to be used on macOS in the Opam sandbox.
+  src: "https://github.com/diskuv/dkml-runtime-common/archive/refs/tags/v1.0.1-prerel0b.tar.gz"
+  checksum: [
+    "sha256=563b89382f07a4ce56917a8eb7034c5fa6993572f087ad909e58229e78748056"
   ]
 }
 url {
   src: "https://github.com/diskuv/dkml-compiler/archive/4.12.1-v1.0.0.tar.gz"
   checksum: [
-    "md5=23f798f9ac63bf614de0755b0a5a9751"
-    "sha512=3028db4dc6a5fdbe8e47f699985f81e6d18144dab81b1e15eb5623d8bbdb39cca2987f50a9e0096cfe714169b6177fff0f670b57322dec879cfb558dbc1b0134"
+    "md5=94f9e2619e329ec6b28c0c42c4e0ced5"
+    "sha512=9bb83aeccb9054153d879c33d0999e5c648bdf2dbded6f7fc3115c984592fd117ff2d7858edb38c53389bbf480050451e4bcb86ea7e7ff59279e175b48183013"
   ]
 }
