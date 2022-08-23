@@ -9,8 +9,11 @@ bug-reports: "https://github.com/wasmerio/wasmer-ocaml/issues"
 dev-repo: "git+https://github.com/wasmerio/wasmer-ocaml.git"
 tags: ["org:wasmer"]
 url {
-	src: "https://github.com/wasmerio/wasmer-ocaml/archive/refs/tags/1.0.0+api-fix.zip"
-	checksum: [] # Placeholder, TODO
+	src: "https://github.com/wasmerio/wasmer-ocaml/archive/refs/tags/1.0.0+api-fix.tar.gz"
+	checksum: [
+		"md5=7bc01f59449024de88857fc15d0f12ee"
+		"sha512=efa6ef01459ed5def7c9ead773147bc875c97a75c5321c46a18cc2891d22f3109718717078a43549e342e3f04242ba1a95b3218060cb0e9c6d3b7ca4bf398078"
+	]
 }
 
 synopsis: "The official Wasmer bindings for OCaml"
@@ -18,15 +21,5 @@ synopsis: "The official Wasmer bindings for OCaml"
 depends: ["ocaml" {>= "4.14.1"} "ocamlfind" "ctypes" "ctypes-foreign" "libwasmer"]
 build: [[make "all"]]
 run-test: [[make "check"]]
-build-env: [
-	[ECHO = "true"]
-	[LIBRARY_PATH := "%{libwasmer:lib}%"]
-	[LDLIBRARY_PATH := "%{libwasmer:lib}%"]
-	[DYLDLIBRARY_PATH := "%{libwasmer:lib}%"]
-]
-setenv: [ # Hacky, but should work; prioritizes the opam library over the system one
-	[LIBRARY_PATH := "%{libwasmer:lib}%"]
-	[LD_LIBRARY_PATH := "%{libwasmer:lib}%"]
-	[DYLD_LIBRARY_PATH := "%{libwasmer:lib}%"]
-]
+build-env: [[ECHO = "true"]]
 install: [make "install"]
