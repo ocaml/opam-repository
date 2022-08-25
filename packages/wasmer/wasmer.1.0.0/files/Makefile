@@ -31,7 +31,7 @@ EXAMPLES:=examples/hello examples/instance examples/rust
 
 all: wasmer
 
-wasmer: lib/Wasmer.cmxs lib/Wasmer.cmxa lib/Wasmer.cma
+wasmer: lib/Wasmer.cmxs lib/Wasmer.cmxa lib/Wasmer.cma lib/Wasmer.cmi
 .PHONY: wasmer
 
 obj/lib/Wasmer.ml: src/lib/wasmer.ml
