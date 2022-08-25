@@ -1,4 +1,5 @@
 ROOT:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+INSTALL?=$(ROOT)lib
 
 OCAMLFIND?=ocamlfind
 OCAMLDEP?=ocamldep
@@ -70,26 +71,20 @@ lib/Wasmer.cmi: obj/lib/Wasmer.cmi
 	@$(ECHO) "Copying the Wasmer cmi to lib"
 	$(SILENCER)cp obj/lib/Wasmer.cmi lib/Wasmer.cmi
 
-obj/lib/wasmerBindings.o: src/lib/wasmerBindings.c
-	@$(ECHO) "Compiling WasmerBindings object file with CFLAGS=$(CFLAGS)"
-	$(SILENCER)$(CC) $(CFLAGS) -c src/lib/wasmerBindings.c -o obj/lib/wasmerBindings.o
-
-lib/Wasmer.cma: obj/lib/wasmerBindings.o obj/lib/Wasmer.cmo
+lib/Wasmer.cma: obj/lib/Wasmer.cmo
 	@$(ECHO) "Compiling Wasmer cma"
 	$(SILENCER)$(OCAMLFIND) ocamlc $(OCAMLFINDFLAGS) $(OCAMLFLAGS) \
 		-a \
 		-o lib/Wasmer.cma \
-		obj/lib/wasmerBindings.o \
-		-cclib -lwasmer -ccopt -L$(ROOT)lib \
+		-ccopt -L$(LIBRARY_PATH) -ccopt -Wl,-rpath=$(LIBRARY_PATH) -cclib -lwasmer \
 		obj/lib/Wasmer.cmo
 
-lib/Wasmer.cmxa: obj/lib/wasmerBindings.o obj/lib/Wasmer.cmx
+lib/Wasmer.cmxa: obj/lib/Wasmer.cmx
 	@$(ECHO) "Compiling Wasmer cmxa"
 	$(SILENCER)$(OCAMLFIND) ocamlopt $(OCAMLFINDFLAGS) $(OCAMLFLAGS) \
 		-a \
 		-o lib/Wasmer.cmxa \
-		obj/lib/wasmerBindings.o \
-		-cclib -lwasmer -ccopt -L$(ROOT)lib \
+		-ccopt -L$(LIBRARY_PATH) -ccopt -Wl,-rpath=$(LIBRARY_PATH) -cclib -lwasmer \
 		obj/lib/Wasmer.cmx
 
 lib/Wasmer.cmxs: lib/Wasmer.cmxa
