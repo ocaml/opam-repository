@@ -230,7 +230,7 @@ examples/rust: lib/Wasmer.cmxa obj/examples/rust.cmx examples/rust-wasm/target/w
 # If the tests fails because of this, update your OCaml version.
 check: $(TESTS)
 	@$(ECHO) "Reminder: segmentation fault errors when exiting are known and an OCaml pre-4.14.1 bug."
-	@$(ECHO); $(ECHO) Test: instance; cd test; cd instance; ./instance
+	@$(ECHO); $(ECHO) Test: instance; cd test; cd instance; readelf -aW instance | grep NEEDED; ./instance
 	@$(ECHO); $(ECHO) Test: hello; cd test; cd hello; ./hello
 
 examples: $(EXAMPLES)
