@@ -76,7 +76,7 @@ lib/Wasmer.cma: obj/lib/Wasmer.cmo
 	$(SILENCER)$(OCAMLFIND) ocamlc $(OCAMLFINDFLAGS) $(OCAMLFLAGS) \
 		-a \
 		-o lib/Wasmer.cma \
-		-ccopt -L$(LIBRARY_PATH) -ccopt -Wl,-rpath,$(LIBRARY_PATH) -cclib -lwasmer \
+		-cclib -Wl,-rpath,$(LIBRARY_PATH) -cclib $(LIBRARY_PATH)/libwasmer.so \
 		obj/lib/Wasmer.cmo
 
 lib/Wasmer.cmxa: obj/lib/Wasmer.cmx
@@ -84,7 +84,7 @@ lib/Wasmer.cmxa: obj/lib/Wasmer.cmx
 	$(SILENCER)$(OCAMLFIND) ocamlopt $(OCAMLFINDFLAGS) $(OCAMLFLAGS) \
 		-a \
 		-o lib/Wasmer.cmxa \
-		-ccopt -L$(LIBRARY_PATH) -ccopt -Wl,-rpath,$(LIBRARY_PATH) -cclib -lwasmer \
+		-cclib -Wl,-rpath,$(LIBRARY_PATH) -cclib $(LIBRARY_PATH)/libwasmer.so \
 		obj/lib/Wasmer.cmx
 
 lib/Wasmer.cmxs: lib/Wasmer.cmxa
