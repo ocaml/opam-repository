@@ -1,0 +1,33 @@
+opam-version: "2.0"
+synopsis: "C bindings for irmin"
+description: "C bindings for irmin using Ctypes inverted stubs"
+maintainer: ["zachshipko@gmail.com"]
+authors: ["Zach Shipko"]
+license: "ISC"
+homepage: "https://github.com/mirage/irmin"
+bug-reports: "https://github.com/mirage/irmin/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ctypes" {>= "0.19"}
+  "ctypes-foreign" {>= "0.18"}
+  "irmin" {= version}
+  "irmin-cli" {= version}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/irmin.git"
+
+# Disabled on arm64 linux and s390x because of a SEGFAULT in tests
+available: [ (arch != "arm64" | os = "macos") & arch != "s390x" ]
+url {
+  src:
+    "https://github.com/mirage/irmin/releases/download/3.4.0/irmin-3.4.0.tbz"
+  checksum: [
+    "sha256=9e72efdc13324602d8da46e0492b1f4e09ad524149845e1a9106882f60ad6e1f"
+    "sha512=ae9cb4b086c7b93962aafc2ea339ac85c6d66bdf769f70a16f62fa5c74d9b194e12ac00b510be5ffac5adff3aa20fd69c4ca4067dcc966767fefcf5c02bc9969"
+  ]
+}
+x-commit-hash: "9b2324763b754af9f823ee98c0b5b557cd102b9d" 
