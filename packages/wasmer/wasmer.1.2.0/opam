@@ -1,0 +1,33 @@
+opam-version: "2.0"
+
+authors: ["rajdakin"]
+maintainer: ["engineering@wasmer.io"]
+license: "MIT"
+homepage: "https://github.com/wasmerio/wasmer-ocaml"
+bug-reports: "https://github.com/wasmerio/wasmer-ocaml/issues"
+dev-repo: "git+https://github.com/wasmerio/wasmer-ocaml.git"
+tags: ["org:wasmer"]
+
+url {
+	src: "https://github.com/wasmerio/wasmer-ocaml/archive/refs/tags/v1.2.0.tar.gz"
+	checksum: [
+		"md5=5760439a24088426723893d896b16520"
+		"sha512=86fc0ef746697985eeccd4f1252a6c8155e85a372a222cf58d1b2bec083d0d6d5d2877ff9564bac0b5013a636d356e5cb835532fcdcf9fd9e956fa5b89779104"
+	]
+}
+
+synopsis: "OCaml bindings for Wasmer"
+description: "The official Wasmer bindings for OCaml"
+
+depends: [
+  "ocaml" {>= "4.14.1"}
+  "dune" {>= "2.0"}
+  "ctypes"
+  "ctypes-foreign"
+  "libwasmer"
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
