@@ -1,0 +1,35 @@
+opam-version: "2.0"
+synopsis: "The OCaml bindings distributed with LLVM"
+description: "Note: LLVM should be installed first."
+maintainer: "Kate <kit.ty.kate@disroot.org>"
+authors: [
+  "Gordon Henriksen <gordonhenriksen@mac.com>"
+  "whitequark <whitequark@whitequark.org>"
+  "The LLVM team"
+]
+license: "Apache-2.0 with LLVM-exception"
+homepage: "http://llvm.moe"
+doc: "http://llvm.moe/ocaml"
+bug-reports: "http://llvm.org/bugs/"
+depends: [
+  "ocaml" {>= "4.00.0"}
+  "dune" {>= "2.7"}
+  "ctypes" {>= "0.4"}
+  "ounit" {with-test}
+  "conf-llvm" {build & = version}
+]
+build: [
+  ["./setup.sh" conf-llvm:config]
+  ["dune" "build" "--release" "-j" jobs]
+  ["rm" "%{name}%.install"]
+]
+install: ["./install.sh" prefix]
+dev-repo: "git+https://github.com/kit-ty-kate/llvm-dune.git"
+url {
+  src:
+    "https://github.com/kit-ty-kate/llvm-dune/releases/download/v15.0.1/llvm-dune-full-minified-15.0.1.tar.gz"
+  checksum: [
+    "md5=f0106c803935bbd82569e29ea1c4da9a"
+    "sha512=55afede339fbcf736996a3b4ec656e3ba3b6c1c6d55f7b4e88580150358d889a372d30f76cdc1adb55dd22bffe170fa5dc090d4fdbce72eb47d5f760324354c9"
+  ]
+}
