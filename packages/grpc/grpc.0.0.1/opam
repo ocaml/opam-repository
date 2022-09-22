@@ -1,0 +1,36 @@
+opam-version: "2.0"
+synopsis: "gRPC for OCaml"
+maintainer: "Satoru Kawahara <s1311350@gmail.com>"
+authors: ["Satoru Kawahara <s1311350@gmail.com>"]
+license: "MIT"
+homepage: "https://github.com/Nymphium/grpc-ocaml"
+bug-reports: "https://github.com/Nymphium/grpc-ocaml/issues"
+dev-repo: "git+https://github.com/Nymphium/grpc-ocaml.git"
+depends: [
+  "ocaml" {>= "4.13" & < "5.0"}
+  "dune" {< "3.2" | >= "3.5"} # just for test, to avoid this bug https://github.com/ocaml/dune/issues/5945
+  "ctypes"
+  "ctypes-foreign"
+  "lwt"
+  "hmap"
+  "logs"
+  "ocaml-protoc-plugin"
+  "lwt_ppx"
+  "ppx_deriving"
+  "odoc" { with-doc }
+  "ppx_inline_test" { with-test }
+  "alcotest" { with-test }
+]
+depexts: [
+  ["grpc"] { os-distribution = "nix" | ( os = "macos" & os-distribution = "homebrew" ) }
+  ["libgrpc-dev"] { os-family = "debian" }
+]
+build: ["dune" "build" "--profile" "release" "-j" jobs "-p" name]
+install: ["dune" "build" "--release" "@install"]
+url {
+  src: "https://github.com/Nymphium/grpc-ocaml/archive/0.0.1.tar.gz"
+  checksum: [
+    "md5=cc659d28220dafda53db5d2c4e3c9b75"
+    "sha512=cd5485108558e4e609480ccd80f682f2d2b3334c62c3f146ea5df3a0e1682ffd4e3ae99669ec03acc6b737696880c931de4806d38785184d7d95dd30176ad0e2"
+  ]
+}
