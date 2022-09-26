@@ -1,0 +1,26 @@
+opam-version: "2.0"
+maintainer: "Romain Calascibetta <romain.calascibetta@gmail.com>"
+authors: "Romain Calascibetta <romain.calascibetta@gmail.com>"
+homepage: "https://github.com/dinosaure/esperanto"
+bug-reports: "https://github.com/dinosaure/esperanto/issues/"
+license: "MIT"
+tags: "org:mirage"
+dev-repo: "git+https://github.com/dinosaure/esperanto.git"
+build: [
+  [ "sh" "-c" "chmod +x ./hello.com" ]
+  [ "sh" "-c" "./hello.com" ]
+]
+synopsis: "Virtual package relying on APE/Cosmopolitan"
+description: "This package can only install if we can run an APE/Cosmopolitan binary"
+available: [ arch = "x86_64" & (os = "linux" | os = "freebsd" | os = "openbsd") ]
+extra-source "hello.com" {
+  src: "https://justine.lol/hello.com"
+  checksum: "sha512=31a5a023c17a4eba236596d299c5e197e28d7ad2f59bbe2216a62b048b44c11190271e8df5f7d54f8a443a56d4ddbcdf50ef95fcc143fe5d3865e181897682a3"
+}
+flags: conf
+post-messages: [ "Your Linux distribution seems to have Mono/Wine and \
+binfmt_misc installed. Installing the latter makes it impossible to run \
+Cosmopolitan binaries as they are then recognised as Mono/Wine programs. You \
+can solve this problem by following this installation \
+(https://justine.lol/apeloader/#binfmt_misc) which completes binfmt_misc with \
+a description of the Cosmopolitan binaries." {failure & os = "linux"}]
