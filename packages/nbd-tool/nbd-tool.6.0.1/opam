@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "Network Block Device (NBD) protocol implementation"
+description: """
+This library allows applications to export and consume block
+devices using the NBD protocol (as used by Linux, qemu etc)"""
+maintainer: "Xapi project maintainers"
+authors: ["Jonathan Ludlam" "David Scott" "Thomas Sanders"]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/xapi-project/nbd"
+bug-reports: "https://github.com/xapi-project/nbd/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.7.0"}
+  "alcotest" {with-test}
+  "alcotest-lwt" {with-test}
+  "cmdliner" {>= "1.1.0"}
+  "lwt" {>= "2.7.0"}
+  "lwt_log"
+  "mirage-block-unix"
+  "nbd-unix" {=version}
+  "odoc" {with-doc}
+  "uri"
+]
+depexts: [
+  ["qemu-img" "nbd" "nmap-ncat"] {with-test & os-family = "rhel"}
+  ["qemu-utils" "nbd-client" "netcat-openbsd"] {with-test & os-family = "debian"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "-p" name "-j" jobs "@doc"] {with-doc}
+  ["dune" "build" "-p" name "-j" jobs "@runtest"] {with-test & os != "macos" & os-distribution != "alpine"}
+]
+dev-repo: "git+https://github.com/xapi-project/nbd.git"
+url {
+  src:
+    "https://github.com/xapi-project/nbd/releases/download/6.0.1/nbd-6.0.1.tbz"
+  checksum: [
+    "sha256=2bd3db48f84d5cc3e67ef46d323034118a6936276b2ca2689c871733482d59d0"
+    "sha512=c8588b81a7e99609c934b7f720caf50d0cee1fd3f86465ead3f9a5da2de94cb8d14a767b365efe66f5e75112889bf2debc97b33f71ec58afb877b06c11d49c22"
+  ]
+}
+x-commit-hash: "aa1bfc5eb58c1defd89cd96bb98f7b6a72fadf42"
