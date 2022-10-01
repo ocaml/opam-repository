@@ -27,6 +27,9 @@ depends: [
   "libwasmer"
 ]
 build: [
+  ["mv" "lib-dune" "lib/dune"]
+  ["sed" "-i" ".orig" "s` \"-cclib\" \"-Wl,--no-as-needed\"``" "lib/dune"] {os = "macos"}
+  ["sed" "-i" ".orig" "s` \"-cclib\" \"-Wl,--as-needed\"``" "lib/dune"] {os = "macos"}
   ["dune" "subst"] {dev}
   ["dune" "build" "-p" name "-j" jobs]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
