@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "Tezos: all rust dependencies and their dependencies"
+maintainer: "contact@tezos.com"
+authors: "Tezos devteam"
+license: "multiple"
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos-rust-libs/issues"
+depends: ["conf-rust-2021"]
+build:[
+  [
+    "cargo"
+    "build"
+    "--target-dir" "target-librustzcash"
+    "--release"
+    "--package" "librustzcash"
+  ]
+  [
+    "cargo"
+    "build"
+    "--target-dir" "target-wasmer"
+    "--release"
+    "--package" "wasmer-c-api"
+    "--no-default-features"
+    "--features" "singlepass,wat,compiler,middlewares,universal"
+  ]
+]
+dev-repo: "git+https://gitlab.com/tezos/tezos-rust-libs.git"
+url {
+  src:
+    "https://gitlab.com/tezos/tezos-rust-libs/-/archive/v1.2/tezos-rust-libs-v1.2.zip"
+  checksum: [
+    "md5=553eb77eb10248af63201476c8c54bf3"
+    "sha512=e9b3c64804974fd254c6e61b45e8898b445a204c70619b65d2d24c11b8357fed6709ebf925e92ff8eb04605e382eb2ada5435ccca301c8bfd843c58d44045c53"
+    "sha256=682127c81681d93acf472e9e1999a79c5178984bc1ea122512ecc6cc6df71763"
+  ]
+}
+x-ci-accept-failures: [
+  "oraclelinux-8" # rust version is too old (need 1.59+)
+  "alpine-3.14" # rust version is too old (need 1.59+)
+  "alpine-3.15" # rust version is too old (need 1.59+)
+]
