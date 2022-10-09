@@ -4,16 +4,24 @@ homepage: "https://wayland.freedesktop.org/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: "Wayland dev team"
 license: "MIT"
-build: ["wayland-scanner" "--version"]
+available: [ os != "macos" & os != "win32" & os != "cygwin" ]
+build: [
+  ["wayland-scanner" "--version"]
+  ["pkg-config" "--exists" "wayland-client"]
+]
+depends: [
+  "conf-pkg-config" {build}
+]
 depexts: [
-  ["libwayland-dev"] {os-family = "debian"}
-  ["wayland-devel"] {os-distribution = "fedora"}
-  ["wayland-devel"] {os-distribution = "rhel"}
-  ["wayland-devel"] {os-distribution = "centos"}
-  ["wayland-devel"] {os-family = "suse"}
-  ["wayland-dev"] {os-distribution = "alpine"}
-  ["wayland"] {os-distribution = "arch"}
-  ["wayland"] {os = "freebsd"}
+  ["libwayland-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["wayland-devel"] {os-family = "mandriva" | os-family = "openmandriva" | os-family = "mageia"}
+  ["wayland-devel"] {os-family = "fedora" | os-family = "rhel" | os-family = "centos"}
+  ["wayland-devel"] {os-family = "suse" | os-family = "opensuse" | os-family = "sles"}
+  ["wayland-dev"] {os-family = "alpine"}
+  ["wayland"] {os-family = "arch" | os-family = "archlinux"}
+  ["dev-libs/wayland"] {os-family = "gentoo"}
+  ["dev-util/wayland-scanner"] {os-family = "gentoo"}
+  ["wayland"] {os-family = "bsd"}
 ]
 synopsis: "Virtual package relying on libwayland"
 description:
