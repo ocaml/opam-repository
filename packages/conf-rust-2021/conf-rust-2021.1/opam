@@ -1,0 +1,37 @@
+opam-version: "2.0"
+maintainer: "contact@trili.tech"
+authors: [
+  "TriliTech"
+  "Simon Cruanes"
+]
+homepage: "https://github.com/ocaml/opam-repository"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "MIT"
+extra-files: ["test.rs" "sha256=536e506bb90914c243a12b397b9a998f85ae2cbd9ba02dfd03a9e155ca5ca0f4"]
+build: [
+  ["cargo" "--version"]
+  ["rustc" "--edition" "2021" "test.rs"]
+]
+depexts: [
+  ["cargo"] {os-distribution = "centos" & os-version >= "8"}
+  ["cargo"] {os-distribution = "ol" & os-version >= "8"}
+  ["cargo"] {os-distribution = "fedora"}
+  ["cargo"] {os-family = "suse"}
+  ["cargo"] {os-family = "debian"}
+  ["cargo"] {os-family = "ubuntu"}
+  ["cargo" "rustc"] {os-distribution = "nixos"}
+  ["cargo"] {os-family = "alpine"}
+  ["rust"] {os-family = "arch"}
+  ["rust"] {os = "macos" & os-distribution = "homebrew"}
+]
+x-ci-accept-failures: [
+  "centos-7" # does not have cargo by default
+  "oraclelinux-7" # does not have cargo by default
+  "debian-10" # rust 2021 is not in the default repository (version is too old)
+  "debian-11" # rust 2021 is not in the default repository (version is too old)
+  "alpine-3.14" # ships with version where rust 2021 is not stable
+]
+synopsis: "Virtual package relying on cargo (rust build system)"
+description:
+  "This package can only install if cargo (edition=2021) is installed on the system."
+flags: conf
