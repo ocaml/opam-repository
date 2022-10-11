@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Typed routing for OCaml applications"
+description:
+  "routes provides combinators for adding typed routing to OCaml applications. The core library will be independent of any particular web framework or runtime. It does path based dispatch from a target url to a user provided handler."
+maintainer: ["Anurag Soni <anurag@sonianurag.com>"]
+authors: ["Anurag Soni"]
+license: "BSD-3-clause"
+tags: ["router" "http"]
+homepage: "https://github.com/anuragsoni/routes"
+doc: "https://anuragsoni.github.io/routes/"
+bug-reports: "https://github.com/anuragsoni/routes/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08.0"}
+  "base" {with-test}
+  "stdio" {with-test}
+  "ppx_expect" {with-test}
+  "ppx_sexp_conv" {with-test}
+  "ppx_sexp_value" {with-test}
+  "ppx_custom_printf" {with-test}
+  "mdx" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/anuragsoni/routes.git"
+url {
+  src:
+    "https://github.com/anuragsoni/routes/releases/download/2.0.0/routes-2.0.0.tbz"
+  checksum: [
+    "sha256=3b629d698c2b00e504c13b4cd783548063719dcf01580c9c3f5104b81eb0d688"
+    "sha512=428f88812f76c4d99198cea42c5d60a7924fd71acf87def6278544c391b9586a10ce2e34485b83b249f639c15776f30d0efd5bb145775eb49118ea8662005eb3"
+  ]
+}
+x-commit-hash: "1293a809e1e0f1104e99584de6c74dd022dda9ab"
