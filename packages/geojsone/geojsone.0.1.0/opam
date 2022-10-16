@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "Streaming GeoJSON library"
+description:
+  "A library for manipulating GeoJSON using a streaming parser. This is useful because GeoJSON can be gigabytes in size."
+maintainer: ["patrick@sirref.org"]
+authors: ["Patrick Ferris"]
+license: "MIT"
+tags: ["geojson" "geospatial" "geocaml"]
+homepage: "https://github.com/geocaml/ocaml-geojson"
+bug-reports: "https://github.com/geocaml/ocaml-geojson/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "geojson" {= version}
+  "mdx" {with-test}
+  "ezjsonm" {with-test}
+  "eio_main" {>= "0.6" & with-test}
+  "hex"
+  "sexplib0"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/geocaml/ocaml-geojson.git"
+url {
+  src:
+    "https://github.com/geocaml/ocaml-geojson/releases/download/v0.1.0/geojson-0.1.0.tbz"
+  checksum: [
+    "sha256=b552db384fbd36410807a5f3c28afd8e8fc8fa53dfc5e2597bffe8ed13720403"
+    "sha512=034543d976db228a465ac5598d25a9dbd98964789692a562c20c276a4d2df39ddd4e475b3b2656b8d5d5d6c3dafa45851f61ffc3812cd6416e4ea072573ea694"
+  ]
+}
+x-commit-hash: "1342f4627caa813cd153d5724f73c2fb8f0eac31"
