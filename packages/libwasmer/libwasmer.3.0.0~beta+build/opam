@@ -1,0 +1,48 @@
+opam-version: "2.0"
+
+authors: ["wasmer"]
+maintainer: ["engineering@wasmer.io"]
+license: "MIT"
+homepage: "https://wasmer.io/"
+
+doc: "https://docs.wasmer.io/"
+bug-reports: "https://github.com/wasmerio/wasmer-ocaml/issues"
+dev-repo: "git+https://github.com/wasmerio/wasmer-ocaml.git"
+tags: ["org:wasmer"]
+
+synopsis: "The official Wasmer library"
+description: """
+This package is used by the wasmer package to trigger the installation
+of the Wasmer library."""
+
+depexts: [
+	["cargo"] {os-distribution = "centos" & os-version >= "8"}
+	["cargo"] {os-distribution = "ol" & os-version >= "8"}
+	["cargo"] {os-distribution = "fedora"}
+	["cargo"] {os-family = "suse"}
+	["cargo"] {os-family = "debian"}
+	["cargo"] {os-family = "ubuntu"}
+	["cargo" "rustc"] {os-distribution = "nixos"}
+	["cargo"] {os-family = "alpine"}
+	["rust"] {os-family = "arch"}
+	["rust"] {os = "macos" & os-distribution = "homebrew"}
+]
+
+url {
+	src: "https://github.com/wasmerio/wasmer/archive/refs/tags/3.0.0-beta.tar.gz"
+	checksum: [
+		"md5=0741bb953e47349954b731c4da1386d4"
+		"sha512=38ec15c601c67468bca255a5a757afaedd6e1924662e3d108e63380a06f26e9f73f1aa0ef0700547885b52205a7d3f84c25bf266704b292b84585103c8369212"
+	]
+}
+extra-source "vendor.tar.gz" {
+	src: "https://github.com/wasmerio/wasmer-ocaml/releases/download/v1.2.1%2Bdunefix/libwasmer-vendor.tar.gz"
+}
+build: [
+	["mkdir" ".cargo"]
+	["mv" "config.toml" ".cargo"]
+	["sh" "-c" "gunzip vendor.tar.gz && tar xf vendor.tar"]
+	[make "build-capi"]
+	[make "package-capi"]
+]
+available: (os-distribution = "centos" & os-version >= "8") | (os-distribution = "ol" & os-version >= "8") | (os-distribution = "fedora") | (os-family = "suse") | (os-family = "debian" & os-version >= "12") | (os-family = "ubuntu") | (os-distribution = "nixos") | (os-family = "alpine" & os-version > "3.14") | (os-family = "arch") | (os = "macos" & os-distribution = "homebrew")
