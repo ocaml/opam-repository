@@ -1,0 +1,35 @@
+opam-version: "2.0"
+synopsis: "Streaming client for Memprof"
+description: "Generates compact traces of a program's memory use."
+maintainer: ["opensource@janestreet.com"]
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+license: "MIT"
+homepage: "https://github.com/janestreet/memtrace"
+bug-reports: "https://github.com/janestreet/memtrace/issues"
+depends: [
+  "dune" {>= "2.3"}
+  "ocaml" {>= "4.11.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & ocaml:version < "5"}
+    "@doc" {with-doc}
+  ]
+]
+post-messages: [
+  "Tracing the current process is not supported on multicore ocaml, so uses of Gc.Memprof will fail. The library is still useful for reading and writing trace files even when Gc.Memprof is not working."
+  {base-domains:installed}
+]
+dev-repo: "git+https://github.com/janestreet/memtrace.git"
+url {
+src: "https://github.com/janestreet/memtrace/archive/refs/tags/v0.2.3.tar.gz"
+checksum: "sha256=fa47379e78be5dbb3066cf96962d18a05d1defb4530588c14e5bc0289e0df520"
+}
