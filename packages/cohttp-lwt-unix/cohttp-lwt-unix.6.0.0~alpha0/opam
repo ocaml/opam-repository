@@ -1,0 +1,71 @@
+opam-version: "2.0"
+synopsis: "CoHTTP implementation for Unix and Windows using Lwt"
+description: """
+An implementation of an HTTP client and server using the Lwt
+concurrency library. See the `Cohttp_lwt_unix` module for information
+on how to use this.  The package also installs `cohttp-curl-lwt`
+and a `cohttp-server-lwt` binaries for quick uses of a HTTP(S)
+client and server respectively.
+
+Although the name implies that this only works under Unix, it
+should also be fine under Windows too.
+"""
+maintainer: ["Anil Madhavapeddy <anil@recoil.org>"]
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+  "Anurag Soni"
+]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08"}
+  "http" {= version}
+  "cohttp" {= version}
+  "cohttp-lwt" {= version}
+  "cmdliner" {>= "1.1.0"}
+  "lwt" {>= "3.0.0"}
+  "conduit-lwt" {>= "5.0.0"}
+  "conduit-lwt-unix" {>= "5.0.0"}
+  "fmt" {>= "0.8.2"}
+  "base-unix"
+  "ppx_sexp_conv" {>= "v0.13.0"}
+  "magic-mime"
+  "logs"
+  "ounit" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v6.0.0_alpha0/cohttp-eio-6.0.0.alpha0.tbz"
+  checksum: [
+    "sha256=48226f19e0a6067694968eee390b85a6a4761bfd3dcecd511567ef7310a04529"
+    "sha512=1befe2ddf0b406b621f833bee95a4338071e27eca0b79c6853604758b422041f09f61a31b38984c3259ac93d46e524f6a1877e059382ef225b95567cfadaa239"
+  ]
+}
+x-commit-hash: "8ecb23a436504e78da38e369307be73f0f4b8863"

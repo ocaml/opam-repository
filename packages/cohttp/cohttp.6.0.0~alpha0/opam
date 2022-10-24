@@ -1,0 +1,75 @@
+opam-version: "2.0"
+synopsis: "An OCaml library for HTTP clients and servers"
+description: """
+Cohttp is an OCaml library for creating HTTP daemons. It has a portable
+HTTP parser, and implementations using various asynchronous programming
+libraries.
+
+See the cohttp-async, cohttp-lwt, cohttp-lwt-unix, cohttp-lwt-jsoo and
+cohttp-mirage libraries for concrete implementations for particular
+targets.
+
+You can implement other targets using the parser very easily. Look at the `IO`
+signature in `lib/s.mli` and implement that in the desired backend.
+
+You can activate some runtime debugging by setting `COHTTP_DEBUG` to any
+value, and all requests and responses will be written to stderr.  Further
+debugging of the connection layer can be obtained by setting `CONDUIT_DEBUG`
+to any value.
+"""
+maintainer: ["Anil Madhavapeddy <anil@recoil.org>"]
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+  "Anurag Soni"
+]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "http" {= version}
+  "ocaml" {>= "4.08"}
+  "re" {>= "1.9.0"}
+  "uri" {>= "2.0.0"}
+  "uri-sexp"
+  "sexplib0"
+  "ppx_sexp_conv" {>= "v0.13.0"}
+  "stringext"
+  "base64" {>= "3.1.0"}
+  "fmt" {with-test}
+  "alcotest" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v6.0.0_alpha0/cohttp-eio-6.0.0.alpha0.tbz"
+  checksum: [
+    "sha256=48226f19e0a6067694968eee390b85a6a4761bfd3dcecd511567ef7310a04529"
+    "sha512=1befe2ddf0b406b621f833bee95a4338071e27eca0b79c6853604758b422041f09f61a31b38984c3259ac93d46e524f6a1877e059382ef225b95567cfadaa239"
+  ]
+}
+x-commit-hash: "8ecb23a436504e78da38e369307be73f0f4b8863"
