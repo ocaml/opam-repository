@@ -1,0 +1,55 @@
+opam-version: "2.0"
+maintainer: "team AT robur dot io"
+authors: ["Hannes Mehnert <hannes@mehnert.org>" "Reynir Björnsson <reynir@reynir.dk>"]
+homepage: "https://github.com/mirage/ocaml-dns"
+doc: "https://mirage.github.io/ocaml-dns/"
+dev-repo: "git+https://github.com/mirage/ocaml-dns.git"
+bug-reports: "https://github.com/mirage/ocaml-dns/issues"
+license: "BSD-2-Clause"
+
+depends: [
+  "dune" {>= "1.2.0"}
+  "ocaml" {>= "4.08.0"}
+  "logs" "ptime"
+  "fmt" {>= "0.8.8"}
+  "domain-name" {>= "0.4.0"}
+  "gmap" {>= "0.3.0"}
+  "cstruct" {>= "6.0.0"}
+  "ipaddr" {>= "5.2.0"}
+  "alcotest" {with-test}
+  "lru" {>= "0.3.0"}
+  "duration" {>= "0.1.2"}
+  "metrics"
+  "base64" {>= "3.3.0"}
+]
+conflicts: [ "result" {< "1.5"} ]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+synopsis: "An opinionated Domain Name System (DNS) library"
+description: """
+µDNS supports most of the domain name system used in the wild.  It adheres to
+strict conventions.  Failing early and hard.  It is mostly implemented in the
+pure fragment of OCaml (no mutation, isolated IO, no exceptions).
+
+Legacy resource record types are not dealt with, and there is no plan to support
+`ISDN`, `MAILA`, `MAILB`, `WKS`, `MB`, `NULL`, `HINFO`, ... .  `AXFR` is only
+handled via TCP connections.  The only resource class supported is `IN` (the
+Internet).  Truncated hmac in `TSIG` are not supported (always the full length
+of the hash algorithm is used).
+
+Please read [the blog article](https://hannes.nqsb.io/Posts/DNS) for a more
+detailed overview.
+"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-dns/releases/download/v6.4.0/dns-6.4.0.tbz"
+  checksum: [
+    "sha256=9651c8fc676b8b983d543f447d3e7a0b3ea50edebb8c89cd70c76c965e94e214"
+    "sha512=349407be8ebe576a5d18ec5aba989d05899f1e89c580e4b2b2213a4c0a55e7e5b38ce637b794235764a980c854c8e4adff45426d45a5e420c9de7f357b45d9bc"
+  ]
+}
+x-commit-hash: "e8f33404f1766b2d31bef3cd1f03229f4773220a"
