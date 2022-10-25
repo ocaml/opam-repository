@@ -1,0 +1,68 @@
+opam-version: "2.0"
+maintainer: "Hannes Mehnert <hannes@mehnert.org>"
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+homepage: "https://github.com/roburio/albatross"
+dev-repo: "git+https://github.com/roburio/albatross.git"
+bug-reports: "https://github.com/roburio/albatross/issues"
+license: "ISC"
+
+depends: [
+  "ocaml" {>= "4.12.0"}
+  "dune" {>= "2.7.0"}
+  "dune-configurator"
+  "conf-pkg-config" {build}
+  "conf-libnl3" {os = "linux"}
+  "lwt" {>= "3.0.0"}
+  "ipaddr" {>= "5.3.0"}
+  "cstruct" {>= "6.0.0"}
+  "logs"
+  "bos"
+  "ptime"
+  "cmdliner" {>= "1.1.0"}
+  "fmt" {>= "0.8.7"}
+  "x509" {>= "0.13.0"}
+  "tls" {>= "0.13.1"}
+  "mirage-crypto"
+  "mirage-crypto-rng" {>= "0.8.0"}
+  "asn1-combinators" {>= "0.2.0"}
+  "duration"
+  "decompress" {>= "1.3.0"}
+  "bigstringaf" {>= "0.2.0"}
+  "checkseum"
+  "metrics" {>= "0.2.0"}
+  "metrics-lwt" {>= "0.2.0"}
+  "metrics-influx" {>= "0.2.0"}
+  "metrics-rusage"
+  "hex"
+  "http-lwt-client" {>= "0.0.4"}
+  "happy-eyeballs-lwt"
+  "solo5-elftool" {>= "0.3"}
+  "owee" {>= "0.4"}
+  "alcotest" {with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["sh" "-ex" "packaging/FreeBSD/create_package.sh"] {os = "freebsd"}
+  ["sh" "-ex" "packaging/debian/create_package.sh"] {os-family = "debian" | os-family = "ubuntu"}
+]
+synopsis: "Albatross - orchestrate and manage MirageOS unikernels with Solo5"
+description: """
+The goal of albatross is robust deployment of [MirageOS](https://mirage.io)
+unikernels using [Solo5](https://github.com/solo5/solo5). Resources managed
+by albatross are network interfaces of kind `tap`, which are connected to
+already existing bridges, block devices, memory, and CPU. Each unikernel is
+pinned (`cpuset` / `taskset`) to a specific core.
+"""
+depexts: ["linux-headers"] {os-family = "alpine"}
+available: os != "macos"
+url {
+  src:
+    "https://github.com/roburio/albatross/releases/download/v1.5.2/albatross-1.5.2.tbz"
+  checksum: [
+    "sha256=674117cb5785851badb36aea1cb0aeed9728f27a451b675383514c1a3b85d0e3"
+    "sha512=367b45d7b4ed2207d7a2ddbf2efb65f1bb26964e0254d8868e5222156ff20b4aee61b55a6d0e956dcc5a13956ee509845f8a8d94e45cafdee0d8ea0ceb360cda"
+  ]
+}
+x-commit-hash: "aa54b7564b0b21a4b2769ec3538f57882afe003b"
