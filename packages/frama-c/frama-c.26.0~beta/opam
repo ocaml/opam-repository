@@ -1,5 +1,4 @@
 opam-version: "2.0"
-name: "frama-c"
 synopsis: "Platform dedicated to the analysis of source code written in C"
 description:"""
 Frama-C gathers several analysis techniques in a single collaborative
@@ -101,33 +100,42 @@ remove: [
 
 run-test: [
   ["dune" "exec" "--" "frama-c-ptests" "tests" "src/plugins/*/tests"
-  ] { arch != "ppc64" & arch != "x86_32" & arch != "arm32" }
+  ] { arch != "ppc64" & arch != "x86_32" & arch != "arm32" & os != "macos" }
   ["dune" "build" "-j%{jobs}%" "@ptests_config"
-  ] { arch != "ppc64" & arch != "x86_32" & arch != "arm32" }
+  ] { arch != "ppc64" & arch != "x86_32" & arch != "arm32" & os != "macos" }
 ]
 
-# Please keep depends and depopts sorted by package name
 depends: [
   "dune" { (>= "3.2.0" & os!="macos") | (>= "3.5.0" & os="macos") }
   "dune-configurator"
   "dune-private-libs"
   "dune-site"
-  ( ( "lablgtk" { >= "2.18.8" } & "conf-gnomecanvas" & "conf-gtksourceview"
-      & ("ocamlgraph" { < "2.0" } | "ocamlgraph_gtk" ))
-    | ( "lablgtk3" { >= "3.1.0" & os!="macos" }
-        & "lablgtk3-sourceview3" & "conf-gtksourceview3" ) )
+
   ( "alt-ergo-free" | "alt-ergo" )
   "conf-graphviz" { post }
   "conf-time" { with-test }
-  "ppx_deriving_yojson"
   "ocaml" { >= "4.11.1" }
   "ocamlfind" # needed beyond build stage, used by -load-module
   "ocamlgraph" { >= "1.8.8" }
   "why3" { >= "1.5.1" }
   "yojson" { >= "1.6.0" & < "2.0.0" }
   "zarith" { >= "1.5" }
+
+  # PPXs
   "ppx_deriving"
+  "ppx_deriving_yojson"
   "ppx_import"
+
+  # This is hackish but will hopefully work until we remove GTK from Frama-C
+  # GTK 2 for macos only
+  "lablgtk" { >= "2.18.8" & os="macos" }
+  "conf-gnomecanvas" { os="macos" }
+  "conf-gtksourceview" { os="macos" }
+  ("ocamlgraph" { < "2.0" & os="macos" } | "ocamlgraph_gtk" { os="macos" })
+  # GTK3 for non-macos only
+  "lablgtk3" { >= "3.1.0" & os!="macos" }
+  "lablgtk3-sourceview3" { os!="macos" }
+  "conf-gtksourceview3" { os!="macos" }
 ]
 
 depopts: [
@@ -136,8 +144,15 @@ depopts: [
   # libraries: because we use dynamic linking
   "apron"
   "coq"
-  "mlmpfr" { >= "4.1.0-bugfix2"}
+  "mlmpfr"
   "zmq"
+]
+
+conflicts: [
+  "cairo2" { < "0.6.2" }
+  "mlmpfr" { < "4.1.0-bugfix2" }
+  "pilat"  { <= "1.6" }
+  "result" { < "1.5" }
 ]
 
 post-messages: [
