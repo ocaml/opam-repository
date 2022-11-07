@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "Offline install of Opam"
+description:
+  "Offline install that places opam in the installation directory. Depending on the end-user's integer size, as reported by Sys.int_size, either 32-bit or 64-bit opam will be installed"
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-component-opam"
+bug-reports: "https://github.com/diskuv/dkml-component-opam/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "dkml-component-staging-opam32" {= version}
+  "dkml-component-staging-opam64" {= version}
+  "dkml-component-staging-ocamlrun" {>= "4.12.1~"}
+  "dkml-install" {>= "0.2.0"}
+  "diskuvbox" {>= "0.1.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-component-opam.git"
+url {
+  src:
+    "https://github.com/diskuv/dkml-component-opam/releases/download/v2.2.0-alpha-20221104/dkml-component-offline-opam-2.2.0-alpha-20221104.tbz"
+  checksum: [
+    "sha256=e442ddabfafd92905c1dce77744be21add78355fdfcb2e5014f01f888c75bab0"
+    "sha512=dc13f84a6a754b38bba2b3f2184bc8aabdf65f28a96b508eb5952bb18bec6185b206d8cb928ac755face5e50bf1756b71400bb5afad8826dd710e7dab9e9da8a"
+  ]
+}
+x-commit-hash: "5c2724bbc049dcb4bd70b058aeacb9d2075944f0"
