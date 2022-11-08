@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Async library for HTTP/1.1 servers"
+description:
+  "http_async implements an efficient HTTP/1.1 server. It uses the shuttle library for network IO, and provides an easy-to-use interface for writing async http services while minimal overhead on top of the user provided http handler."
+maintainer: ["Anurag Soni <anurag@sonianurag.com>"]
+authors: ["Anurag Soni <anurag@sonianurag.com>"]
+license: "MIT"
+tags: ["http-server" "http" "http1.1" "async"]
+homepage: "https://github.com/anuragsoni/http_async"
+doc: "https://anuragsoni.github.io/http_async/"
+bug-reports: "https://github.com/anuragsoni/http_async/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.11.0"}
+  "shuttle" {>= "0.6.0"}
+  "ppxlib" {>= "0.23.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/anuragsoni/http_async.git"
+available: [ arch = "x86_64" | arch = "arm64" ]
+url {
+  src:
+    "https://github.com/anuragsoni/http_async/releases/download/0.2.0/http_async-0.2.0.tbz"
+  checksum: [
+    "sha256=3ba4a210833e93a50ca2e539b38d29352f7c1b892fd7b7e89af4e788fafe905f"
+    "sha512=0bf256e969a49d45765f8b0e1a06d914c2bc45c4d6f4adc28ad4d2f68f52734b3de73e890a9b5501c8679fdca30191663372a5786e693d505b1640554068af94"
+  ]
+}
+x-commit-hash: "602889e33b92a842ce7a64dcc259270f529231e3"
