@@ -1,0 +1,56 @@
+opam-version: "2.0"
+synopsis: "Pipeline language for keeping things up-to-date"
+description: """\
+OCurrent provides an OCaml eDSL for writing CI/CD pipelines.
+
+It is used in ocaml-ci (which provides CI for OCaml projects on GitHub),
+and in docker-base-images (a pipeline that builds Docker images for various
+Linux distributions, OCaml compiler versions and CPU types, and pushes them
+to Docker Hub).
+
+A pipeline is written much like you would write a one-shot sequential script,
+but OCurrent will automatically re-run steps when the inputs change, and will
+run steps in parallel where possible."""
+maintainer: "talex5@gmail.com"
+authors: "talex5@gmail.com"
+license: "Apache-2.0"
+homepage: "https://github.com/ocurrent/ocurrent"
+doc: "https://ocurrent.github.io/ocurrent/"
+bug-reports: "https://github.com/ocurrent/ocurrent/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "current_incr" {>= "0.5"}
+  "fmt" {>= "0.8.9"}
+  "bos"
+  "ppx_deriving"
+  "lwt" {>= "5.6.1"}
+  "cmdliner" {>= "1.1.0"}
+  "sqlite3"
+  "duration"
+  "prometheus"
+  "dune" {>= "3.3"}
+  "re" {>= "1.9.0"}
+  "lwt-dllist"
+  "alcotest" {>= "1.2.0" & with-test}
+  "alcotest-lwt" {>= "1.2.0" & with-test}
+  "astring" {>= "0.8.5"}
+  "fpath" {>= "0.7.3"}
+  "logs" {>= "0.7.0"}
+  "result" {>= "1.5"}
+  "prometheus-app" {with-test & >= "1.2"}
+  "conf-libev" {os != "win32"}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/ocurrent/ocurrent.git"
+url {
+  src:
+    "https://github.com/ocurrent/ocurrent/releases/download/0.6.3/current-0.6.3.tbz"
+  checksum: [
+    "sha256=6ef24df684b6eda7b7bac2cbe306ae59052d761743263367c3d1901a5917b9e7"
+    "sha512=6d544f3168d18bbb50ed26635057ebc48129e132704009fb5af5a9dce89c658f3e820b5c67f97647c1168bd1011db32ab63c9ae16b6bcb5e4e3f2045107d00f7"
+  ]
+}
+x-commit-hash: "37a9d01a5a759c3109e9a9351ee6af88389bde88"
