@@ -1,0 +1,370 @@
+opam-version: "2.0"
+synopsis: "DKML component for 64-bit versions of opam"
+description: """
+For 64-bit capable platforms, opam, opam-putenv and opam-installer will be in <share>/staging-files/<platform>.
+But for any platform that does not support 64-bit, this package will install nothing (aka. be a no-op).
+Consumers of the component should place both tools/opam64 and tools/opam32 into the PATH, so that whichever is available can be used.
+
+Cross-compiling to both darwin_arm64 and darwin_x86_64 platforms are supported on macOS when you have both dkml-base-compiler and
+conf-dkml-cross-toolchain installed in your switch.
+
+The package version, and what [opam --version] returns, are closely associated with the Opam version from the Opam
+source code. The only modifications are to ensure that the package version can be ordered using semver. In particular:
+
+* 2.2.0~alpha~dev -> 2.2.0~alpha0~20221231
+* 2.2.0~alpha~1   -> 2.2.0~alpha1~20230601
+* 2.2.0           -> 2.2.0
+
+The dates (YYYYMMDD) are the Git commit dates in the Opam source code, and simply replacing the tildes (~) with dashes (-) is
+sufficient to be a semver version.
+"""
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-component-opam"
+bug-reports: "https://github.com/diskuv/dkml-component-opam/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "dkml-install" {>= "0.2.0"}
+  "cmdliner" {>= "1.0.4"}
+  "diskuvbox" {>= "0.1.0"}
+  "odoc" {with-doc}
+]
+depopts: [
+  "ocaml-system"
+  "dkml-base-compiler"
+  "ocaml-base-compiler"
+  "ocaml-variants"
+  "conf-dkml-cross-toolchain"
+  "ocaml-option-32bit"
+]
+dev-repo: "git+https://github.com/diskuv/dkml-component-opam.git"
+build: [
+  # Homebrew's bundle tap, needed for reproducible build auditing in drc's crossplatform-functions.sh.
+  ["sh" "src/opamtime/brewbundle.sh"] {os = "macos"}
+
+  # Opam source code
+  ["install" "-d" "dl/opam"]
+  ["tar" "xCfz" "dl/opam" "dl/opam.tar.gz" "--strip-components=1"]
+  #   For macos, build arm64 as well using Dune+DKML cross-compilation
+  [
+    "diskuvbox"
+    "copy-file"
+    "assets/dune-workspace.darwin_x86_64" { arch = "x86_64" }
+    "assets/dune-workspace.darwin_arm64"  { arch = "arm64" }
+    "dl/opam/dune-workspace"
+  ] { os = "macos" & (arch = "x86_64" | arch = "arm64") & dkml-base-compiler:installed & conf-dkml-cross-toolchain:installed }
+
+  # Create a DKMLDIR. Its structure mimics a git submodule setup.
+
+  #   <dkmldir>/vendor/drc/
+  ["install" "-d" "dkmldir/vendor/drc"]
+  ["tar" "xCfz" "dkmldir/vendor/drc" "dl/dkml-runtime-common.tar.gz" "--strip-components=1"]
+  #   <dkmldir>/.dkmlroot
+  ["install" "dkmldir/vendor/drc/.template.dkmlroot" "dkmldir/.dkmlroot"]
+
+  #   <dkmldir>/vendor/drd/ (dkml-runtime-distribution)
+  ["diskuvbox" "copy-dir" "src/repro" "dkmldir/vendor/drd/src/unix/private"]
+
+  #   <dkmldir>/vendor/dkml-compiler/
+  ["install" "-d" "dkmldir/vendor/dkml-compiler/src"]
+  ["tar" "xCfz" "dkmldir/vendor/dkml-compiler" "dl/dkml-compiler.tar.gz" "--strip-components=1"]
+
+  # Run r-c-opam-1-setup
+  [
+    "env" "TOPDIR=dkmldir/vendor/drc/all/emptytop"
+      "DKML_REPRODUCIBLE_SYSTEM_BREWFILE=%{_:build}%/Brewfile"
+      #   Debugging. Keep this on ... it tends to be helpful!
+      "bash" "-x"
+      "dkmldir/vendor/drd/src/unix/private/r-c-opam-1-setup.sh"
+      "-d" "dkmldir"
+      "-t" "_w"
+      "-v" "dl/opam"
+      "-p" "%{_:version}%"
+      # Instead of letting Opam bootstrap its own OCaml compiler, we can just
+      # tell it to use the OCaml home (ie. compiler in %{prefix}%/bin/ocamlc).
+      # We don't have a "home" if ocaml-system is installed, but we do for
+      # the base compilers. This will save time, reduce build errors and
+      # dkml-base-compiler gives access to a cross compiler.
+      "-c"          { ocaml-base-compiler:installed | dkml-base-compiler:installed | ocaml-variants:installed }
+      "%{prefix}%"  { ocaml-base-compiler:installed | dkml-base-compiler:installed | ocaml-variants:installed }
+      "-f"                    { ocaml-system:installed }
+      "%{ocaml-system:path}%" { ocaml-system:installed }
+      # Target ABIs
+      "-awindows_x86_64"  { os = "win32" & (!ocaml-option-32bit:installed & arch = "x86_64") }
+      "-alinux_x86_64"    { os = "linux" & arch = "x86_64" }
+      "-adarwin_arm64"    { os = "macos" & arch = "arm64" }
+      "-adarwin_x86_64"   { os = "macos" & arch = "x86_64" }
+  ] { os = "macos" |
+      (os = "linux" & arch = "x86_64") |
+      (os = "win32" & (!ocaml-option-32bit:installed & arch = "x86_64") ) }
+
+  # Run r-c-opam-2-build-noargs.sh
+  [
+    "sh" "-eufc"
+    "cd _w && share/dkml/repro/110co/vendor/drd/src/unix/private/r-c-opam-2-build-noargs.sh"
+  ] { os = "macos" |
+      (os = "linux" & arch = "x86_64") |
+      (os = "win32" & (!ocaml-option-32bit:installed & arch = "x86_64") ) }
+
+  # --------------
+  # Build install library
+  # --------------
+
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+install: [
+  [
+    "diskuvbox"
+    "copy-file-into"
+    "_w/bin/opam"
+    "_w/bin/opam-installer"
+    "%{_:share}%/staging-files/darwin_x86_64/bin"
+  ] { os = "macos" & arch = "x86_64" }
+  [
+    "diskuvbox"
+    "copy-file-into"
+    "_w/bin/opam"
+    "_w/bin/opam-installer"
+    "%{_:share}%/staging-files/darwin_arm64/bin"
+  ] { os = "macos" & arch = "arm64" }
+  [
+    "diskuvbox"
+    "copy-file-into"
+    "_w/bin/opam"
+    "_w/bin/opam-installer"
+    "%{_:share}%/staging-files/linux_x86_64/bin"
+  ] { (os = "linux" & arch = "x86_64") }
+  [
+    "diskuvbox"
+    "copy-file-into"
+    "_w/bin/opam.exe"
+    "_w/bin/opam-installer.exe"
+    "%{_:share}%/staging-files/windows_x86_64/bin"
+  ] { os = "win32" & (!ocaml-option-32bit:installed & arch = "x86_64") }
+
+  [
+    "diskuvbox"
+    "copy-file-into"
+    "_w/bin/opam-putenv.exe"
+    "%{_:share}%/staging-files/windows_x86_64/bin"
+  ] { os = "win32" & (!ocaml-option-32bit:installed & arch = "x86_64") }
+
+  [
+    "diskuvbox"
+    "copy-file-into"
+    "_w/src/opam/_build/install/default.darwin_arm64/bin/opam"
+    "_w/src/opam/_build/install/default.darwin_arm64/bin/opam-installer"
+    "%{_:share}%/staging-files/darwin_arm64/bin"
+  ] { os = "macos" & arch = "x86_64" & dkml-base-compiler:installed & conf-dkml-cross-toolchain:installed }
+  [
+    "diskuvbox"
+    "copy-file-into"
+    "_w/src/opam/_build/install/default.darwin_x86_64/bin/opam"
+    "_w/src/opam/_build/install/default.darwin_x86_64/bin/opam-installer"
+    "%{_:share}%/staging-files/darwin_x86_64/bin"
+  ] { os = "macos" & arch = "arm64" & dkml-base-compiler:installed & conf-dkml-cross-toolchain:installed }
+
+  [
+    "diskuvbox"
+    "copy-dir"
+    "_w/share/man"
+    "%{_:share}%/staging-files/generic/man"
+  ] { os = "macos" |
+      (os = "linux" & arch = "x86_64") |
+      (os = "win32" & (!ocaml-option-32bit:installed & arch = "x86_64") ) }
+]
+extra-source "dl/dkml-compiler.tar.gz" {
+  src: "https://github.com/diskuv/dkml-compiler/releases/download/4.12.1-v1.0.2-prerel0/src.tar.gz"
+  checksum: [
+    "sha256=f2f30f7cf668be60e3c3db86cb50f790195da88b330bc764e16bc5b877038f98"
+  ]
+}
+extra-source "dl/opam.tar.gz" {
+  # https://github.com/ocaml/opam/tree/351dd7f5561e78d5f4b103c39a208d1840d98229 Nov 4, 2022
+  src: "https://github.com/ocaml/opam/archive/351dd7f5561e78d5f4b103c39a208d1840d98229.tar.gz"
+  checksum: [
+    "sha256=3641564016a0e87ed62553575df3a68c26cfccfd3d2bb9ea3af2c4f4c29fd443"
+  ]
+}
+extra-source "dl/homebrew-bundle.tar.gz" {
+  src: "https://github.com/Homebrew/homebrew-bundle/archive/4756e4c4cf95485c5ea4da27375946c1dac2c71d.tar.gz"
+  checksum: [
+    "sha256=10c024ca7871cea36b4c27b2601971d3fa6cba6f37855613baf0026d0f555e76"
+  ]
+}
+
+# -------------------
+# BEGIN OPAM ARCHIVES
+#
+# Since we don't have network access in sandboxes, we can't let `make -C src_ext cache-archives`
+# actual download. Use extra-source instead.
+#
+# This section can be autogenerated within dl/opam using:
+#   join <(awk '$1~/^URL_[0-9a-z]/{sub(/URL_/,"",$1); print $1,"URL",$NF}' src_ext/Makefile src_ext/Makefile.sources) <(awk '$1~/^MD5_[0-9a-z]/{sub(/MD5_/,"",$1); print $1,"MD5",$NF}' src_ext/Makefile src_ext/Makefile.sources) | awk -v dq='"' '$2=="URL" && $4=="MD5"{name=$3; sub(".*/", "",name); printf "extra-source %sdl/opam/src_ext/archives/%s%s {\n  src: %s%s%s\n  checksum: [\n    %smd5=%s%s\n  ]\n}\n", dq,name,dq, dq,$3,dq, dq,$5,dq }'
+
+extra-source "dl/opam/src_ext/archives/ocaml-4.14.0.tar.gz" {
+  src: "https://caml.inria.fr/pub/distrib/ocaml-4.14/ocaml-4.14.0.tar.gz"
+  checksum: [
+    "md5=57a4fa799114b3addbf31e42c4f4a7b3"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/0.40.tar.gz" {
+  src: "https://github.com/alainfrisch/flexdll/archive/0.40.tar.gz"
+  checksum: [
+    "md5=e68f7311179fa7e09408825b362c5c5a"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/v1.6.8.tar.gz" {
+  src: "https://github.com/ocaml-community/cppo/archive/v1.6.8.tar.gz"
+  checksum: [
+    "md5=fed401197d86f9089e89f6cbdf1d660d"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/extlib-1.7.8.tar.gz" {
+  src: "https://ygrek.org/p/release/ocaml-extlib/extlib-1.7.8.tar.gz"
+  checksum: [
+    "md5=7e0df072af4e2daa094e5936a661cb11"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/base64-v3.5.0.tbz" {
+  src: "https://github.com/mirage/ocaml-base64/releases/download/v3.5.0/base64-v3.5.0.tbz"
+  checksum: [
+    "md5=0179af18d6c1cf13d77671ee23901433"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/re-1.10.3.tbz" {
+  src: "https://github.com/ocaml/ocaml-re/releases/download/1.10.3/re-1.10.3.tbz"
+  checksum: [
+    "md5=a36347dcfaf71c95916f96f72b0cf2ce"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/cmdliner-1.1.1.tbz" {
+  src: "http://erratique.ch/software/cmdliner/releases/cmdliner-1.1.1.tbz"
+  checksum: [
+    "md5=26b9af55a7456290b710e1c96a0ca231"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/ocamlgraph-2.0.0.tbz" {
+  src: "https://github.com/backtracking/ocamlgraph/releases/download/2.0.0/ocamlgraph-2.0.0.tbz"
+  checksum: [
+    "md5=2d07fcf3501e1d4997c03fa94cea22f0"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/cudf-v0.10.tar.gz" {
+  # src: "https://gitlab.com/irill/cudf/-/archive/v0.10/cudf-v0.10.tar.gz"
+  # checksum: [
+  #   "md5=ed8fea314d0c6dc0d8811ccf860c53dd"
+  # ]
+  src: "https://github.com/diskuv/dkml-component-opam/releases/download/v0.0.0-dependencies/cudf-v0.10.tar.gz"
+  checksum: [
+    "sha256=7b9d7390fca822afd8b35197814616088edfb3fa3cb44903dfa49399e9fefb50"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/dose3-7.0.0.tar.gz" {
+  # src: "https://gitlab.com/irill/dose3/-/archive/7.0.0/dose3-7.0.0.tar.gz"
+  # checksum: [
+  #   "md5=bc99cbcea8fca29dca3ebbee54be45e1"
+  # ]
+  src: "https://github.com/diskuv/dkml-component-opam/releases/download/v0.0.0-dependencies/dose3-7.0.0.tar.gz"
+  checksum: [
+    "sha256=02db6104db2683483f8309c76e77705b2606803fc5b58ea0a402f9da30a56029"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/1.1+13.tar.gz" {
+  src: "https://github.com/AltGr/ocaml-mccs/archive/1.1+13.tar.gz"
+  checksum: [
+    "md5=13504d3b5dcbf0bdc6d95a62de20af4a"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/opam-0install-cudf-v0.4.2.tbz" {
+  src: "https://github.com/ocaml-opam/opam-0install-solver/releases/download/v0.4.2/opam-0install-cudf-v0.4.2.tbz"
+  checksum: [
+    "md5=8e1494e8b97fc6f9a463966c394e9bdd"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/0install-v2.17.tbz" {
+  src: "https://github.com/0install/0install/releases/download/v2.17/0install-v2.17.tbz"
+  checksum: [
+    "md5=50daf035b04b29399a3c6e6f965ac447"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/2.1.4.tar.gz" {
+  src: "https://github.com/ocaml/opam-file-format/archive/2.1.4.tar.gz"
+  checksum: [
+    "md5=cd9dac41c2153d07067c5f30cdcf77db"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/result-1.5.tbz" {
+  src: "https://github.com/janestreet/result/releases/download/1.5/result-1.5.tbz"
+  checksum: [
+    "md5=1b82dec78849680b49ae9a8a365b831b"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/0.2.2.tar.gz" {
+  src: "https://github.com/c-cube/seq/archive/0.2.2.tar.gz"
+  checksum: [
+    "md5=9033e02283aa3bde9f97f24e632902e3"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/stdlib-shims-0.3.0.tbz" {
+  src: "https://github.com/ocaml/stdlib-shims/releases/download/0.3.0/stdlib-shims-0.3.0.tbz"
+  checksum: [
+    "md5=09db7af8b4a3a96048a61cb6ae2496ef"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/spdx_licenses-v1.1.0.tbz" {
+  src: "https://github.com/kit-ty-kate/spdx_licenses/releases/download/v1.1.0/spdx_licenses-v1.1.0.tbz"
+  checksum: [
+    "md5=af8493759aa35b629a324caa3f5ced65"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/uutf-1.0.3.tbz" {
+  src: "https://erratique.ch/software/uutf/releases/uutf-1.0.3.tbz"
+  checksum: [
+    "md5=a308285514259d20b48abc92f00a3708"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/jsonm-1.0.1.tbz" {
+  src: "http://erratique.ch/software/jsonm/releases/jsonm-1.0.1.tbz"
+  checksum: [
+    "md5=e2ca39eaefd55b8d155c4f1ec5885311"
+  ]
+}
+extra-source "dl/opam/src_ext/archives/sha-1.15.2.tbz" {
+  src: "https://github.com/djs55/ocaml-sha/releases/download/1.15.2/sha-1.15.2.tbz"
+  checksum: [
+    "md5=b78eea17a52b705b5a068fc7f5b6c6ae"
+  ]
+}
+
+# END OPAM ARCHIVES
+# -------------------
+extra-source "dl/dkml-runtime-common.tar.gz" {
+  src: "https://github.com/diskuv/dkml-runtime-common/archive/refs/tags/v1.0.1.tar.gz"
+  checksum: [
+    "sha256=35a88827e3e02665a6ed5abf1c1aa457fbb3c2a78ff61c4211d24bec8d8b757d"
+  ]
+}
+url {
+  src:
+    "https://github.com/diskuv/dkml-component-opam/releases/download/v2.2.0-alpha-20221104/dkml-component-offline-opam-2.2.0.alpha0.20221104.tbz"
+  checksum: [
+    "sha256=0c87a32663eaa7c6b603817b2fa57d209e795ea3573b35042d78a0cab1260667"
+    "sha512=596088a892e84c1b6473502606a4840b22f87aa9ee6f7db0617aeef7c19f87bb3df0c5a27b3083b9f15805173b04ff11f5cfb0724db9674973916ab31d8509c6"
+  ]
+}
+x-commit-hash: "abaac32bebe809c4a450dcc4802da1b125d0566d"
