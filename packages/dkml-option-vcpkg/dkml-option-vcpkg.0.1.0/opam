@@ -1,0 +1,38 @@
+opam-version: "2.0"
+synopsis: "Configures DKML components to support vcpkg"
+description: "Configures DKML components to support vcpkg"
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-option-vcpkg"
+bug-reports: "https://github.com/diskuv/dkml-option-vcpkg/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-option-vcpkg.git"
+url {
+  src:
+    "https://github.com/diskuv/dkml-option-vcpkg/releases/download/0.1.0/dkml-option-vcpkg-0.1.0.tbz"
+  checksum: [
+    "sha256=e1a0976c8dbe29f6d0e48995850fedd63b363b09b54edde03450205b14f836fe"
+    "sha512=5a418b5b25011202feb77f9680da1f2b33f666bb7c2413133a0f2e5cc773022c527690ac4efa0ef144362f8a77d3093babaf92f7029d1a4a6d0d5df665bd50cc"
+  ]
+}
+x-commit-hash: "28ee15511192e6537ba8b00086275e180e48178a"
