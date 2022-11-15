@@ -1,0 +1,66 @@
+opam-version: "2.0"
+maintainer:   "Lucas Pluvinage"
+authors:      "Lucas Pluvinage"
+license:      "ISC"
+homepage:     "https://github.com/tarides/current-albatross-deployer"
+bug-reports:  "https://github.com/tarides/current-albatross-deployer/issues"
+dev-repo:     "git+https://github.com/tarides/current-albatross-deployer.git"
+doc:         "https://tarides.github.io/current-albatross-deployer/"
+
+depends: [
+  "albatross" {>= "1.5.1"}
+  "obuilder-spec" {>= "0.5"}
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.9.0"}
+  "odoc" {with-doc}
+  "asn1-combinators" {>= "0.2.6"}
+  "bos" {>= "0.2.0"}
+  "cmdliner" {>= "1.1.0"}
+  "cstruct" {>= "6.0.1"}
+  "current" {>= "0.5"}
+  "current_docker" {>= "0.5"}
+  "current_web" {with-test}
+  "ipaddr" {>= "5.2.0"}
+  "logs" {>= "0.7.0"}
+  "lwt" {>= "5.4.2"}
+  "ppx_deriving" {>= "5.2.1"}
+  "ppx_deriving_yojson" {>= "3.6.1"}
+  "rresult" {>= "0.6.0"}
+  "alcotest" {>= "1.4.0" & with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+
+synopsis: """
+An ocurrent plugin to deploy MirageOS unikernels
+"""
+description: """
+This is an [ocurrent](https://github.com/ocurrent/ocurrent) plugin to manage deployment of
+unikernels. It's specialized for linux, using [Albatross](https://github.com/roburio/albatross)
+for orchestrating the virtual machines and `iptables` for exposing ports.
+
+It's been made with _zero downtime_ in mind, meaning that when an unikernel is updated, a new
+instance is started while keeping the old one alive, and the switch to the new instance is managed
+using a port redirection to the new IP.
+"""
+url {
+  src:
+    "https://github.com/tarides/current-albatross-deployer/releases/download/1.0.0/current-albatross-deployer-1.0.0.tbz"
+  checksum: [
+    "sha256=2ea909d9f114ce2b67a22c9e0f84826d01fd09ede2437623eab6e4d6ebd4020b"
+    "sha512=634337fa5eef32e26aac32e61001f7fed92885b7382f3710b68eb001c3e9edf66eb84c4a1aa6257b1a63349377360dea5f8689aa895cb9b072897e56ad2d4710"
+  ]
+}
+x-commit-hash: "f9065be4bdf2105f816797fe0c12e3ba10b56711"
