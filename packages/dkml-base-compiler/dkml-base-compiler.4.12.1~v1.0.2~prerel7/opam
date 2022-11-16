@@ -1,0 +1,139 @@
+opam-version: "2.0"
+synopsis:
+  "OCaml cross-compiler and libraries from the DKML distribution that works with at least Win32 and macOS"
+description: """\
+The DKML distribution of the OCaml bytecode and native compiler, Stdlib and the other OCaml libraries (str, unix, bigarray, etc.).
+A cross-compiler for macOS x86_64 to macOS arm64 is included; for build consistency the regular OCaml compiler will be for x86_64 regardless of whether the build machine is Apple Silicon.
+Install with something like: opam switch create dkml-4.12.1 '--formula="dkml-base-compiler" {>= "4.12.1~" & < "4.13.0~"}'"""
+maintainer: "opensource+diskuv-ocaml@support.diskuv.com"
+authors: "Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-compiler"
+bug-reports: "https://github.com/diskuv/dkml-compiler/issues"
+depends: [
+  "ocaml" {= "4.12.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "dkml-runtime-common" {= "1.0.2~prerel7"}
+]
+depopts: ["ocaml-option-32bit"]
+conflict-class: "ocaml-core-compiler"
+available:
+  opam-version >= "2.1.0" &
+  (arch = "x86_64" & (os = "linux" | os = "win32" | os = "macos") |
+   arch = "x86_32" & (os = "linux" | os = "win32") |
+   arch = "arm64" & os = "macos")
+flags: [compiler avoid-version]
+build: [
+  ["sh" "scripts/macos-bundle-dump.sh"] {os = "macos"}
+  ["install" "-d" "dl/ocaml/flexdll"]
+  ["tar" "xCfz" "dl/ocaml" "dl/ocaml.tar.gz" "--strip-components=1"]
+  [
+    "tar" "xCfz" "dl/ocaml/flexdll" "dl/flexdll.tar.gz" "--strip-components=1"
+  ]
+  ["install" "-d" "dkmldir"]
+  [
+    "sh"
+    "-eufc"
+    "printf 'dkml_root_version=%s\\n' '%{version}%' | sed 's/[0-9.]*~v//; s/~/-/' > dkmldir/.dkmlroot"
+  ]
+  ["install" "-d" "dkmldir/vendor/drc"]
+  [
+    "sh"
+    "-eufc"
+    "tar cCf '%{dkml-runtime-common:lib}%/' - . | tar xCf dkmldir/vendor/drc/ -"
+  ]
+  [
+    "install"
+    "-d"
+    "dkmldir/vendor/dkml-compiler/src"
+    "dkmldir/vendor/dkml-compiler/env"
+  ]
+  [
+    "install"
+    "env/standard-compiler-env-to-ocaml-configure-env.sh"
+    "dkmldir/vendor/dkml-compiler/env/"
+  ]
+  [
+    "sh"
+    "-eufc"
+    "tar cCf src/ - . | tar xCf dkmldir/vendor/dkml-compiler/src/ -"
+  ]
+]
+install: [
+  [
+    "env"
+    "TOPDIR=dkmldir/vendor/drc/all/emptytop"
+    "DKML_REPRODUCIBLE_SYSTEM_BREWFILE=%{_:build}%/Brewfile"
+    "dkmldir/vendor/dkml-compiler/src/r-c-ocaml-1-setup.sh"
+    "-d"
+    "dkmldir"
+    "-t"
+    "%{prefix}%"
+    "-f"
+    "src-ocaml"
+    "-g"
+    "%{_:share}%/mlcross"
+    "-v"
+    "dl/ocaml"
+    "-z"
+    "-ewindows_x86"
+      {os = "win32" & (arch = "x86_32" | ocaml-option-32bit:installed)}
+    "-ewindows_x86_64"
+      {os = "win32" & arch = "x86_64" & !ocaml-option-32bit:installed}
+    "-elinux_x86"
+      {os = "linux" & (arch = "x86_32" | ocaml-option-32bit:installed)}
+    "-elinux_x86_64"
+      {os = "linux" & arch = "x86_64" & !ocaml-option-32bit:installed}
+    "-edarwin_x86_64" {os = "macos" & arch = "x86_64"}
+    "-edarwin_arm64" {os = "macos" & arch = "arm64"}
+    "-adarwin_x86_64=vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh"
+      {os = "macos" & arch = "arm64"}
+    "-adarwin_arm64=vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh"
+      {os = "macos" & arch = "x86_64"}
+    "-k"
+    "vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh"
+  ]
+  [
+    "sh"
+    "-eufc"
+    """
+    cd '%{prefix}%'
+    share/dkml/repro/100co/vendor/dkml-compiler/src/r-c-ocaml-2-build_host-noargs.sh
+    """
+  ]
+  [
+    "sh"
+    "-eufc"
+    """
+    cd '%{prefix}%'
+    share/dkml/repro/100co/vendor/dkml-compiler/src/r-c-ocaml-3-build_cross-noargs.sh
+    """
+  ]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-compiler.git"
+url {
+  src:
+    "https://github.com/diskuv/dkml-compiler/releases/download/1.0.2-prerel7-r2/src.tar.gz"
+  checksum: [
+    "md5=6f0301013b0e5976d3753c7a5ab54061"
+    "sha512=40faf510a113439678ea2424905b1ad6c79c22315c23f688f6b4e685d90bc83161b6d0d74d65b6e750065a6df234ec4845b04b5352dc9fb9fb9442a10ef3bba3"
+  ]
+}
+extra-source "dl/flexdll.tar.gz" {
+  src: "https://github.com/alainfrisch/flexdll/archive/0.39.tar.gz"
+  checksum:
+    "sha256=51a6ef2e67ff475c33a76b3dc86401a0f286c9a3339ee8145053ea02d2fb5974"
+}
+extra-source "dl/homebrew-bundle.tar.gz" {
+  src:
+    "https://github.com/Homebrew/homebrew-bundle/archive/4756e4c4cf95485c5ea4da27375946c1dac2c71d.tar.gz"
+  checksum:
+    "sha256=10c024ca7871cea36b4c27b2601971d3fa6cba6f37855613baf0026d0f555e76"
+}
+extra-source "dl/ocaml.tar.gz" {
+  src: "https://github.com/ocaml/ocaml/archive/4.12.1.tar.gz"
+  checksum:
+    "sha256=f5a48a90557cb47ace7b1590fcab1362a1af38629a218350f69c225c57e96a41"
+}
