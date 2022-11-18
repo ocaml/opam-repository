@@ -20,7 +20,7 @@ for version in default $(seq $maximum_version -1 3); do
                 llvm_config="$(brew --prefix)/opt/llvm/bin/llvm-config" || continue
                 ;;
             none)
-                continue
+                break
                 ;;
             esac
             llvm_version="$($llvm_config --version)" || continue
@@ -32,6 +32,9 @@ for version in default $(seq $maximum_version -1 3); do
             fi
             break
         done
+	if [ "$kind" == none ]; then
+	    continue
+	fi
     else
         if hash brew 2>/dev/null; then
            brew_llvm_config="$(brew --cellar llvm)"/${version}*/bin/llvm-config
