@@ -47,6 +47,7 @@ for version in default $(seq $maximum_version -1 3); do
             llvm-config-mp-${version}.0 $brew_llvm_config \
             /usr/lib64/llvm/${version}/bin/llvm-config \
             /usr/lib/llvm/${version}/bin/llvm-config; do
+            llvm_config="$(command -v $llvm_config)"
             llvm_version="$($llvm_config --version)" || continue
             break
         done
@@ -113,12 +114,23 @@ EOF
         echo "Error: Unable to find a hasher"
         exit 1
     fi
+
+    case "$llvm_version" in
+    14*)
+        clangml460_configure_options="--with-llvm-version=14.0.0" # clangml.4.4.0 does not recognize 14.0.x with x>=4
+        ;;
+    *)
+        clangml460_configure_options="" # rely on clangml's ./configure autodetection
+        ;;
+    esac
+
     cat >"conf-libclang.config" <<EOF
 opam-version: "2.0"
 file-depends: [ "$llvm_config" "$checksum" ]
 variables {
     config: "$llvm_config"
     version: "$llvm_version"
+    clangml460_configure_options: "$clangml460_configure_options"
 }
 EOF
     exit 0
