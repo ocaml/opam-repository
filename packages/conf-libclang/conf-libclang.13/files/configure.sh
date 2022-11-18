@@ -25,7 +25,8 @@ for version in default 13 12 11 10 9 8 7 6 5 4 3; do
             llvm-config-mp-$version \
             llvm-config-mp-${version}.0 $brew_llvm_config \
             /usr/lib64/llvm/${version}/bin/llvm-config \
-            /usr/lib/llvm/${version}/bin/llvm-config; do
+            /usr/lib/llvm/${version}/bin/llvm-config \
+            /usr/lib/llvm${version}/bin/llvm-config; do
             llvm_version="$($llvm_config --version)" || continue
             break
         done
