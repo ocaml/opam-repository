@@ -15,7 +15,7 @@ depends: [
   "conf-zlib"
   "dune" {>= "1.11.0"}
   "stdcompat" {>= "13"}
-  "ocaml" {>= "4.08.0"}
+  "ocaml" {>= "4.08.0" & < "5.0"}
   "ocamlfind" {build & >= "1.8.0"}
   "ocamlcodoc" {with-test & >= "1.0.1"}
   "pattern" {with-test & >= "0.2.0"}
@@ -34,7 +34,7 @@ x-ci-accept-failures: [
 available: arch != "arm32" & arch != "arm64" & arch != "ppc64" # Compiler segfaults on those architectures
 dev-repo: "git+https://gitlab.inria.fr/memcad/clangml"
 build: [
-  ["./configure" "--prefix=%{prefix}%" "--with-llvm-config=%{conf-libclang:config}%"]
+  ["./configure" "--prefix=%{prefix}%" "--with-llvm-config=%{conf-libclang:config}%" conf-libclang:clangml460_configure_options]
   ["dune" "build" "-p" name "-j" jobs "@install"
     "@runtest" {with-test}
     "@doc" {with-doc}]]
