@@ -37,14 +37,15 @@ for version in default $(seq $maximum_version -1 3); do
 	fi
     else
         if hash brew 2>/dev/null; then
-           brew_llvm_config="$(brew --cellar llvm)"/${version}*/bin/llvm-config
+           brew_llvm_config="$(brew --cellar llvm)"/${version}*/bin/llvm-config || true
+           brew_llvm_config_at="$(brew --cellar llvm@${version})"/${version}*/bin/llvm-config || true
         fi
         for llvm_config in \
             llvm-config-${version} llvm-config-${version}.0 \
             llvm-config${version}0 llvm-config${version} \
             llvm-config-${version}-32 llvm-config-${version}-64 \
             llvm-config-mp-$version \
-            llvm-config-mp-${version}.0 $brew_llvm_config \
+            llvm-config-mp-${version}.0 $brew_llvm_config $brew_llvm_config_at \
             /usr/lib64/llvm/${version}/bin/llvm-config \
             /usr/lib/llvm/${version}/bin/llvm-config \
             /usr/lib/llvm${version}/bin/llvm-config; do

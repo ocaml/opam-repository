@@ -8,18 +8,30 @@ build: [
   ["bash" "-ex" "configure.sh" version]
 ]
 depexts: [
-  ["llvm"] {os = "macos"}
-  ["llvm" "clang"] {os-distribution = "arch"}
-  ["libclang-dev" "libclang-cpp-dev" "llvm-dev"] {os-family = "debian"}
+  ["llvm@15"] {os = "macos"}
+  ["llvm15" "clang15"] {os-distribution = "arch"}
+  ["libclang-15-dev" "libclang-cpp15-dev" "llvm-15-dev"]
+    {(os-distribution = "ubuntu" & os-version >= "22.10")}
+  ["libclang-14-dev" "libclang-cpp14-dev" "llvm-14-dev"]
+    {(os-distribution = "debian" & os-version >= "12") |
+     (os-distribution = "ubuntu" & os-version = "22.04")}
+  ["libclang-dev" "libclang-cpp-dev" "llvm-dev"] {
+     os-family = "debian" &
+     !(os-distribution = "debian" & os-version >= "12") &
+     !(os-distribution = "ubuntu" & os-version >= "22.04")}
   ["clang-dev" "llvm-dev" "clang-static"] {os-distribution = "alpine"}
   ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
     {os-distribution = "centos"}
+  ["clang14-devel" "llvm14-devel" "zlib-devel" "redhat-rpm-config"]
+    {os-distribution = "fedora" & os-version >= "36"}
+  ["clang13-devel" "llvm13-devel" "zlib-devel" "redhat-rpm-config"]
+    {os-distribution = "fedora" & os-version = "35"}
   ["clang-devel" "llvm-devel" "zlib-devel" "redhat-rpm-config"]
-    {os-distribution = "fedora"}
+    {os-distribution = "fedora" & os-version < "35"}
   ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
     {os-distribution = "ol" & os-version >= "8"}
   ["llvm-clang-devel"] {os-family = "suse"}
-  ["devel/llvm14"] {os = "freebsd"}
+  ["devel/llvm15"] {os = "freebsd"}
   ["sys-devel/clang"] {os-distribution = "gentoo"}
 ]
 x-ci-accept-failures: [
@@ -31,7 +43,7 @@ x-ci-accept-failures: [
   "opensuse-15.3" # unavailable system package 'llvm-clang-devel'
 ]
 extra-files: [[
-  "configure.sh" "sha512=c0aea69e714b95fe93df5f417247b66a8da27488da7d60eb98a608ff11e46c2ffe9049a64c09b5fddd167a33d7b2167b6fcb0c04ef8f3fe8ba8052b91839e300"
+  "configure.sh" "sha512=f3c41812ec4355bdb2e25774b36f9e7e335f9f2e63f9839cdcb088bc12496a6fdc2aaffbe2eca559cb9d3b20ca890f6d28ee7db211dc877b4d180ded1e6eadef"
 ]]
 synopsis: "Virtual package relying on the installation of llvm and clang libraries (<= 15.0.x)"
 flags: conf
