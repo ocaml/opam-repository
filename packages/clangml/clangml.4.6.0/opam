@@ -35,9 +35,12 @@ available: arch != "arm32" & arch != "arm64" & arch != "ppc64" # Compiler segfau
 dev-repo: "git+https://gitlab.inria.fr/memcad/clangml"
 build: [
   ["./configure" "--prefix=%{prefix}%" "--with-llvm-config=%{conf-libclang:config}%" conf-libclang:clangml460_configure_options]
-  ["dune" "build" "-p" name "-j" jobs "@install"
+  ["./build_with_bigger_stack_size.sh" "dune" "build" "-p" name "-j" jobs "@install"
     "@runtest" {with-test}
     "@doc" {with-doc}]]
+extra-files: [[
+  "build_with_bigger_stack_size.sh" "sha512=16e37f951916194b1afc077b61283f4f691bffeea9407a7192eebad65b92b6e2e0747c8d3640b4fbaf2fe9e9138cb82bb3f898e21a803b186dd4ac5492b103bd"
+]]
 url {
   src: "https://gitlab.inria.fr/memcad/clangml/-/archive/v4.6.0/clangml-v4.6.0.tar.gz"
   checksum: "sha512=70fc8a1e83e5c96d742c8517c6e30a2e08c233e622a493417c31688dbab25d4e1edd8e54abdcb60438b8e5c942206d34e7b64fa2f45aaafcd44411959a06857f"
