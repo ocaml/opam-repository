@@ -9,14 +9,24 @@ build: [
 ]
 depexts: [
   ["llvm@14"] {os = "macos"}
-  ["llvm" "clang"] {os-distribution = "arch"}
-  ["libclang-14-dev" "llvm-14-dev"] {os-family = "debian"}
+  ["llvm14" "clang14"] {os-distribution = "arch"}
+  ["libclang-14-dev" "llvm-14-dev"]
+    {(os-distribution = "debian" & os-version >= "12") |
+     (os-distribution = "ubuntu" & os-version >= "22.04")}
+  ["libclang-dev" "llvm-dev"] {
+     os-family = "debian" &
+     !(os-distribution = "debian" & os-version >= "12") &
+     !(os-distribution = "ubuntu" & os-version >= "22.04")}
   ["clang-dev" "llvm-dev" "clang-static"] {os-distribution = "alpine"}
   ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
     {os-distribution = "centos"}
+  ["clang-devel-14.0.6" "llvm-devel-14.0.5" "zlib-devel" "redhat-rpm-config"]
+    {os-distribution = "fedora" & os-version >= "36"}
+  ["clang-devel-13.0.1" "llvm-devel-13.0.1" "zlib-devel" "redhat-rpm-config"]
+    {os-distribution = "fedora" & os-version = "35"}
   ["clang-devel" "llvm-devel" "zlib-devel" "redhat-rpm-config"]
-    {os-distribution = "fedora"}
-  ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
+    {os-distribution = "fedora" & os-version < "35"}
+  ["clang-devel-14.0.6" "llvm-devel-14.0.6" "llvm-static-14.0.6" "zlib-devel"]
     {os-distribution = "ol" & os-version >= "8"}
   ["llvm-clang-devel"] {os-family = "suse"}
   ["devel/llvm14"] {os = "freebsd"}
@@ -29,7 +39,7 @@ x-ci-accept-failures: [
   "opensuse-15.3" # unavailable system package 'llvm-clang-devel'
 ]
 extra-files: [[
-  "configure.sh" "sha512=21a5c20ee90b757e410a49861579a3a6f9309375d9458b28e32e45227921d9101a9f819997387a68e1d117e21a8479bfb478afa114a3e2ff0dc0d2dbc4628739"
+  "configure.sh" "sha512=5c32c6a3f228b8a1f9b4053c6aa109b857f576121054f353b256467203104862882b8d72b757cfdde975d0cb8083a91b47fc7facdd17017e7bc3f2d9d62af0ed"
 ]]
 synopsis: "Virtual package relying on the installation of llvm and clang libraries (<= 14.0.x)"
 flags: conf
