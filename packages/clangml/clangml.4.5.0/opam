@@ -35,9 +35,12 @@ available: arch != "arm32" & arch != "ppc64" # Compiler segfaults on those archi
 dev-repo: "git+https://gitlab.inria.fr/memcad/clangml"
 build: [
   ["./configure" "--prefix=%{prefix}%" "--with-llvm-config=%{conf-libclang:config}%"]
-  ["dune" "build" "-p" name "-j" jobs "@install"
+  ["./build_with_bigger_stack_size.sh" "dune" "build" "-p" name "-j" jobs "@install"
     "@runtest" {with-test}
     "@doc" {with-doc}]]
+extra-files: [[
+  "build_with_bigger_stack_size.sh" "sha512=16e37f951916194b1afc077b61283f4f691bffeea9407a7192eebad65b92b6e2e0747c8d3640b4fbaf2fe9e9138cb82bb3f898e21a803b186dd4ac5492b103bd"
+]]
 url {
   src: "https://gitlab.inria.fr/memcad/clangml/uploads/888b796e6a42405e831315d967bf094d/clangml.4.5.0.tar.gz"
   checksum: "sha512=f0e0da9290a4f7e9a193754236ea028cabf2a0039f3c2e49a85e53a2cd6a2a78eade60f0c0bd73d272cd0e4bc7fba4333a645faaf14f94e4404498e4144306fc"
