@@ -8,19 +8,23 @@ build: [
   ["bash" "-ex" "configure.sh" version]
 ]
 depexts: [
-  ["llvm"] {os = "macos"}
-  ["llvm" "clang"] {os-distribution = "arch"}
+  ["llvm@13"] {os = "macos"}
+  ["llvm13" "clang13"] {os-distribution = "arch"}
   ["libclang-13-dev" "llvm-13-dev"]
-    {os-distribution = "ubuntu" & os-version >= "22.04"}
+    {(os-distribution = "debian" & os-version >= "12") |
+     (os-distribution = "ubuntu" & os-version >= "22.04")}
   ["libclang-dev" "llvm-dev"] {
      os-family = "debian" &
+     !(os-distribution = "debian" & os-version >= "12") &
      !(os-distribution = "ubuntu" & os-version >= "22.04")}
   ["clang-dev" "llvm-dev" "clang-static"] {os-distribution = "alpine"}
   ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
     {os-distribution = "centos"}
+  ["clang-devel-13.0.1" "llvm-devel-13.0.1" "zlib-devel" "redhat-rpm-config"]
+    {os-distribution = "fedora" & os-version >= "35"}
   ["clang-devel" "llvm-devel" "zlib-devel" "redhat-rpm-config"]
-    {os-distribution = "fedora"}
-  ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
+    {os-distribution = "fedora" & os-version < "35"}
+  ["clang-devel-13.0.1" "llvm-devel-13.0.1" "llvm-static-13.0.1" "zlib-devel"]
     {os-distribution = "ol" & os-version >= "8"}
   ["llvm-clang-devel"] {os-family = "suse"}
   ["devel/llvm13"] {os = "freebsd"}
