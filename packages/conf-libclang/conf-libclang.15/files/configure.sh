@@ -44,6 +44,7 @@ for version in default $(seq $maximum_version -1 3); do
             llvm-config-mp-${version}.0 $brew_llvm_config \
             /usr/lib64/llvm/${version}/bin/llvm-config \
             /usr/lib/llvm/${version}/bin/llvm-config; do
+            llvm_config="$(command -v $llvm_config)"
             llvm_version="$($llvm_config --version)" || continue
             break
         done
