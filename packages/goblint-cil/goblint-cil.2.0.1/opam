@@ -1,0 +1,74 @@
+opam-version: "2.0"
+synopsis:
+  "A front-end for the C programming language that facilitates program analysis and transformation"
+description: """
+This is a fork of the 'cil' package used for 'goblint'. Major changes include:
+* Support for C99 and C11.
+* Compatibility with modern OCaml versions.
+* Use Zarith instead of Num and use that for integer constants.
+* Improved locations with columns and spans.
+* Removal of unmaintained extensions and MSVC support.
+* Use dune instead of make and ocamlbuild.
+* Many bug fixes."""
+maintainer: [
+  "Michael Schwarz <michael.schwarz93@gmail.com>"
+  "Simmo Saan <simmo.saan@gmail.com>"
+]
+authors: [
+  "George Necula"
+  "Scott McPeak"
+  "Westley Weimer"
+  "Gabriel Kerneis"
+  "Ralf Vogler"
+  "Michael Schwarz"
+  "Simmo Saan"
+]
+license: "BSD-3-Clause"
+homepage: "https://github.com/goblint/cil"
+bug-reports: "https://github.com/goblint/cil/issues"
+depends: [
+  "ocaml" {>= "4.05.0"}
+  "ocamlfind" {with-test}
+  "zarith"
+  "hevea" {with-doc}
+  "dune" {>= "2.7"}
+  "dune-configurator"
+  "odoc" {with-doc}
+  "stdlib-shims"
+  "ppx_deriving_yojson" {>= "3.2"}
+  "yojson"
+  "conf-perl"
+  "cppo"
+  "conf-gcc"
+]
+conflicts: ["cil"]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/goblint/cil.git"
+depexts: [
+  ["perl-ExtUtils-MakeMaker"] {os-distribution = "centos" | os-distribution = "fedora" | os-distribution = "ol"}
+  ["perl-FindBin"] {os-distribution = "fedora"}
+  ["build-base"] {os-distribution = "alpine"}
+]
+available: arch != "x86_32" & arch != "arm32" & arch != "ppc32" & arch != "ppc64" & arch != "s390x"
+url {
+  src:
+    "https://github.com/goblint/cil/releases/download/2.0.1/goblint-cil-2.0.1.tbz"
+  checksum: [
+    "sha256=5f81cb3f25c09770e77b5eb4092e6621e456122b6d1219dcc304c062075f9572"
+    "sha512=31bb753031e0ef321a2ef065373009270881b1cce7f23167b378845188aed9cb49f18a165edd2e11f751f2c7a7b84ab5ac1da50ba1f5cb975e6e8a97157838ed"
+  ]
+}
+x-commit-hash: "3261501a8c7d712748711341677bf023437e3c56"
