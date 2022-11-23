@@ -1,0 +1,70 @@
+opam-version: "2.0"
+synopsis:
+  "Sail is a language for describing the instruction semantics of processors"
+description: """
+Sail is a language for describing the instruction-set
+architecture (ISA) semantics of processors. Sail aims to provide a
+engineer-friendly, vendor-pseudocode-like language for describing
+instruction semantics. It is essentially a first-order imperative
+language, but with lightweight dependent typing for numeric types and
+bitvector lengths, which are automatically checked using Z3. It has
+been used for several papers, available from
+http://www.cl.cam.ac.uk/~pes20/sail/.
+"""
+maintainer: ["Sail Devs <cl-sail-dev@lists.cam.ac.uk>"]
+authors: [
+  "Alasdair Armstrong"
+  "Thomas Bauereiss"
+  "Brian Campbell"
+  "Shaked Flur"
+  "Jonathan French"
+  "Kathy Gray"
+  "Robert Norton"
+  "Christopher Pulte"
+  "Peter Sewell"
+  "Mark Wassell"
+]
+license: "BSD-2-Clause"
+homepage: "https://github.com/rems-project/sail"
+bug-reports: "https://github.com/rems-project/sail/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "libsail" {= version}
+  "sail_manifest" {= version & build}
+  "sail_ocaml_backend" {= version & post}
+  "sail_c_backend" {= version & post}
+  "sail_smt_backend" {= version & post}
+  "sail_lem_backend" {= version & post}
+  "sail_coq_backend" {= version & post}
+  "sail_latex_backend" {= version & post}
+  "sail_output" {= version & post}
+  "linenoise" {>= "1.1.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/rems-project/sail.git"
+substs: [ "src/bin/manifest.ml" ]
+url {
+  src:
+    "https://github.com/rems-project/sail/releases/download/0.15/sail-0.15.tbz"
+  checksum: [
+    "sha256=6849fb16af6a3a1f70a9202ceffeb91f0d5afe0dc403d7a29b42b065dc3510fb"
+    "sha512=64219a4824c428798937f1f2b3d4e8c7b2ff0cb3a835e82a7e98b6c337d16f7496d0f94cb7c65f2c74089a53598e6df04624485f1db0c1ca11ba8fc9dea281d6"
+  ]
+}
+x-commit-hash: "10b7ffc4628cf6e3b6aae0657b1a998b945b8085"
