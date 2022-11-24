@@ -2,9 +2,14 @@ opam-version: "2.0"
 
 authors: [
   "Mohamed Iguernlala <mohamed.iguernlala@ocamlpro.com>"
+  "Hichem Ait El Hara <hichem@ocamlpro.com>"
+  "Steven de Oliveira <steven@ocamlpro.com>"
+  "Guillaume Bury <guillaume.bury@ocamlpro.com>"
 ]
 maintainer: [
-  "Mohamed Iguernlala <mohamed.iguernlala@ocamlpro.com>"
+  "Hichem Ait El Hara <hichem@ocamlpro.com>"
+  "Steven de Oliveira <steven@ocamlpro.com>"
+  "Guillaume Bury <guillaume.bury@ocamlpro.com>"
 ]
 
 license: "LGPL-2.1-only"
@@ -12,28 +17,29 @@ homepage: "https://github.com/OCamlPro/ocplib-simplex"
 
 bug-reports: "https://github.com/OCamlPro/ocplib-simplex/issues"
 dev-repo: "git+https://github.com/OCamlPro/ocplib-simplex.git"
-build:[
-        ["autoconf"]
-        ["./configure" "-prefix" "%{prefix}%"]
-	[make]
-]
 
-
-install:[
-	[make "install"]
-]
-
-remove:[
-        ["ocamlfind" "remove" "ocplib-simplex"]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
 ]
 
 depends: [
-  "ocaml" {>= "4.01.0"}
-  "ocamlfind" {build}
-  "conf-autoconf" {build}
+  "ocaml" {>= "4.02.0"}
+  "dune" {>= "2.0"}
   "num"
+  "logs" {>= "0.5.0"}
 ]
-conflicts: [ "osdp" {= "0.5.4"} ]
+
 synopsis:
   "A library implementing a simplex algorithm, in a functional style, for solving systems of linear inequalities and optimizing linear objective functions"
 description: """
@@ -45,6 +51,6 @@ linear optimization."""
 flags: light-uninstall
 url {
   src:
-    "https://github.com/OCamlPro-Iguernlala/ocplib-simplex/archive/v0.4.tar.gz"
-  checksum: "md5=fbde2d7194acc0cda9f1b4511f4baa27"
+    "https://github.com/OCamlPro/ocplib-simplex/archive/refs/tags/v0.5.tar.gz"
+  checksum: "md5=8e0596c828b50527314001d4c6ca3123"
 }
