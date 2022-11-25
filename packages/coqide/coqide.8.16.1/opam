@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "coqdev@inria.fr"
+authors: "The Coq development team, INRIA, CNRS, and contributors."
+homepage: "https://coq.inria.fr/"
+bug-reports: "https://github.com/coq/coq/issues"
+dev-repo: "git+https://github.com/coq/coq.git"
+license: "LGPL-2.1-only"
+synopsis: "IDE of the Coq formal proof management system"
+description: """
+CoqIDE is a graphical user interface for interactive development
+of mathematical definitions, executable algorithms, and proofs of theorems
+using the Coq proof assistant.
+"""
+
+depends: [
+  "coq" {= version}
+  "ocamlfind" {>= "1.8.1"}
+  "dune" {>= "2.5.1"}
+  "conf-findutils" {build}
+  "lablgtk3-sourceview3" {>= "3.1.2"}
+  "conf-adwaita-icon-theme"
+]
+build: [
+  [
+    "./configure"
+    "-configdir" "%{lib}%/coq/config"
+    "-prefix" prefix
+    "-mandir" man
+    "-docdir" "%{doc}%/coq"
+    "-libdir" "%{lib}%/coq"
+    "-datadir" "%{share}%/coq"
+    "-native-compiler" "yes" {coq-native:installed} "no" {!coq-native:installed}
+  ]
+  [ "dune" "build" "-p" name "-j" jobs ]
+]
+
+url {
+  src: "https://github.com/coq/coq/archive/refs/tags/V8.16.1.tar.gz"
+  checksum: "sha256=583471c8ed4f227cb374ee8a13a769c46579313d407db67a82d202ee48300e4b"
+}
