@@ -1,0 +1,91 @@
+opam-version: "2.0"
+synopsis: "Static analysis framework for C"
+maintainer: [
+  "Simmo Saan <simmo.saan@gmail.com>"
+  "Michael Schwarz <michael.schwarz93@gmail.com>"
+]
+authors: [
+  "Simmo Saan"
+  "Michael Schwarz"
+  "Julian Erhard"
+  "Sarah Tilscher"
+  "Ralf Vogler"
+  "Kalmer Apinis"
+  "Vesal Vojdani"
+]
+license: "MIT"
+homepage: "https://goblint.in.tum.de"
+doc: "https://goblint.readthedocs.io/en/latest/"
+bug-reports: "https://github.com/goblint/analyzer/issues"
+depends: [
+  "ocaml" {>= "4.10"}
+  "dune" {>= "3.0"}
+  "goblint-cil" {>= "2.0.1"}
+  "batteries" {>= "3.4.0"}
+  "zarith" {>= "1.8"}
+  "yojson" {>= "2.0.0"}
+  "qcheck-core"
+  "ppx_deriving"
+  "ppx_deriving_hash"
+  "ppx_deriving_yojson" {>= "3.7.0"}
+  "ppx_blob" {>= "0.6.0"}
+  "ounit2" {with-test}
+  "qcheck-ounit" {with-test}
+  "odoc" {with-doc}
+  "fpath"
+  "dune-site"
+  "json-data-encoding"
+  "jsonrpc" {>= "1.12"}
+  "sha" {>= "1.12"}
+  "cpu"
+  "arg-complete"
+  "yaml"
+  "uuidm"
+  "catapult"
+  "catapult-file"
+  "conf-gmp" {>= "3"}
+  "conf-ruby" {with-test}
+  "benchmark" {with-test}
+  "conf-gcc"
+]
+depopts: ["apron" "z3"]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/goblint/analyzer.git"
+# on `dune build` goblint.opam will be generated from goblint.opam.template and dune-project
+# also remember to generate/adjust goblint.opam.locked!
+available: os-distribution != "alpine" & arch != "arm64"
+url {
+  src:
+    "https://github.com/goblint/analyzer/releases/download/v2.1.0/goblint-2.1.0.tbz"
+  checksum: [
+    "sha256=bfc412ec2e447eaef6f4f83892e3511ebf305593cb00561c1406be3ae8bf48e9"
+    "sha512=5f2a162e5f36bffafc9836b0d18b5b2808cecfa6bf68f83bb7d1e8b9947ac74cf07776eb09274b4b29d55c897a45a10768f0d9ed25810cf6ba2409c525e4cd4d"
+  ]
+}
+x-commit-hash: "694375b2081f51f381792fe02c3dd69a4a2e9f97"
+# pin-depends: [
+  # published goblint-cil 2.0.1 is currently up-to-date, so no pin needed
+  # [ "goblint-cil.2.0.0" "git+https://github.com/goblint/cil.git#3261501a8c7d712748711341677bf023437e3c56" ]
+  # TODO: add back after release, only pinned for optimization (https://github.com/ocaml-ppx/ppx_deriving/pull/252)
+  # [ "ppx_deriving.5.2.1" "git+https://github.com/ocaml-ppx/ppx_deriving.git#0a89b619f94cbbfc3b0fb3255ab4fe5bc77d32d6" ]
+  # TODO: add back after release, only pinned for CI stability
+  # [ "apron.v0.9.13" "git+https://github.com/antoinemine/apron.git#c852ebcc89e5cf4a5a3318e7c13c73e1756abb11"]
+# ]
