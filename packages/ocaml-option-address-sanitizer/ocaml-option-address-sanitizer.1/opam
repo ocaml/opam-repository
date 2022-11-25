@@ -1,30 +1,31 @@
 opam-version: "2.0"
-synopsis: "Ensure that OCaml is compiled with no special options enabled"
+synopsis: "Set OCaml to be compiled with address sanitizer"
+description: """
+This configuration package enables memory leak sanitzation using
+the -fsanitize=leak gcc and clang option.
+"""
+post-messages: """
+Make sure to set ASAN_OPTIONS=detect_leaks=0,exitcode=0
+while compiling and to unset it before running compiled binaries.
+"""
 depends: [
-  "ocaml-base-compiler" {post} |
-  "ocaml-system" {post} |
-  "ocaml-variants" {post & >= "4.12.0~"}
+  "ocaml-variants" {post & >= "5.0"}
 ]
 conflicts: [
   "ocaml-option-32bit"
   "ocaml-option-afl"
   "ocaml-option-bytecode-only"
-    {ocaml-system:version < "5" |
-     ocaml-base-compiler:version < "5" |
-     ocaml-variants:version < "5" |
-     arch = "arm64" |
-     arch = "x86_64" }
   "ocaml-option-default-unsafe-string"
   "ocaml-option-flambda"
-  "ocaml-option-fp"
   "ocaml-option-musl"
   "ocaml-option-no-flat-float-array"
   "ocaml-option-spacetime"
   "ocaml-option-static"
   "ocaml-option-nnp"
   "ocaml-option-nnpchecker"
-  "ocaml-option-address-sanitizer"
+  "ocaml-option-fp"
   "ocaml-option-leak-sanitizer"
 ]
+available: [ os = "macos" | os = "linux" ]
 maintainer: "platform@lists.ocaml.org"
 flags: compiler
