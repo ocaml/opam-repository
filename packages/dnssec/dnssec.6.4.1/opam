@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "team AT robur dot io"
+authors: ["Hannes Mehnert <hannes@mehnert.org>" "Reynir Björnsson <reynir@reynir.dk>"]
+homepage: "https://github.com/mirage/ocaml-dns"
+doc: "https://mirage.github.io/ocaml-dns/"
+dev-repo: "git+https://github.com/mirage/ocaml-dns.git"
+bug-reports: "https://github.com/mirage/ocaml-dns/issues"
+license: "BSD-2-Clause"
+
+depends: [
+  "dune" {>= "2.0.0"}
+  "ocaml" {>= "4.08.0"}
+  "cstruct" {>= "6.0.0"}
+  "dns" {= version}
+  "alcotest" {with-test}
+  "mirage-crypto"
+  "mirage-crypto-pk"
+  "mirage-crypto-ec"
+  "domain-name" {>= "0.4.0"}
+  "base64" {with-test & >= "3.0.0"}
+  "logs" {>= "0.7.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+synopsis: "DNSSec support for OCaml-DNS"
+description: """
+DNSSec (DNS security extensions) for OCaml-DNS, including
+signing and verifying of RRSIG records.
+"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-dns/releases/download/v6.4.1/dns-6.4.1.tbz"
+  checksum: [
+    "sha256=a261b47ca6401c673ee04442f1cc8ae3b8de12488166407ed5fcf8ea3e920e7a"
+    "sha512=4f761a25f8bdffb866c02ae91d85b248158d478b4905b6cbc107a24ed8f1ce0c58468e34a32ddc74b2c1bca29fddc50c1591e47927bc19c15b85d909d2496317"
+  ]
+}
+x-commit-hash: "748ada0f9a8799ed8c7b5354d8a4c8cb9dc0953f"
