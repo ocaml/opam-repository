@@ -1,0 +1,67 @@
+opam-version: "2.0"
+synopsis: "Preprocessor-pretty-printer of OCaml"
+description: """
+Camlp5 is a preprocessor and pretty-printer for OCaml programs. It also provides parsing and printing tools.
+
+As a preprocessor, it allows to:
+
+extend the syntax of OCaml,
+redefine the whole syntax of the language.
+As a pretty printer, it allows to:
+
+display OCaml programs in an elegant way,
+convert from one syntax to another,
+check the results of syntax extensions.
+Camlp5 also provides some parsing and pretty printing tools:
+
+extensible grammars
+extensible printers
+stream parsers and lexers
+pretty print module
+It works as a shell command and can also be used in the OCaml toplevel."""
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+authors: ["Daniel de Rauglaudre" "Chet Murthy"]
+license: "BSD-3-Clause"
+homepage: "https://camlp5.github.io"
+doc: "https://camlp5.github.io/doc/html"
+bug-reports: "https://github.com/camlp5/camlp5/issues"
+depends: [
+  "ocaml" {>= "4.05" & < "5.01.0"}
+  "ocamlfind"
+  "camlp-streams" { >= "5.0" }
+  "conf-perl"
+  "conf-perl-ipc-system-simple"
+  "conf-perl-string-shellquote"
+  "conf-diffutils" { with-test & os-distribution = "alpine" }
+  "pcre" { with-test }
+  "ounit" { with-test }
+  "rresult" { with-test }
+  "fmt" { with-test }
+]
+build: [
+  ["./configure" "--prefix" prefix "-libdir" lib "-mandir" man]
+  [make "-j%{jobs}%" "DEBUG=-g" "world.opt"]
+  [make "-j%{jobs}%" "DEBUG=-g" "all"]
+  [make "-C" "testsuite" "clean" "all-tests"] {
+    with-test
+  & ocaml:version >= "4.10.0"
+  & os-distribution != "homebrew"
+  }
+  [make "-C" "test" "clean" "all"] {
+    with-test
+  & ocaml:version >= "4.10.0"
+  & os-distribution != "homebrew"
+  }
+]
+install: [make "install"]
+
+post-messages:
+  "To use mkcamlp5 and mkcamlp5.opt properly you will require Perl module which contains 'IPC/System/Simple.pm'. We currently don't know the right way to specify this dependecy on BSD and MacOS systems. You can use https://github.com/camlp5/camlp5/issues/66 for discussion." { os = "macos" | os = "freebsd" | os = "openbsd" }
+
+dev-repo: "git+https://github.com/camlp5/camlp5.git"
+url {
+  src: "https://github.com/camlp5/camlp5/archive/refs/tags/rel8.00.04.tar.gz"
+  checksum: [
+    "sha512=0951a9528c8c9b4becf54b352a6f897cb1af26de437a137757d597a3a2ad8aef1160a3c326c9503f783bccd154d8c14a354d3a35baae2bb551611697ce4f5327"
+  ]
+}
