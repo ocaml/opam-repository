@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "First release candidate of OCaml 5.0.0"
+maintainer: "platform@lists.ocaml.org"
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+authors: "Xavier Leroy and many contributors"
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git+https://github.com/ocaml/ocaml#5.0"
+depends: [
+  "ocaml" {= "5.0.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-domains" {post}
+  "base-nnp" {post}
+  "ocaml-options-vanilla" {post}
+  "ocaml-option-bytecode-only" {arch != "arm64" & arch != "x86_64"}
+  "ocaml-beta" {opam-version < "2.1.0"}
+]
+conflict-class: "ocaml-core-compiler"
+flags: [ compiler avoid-version ]
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "--prefix=%{prefix}%"
+    "--docdir=%{doc}%/ocaml"
+    "-C"
+    "CC=cc" {os = "openbsd" | os = "macos"}
+    "ASPP=cc -c" {os = "openbsd" | os = "macos"}
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/5.0.0-rc1.tar.gz"
+  checksum: "sha256=6163a5161cdef4aaddba0f6d53c61b5c6b48274cf6e8bf95318e2642634d3604"
+}
+extra-files: ["ocaml-base-compiler.install" "md5=3e969b841df1f51ca448e6e6295cb451"]
+post-messages: [
+  "A failure in the middle of the build may be caused by build parallelism
+   (enabled by default).
+   Please file a bug report at https://github.com/ocaml/opam-repository/issues"
+  {failure & jobs > 1}
+  "You can try installing again including --jobs=1
+   to force a sequential build instead."
+  {failure & jobs > 1 & opam-version >= "2.0.5"}
+]
