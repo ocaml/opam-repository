@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Eio implementation using luv (libuv)"
+description: "An eio implementation for most platforms, using luv."
+maintainer: ["anil@recoil.org"]
+authors: ["Anil Madhavapeddy" "Thomas Leonard"]
+license: "ISC"
+homepage: "https://github.com/ocaml-multicore/eio"
+doc: "https://ocaml-multicore.github.io/eio/"
+bug-reports: "https://github.com/ocaml-multicore/eio/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "eio" {= version}
+  "luv" {>= "0.5.11"}
+  "luv_unix" {>= "0.5.0"}
+  "mdx" {>= "1.10.0" & with-test}
+  "logs" {>= "0.7.0"}
+  "fmt" {>= "0.8.9"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/ocaml-multicore/eio.git"
+url {
+  src:
+    "https://github.com/ocaml-multicore/eio/releases/download/v0.7/eio-0.7.tbz"
+  checksum: [
+    "sha256=675e67f343ccf37b965d15d1ee1c639d7a06431e8f08e95559133419f3488ee1"
+    "sha512=3d1bd0e5e0aa79d8858d83944d734a0efc325ed66a12a1506c3b36281db56c0216e6cb90a46e6021db1ea34cdd2567ebabe0bd687d9989495bb7cf6099e90ba7"
+  ]
+}
+x-commit-hash: "aa91a7bf813b9ab2eddeae35c17bc7439f2c0836"
