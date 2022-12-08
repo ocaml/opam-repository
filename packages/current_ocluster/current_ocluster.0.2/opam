@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis: "OCurrent plugin for OCluster builds"
+description:
+  "Creates a stage in an OCurrent pipeline for submitting jobs to OCluster."
+maintainer: ["talex5@gmail.com"]
+authors: ["talex5@gmail.com"]
+license: "Apache-2.0"
+homepage: "https://github.com/ocurrent/ocluster"
+bug-reports: "https://github.com/ocurrent/ocluster/issues"
+depends: [
+  "dune" {>= "3.3"}
+  "ppx_deriving"
+  "ocluster-api" {= version}
+  "lwt" {>= "5.6.1"}
+  "current" {>= "0.6"}
+  "current_git" {>= "0.6"}
+  "current_web" {>= "0.6" & with-test}
+  "current_github" {>= "0.6" & with-test}
+  "capnp-rpc-unix" {>= "1.2"}
+  "duration"
+  "logs"
+  "fmt"
+  "prometheus" {>= "1.2"}
+  "ppx_deriving_yojson"
+  "ocaml" {>= "4.12.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocurrent/ocluster.git"
+url {
+  src:
+    "https://github.com/ocurrent/ocluster/releases/download/v0.2/ocluster-0.2.tbz"
+  checksum: [
+    "sha256=a6245d78f1f2b4b431596cfe167dfe18497b72c2844b8b7fb99603731eda4192"
+    "sha512=477f16a1abc7de7c8e807ac1b8e33a461865e20358734716707874af2e6fec47f7fe24753cd88d520fe94921d9f1f8da63d96c41ab1dfae9f86be85dd4098c7d"
+  ]
+}
+x-commit-hash: "222011c2ef5100f9ed43234c59d215dc2430bfca"
