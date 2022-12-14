@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Bootstrapped development binary for opam 2.1"
+description:
+  "This package compiles (bootstraps) opam. For consistency and safety of the installation, the binaries are not installed into the PATH, but into lib/opam-devel, from where the user can manually install them system-wide."
+maintainer: "opam-devel@lists.ocaml.org"
+authors: [
+  "Vincent Bernardoff <vb@luminar.eu.org>"
+  "Raja Boujbel <raja.boujbel@ocamlpro.com>"
+  "Roberto Di Cosmo <roberto@dicosmo.org>"
+  "Thomas Gazagnaire <thomas@gazagnaire.org>"
+  "Louis Gesbert <louis.gesbert@ocamlpro.com>"
+  "Fabrice Le Fessant <Fabrice.Le_fessant@inria.fr>"
+  "Anil Madhavapeddy <anil@recoil.org>"
+  "Guillem Rieu <guillem.rieu@ocamlpro.com>"
+  "Ralf Treinen <ralf.treinen@pps.jussieu.fr>"
+  "Frederic Tuong <tuong@users.gforge.inria.fr>"
+]
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://opam.ocaml.org"
+bug-reports: "https://github.com/ocaml/opam/issues"
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "opam-client" {= version}
+  "cmdliner" {>= "0.9.8"}
+  "dune" {>= "1.11.0"}
+  "conf-openssl" {with-test}
+  "conf-diffutils" {with-test}
+]
+build: [
+  ["./configure" "--disable-checks" "--prefix" prefix]
+  [make "%{name}%.install"]
+]
+post-messages:
+  """\
+The development version of opam has been successfully compiled into %{lib}%/%{name}%. You should not run it from there, please install the binaries to your PATH, e.g. with
+    sudo cp %{lib}%/%{name}%/opam /usr/local/bin
+
+If you just want to give it a try without altering your current installation, you could use instead:
+    alias opam2="OPAMROOT=~/.opam2 %{lib}%/%{name}%/opam\""""
+    {success}
+dev-repo: "git+https://github.com/ocaml/opam.git"
+url {
+  src: "https://github.com/ocaml/opam/archive/refs/tags/2.1.4.tar.gz"
+  checksum: [
+    "md5=f8123b6840e93000fcf228aa9cb23891"
+    "sha512=276fdbe4e114a0d23b9d4b7938d87bf39c06b4716fae601588da7d5d2d5d9b5c584855d96edfed2eb5ac8a36ee9431c4ea7d281c52acdab28b9a3bdcbf10ce57"
+  ]
+}
