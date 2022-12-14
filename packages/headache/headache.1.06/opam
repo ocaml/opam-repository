@@ -24,18 +24,19 @@ bug-reports: "https://github.com/Frama-C/headache/issues"
 dev-repo: "git+https://github.com/Frama-C/headache.git"
 
 depends: [
+  "ocaml"
   "camomile"
   "dune" {>= "1.6"}
+  "odoc" {with-doc}
 ]
 
 build: [
-  [ "dune" "build" "-p" "headache" ]
+  [ 
+    "dune" "build" "-p" headache "-j" jobs
+    "@doc" {with-doc}
+  ]
 ]
 
-install:  [
-  [make "INSTALLDIR=%{prefix}%/bin" "install"]
-  [make "DOC_INSTALLDIR=%{prefix}%/doc/headache" "install-doc"] {with-doc}
-]
 url {
   src: "https://github.com/Frama-C/headache/archive/v1.06.tar.gz"
   checksum: [
