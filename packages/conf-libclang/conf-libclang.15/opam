@@ -8,9 +8,17 @@ build: [
   ["bash" "-ex" "configure.sh" version]
 ]
 depexts: [
-  ["llvm"] {os = "macos"}
+  ["llvm@15"] {os = "macos"}
   ["llvm" "clang"] {os-distribution = "arch"}
-  ["libclang-dev" "libclang-cpp-dev" "llvm-dev"] {os-family = "debian"}
+  ["libclang-15-dev" "libclang-cpp15-dev" "llvm-15-dev"]
+    {(os-distribution = "ubuntu" & os-version >= "22.10")}
+  ["libclang-14-dev" "libclang-cpp14-dev" "llvm-14-dev"]
+    {(os-distribution = "debian" & os-version >= "12") |
+     (os-distribution = "ubuntu" & os-version = "22.04")}
+  ["libclang-dev" "libclang-cpp-dev" "llvm-dev"] {
+     os-family = "debian" &
+     !(os-distribution = "debian" & os-version >= "12") &
+     !(os-distribution = "ubuntu" & os-version >= "22.04")}
   ["clang-dev" "llvm-dev" "clang-static"] {os-distribution = "alpine"}
   ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
     {os-distribution = "centos"}
@@ -19,7 +27,7 @@ depexts: [
   ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
     {os-distribution = "ol" & os-version >= "8"}
   ["llvm-clang-devel"] {os-family = "suse"}
-  ["devel/llvm14"] {os = "freebsd"}
+  ["devel/llvm15"] {os = "freebsd"}
   ["sys-devel/clang"] {os-distribution = "gentoo"}
 ]
 x-ci-accept-failures: [
@@ -31,7 +39,7 @@ x-ci-accept-failures: [
   "opensuse-15.3" # unavailable system package 'llvm-clang-devel'
 ]
 extra-files: [[
-  "configure.sh" "sha512=495b1915a845c75033449e8a86b35e399320a50d63cee959f5685dedb085c5efc2a27d5c2672c90c38444a5af4edd212cf2e23bb2b34aaedc5cf271073dce087"
+  "configure.sh" "sha512=e94dc4cf5eff11f0b845b03dd7995714d819b2f55f0a0ae387d266c49a2f8d3602cb311c980587daf17b5767498fbff8ab20f66bd1427bf45aff74620bef515c"
 ]]
 synopsis: "Virtual package relying on the installation of llvm and clang libraries (<= 15.0.x)"
 flags: conf
