@@ -127,5 +127,5 @@ EOF
     exit 0
 done
 
-echo "Error: No usable version of LLVM <=14.0.x found."
+echo "Error: No usable version of LLVM <=15.0.x found."
 exit 1
