@@ -1,0 +1,31 @@
+opam-version: "2.0"
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+synopsis: "The OCaml compiler (virtual package)"
+description: """
+This package requires a matching implementation of OCaml,
+and polls it to initialise specific variables like `ocaml:native-dynlink`"""
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml-config" {>= "2"}
+  "ocaml-base-compiler" {>= "4.14.2~" & < "4.14.3~"} |
+  "ocaml-variants" {>= "4.14.2~" & < "4.14.3~"} |
+  "ocaml-system" {>= "4.14.2" & < "4.14.3~"}
+]
+setenv: [
+  [CAML_LD_LIBRARY_PATH = "%{_:stubsdir}%"]
+  [CAML_LD_LIBRARY_PATH += "%{lib}%/stublibs"]
+  [OCAML_TOPLEVEL_PATH = "%{toplevel}%"]
+]
+build: ["ocaml" "%{ocaml-config:share}%/gen_ocaml_config.ml" _:version _:name]
+build-env: CAML_LD_LIBRARY_PATH = ""
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: [
+  "Xavier Leroy"
+  "Damien Doligez"
+  "Alain Frisch"
+  "Jacques Garrigue"
+  "Didier Rémy"
+  "Jérôme Vouillon"
+]
+flags: conf
