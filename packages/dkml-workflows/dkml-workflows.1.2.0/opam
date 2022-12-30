@@ -1,0 +1,35 @@
+opam-version: "2.0"
+synopsis:
+  "GitLab CI/CD and GitHub Action workflows used by and with Diskuv OCaml (DKML) tooling"
+description:
+  "GitLab CI/CD and GitHub Action workflows used by and with Diskuv OCaml (DKML) tooling."
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-workflows"
+bug-reports: "https://github.com/diskuv/dkml-workflows/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "astring" {>= "0.8.5"}
+  "bos" {>= "0.2.1"}
+  "crunch" {>= "3.3.1"}
+  "jingoo" {>= "1.4.4"}
+  "uutf" {>= "1.0.3"}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/diskuv/dkml-workflows.git"
+# Until Dune 3+ the auto-generated '.opam' will have an invalid ["dune" "install" ...] step
+# that messes up with cross-compilation. Customized it to remove it.
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs "@install" "@runtest" {with-test} "@doc" {with-doc}]
+]
+url {
+  src:
+    "https://github.com/diskuv/dkml-workflows/releases/download/1.2.0/dkml-workflows-1.2.0.tbz"
+  checksum: [
+    "sha256=b91e0bfbb7755f9dc8a56bac6492b17f9f249fe4fc255bb60dc43b531a7ba45d"
+    "sha512=cae40d71686c391eb157203aabfc519105a408e480edaf59d66ee0a0c4fd57d02d4bc69a3539513ec132b20da36823ed5fb6f906c3908d4ee42c87e6f795f539"
+  ]
+}
+x-commit-hash: "b079de3a85c8ab2201bfb2c8f6de9429f13e53eb"
