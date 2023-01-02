@@ -1,0 +1,61 @@
+opam-version: "2.0"
+synopsis: "Websocket library (Async)"
+description: """
+The WebSocket Protocol enables two-way communication between a client
+running untrusted code in a controlled environment to a remote host
+that has opted-in to communications from that code.
+
+The security model used for this is the origin-based security model
+commonly used by web browsers. The protocol consists of an opening
+handshake followed by basic message framing, layered over TCP.
+
+The goal of this technology is to provide a mechanism for
+browser-based applications that need two-way communication with
+servers that does not rely on opening multiple HTTP connections (e.g.,
+using XMLHttpRequest or <iframe>s and long polling).
+"""
+maintainer: ["Vincent Bernardoff <vb@luminar.eu.org>"]
+authors: ["Vincent Bernardoff <vb@luminar.eu.org>"]
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/vbmithr/ocaml-websocket"
+doc: "https://vbmithr.github.io/ocaml-websocket/doc"
+bug-reports: "https://github.com/vbmithr/ocaml-websocket/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.06.0"}
+  "websocket" {= version}
+  "core" {>= "v0.15.0"}
+  "core_unix" {>= "v0.15.0"}
+  "async" {>= "v0.15.0"}
+  "cohttp-async" {>= "5.0.0"}
+  "logs-async" {>= "1.1"}
+  "logs-async-reporter" {>= "1.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/vbmithr/ocaml-websocket.git"
+url {
+  src:
+    "https://github.com/vbmithr/ocaml-websocket/releases/download/2.16/websocket-2.16.tbz"
+  checksum: [
+    "sha256=1221f4683ddad884dbd62bc3f0ee59e8cd1b0c770c356357c5e6100ac87dc5eb"
+    "sha512=1561b022380e6bc21561d36cbce1e2e28cdd08fc47f5c91f7dd9f514cb1b3f4866534512f22e85086727a758695c22125735397b5955a70f476e1b9d8cbc75c4"
+  ]
+}
+x-commit-hash: "a5d7cb0710e6df49cc0c328b2ed28be4d1a397b4"
