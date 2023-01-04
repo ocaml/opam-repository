@@ -1,0 +1,45 @@
+opam-version: "2.0"
+maintainer: "dev@clarus.me"
+homepage: "https://github.com/formal-land/coq-of-ocaml"
+dev-repo: "git+https://github.com/formal-land/coq-of-ocaml.git"
+bug-reports: "https://github.com/formal-land/coq-of-ocaml/issues"
+authors: ["Guillaume Claret"]
+license: "MIT"
+build: [
+  ["sh" "-c" "cd proofs && ./configure.sh"] {coq:installed}
+  [make "-C" "proofs" "-j%{jobs}%"] {coq:installed}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+install: [
+  [make "-C" "proofs" "install"] {coq:installed}
+]
+depends: [
+  "angstrom"
+  "csexp"
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.14" & < "4.15"}
+  "ocamlfind" {>= "1.5.2"}
+  "result"
+  "smart-print"
+  "yojson" {>= "1.6.0"}
+]
+depopts: [
+  "coq"
+]
+conflicts: [
+  "coq" {< "8.11"}
+]
+tags: [
+  "keyword:compilation"
+  "keyword:OCaml"
+  "logpath:CoqOfOCaml"
+]
+synopsis: "Compile a subset of OCaml to Coq"
+
+url {
+  src: "https://github.com/formal-land/coq-of-ocaml/releases/download/2.5.3/coq-of-ocaml-full.2.5.3+4.14.tar.gz"
+  checksum: [
+    "sha256=1c6d414ae8e4babfd79f82cb667cdaaf11b4c3b76dc83de4c23f6ee8ec6affff"
+    "sha512=4b017b5892ef0c665a5ff5da292ec5cbdd1a103dfb7193553b78d25693787acd359a30028c335b300883d555786d3787258fe7a57d63cd53b94edc6b40e8ffbe"
+  ]
+}
