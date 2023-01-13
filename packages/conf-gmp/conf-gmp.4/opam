@@ -6,16 +6,18 @@ license: "GPL-1.0-or-later"
 build: [
   ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos" & os != "win32"}
   [
-		"sh"
-		"-exc"
-		"$(ocamlc -config-var c_compiler) -c $CFLAGS -I/usr/local/include test.c"
-	] {os = "win32" & os-distribution = "cygwinports"}
+    "sh"
+    "-exc"
+    "$(ocamlc -config-var c_compiler) -c $CFLAGS -I/usr/local/include test.c"
+  ] {os = "win32" & os-distribution = "cygwinports"}
   [
     "sh"
     "-exc"
     "cc -c $CFLAGS -I/opt/homebrew/include -I/opt/local/include -I/usr/local/include test.c"
-  ] {os = "macos"}
+  ] {os = "macos" & os-distribution != "homebrew"}
+  ["pkg-config" "gmp"] {os = "macos" & os-distribution = "homebrew"}
 ]
+depends: ["conf-pkg-config" {build & os = "macos" & os-distribution = "homebrew"}]
 depexts: [
   ["libgmp-dev"] {os-family = "debian"}
   ["libgmp-dev"] {os-family = "ubuntu"}
