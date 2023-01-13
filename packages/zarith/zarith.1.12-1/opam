@@ -8,6 +8,7 @@ authors: [
 homepage: "https://github.com/ocaml/Zarith"
 bug-reports: "https://github.com/ocaml/Zarith/issues"
 dev-repo: "git+https://github.com/ocaml/Zarith.git"
+license: "LGPL-2.0-only WITH OCaml-LGPL-linking-exception"
 build: [
   ["./configure"] {os != "openbsd" & os != "freebsd" & os != "macos"}
   [
@@ -19,17 +20,12 @@ build: [
     "sh"
     "-exc"
     "LDFLAGS=\"$LDFLAGS -L/opt/local/lib -L/usr/local/lib\" CFLAGS=\"$CFLAGS -I/opt/local/include -I/usr/local/include\" ./configure"
-  ] {os = "macos" & os-distribution != "homebrew"}
+  ] {os = "macos" & os-distribution != "homebrew" & os-distribution != "macports"}
   [
     "sh"
     "-exc"
-    "LDFLAGS=\"$LDFLAGS -L/opt/local/lib -L/usr/local/lib\" CFLAGS=\"$CFLAGS -I/opt/local/include -I/usr/local/include\" ./configure"
-  ] {os = "macos" & os-distribution = "homebrew" & arch = "x86_64" }
-  [
-    "sh"
-    "-exc"
-    "LDFLAGS=\"$LDFLAGS -L/opt/homebrew/lib\" CFLAGS=\"$CFLAGS -I/opt/homebrew/include\" ./configure"
-  ] {os = "macos" & os-distribution = "homebrew" & arch = "arm64" }
+    "LDFLAGS=\"$LDFLAGS $(pkg-config --libs-only-L gmp)\" CFLAGS=\"$CFLAGS $(pkg-config --cflags gmp)\" ./configure"
+  ] {os = "macos" & (os-distribution = "homebrew" | os-distribution = "macports")}
   [make]
 ]
 install: [

@@ -6,21 +6,27 @@ license: "GPL-1.0-or-later"
 build: [
   ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos" & os != "win32"}
   [
-		"sh"
-		"-exc"
-		"$(ocamlc -config-var c_compiler) -c $CFLAGS -I/usr/local/include test.c"
-	] {os = "win32" & os-distribution = "cygwinports"}
+    "sh"
+    "-exc"
+    "$(ocamlc -config-var c_compiler) -c $CFLAGS -I/usr/local/include test.c"
+  ] {os = "win32" & os-distribution = "cygwinports"}
   [
     "sh"
     "-exc"
-    "cc -c $CFLAGS -I/opt/homebrew/include -I/opt/local/include -I/usr/local/include test.c"
-  ] {os = "macos"}
+    "cc -c $CFLAGS -I/opt/local/include -I/usr/local/include test.c"
+  ] {os = "macos" & os-distribution != "homebrew" & os-distribution != "macports"}
+  ["pkg-config" "gmp"] {os = "macos" & os-distribution = "homebrew"}
+  ["pkg-config" "gmp"] {os = "macos" & os-distribution = "macports"}
+]
+depends: [
+  "conf-pkg-config" {build & os = "macos" & os-distribution = "homebrew"}
+  "conf-pkg-config" {build & os = "macos" & os-distribution = "macports"}
 ]
 depexts: [
   ["libgmp-dev"] {os-family = "debian"}
   ["libgmp-dev"] {os-family = "ubuntu"}
   ["gmp"] {os = "macos" & os-distribution = "homebrew"}
-  ["gmp"] {os-distribution = "macports" & os = "macos"}
+  ["gmp"] {os = "macos" & os-distribution = "macports"}
   ["gmp" "gmp-devel"] {os-distribution = "centos"}
   ["gmp" "gmp-devel"] {os-distribution = "fedora"}
   ["gmp" "gmp-devel"] {os-distribution = "ol"}
