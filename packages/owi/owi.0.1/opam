@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis:
+  "OCaml toolchain to work with WebAssembly, including and interpreter"
+description:
+  "owi is an OCaml toolchain to work with WebAssembly. It provides an interpreter as an executable and a library."
+maintainer: ["Léo Andrès <contact@ndrs.fr>"]
+authors: [
+  "Léo Andrès <contact@ndrs.fr>"
+  "Pierre Chambart <pierre.chambart@ocamlpro.com>"
+]
+license: "ISC"
+tags: ["owi" "ocaml" "webassembly" "wasm" "interpreter" "compiler"]
+homepage: "https://github.com/ocamlpro/owi"
+bug-reports: "https://github.com/ocamlpro/owi/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.13"}
+  "integers" {>= "0.5.1"}
+  "sedlex"
+  "menhir" {build & >= "20220210"}
+  "ocaml_intrinsics"
+  "uutf"
+  "bisect_ppx" {with-test & >= "2.5" & dev}
+  "ocb" {with-test & >= "0.1" & dev}
+  "odoc" {with-doc}
+  "bos" {with-test}
+  "mdx" {with-test & >= "2.1"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocamlpro/owi.git"
+available: (arch = "x86_64" | arch = "arm64") & os != "win32" & arch != "x86_32"
+url {
+  src: "https://github.com/ocamlpro/owi/archive/refs/tags/0.1.tar.gz"
+  checksum: [
+    "sha256=eb0ee5a97a5310f30002b573f37ae69617688aa95d5e346ef4938ec91972102a"
+    "sha512=6aa67b3a8f999965788429a4fdb3f729570958815ab3b55d113d2c52a3fa22485e9e2872fddde5428eb0f726a0ccd5748ba216b4dc337d2b5f01f0bf27fe7701"
+  ]
+}
