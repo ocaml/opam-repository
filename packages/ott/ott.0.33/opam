@@ -1,0 +1,46 @@
+opam-version: "2.0"
+version: "0.33"
+maintainer: "Thibaut Pérami <Thibaut.Perami@cl.cam.ac.uk>"
+authors: ["Peter Sewell" "Francesco Zappa Nardelli" "Scott Owens"]
+license: ["BSD-3-Clause" "LGPL-2.1-only"]
+homepage: "http://www.cl.cam.ac.uk/~pes20/ott/"
+bug-reports: "https://github.com/ott-lang/ott/issues"
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "ocamlbuild" {with-test}
+  "ocamlfind" {build | with-test}
+  "ocamlgraph"
+  "pprint" {with-test}
+  "menhir" {>= "20151112" & with-test}
+]
+build: [
+  [make "world"]
+  [make "ott.install"]
+]
+run-test: [
+  [make "-C" "tests/menhir_tests/test_if"]
+  [make "-C" "tests/menhir_tests/test10menhir"]
+  [make "-C" "tests/menhir_tests/test10menhir_with_aux_args"]
+  [make "-C" "tests/menhir_tests/test10menhir_with_aux_rules"]
+]
+dev-repo: "git+https://github.com/ott-lang/ott.git"
+synopsis: "A tool for writing definitions of programming languages and calculi"
+description: """
+Ott takes as input a definition of a language syntax and semantics, in a
+concise and readable ASCII notation that is close to what one would write in
+informal mathematics.  It generates output:
+- a LaTeX source file that defines commands to build a typeset version of the definition;
+- a Coq version of the definition;
+- a HOL version of the definition;
+- an Isabelle/HOL version of the definition;
+- a Lem version of the definition;
+- an OCaml version of the syntax of the definition.
+Additionally, it can be run as a filter, taking a
+LaTeX/Coq/Isabelle/HOL/Lem/OCaml source file
+with embedded (symbolic) terms of the defined language, parsing them and
+replacing them by typeset terms.
+"""
+url {
+  src: "https://github.com/ott-lang/ott/archive/0.33.tar.gz"
+  checksum: "sha512=fd601ef958e52ca461eaff8175323416e3e524e1ba11fcf5328827ef2cb9ee3d54111843adb54d3c32e2f08c7c70214558bf5519fb8385bfa58049f22237c3c6"
+}
