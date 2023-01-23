@@ -19,6 +19,7 @@ for version in default 13 12 11 10 9 8 7 6 5 4 3; do
            brew_llvm_config="$(brew --cellar)"/llvm*/${version}*/bin/llvm-config || true
            brew_llvm_config_at="$(brew --cellar)"/llvm@${version}/${version}*/bin/llvm-config || true
         fi
+        llvm_version=""
         for llvm_config in \
             llvm-config-${version} llvm-config-${version}.0 \
             llvm-config${version}0 llvm-config${version} \
