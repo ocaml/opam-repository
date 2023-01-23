@@ -40,6 +40,7 @@ for version in default $(seq $maximum_version -1 3); do
            brew_llvm_config="$(brew --cellar llvm)"/${version}*/bin/llvm-config || true
            brew_llvm_config_at="$(brew --cellar llvm@${version})"/${version}*/bin/llvm-config || true
         fi
+        llvm_version=""
         for llvm_config in \
             llvm-config-${version} llvm-config-${version}.0 \
             llvm-config${version}0 llvm-config${version} \
