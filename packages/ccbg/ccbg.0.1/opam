@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "Wallpaper utility for Wayland"
+description:
+  "Ccbg is an OCaml executable to manage wallpapers in Wayland, using swaybg."
+maintainer: ["Léo Andrès <contact@ndrs.fr>"]
+authors: ["Léo Andrès <contact@ndrs.fr>"]
+license: "ISC"
+tags: ["ccbg" "wallpaper" "sway" "wayland" "swaybg" "background"]
+homepage: "https://git.zapashcanon.fr/zapashcanon/ccbg"
+bug-reports: "https://git.zapashcanon.fr/zapashcanon/ccbg/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.13"}
+  "bos"
+  "directories"
+  "fpath"
+  "scfg"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://git.zapashcanon.fr/zapashcanon/ccbg.git"
+url {
+  src: "https://git.zapashcanon.fr/zapashcanon/ccbg/archive/0.1.tar.gz"
+  checksum: [
+  "sha256=1768d5e8a75b0705f86c048453548ebf8f70c322e648f620dfd0c59c0f458662"
+  "sha512=3e2dc5082de7de80ca0566376424453d6dc2adff3baae8a97cb46bb67d29d38235eca7d17c8ecd26bdb6f3ed666fd3d7ea6e0f8d3f187944c8d0c8481c9fb221"
+  ]
+}
