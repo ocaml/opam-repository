@@ -1,0 +1,37 @@
+opam-version: "2.0"
+synopsis: "Graphing dependencies of opam packages"
+description: """\
+This package outputs dependency graphs (in svg and dot) of opam package
+universes (opam switch export)."""
+maintainer: "Robur <team@robur.coop>"
+authors: "Robur <team@robur.coop>"
+license: "ISC"
+homepage: "https://git.robur.io/robur/opam-graph"
+bug-reports: "https://github.com/roburio/opam-graph/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.0.0"}
+  "cmdliner" {>= "1.1.0"}
+  "fmt" {>= "0.8.7"}
+  "logs"
+  "opam-core"
+  "opam-format"
+  "ocamldot"
+  "tyxml"
+  "gg"
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["sh" "-ex" "packaging/FreeBSD/create_package.sh"] {os = "freebsd"}
+  ["sh" "-ex" "packaging/debian/create_package.sh"] {os-family = "debian"}
+]
+dev-repo: "git+https://git.robur.io/robur/opam-graph.git"
+url {
+  src:
+    "https://git.robur.io/attachments/d1fa3187-e242-4b39-9f3f-ccae7a4a9739"
+  checksum: [
+    "md5=a10dd28b8feb9c9920c7f688e30219eb"
+    "sha512=5436ee5bf379c51d48e41e4fa8fb874f4921eea61d878fd9e6c0a892e2d30ec6726b495a0525e4d37614c4a667745055739e5d81b1137fab3f5190dd37dd1d75"
+  ]
+}
