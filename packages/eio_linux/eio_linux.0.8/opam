@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Eio implementation for Linux using io-uring"
+description: "An eio implementation for Linux using io-uring."
+maintainer: ["anil@recoil.org"]
+authors: ["Anil Madhavapeddy" "Thomas Leonard"]
+license: "ISC"
+homepage: "https://github.com/ocaml-multicore/eio"
+doc: "https://ocaml-multicore.github.io/eio/"
+bug-reports: "https://github.com/ocaml-multicore/eio/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "alcotest" {>= "1.4.0" & with-test}
+  "eio" {= version}
+  "mdx" {>= "1.10.0" & with-test}
+  "logs" {>= "0.7.0"}
+  "fmt" {>= "0.8.9"}
+  "cmdliner" {>= "1.1.0" & with-test}
+  "uring" {>= "0.5"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-multicore/eio.git"
+url {
+  src:
+    "https://github.com/ocaml-multicore/eio/releases/download/v0.8/eio-0.8.tbz"
+  checksum: [
+    "sha256=55dcf4480db4d4b96670602a5827529df6a413d8fe111dd35eb5a985d3e41297"
+    "sha512=ea7166cb8e49c687c0d7c9e10c099726be1cfe230d5d2b749bba95bb2dd44441aba6046913f02ef9f25f90a97db53313d72058a089913b709b3af27efa7c200c"
+  ]
+}
+x-commit-hash: "528f6a7b6d1d81b0c44a81ca2b10dbeebb190e59"
+available: [ arch = "x86_64" | arch = "arm64" ]
