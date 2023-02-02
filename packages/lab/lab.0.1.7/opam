@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "GitLab cli"
+description:
+  "Experimental GitLab cli in the style of GitHub's gh and hub commands."
+maintainer: ["Tim McGilchrist <timmcgil@gmail.com>"]
+authors: ["Tim McGilchrist"]
+license: "BSD-3-clause"
+homepage: "https://github.com/tmcgilchrist/ocaml-gitlab"
+doc: "https://tmcgilchrist.github.io/ocaml-gitlab/"
+bug-reports: "https://github.com/tmcgilchrist/ocaml-gitlab/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08.0"}
+  "cmdliner" {>= "1.1.0"}
+  "gitlab-unix" {= version}
+  "cohttp-lwt-unix" {>= "4.0"}
+  "otoml" {>= "0.9.0"}
+  "fmt" {>= "0.9.0"}
+  "mdx" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/tmcgilchrist/ocaml-gitlab.git"
+url {
+  src:
+    "https://github.com/tmcgilchrist/ocaml-gitlab/releases/download/0.1.7/gitlab-0.1.7.tbz"
+  checksum: [
+    "sha256=b7735b3002a39c2553a1fe43e7b90eeb80a07d0a37da0f6da9908d1f131d734b"
+    "sha512=c0d05519666979285ddbaf982c50c90d0c97b0b4d9d2223aefd69e40f18249fdd2f15250871a12dba61ff00e9ad5c312526c3bf1f805f66d1fa154623d01fbc6"
+  ]
+}
+x-commit-hash: "d032591e16fe6a0ac57fc231bae1790596a46576"
