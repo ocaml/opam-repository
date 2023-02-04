@@ -1,0 +1,39 @@
+opam-version: "2.0"
+synopsis: "Write XML-Parsers using the SAX method"
+description: """\
+An ocaml wrapper for the Expat XML parsing library. It allows you to
+write XML-Parsers using the SAX method. An XML document is parsed on
+the fly without needing to load the entire XML-Tree into memory."""
+maintainer: "whitequark@whitequark.org"
+authors: "Maas-Maarten Zeeman"
+homepage: "https://github.com/whitequark/ocaml-expat"
+bug-reports: "https://github.com/whitequark/ocaml-expat/issues"
+license: "MIT"
+depends: [
+  "ocaml" {>= "4.14.1"}
+  "ocamlfind" {build}
+]
+flags: light-uninstall
+build: [
+  [make "all"]
+  [make "allopt"] {arch != "ppc64" & arch != "x86_32" & arch != "arm32" & arch != "s390x"}
+]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "expat"]
+depexts: [
+  ["libexpat1-dev"] {os-family = "debian"}
+  ["expat-devel"] {os-family = "fedora"}
+  ["expat-dev"] {os-family = "alpine"}
+  ["libexpat0"] {os-family = "suse"}
+  ["expat-devel"] {os-family = "oraclelinux"}
+  ["expat"] {os = "macos" & os-distribution = "homebrew"}
+]
+dev-repo: "git+https://github.com/whitequark/ocaml-expat.git"
+url {
+  src:
+    "https://github.com/whitequark/ocaml-expat/archive/refs/tags/v1.3.0.tar.gz"
+  checksum: [
+    "md5=f81080294871caf00c9bcd9581701c26"
+    "sha512=72a59c982179ebc2cbd4c0659ec81c1c7422de78f9fff4bd9feebda8739d3a50d2840bb5f058e075dd63a2d1af35727e04315361febca3af6c8605ee52e27498"
+  ]
+}
