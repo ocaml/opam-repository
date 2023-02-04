@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Arbitrary-precision floating-point decimal library"
+description: """
+Arbitrary-precision floating-point decimal library ported from
+the Python decimal module."""
+maintainer: ["Yawar Amin <yawar.amin@gmail.com>"]
+authors: ["Yawar Amin <yawar.amin@gmail.com>"]
+license: "PSF-2.0"
+homepage: "https://github.com/yawaramin/ocaml-decimal"
+doc: "https://yawaramin.github.io/ocaml-decimal/api"
+bug-reports: "https://github.com/yawaramin/ocaml-decimal/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "alcotest" {>= "1.5.0" & < "2.0.0" & with-test}
+  "angstrom" {>= "0.15.0" & < "1.0.0" & with-test}
+  "ocaml" {>= "4.08.0"}
+  "zarith" {>= "1.10" & < "2.0.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/yawaramin/ocaml-decimal.git"
+available:
+  arch = "arm64" | arch = "x86_64"
+url {
+  src:
+    "https://github.com/yawaramin/ocaml-decimal/releases/download/0.3.1/decimal-0.3.1.tbz"
+  checksum: [
+    "sha256=90b4a00b2703c79f6237ba3bbf15a0876aac8364361357b825abec1561dc8166"
+    "sha512=6e78d4b0467c2fa1aaf75f3b40b95936c4f87354281e8a1350838c31b5e5581c27e9f85c4c2209fdd9d8c9ef5429671c3e124f85a3b7741617bca48d6c58e065"
+  ]
+}
+x-commit-hash: "93b70ef9e4ded77bd5a553c512b3d38689622c76"
