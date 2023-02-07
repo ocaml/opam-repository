@@ -12,22 +12,13 @@ license: "MIT"
 depends: [
   "ocaml" {>= "4.14.1"}
   "ocamlfind" {build}
+  "conf-expat"
 ]
-flags: light-uninstall
 build: [
   [make "all"]
-  [make "allopt"] {arch != "ppc64" & arch != "x86_32" & arch != "arm32" & arch != "s390x"}
+  [make "allopt"] {ocaml:native}
 ]
 install: [make "install"]
-remove: ["ocamlfind" "remove" "expat"]
-depexts: [
-  ["libexpat1-dev"] {os-family = "debian"}
-  ["expat-devel"] {os-family = "fedora"}
-  ["expat-dev"] {os-family = "alpine"}
-  ["libexpat0"] {os-family = "suse"}
-  ["expat-devel"] {os-family = "oraclelinux"}
-  ["expat"] {os = "macos" & os-distribution = "homebrew"}
-]
 dev-repo: "git+https://github.com/whitequark/ocaml-expat.git"
 url {
   src:
