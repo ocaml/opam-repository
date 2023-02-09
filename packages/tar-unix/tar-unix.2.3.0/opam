@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Decode and encode tar format files from Unix"
+description: """
+tar is a simple library to read and write tar files with an emphasis on
+streaming.  This library provides a Unix or Windows compatible interface.
+"""
+maintainer: ["dave@recoil.org"]
+authors: ["Dave Scott" "Thomas Gazagnaire" "David Allsopp" "Antonin Décimo"]
+license: "ISC"
+tags: ["org:xapi-project" "org:mirage"]
+homepage: "https://github.com/mirage/ocaml-tar"
+doc: "https://mirage.github.io/ocaml-tar/"
+bug-reports: "https://github.com/mirage/ocaml-tar/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.03.0"}
+  "cstruct" {>= "6.0.0"}
+  "cstruct-lwt"
+  "lwt"
+  "tar" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/mirage/ocaml-tar.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-tar/releases/download/v2.3.0/tar-2.3.0.tbz"
+  checksum: [
+    "sha256=09cee3e0a9d3c4f58f8f9a442f2e40323e60532fd50ae661bf335f430c1d79d7"
+    "sha512=924ed87b195a30a88cef2f0323d0363f350d9ca319d79727e3d6c91ee9ce00d4034f65f1d0cbc1f9a781a5d30045df78433bd8f7d6b7e20730c96039b6d77332"
+  ]
+}
+x-commit-hash: "7b49f6640a876cde2a2a9a2d21aae2751c2df13e"
