@@ -1,0 +1,67 @@
+opam-version: "2.0"
+maintainer: "Hannes Mehnert <hannes@mehnert.org>"
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+homepage: "https://github.com/roburio/albatross"
+dev-repo: "git+https://github.com/roburio/albatross.git"
+bug-reports: "https://github.com/roburio/albatross/issues"
+license: "ISC"
+
+depends: [
+  "ocaml" {>= "4.12.0"}
+  "dune" {>= "2.7.0"}
+  "dune-configurator"
+  "conf-pkg-config" {build}
+  "conf-libnl3" {os = "linux"}
+  "lwt" {>= "3.0.0"}
+  "ipaddr" {>= "5.3.0"}
+  "cstruct" {>= "6.0.0"}
+  "logs"
+  "bos"
+  "ptime"
+  "cmdliner" {>= "1.1.0"}
+  "fmt" {>= "0.8.7"}
+  "x509" {>= "0.13.0"}
+  "tls" {>= "0.13.1"}
+  "mirage-crypto"
+  "mirage-crypto-rng" {>= "0.8.0"}
+  "asn1-combinators" {>= "0.2.0"}
+  "duration"
+  "decompress" {>= "1.3.0"}
+  "bigstringaf" {>= "0.2.0"}
+  "checkseum"
+  "metrics" {>= "0.2.0"}
+  "metrics-lwt" {>= "0.2.0"}
+  "metrics-influx" {>= "0.2.0"}
+  "metrics-rusage"
+  "hex"
+  "http-lwt-client" {>= "0.2.0"}
+  "happy-eyeballs-lwt"
+  "solo5-elftool" {>= "0.3"}
+  "owee" {>= "0.4"}
+  "alcotest" {with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["sh" "-ex" "packaging/FreeBSD/create_package.sh"] {os = "freebsd"}
+  ["sh" "-ex" "packaging/debian/create_package.sh"] {os-family = "debian" | os-family = "ubuntu"}
+]
+synopsis: "Albatross - orchestrate and manage MirageOS unikernels with Solo5"
+description: """
+The goal of albatross is robust deployment of [MirageOS](https://mirage.io)
+unikernels using [Solo5](https://github.com/solo5/solo5). Resources managed
+by albatross are network interfaces of kind `tap`, which are connected to
+already existing bridges, block devices, memory, and CPU. Each unikernel is
+pinned (`cpuset` / `taskset`) to a specific core.
+"""
+depexts: ["linux-headers"] {os-family = "alpine"}
+url {
+  src:
+    "https://github.com/roburio/albatross/releases/download/v1.5.5/albatross-1.5.5.tbz"
+  checksum: [
+    "sha256=b868da3ff9fa6ed94fe4a934ae60e9fe7efafbca7b01ed071346d16360180980"
+    "sha512=b002ea671a16169a21e23dc4a3b17ad199b2cf1d3dd5b1dbd72dc076d2bfe80af7bf34c430ac89e84125fcb6b1a43a30a3bba1e47f4a80514a8598a523c8e99a"
+  ]
+}
+x-commit-hash: "0dc2f921544a42946a3878dfa552da03d496de81"
