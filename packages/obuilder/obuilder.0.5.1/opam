@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "Run build scripts for CI"
+description:
+  "OBuilder takes a build script (similar to a Dockerfile) and performs the steps in it in a sandboxed environment."
+maintainer: ["talex5@gmail.com"]
+authors: ["talex5@gmail.com"]
+license: "Apache-2.0"
+homepage: "https://github.com/ocurrent/obuilder"
+doc: "https://ocurrent.github.io/obuilder/"
+bug-reports: "https://github.com/ocurrent/obuilder/issues"
+depends: [
+  "dune" {>= "3.3"}
+  "lwt" {>= "5.6.1"}
+  "astring"
+  "fmt" {>= "0.8.9"}
+  "logs"
+  "cmdliner" {>= "1.1.0"}
+  "tar-unix" {>= "2.0.0"}
+  "yojson" {>= "1.6.0"}
+  "sexplib"
+  "ppx_deriving"
+  "ppx_sexp_conv"
+  "sha" {>= "1.15.4"}
+  "sqlite3"
+  "obuilder-spec" {= version}
+  "ocaml" {>= "4.14.0"}
+  "alcotest-lwt" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocurrent/obuilder.git"
+url {
+  src:
+    "https://github.com/ocurrent/obuilder/releases/download/v0.5.1/obuilder-0.5.1.tbz"
+  checksum: [
+    "sha256=9de36c0a7f3df94bbe6ae3fa8c77ab31cf0c890a7580cbcf4c9f522d896594d7"
+    "sha512=d6c98d7e44f5d877fd77af29c16129cc57f7fcbe0161a48441ca38c4a73d15d319d41065ffe24f42430a5c733c088c65bfc4a4b50b92bf1b3a204f72bc580d49"
+  ]
+}
+x-commit-hash: "7015f4f00ac5183c70b27d044e8582b6c33105bd"
