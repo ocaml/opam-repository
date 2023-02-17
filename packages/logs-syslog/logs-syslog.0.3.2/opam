@@ -1,0 +1,55 @@
+opam-version: "2.0"
+maintainer: "Hannes Mehnert <hannes@mehnert.org>"
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+homepage: "https://github.com/hannesm/logs-syslog"
+doc: "https://hannesm.github.io/logs-syslog/doc"
+dev-repo: "git+https://github.com/hannesm/logs-syslog.git"
+bug-reports: "https://github.com/hannesm/logs-syslog/issues"
+license: "ISC"
+
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "dune" {>= "1.1.0"}
+  "logs"
+  "ptime"
+  "syslog-message" {>= "1.0.0"}
+]
+
+depopts: [
+  "lwt"
+  "x509" "tls-lwt" "tls-mirage" "cstruct"
+  "mirage-kv"
+  "mirage-console" "mirage-clock" "ipaddr" "tcpip"
+]
+
+conflicts: [
+  "mirage-kv" {< "3.0.0"}
+  "mirage-console" {< "3.0.0"}
+  "mirage-clock" {< "3.0.0"}
+  "tcpip" {< "7.0.0"}
+]
+
+build: [
+  ["dune" "subst"] {dev}
+  [ "dune" "build" "-p" name "-j" jobs ]
+]
+
+synopsis: "Logs reporter to syslog (UDP/TCP/TLS)"
+description: """
+This library provides log reporters using syslog over various transports (UDP,
+TCP, TLS) with various effectful layers: Unix, Lwt, MirageOS.  It integrates the
+[Logs](http://erratique.ch/software/logs) library, which provides logging
+infrastructure for OCaml, with the
+[syslog-message](http://verbosemo.de/syslog-message/) library, which provides
+encoding and decoding of syslog messages ([RFC
+3164](https://tools.ietf.org/html/rfc3164)).
+"""
+url {
+  src:
+    "https://github.com/hannesm/logs-syslog/releases/download/v0.3.2/logs-syslog-0.3.2.tbz"
+  checksum: [
+    "sha256=459f8c45d2de752b8435a639a5445ff15270d15c4cfbd3964a6e99949426153e"
+    "sha512=07442500b51a5547c9dbef32987f094571e3941c3a270ce13691a0cf8379bc0f3b142b2a83d4fcbde35d1850b6570e0e43756466909761a0d2b99a304b693309"
+  ]
+}
+x-commit-hash: "b5ae2ef2db45782da566224b08d6c681e0e32189"
