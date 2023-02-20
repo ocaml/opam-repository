@@ -1,0 +1,35 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: ["Tezos devteam"]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.0" }
+  "tezos-base" { = version }
+  "tezos-stdlib" { = version }
+  "irmin" { >= "3.5.1" & < "3.6.0" }
+  "irmin-pack" { >= "3.5.1" & < "3.6.0" }
+  "tezos-stdlib-unix" { = version }
+  "fmt" { >= "0.8.7" }
+  "bigstringaf" { >= "0.5.0" }
+  "logs"
+  "tezos-test-helpers" { with-test & = version }
+  "tezos-test-helpers-extra" { with-test & = version }
+  "alcotest-lwt" { with-test & >= "1.5.0" }
+  "qcheck-alcotest" { with-test & >= "0.20" }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: on-disk context abstraction for `octez-node`"
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v16.0-rc2/tezos-16.0-rc2.tar.gz"
+  checksum: [
+    "sha256=211a0ee2a875ae82d93f09ae6f4bb2d2c4c3564c5c05c454eac18d06f18f6926"
+    "sha512=afa093fb4fdff8db1cb404fbebd7b13211db665bda676915eec42a022d38cd3ed4b03b28a699ef29cb8160d766abbb95bf7828e5be35bb6133b1c63b8cc7a9db"
+  ]
+}

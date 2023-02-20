@@ -1,0 +1,39 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: ["Tezos devteam"]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.0" }
+  "ocaml" { >= "4.14" }
+  "hacl-star" { >= "0.6.1" & < "0.7" }
+  "hacl-star-raw"
+  "ctypes_stubs_js"
+  "ctypes" { >= "0.18.0" }
+  "ezjsonm" { >= "1.1.0" }
+  "tezos-stdlib" { with-test & = version }
+  "tezos-error-monad" { with-test & = version }
+  "zarith" { with-test & >= "1.12" & < "1.13" }
+  "zarith_stubs_js" {with-test}
+  "data-encoding" { with-test & >= "0.7.1" & < "1.0.0" }
+  "qcheck-alcotest" { with-test & >= "0.20" }
+  "tezos-test-helpers" { with-test & = version }
+]
+conflicts: [
+  "hacl_x25519"
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: thin layer around hacl-star"
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v16.0-rc2/tezos-16.0-rc2.tar.gz"
+  checksum: [
+    "sha256=211a0ee2a875ae82d93f09ae6f4bb2d2c4c3564c5c05c454eac18d06f18f6926"
+    "sha512=afa093fb4fdff8db1cb404fbebd7b13211db665bda676915eec42a022d38cd3ed4b03b28a699ef29cb8160d766abbb95bf7828e5be35bb6133b1c63b8cc7a9db"
+  ]
+}
