@@ -1,0 +1,45 @@
+opam-version: "2.0"
+maintainer:   ["anil@recoil.org" "thomas@gazagnaire.org"]
+authors:      ["Thomas Gazagnaire" "Anil Madhavapeddy" "Gabriel Radanne"
+               "Mindy Preston" "Thomas Leonard" "Nicolas Ojeda Bar"
+               "Dave Scott" "David Kaloper" "Hannes Mehnert" "Richard Mortier"]
+homepage:     "https://github.com/mirage/mirage"
+bug-reports:  "https://github.com/mirage/mirage/issues/"
+dev-repo:     "git+https://github.com/mirage/mirage.git"
+license:      "ISC"
+tags:         ["org:mirage" "org:xapi-project"]
+doc:          "https://mirage.github.io/mirage/"
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.9.0"}
+  "ipaddr"             {>= "5.0.0"}
+  "functoria-runtime"  {= version}
+  "fmt" {>= "0.8.4"}
+  "logs"
+  "lwt" {>= "4.0.0"}
+  "alcotest" {with-test}
+]
+conflicts: [
+  "result" {< "1.5"}
+  "ppxlib" {= "0.29.0"} #0.29.0 provides a vendored ppx_sexp_conv
+]
+synopsis: "The base MirageOS runtime library, part of every MirageOS unikernel"
+description: """
+A bundle of useful runtime functions for applications built with MirageOS
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage/releases/download/v4.3.4/mirage-4.3.4.tbz"
+  checksum: [
+    "sha256=64df0b6b6f8dd7dc15a3fbc151f223d7b254e854a9d235fb8769c3a08a51d576"
+    "sha512=9410cc17ad2fda7ffea67eec405f4797f2f27d78ee7aacaae8cdc48793f31da9fed830471edbbcbd12a7550a9dffa21f1b6f9a5507c3177bb696e1e39858a061"
+  ]
+}
+x-commit-hash: "5644d066c29c0be28fd1ade39047690be6372059"
