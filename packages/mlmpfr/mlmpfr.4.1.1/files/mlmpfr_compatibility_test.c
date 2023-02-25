@@ -12,5 +12,9 @@ int main(int argc, char **argv)
   if(strcmp(subversion, "4.1.1") == 0)
     return 0;
 
+  // Version 4.1.1 is also compatible with 4.2.0
+  if(strcmp(subversion, "4.2.0") == 0)
+    return 0;
+
   return 1;
 }
