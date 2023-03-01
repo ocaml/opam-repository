@@ -1,0 +1,48 @@
+diff --git a/dune-project b/dune-project
+index aa1a68e9..10e2f00c 100644
+--- a/dune-project
++++ b/dune-project
+@@ -84,6 +84,8 @@
+   dune
+   (ocamlformat-lib
+    (= :version))
++  (ocamlformat-rpc-lib
++   (and :with-test (= :version)))
+   (re
+    (>= 1.10.3))))
+ 
+diff --git a/ocamlformat.opam b/ocamlformat.opam
+index a83f0029..03a5cc11 100644
+--- a/ocamlformat.opam
++++ b/ocamlformat.opam
+@@ -12,6 +12,7 @@ depends: [
+   "cmdliner" {>= "1.1.0"}
+   "dune" {>= "2.8"}
+   "ocamlformat-lib" {= version}
++  "ocamlformat-rpc-lib" {with-test & = version}
+   "re" {>= "1.10.3"}
+   "odoc" {with-doc}
+ ]
+diff --git a/test/unit/dune b/test/unit/dune
+index d7f05e95..37dcbd86 100644
+--- a/test/unit/dune
++++ b/test/unit/dune
+@@ -1,4 +1,7 @@
+ (test
+  (name test_unit)
++ (deps
++  ../passing/tests/partial.ml
++  ../passing/tests/format_invalid_files_with_locations.ml)
+  (package ocamlformat-lib)
+  (libraries alcotest base ocamlformat-lib))
+diff --git a/vendor/parser-recovery/lib/dune b/vendor/parser-recovery/lib/dune
+index 503f2993..af614a68 100644
+--- a/vendor/parser-recovery/lib/dune
++++ b/vendor/parser-recovery/lib/dune
+@@ -23,5 +23,6 @@
+ 
+ (rule
+  (alias runtest)
++ (package ocamlformat-lib)
+  (action
+   (diff recovery_parser.log recovery_parser.stderr)))
