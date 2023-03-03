@@ -1,0 +1,75 @@
+opam-version: "2.0"
+synopsis: "Distribute build jobs to workers"
+description: """
+OCluster manages a pool of build workers.
+A build scheduler service accepts build jobs from clients and distributes them to worker machines using Cap'n Proto.
+Workers register themselves by connecting to the scheduler (and workers do not need to be able to accept incoming network connections).
+
+The scheduler can manage multiple pools (e.g. `linux-x86_64` and `linux-arm32`).
+Clients say which pool should handle their requests.
+At the moment, two build types are provided: building a Dockerfile, or building an OBuilder spec.
+In either case, the build may done in the context of some Git commit.
+The scheduler tries to schedule similar builds on the same machine, to benefit from caching."""
+maintainer: ["talex5@gmail.com"]
+authors: ["talex5@gmail.com"]
+license: "Apache-2.0"
+homepage: "https://github.com/ocurrent/ocluster"
+doc: "https://ocurrent.github.io/ocluster/"
+bug-reports: "https://github.com/ocurrent/ocluster/issues"
+depends: [
+  "dune" {>= "3.3"}
+  "ocluster-api" {= version}
+  "ocluster-worker" {= version}
+  "ocaml" {>= "4.12.0"}
+  "capnp-rpc-lwt" {>= "1.2.3"}
+  "capnp-rpc-net" {>= "1.2.3"}
+  "capnp-rpc-unix" {>= "1.2.3"}
+  "cmdliner" {>= "1.1.0"}
+  "conf-libev" {os != "win32"}
+  "digestif" {>= "0.8"}
+  "dune-build-info"
+  "fmt"
+  "fpath"
+  "logs"
+  "lwt" {>= "5.6.1"}
+  "lwt-dllist"
+  "mirage-crypto" {>= "0.8.5"}
+  "obuilder" {>= "0.5.1"}
+  "ppx_expect" {>= "v0.14.1"}
+  "ppx_sexp_conv"
+  "prometheus"
+  "prometheus-app" {>= "1.2"}
+  "psq" {>= "0.2.1"}
+  "sqlite3"
+  "winsvc" {>= "1.0.1" & os = "win32"}
+  "current_ocluster" {= version & with-test}
+  "alcotest" {>= "1.0.0" & with-test}
+  "alcotest-lwt" {>= "1.0.1" & with-test}
+  "mirage-crypto-rng" {>= "0.11.0" & with-test}
+  "mirage-crypto-rng-lwt" {>= "0.11.0" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocurrent/ocluster.git"
+url {
+  src:
+    "https://github.com/ocurrent/ocluster/releases/download/v0.2.1/ocluster-0.2.1.tbz"
+  checksum: [
+    "sha256=3b88db5ad1edfaf3295bb145c64d5afc6fb7271ac20f69054eb91860dd4a5dff"
+    "sha512=88b885c2556b822f7970f4ef9ffd6402ff6cc21cf9aa9ac10a13992e144d23398a99ed1dc71ff09f47c026222c6cfd009af316a45e425d5f058c2f522ebb909d"
+  ]
+}
+x-commit-hash: "d177823e29803387eb12e2db9e55981ae9f00a2f"
