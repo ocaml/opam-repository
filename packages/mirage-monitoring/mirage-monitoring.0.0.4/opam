@@ -1,0 +1,45 @@
+opam-version: "2.0"
+maintainer: "Robur <team@robur.coop>"
+authors: ["Robur <team@robur.coop>"]
+homepage: "https://github.com/roburio/mirage-monitoring"
+doc: "https://roburio.github.io/mirage-monitoring"
+dev-repo: "git+https://github.com/roburio/mirage-monitoring.git"
+bug-reports: "https://github.com/roburio/mirage-monitoring/issues"
+license: "AGPL-3.0-only"
+
+depends: [
+  "ocaml" {>= "4.11.0"}
+  "dune"
+  "logs" {>= "0.6.3"}
+  "metrics" {>= "0.4.0"}
+  "metrics-lwt" {>= "0.2.0"}
+  "metrics-influx" {>= "0.2.0"}
+  "mirage-time" {>= "2.0.0"}
+  "tcpip" {>= "7.0.0"}
+  "mirage-runtime" {>= "4.3.0"}
+  "memtrace-mirage" {>= "0.2.1.2.2"}
+  "mirage-clock" {>= "4.0.0"}
+]
+conflicts: [
+  "mirage-solo5" {< "0.9.2"}
+  "mirage-solo5" {< "8.0.2"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Monitoring of MirageOS unikernels"
+description: """
+Reporting metrics to Influx, Telegraf. Dynamic adjusting log level and metrics
+sources, memprof profiling.
+"""
+url {
+  src:
+    "https://github.com/roburio/mirage-monitoring/releases/download/v0.0.4/mirage-monitoring-0.0.4.tbz"
+  checksum: [
+    "sha256=8e0bec0ea98fd029684adef9269d05df1ffe22294d71e4eca35476871460a96e"
+    "sha512=7f80dd59fba8c7e1553fedb3534606b4fad1211c2883e34715c5129da8c08aef255f9eebd8956e6766cba674bdd6130bfcda8971552b2894f99d43caf762854f"
+  ]
+}
+x-commit-hash: "8ef147f1ce52dd0e5d0b401f806a55b4f574800d"
