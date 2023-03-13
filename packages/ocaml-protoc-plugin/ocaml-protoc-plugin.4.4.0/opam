@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "Issuu"
+authors: "Anders Fugmann <anders@fugmann.net>"
+license: "APACHE-2.0"
+homepage: "https://github.com/issuu/ocaml-protoc-plugin"
+dev-repo: "git+https://github.com/issuu/ocaml-protoc-plugin"
+bug-reports: "https://github.com/issuu/ocaml-protoc-plugin/issues"
+doc: "https://issuu.github.io/ocaml-protoc-plugin/"
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & arch != "arm32" & arch != "x86_32"}
+]
+
+depends: [
+  "conf-protoc" {>= "1.0.0"}
+  "dune" {>= "3.2"}
+  "ocaml" {>= "4.08.0"}
+  "ppx_expect" {with-test}
+  "ppx_inline_test" {with-test}
+  "ppx_deriving" {with-test}
+  "conf-pkg-config" {build}
+]
+
+
+synopsis: "Plugin for protoc protobuf compiler to generate ocaml definitions from a .proto file"
+
+description: """ The plugin generates ocaml type definitions,
+serialization and deserialization functions from a protobuf file.
+The types generated aims to create ocaml idiomatic types;
+- messages are mapped into modules
+- oneof constructs are mapped to polymorphic variants
+- enums are mapped to adt's
+- map types are mapped to assoc lists
+- all integer types are mapped to int by default (exact mapping is also possible)
+- all floating point types are mapped to float.
+- packages are mapped to nested modules
+"""
+url {
+  src:
+    "https://github.com/issuu/ocaml-protoc-plugin/archive/refs/tags/4.4.0.tar.gz"
+  checksum: [
+    "md5=33eec898e6b8b31ec1f8aed351a32b5d"
+    "sha512=3f7515c430bad3706dbe2fcfdbe0d5b33984dd6300adfc3cbbe912f033c3868eaa65d916eabac91195506f02f151cabb4f8173b732b020673ac7df04f9e48172"
+  ]
+}
