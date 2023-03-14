@@ -1,0 +1,30 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: ["Tezos devteam"]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.0" }
+  "ocaml" { >= "4.14" }
+  "tezos-base" { = version }
+  "tezos-stdlib-unix" { = version }
+  "tezos-stdlib" { with-test & = version }
+  "tezos-test-helpers" { with-test & = version }
+  "tezos-base-test-helpers" { with-test & = version }
+  "alcotest-lwt" { with-test & >= "1.5.0" }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: worker library"
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v16.0/tezos-16.0.tar.gz"
+  checksum: [
+    "sha256=ad9e08819871c75ba6f4530b125f7d157799398e4d77a1e6bfea9d91ff37ff55"
+    "sha512=c5dc4d40cc09bc6980fbbdb5c2e105bf4252cf9cfcb2b49660b0ebe4dc789f6709ec3b3bf2f87d81580d3eed9521eeb1c960f24d9b14eb0285aaba1f84d10a9b"
+  ]
+}
