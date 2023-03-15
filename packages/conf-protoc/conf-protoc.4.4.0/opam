@@ -1,0 +1,33 @@
+opam-version: "2.0"
+maintainer: "Issuu"
+authors: "Google"
+license: "BSD-3-Clause"
+homepage: "https://developers.google.com/protocol-buffers/"
+bug-reports: "https://github.com/protocolbuffers/protobuf/issues"
+dev-repo: "git+https://github.com/protocolbuffers/protobuf.git"
+build: [ "protoc" "--version" ]
+
+depexts: [
+  ["libprotobuf-dev" "protobuf-compiler"]   {os-family = "debian"}
+  ["libprotobuf-dev" "protobuf-compiler"]   {os-family = "ubuntu"}
+  ["libprotobuf-devel" "protobuf-compiler"] {os-distribution = "mageia"}
+  ["protobuf-devel" "protobuf-compiler"]    {os-distribution = "centos"}
+  ["protobuf-devel" "protobuf-compiler"]    {os-distribution = "fedora"}
+  ["protobuf-devel" "protobuf-compiler"]    {os-distribution = "rhel"}
+  ["protobuf" "protobuf-dev"]               {os-family = "alpine"}
+  ["protobuf"]                              {os-family = "arch"}
+  ["protobuf-devel"]                        {os-family = "suse"}
+  ["protobuf"]                              {os = "freebsd"}
+  ["protobuf"]                              {os = "macos" & os-distribution = "homebrew"}
+]
+
+x-ci-accept-failures: [
+  "oraclelinux-7" # Package not available by default
+  "oraclelinux-8" # Package not available by default
+]
+
+available: (os-distribution != "ubuntu" | os-version >= "18.04") & (os-distribution != "centos" | os-version >= "8")
+synopsis: "Virtual package to install protoc compiler"
+description:
+  "This package will install the protoc compiler if invoked via `opam depext`"
+flags: conf
