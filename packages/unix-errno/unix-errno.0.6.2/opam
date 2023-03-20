@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "Unix errno types, maps, and support"
+description: """\
+unix-errno can be used with or without ctypes and OCaml's Unix
+module. Without ctypes and Unix, the basic types and functions are
+provided as well as Errno_host containing errno maps for popular
+operating systems. The errno-srcgen tool for generating OCaml source
+representing Errno.Host.t values will also be built. With ctypes and
+Unix, you'll also receive the errno-map tool for outputting the current
+host's errno map and the Errno_unix module containing an errno global
+variable checking function and Unix.error type converters."""
+maintainer: "Xapi Project"
+authors: "David Sheets <sheets@alum.mit.edu>"
+license: "ISC"
+tags: ["errno" "errno.h" "errors" "unix" "syscall"]
+homepage: "https://github.com/xapi-project/ocaml-unix-errno"
+bug-reports: "https://github.com/xapi-project/ocaml-unix-errno/issues"
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "dune" {>= "2.0"}
+  "alcotest" {with-test}
+  "base-bytes"
+  "result"
+  "ctypes"
+]
+depopts: ["base-unix"]
+conflicts: [
+  "ctypes" {< "0.7.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "-p" name "-j" jobs "@runtest"] {with-test}
+]
+dev-repo: "git+https://github.com/xapi-project/ocaml-unix-errno.git"
+url {
+  src:
+    "https://github.com/xapi-project/ocaml-unix-errno/releases/download/0.6.2/unix-errno-0.6.2.tbz"
+  checksum: [
+    "sha256=2d6a9bc86731b3a7ff15c38fa3725847753e00bd091de5828868ee621c71ad65"
+    "sha512=3f820834fe4dcc246e777a3e4b9d19c85dcccf87aa77b7b9e3a59e5080f6094dc059d5d035831e82cc3efc4c20065422e3299cb44ff49674b7b0a3139fd15ba7"
+  ]
+}
+x-commit-hash: "c91d9ac97e33f7df0d63f95110130130d040c6ce"
