@@ -1,0 +1,55 @@
+opam-version: "2.0"
+maintainer:   ["anil@recoil.org" "thomas@gazagnaire.org"]
+authors:      ["Thomas Gazagnaire" "Anil Madhavapeddy" "Gabriel Radanne"
+               "Mindy Preston" "Thomas Leonard" "Nicolas Ojeda Bar"
+               "Dave Scott" "David Kaloper" "Hannes Mehnert" "Richard Mortier"]
+homepage:     "https://github.com/mirage/mirage"
+bug-reports:  "https://github.com/mirage/mirage/issues/"
+dev-repo:     "git+https://github.com/mirage/mirage.git"
+license:      "ISC"
+tags:         ["org:mirage" "org:xapi-project"]
+doc:          "https://mirage.github.io/mirage/"
+available: opam-version >= "2.1.0"
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & os != "macos"}
+]
+
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.9.0"}
+  "dune" {with-test & >= "3.0.0"}
+  "ipaddr" {>= "5.0.0"}
+  "functoria" {= version}
+  "bos"
+  "astring"
+  "logs"
+  "mirage-runtime" {= version}
+  "opam-monorepo" {>= "0.3.2"}
+  "alcotest" {with-test}
+  "fmt" {>= "0.8.7" & with-test}
+]
+synopsis: "The MirageOS library operating system"
+description: """
+MirageOS is a library operating system that constructs unikernels for
+secure, high-performance network applications across a variety of
+cloud computing and mobile platforms. Code can be developed on a
+normal OS such as Linux or MacOS X, and then compiled into a
+fully-standalone, specialised unikernel that runs under the Xen
+hypervisor.
+
+Since Xen powers most public cloud computing infrastructure such as
+Amazon EC2 or Rackspace, this lets your servers run more cheaply,
+securely and with finer control than with a full software stack.
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage/releases/download/v4.3.5/mirage-4.3.5.tbz"
+  checksum: [
+    "sha256=3106648f194402c5fe33f06eac292f2988989567aebdf59818c72b68755f0580"
+    "sha512=72a687d4f6f3d11e035146b8064add7012b9959c75d60f92c3bcf5d273979084658874b6af170ea159b8737d15e8879e9797c9976916a9c50a0d9e19545fce64"
+  ]
+}
+x-commit-hash: "4dcb471e595083ad7069801dbe6b99e6128a1d91"
