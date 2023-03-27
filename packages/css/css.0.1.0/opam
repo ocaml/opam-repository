@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "CSS parser and printer"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "GPL-3.0-only"
+homepage: "https://zoggy.frama.io/ocaml-css/"
+doc: "https://zoggy.frama.io/ocaml-css/doc.html"
+bug-reports: "https://framagit.org/zoggy/ocaml-css/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.12.0"}
+  "angstrom" {>= "0.15.0"}
+  "fmt" {>= "0.9.0"}
+  "iri" {>= "0.6.0"}
+  "logs" {>= "0.7.0"}
+  "rdf" {>= "0.14.0"}
+  "alcotest" {with-test}
+  "lwt_ppx" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/ocaml-css.git"
+url {
+  src:
+    "https://framagit.org/zoggy/ocaml-css/-/archive/0.1.0/ocaml-css-0.1.0.tar.bz2"
+  checksum: [
+    "md5=bc4bdcf47b37c7bd50bf9f31c391dcd2"
+    "sha512=8fa12c193638ba8c2d307f48e477cdac839ca25f865f7f350bc7675086c3c4a70bc1e5936d35d64aab9d8da2c9806005be70c59ac3d7f3c407a3861f6e0a7cf8"
+  ]
+}
