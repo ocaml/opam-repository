@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis:
+  "Embedded DSL for Dune files to do syntax checking, auto-completion and generate dune.inc include files"
+description:
+  "dkml-dune-dsl lets you define Dune files in OCaml code with your favorite auto-completing IDE, compile it to an executable, and use it as a generator of your dune.inc files."
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-dune-dsl"
+doc: "https://diskuv.github.io/dkml-dune-dsl/dkml-dune-dsl/index.html"
+bug-reports: "https://github.com/diskuv/dkml-dune-dsl/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.12.1"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-dune-dsl.git"
+url {
+  src:
+    "https://github.com/diskuv/dkml-dune-dsl/releases/download/0.1.1/dkml-dune-dsl-0.1.1.tbz"
+  checksum: [
+    "sha256=a7fe720d17809079b5430f382497f0c138159dc67e94d74bbeab35a4094344ed"
+    "sha512=a43b94f0b4708f0a40942ff23c850a466501abbd39ca1bc2ddf0743be2d8c4793ccf2d8a2b64a326752c4f425b62abc51f51af29fa3ba5b2e2f44b31c1ef483f"
+  ]
+}
+x-commit-hash: "09d904857ed41e67638dfddb73cbdf12d0dae459"
