@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis: "Virtual package relying on library MPFR installation"
+description:
+  "This package can only install if the MPFR library is installed on the system."
+maintainer: "Nicolas Berthier <m@nberth.space>"
+authors: "http://www.mpfr.org/credit.html"
+homepage: "http://gmplib.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "GPL-1.0-or-later"
+build: [
+  [ "sh" ez-conf-lib:exe "mpfr" "mpfr.h" "test-mpfr.c"
+         "CPPFLAGS+=-I%{conf-gmp:incdir}%" { conf-gmp:incdir != "" }
+         "LDFLAGS+=-L%{conf-gmp:libdir}%"  { conf-gmp:libdir != "" }
+         "LIBS+=-lgmp"
+         "--"
+         "/usr/local" {os != "macos" & os != "win32"}
+         "/opt/homebrew" {os = "macos"}
+         "/opt/local" {os = "macos"} ]
+]
+depends: [
+  "ez-conf-lib" {build}
+  "conf-gmp" {>= "5" & build}
+]
+depexts: [
+  ["libmpfr-dev"] {os-family = "debian"}
+  ["libmpfr-dev"] {os-family = "ubuntu"}
+  ["mpfr-devel"] {os-distribution = "fedora"}
+  ["mpfr-devel"] {os-distribution = "ol"}
+  ["mpfr-devel"] {os-distribution = "centos"}
+  ["mpfr"] {os = "macos" & os-distribution = "homebrew"}
+  ["mpfr"] {os = "macos" & os-distribution = "macports"}
+  ["mpfr"] {os = "freebsd"}
+  ["mpfr"] {os = "openbsd"}
+  ["mpfr"] {os-family = "arch"}
+  ["mpfr-dev"] {os-family = "alpine"}
+  ["mpfr-devel"] {os-family = "suse"}
+  ["mpfr"] {os = "win32" & os-distribution = "cygwinports"}
+]
+extra-files: ["test-mpfr.c" "md5=60677273f1781840669e5a897df5d645"]
+flags: conf
