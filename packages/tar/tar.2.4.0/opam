@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Decode and encode tar format files in pure OCaml"
+description: """
+tar is a simple library to read and write tar files with an emphasis on
+streaming.
+
+This is pure OCaml code, no C bindings.
+"""
+maintainer: ["dave@recoil.org"]
+authors: ["Dave Scott" "Thomas Gazagnaire" "David Allsopp" "Antonin Décimo"]
+license: "ISC"
+tags: ["org:xapi-project" "org:mirage"]
+homepage: "https://github.com/mirage/ocaml-tar"
+doc: "https://mirage.github.io/ocaml-tar/"
+bug-reports: "https://github.com/mirage/ocaml-tar/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "camlp-streams"
+  "ocaml" {>= "4.08.0"}
+  "cstruct" {>= "6.0.0"}
+  "decompress" {>= "1.5.1"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/mirage/ocaml-tar.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-tar/releases/download/v2.4.0/tar-2.4.0.tbz"
+  checksum: [
+    "sha256=4e3594663a4ec93b046bd3bc546d1a81da1995f531f153138c6591084e25fbe3"
+    "sha512=81ec2fa08c3210eb1cf50be9483a9f9df9648ece34906c058d0a18c43236f138dde10bc190c11084e36dfdfe85b8ffa0e786c02930893e7bca18843770a37b0c"
+  ]
+}
+x-commit-hash: "fa05f168a83ddcd8906bb068e3b2f64388ddc95c"
