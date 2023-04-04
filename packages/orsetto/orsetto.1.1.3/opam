@@ -1,0 +1,73 @@
+opam-version: "2.0"
+synopsis: "A library of assorted structured data interchange languages"
+maintainer: "james woodyatt <jhw@conjury.org>"
+authors: "james woodyatt <jhw@conjury.org>"
+homepage: "https://bitbucket.org/jhw/orsetto/"
+bug-reports: "https://conjury.atlassian.net/browse/ORS"
+dev-repo: "git+https://bitbucket.org/jhw/orsetto"
+description: """
+Orsetto is a standalone library comprising a core toolkit...
+
+    - Core functional data structures and processes.
+    - Unicode transport, normalization, parsing and formatting.
+    - General purpose packet format encoder-decoder processes.
+
+...used to implement streaming parsers and formatters for a useful variety of
+structured data interchange languages...
+
+    - JavaScript Object Notation (JSON).
+    - Concise Binary Object Representation (CBOR).
+    - DjB's 64-bit Temps Atomique International (TAI64).
+    - Base-64 and Base-32 binary data encodings.
+    - Uniform Resource Identifier (URI).
+
+...and other languages as need and opportunity arise.
+"""
+tags: [
+    "org:conjury.org"
+    "unicode"
+    "data-interchange"
+    "parser-combinators"
+    "serialization"
+    "json"
+    "cbor"
+    "uri"
+    "url"
+    "tai64"
+]
+license: "BSD-2-Clause"
+depends: [
+    "ocaml" { >= "4.08.1" }
+    "conjury" { build & >= "2.2" & < "3.0~" }
+    "omake" { build & >= "0.10.3" }
+    "uucd" { build & = "15.0.0" }
+    "ounit2" { build & with-test & >= "2.2" }
+]
+build: [
+    [ "omake" "--verbose" "--configure" "MODE=release" ] { !dev }
+    [ "omake" "test" ] { with-test }
+]
+install: [
+    [ "omake" "--verbose" "install" ] { !dev }
+    [ "omake" "--verbose" "install" "MODE=develop" ] { dev }
+]
+url {
+    src: "https://bitbucket.org/jhw/orsetto/get/r1.1.3.tar.gz"
+    checksum: "sha512=9b654edb663ae697563f150824047052f3b1bf760398f24bce6350553f031f73c46b6337239a1acd871e61238597ea92046809e3358290ff14d6ba671b449085"
+}
+extra-source "ucd.all.grouped.zip" {
+    src: "http://www.unicode.org/Public/15.0.0/ucdxml/ucd.all.grouped.zip"
+    checksum: "sha512=44f46232eeebaff32f8c19bda87a9c40b62949b832e4c92de2c16b6f01ae08e63b0a6e349bf513456d0994122ea575c0cc0ddd0a9e45cb01e9573c440caac442"
+}
+extra-source "NormalizationTest.txt" {
+    src: "http://www.unicode.org/Public/15.0.0/ucd/NormalizationTest.txt"
+    checksum: "sha512=7ccac7770efec63ea8071b611895cacd676e11896bc898d49219baf42b146c3e914ff27c5f8228775ccbcb433850ee71cca62afa498fbaf3afd3e405c9c3a0db"
+}
+extra-source "PropertyAliases.txt" {
+    src: "https://www.unicode.org/Public/15.0.0/ucd/PropertyAliases.txt"
+    checksum: "sha512=6138bfe5d3112a777328d7271cb62bdf14bcd4385d64cfd31ac42f5636c807f922cda363362a1db9767dfb0b544e05804f523bdb4b9a078531efec7d078b616d"
+}
+extra-source "PropertyValueAliases.txt" {
+    src: "https://www.unicode.org/Public/15.0.0/ucd/PropertyValueAliases.txt"
+    checksum: "sha512=34c9feca7b8f276b369994d1c25042c3471eb312ec6aa352affbee2b24c58cee50220b14fc4b29c845d25f79dcfaebe8aae9ccbc43528eeb10c696331286701c"
+}
