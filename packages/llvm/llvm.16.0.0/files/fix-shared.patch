@@ -1,0 +1,37 @@
+From 7eaf48ca7f0b2ba0b5871b48fbe4a1b1460afbef Mon Sep 17 00:00:00 2001
+From: Kate <kit.ty.kate@disroot.org>
+Date: Sat, 25 Dec 2021 18:21:00 +0000
+Subject: [PATCH 1/2] Add support for out-of-tree shared linked OCaml LLVM
+ binding
+
+---
+ llvm/cmake/modules/AddOCaml.cmake | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/llvm/cmake/modules/AddOCaml.cmake b/llvm/cmake/modules/AddOCaml.cmake
+index 891c9e6d618c..b7e2ba430344 100644
+--- a/llvm/cmake/modules/AddOCaml.cmake
++++ b/llvm/cmake/modules/AddOCaml.cmake
+@@ -70,9 +70,16 @@ function(add_ocaml_library name)
+     list(APPEND ocaml_flags "-lLLVM")
+   else()
+     explicit_map_components_to_libraries(llvm_libs ${ARG_LLVM})
+-    foreach( llvm_lib ${llvm_libs} )
+-      list(APPEND ocaml_flags "-l${llvm_lib}" )
+-    endforeach()
++    if( BUILD_SHARED_LIBS )
++      list(APPEND ocaml_flags "-lLLVM-${LLVM_VERSION_MAJOR}${LLVM_VERSION_SUFFIX}")
++    else()
++      foreach( llvm_lib ${llvm_libs} )
++        list(APPEND ocaml_flags "-l${llvm_lib}" )
++      endforeach()
++    endif()
++    if(LLVM_OCAML_OUT_OF_TREE)
++      list(APPEND ocaml_flags "-L${LLVM_OCAML_EXTERNAL_LLVM_LIBDIR}" )
++    endif()
+ 
+     get_property(system_libs TARGET LLVMSupport PROPERTY LLVM_SYSTEM_LIBS)
+     foreach(system_lib ${system_libs})
+-- 
+2.34.0
+
