@@ -1,0 +1,59 @@
+opam-version: "2.0"
+synopsis: "Fast, portable, and opinionated build system"
+description: """
+
+dune is a build system that was designed to simplify the release of
+Jane Street packages. It reads metadata from "dune" files following a
+very simple s-expression syntax.
+
+dune is fast, has very low-overhead, and supports parallel builds on
+all platforms. It has no system dependencies; all you need to build
+dune or packages using dune is OCaml. You don't need make or bash
+as long as the packages themselves don't use bash explicitly.
+
+dune supports multi-package development by simply dropping multiple
+repositories into the same directory.
+
+It also supports multi-context builds, such as building against
+several opam roots/switches simultaneously. This helps maintaining
+packages across several versions of OCaml and gives cross-compilation
+for free.
+"""
+maintainer: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+license: "MIT"
+homepage: "https://github.com/ocaml/dune"
+doc: "https://dune.readthedocs.io/"
+bug-reports: "https://github.com/ocaml/dune/issues"
+conflicts: [
+  "merlin" {< "3.4.0"}
+  "ocaml-lsp-server" {< "1.3.0"}
+  "dune-configurator" {< "2.3.0"}
+  "odoc" {< "2.0.1"}
+  "dune-release" {< "1.3.0"}
+  "js_of_ocaml-compiler" {< "3.6.0"}
+  "jbuilder" {= "transition"}
+  "ocaml-base-compiler" {= "5.0.0~alpha0"}
+  "ocaml-variants" {= "5.0.0~alpha0+options"}
+]
+dev-repo: "git+https://github.com/ocaml/dune.git"
+build: [
+  ["ocaml" "bootstrap.ml" "-j" jobs]
+  ["./dune.exe" "build" "dune.install" "--release" "--profile" "dune-bootstrap" "-j" jobs]
+]
+depends: [
+  # Please keep the lower bound in sync with .github/workflows/workflow.yml,
+  # dune-project and min_ocaml_version in bootstrap.ml
+  ("ocaml" {>= "4.08"} | ("ocaml" {>= "4.02" & < "4.08~~"} & "ocamlfind-secondary"))
+  "base-unix"
+  "base-threads"
+]
+url {
+  src: "https://github.com/ocaml/dune/releases/download/3.4.0/dune-3.4.0.tbz"
+  checksum: [
+    "sha256=0a5566c4910f193d609965a034b482085dc04e0bcdfec9756ff9957df2b67a3c"
+    "sha512=74cd3aa75fb0fcc098b6dcf69d6d904221b69b52430e910e0839e1706c453647a4d107471b55363e16ba8094e62461736a1e52eca08dd288cbb15d3d6ce0df10"
+  ]
+}
+x-commit-hash: "261966294b37f7c88973207944338b79b2ad27f8"
+available: !(os = "cygwin" & arch = "x86_32")

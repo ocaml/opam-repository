@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Scripts used by the Diskuv OCaml distribution during installation"
+description: """\
+Scripts used by the Diskuv OCaml distribution during the installation of:
+* a local project (ie. a Opam switch created with `opam dkml init`)
+* a user profile (ex. OCaml binaries installed within the user's home directory)
+* a machine (ex. system or Administrator assembly/C compilers)"""
+maintainer: "opensource+diskuv-ocaml@support.diskuv.com"
+authors: "Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-runtime-distribution"
+bug-reports: "https://github.com/diskuv/dkml-runtime-distribution/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.12.1~" & < "4.12.2~" | >= "4.13.1~" & < "4.13.2~"}
+  "diskuvbox" {>= "0.1.0" & build}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+install: [
+  ["diskuvbox" "copy-dir" "repos" "%{_:lib}%/repos"]
+  ["diskuvbox" "copy-dir" "src" "%{_:lib}%/src"]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-runtime-distribution.git"
+url {
+  src:
+    "https://github.com/diskuv/dkml-runtime-distribution/releases/download/1.0.2-prerel7_r2/src.tar.gz"
+  checksum: [
+    "md5=630228247651bcc0e3c82e899777b536"
+    "sha512=2cd1c4cacefce80ba6fdc6b366dc77f8ab60c71c6bd89e523e9ae73b1d083953fd3aa1ad6e3b8372fb37dc670a4340fc78b914589c2ff1bc0ba2adad7abe7e5c"
+  ]
+}

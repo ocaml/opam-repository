@@ -1,0 +1,53 @@
+opam-version: "2.0"
+maintainer: "martin@lucina.net"
+authors: [
+  "Dan Williams <djwillia@us.ibm.com>"
+  "Martin Lucina <martin@lucina.net>"
+  "Ricardo Koller <kollerr@us.ibm.com>"
+]
+homepage: "https://github.com/solo5/solo5"
+bug-reports: "https://github.com/solo5/solo5/issues"
+license: "ISC"
+dev-repo: "git+https://github.com/solo5/solo5.git"
+build: [
+  ["./configure.sh" "--prefix=%{prefix}%"]
+  [make "V=1"]
+]
+install: [make "V=1" "install"]
+depends: [
+  "conf-pkg-config" {build & os = "linux"}
+  "conf-libseccomp" {build & os = "linux"}
+]
+depexts: [
+  ["linux-headers"] {os-distribution = "alpine"}
+  ["kernel-headers"] {os-distribution = "fedora"}
+  ["kernel-headers"] {os-distribution = "rhel"}
+  ["linux-libc-dev"] {os-family = "debian"}
+]
+conflicts: [
+  "ocaml-freestanding" {< "0.7.0"}
+  "solo5-bindings-hvt"
+  "solo5-bindings-spt"
+  "solo5-bindings-virtio"
+  "solo5-bindings-muen"
+  "solo5-bindings-genode"
+  "solo5-bindings-xen"
+]
+available: [
+  (arch = "x86_64" | arch = "arm64" | arch = "ppc64") &
+  (os = "linux" | os = "freebsd" | os = "openbsd")
+]
+x-ci-accept-failures: [ "centos-7" ]
+synopsis: "Solo5 sandboxed execution environment"
+description: """
+Solo5 is a sandboxed execution environment primarily intended
+for, but not limited to, running applications built using various
+unikernels (a.k.a.  library operating systems).
+
+This package provides the Solo5 components needed to build and
+run MirageOS unikernels on the host system.
+"""
+url {
+  src: "https://github.com/Solo5/solo5/releases/download/v0.7.4/solo5-v0.7.4.tar.gz"
+  checksum: "sha512=1a47ee4a9e08704ae7aa5f48efdd79e33ae83d4d2f60a2c8ef7db33c85412cd1f0b023b4acc0ad6123377933a2ce6841590cf127fd2c062ff8d1594f36cddda1"
+}

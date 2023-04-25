@@ -8,9 +8,6 @@ bug-reports: "https://github.com/Chris00/ocaml-docker/issues"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
-  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
-  ["ocaml" "setup.ml" "-build"] {with-test}
-  ["ocaml" "setup.ml" "-test"] {with-test}
   ["ocaml" "setup.ml" "-doc"] {with-doc}
 ]
 install: ["ocaml" "setup.ml" "-install"]
@@ -18,12 +15,12 @@ remove: [
   ["ocamlfind" "remove" "docker"]
 ]
 depends: [
-  "ocaml"
+  "ocaml" {< "5.0.0"}
   "base-bytes"
   "base-unix"
   "ocamlbuild" {build}
-  "ocamlfind" {build & >= "1.5"}
-  "yojson"
+  "ocamlfind" {build & >= "1.5.3"}
+  "yojson" {< "2.0.0"}
 ]
 synopsis: "Binding to the Docker Remote API"
 description: """

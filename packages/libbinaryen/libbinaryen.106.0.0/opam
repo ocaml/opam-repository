@@ -1,0 +1,29 @@
+opam-version: "2.0"
+synopsis: "Libbinaryen packaged for OCaml"
+maintainer: "blaine@grain-lang.org"
+authors: "Blaine Bublitz"
+license: "Apache-2.0"
+homepage: "https://github.com/grain-lang/libbinaryen"
+bug-reports: "https://github.com/grain-lang/libbinaryen/issues"
+depends: [
+  "conf-cmake" {build}
+  "dune" {>= "2.9.1" & < "3.0.0"}
+  "dune-configurator" {>= "2.9.1" & < "3.0.0"}
+  "js_of_ocaml-compiler" {with-test & >= "3.10.0" & < "4.0.0"}
+  "ocaml" {>= "4.12"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+depexts: ["gcc-g++"] {os-distribution = "cygwinports"}
+available: arch != "arm32" & arch != "x86_32"
+dev-repo: "git+https://github.com/grain-lang/libbinaryen.git"
+url {
+  src:
+    "https://github.com/grain-lang/libbinaryen/releases/download/v106.0.0/libbinaryen-v106.0.0.tar.gz"
+  checksum: [
+    "md5=7ab44f1fc608c5c274594fa635e97c41"
+    "sha512=3e4f90fce52843949b43e42089a8dd8fac4a17653e18bbe100e04790ce84a08d8abe2da8cfab66af92593875bc33c9c6948fc48032de876e547c2fc14011df9f"
+  ]
+}

@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: """\
+Implementation of BLS12-381 and some cryptographic primitives built
+on top of it"""
+maintainer: "Danny Willems <be.danny.willems@gmail.com>"
+authors: "Danny Willems <be.danny.willems@gmail.com>"
+license: "MIT"
+homepage:
+  "https://nomadic-labs.gitlab.io/cryptography/ocaml-bls12-381/bls12-381/"
+bug-reports:
+  "https://gitlab.com/nomadic-labs/cryptography/ocaml-bls12-381/-/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.08"}
+  "zarith" {>= "1.10" & < "2.0"}
+  "zarith_stubs_js" {with-test}
+  "hex" {>= "1.3.0"}
+  "alcotest" {with-test}
+  "integers"
+  "integers_stubs_js" {with-test}
+  "odoc" {with-doc}
+]
+conflicts: ["ocaml-option-bytecode-only"]
+available: arch != "arm32" & arch != "x86_32"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo:
+  "git+https://gitlab.com/nomadic-labs/cryptography/ocaml-bls12-381.git"
+url {
+  src:
+    "https://gitlab.com/nomadic-labs/cryptography/ocaml-bls12-381/-/archive/6.1.0/ocaml-bls12-381-6.1.0.tar.gz"
+  checksum: [
+    "md5=999c150ef33f33ab2d040308a810a527"
+    "sha512=6afbbbaa6bd855db643d54999af1ec5972c20c303db24f337171b5bee3a1c06ee11ff5d2184d087bd1596a667b74a43ffaa5c287747406518e08e97d85796cba"
+  ]
+}
+x-ci-accept-failures: ["centos-7" "oraclelinux-7"]

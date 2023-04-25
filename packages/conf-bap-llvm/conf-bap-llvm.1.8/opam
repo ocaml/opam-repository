@@ -1,0 +1,52 @@
+opam-version: "2.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+homepage: "http://llvm.org"
+authors: "The LLVM Team"
+bug-reports: "https://llvm.org/bugs/"
+license: "MIT"
+build: [
+  ["ocaml" "unix.cma" "find-llvm.ml"]
+]
+depends: [
+  "ocaml" {>= "4.09.0" }
+  "base-unix"
+  "conf-which" {build}
+]
+depexts: [
+  # kali
+  ["llvm-12-dev"] {os-distribution = "kali"}
+
+  # debian
+  ["llvm-6.0-dev"] {os-distribution = "debian" & os-version = "8"}       # jessie
+  ["llvm-7-dev"] {os-distribution = "debian" & os-version < "11"}
+  ["llvm-9-dev"] {os-distribution = "debian" & os-version >= "11"}
+  ["llvm-9-dev"]   {os-distribution = "debian" & os-version = "unknown"}
+
+  # ubuntu
+  ["llvm-8-dev"]   {os-distribution = "ubuntu" & os-version = "16.04"} #xenial
+  ["llvm-9-dev"]   {os-distribution = "ubuntu" & os-version = "18.04"} #bionic
+  ["llvm-10-dev"]  {os-distribution = "ubuntu" & os-version = "20.04"} #focal
+  ["llvm-14-dev"]  {os-distribution = "ubuntu" & os-version = "22.04"} #jammy
+
+  # fedora
+  ["llvm-devel" "llvm-static"] {os-distribution = "fedora"}
+
+  # macos
+  ["llvm-6.0"] {os = "macos" & os-distribution = "macports"}
+  ["llvm@9"]   {os = "macos" & os-distribution = "homebrew"}
+
+  # alpine
+  ["llvm-dev" "llvm-static"] {os-distribution = "alpine"}
+]
+
+substs: [ "find-llvm.ml" ]
+flags: [ conf ]
+
+synopsis: "Checks that supported version of LLVM is installed"
+description: """
+Supported LLVM versions are from 6.0 to 14.0, bounds including.
+
+A preferred llvm-config can be choosen by setting opam config variable:
+$: opam config set llvm-config your-llvm-config
+OR by setting LLVM_CONFIG environment variable.
+"""

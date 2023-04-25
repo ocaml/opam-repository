@@ -1,0 +1,60 @@
+opam-version: "2.0"
+maintainer:   [ "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+authors:      [ "Romain Calascibetta <romain.calascibetta@gmail.com>" ]
+homepage:     "https://github.com/mirage/checkseum"
+bug-reports:  "https://github.com/mirage/checkseum/issues"
+dev-repo:     "git+https://github.com/mirage/checkseum.git"
+doc:          "https://mirage.github.io/checkseum/"
+license:      "MIT"
+synopsis:     "Adler-32, CRC32 and CRC32-C implementation in C and OCaml"
+description: """
+Checkseum is a library to provide implementation of Adler-32, CRC32 and CRC32-C
+in C and OCaml.
+
+This library use the linking trick to choose between the C implementation
+(checkseum.c) or the OCaml implementation (checkseum.ocaml). This library is on
+top of optint to get the best representation of an int32. """
+
+build: [
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "ocaml" "./install/install.ml" ]
+  [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
+]
+
+install: [
+  [ "dune" "install" "-p" name ] {with-test}
+  [ "ocaml" "./test/test_runes.ml" ] {with-test}
+]
+
+depends: [
+  "ocaml"         {>= "4.07.0"}
+  "dune"          {>= "2.6.0"}
+  "conf-pkg-config" {build}
+  "dune-configurator"
+  "optint"        {>= "0.2.0"}
+  "alcotest"      {with-test}
+  "bos"           {with-test}
+  "astring"       {with-test}
+  "fmt"           {with-test}
+  "fpath"         {with-test}
+  "rresult"       {with-test}
+  "ocamlfind"     {with-test}
+]
+
+depopts: [
+  "ocaml-freestanding"
+]
+
+conflicts: [
+  "mirage-xen" {< "6.0.0"}
+  "ocaml-freestanding" {< "0.4.3"}
+]
+url {
+  src:
+    "https://github.com/mirage/checkseum/releases/download/v0.4.0/checkseum-0.4.0.tbz"
+  checksum: [
+    "sha256=2ba40f32db39fa1c47d9af96435374970301a2c846d93d1b4a8ccd83346f025a"
+    "sha512=3edee66d3fa8fb0e11cf05d24f925341c96c53864cb4fb5b6173e29038882d33e3ee82819a3a2bedde717a3658c866278d09196862735d2ac9da889badd26e7b"
+  ]
+}
+x-commit-hash: "a09c7397401e5f7dee4ea58a2af521f47d84c0ee"

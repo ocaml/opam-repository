@@ -1,0 +1,51 @@
+opam-version: "2.0"
+maintainer: "Thierry Martinez <martinez@nsup.org>"
+authors: "The LLVM team"
+homepage: "http://llvm.org"
+bug-reports: "https://llvm.org/bugs/"
+license: "MIT"
+build-env: [
+  [HOMEBREW_NO_AUTO_UPDATE = "1"]
+]
+build: [
+  ["bash" "-ex" "configure.sh" version]
+]
+depends: [
+  "conf-bash" {build}
+]
+depexts: [
+  ["llvm@14"] {os = "macos"}
+  ["llvm14" "clang14"] {os-distribution = "arch"}
+  ["libclang-14-dev" "libclang-cpp14-dev" "llvm-14-dev"]
+    {(os-distribution = "debian" & os-version >= "12") |
+     (os-distribution = "ubuntu" & os-version >= "22.04")}
+  ["libclang-dev" "libclang-cpp-dev" "llvm-dev"] {
+     os-distribution = "debian" & os-version >= "11"}
+  ["libclang-dev" "llvm-dev"] {
+     os-family = "debian" &
+     !(os-distribution = "debian" & os-version >= "11") &
+     !(os-distribution = "ubuntu" & os-version >= "22.04")}
+  ["clang-dev" "llvm-dev" "clang-static"] {os-distribution = "alpine"}
+  ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
+    {os-distribution = "centos"}
+  ["clang14-devel" "llvm14-devel" "zlib-devel" "redhat-rpm-config"]
+    {os-distribution = "fedora" & os-version >= "37"}
+  ["clang-devel" "llvm-devel" "zlib-devel" "redhat-rpm-config"]
+    {os-distribution = "fedora" & os-version < "37"}
+  ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
+    {os-distribution = "ol" & os-version >= "8"}
+  ["llvm-clang-devel"] {os-family = "suse"}
+  ["devel/llvm14"] {os = "freebsd"}
+  ["sys-devel/clang"] {os-distribution = "gentoo"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7" # clang-devel is not available
+  "alpine-3.13" # unavailable system package 'llvm-dev'
+  "alpine-3.14" # unavailable system package 'llvm-dev'
+  "opensuse-15.3" # unavailable system package 'llvm-clang-devel'
+]
+extra-files: [[
+  "configure.sh" "sha512=27a0ddec4e5ccf895a279b910c7e0fe130f9b680d4771c409161d6ed5ebefcdc94d54fcb7625c40e49f83a6e1c5c4511b29ab8ddc3ce09f27ca8f77daf2c65be"
+]]
+synopsis: "Virtual package relying on the installation of llvm and clang libraries (<= 14.0.x)"
+flags: conf

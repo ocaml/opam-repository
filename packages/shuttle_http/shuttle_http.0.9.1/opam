@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Async library for HTTP/1.1 servers and clients"
+description:
+  "Shuttle_http is a low level library for implementing HTTP/1.1 web services and clients in OCaml."
+maintainer: ["Anurag Soni <anurag@sonianurag.com>"]
+authors: ["Anurag Soni"]
+license: "MIT"
+tags: ["http-server" "http-client" "http" "http1.1" "async"]
+homepage: "https://github.com/anuragsoni/shuttle"
+doc: "https://anuragsoni.github.io/shuttle/"
+bug-reports: "https://github.com/anuragsoni/shuttle/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "shuttle" {= version}
+  "shuttle_ssl" {= version}
+  "re2" {>= "v0.15.0"}
+  "ppx_jane" {with-test}
+  "core_unix" {with-test}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/anuragsoni/shuttle.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & os != "macos"}
+    "@doc" {with-doc}
+  ]
+]
+available: [ arch = "x86_64" | arch = "arm64" ]
+url {
+  src:
+    "https://github.com/anuragsoni/shuttle/releases/download/0.9.1/shuttle-0.9.1.tbz"
+  checksum: [
+    "sha256=d89447a79fc5edce56f56fe5ce69329471d03340b2976554f0e11d6d9525cf7b"
+    "sha512=5d687d027a6dfeeee39060cb8e9df68869a2a7fb45209221c501bf45b710cf44ea551eebc8e9b480a9f0252f923dc9e6eefa312fa659f45ec7045de9d7a426a3"
+  ]
+}
+x-commit-hash: "f85e199f30fe441bc51e43eb09d9e01dcb3ef64b"

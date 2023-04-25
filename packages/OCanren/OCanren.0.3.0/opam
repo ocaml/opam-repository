@@ -1,0 +1,63 @@
+opam-version: "2.0"
+synopsis: "Implementation of miniKanren relational (logic) EDSL"
+description: """
+The family of miniKanren derivatives has many implementations. This
+one is typed embedding to OCaml. The original implementation for
+this is in scheme and can be found at https://github.com/michaelballantyne/faster-miniKanren .
+
+Features:
+1) disequality constraints
+2) relational standard library: lists, nats
+"""
+maintainer: ["Dmitrii Kosarev Kakadu@pm.me"]
+authors: [
+  "Dmitrii Boulytchev https://github.com/dboulytchev"
+  "Dmitrii Kosarev https://github.com/Kakadu"
+  "Evgenii Moiseenko https://github.com/eupp"
+  "Petr Lozov https://github.com/Lozov-Petr"
+  "JetBrains Research https://research.jetbrains.org"
+]
+license: "LGPL-2.1"
+homepage: "https://github.com/JetBrains-Research/OCanren"
+bug-reports: "https://github.com/JetBrains-Research/OCanren/issues"
+depends: [
+  "dune" {>= "3" }                      # for older dune there are some issues with OCaml 4.10 - 4.11
+  "ocaml" {>= "4.10"}
+  "dune-configurator"
+  "ocamlfind"
+  "camlp5" { >= "8.00.02" }
+  "logger-p5"
+  "GT" {>= "0.5"}
+  "OCanren-ppx" { >= "0.3.0" }
+  "benchmark" { with-test }
+  "ocamlformat" { with-test & < "0.22" }
+  "ppx_inline_test"
+  "mtime" { >= "1.1" }
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+
+dev-repo: "git+https://github.com/JetBrains-Research/OCanren.git"
+url {
+  src:
+    "https://github.com/JetBrains-Research/OCanren/archive/refs/tags/0.3.0.tar.gz"
+    #"https://github.com/Kakadu/OCanren/archive/refs/heads/master.tar.gz"
+  checksum: [
+    "sha256=eaf9624bbdbae8050eb43a48c0e79e97160b83b6f65a543ee1beca4c9f4ff4b2"
+    "sha512=e55dd7a3026b1dedcd37f55181059dfa44ad6976d241a1199246ee3c1684dcfdf1ae0c1da32165b5b2eb5748cfc57c906a0f0ebab56d03035a5bb87187a63cf7"
+  ]
+}
+

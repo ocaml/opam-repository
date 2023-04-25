@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "Seq literals ppx for OCaml"
+description: """
+Simple unintrusive ppx rewriter that offers Seq literals.
+It offers List-like syntax in the form of [%seq a; b; c...],
+among other features like a compact ranges syntax.
+"""
+maintainer: "hyphens@pm.me"
+authors: "Hazem Elmasry"
+license: "ISC"
+tags: "syntax"
+homepage: "https://sr.ht/~hyphen/ppx_seq"
+doc: [
+  "https://git.sr.ht/~hyphen/ppx_seq/tree/0.3.2/item/README"
+  "https://ocaml.org/p/ppx_seq/0.3.2/doc/index.html"
+]
+bug-reports: "https://lists.sr.ht/~hyphen/ppx_seq"
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "dune" {>= "2.9"}
+  "ppxlib" {>= "0.23"}
+  "seq" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://git.sr.ht/~hyphen/ppx_seq"
+url {
+  src: "https://github.com/hyphenrf/ppx_seq/archive/refs/tags/0.3.2.tar.gz"
+  checksum: [
+    "md5=dca5b027638ecaecf5229174b8492757"
+    "sha256=a3687a6b1491eb8e23ccb104d4864b2e4c13eeb44cb8848e60cba990dba1081e"
+    "sha512=0b165dd5450a157cdb950b5bf14c1f33c795efcfc4c145f552a4a07965a7239edd41a0647c2c33193e919145ad17035ad7ca166655a92c3c4f3ac846b11fe172"
+  ]
+  mirrors: "https://git.sr.ht/~hyphen/ppx_seq/archive/0.3.2.tar.gz"
+}

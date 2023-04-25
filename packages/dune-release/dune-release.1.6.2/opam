@@ -1,0 +1,62 @@
+opam-version: "2.0"
+synopsis: "Release dune packages in opam"
+description: """
+`dune-release` is a tool to streamline the release of Dune packages in
+[opam](https://opam.ocaml.org). It supports projects built
+with [Dune](https://github.com/ocaml/dune) and hosted on
+[GitHub](https://github.com)."""
+maintainer: ["Nathan Rebours <nathan.p.rebours@gmail.com>"]
+authors: [
+  "Daniel Bünzli"
+  "Thomas Gazagnaire"
+  "Nathan Rebours"
+  "Guillaume Petiot"
+  "Sonja Heinze"
+]
+license: "ISC"
+homepage: "https://github.com/ocamllabs/dune-release"
+bug-reports: "https://github.com/ocamllabs/dune-release/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.08.0"}
+  "curly"
+  "fmt" {>= "0.8.7"}
+  "fpath" {>= "0.7.3"}
+  "bos"
+  "cmdliner" {>= "1.1.0"}
+  "re" {>= "1.7.2"}
+  "astring"
+  "opam-file-format" {>= "2.1.2"}
+  "opam-format" {>= "2.1.0"}
+  "opam-state" {>= "2.1.0"}
+  "opam-core" {>= "2.1.0"}
+  "rresult"
+  "logs"
+  "odoc"
+  "alcotest" {with-test}
+  "yojson" {>= "1.6"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & opam-version < "2.2"}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocamllabs/dune-release.git"
+url {
+  src:
+    "https://github.com/ocamllabs/dune-release/releases/download/1.6.2/dune-release-1.6.2.tbz"
+  checksum: [
+    "sha256=a09e522fba8d3398b3a04a6bfa74e36d3f989a6348a32ed081236c7b7c0d200e"
+    "sha512=3aba1514b46eadc76e8409b4151b110058f4b3dc600db05a35ce5fc14585cdc7c82c6a194e21046399032236b10ddba6d0dccdf0c3c85ee1e47720ce922888e4"
+  ]
+}
+x-commit-hash: "c66dd89fb3588e32dd9b064b6aef58d450c942c2"

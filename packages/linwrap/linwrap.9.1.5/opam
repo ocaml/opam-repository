@@ -1,0 +1,86 @@
+opam-version: "2.0"
+authors: "Francois Berenger"
+maintainer: "unixjunkie@sdf.org"
+homepage: "https://github.com/UnixJunkie/linwrap"
+bug-reports: "https://github.com/UnixJunkie/linwrap/issues"
+dev-repo: "git+https://github.com/UnixJunkie/linwrap.git"
+license: "BSD-3-Clause"
+build: ["dune" "build" "-p" name "-j" jobs]
+install: ["cp" "bin/ecfp6.py" "%{bin}%/linwrap_ecfp6.py"]
+depends: [
+  "base-unix"
+  "batteries" {>= "3.3.0"}
+  "bst"
+  "conf-liblinear-tools"
+  "cpm" {>= "11.0.0"}
+  "dokeysto" # possible perf. regr.: dokeysto_camltc -> dokeysto
+  "ocaml" {>= "5.0.0"} # because camltc not yet ready for ocaml>=5.0.0
+  "dolog" {>= "6.0.0"}
+  "dune" {>= "1.10"}
+  "minicli" {>= "5.0.0"}
+  "molenc"
+  "parany" {>= "11.0.0"}
+]
+# the software can compile and install without the depopts.
+# however, some tools and options will not work anymore at run-time  
+depopts: [
+  "conf-gnuplot"
+  "conf-python-3"
+  "conf-rdkit"
+]
+synopsis: "Wrapper on top of liblinear-tools"
+description: """
+Linwrap can be used to train a L2-regularized logistic regression classifier
+or a linear Support Vector Regressor.
+You can optimize C (the L2 regularization parameter), w (the class weight)
+or k (the number of bags, i.e. use bagging).
+You can also find the optimal classification threshold using MCC maximization,
+use k-folds cross validation, parallelization, etc.
+In the regression case, you can only optimize C and epsilon.
+
+When using bagging, each model is trained on balanced bootstraps
+from the training set (one bootstrap for the positive class,
+one for the negative class).
+The size of the bootstrap is the size of the smallest (under-represented)
+class.
+
+usage: linwrap
+  -i <filename>: training set or DB to screen
+  [-o <filename>]: predictions output file
+  [-np <int>]: ncores
+  [-c <float>]: fix C
+  [-e <float>]: fix epsilon (for SVR);
+  (0 <= epsilon <= max_i(|y_i|))
+  [-w <float>]: fix w1
+  [--no-plot]: no gnuplot
+  [-k <int>]: number of bags for bagging (default=off)
+  [{-n|--NxCV} <int>]: folds of cross validation
+  [--mcc-scan]: MCC scan for a trained model (requires n>1)
+  also requires (c, w, k) to be known
+  [--seed <int>]: fix random seed
+  [-p <float>]: training set portion (in [0.0:1.0])
+  [--pairs]: read from .AP files (atom pairs; will offset feat. indexes by 1)
+  [--train <train.liblin>]: training set (overrides -p)
+  [--valid <valid.liblin>]: validation set (overrides -p)
+  [--test <test.liblin>]: test set (overrides -p)
+  [{-l|--load} <filename>]: prod. mode; use trained models
+  [{-s|--save} <filename>]: train. mode; save trained models
+  [-f]: force overwriting existing model file
+  [--scan-c]: scan for best C
+  [--scan-e <int>]: epsilon scan #steps for SVR
+  [--regr]: regression (SVR); also, implied by -e and --scan-e
+  [--scan-w]: scan weight to counter class imbalance
+  [--w-range <float>:<int>:<float>]: specific range for w
+  (semantic=start:nsteps:stop)
+  [--e-range <float>:<int>:<float>]: specific range for e
+  (semantic=start:nsteps:stop)
+  [--c-range <float,float,...>] explicit scan range for C 
+  (example='0.01,0.02,0.03')
+  [--k-range <int,int,...>] explicit scan range for k 
+  (example='1,2,3,5,10')
+  [--scan-k]: scan number of bags (advice: optim. k rather than w)
+"""
+url {
+  src: "https://github.com/UnixJunkie/linwrap/archive/v9.1.5.tar.gz"
+  checksum: "md5=f59e8b0452a5bb33f0fe239e524b5b40"
+}
