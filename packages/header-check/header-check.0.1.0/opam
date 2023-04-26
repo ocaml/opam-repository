@@ -1,0 +1,50 @@
+opam-version: "2.0"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+synopsis: "A tool to check and update source headers, using checksums"
+description: """\
+The header-check tool scans a source project, lists all existing headers and
+can be used to update them. It uses checksums to create identifiers for 
+headers and works with OCaml, C/C++ and Shell kinds of comments.
+"""
+authors: ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+maintainer: ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+homepage: "https://ocamlpro.github.io/header-check"
+doc: "https://ocamlpro.github.io/header-check/sphinx"
+bug-reports: "https://github.com/ocamlpro/header-check/issues"
+dev-repo: "git+https://github.com/ocamlpro/header-check.git"
+tags: "org:ocamlpro"
+build: [
+  ["dune" "subst"] {dev}
+  ["sh" "-c" "./scripts/before.sh build '%{name}%'"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["sh" "-c" "./scripts/after.sh build '%{name}%'"]
+]
+install: [
+  ["sh" "-c" "./scripts/before.sh install '%{name}%'"]
+]
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "dune" {>= "2.7.0"}
+  "ocplib_stuff" {>= "0.1"}
+  "ez_file" {>= "0.3"}
+  "base-unix" {>= "base"}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
+]
+
+url {
+    src: "https://github.com/ocamlpro/header-check/archive/v0.1.0.tar.gz"
+    checksum: [ "sha256=44ef7d6fe8686c3ab8161094d1fcca37e3cce5f2071ed2ad5afc11c180fe69e7" ]
+}
