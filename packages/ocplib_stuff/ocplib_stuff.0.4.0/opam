@@ -1,0 +1,49 @@
+opam-version: "2.0"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+synopsis: "Basic stuff used by some OCP libraries and tools"
+description: """\
+This library contains some basic stuff that is used in some OCP libraries 
+and applications. Most of them are probably available in other extensions
+of the standard libraries (extlib, core, etc.), but we are used to these
+ones.
+"""
+authors: ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+maintainer: ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+homepage: "https://ocamlpro.github.io/ocplib_stuff"
+doc: "https://ocamlpro.github.io/ocplib_stuff/sphinx"
+bug-reports: "https://github.com/ocamlpro/ocplib_stuff/issues"
+dev-repo: "git+https://github.com/ocamlpro/ocplib_stuff.git"
+tags: "org:ocamlpro"
+build: [
+  ["dune" "subst"] {dev}
+  ["sh" "-c" "./scripts/before.sh build '%{name}%'"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["sh" "-c" "./scripts/after.sh build '%{name}%'"]
+]
+install: [
+  ["sh" "-c" "./scripts/before.sh install '%{name}%'"]
+]
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "dune" {>= "2.7.0"}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
+  "dune" {>= "2.6.0"}
+]
+
+url {
+    src: "https://github.com/ocamlpro/ocplib_stuff/archive/v0.4.0.tar.gz"
+    checksum: [ "sha256=471c5b3aee72923ed69b0f1a9577d053fd89b96c8711c2674367026037a96aab" ]
+}
