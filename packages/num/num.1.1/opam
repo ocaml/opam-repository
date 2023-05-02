@@ -14,9 +14,13 @@ build: [
   [make]
 ]
 install: [
-  make
-  "install" {!ocaml:preinstalled}
-  "findlib-install" {ocaml:preinstalled}
+  ["ocamlfind" "remove" "num"]
+  ["ocamlfind" "remove" "num-top"]
+  [
+    make
+    "install" {!ocaml:preinstalled}
+    "findlib-install" {ocaml:preinstalled}
+  ]
 ]
 remove: [
   make
@@ -27,7 +31,10 @@ depends: [
   "ocaml" {>= "4.06.0"}
   "ocamlfind" {build & >= "1.7.3"}
 ]
-conflicts: [ "base-num" ]
+conflicts: [
+  "base-num"
+  "ocaml-option-bytecode-only"
+]
 patches: [ "findlib-install.patch" "installation-warning.patch" ]
 synopsis:
   "The legacy Num library for arbitrary-precision integer and rational arithmetic"

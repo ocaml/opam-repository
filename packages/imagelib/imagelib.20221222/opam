@@ -1,0 +1,70 @@
+synopsis: "Library implementing parsing of image formats such as PNG, BMP, PPM"
+description:
+"""
+The imagelib library implements image formats such as PNG, BMP, and PPM in
+OCaml, relying on only one external dependency: 'decompress'.
+
+Unix-dependent functionality such as reading or writing to files in the
+filesystem are packaged in the `imagelib.unix` findlib module inside this
+OPAM package; to use it you need to include `imagelib.unix` specifically
+in your project's dependencies, for instance `(libraries imagelib.unix)`
+in your Dune file.
+
+Supported image formats:
+ - PNG (full implementation of RFC 2083),
+ - PPM, PGM, PBM, ... (fully supported),
+ - BMP (read-only)
+ - JPG (only image size natively),
+ - GIF (only image size natively),
+    - There is an experimental native implementation available in the pure `ImageLib` module.
+ - XCF (only image size natively),
+ - Utility functions for handling unimplemented formats are available in
+   the 'imagelib.unix' findlib package and handle conversion from unsupported
+   image formats like JPG, GIF, XCF by converting them to PNG using the
+   `convert` commandline utility from `imagemagick`.
+
+As imagelib only requires `decompress`, it is suitable (excluding operations
+requiring the `imagemagick` `convert` binary) for compilation to javascript
+using `js_of_ocaml`, or inclusion in MirageOS unikernels.
+
+`app/imagetool.ml` contains an example binary that acts as a command-line interface to many of the functions in the library. It will be installed as `imagetool` or `imagetool.exe` if you use **opam** to install the library, and otherwise it will be in `_build/default/app/imagetool.exe`
+"""
+opam-version: "2.0"
+maintainer: "rodolphe.lepigre@inria.fr"
+bug-reports: "https://github.com/rlepigre/ocaml-imagelib/issues"
+homepage: "https://github.com/rlepigre/ocaml-imagelib"
+dev-repo: "git+https://github.com/rlepigre/ocaml-imagelib.git"
+authors: [
+  "Rodolphe Lepigre <rodolphe.lepigre@inria.fr>"
+]
+license: "GPL-3.0"
+doc: "https://rlepigre.github.io/ocaml-imagelib"
+
+depends: [
+  "ocaml"        { >= "4.07.0" }
+  "base-unix"
+  "dune"         { >= "2.3.0"  }
+  "decompress"   { >= "1.3.0" }
+  "stdlib-shims"
+  "alcotest"     { with-test }
+]
+
+depopts: [
+  "crowbar"        { with-test }
+  "afl-persistent" { with-test }
+]
+
+build: [
+  [ "dune" "build" "-p" name "-j" jobs
+      "@install"
+      "@runtest" {with-test} ]
+]
+url {
+  src:
+    "https://github.com/rlepigre/ocaml-imagelib/releases/download/20221222/imagelib-20221222.tbz"
+  checksum: [
+    "sha256=050d935711a5a5cead7a6b5e2bce13297a71d0cb47652ca42ff4e328df7118fd"
+    "sha512=28dae756945adb1c6a348d5c3e61840af7efb8df16c56bdf09ee4c69231774f169384f822359999ab315cc11634392dc4811ba932479aa1fdb78d25100b6733d"
+  ]
+}
+x-commit-hash: "54aa4fc75e9a1c8b6e114a5548d7f94041184f23"

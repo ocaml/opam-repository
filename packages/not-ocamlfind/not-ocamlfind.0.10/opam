@@ -1,0 +1,37 @@
+opam-version: "2.0"
+synopsis: "A small frontend for ocamlfind that adds a few useful commands"
+license: "MIT"
+maintainer: "Chet Murthy <chetsky@gmail.com>"
+
+(* Gerd wrote most of this code; I just modified it (and probably
+introduced bugs.  This is to silence opam *)
+
+authors: "Chet Murthy <chetsky@gmail.com>"
+homepage: "https://github.com/chetmurthy/not-ocamlfind"
+bug-reports: "Chet Murthy <chetsky@gmail.com>"
+depends: [
+  "ocamlfind" {>= "1.8.0"}
+  "camlp-streams"
+  "conf-m4" {build}
+  "fmt" {>= "0.8.8"}
+  "rresult" {>= "0.6.0"}
+  "ocamlgraph" {>= "2.0.0"}
+  "conf-which"
+]
+depexts: [
+  [
+    "xdot"
+  ] {os-family = "debian"}
+]
+build: [
+  ["./configure" "-bindir" bin "-sitelib" lib "-mandir" man "-config" "%{lib}%/findlib.conf" "-no-custom" "-no-topfind" {preinstalled}]
+  [make "all"]
+]
+install: [make "install"]
+dev-repo: "git+https://github.com/chetmurthy/not-ocamlfind"
+url {
+  src: "https://github.com/chetmurthy/not-ocamlfind/archive/refs/tags/0.10.tar.gz"
+  checksum: [
+    "sha512=c1163879f970a7f67fa86c0d06eb56a0ebbcab2ca92436f402faff07c27f8ccee42d827c92651ad02b6d516debdd18882dc0959f73be8edb418cee93f332352b"
+  ]
+}

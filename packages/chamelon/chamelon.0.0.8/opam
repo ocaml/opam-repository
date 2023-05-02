@@ -1,0 +1,55 @@
+opam-version: "2.0"
+maintainer: [ "yomimono <maintenance@identity-function.com>" ]
+authors: [ "yomimono <maintenance@identity-function.com>" ]
+homepage: "https://github.com/yomimono/chamelon"
+bug-reports: "https://github.com/yomimono/chamelon/issues"
+dev-repo: "git+https://github.com/yomimono/chamelon.git"
+license: "ISC"
+synopsis: "Subset of littlefs filesystem fulfilling MirageOS KV"
+description: """
+Chamelon implements a subset of the littlefs filesystem,
+which was originally designed for microcontroller use.  It exposes
+an interface matching the Mirage_kv.RW module type and operates
+on top of a block device matching Mirage_block.S .
+
+It is extremely not POSIX."""
+
+build: [
+ [ "dune" "build" "-p" name "-j" jobs ]
+ [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.10.0"}
+  "dune" {>= "2.9.0" & < "3.7.0"}
+  "chamelon-unix" {= version & with-test}
+  "fpath" {>= "0.7.3" & with-test}
+  "alcotest" {>= "1.5.0" & with-test}
+  "alcotest-lwt" {>= "1.5.0" & with-test}
+  "mirage-block-unix" {>= "2.13.0" & with-test}
+  "bechamel" {>= "0.2.0" & with-test}
+  "bechamel-js" {>= "0.2.0" & with-test}
+  "checkseum" {>= "0.3.2"}
+  "cstruct" {>= "6.0.0"}
+  "digestif" {>= "1.0.0"}
+  "fmt" {>= "0.8.7"}
+  "logs" {>= "0.6.0"}
+  "lwt" {>= "5.3.0"}
+  "ptime" {>= "0.8.6"}
+  "mirage-block" {>= "3.0.0"}
+  "mirage-clock" {>= "2.0.0"}
+  "mirage-kv" {>= "4.0.1" & < "5.0.0"}
+  "mirage-logs" {>= "1.2.0"}
+  "ppx_cstruct"
+  "optint" {>= "0.0.4"}
+]
+available: arch != "arm32" & arch != "x86_32"
+url {
+  src:
+    "https://github.com/yomimono/chamelon/releases/download/v0.0.8/chamelon-0.0.8.tbz"
+  checksum: [
+    "sha256=6f02ee1ed4d73a28dec7e351c26caf0036846845f597f10fcff1da54f9edb58c"
+    "sha512=a5781e2b183f6c78c8ef289950476274e19d4d56df85b99d8887c5155f24e79d0dac440bbc395a072b9e39f7666d4fd27ee94e65aa0117646bf305511d93def6"
+  ]
+}
+x-commit-hash: "2481dfdc61a88ba1ac175761eab9b6a946a513c4"

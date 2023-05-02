@@ -4,7 +4,7 @@ maintainer: "Nicolas Berthier <m@nberth.space>"
 dev-repo: "git+https://github.com/nberth/mlgmpidl.git"
 bug-reports: "https://github.com/nberth/mlgmpidl/issues"
 homepage: "https://www.inrialpes.fr/pop-art/people/bjeannet/mlxxxidl-forge/mlgmpidl/"
-license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
 build: [
   ["sh" "./configure" "--absolute-dylibs" {os = "macos"}]
   [make]
@@ -13,9 +13,9 @@ install: [
   [make "install"]
 ]
 depends: [
-  "ocaml" {>= "3.12.1"}
+  "ocaml" {>= "3.12.1" & < "5"}
   "ocamlfind" {build & >= "1.5.6"}
-  "camlidl"
+  "camlidl" {!= "1.10"}
   "conf-gmp"
   "conf-mpfr"
   "conf-perl" {build}
@@ -25,6 +25,7 @@ conflicts: [
   "apron" {= "20140725"}
   "apron" {= "20150518"}
 ]
+available: (os != "macos" | arch != "arm64")
 synopsis: "OCaml interface to the GMP library"
 url {
   src: "https://github.com/nberth/mlgmpidl/archive/1.2.14.tar.gz"

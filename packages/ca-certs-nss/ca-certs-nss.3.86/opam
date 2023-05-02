@@ -1,0 +1,54 @@
+opam-version: "2.0"
+synopsis: "X.509 trust anchors extracted from Mozilla's NSS"
+description: """
+Trust anchors extracted from Mozilla's NSS certdata.txt package,
+to be used in MirageOS unikernels.
+"""
+maintainer: ["Hannes Mehnert <hannes@mehnert.org>"]
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+license: "ISC"
+homepage: "https://github.com/mirage/ca-certs-nss"
+doc: "https://mirage.github.io/ca-certs-nss/doc"
+bug-reports: "https://github.com/mirage/ca-certs-nss/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "mirage-crypto"
+  "mirage-clock" {>= "3.0.0"}
+  "x509" {>= "0.15.0"}
+  "ocaml" {>= "4.08.0"}
+  "logs" {build}
+  "fmt" {build & >= "0.8.7"}
+  "bos" {build}
+  "astring" {build}
+  "cmdliner" {build & >= "1.1.0"}
+  "alcotest" {with-test}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mirage/ca-certs-nss.git"
+tags: ["org:mirage"]
+url {
+  src:
+    "https://github.com/mirage/ca-certs-nss/releases/download/v3.86/ca-certs-nss-3.86.tbz"
+  checksum: [
+    "sha256=ddbdb4bd804ff53dae475ed5c728a57ecffd0bbd96554ae047b4f9f3657efa54"
+    "sha512=2101d93a82733c496d7e2c57993e0bc77fef1d7ab8009fe3b6cd03d62c6a659cfad747deab2391e6553c8e8527b7fe6cc47e0312b54021321137cdd5781714c4"
+  ]
+}
+x-commit-hash: "82a533cc15824a0b5e86a5335e4b3447ff407b6b"

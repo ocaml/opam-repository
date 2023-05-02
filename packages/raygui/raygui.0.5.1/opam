@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings for raygui"
+description: "OCaml bindings for raygui"
+maintainer: ["tobiasjammer@gmail.com"]
+authors: ["Tobias Mock"]
+license: "MIT"
+homepage: "https://github.com/tjammer/raylib-ocaml"
+bug-reports: "https://github.com/tjammer/raylib-ocaml/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "dune-configurator"
+  "ctypes" {>= "0.14"}
+  "ppx_cstubs" {>= "0.6"}
+  "raylib" {>= "0.3" & < "0.6"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/tjammer/raylib-ocaml.git"
+available: [arch != "arm32" & arch != "ppc64"]
+x-ci-accept-failures: [
+  "centos-7" # C compiler is too old
+  "oraclelinux-7" # C compiler is too old
+]
+url {
+  src:
+    "https://github.com/tjammer/raylib-ocaml/releases/download/0.5.1/raygui-0.5.1.tbz"
+  checksum: [
+    "sha256=ace92b528632084ef1467e97aa14e772cdca10e8f3f26f3445473f7c1dbdba88"
+    "sha512=9aa37cd17f88f251cf9ce79dc4f8e0df61113f88f6b3a0ee05bb75b734847ce4393093df8a98b2c41103cc3e741fc75baeda8ffc5ec66b2c6f49c5576de80872"
+  ]
+}
+x-commit-hash: "ab18925f716350841f9193dcfc887fd5c26efb0d"

@@ -1,0 +1,64 @@
+opam-version: "2.0"
+maintainer:   "thomas@gazagnaire.org"
+authors:      ["Thomas Gazagnaire" "Thomas Leonard"]
+license:      "ISC"
+homepage:     "https://github.com/mirage/irmin"
+bug-reports:  "https://github.com/mirage/irmin/issues"
+dev-repo:     "git+https://github.com/mirage/irmin.git"
+doc:          "https://mirage.github.io/irmin/"
+
+build: [
+ ["dune" "subst"] {dev}
+ ["dune" "build" "-p" name "-j" jobs]
+ ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depends: [
+  "ocaml"   {>= "4.08.0"}
+  "dune"    {>= "2.9.0"}
+  "repr"    {>= "0.6.0"}
+  "fmt"     {>= "0.8.5"}
+  "uri"     {>= "1.3.12"}
+  "uutf"
+  "jsonm"   {>= "1.0.0"}
+  "lwt"     {>= "5.3.0"}
+  "digestif" {>= "0.9.0"}
+  "ocamlgraph"
+  "logs"    {>= "0.5.0"}
+  "bheap" {>= "2.0.0"}
+  "astring"
+  "mtime" {>= "1.0.0" & < "2.0.0"}
+  "bigstringaf" { >= "0.2.0" }
+  "ppx_irmin" {= version}
+  "hex"      {with-test}
+  "alcotest" {>= "1.1.0" & with-test}
+  "alcotest-lwt" {with-test}
+  "qcheck-alcotest" {with-test}
+  "vector" {with-test}
+  "odoc" {(< "2.0.1" | > "2.0.2") & with-doc} # See https://github.com/ocaml/odoc/issues/793
+  "bisect_ppx" {dev & >= "2.5.0"}
+]
+
+conflicts: [
+  "result" {< "1.5"} # Requires `Result = Stdlib.Result`
+]
+
+synopsis: """
+Irmin, a distributed database that follows the same design principles as Git
+"""
+description: """
+Irmin is a library for persistent stores with built-in snapshot,
+branching and reverting mechanisms. It is designed to use a large
+variety of backends. Irmin is written in pure OCaml and does not
+depend on external C stubs; it aims to run everywhere, from Linux,
+to browsers and Xen unikernels.
+"""
+url {
+  src:
+    "https://github.com/mirage/irmin/releases/download/3.6.1/irmin-3.6.1.tbz"
+  checksum: [
+    "sha256=11fc2570bdbfd48478c89113fc801084a84a9a2c12d9bf8c64e05ce64ae19bd7"
+    "sha512=2171699ca24dec5c9c908a2676b272e034c14eb17f7052a794535e52af0be40be68a689e59c0a640ee244b11703320483f4d0c261542e6242ba23a8f1272b9b0"
+  ]
+}
+x-commit-hash: "0d241e62f69036e4b26c6bddbab49826051ab3af"

@@ -1,0 +1,84 @@
+opam-version: "2.0"
+synopsis: "Proof assistant for the λΠ-calculus modulo rewriting"
+description: """
+This package provides:
+- A lambdapi command for checking .lp or .dk files,
+translating .dk files to .lp files and vice versa,
+or launching an LSP server for editing .lp files.
+- A library of logic definitions and basic definitions and proofs
+on natural numbers and polymorphic lists.
+- A rich Emacs mode based on LSP (available on MELPA too).
+- A basic mode for Vim.
+- OCaml libraries.
+A VSCode extension is also available on the VSCode Marketplace.
+
+Find Lambdapi user manual on https://lambdapi.readthedocs.io/.
+
+Lambdapi provides a rich type system with dependent types.
+In Lambdapi, one can define both type and function symbols
+by using rewriting rules (oriented equations).
+A symbol can be declared associative and commutative.
+Lambdapi supports unicode symbols and infix operators.
+The declaration of symbols and rewriting rules is separated
+so that one can easily define inductive-recursive types.
+
+Lambdapi checks that rules are locally confluent (by checking
+the joinability of critical pairs) and preserve typing.
+Rewrite rules can also be exported to the TRS and XTC formats
+for checking confluence and termination with external tools.
+
+Lambdapi does not come with a pre-defined logic. It is a
+powerful logical framework in which one can easily define
+its own logic and build and check proofs in this logic.
+There exist .lp files defining first or higher-order logic
+and complex type systems like in Coq or Agda.
+
+Lambdapi provides a basic module and package system,
+interactive modes for proving both unification goals
+and typing goals, and tactics for solving them step by step.
+In particular, a rewrite tactic like in SSReflect, and
+a why3 tactic for calling external automated provers through
+the Why3 platform."""
+maintainer: ["dedukti-dev@inria.fr"]
+authors: ["Deducteam"]
+license: "CECILL-2.1"
+homepage: "https://github.com/Deducteam/lambdapi"
+bug-reports: "https://github.com/Deducteam/lambdapi/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.08.0"}
+  "menhir" {>= "20200624"}
+  "sedlex" {>= "2.2"}
+  "alcotest" {with-test}
+  "alt-ergo" {with-test}
+  "bindlib" {>= "5.0.1"}
+  "timed" {>= "1.0"}
+  "pratter" {>= "1.2" & < "2.0.0"}
+  "why3" {>= "1.4" & < "1.5~"}
+  "yojson" {>= "1.6.0"}
+  "cmdliner" {>= "1.1.0"}
+  "stdlib-shims" {>= "0.1.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+  ]
+]
+dev-repo: "git+https://github.com/Deducteam/lambdapi.git"
+url {
+  src:
+    "https://github.com/Deducteam/lambdapi/releases/download/2.2.0/lambdapi-2.2.0.tbz"
+  checksum: [
+    "sha256=920de48ec6c2c3223b6b93879bb65d07ea24aa27f7f7176b3de16e5e467b9939"
+    "sha512=135f132730825adeb084669222e68bc999de97b12378fae6abcd9f91ae13093eab29fa49c854adb28d064d52c9890c0f5c8ff9d47a9916f66fe5e0fba3479759"
+  ]
+}
+x-commit-hash: "0476fbec66e99750abe9d60c3aa9cb9a52189bea"

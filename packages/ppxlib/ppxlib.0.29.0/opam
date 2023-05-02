@@ -1,0 +1,63 @@
+opam-version: "2.0"
+synopsis: "Standard library for ppx rewriters"
+description: """
+Ppxlib is the standard library for ppx rewriters and other programs
+that manipulate the in-memory representation of OCaml programs, a.k.a
+the "Parsetree".
+
+It also comes bundled with two ppx rewriters that are commonly used to
+write tools that manipulate and/or generate Parsetree values;
+`ppxlib.metaquot` which allows to construct Parsetree values using the
+OCaml syntax directly and `ppxlib.traverse` which provides various
+ways of automatically traversing values of a given type, in particular
+allowing to inject a complex structured value into generated code.
+"""
+maintainer: ["opensource@janestreet.com"]
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+license: "MIT"
+homepage: "https://github.com/ocaml-ppx/ppxlib"
+doc: "https://ocaml-ppx.github.io/ppxlib/"
+bug-reports: "https://github.com/ocaml-ppx/ppxlib/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.04.1" & < "5.1.0"}
+  "ocaml-compiler-libs" {>= "v0.11.0"}
+  "ppx_derivers" {>= "1.0"}
+  "sexplib0" {>= "v0.12"}
+  "sexplib0" {with-test & >= "v0.15"}
+  "stdlib-shims"
+  "ocamlfind" {with-test}
+  "re" {with-test & >= "1.9.0"}
+  "cinaps" {with-test & >= "v0.12.1"}
+  "base" {with-test}
+  "stdio" {with-test}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "ocaml-migrate-parsetree" {< "2.0.0"}
+  "base-effects"
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-ppx/ppxlib.git"
+url {
+  src:
+    "https://github.com/ocaml-ppx/ppxlib/releases/download/0.29.0/ppxlib-0.29.0.tbz"
+  checksum: [
+    "sha256=8e8b104ddbf0ef39787533e98d49460b36151eaa5cdfabde9ffc94c0139658ba"
+    "sha512=d2772572b2a1770f7bad237ab4824865ace635e344eceeafc81198546a17f812ba453b3727e4d261b539767132c1904f0a65dd3a0aa95444a2fd7028d6cf127b"
+  ]
+}
+x-commit-hash: "b74c671ca7063d182016abcac397f28d7495cfc8"

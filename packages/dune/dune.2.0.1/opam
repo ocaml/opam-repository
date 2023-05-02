@@ -26,7 +26,7 @@ homepage: "https://github.com/ocaml/dune"
 doc: "https://dune.readthedocs.io/"
 bug-reports: "https://github.com/ocaml/dune/issues"
 depends: [
-  ("ocaml" {>= "4.06" & < "4.12"} | ("ocaml" {< "4.06~~"} & "ocamlfind-secondary"))
+  ("ocaml" {>= "4.06" & < "4.12"} | ("ocaml" {>= "4.02" & < "4.06~~"} & "ocamlfind-secondary"))
   "base-unix"
   "base-threads"
 ]
@@ -37,8 +37,6 @@ conflicts: [
 ]
 dev-repo: "git+https://github.com/ocaml/dune.git"
 build: [
-  # opam 2 sets OPAM_SWITCH_PREFIX, so we don't need a hardcoded path
-  ["ocaml" "configure.ml" "--libdir" lib] {opam-version < "2"}
   ["ocaml" "bootstrap.ml" "-j" jobs]
   ["./dune.exe" "build" "-p" name "--profile" "dune-bootstrap" "-j" jobs]
 ]

@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis:
+  "Component used by the dkml-package-console Console Packager"
+description:
+  "Executables needed to launch console based installers"
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-component-console"
+bug-reports: "https://github.com/diskuv/dkml-component-console/issues"
+dev-repo: "git+https://github.com/diskuv/dkml-component-console.git"
+#   Components can be assembled on any "host" build machine defined in
+#   https://github.com/diskuv/dkml-install-api/blob/5cfd7b57c79d990c76a9bdc8f8f0fa9f6fd5346f/runner/src/host_abi.ml
+#   into a installer that will run on any end-user machine defined in
+#   https://github.com/diskuv/dkml-install-api/blob/5cfd7b57c79d990c76a9bdc8f8f0fa9f6fd5346f/runner/src/ocaml_abi.ml
+available: os = "win32" | os = "linux" | os = "macos"
+depopts: [
+  "dkml-install" {>= "0.1.0"}
+]
+install: [
+  ["install" "-d"
+    "%{_:share}%/staging-files/windows_x86/bin"
+    "%{_:share}%/staging-files/windows_x86_64/bin"]
+
+  # gsudo
+  [
+    "unzip" "-o" "-d" "%{_:share}%/staging-files/windows_x86/bin"
+    "dl/gsudo.v1.3.0.zip"
+    "gsudo.exe"
+  ]
+  [
+    "unzip" "-o" "-d" "%{_:share}%/staging-files/windows_x86_64/bin"
+    "dl/gsudo.v1.3.0.zip"
+    "gsudo.exe"
+  ]
+]
+extra-source "dl/gsudo.v1.3.0.zip" {
+  src: "https://github.com/gerardog/gsudo/releases/download/v1.3.0/gsudo.v1.3.0.zip"
+  checksum: [
+    "sha256=cfd28467bbedf85bb05dc35f59c2e16ba8f19bd7aa555abb37cb2693a9b97855"
+  ]
+}
+url {
+  src:
+    "https://github.com/diskuv/dkml-component-console/archive/v0.1.1.tar.gz"
+  checksum: [
+    "md5=41d5651456f2d23e86ecbe80dae5b704"
+    "sha512=f6ac15c62790bfc1e3af80c016922f194343fe697bd1f2999f491373398fd289dad4fadc58d60f4307a3789038b35240317d013a8ceb9a48ec37594d825de81b"
+  ]
+}

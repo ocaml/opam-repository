@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "A library that implements dependent (heterogeneous) maps"
+description: """\
+A library that implements dependent (heterogeneous) maps.
+   The type of keys is indexed by the type of the associated values, so
+   that the maps might contain data whose types may depend on the values of
+   keys. It is adapted from the implementation code for maps that is used by
+   the standard library."""
+maintainer: "Benoît Montagu <benoit.montagu@inria.fr>"
+authors: "Benoît Montagu <benoit.montagu@inria.fr>"
+license: "LGPL-2.1"
+homepage: "https://gitlab.inria.fr/bmontagu/dmap"
+bug-reports: "Benoît Montagu <benoit.montagu@inria.fr>"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://gitlab.inria.fr/bmontagu/dmap"
+url {
+  src: "https://gitlab.inria.fr/bmontagu/dmap/-/archive/0.2/dmap-0.2.tar.gz"
+  checksum: [
+    "md5=6f7d79cf1436728f9b35509aa7471119"
+    "sha512=caf7ddae383e9bab710ae1d588a5334c9c8f7eacbad8ea22bcb57b2d09cd061822400abcb93a4597752a201ea78d3e083d7768581bee9338c2e916f260d99105"
+  ]
+}

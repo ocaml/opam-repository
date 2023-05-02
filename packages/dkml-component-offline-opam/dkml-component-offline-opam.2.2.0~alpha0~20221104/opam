@@ -1,0 +1,75 @@
+opam-version: "2.0"
+synopsis: "Offline install of Opam"
+description: """
+Offline install that places opam in the installation directory.
+
+Depending on the end-user's integer size, as reported by Sys.int_size, either 32-bit or 64-bit opam will be installed.
+
+On macOS the end-user target ABI can be either darwin_arm64 or darwin_x86_64 when you have both dkml-base-compiler and
+conf-dkml-cross-toolchain installed in your switch, regardless whether your host's ABI is darwin_arm64 or darwin_x86.64.
+Otherwise on macOS the target ABI must match the host ABI.
+
+The package version, and what [opam --version] returns, are closely associated with the Opam version from the Opam
+source code. The only modifications are to ensure that the package version can be ordered using semver. In particular:
+
+* 2.2.0~alpha~dev -> 2.2.0~alpha0~20221231
+* 2.2.0~alpha~1   -> 2.2.0~alpha1~20230601
+* 2.2.0           -> 2.2.0
+
+The dates (YYYYMMDD) are the Git commit dates in the Opam source code, and simply replacing the tildes (~) with dashes (-) is
+sufficient to be a semver version.
+"""
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-component-opam"
+bug-reports: "https://github.com/diskuv/dkml-component-opam/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "dkml-component-staging-opam32" {= version}
+  "dkml-component-staging-opam64" {= version}
+  "dkml-component-staging-ocamlrun" {>= "4.12.1~"}
+  "dkml-install" {>= "0.2.0"}
+  "diskuvbox" {>= "0.1.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-component-opam.git"
+install: [
+  [
+    "diskuvbox"
+    "copy-dir"
+    "assets/staging-files/win32"
+    "%{_:share}%/staging-files/windows_x86"
+  ]
+  [
+    "diskuvbox"
+    "copy-dir"
+    "assets/staging-files/win32"
+    "%{_:share}%/staging-files/windows_x86_64"
+  ]
+]
+url {
+  src:
+    "https://github.com/diskuv/dkml-component-opam/releases/download/v2.2.0-alpha-20221104/dkml-component-offline-opam-2.2.0.alpha0.20221104.tbz"
+  checksum: [
+    "sha256=0c87a32663eaa7c6b603817b2fa57d209e795ea3573b35042d78a0cab1260667"
+    "sha512=596088a892e84c1b6473502606a4840b22f87aa9ee6f7db0617aeef7c19f87bb3df0c5a27b3083b9f15805173b04ff11f5cfb0724db9674973916ab31d8509c6"
+  ]
+}
+x-commit-hash: "abaac32bebe809c4a450dcc4802da1b125d0566d"

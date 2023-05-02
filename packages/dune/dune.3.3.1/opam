@@ -1,0 +1,56 @@
+opam-version: "2.0"
+synopsis: "Fast, portable, and opinionated build system"
+description: """
+
+dune is a build system that was designed to simplify the release of
+Jane Street packages. It reads metadata from "dune" files following a
+very simple s-expression syntax.
+
+dune is fast, has very low-overhead, and supports parallel builds on
+all platforms. It has no system dependencies; all you need to build
+dune or packages using dune is OCaml. You don't need make or bash
+as long as the packages themselves don't use bash explicitly.
+
+dune supports multi-package development by simply dropping multiple
+repositories into the same directory.
+
+It also supports multi-context builds, such as building against
+several opam roots/switches simultaneously. This helps maintaining
+packages across several versions of OCaml and gives cross-compilation
+for free.
+"""
+maintainer: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+license: "MIT"
+homepage: "https://github.com/ocaml/dune"
+doc: "https://dune.readthedocs.io/"
+bug-reports: "https://github.com/ocaml/dune/issues"
+conflicts: [
+  "merlin" {< "3.4.0"}
+  "ocaml-lsp-server" {< "1.3.0"}
+  "dune-configurator" {< "2.3.0"}
+  "odoc" {< "2.0.1"}
+  "dune-release" {< "1.3.0"}
+  "js_of_ocaml-compiler" {< "3.6.0"}
+  "jbuilder" {= "transition"}
+]
+dev-repo: "git+https://github.com/ocaml/dune.git"
+build: [
+  ["ocaml" "bootstrap.ml" "-j" jobs]
+  ["./dune.exe" "build" "dune.install" "--release" "--profile" "dune-bootstrap" "-j" jobs]
+]
+depends: [
+  # Please keep the lower bound in sync with .github/workflows/workflow.yml,
+  # dune-project and min_ocaml_version in bootstrap.ml
+  ("ocaml" {>= "4.08"} | ("ocaml" {>= "4.02" & < "4.08~~"} & "ocamlfind-secondary"))
+  "base-unix"
+  "base-threads"
+]
+url {
+  src: "https://github.com/ocaml/dune/releases/download/3.3.1/dune-3.3.1.tbz"
+  checksum: [
+    "sha256=840c80491bfe12bab5f2b99d49e163f3e4c4d2fc4b4a3e6fb16c24dccd5502e1"
+    "sha512=b5d7639336b5df8cf37b8aac45906c6d0ff7e38b1a4a2c6ddb616ea81cdc5a8ff36cecf3d4ee4ff9282c835ed2958d4702ae1b3dd1f048c4269f5e7fedbe50d5"
+  ]
+}
+x-commit-hash: "b3232b22e13ff2fe4db994ba7ae3db727d1493cd"

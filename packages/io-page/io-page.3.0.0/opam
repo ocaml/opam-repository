@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: ["Anil Madhavapeddy" "Dave Scott" "Thomas Gazagnaire"]
+license: "ISC"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/io-page"
+bug-reports: "https://github.com/mirage/io-page/issues"
+doc: "https://mirage.github.io/io-page/"
+depends: [
+  "conf-pkg-config" {build}
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.6"}
+  "cstruct" {>= "2.0.0"}
+  "ounit" {with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+conflicts: [
+  "mirage-xen" {< "6.0.0"}
+  "ocaml-freestanding" {< "0.4.1"}
+]
+depopts: [
+  "ocaml-freestanding"
+]
+dev-repo: "git+https://github.com/mirage/io-page.git"
+synopsis: "Support for efficient handling of I/O memory pages"
+description: """
+IO pages are page-aligned, and wrapped in the `Cstruct` library to avoid
+copying the data contained within the page.
+"""
+url {
+  src:
+    "https://github.com/mirage/io-page/releases/download/v3.0.0/io-page-3.0.0.tbz"
+  checksum: [
+    "sha256=0e36ca74d9056ba6108090cb98bb2ebf2af079be3f4cdbea022820723ff786ee"
+    "sha512=777e5cf4cb82bfc21d026ea2a44a2c30f388a2daa570ad30a396d498b7e4845c0b887402fc002560e2bf17dd49ee7c9839675a3c587e6104f395997eef3c9667"
+  ]
+}
+x-commit-hash: "cc82c9cbd1e1caf7c40e12891b9e668d94b06b88"

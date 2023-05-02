@@ -1,0 +1,56 @@
+opam-version: "2.0"
+synopsis: "Effect-based direct-style IO API for OCaml"
+description: "An effect-based IO API for multicore OCaml with fibers."
+maintainer: ["anil@recoil.org"]
+authors: ["Anil Madhavapeddy" "Thomas Leonard"]
+license: "ISC"
+homepage: "https://github.com/ocaml-multicore/eio"
+doc: "https://ocaml-multicore.github.io/eio/"
+bug-reports: "https://github.com/ocaml-multicore/eio/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "5.0.0"}
+  "bigstringaf" {>= "0.9.0"}
+  "cstruct" {>= "6.0.1"}
+  "lwt-dllist"
+  "optint" {>= "0.1.0"}
+  "psq" {>= "0.2.0"}
+  "fmt" {>= "0.8.9"}
+  "hmap" {>= "0.8.1"}
+  "astring" {>= "0.8.5" & with-test}
+  "crowbar" {>= "0.2" & with-test}
+  "mtime" {>= "1.2.0"}
+  "alcotest" {>= "1.4.0" & with-test}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "ocaml-base-compiler" {< "5.0.0~beta1"}
+  "ocaml-variants" {< "5.0.0~beta1"}
+  "ocaml-system" {< "5.0.0~beta1"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/ocaml-multicore/eio.git"
+url {
+  src:
+    "https://github.com/ocaml-multicore/eio/releases/download/v0.6/eio-0.6.tbz"
+  checksum: [
+    "sha256=ead3eea352dd3d7d11a81ffdbeee6ca94d5e6b3f46de264b4e59689360b3ef38"
+    "sha512=0543643da7861f533f9b7ebee8aa30a6868b48ae1e19211666a9b860e9ff8d8a9e135f214a4603d0329f2027277701f6ffd900b6fba3405a538eebc301edaf29"
+  ]
+}
+x-commit-hash: "9faa07bb934e7e44521f84eec110429faaab8ed4"

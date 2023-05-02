@@ -1,0 +1,53 @@
+opam-version: "2.0"
+maintainer: "Thierry Martinez <martinez@nsup.org>"
+authors: "The LLVM team"
+homepage: "http://llvm.org"
+bug-reports: "https://llvm.org/bugs/"
+license: "MIT"
+build-env: [
+  [HOMEBREW_NO_AUTO_UPDATE = "1"]
+]
+build: [
+  ["bash" "-ex" "configure.sh" version]
+]
+depends: [
+  "conf-bash" {build}
+]
+depexts: [
+  ["llvm@15"] {os = "macos"}
+  ["llvm" "clang"] {os-distribution = "arch"}
+  ["libclang-15-dev" "libclang-cpp15-dev" "llvm-15-dev"]
+    {(os-distribution = "ubuntu" & os-version >= "22.10")}
+  ["libclang-14-dev" "libclang-cpp14-dev" "llvm-14-dev"]
+    {(os-distribution = "debian" & os-version >= "12") |
+     (os-distribution = "ubuntu" & os-version = "22.04")}
+  ["libclang-dev" "libclang-cpp-dev" "llvm-dev"] {
+     os-distribution = "debian" & os-version >= "11"}
+  ["libclang-dev" "llvm-dev"] {
+     os-family = "debian" &
+     !(os-distribution = "debian" & os-version >= "11") &
+     !(os-distribution = "ubuntu" & os-version >= "22.04")}
+  ["clang-dev" "llvm-dev" "clang-static"] {os-distribution = "alpine"}
+  ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
+    {os-distribution = "centos"}
+  ["clang-devel" "llvm-devel" "zlib-devel" "redhat-rpm-config"]
+    {os-distribution = "fedora"}
+  ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
+    {os-distribution = "ol" & os-version >= "8"}
+  ["llvm-clang-devel"] {os-family = "suse"}
+  ["devel/llvm15"] {os = "freebsd"}
+  ["sys-devel/clang"] {os-distribution = "gentoo"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7" # clang-devel is not available
+  "alpine-3.13" # unavailable system package 'llvm-dev'
+  "alpine-3.14" # unavailable system package 'llvm-dev'
+  "alpine-3.15" # unavailable system package 'llvm-dev'
+  "alpine-3.16" # unavailable system package 'llvm-dev'
+  "opensuse-15.3" # unavailable system package 'llvm-clang-devel'
+]
+extra-files: [[
+  "configure.sh" "sha512=fe42feb01df29147397d9b29afd1da118ad9e7959fb1284e141edd6555b9eaea2a08b55ef400553208cd14ac214b44c131cad7b9e0a93bd5da7548abbf374a32"
+]]
+synopsis: "Virtual package relying on the installation of llvm and clang libraries (<= 15.0.x)"
+flags: conf

@@ -1,0 +1,56 @@
+opam-version: "2.0"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+synopsis:
+  "The drom tool is a wrapper over opam/dune in an attempt to provide a cargo-like user experience"
+description: """\
+The drom tool is a wrapper over opam/dune in an attempt to provide a cargo-like
+user experience. It can be used to create full OCaml projects with
+sphinx and odoc documentation. It has specific knowledge of Github and
+will generate files for Github Actions CI and Github pages.
+"""
+authors: [
+  "Fabrice Le Fessant <fabrice.le_fessant@origin-labs.com>"
+  "Léo Andrès <leo.andres@ocamlpro.com>"
+]
+maintainer: [
+  "Fabrice Le Fessant <fabrice.le_fessant@origin-labs.com>"
+  "Léo Andrès <leo.andres@ocamlpro.com>"
+]
+homepage: "https://ocamlpro.github.io/drom"
+doc: "https://ocamlpro.github.io/drom/sphinx"
+bug-reports: "https://github.com/ocamlpro/drom/issues"
+dev-repo: "git+https://github.com/ocamlpro/drom.git"
+tags: "org:ocamlpro"
+build: [
+  ["dune" "subst"] {dev}
+  ["sh" "-c" "./scripts/before.sh build '%{name}%'"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["sh" "-c" "./scripts/after.sh build '%{name}%'"]
+]
+install: [
+  ["sh" "-c" "./scripts/before.sh install '%{name}%'"]
+]
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "dune" {>= "2.7.0"}
+  "drom_lib" {= version}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
+]
+
+url {
+    src: "https://github.com/ocamlpro/drom/archive/v0.8.0.tar.gz"
+    checksum: [ "sha256=080b24601f5a6ac12980b029dd23bfe9e948f9959e89c54464e757a4db8f245a" ]
+}

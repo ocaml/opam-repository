@@ -1,0 +1,54 @@
+opam-version: "2.0"
+synopsis: "API and registry for Diskuv OCaml (DKML) installation components"
+description:
+  "All DKML installation components implement the interfaces exposed in this API."
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-install-api"
+bug-reports: "https://github.com/diskuv/dkml-install-api/issues"
+#   Components can be assembled on any "host" build machine defined in
+#   https://github.com/diskuv/dkml-install-api/blob/5cfd7b57c79d990c76a9bdc8f8f0fa9f6fd5346f/runner/src/host_abi.ml
+#   into a installer that will run on any end-user machine defined in
+#   https://github.com/diskuv/dkml-install-api/blob/5cfd7b57c79d990c76a9bdc8f8f0fa9f6fd5346f/runner/src/ocaml_abi.ml
+available: os = "win32" | os = "linux" | os = "macos"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "alcotest" {>= "1.4.0" & with-test}
+  "odoc" {>= "1.5.3" & with-doc}
+  "dune" {>= "2.9"}
+  "ppx_deriving" {>= "5.2.1"}
+  "result" {>= "1.5"}
+  "astring" {>= "0.8.5"}
+  "bos" {>= "0.2.0"}
+  "cmdliner" {>= "1.0.4"}
+  "fmt" {>= "0.8.9"}
+  "tsort" {>= "2.1.0"}
+  "diskuvbox" {>= "0.1.0" & with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-install-api.git"
+url {
+  src:
+    "https://github.com/diskuv/dkml-install-api/releases/download/0.3.0/dkml-install-0.3.0.tbz"
+  checksum: [
+    "sha256=c975d7d8d193946e268722538621aa4f99acdfcd7ead6a72157a2db80b98cb28"
+    "sha512=f799d6f44486ca7a780bb8d9d976056548b37cdf5211dd7608c32d65e1766ae9f4e113c03cfcfb9d0ba546adaf20e1176bc5531f9a5ca8c6c04497e5c76ba991"
+  ]
+}
+x-commit-hash: "160430ea6a95ee7ed8ba37697f28d47fcc090d67"

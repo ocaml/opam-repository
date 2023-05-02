@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "Run Lwt code within Eio"
+description:
+  "An Lwt engine that allows running Lwt within an Eio event loop."
+maintainer: ["talex5@gmail.com"]
+authors: ["Thomas Leonard"]
+license: "ISC"
+homepage: "https://github.com/ocaml-multicore/lwt_eio"
+doc: "https://ocaml-multicore.github.io/lwt_eio"
+bug-reports: "https://github.com/ocaml-multicore/lwt_eio/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "eio" {>= "0.2"}
+  "lwt"
+  "mdx" {>= "1.10.0" & with-test}
+  "eio_main" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/ocaml-multicore/lwt_eio.git"
+url {
+  src:
+    "https://github.com/ocaml-multicore/lwt_eio/releases/download/v0.2/lwt_eio-0.2.tbz"
+  checksum: [
+    "sha256=569e0c4aca057eeed2d2c272642baf16cb7a7266a5c197bdfa2f33e84e8ed4e4"
+    "sha512=e7534a9810fbdf12bc36bc67c885e45bf0ad19cbbf9df435b08c0ba6188ad8e52642d6a10b570a762e07756ac393fe5c5e337d5bccec4fb517415c7609e00b6a"
+  ]
+}
+x-commit-hash: "7e8a11e412261695f4c3c46d6468502057965c1a"

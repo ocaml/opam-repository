@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer: "weng@cs.jhu.edu"
+authors: "MSR"
+homepage: "https://github.com/Z3prover/z3"
+bug-reports: "https://github.com/Z3prover/z3/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Z3prover/z3.git"
+depexts: [
+  ["python3-distutils"] {os-family = "debian"}
+]
+build: [
+  [ "python3" "scripts/mk_make.py" "--ml" ]
+  [ make "-C" "build" "-j" jobs ]
+]
+
+install: [
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/* -dll build/libz3.*"]
+  [ "cp" "build/z3" "%{bin}%/z3"]
+]
+
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "ocamlfind" {build}
+  "zarith"
+  "conf-gmp"
+  "conf-python-3" {build}
+  "conf-c++" {build}
+]
+x-ci-accept-failures: [
+  "centos-7" "oraclelinux-7" # C compiler is too old
+]
+synopsis: "Z3 solver"
+post-messages: [
+  """
+Z3 4.8.13 changed the linking mode from static to dynamic.
+This change is silent and potentially breaking.
+Please make sure that you don't require static binaries in the programs using Z3.
+""" {success}
+]
+url {
+  src:
+    "https://github.com/Z3Prover/z3/archive/refs/tags/z3-4.10.2.tar.gz"
+  checksum: [
+    "sha256=889fd035b833775c8cd2eb4723eb011bf916a3e9bf08ce66b31c548acee7a321"
+    "sha512=d0e54036d403d124a7bbf4cf8de9fd9159bab5151f875b546474563811dfb259bc46650df950802031a180375745fb589acbc79d0065944f0631df378dd6d0c3"
+  ]
+}

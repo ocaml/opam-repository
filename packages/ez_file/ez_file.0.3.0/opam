@@ -1,0 +1,49 @@
+opam-version: "2.0"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+synopsis: "Easy file manipulation (read_file, write_file, etc.)"
+description: """\
+This library provides some modules to read and write files, and create 
+and scan directories.
+"""
+authors: ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+maintainer: ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+homepage: "https://ocamlpro.github.io/ez_file"
+doc: "https://ocamlpro.github.io/ez_file/sphinx"
+bug-reports: "https://github.com/ocamlpro/ez_file/issues"
+dev-repo: "git+https://github.com/ocamlpro/ez_file.git"
+tags: "org:ocamlpro"
+build: [
+  ["dune" "subst"] {dev}
+  ["sh" "-c" "./scripts/before.sh build '%{name}%'"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["sh" "-c" "./scripts/after.sh build '%{name}%'"]
+]
+install: [
+  ["sh" "-c" "./scripts/before.sh install '%{name}%'"]
+]
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "dune" {>= "2.7.0"}
+  "re" {>= "1.8.0" & < "2.0.0"}
+  "ocplib_stuff" {>= "0.1.0" & < "1.0.0"}
+  "base-unix" {>= "base"}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
+]
+
+url {
+    src: "https://github.com/ocamlpro/ez_file/archive/v0.3.0.tar.gz"
+    checksum: [ "sha256=e426f0853d613ce290003e4df93bdda93cb20be9b19ee57d59df0f92842310e9" ]
+}

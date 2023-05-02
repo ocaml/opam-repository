@@ -1,0 +1,37 @@
+opam-version: "2.0"
+synopsis: "Irmin implementation of the Tezos context hash specification"
+description: "Irmin implementation of the Tezos context hash specification"
+maintainer: "Tarides <contact@tarides.com>"
+authors: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+license: "ISC"
+homepage: "https://github.com/mirage/irmin"
+bug-reports: "https://github.com/mirage/irmin/issues"
+depends: [
+  "dune" {>= "2.9.0"}
+  "irmin" {>= version}
+  "irmin-pack" {= version}
+  "ppx_irmin" {= version}
+  "tezos-base58"
+  "digestif" {>= "0.7"}
+  "cmdliner"
+  "fmt"
+  "yojson"
+  "alcotest" {with-test}
+  "hex" {with-test & >= "1.4.0"}
+  "fpath" {with-test}
+  "irmin-test" {with-test & = version}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs "@runtest" {with-test & arch != "arm32" & arch != "x86_32"}]
+]
+dev-repo: "git+https://github.com/mirage/irmin.git"
+url {
+  src:
+    "https://github.com/mirage/irmin/releases/download/3.4.2/irmin-3.4.2.tbz"
+  checksum: [
+    "sha256=964512f77697947a73dd1875c634d6804e98f14167c5aadd3c4f85b5f30ffb53"
+    "sha512=d56d3285daa2dd36f1eaff867af5c8f44c61bba4de1a5c7bb5347652dbc460c343483ab61de1a9302f664af357eacc964dc5c8b4477f6d01372dc028b162e98b"
+  ]
+}
+x-commit-hash: "78a0bed5b6cb25c8a90a00cc9280c0fad37b89e2"

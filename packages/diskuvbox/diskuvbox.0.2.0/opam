@@ -1,0 +1,38 @@
+opam-version: "2.0"
+synopsis: "Cross-platform basic set of script commands"
+description:
+  "A cross-platform basic set of script commands. Available as a single binary (`diskuvbox`, or `diskuvbox.exe` on Windows) and as an OCaml library."
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/diskuvbox"
+doc: "https://diskuv.github.io/diskuvbox/diskuvbox/index.html"
+bug-reports: "https://github.com/diskuv/diskuvbox/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "odoc" {>= "1.5.3" & with-doc}
+  "ocaml" {>= "4.10.0"}
+  "ppx_deriving" {>= "5.2.1"}
+  "bos" {>= "0.2.0"}
+  "fmt" {>= "0.8.9"}
+  "logs" {>= "0.7.0"}
+  "result" {>= "1.5"}
+  "mdx" {>= "2.0.0" & with-test}
+  "cmdliner" {>= "1.1.0"}
+]
+dev-repo: "git+https://github.com/diskuv/diskuvbox.git"
+# Until Dune 3+ the auto-generated '.opam' will have an invalid ["dune" "install" ...] step
+# that messes up with cross-compilation. Customized it to remove it.
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs "@install" "@runtest" {with-test} "@doc" {with-doc}]
+]
+url {
+  src:
+    "https://github.com/diskuv/diskuvbox/releases/download/0.2.0/diskuvbox-0.2.0.tbz"
+  checksum: [
+    "sha256=72835b6f74c4719d0cf9fc77a7b143a2885c883d05ebf84ea73a276178de1fb8"
+    "sha512=807b2e7e3b933f4177e09690019bf0a2b6bc19f443da4cc73e03e9f2a3c0acf530073abbff352503ec6f1b67ac777ebd5460868a37958bb970f0f6fda2279c18"
+  ]
+}
+x-commit-hash: "25d671a4f401a04802665fa2d112aeefae30d541"

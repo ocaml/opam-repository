@@ -1,0 +1,168 @@
+opam-version: "2.0"
+synopsis: "OCaml cross-compiler and libraries from the DKML distribution that works with at least Win32 and macOS"
+description:
+  """The DKML distribution of the OCaml bytecode and native compiler, Stdlib and the other OCaml libraries (str, unix, bigarray, etc.).
+A cross-compiler for macOS x86_64 to macOS arm64 is included; for build consistency the regular OCaml compiler will be for x86_64 regardless of whether the build machine is Apple Silicon.
+Install with something like: opam switch create dkml-4.12.1 '--formula="dkml-base-compiler" {>= "4.12.1~" & < "4.13.0~"}'"""
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-compiler"
+bug-reports: "https://github.com/diskuv/dkml-compiler/issues"
+depends: [
+  "ocaml" {= "4.12.1" & post}
+
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: [ compiler avoid-version ]
+available: [
+  opam-version >= "2.1.0" &
+  ( (arch = "x86_64" & (os = "linux" | os = "win32" | os = "macos")) |
+    (arch = "arm64" & os = "macos") )
+]
+build: [
+  # Homebrew's bundle tap, needed for reproducible build auditing in drc's crossplatform-functions.sh.
+  #
+  # The Opam sandbox will stop Homebrew from auto-installing its own tap. In particular 'brew bundle ...'
+  # is automatically installed per https://github.com/Homebrew/homebrew-bundle/tree/4756e4c4cf95485c5ea4da27375946c1dac2c71d#installation,
+  # and it is an "official" tap per
+  # https://github.com/Homebrew/brew/blob/master/Library/Homebrew/official_taps.rb#L11-L18 .
+  #
+  # So our solution is to:
+  # a) Use extra-source:[] to download a Git tarball without tripping over the sandbox firewall
+  # b) Recreate a local file git repository
+  # c) Use the next build:[] steps to let Homebrew know about the bundle tap
+  #
+  # Test with: brew untap homebrew/bundle
+  ["install" "-d" "dl/homebrew-bundle"] {os = "macos"}
+  ["tar" "xCfz" "dl/homebrew-bundle" "dl/homebrew-bundle.tar.gz" "--strip-components=1"] {os = "macos"}
+  ["sh" "-c" """#!/bin/sh
+    set -eufx
+    if command -v brew; then
+      eval $(brew shellenv)
+      HOMEBREW_BREW_FILE="$(command -v brew)"
+      HOMEBREW_LIBRARY="${HOMEBREW_REPOSITORY}/Library"
+      HOMEBREW_PATH="$PATH"
+      HOMEBREW_CACHE="$PWD/dl/homebrew-cache"
+      export HOMEBREW_BREW_FILE HOMEBREW_PATH HOMEBREW_CACHE
+
+      # Clone the Library which contains the Taps/
+      # (and also Homebrew/ which is all the core scripts).
+      # * [-a] will copy and continue even if there are errors (like dangling symlinks).
+      install -d dl/homebrew
+      cp -a "$HOMEBREW_LIBRARY" dl/homebrew/ || true
+      HOMEBREW_LIBRARY="$PWD/dl/homebrew/Library"
+      export HOMEBREW_LIBRARY
+
+      # Install the tap manually by copying it. If we had used
+      # 'brew tap homebrew/bundle [URL]' or more specifically
+      # '/bin/bash "${HOMEBREW_LIBRARY}/Homebrew/brew.sh" tap homebrew/bundle [URL]'
+      # then brew would try to update its own configuration repository to say the tap was installed.
+      # It would fail with 'error: could not lock config file .git/config: Operation not permitted'
+      # because we are in a sandbox. We would have to ignore that error even though the tap was installed.
+      # too many sandbox permissions, even with a file:// URL).
+      install -d "${HOMEBREW_LIBRARY}/Taps/homebrew"
+      cp -rp dl/homebrew-bundle "${HOMEBREW_LIBRARY}/Taps/homebrew/"
+
+      /bin/bash "${HOMEBREW_LIBRARY}/Homebrew/brew.sh" bundle dump
+      test -e Brewfile
+    fi
+   """] {os = "macos"}
+
+  # OCaml source code
+  ["install" "-d" "dl/ocaml/flexdll"]
+  ["tar" "xCfz" "dl/ocaml"          "dl/ocaml.tar.gz"   "--strip-components=1"]
+  ["tar" "xCfz" "dl/ocaml/flexdll"  "dl/flexdll.tar.gz" "--strip-components=1"]
+
+  # Create a DKMLDIR. Its structure mimics a git submodule setup.
+  #   <dkmldir>/.dkmlroot
+  ["install" "-d" "dkmldir"]
+  #     4.12.1~v0.4.1          --dkml-semver--> 0.4.1
+  #     4.12.1~v0.4.1~prerel69 --dkml-semver--> 0.4.1-prerel69
+  ["sh" "-c" "printf 'dkml_root_version=%s\\n' '%{version}%' | sed 's/[0-9.]*~v//; s/~/-/' > dkmldir/.dkmlroot"]
+
+  #   <dkmldir>/vendor/drc/
+  ["install" "-d" "dkmldir/vendor/drc"]
+  ["tar" "xCfz" "dkmldir/vendor/drc" "dl/dkml-runtime-common.tar.gz" "--strip-components=1"]
+
+  #   <dkmldir>/vendor/dkml-compiler/
+  ["install" "-d" "dkmldir/vendor/dkml-compiler/src"]
+  ["sh" "-eufc" "tar cCf src/ - . | tar xCf dkmldir/vendor/dkml-compiler/src/ -"]
+]
+install: [
+  # Run r-c-ocaml-1-setup.sh
+  [
+    "env" "TOPDIR=dkmldir/vendor/drc/all/emptytop"
+      "DKML_REPRODUCIBLE_SYSTEM_BREWFILE=%{_:build}%/Brewfile"
+      "dkmldir/vendor/dkml-compiler/src/r-c-ocaml-1-setup.sh"
+      "-d" "dkmldir"
+      "-t" "%{prefix}%"
+      "-f" "src-ocaml"
+      "-g" "%{_:share}%/mlcross"
+      "-v" "dl/ocaml"
+      #   Host architectures
+      "-ewindows_x86_64"  { os = "win32" }
+      "-elinux_x86_64"    { os = "linux" }
+      "-edarwin_x86_64"   { os = "macos" }
+      #   Target architectures (if cross-compiling)
+      "-adarwin_arm64=vendor/dkml-compiler/src/standard-compiler-env-to-ocaml-configure-env.sh" { os = "macos" }
+      #     TODO: Would be nice to bundle the 3 Android cross-compilers here since they are already supported
+      #     by DKML, but I (jonahbeckford@) doubt there is an Android NDK available on the Opam hosts.
+      #     Confer: https://github.com/diskuv/diskuv-ocaml-ghmirror/runs/4831077050
+      #     Perhaps the Android NDK should just be downloaded via an 'android-option-ndk23' package? That would give control of the NDK version.
+      # "-aandroid_arm64v8a=vendor/dkml-compiler/src/ci/github-actions-ci-to-ocaml-configure-env.sh;android_x86_64=vendor/dkml-compiler/src/ci/github-actions-ci-to-ocaml-configure-env.sh"] { os = "linux" & !ocaml-option-32bit:installed }
+      # "-aandroid_arm32v7a=vendor/dkml-compiler/src/ci/github-actions-ci-to-ocaml-configure-env.sh" { os = "linux" & ocaml-option-32bit:installed }
+      "-k" "vendor/dkml-compiler/src/standard-compiler-env-to-ocaml-configure-env.sh"
+  ]
+
+  # Run r-c-ocaml-2-build_host-noargs.sh
+  [
+    "sh" "-eufc"
+    """
+    cd '%{prefix}%'
+    share/dkml/repro/100co/vendor/dkml-compiler/src/r-c-ocaml-2-build_host-noargs.sh
+    """
+  ]
+
+  # Run r-c-ocaml-3-build_cross-noargs.sh (typically a no-op unless we are cross-compiling)
+  [
+    "sh" "-eufc"
+    """
+    cd '%{prefix}%'
+    share/dkml/repro/100co/vendor/dkml-compiler/src/r-c-ocaml-3-build_cross-noargs.sh
+    """
+  ]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-component-ocamlcompiler.git"
+extra-source "dl/ocaml.tar.gz" {
+  src: "https://github.com/ocaml/ocaml/archive/4.12.1.tar.gz"
+  checksum: "sha256=f5a48a90557cb47ace7b1590fcab1362a1af38629a218350f69c225c57e96a41"
+}
+extra-source "dl/flexdll.tar.gz" {
+  src: "https://github.com/alainfrisch/flexdll/archive/0.39.tar.gz"
+  checksum: "sha256=51a6ef2e67ff475c33a76b3dc86401a0f286c9a3339ee8145053ea02d2fb5974"
+}
+extra-source "dl/homebrew-bundle.tar.gz" {
+  src: "https://github.com/Homebrew/homebrew-bundle/archive/4756e4c4cf95485c5ea4da27375946c1dac2c71d.tar.gz"
+  checksum: [
+    "sha256=10c024ca7871cea36b4c27b2601971d3fa6cba6f37855613baf0026d0f555e76"
+  ]
+}
+extra-source "dl/dkml-runtime-common.tar.gz" {
+  # This violates the v1.0.0 versioning, but this future patch is needed to allow the 'bundle'
+  # brew tap to be used on macOS in the Opam sandbox.
+  src: "https://github.com/diskuv/dkml-runtime-common/archive/refs/tags/v1.0.1-prerel0b.tar.gz"
+  checksum: [
+    "sha256=563b89382f07a4ce56917a8eb7034c5fa6993572f087ad909e58229e78748056"
+  ]
+}
+url {
+  src: "https://github.com/diskuv/dkml-compiler/releases/download/4.12.1-v1.0.0/src.tar.gz"
+  checksum: [
+    "md5=94f9e2619e329ec6b28c0c42c4e0ced5"
+    "sha512=9bb83aeccb9054153d879c33d0999e5c648bdf2dbded6f7fc3115c984592fd117ff2d7858edb38c53389bbf480050451e4bcb86ea7e7ff59279e175b48183013"
+  ]
+}

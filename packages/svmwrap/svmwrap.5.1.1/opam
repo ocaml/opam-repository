@@ -1,0 +1,82 @@
+opam-version: "2.0"
+authors: "Francois Berenger"
+maintainer: "unixjunkie@sdf.org"
+homepage: "https://github.com/UnixJunkie/svmwrap"
+bug-reports: "https://github.com/UnixJunkie/svmwrap/issues"
+dev-repo: "git+https://github.com/UnixJunkie/svmwrap.git"
+license: "BSD-3-Clause"
+build: ["dune" "build" "-p" name "-j" jobs]
+depends: [
+  "base-unix"
+  "batteries"
+  "conf-libsvm-tools"
+  "cpm" {>= "11.0.0"}
+  "dolog" {>= "6.0.0"}
+  "dune" {>= "2.9"}
+  "minicli" {>= "5.0.0"}
+  "molenc" {>= "16.0.0"}
+  "parany" {>= "11.0.0"}
+  "line_oriented" {>= "1.2.0"}
+  "nlopt"
+  "dokeysto" # dokeysto_camltc not yet compiling w/ ocaml-5
+  "ocaml" {>= "5.0.0"} # possible perf. regr.: dokeysto_camltc -> dokeysto
+]
+# the software can compile and install without the depopts.
+# however, some tools and options will not work anymore at run-time
+depopts: [
+  "conf-gnuplot"
+]
+synopsis: "Wrapper on top of libsvm-tools"
+description: """
+Svmwrap can be used to train/test regressors using libsvm-tools.
+
+(Scary) usage:
+usage: svmwrap
+  -i <filename>: training set or DB to screen
+  --feats <int>: number of features
+  [-o <filename>]: predictions output file
+  [-np <int>]: ncores
+  [--kernel <string>] choose kernel type {Lin|RBF|Sig|Pol}
+  [-c <float>]: fix C
+  [-e <float>]: epsilon in the loss function of epsilon-SVR;
+  (0 <= epsilon <= max_i(|y_i|))
+  [--nlopt <int>]: use NLopt with MAX_ITER (global optim.)
+  instead of grid-search (recommended: MAX_ITER >= 100)
+  [-g <float>]: fix gamma (for RBF and Sig kernels)
+  [-r <float>]: fix r for the Sig kernel
+  [--iwn]: turn ON instance-wise-normalization
+  [--scale]: turn ON [0:1] scaling (NOT PRODUCTION READY)
+  [--no-plot]: no gnuplot
+  [{-n|--NxCV} <int>]: folds of cross validation
+  [-q]: quiet
+  [-v|--verbose]: equivalent to not specifying -q
+  [--seed <int>]: fix random seed
+  [-p <float>]: training set portion (in [0.0:1.0])
+  [--pairs]: read from .AP files (atom pairs; will offset feat. indexes by 1)
+  [--train <train.liblin>]: training set (overrides -p)
+  [--valid <valid.liblin>]: validation set (overrides -p)
+  [--test <test.liblin>]: test set (overrides -p)
+  [{-l|--load} <filename>]: prod. mode; use trained models
+  [{-s|--save} <filename>]: train. mode; save trained models
+  [-f]: force overwriting existing model file
+  [--scan-c]: scan for best C
+  [--scan-e <int>]: epsilon scan #steps for SVR
+  [--scan-g]: scan for best gamma
+  [--regr]: regression (SVR); also, implied by -e and --scan-e
+  [--e-range <float>:<int>:<float>]: specific range for e
+  (semantic=start:nsteps:stop)
+  [--c-range <float,float,...>] explicit scan range for C
+  (example='0.01,0.02,0.03')
+  [--g-range <float,float,...>] explicit range for gamma
+  (example='0.01,0.02,0.03')
+  [--scan-k]: scan number of bags
+  [--k-range <int,int,...>] explicit scan range for k
+  (example='1,2,3,5,10')
+  [-k <int>]: explicit value for k
+  [--r-range <float,float,...>] explicit range for r
+  (example='0.01,0.02,0.03')
+"""
+url {
+  src: "https://github.com/UnixJunkie/svmwrap/archive/v5.1.1.tar.gz"
+  checksum: "md5=8535188a0193e1303dda8ba3fe679e39"
+}

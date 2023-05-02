@@ -1,0 +1,65 @@
+opam-version: "2.0"
+synopsis: "Type definitions of HTTP essentials"
+description: """
+This package contains essential type definitions used in Cohttp. It is designed
+to have no dependencies and make it easy for other packages to easily
+interoperate with Cohttp."""
+maintainer: ["Anil Madhavapeddy <anil@recoil.org>"]
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+  "Anurag Soni"
+]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08"}
+  "ppx_expect" {with-test}
+  "alcotest" {with-test}
+  "base_quickcheck" {with-test}
+  "ppx_assert" {with-test}
+  "ppx_sexp_conv" {with-test}
+  "ppx_compare" {with-test}
+  "ppx_here" {with-test}
+  "core" {with-test & >= "v0.13.0"}
+  "core_bench" {with-test}
+  "crowbar" {with-test & >= "0.2"}
+  "sexplib0" {with-test}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@http/runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+available: opam-version >= "2.1.0"
+flags: [ avoid-version ]
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v6.0.0_alpha0/cohttp-eio-6.0.0.alpha0.tbz"
+  checksum: [
+    "sha256=2ed4acd5ea309ca064731ec9f02a4b4afcec1ab000f471da68ae81355130b56e"
+    "sha512=e741293352d8376eaf7ccc7ba986dc8fd33cc560b8a786d4b4f8cffde5f1d78651dd5dbb944db00e57a48f25bffdde8d6d7b8c5828605ed02f295c297ef87fdd"
+  ]
+}
+x-commit-hash: "ba9ca0791c3fd6242e28026feaa41fe4ac453089"
