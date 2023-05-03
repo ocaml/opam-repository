@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "Parse ocaml compiler output into structured form"
+description:
+  "This library offers no backwards compatibility guarantees. Use at your own risk."
+maintainer: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+license: "MIT"
+homepage: "https://github.com/ocaml/dune"
+doc: "https://dune.readthedocs.io/"
+bug-reports: "https://github.com/ocaml/dune/issues"
+depends: [
+  "dune" {>= "3.5"}
+  "ocaml" {>= "4.08.0"}
+  "dyn" {= version}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "ocaml-lsp-server" {< "1.15.0"}
+]
+dev-repo: "git+https://github.com/ocaml/dune.git"
+build: [
+  ["dune" "subst"] {dev}
+  ["rm" "-rf" "vendor/csexp"]
+  ["rm" "-rf" "vendor/pp"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/ocaml/dune/releases/download/3.8.0_alpha2/dune-3.8.0.alpha2.tbz"
+  checksum: [
+    "sha256=8fce380e29d9704eefb402f57b5b00da9b826b189bc0fa4e5cc15fd707a887a4"
+    "sha512=72fb7eaa9cb0db7592d0f290dbf2945457dc42e9c1b1025a82ad3f7a8cb3e693a13b6824254aa67dfe74685bdb47b728fb0d704496a42e625773a7da15a328fe"
+  ]
+}
+x-commit-hash: "8afa6ea0cf9ace1ef60fbda121c14f23fe02d13f"
