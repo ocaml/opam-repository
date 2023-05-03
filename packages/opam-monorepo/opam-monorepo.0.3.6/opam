@@ -1,0 +1,54 @@
+opam-version: "2.0"
+synopsis: "Assemble and manage fully vendored Dune repositories"
+description: """
+The opam monorepo plugin provides a convenient interface to bridge the
+opam package manager with having a local copy of all the source
+code required to build a project using the dune build tool."""
+maintainer: ["anil@recoil.org"]
+authors: [
+  "Anil Madhavapeddy" "Nathan Rebours" "Lucas Pluvinage" "Jules Aguillon"
+]
+license: "ISC"
+homepage: "https://github.com/tarides/opam-monorepo"
+doc: "https://tarides.github.io/opam-monorepo"
+bug-reports: "https://github.com/tarides/opam-monorepo/issues"
+depends: [
+  "dune" {>= "3.6"}
+  "ocaml" {>= "4.10.0"}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "dune-build-info" {= "2.7.0" | = "2.7.1"}
+  "dune-configurator" {= "2.7.0" | = "2.7.1"}
+]
+dev-repo: "git+https://github.com/tarides/opam-monorepo.git"
+build: [ "dune" "build" "-p" name "-j" jobs "@install" "@test/lib/runtest" {with-test} ]
+flags: [ plugin ]
+depexts: [
+  ["devel/pkgconf"] {os = "openbsd"}
+  ["pkg-config"] {os-family = "debian"}
+  ["pkg-config"] {os = "macos" & os-distribution = "homebrew"}
+  ["pkgconf"] {os = "freebsd"}
+  ["pkgconf"] {os-distribution = "alpine"}
+  ["pkgconf"] {os-distribution = "arch"}
+  ["pkgconf-pkg-config"] {os-distribution = "fedora"}
+  ["pkgconf-pkg-config"] {os-distribution = "mageia"}
+  ["pkgconf-pkg-config"] {os-distribution = "centos" & os-version >= "8"}
+  ["pkgconf-pkg-config"] {os-distribution = "ol" & os-version >= "8"}
+  ["pkgconf-pkg-config"] {os-distribution = "rhel" & os-version >= "8"}
+  ["pkgconfig"] {os-distribution = "nixos"}
+  ["pkgconfig"] {os = "macos" & os-distribution = "macports"}
+  ["pkgconfig"] {os-distribution = "centos" & os-version <= "7"}
+  ["pkgconfig"] {os-distribution = "ol" & os-version <= "7"}
+  ["pkgconfig"] {os-distribution = "rhel" & os-version <= "7"}
+  ["system:pkgconf"] {os = "win32" & os-distribution = "cygwinports"}
+]
+url {
+  src:
+    "https://github.com/tarides/opam-monorepo/releases/download/0.3.6/opam-monorepo-0.3.6.tbz"
+  checksum: [
+    "sha256=e79c3b380f6dd586a8615c84db3304020424c4553c13fa2bb621ac89c61ba107"
+    "sha512=8f76bcbd436aa30a41d43c242485be8289fe13f199bbcd3c850fe173da0fcfd8b13a9b8af15a6e004182933ab8e4b8dcfd9ed1a3bceecd902c00f5d72759a9a9"
+  ]
+}
+x-commit-hash: "5123379521634540c7aba55440a0293dc763d7a6"
