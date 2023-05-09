@@ -1,0 +1,35 @@
+name: Check if package is installable
+inputs:
+  opam:
+    required: true
+  package:
+    required: true
+outputs:
+  installable:
+    description: "Is the package installable?"
+    value: ${{ steps.installable.outputs.installable }}
+runs:
+  using: composite
+  steps:
+    - name: Get opam cli option
+      id: cli
+      shell: sh
+      run: |
+        if [ "${{ inputs.opam }}" = "opam-2.1" ]; then
+          echo 'cli=--cli=2.1' >> $GITHUB_OUTPUT
+        fi
+    - name: Check if package is installable
+      id: installable
+      shell: sh
+      run: |
+        if opam ${{ steps.cli.outputs.cli }} list --readonly --external --resolve=${{ inputs.package }} >/dev/null 2>&1; then
+          echo 'installable=true' >> $GITHUB_OUTPUT
+        else
+          echo "Package is not installable";
+        fi
+    - name: Annotate result
+      if: ${{ !steps.installable.outputs.installable }}
+      uses: actions/github-script@v5
+      with:
+        script: |
+          core.notice('${{ inputs.package }} is not installable');
