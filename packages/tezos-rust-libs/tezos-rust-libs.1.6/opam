@@ -1,0 +1,57 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: [ "Tezos devteam" ]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos-rust-libs/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos-rust-libs.git"
+license: "LicenseRef-multiple"
+depends: ["conf-rust-2021"]
+build:[
+  [
+    "cargo"
+    "build"
+    "--target-dir" "target-librustzcash"
+    "--release"
+    "--package" "librustzcash"
+  ]
+  [
+    "cargo"
+    "build"
+    "--target-dir" "target-wasmer"
+    "--release"
+    "--package" "wasmer-c-api"
+    "--no-default-features"
+    "--features" "singlepass,cranelift,wat,middlewares"
+  ]
+]
+install: [
+  [ "mkdir" "-p" "%{lib}%/tezos-rust-libs" ]
+  [ "mkdir" "-p" "%{lib}%/tezos-rust-libs/rust" ]
+  [ "cp"
+      "librustzcash/include/librustzcash.h"
+      "target-librustzcash/release/librustzcash.a"
+      "wasmer-3.3.0/lib/c-api/wasm.h"
+      "wasmer-3.3.0/lib/c-api/wasmer.h"
+      "target-wasmer/release/libwasmer.a"
+      "%{lib}%/tezos-rust-libs"
+  ]
+  [ "cp"
+      "librustzcash/include/rust/types.h"
+      "%{lib}%/tezos-rust-libs/rust"
+  ]
+]
+synopsis: "Tezos: all rust dependencies and their dependencies"
+url {
+  src:
+    "https://gitlab.com/tezos/tezos-rust-libs/-/archive/v1.6/tezos-rust-libs-v1.6.zip"
+  checksum: [
+    "sha512=ac4df82e4ff65e1f65a808fbe1494519e175c7b2ed22dc8336c4458996075088d5d41d223ade9c48e285f41929d5048c0af2a484e0c543e75d8ee133829564b5"
+    "sha256=7ca33dc3bf873fc5768ca5670f6abe43b8f9badde43a956c3f61f3dd979bec34"
+  ]
+}
+x-ci-accept-failures: [
+  "oraclelinux-8" # rust version is too old (need 1.62+)
+  "alpine-3.14" # rust version is too old (need 1.62+)
+  "alpine-3.15" # rust version is too old (need 1.62+)
+  "alpine-3.16" # rust version is too old (need 1.62+)
+]
