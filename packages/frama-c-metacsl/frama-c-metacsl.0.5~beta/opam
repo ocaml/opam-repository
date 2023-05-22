@@ -1,0 +1,59 @@
+opam-version: "2.0"
+synopsis: "MetAcsl plugin of Frama-C for writing pervasives properties"
+description: """\
+MetAcsl let users write properties that need to be checked at particular
+contexts (e.g. each time a location is written to inside a given set
+of functions). It will then generate all the corresponding ACSL
+annotations, leaving it to analysis plug-ins (e.g. WP) to prove the
+resulting clauses."""
+maintainer: "Virgile.Prevosto@cea.fr"
+authors: "Virgile Robles"
+license: "LGPL-2.1-only"
+tags: [
+  "program verification"
+  "formal specification"
+  "C"
+  "plugins"
+  "ACSL"
+  "MetACSL"
+]
+homepage: "https://frama-c.com/"
+bug-reports: "https://git.frama-c.com/pub/meta/-/issues"
+depends: [
+  "dune" {>= "3.2"}
+  "ocaml" {>= "4.11.1"}
+  "frama-c" {>= "27.0~" & < "28.0~"}
+  "odoc" {with-doc}
+]
+depopts: [
+  "conf-swi-prolog"
+  "why3" {>= "1.3.1"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+messages:
+  "Note that if you wish to use the deduction features of MetAcsl, you must install the conf-swi-prolog package (and swi-prolog itself)"
+    {!conf-swi-prolog:installed}
+dev-repo: "git+https://git.frama-c.com/pub/meta.git"
+url {
+  src:
+    "https://git.frama-c.com/pub/meta/-/archive/0.5-beta/meta-0.5-beta.tar.bz2"
+  checksum: [
+    "md5=33be7f72b15f8c373f26b607717f3006"
+    "sha512=d8f72397ee9017ed321f0f7dc65103db7394616ddd22a35cf2b293bdccf26eabf4272efad9ba32b0a824e65b6cf661c148f893ad6e120de54b5ab5086b8c79e3"
+  ]
+}

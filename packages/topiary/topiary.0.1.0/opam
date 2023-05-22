@@ -1,0 +1,36 @@
+opam-version: "2.0"
+
+maintainer: "hello@tweag.io"
+authors: [ "Tweag" ]
+
+homepage: "https://github.com/tweag/topiary"
+bug-reports: "https://github.com/tweag/topiary/issues"
+dev-repo: "git+https://github.com/tweag/topiary.git"
+
+license: "MIT"
+depends: ["conf-rust-2021"]
+
+build:[
+  [ "cargo" "build" "--release" "--package" "topiary" ]
+  [ "sh" "make-topiary-wrapper.sh"
+      "--language-dir" "%{share}%/topiary/languages"
+      "--topiary-wrapped" "%{bin}%/.topiary-wrapped"
+      "--output-file" "topiary-wrapper" ]
+]
+
+install: [
+  [ "cp" "target/release/topiary" "%{bin}%/.topiary-wrapped" ]
+  [ "cp" "topiary-wrapper" "%{bin}%/topiary" ]
+  [ "mkdir" "%{share}%/topiary" ]
+  [ "cp" "-R" "topiary/languages" "%{share}%/topiary/languages" ]
+]
+
+synopsis: "A formatter for OCaml based on the Topiary universal formatting engine"
+
+url {
+  src: "https://github.com/tweag/topiary-opam/releases/download/v0.1.0/source-code-with-submodules.tar.xz"
+  checksum: [
+    "md5=cd825a17db25cb94fd876eef055090e4"
+    "sha512=ae6946aaba0f784773cca71019f73aa62d9b976646ea25e451c220f45da49e6c7e4147e2dd57e3c4764a9038946c38b9de33ce5d463c46ea3f3271d5b98dd46f"
+  ]
+}
