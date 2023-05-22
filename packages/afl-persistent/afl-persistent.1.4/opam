@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "stephen.dolan@cl.cam.ac.uk"
+authors: ["Stephen Dolan"]
+homepage: "https://github.com/stedolan/ocaml-afl-persistent"
+bug-reports: "https://github.com/stedolan/ocaml-afl-persistent/issues"
+dev-repo: "git+https://github.com/stedolan/ocaml-afl-persistent.git"
+license: "MIT"
+build: [
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "./config.sh" ]
+]
+depends: [
+  "ocaml" {>= "4.05"}
+  "dune" {>= "2.9"}
+  "base-unix"
+]
+post-messages: [
+"afl-persistent is installed, but since the current OCaml compiler does
+not enable AFL instrumentation by default, most packages will not be
+instrumented and fuzzing with afl-fuzz may not be effective.
+
+To globally enable AFL instrumentation, create an OCaml switch like:
+
+  opam switch create %{ocaml:version}%+afl ocaml-variants.%{ocaml:version}%+options ocaml-option-afl" {success & afl-available & !afl-always}
+]
+synopsis: "Use afl-fuzz in persistent mode"
+description: """
+afl-fuzz normally works by repeatedly fork()ing the program being
+tested. using this package, you can run afl-fuzz in 'persistent mode',
+which avoids repeated forking and is much faster."""
+url {
+  src:
+    "https://github.com/stedolan/ocaml-afl-persistent/archive/refs/tags/v1.4.tar.gz"
+  checksum: [
+    "md5=4791d637ade0269ddb348d231e643bb0"
+    "sha512=68b779f67d3e4e25f64b4cfe902a183b977158e476abd9691e65a65b0220595de802a7fdb3ac473c5379e12e2e1a4cd96cc5f51e407c72f892bdb87db364dd2c"
+  ]
+}
