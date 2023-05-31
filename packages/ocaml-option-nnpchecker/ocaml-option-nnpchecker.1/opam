@@ -1,5 +1,22 @@
 opam-version: "2.0"
 synopsis: "Set OCaml to be compiled with --enable-naked-pointers-checker"
+description: """
+This package can be used to run OCaml packages with the check for
+'naked pointers' enabled. A naked pointer is a pointer outside the OCaml heap
+without a valid header, which is valid in OCaml 4.x, but forbidden in the
+multicore OCaml 5.x runtime.  The nnpchecker prints warnings to standard
+error with the address that contains the naked pointer, the naked pointer
+and the reason why the warning was raised.
+See [https://discuss.ocaml.org/t/ann-a-dynamic-checker-for-detecting-naked-pointers/5805]
+for more details on the operation of the naked pointer checker.
+
+By convention, the opam repository adds conflicts to OCaml packages that
+violate the naked pointer rule. This means that if you install this package,
+you can find the subset of packages that _are_ compatible with OCaml 5.
+If you spot any violations of the nnpchecker on packages, then please consider
+submitting a pull request to the ocaml/opam-repository that adds a conflict
+against the violating package against this one.
+"""
 depends: [
   "ocaml-variants" {post & ((>= "4.12.0~" & arch = "x86_64") | >= "4.14.0~") & < "5.0.0~~"}
 ]
