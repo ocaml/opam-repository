@@ -1,0 +1,37 @@
+opam-version: "2.0"
+synopsis: "Compiler for High-Assurance and High-Speed Cryptography"
+description: """
+Jasmin is a workbench for high-assurance and high-speed cryptography. Jasmin
+implementations aim at being efficient, safe, correct, and secure.
+"""
+maintainer: "Jean-Christophe Léchenet <jean-christophe.lechenet@inria.fr>"
+author: "Jasmin authors and contributors"
+license: "MIT"
+homepage: "https://github.com/jasmin-lang/jasmin"
+bug-reports: "https://github.com/jasmin-lang/jasmin/issues"
+dev-repo: "git+https://github.com/jasmin-lang/jasmin.git"
+
+depends: [
+  "ocaml" {>= "4.08.0" & build}
+  "batteries" {>= "3.4.0"}
+  "menhir" {>= "20160825" & build}
+  "menhirLib"
+  "camlidl"
+  "zarith" {>= "1.9.0"}
+  "apron" {>= "v0.9.12"}
+  "conf-ppl"
+  "yojson" {>= "1.6.0"}
+  "ocamlbuild" { build }
+  "ocamlfind" { build }
+]
+build: [
+  [make "-C" "compiler" "build"]
+]
+install: [
+  ["mkdir" "-p" "%{prefix}%/bin"]
+  ["cp" "compiler/_build/entry/jasminc.native" "%{prefix}%/bin/jasminc"]
+]
+url {
+  src: "https://github.com/jasmin-lang/jasmin/releases/download/v2022.09.3/jasmin-compiler-v2022.09.3.tar.bz2"
+  checksum: "sha256=0822d4177183790ad622eaf5bded7d5af78d88e47fea44555ae53bc2f9971868"
+}
