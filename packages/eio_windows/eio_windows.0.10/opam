@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "Eio implementation for Windows"
+description: "An Eio implementation using OCaml's Unix.select"
+maintainer: ["anil@recoil.org"]
+authors: ["Anil Madhavapeddy" "Thomas Leonard"]
+license: "ISC"
+homepage: "https://github.com/ocaml-multicore/eio"
+doc: "https://ocaml-multicore.github.io/eio/"
+bug-reports: "https://github.com/ocaml-multicore/eio/issues"
+depends: [
+  "dune" {>= "3.7"}
+  "eio" {= version}
+  "kcas" {>= "0.3.0" & with-test}
+  "alcotest" {>= "1.4.0" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-multicore/eio.git"
+url {
+  src:
+    "https://github.com/ocaml-multicore/eio/releases/download/v0.10/eio-0.10.tbz"
+  checksum: [
+    "sha256=390f7814507b8133d6c25e3a67a742d731c7ca66252b287b1fb0e3ad4d10eecc"
+    "sha512=9c0c9088b178df9799aaae9deb803a802228f1329cbe452479c90e80a13985d9c364ea86ee14e4e759133940f9f6065c7e8ece509d176fb1e347c5320f00a494"
+  ]
+}
+x-commit-hash: "687ebf99a6ab10ce5d85f4a3335d8e2e94c2b875"
+available: [os-family = "windows"]
