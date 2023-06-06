@@ -1,0 +1,38 @@
+opam-version: "2.0"
+synopsis: "Auto-generated low-level OCaml bindings for EverCrypt/HACL*"
+description: """\
+This package contains a snapshot of the EverCrypt crypto provider and
+the HACL* library, along with automatically generated Ctypes bindings.
+For a higher-level idiomatic API see the `hacl-star` package, of
+which `hacl-star-raw` is a dependency."""
+maintainer: "Victor Dumitrescu <victor.dumitrescu@nomadic-labs.com>"
+authors: "Project Everest"
+license: "Apache-2.0"
+homepage: "https://cryspen.com/hacl-packages/"
+bug-reports: "https://github.com/cryspen/hacl-packages/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "1.2"}
+  "ocamlfind" {build}
+  "ctypes" {>= "0.18.0"}
+  "conf-which" {build}
+  "conf-cmake" {build}
+]
+conflicts: ["ocaml-option-bytecode-only"]
+available:
+  arch != "ppc64" & arch != "ppc32" & arch != "arm32" &
+  (os = "freebsd" | os-family != "bsd")
+build: [
+  [make "-C" "hacl-star-raw" "build-c"]
+  [make "-C" "hacl-star-raw" "build-bindings"]
+]
+install: [make "-C" "hacl-star-raw" "install"]
+dev-repo: "git+https://github.com/cryspen/hacl-packages.git"
+url {
+  src:
+    "https://github.com/cryspen/hacl-packages/releases/download/ocaml-v0.7.1/hacl-star.0.7.1.tar.gz"
+  checksum: [
+    "md5=192bca3819b9e21b39a0d38f02081d39"
+    "sha512=28c3f43af0bfeb3976ca11f8cb8ac38694165fd2c897b9048515b02a2116aff8aa45c37c8e475dc172dc7c964a8712beb94ba149426c2caeda1659312347e0b2"
+  ]
+}
