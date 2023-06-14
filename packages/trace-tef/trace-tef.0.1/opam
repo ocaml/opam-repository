@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "A simple backend for trace"
+maintainer: ["Simon Cruanes"]
+authors: ["Simon Cruanes"]
+license: "MIT"
+tags: ["trace" "tracing" "catapult"]
+homepage: "https://github.com/c-cube/trace"
+bug-reports: "https://github.com/c-cube/trace/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "trace" {= version}
+  "mtime" {>= "2.0"}
+  "base-unix"
+  "dune" {>= "2.9"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/c-cube/trace.git"
+url {
+  src: "https://github.com/c-cube/trace/releases/download/v0.1/trace-0.1.tbz"
+  checksum: [
+    "sha256=07f5ea29942a760b84f49c669513ff92880fec8f25f8cdea348c04423d7e77dc"
+    "sha512=6235d3b8352d482e6cff47d0cb6e0f978af798990d1ff9ea79e61449fbcd7a4038df6f1bd0ae9a2b995d8cf6d4dedd6d933d255ea6babbc9977497d70856c3c5"
+  ]
+}
+x-commit-hash: "261f143dd2cb891ceec5f5112cce26070ae2b236"
