@@ -1,0 +1,31 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: ["Tezos devteam"]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.0" }
+  "ocaml" { >= "4.14" }
+  "tezos-base" { = version }
+  "tezos-rpc" { = version }
+  "tezos-p2p-services" { = version }
+  "tezos-version" { = version }
+  "tezos-context" { = version }
+  "tezt" { with-test & >= "3.1.0" }
+  "octez-alcotezt" { with-test & = version }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: descriptions of RPCs exported by `tezos-shell`"
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v17.1/tezos-17.1.tar.gz"
+  checksum: [
+    "sha256=12c194618501697c6f12edf4e931489a6b60465280cb0a116e5507032d64b7b0"
+    "sha512=e32145376626b69a9cbe20edbab716a7df1489847c54ec2ff33597bd239f8c83ea541c135165092520450b081d55af83c5e287229b1ca95766834b5457e79aba"
+  ]
+}

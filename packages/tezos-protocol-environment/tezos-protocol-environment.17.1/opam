@@ -1,0 +1,58 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: ["Tezos devteam"]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.0" }
+  "ocaml" { >= "4.14.0" & < "4.15" }
+  "tezos-stdlib" { = version }
+  "tezos-crypto" { = version }
+  "tezos-lwt-result-stdlib" { = version }
+  "tezos-scoru-wasm" { = version }
+  "data-encoding" { >= "0.7.1" & < "1.0.0" }
+  "bls12-381" { >= "6.1.0" & < "6.2.0" }
+  "octez-plonk" { = version }
+  "zarith" { >= "1.12" & < "1.13" }
+  "zarith_stubs_js"
+  "tezos-crypto-dal" { = version }
+  "class_group_vdf" { >= "0.0.4" }
+  "aches" { >= "1.0.0" }
+  "aches-lwt" { >= "1.0.0" }
+  "tezos-base" { = version }
+  "tezos-sapling" { = version }
+  "tezos-micheline" { = version }
+  "tezos-context" { = version }
+  "tezos-event-logging" { = version }
+  "tezt" { with-test & >= "3.1.0" }
+  "octez-alcotezt" { with-test & = version }
+  "tezos-test-helpers" { with-test & = version }
+  "qcheck-alcotest" { with-test & >= "0.20" }
+  "lwt" { with-test & >= "5.6.0" }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Interface layer between the protocols and the shell"
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v17.1/tezos-17.1.tar.gz"
+  checksum: [
+    "sha256=12c194618501697c6f12edf4e931489a6b60465280cb0a116e5507032d64b7b0"
+    "sha512=e32145376626b69a9cbe20edbab716a7df1489847c54ec2ff33597bd239f8c83ea541c135165092520450b081d55af83c5e287229b1ca95766834b5457e79aba"
+  ]
+}
+description: "The protocol-environment is a two-sided component sitting between the shell and
+the protocols.
+
+On one side, it provides a restricted typing environment to compile the
+protocols against. This is a series of modules which replace the standard
+library of OCaml. These modules purposefully omit many functionalities, thus
+preventing the protocols from, say, directly writing to disk.
+
+On the other side, it provides the shell with specific call-sites in the
+protocols. These are the only entry-points into the otherwise black-box
+protocols."
