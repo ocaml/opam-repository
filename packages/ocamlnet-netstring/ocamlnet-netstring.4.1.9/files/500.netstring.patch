@@ -1,0 +1,3949 @@
+diff -ur ocamlnet-4.1.9/configure ocamlnet-4.1.9-work/configure
+--- ocamlnet-4.1.9/configure	2021-03-25 00:20:13
++++ ocamlnet-4.1.9-work/configure	2023-06-02 17:13:27
+@@ -52,6 +52,8 @@
+     enable_gssapi=0
+     enable_pcre=0
+     enable_full_pcre=0
++    enable_netsys=0
++    enable_netstring=0
+     compat_pcre=0
+     enable_nethttpd=0
+     bindir=`dirname "$ocamlc"`
+@@ -73,7 +75,7 @@
+ ocamlc=`get_path ocamlc`
+ set_defaults
+ 
+-version="$(sed -ne 's/^version: *"\(.*\)\.git".*/\1/p' ../opam)"
++version="4.1.9"
+ exec_suffix=""
+ path_sep=":"
+ 
+@@ -91,8 +93,11 @@
+ ehelp_full_pcre="Enable/disable the build against pcre-ocaml (no Str)"
+ ehelp_nethttpd="Enable/disable nethttpd web server component (GPL!)"
+ 
++ehelp_netsys="Enable/disable Netsys"
++ehelp_netstring="Enable/disable Netstring"
++
+ # Which options exist? eoptions for enable/disable
+-eoptions="pcre full_pcre gtk gtk2 tcl gnutls gssapi zip apache nethttpd"
++eoptions="pcre full_pcre gtk gtk2 tcl gnutls gssapi zip apache nethttpd netsys netstring"
+ 
+ # Packages to include anyway:
+ requires="bytes unix"
+@@ -1161,6 +1166,14 @@
+     # Omit the core packages:
+     pkglist=""
+     with_rpc_xti=0
++fi
++
++if [ $enable_netsys -gt 0 ]; then
++    pkglist="$pkglist netsys"
++fi
++
++if [ $enable_netstring -gt 0 ]; then
++    pkglist="$pkglist netstring"
+ fi
+ 
+ for opt in rpc_xti $woptions equeue_tcl equeue_gtk1 equeue_gtk2 netzip; do
+diff -ur ocamlnet-4.1.9/doc/html-main/Equeue_intro.html ocamlnet-4.1.9-work/doc/html-main/Equeue_intro.html
+--- ocamlnet-4.1.9/doc/html-main/Equeue_intro.html	2021-03-25 00:20:17
++++ ocamlnet-4.1.9-work/doc/html-main/Equeue_intro.html	2023-06-02 18:17:06
+@@ -1396,7 +1396,7 @@
+ <h4 id="eng_uqio">The I/O functions in <a href="Uq_io.html"><code class="code">Uq_io</code></a></h4>
+ <p>The functions in <a href="Uq_io.html"><code class="code">Uq_io</code></a> are patterned after the I/O functions
+ in the standard library, only that they use the engine paradigm.
+-For example, we have in <code class="code">Pervasives</code></p>
++For example, we have in <code class="code">Stdlib</code></p>
+ 
+ <pre class="codepre"><code class="code">val input : in_channel -&gt; string -&gt; int -&gt; int -&gt; int
+ </code></pre>
+diff -ur ocamlnet-4.1.9/doc/html-main/Netbuffer.html ocamlnet-4.1.9-work/doc/html-main/Netbuffer.html
+--- ocamlnet-4.1.9/doc/html-main/Netbuffer.html	2021-03-25 00:20:20
++++ ocamlnet-4.1.9-work/doc/html-main/Netbuffer.html	2023-06-02 18:16:31
+@@ -467,7 +467,7 @@
+  the actual number of added bytes; this number is also returned by
+  <code class="code">add_inplace</code>.</p>
+ 
+-<p>Example: let n = add_inplace nb (Pervasives.input ch)</p>
++<p>Example: let n = add_inplace nb (Stdlib.input ch)</p>
+ 
+ <p>The argument <code class="code">len</code> is the number of bytes to add (second argument of
+  <code class="code">f</code>). It defaults to the number of free bytes in the buffer after space
+diff -ur ocamlnet-4.1.9/doc/html-main/Netchannels.input_channel-c.html ocamlnet-4.1.9-work/doc/html-main/Netchannels.input_channel-c.html
+--- ocamlnet-4.1.9/doc/html-main/Netchannels.input_channel-c.html	2021-03-25 00:20:19
++++ ocamlnet-4.1.9-work/doc/html-main/Netchannels.input_channel-c.html	2023-06-02 18:17:19
+@@ -262,7 +262,7 @@
+ <p>Creates an input channel from an <code class="code">in_channel</code>, which must be open.</p>
+ 
+ <p>The method <code class="code">pos_in</code> reflects the real position in the channel as
+- returned by <code class="code">Pervasives.pos_in</code>. This works for both seekable and
++ returned by <code class="code">Stdlib.pos_in</code>. This works for both seekable and
+  non-seekable channels.</p>
+ 
+ <p>The method <code class="code">close_in</code> also closes the underlying <code class="code">in_channel</code>.</p>
+diff -ur ocamlnet-4.1.9/doc/html-main/Netchannels.output_channel-c.html ocamlnet-4.1.9-work/doc/html-main/Netchannels.output_channel-c.html
+--- ocamlnet-4.1.9/doc/html-main/Netchannels.output_channel-c.html	2021-03-25 00:20:19
++++ ocamlnet-4.1.9-work/doc/html-main/Netchannels.output_channel-c.html	2023-06-02 18:16:46
+@@ -264,7 +264,7 @@
+ <p>Creates an output channel writing into an <code class="code">out_channel</code>.</p>
+ 
+ <p>The method <code class="code">pos_out</code> reflects the real position in the channel as
+- returned by <code class="code">Pervasives.pos_out</code>. This works for both seekable and
++ returned by <code class="code">Stdlib.pos_out</code>. This works for both seekable and
+  non-seekable channels.</p>
+ 
+ <p>The method <code class="code">close_out</code> also closes the underlying <code class="code">out_channel</code>.
+diff -ur ocamlnet-4.1.9/doc/html-main/Netchannels_tut.html ocamlnet-4.1.9-work/doc/html-main/Netchannels_tut.html
+--- ocamlnet-4.1.9/doc/html-main/Netchannels_tut.html	2021-03-25 00:20:21
++++ ocamlnet-4.1.9-work/doc/html-main/Netchannels_tut.html	2023-06-02 18:15:50
+@@ -329,7 +329,7 @@
+ sum_up ch
+ </code></pre><p>The class <a href="Netchannels.html#VALinput_channel"><code class="code">Netchannels.input_channel</code></a> is an implementation of the type
+ <code class="code">in_obj_channel</code> where every method of the class simply calls the
+-corresponding function of the module <code class="code">Pervasives</code>. (By the way, it would
++corresponding function of the module <code class="code">Stdlib</code>. (By the way, it would
+ be a good idea to close the channel afterwards: <code class="code">ch#close_in()</code>.
+ We will discuss that below.)</p>
+ 
+diff -ur ocamlnet-4.1.9/doc/html-main/Rpc_intro.html ocamlnet-4.1.9-work/doc/html-main/Rpc_intro.html
+--- ocamlnet-4.1.9/doc/html-main/Rpc_intro.html	2021-03-25 00:20:22
++++ ocamlnet-4.1.9-work/doc/html-main/Rpc_intro.html	2023-06-02 18:16:12
+@@ -667,7 +667,7 @@
+   ints as default integer representation. Note that overflows are ignored for
+   unsigned ints; i.e. large unsigned XDR integers are mapped to negative <code class="code">int32</code>
+   values.</li>
+-<li><code class="code">-int unboxed</code>: Uses <code class="code">Pervasives.int</code> for both signed and
++<li><code class="code">-int unboxed</code>: Uses <code class="code">Stdlib.int</code> for both signed and
+   unsigned ints as default integer representation. XDR values outside the range
+   of O'Camls 31 bit signed ints are rejected (raise an exception).</li>
+ <li><code class="code">-hyper abstract</code>: Uses <a href="Netnumber.html#TYPEint8"><code class="code">Netnumber.int8</code></a> for signed ints and
+@@ -677,7 +677,7 @@
+   ints as default hyper representation. Note that overflows are ignored for
+   unsigned ints; i.e. large unsigned XDR hypers are mapped to negative <code class="code">int64</code>
+   values.</li>
+-<li><code class="code">-hyper unboxed</code>: Uses <code class="code">Pervasives.int</code> for both signed and
++<li><code class="code">-hyper unboxed</code>: Uses <code class="code">Stdlib.int</code> for both signed and
+   unsigned ints as default hyper representation. XDR values outside the range
+   of O'Camls 31 bit signed ints are rejected (raise an exception).</li>
+ <li><code class="code">-cpp /path/to/cpp</code>: Applies the C preprocessor found
+diff -ur ocamlnet-4.1.9/setup.ml ocamlnet-4.1.9-work/setup.ml
+--- ocamlnet-4.1.9/setup.ml	2021-03-25 00:20:13
++++ ocamlnet-4.1.9-work/setup.ml	2023-06-02 13:14:20
+@@ -1772,7 +1772,7 @@
+     Map.Make
+       (struct
+         type t = plugin_kind * name
+-        let compare = Pervasives.compare
++        let compare = Stdlib.compare
+       end)
+ 
+   module Data =
+@@ -3465,7 +3465,7 @@
+           ([], None)
+           (List.sort
+              (fun (o1, _) (o2, _) ->
+-                Pervasives.compare o2 o1)
++                Stdlib.compare o2 o1)
+              lst)
+       in
+       match res, errors with
+diff -ur ocamlnet-4.1.9/src/equeue/Makefile ocamlnet-4.1.9-work/src/equeue/Makefile
+--- ocamlnet-4.1.9/src/equeue/Makefile	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/equeue/Makefile	2023-06-02 15:14:18
+@@ -22,6 +22,8 @@
+ INCLUDES += $(INC_NETSYS)
+ INCLUDES += $(INC_NETSTRING)
+ 
++REQUIRES += camlp-streams
++
+ OCAMLC_OPTIONS += $(STRING_OPTS)
+ OCAMLOPT_OPTIONS += $(STRING_OPTS)
+ 
+diff -ur ocamlnet-4.1.9/src/equeue/unixqueue_pollset.ml ocamlnet-4.1.9-work/src/equeue/unixqueue_pollset.ml
+--- ocamlnet-4.1.9/src/equeue/unixqueue_pollset.ml	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/equeue/unixqueue_pollset.ml	2023-06-02 13:14:20
+@@ -16,7 +16,7 @@
+ 
+ module Float = struct
+   type t = float
+-(*  let compare = ( Pervasives.compare : float -> float -> int ) *)
++(*  let compare = ( Stdlib.compare : float -> float -> int ) *)
+   let compare (x:float) y =
+     if x < y then (-1) else if x = y then 0 else 1
+       (* does not work for non-normal numbers but we don't care *)
+diff -ur ocamlnet-4.1.9/src/equeue/unixqueue_select.ml ocamlnet-4.1.9-work/src/equeue/unixqueue_select.ml
+--- ocamlnet-4.1.9/src/equeue/unixqueue_select.ml	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/equeue/unixqueue_select.ml	2023-06-02 13:14:20
+@@ -35,7 +35,7 @@
+ module Fdescr = struct
+   type t = Unix.file_descr
+ 
+-  let compare (a:t) (b:t) = Pervasives.compare a b
++  let compare (a:t) (b:t) = Stdlib.compare a b
+ 
+ end;;
+ 
+@@ -59,7 +59,7 @@
+   type t = operation
+ 
+   (* let compare (rid1:t) (rid2:t) =
+-        Pervasives.compare rid1 rid2
++        Stdlib.compare rid1 rid2
+    *)
+ 
+   let equal (rid1:t) (rid2:t) =
+diff -ur ocamlnet-4.1.9/src/equeue/unixqueue_util.ml ocamlnet-4.1.9-work/src/equeue/unixqueue_util.ml
+--- ocamlnet-4.1.9/src/equeue/unixqueue_util.ml	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/equeue/unixqueue_util.ml	2023-06-02 13:14:20
+@@ -179,7 +179,7 @@
+ let fd_cmp =
+   match Sys.os_type with
+     | "Win32" ->
+-	Pervasives.compare
++	Stdlib.compare
+     | _ ->
+ 	(fun (fd1:Unix.file_descr) fd2 ->
+ 	   (Obj.magic fd1 : int) - (Obj.magic fd2 : int)
+diff -ur ocamlnet-4.1.9/src/equeue/uq_engines.ml ocamlnet-4.1.9-work/src/equeue/uq_engines.ml
+--- ocamlnet-4.1.9/src/equeue/uq_engines.ml	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/equeue/uq_engines.ml	2023-06-02 13:14:20
+@@ -121,7 +121,7 @@
+   Set.Make
+     (struct
+        type t = int
+-       let compare (x:t) (y:t) = Pervasives.compare x y
++       let compare (x:t) (y:t) = Stdlib.compare x y
+      end
+     )
+ 
+diff -ur ocamlnet-4.1.9/src/netgss-system/META.in ocamlnet-4.1.9-work/src/netgss-system/META.in
+--- ocamlnet-4.1.9/src/netgss-system/META.in	2021-03-25 00:20:15
++++ ocamlnet-4.1.9-work/src/netgss-system/META.in	2023-06-02 15:53:01
+@@ -1,5 +1,5 @@
+ description = "Ocamlnet - GSSAPI bindings"
+-requires = "unix,bigarray,netsys,netstring"
++requires = "unix,netsys,netstring"
+ version = "@VERSION@"
+ archive(byte) = "netgss-system.cma"
+ archive(native) = "netgss-system.cmxa"
+diff -ur ocamlnet-4.1.9/src/nethttpd/nethttpd_services.ml ocamlnet-4.1.9-work/src/nethttpd/nethttpd_services.ml
+--- ocamlnet-4.1.9/src/nethttpd/nethttpd_services.ml	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/nethttpd/nethttpd_services.ml	2023-06-02 17:45:19
+@@ -107,10 +107,10 @@
+       try
+ 	let req_name = env # input_header_field "Host" in
+ 	let (req_host, req_port_opt) = split_host_port req_name in
+-	let req_host = String.lowercase req_host in
++	let req_host = String.lowercase_ascii req_host in
+ 	let req_port = match req_port_opt with Some p -> p | None -> 80 in  (* CHECK *)
+ 	List.find
+-	  (fun (n,p) -> (n = "*" || String.lowercase n = req_host) && 
++	  (fun (n,p) -> (n = "*" || String.lowercase_ascii n = req_host) && 
+ 	                (p = 0 || p = req_port))
+ 	  host.server_names
+       with
+diff -ur ocamlnet-4.1.9/src/netplex/Makefile ocamlnet-4.1.9-work/src/netplex/Makefile
+--- ocamlnet-4.1.9/src/netplex/Makefile	2021-03-25 00:20:15
++++ ocamlnet-4.1.9-work/src/netplex/Makefile	2023-06-02 16:27:15
+@@ -26,6 +26,8 @@
+ 
+ PP_OPTIONS = -pp "$(CPPO) $(PP_BYTES) $(PP_DEPRECATED)"
+ 
++REQUIRES += camlp-streams
++
+ INCLUDES += $(INC_EQUEUE) $(INC_RPC) $(INC_NETSTRING) $(INC_NETSYS)
+ 
+ ALL_EXTRA = netplex-admin$(EXEC_SUFFIX) netplex-packlist 
+@@ -36,7 +38,7 @@
+ 
+ netplex-admin$(EXEC_SUFFIX): netplex.cma netplex_admin.cmo
+ 	$(OCAMLC) -o netplex-admin -custom \
+-	        -package "bytes unix bigarray str" -linkpkg \
++	        -package "bytes unix str" -linkpkg \
+ 		netsys_oothr.cma netsys.cma netstring.cma equeue.cma \
+ 		rpc.cma netplex.cma netplex_admin.cmo
+ 
+diff -ur ocamlnet-4.1.9/src/netplex/netplex_kit.ml ocamlnet-4.1.9-work/src/netplex/netplex_kit.ml
+--- ocamlnet-4.1.9/src/netplex/netplex_kit.ml	2021-03-25 00:20:15
++++ ocamlnet-4.1.9-work/src/netplex/netplex_kit.ml	2023-06-02 13:14:20
+@@ -89,7 +89,7 @@
+ 
+ module PTYPE = struct
+   type t = parallelization_type
+-  let compare (x:t) (y:t) = Pervasives.compare x y
++  let compare (x:t) (y:t) = Stdlib.compare x y
+ end
+ 
+ module PSet = Set.Make(PTYPE)
+diff -ur ocamlnet-4.1.9/src/netplex/netplex_workload.ml ocamlnet-4.1.9-work/src/netplex/netplex_workload.ml
+--- ocamlnet-4.1.9/src/netplex/netplex_workload.ml	2021-03-25 00:20:15
++++ ocamlnet-4.1.9-work/src/netplex/netplex_workload.ml	2023-06-02 13:14:20
+@@ -119,7 +119,7 @@
+ 
+ module ContId = struct
+   type t = container_id
+-  let (compare : t -> t -> int) = Pervasives.compare
++  let (compare : t -> t -> int) = Stdlib.compare
+ end
+ 
+ 
+diff -ur ocamlnet-4.1.9/src/netshm/META.in ocamlnet-4.1.9-work/src/netshm/META.in
+--- ocamlnet-4.1.9/src/netshm/META.in	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netshm/META.in	2023-06-02 15:52:26
+@@ -1,6 +1,6 @@
+ version = "@VERSION@"
+ description = "Ocamlnet - Shared memory"
+-requires = "unix netsys bigarray"
++requires = "unix netsys"
+ archive(byte) = "netshm.cma"
+ archive(native) = "netshm.cmxa"
+ archive(native,gprof) = "netshm.p.cmxa"
+diff -ur ocamlnet-4.1.9/src/netshm/netshm.ml ocamlnet-4.1.9-work/src/netshm/netshm.ml
+--- ocamlnet-4.1.9/src/netshm/netshm.ml	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netshm/netshm.ml	2023-06-02 13:14:20
+@@ -133,7 +133,7 @@
+ 
+ module Int = struct
+   type t = int
+-  let compare = (Pervasives.compare : int -> int -> int)
++  let compare = (Stdlib.compare : int -> int -> int)
+ end
+ 
+ module IntMap = Map.Make(Int)
+diff -ur ocamlnet-4.1.9/src/netstring/Makefile ocamlnet-4.1.9-work/src/netstring/Makefile
+--- ocamlnet-4.1.9/src/netstring/Makefile	2021-03-25 00:20:13
++++ ocamlnet-4.1.9-work/src/netstring/Makefile	2023-06-02 15:23:35
+@@ -28,7 +28,7 @@
+ 
+ PKGNAME  = netstring
+ 
+-REQUIRES += $(REGEXP_PROVIDER_MAKE) bigarray
++REQUIRES += $(REGEXP_PROVIDER_MAKE) camlp-streams
+ INCLUDES += $(INC_NETSYS)
+ INCLUDES += -I ../netstring-pcre
+ 
+diff -ur ocamlnet-4.1.9/src/netstring/netaccel_c.c ocamlnet-4.1.9-work/src/netstring/netaccel_c.c
+--- ocamlnet-4.1.9/src/netstring/netaccel_c.c	2021-03-25 00:20:13
++++ ocamlnet-4.1.9-work/src/netstring/netaccel_c.c	2023-06-02 14:53:01
+@@ -25,7 +25,7 @@
+ 	srcpos_c+len_c > Wosize_val(src) ||
+ 	destpos_c < 0 ||
+ 	destpos_c+len_c > Wosize_val(dest))
+-	invalid_argument("Netaccel.int_blit");
++	caml_invalid_argument("Netaccel.int_blit");
+     
+     if (src != dest || destpos_c <= srcpos_c) {
+ 	for (i=0; i<len_c; i++) {
+@@ -59,7 +59,7 @@
+ 	srcpos_c+len_c > Wosize_val(src) ||
+ 	destpos_c < 0 ||
+ 	destpos_c+len_c > Wosize_val(dest))
+-	invalid_argument("Netaccel.int_series");
++	caml_invalid_argument("Netaccel.int_series");
+ 
+     s = n_c;
+     for (i=0; i<len_c; i++) {
+@@ -99,9 +99,9 @@
+     slice_char_len = Wosize_val(slice_char);
+ 
+     if (slice_char_len != Wosize_val(slice_blen)) 
+-	invalid_argument("Netaccel.read_iso88591");
+-    if (p_in_c < 0 || l_in_c < 0 || p_in_c + l_in_c > string_length(s_in)) 
+-	invalid_argument("Netaccel.read_iso88591");
++	caml_invalid_argument("Netaccel.read_iso88591");
++    if (p_in_c < 0 || l_in_c < 0 || p_in_c + l_in_c > caml_string_length(s_in)) 
++	caml_invalid_argument("Netaccel.read_iso88591");
+ 
+     m = l_in_c;
+     if (slice_char_len < m) m = slice_char_len;
+@@ -110,11 +110,11 @@
+ 	ch = Byte_u(s_in, p_in_c+k);
+ 	if (ch > maxcode_c) {
+ 	    Field(slice_char, k) = Val_long(-1);
+-	    r = alloc_tuple(3);
++	    r = caml_alloc_tuple(3);
+ 	    Store_field(r, 0, Val_long(k));
+ 	    Store_field(r, 1, Val_long(k));
+ 	    Store_field(r, 2, enc);
+-	    raise_with_arg(*caml_named_value("Netconversion.Malformed_code_read"),
++	    caml_raise_with_arg(*caml_named_value("Netconversion.Malformed_code_read"),
+ 			   r);
+ 	};
+ 	Field(slice_char, k) = Val_int((signed int) ch);
+@@ -124,7 +124,7 @@
+ 	Field(slice_char, m) = Val_long(-1);
+     };
+ 
+-    r = alloc_tuple(3);
++    r = caml_alloc_tuple(3);
+     Store_field(r, 0, Val_long(m));
+     Store_field(r, 1, Val_long(m));
+     Store_field(r, 2, enc);
+@@ -164,9 +164,9 @@
+     slice_char_len = Wosize_val(slice_char);
+ 
+     if (slice_char_len != Wosize_val(slice_blen)) 
+-	invalid_argument("Netaccel.read_utf8");
+-    if (p_in_c < 0 || l_in_c < 0 || p_in_c + l_in_c > string_length(s_in)) 
+-	invalid_argument("Netaccel.read_utf8");
++	caml_invalid_argument("Netaccel.read_utf8");
++    if (p_in_c < 0 || l_in_c < 0 || p_in_c + l_in_c > caml_string_length(s_in)) 
++	caml_invalid_argument("Netaccel.read_utf8");
+ 
+     p = p_in_c;
+     p_max = p_in_c + l_in_c;
+@@ -249,20 +249,20 @@
+ 	Field(slice_char, n_ret) = Val_long(-1);
+     }
+ 
+-    r = alloc_tuple(3);
++    r = caml_alloc_tuple(3);
+     Store_field(r, 0, Val_long(n_ret));
+     Store_field(r, 1, Val_long(p-p_in_c));
+-    Store_field(r, 2, hash_variant("Enc_utf8"));
++    Store_field(r, 2, caml_hash_variant("Enc_utf8"));
+ 
+     CAMLreturn(r);
+ 
+  malformed_code:
+     Field(slice_char, n) = Val_long(-1);
+-    r = alloc_tuple(3);
++    r = caml_alloc_tuple(3);
+     Store_field(r, 0, Val_long(n));
+     Store_field(r, 1, Val_long(p-p_in_c));
+-    Store_field(r, 2, hash_variant("Enc_utf8"));
+-    raise_with_arg(*caml_named_value("Netconversion.Malformed_code_read"),
++    Store_field(r, 2, caml_hash_variant("Enc_utf8"));
++    caml_raise_with_arg(*caml_named_value("Netconversion.Malformed_code_read"),
+ 		   r);
+ 
+     /* Cannot reach this point! */
+diff -ur ocamlnet-4.1.9/src/netstring/netbuffer.mli ocamlnet-4.1.9-work/src/netstring/netbuffer.mli
+--- ocamlnet-4.1.9/src/netstring/netbuffer.mli	2021-03-25 00:20:13
++++ ocamlnet-4.1.9-work/src/netstring/netbuffer.mli	2023-06-02 13:14:20
+@@ -129,7 +129,7 @@
+      * the actual number of added bytes; this number is also returned by
+      * [add_inplace].
+      *
+-     * Example: let n = add_inplace nb (Pervasives.input ch)
++     * Example: let n = add_inplace nb (Stdlib.input ch)
+      *
+      * The argument [len] is the number of bytes to add (second argument of
+      * [f]). It defaults to the number of free bytes in the buffer after space
+diff -ur ocamlnet-4.1.9/src/netstring/netchannels.ml ocamlnet-4.1.9-work/src/netstring/netchannels.ml
+--- ocamlnet-4.1.9/src/netstring/netchannels.ml	2021-03-25 00:20:13
++++ ocamlnet-4.1.9-work/src/netstring/netchannels.ml	2023-06-02 13:14:20
+@@ -213,45 +213,45 @@
+     if closed then self # complain_closed();
+     try
+       if len=0 then raise Sys_blocked_io;
+-      let n = Pervasives.input ch buf pos len in
++      let n = Stdlib.input ch buf pos len in
+       if n=0 then raise End_of_file else n
+     with
+ 	Sys_blocked_io -> 0
+ 
+   method really_input buf pos len = 
+     if closed then self # complain_closed();
+-    Pervasives.really_input ch buf pos len 
++    Stdlib.really_input ch buf pos len 
+ 
+   method really_input_string len = 
+     if closed then self # complain_closed();
+     #ifdef HAVE_BYTES
+-      Pervasives.really_input_string ch len 
++      Stdlib.really_input_string ch len 
+     #else
+       let buf = String.create len in
+-      Pervasives.really_input ch buf 0 len;
++      Stdlib.really_input ch buf 0 len;
+       buf
+     #endif
+ 
+   method input_char () =
+     if closed then self # complain_closed();
+-    Pervasives.input_char ch 
++    Stdlib.input_char ch 
+ 
+   method input_line () =
+     if closed then self # complain_closed();
+-    Pervasives.input_line ch 
++    Stdlib.input_line ch 
+ 
+   method input_byte () =
+     if closed then self # complain_closed();
+-    Pervasives.input_byte ch 
++    Stdlib.input_byte ch 
+ 
+   method close_in () =
+     if not closed then (
+-      Pervasives.close_in ch; closed <- true; onclose()
++      Stdlib.close_in ch; closed <- true; onclose()
+     )
+ 
+   method pos_in =
+     if closed then self # complain_closed();
+-    Pervasives.pos_in ch 
++    Stdlib.pos_in ch 
+ end
+ ;;
+ 
+@@ -999,17 +999,17 @@
+ 
+   method output buf pos len =
+     if closed then self # complain_closed();
+-    (* Pervasives.output does not support non-blocking I/O directly.
++    (* Stdlib.output does not support non-blocking I/O directly.
+      * Work around it:
+      *)
+-    let p0 = Pervasives.pos_out ch in
++    let p0 = Stdlib.pos_out ch in
+     try 
+-      Pervasives.output ch buf pos len;
++      Stdlib.output ch buf pos len;
+       errflag := false;
+       len
+     with
+       | Sys_blocked_io ->
+-	  let p1 = Pervasives.pos_out ch in
++	  let p1 = Stdlib.pos_out ch in
+ 	  errflag := false;
+ 	  p1 - p0
+       | error ->
+@@ -1018,35 +1018,35 @@
+ 
+   method really_output buf pos len =
+     if closed then self # complain_closed();
+-    monitored (Pervasives.output ch buf pos) len
++    monitored (Stdlib.output ch buf pos) len
+ 
+   method really_output_string buf pos len =
+     if closed then self # complain_closed();
+     #ifdef HAVE_BYTES
+-      monitored (Pervasives.output_substring ch buf pos) len
++      monitored (Stdlib.output_substring ch buf pos) len
+     #else
+-      monitored (Pervasives.output ch buf pos) len
++      monitored (Stdlib.output ch buf pos) len
+     #endif
+ 
+   method output_char c =
+     if closed then self # complain_closed();
+-    monitored (Pervasives.output_char ch) c
++    monitored (Stdlib.output_char ch) c
+ 
+   method output_string s =
+     if closed then self # complain_closed();
+-    monitored (Pervasives.output_string ch) s
++    monitored (Stdlib.output_string ch) s
+ 
+   method output_bytes s =
+     if closed then self # complain_closed();
+     #ifdef HAVE_BYTES
+-      monitored (Pervasives.output_bytes ch) s
++      monitored (Stdlib.output_bytes ch) s
+     #else
+-      monitored (Pervasives.output_string ch) s
++      monitored (Stdlib.output_string ch) s
+     #endif
+ 
+   method output_byte b =
+     if closed then self # complain_closed();
+-    monitored (Pervasives.output_byte ch) b
++    monitored (Stdlib.output_byte ch) b
+ 
+   method output_buffer b =
+     if closed then self # complain_closed();
+@@ -1061,7 +1061,7 @@
+ 
+   method flush() =
+     if closed then self # complain_closed();
+-    monitored Pervasives.flush ch
++    monitored Stdlib.flush ch
+ 
+   method close_out() =
+     if not closed then (
+@@ -1071,9 +1071,9 @@
+ 	     exception handler
+ 	   *)
+ 	  if !errflag then
+-	    Pervasives.close_out_noerr ch
++	    Stdlib.close_out_noerr ch
+ 	  else
+-	    Pervasives.close_out ch; 
++	    Stdlib.close_out ch; 
+ 	  closed <- true; 
+ 	with
+ 	  | error ->
+@@ -1082,7 +1082,7 @@
+ 		"Netchannels.output_channel: \
+                    Suppressed error in close_out: %s - backtrace: %s"
+ 		(Netexn.to_string error) bt;
+-	      Pervasives.close_out_noerr ch;
++	      Stdlib.close_out_noerr ch;
+ 	      closed <- true; 
+       );
+       onclose()
+@@ -1090,7 +1090,7 @@
+ 
+   method pos_out = 
+     if closed then self # complain_closed();
+-    Pervasives.pos_out ch
++    Stdlib.pos_out ch
+ 
+ end
+ ;;
+@@ -1844,7 +1844,7 @@
+                   Suppressed error in close_out: %s - backtrace: %s"
+ 		(Netexn.to_string error) bt;
+       );
+-      Pervasives.close_in transch_in;
++      Stdlib.close_in transch_in;
+       trans # close_out();      (* closes transch_out *)
+       out # close_out();
+       closed := true
+@@ -1859,7 +1859,7 @@
+     need_clear <- true;
+     let len = trans # pos_out in
+     trans # flush();
+-    Pervasives.seek_in transch_in 0;
++    Stdlib.seek_in transch_in 0;
+     let trans' = new input_channel transch_in in
+     ( try 
+         out # output_channel ~len trans';
+@@ -1876,7 +1876,7 @@
+   method private clear() =
+     (* delete the contents of the file *)
+     (* First empty the file and reset the output channel: *)
+-    Pervasives.seek_out transch_out 0;
++    Stdlib.seek_out transch_out 0;
+     Unix.ftruncate (Unix.descr_of_out_channel transch_out) 0;
+     (* Renew the input channel. We create a new channel to avoid problems
+      * with the internal buffer of the channel.
+diff -ur ocamlnet-4.1.9/src/netstring/netchannels.mli ocamlnet-4.1.9-work/src/netstring/netchannels.mli
+--- ocamlnet-4.1.9/src/netstring/netchannels.mli	2021-03-25 00:20:13
++++ ocamlnet-4.1.9-work/src/netstring/netchannels.mli	2023-06-02 13:14:20
+@@ -389,7 +389,7 @@
+   (** Creates an input channel from an [in_channel], which must be open.
+    *
+    * The method [pos_in] reflects the real position in the channel as
+-   * returned by [Pervasives.pos_in]. This works for both seekable and
++   * returned by [Stdlib.pos_in]. This works for both seekable and
+    * non-seekable channels.
+    *
+    * The method [close_in] also closes the underlying [in_channel].
+@@ -530,7 +530,7 @@
+   (** Creates an output channel writing into an [out_channel].
+    *
+    * The method [pos_out] reflects the real position in the channel as
+-   * returned by [Pervasives.pos_out]. This works for both seekable and
++   * returned by [Stdlib.pos_out]. This works for both seekable and
+    * non-seekable channels.
+    *
+    * The method [close_out] also closes the underlying [out_channel].
+diff -ur ocamlnet-4.1.9/src/netstring/netchannels_tut.txt ocamlnet-4.1.9-work/src/netstring/netchannels_tut.txt
+--- ocamlnet-4.1.9/src/netstring/netchannels_tut.txt	2021-03-25 00:20:13
++++ ocamlnet-4.1.9-work/src/netstring/netchannels_tut.txt	2023-06-02 18:17:52
+@@ -83,7 +83,7 @@
+ ]}
+ The class {!Netchannels.input_channel} is an implementation of the type
+ [in_obj_channel] where every method of the class simply calls the
+-corresponding function of the module [Pervasives]. (By the way, it would
++corresponding function of the module [Stdlib]. (By the way, it would
+ be a good idea to close the channel afterwards: [ch#close_in()].
+ We will discuss that below.)
+ 
+diff -ur ocamlnet-4.1.9/src/netstring/nethtml.ml ocamlnet-4.1.9-work/src/netstring/nethtml.ml
+--- ocamlnet-4.1.9/src/netstring/nethtml.ml	2021-03-25 00:20:13
++++ ocamlnet-4.1.9-work/src/netstring/nethtml.ml	2023-06-02 13:14:20
+@@ -283,7 +283,7 @@
+ 
+ module S = struct
+   type t = string
+-  let compare = (Pervasives.compare : string -> string -> int)
++  let compare = (Stdlib.compare : string -> string -> int)
+ end
+ 
+ module Strset = Set.Make(S);;
+diff -ur ocamlnet-4.1.9/src/netstring/nethttp.ml ocamlnet-4.1.9-work/src/netstring/nethttp.ml
+--- ocamlnet-4.1.9/src/netstring/nethttp.ml	2021-03-25 00:20:13
++++ ocamlnet-4.1.9-work/src/netstring/nethttp.ml	2023-06-02 13:14:20
+@@ -1009,7 +1009,7 @@
+       snd
+       (List.stable_sort
+ 	 (fun (q1, tok_param1) (q2, tok_param2) ->
+-	    Pervasives.compare q2 q1)
++	    Stdlib.compare q2 q1)
+ 	 (List.filter
+ 	    (fun (q, tok_param) ->
+ 	       q > 0.0)
+diff -ur ocamlnet-4.1.9/src/netstring/netmime.ml ocamlnet-4.1.9-work/src/netstring/netmime.ml
+--- ocamlnet-4.1.9/src/netstring/netmime.ml	2021-03-25 00:20:13
++++ ocamlnet-4.1.9-work/src/netstring/netmime.ml	2023-06-02 13:14:20
+@@ -71,7 +71,7 @@
+ end = struct
+   type t = string
+   let compare (a_ci:t) (b_ci:t) =
+-    Pervasives.compare a_ci b_ci
++    Stdlib.compare a_ci b_ci
+   let make s = STRING_LOWERCASE s
+ end
+ 
+diff -ur ocamlnet-4.1.9/src/netsys/META.in ocamlnet-4.1.9-work/src/netsys/META.in
+--- ocamlnet-4.1.9/src/netsys/META.in	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/META.in	2023-06-02 15:51:39
+@@ -1,5 +1,5 @@
+ description = "Ocamlnet - OS-specific functions"
+-requires = "bytes,unix,bigarray"
++requires = "bytes,unix"
+ version = "@VERSION@"
+ archive(byte) = "netsys_oothr.cma netsys.cma"
+ archive(native) = "netsys_oothr.cmxa netsys.cmxa"
+diff -ur ocamlnet-4.1.9/src/netsys/netlog.ml ocamlnet-4.1.9-work/src/netsys/netlog.ml
+--- ocamlnet-4.1.9/src/netsys/netlog.ml	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netlog.ml	2023-06-02 13:14:20
+@@ -129,7 +129,7 @@
+     
+ 
+ let current_logger =
+-  ref(channel_logger Pervasives.stderr `Debug)
++  ref(channel_logger Stdlib.stderr `Debug)
+ 
+ 
+ let log lev msg =
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c.c ocamlnet-4.1.9-work/src/netsys/netsys_c.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c.c	2023-06-02 16:12:01
+@@ -12,13 +12,13 @@
+ #ifdef _WIN32
+     switch (Descr_kind_val(fd)) {
+     case KIND_HANDLE:
+-	return copy_int64((intnat) (Handle_val(fd)));
++	return caml_copy_int64((intnat) (Handle_val(fd)));
+     case KIND_SOCKET:
+-	return copy_int64((intnat) (Socket_val(fd)));
++	return caml_copy_int64((intnat) (Socket_val(fd)));
+     }
+-    return copy_int64(0);
++    return caml_copy_int64(0);
+ #else
+-    return copy_int64(Long_val(fd));
++    return caml_copy_int64(Long_val(fd));
+ #endif
+ }
+ 
+@@ -137,7 +137,7 @@
+ #ifdef HAVE_POSIX_TTY
+     char *s;
+     s = NULL;
+-    return copy_string(ctermid(s));
++    return caml_copy_string(ctermid(s));
+     /* ctermid is always successful; however it can return an empty string */
+ #else
+     invalid_argument("Netsys.ctermid not available");
+@@ -151,7 +151,7 @@
+ 
+     s = ttyname(Int_val(fd));
+     if ( s == NULL ) uerror("ttyname", Nothing);
+-    return copy_string(s);
++    return caml_copy_string(s);
+ #else
+     invalid_argument("Netsys.ttyname not available");
+ #endif
+@@ -260,7 +260,7 @@
+   value res;
+   d = fdopendir(Int_val(fd));
+   if (d == (DIR *) NULL) uerror("fdopendir", Nothing);
+-  res = alloc_small(1, Abstract_tag);
++  res = caml_alloc_small(1, Abstract_tag);
+   DIR_Val(res) = d;
+   return res;
+ #else
+@@ -281,7 +281,7 @@
+ 	uerror("realpath", Nothing);
+     }
+     else {
+-	name_out = copy_string(name_out_s);
++	name_out = caml_copy_string(name_out_s);
+ 	free(name_out_s);
+     }
+     return name_out;
+@@ -324,7 +324,7 @@
+ 
+     s = ptsname(Int_val(fd));
+     if ( s == NULL ) uerror("ptsname", Nothing);
+-    return copy_string(s);
++    return caml_copy_string(s);
+ #else
+     invalid_argument("Netsys_posix.ptsname not available");
+ #endif
+@@ -473,8 +473,8 @@
+     char * p;
+ 
+     /* shamelessly copied from ocaml distro */
+-    cv_flags = convert_flag_list(flags, open_flag_table);
+-    clo_flags = convert_flag_list(flags, open_cloexec_table);
++    cv_flags = caml_convert_flag_list(flags, open_flag_table);
++    clo_flags = caml_convert_flag_list(flags, open_cloexec_table);
+     if (clo_flags & CLOEXEC)
+         cloexec = 1;
+     else if (clo_flags & KEEPEXEC)
+@@ -484,12 +484,12 @@
+ #if defined(O_CLOEXEC)
+     if (cloexec) cv_flags |= O_CLOEXEC;
+ #endif
+-    p = stat_alloc(string_length(path) + 1);
++    p = caml_stat_alloc(caml_string_length(path) + 1);
+     strcpy(p, String_val(path));
+-    enter_blocking_section();
++    caml_enter_blocking_section();
+     ret = openat(Int_val(dirfd), p, cv_flags, Int_val(perm));
+-    leave_blocking_section();
+-    stat_free(p);
++    caml_leave_blocking_section();
++    caml_stat_free(p);
+     if (ret == -1) uerror("openat", path);
+ #if !defined(O_CLOEXEC)
+     {
+@@ -517,8 +517,8 @@
+ {
+ #ifdef HAVE_AT
+     int ret, cv_perms, cv_flags;
+-    cv_perms = convert_flag_list(perms, access_permission_table);
+-    cv_flags = convert_flag_list(flags, at_flags_table);
++    cv_perms = caml_convert_flag_list(perms, access_permission_table);
++    cv_flags = caml_convert_flag_list(flags, at_flags_table);
+     cv_flags &= (AT_EACCESS | AT_SYMLINK_NOFOLLOW);
+     ret = faccessat(Int_val(dirfd), String_val(path), cv_perms, cv_flags);
+     if (ret == -1)
+@@ -561,7 +561,7 @@
+ {
+ #ifdef HAVE_AT
+     int cv_flags;
+-    cv_flags = convert_flag_list(flags, at_flags_table);
++    cv_flags = caml_convert_flag_list(flags, at_flags_table);
+     cv_flags &= AT_SYMLINK_FOLLOW;  /* only allowed flag here */
+     if (linkat(Int_val(olddirfd), String_val(oldpath),
+ 	       Int_val(newdirfd), String_val(newpath), cv_flags) == -1)
+@@ -577,7 +577,7 @@
+ {
+ #ifdef HAVE_AT
+     int cv_flags;
+-    cv_flags = convert_flag_list(flags, at_flags_table);
++    cv_flags = caml_convert_flag_list(flags, at_flags_table);
+     cv_flags &= AT_REMOVEDIR;  /* only allowed flag here */
+     if (unlinkat(Int_val(dirfd), String_val(path), cv_flags) == -1)
+ 	uerror("unlinkat", path);
+@@ -622,7 +622,7 @@
+   len = readlinkat(Int_val(dirfd), String_val(path), buffer, sizeof(buffer)-1);
+   if (len == -1) uerror("readlinkat", path);
+   buffer[len] = '\0';
+-  return copy_string(buffer);
++  return caml_copy_string(buffer);
+ #else
+     invalid_argument("Netsys_posix.readlinkat not available");
+ #endif
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c.h ocamlnet-4.1.9-work/src/netsys/netsys_c.h
+--- ocamlnet-4.1.9/src/netsys/netsys_c.h	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c.h	2023-06-02 16:21:41
+@@ -184,9 +184,21 @@
+    this file.
+ */
+ 
+-extern value unix_error_of_code (int errcode);
+-extern void unix_error (int errcode, char * cmdname, value arg) Noreturn;
+-extern void uerror (char * cmdname, value arg) Noreturn;
++extern value caml_unix_error_of_code (int errcode);
++extern int caml_unix_code_of_unix_error (value error);
++
++CAMLnoreturn_start
++extern void caml_unix_error (int errcode, const char * cmdname, value arg)
++CAMLnoreturn_end;
++
++CAMLnoreturn_start
++extern void caml_uerror (const char * cmdname, value arg)
++CAMLnoreturn_end;
++
++#define unix_error_of_code caml_unix_error_of_code
++#define code_of_unix_error caml_unix_code_of_unix_error
++#define uerror caml_uerror
++#define unix_error caml_unix_error
+ 
+ #define DIR_Val(v) *((DIR **) &Field(v, 0))
+ 
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_clock.c ocamlnet-4.1.9-work/src/netsys/netsys_c_clock.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_clock.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_clock.c	2023-06-02 16:14:32
+@@ -23,10 +23,10 @@
+ 
+     d = Double_val(Field(tspair,0));
+     if (!isfinite(d) || d < 0 || d > LONG_MAX-1)
+-	failwith("Netsys_posix: time value out of range");
++	caml_failwith("Netsys_posix: time value out of range");
+     n = Long_val(Field(tspair,1));
+     if (n < 0 || n > 999999999)
+-	failwith("Netsys_posix: time value out of range");
++	caml_failwith("Netsys_posix: time value out of range");
+     i = floor(d);
+     r = floor((d - i) * 1E9);
+     r = r + n;
+@@ -44,7 +44,7 @@
+ static value alloc_timespec_pair(double sec, long nsec) {
+     CAMLparam0();
+     CAMLlocal1(tsout);
+-    tsout = alloc(2,0);
++    tsout = caml_alloc(2,0);
+     Store_field(tsout, 0, caml_copy_double(sec));
+     Store_field(tsout, 1, Val_long(nsec));
+     CAMLreturn(tsout);
+@@ -65,7 +65,7 @@
+ 	    *out = CLOCK_MONOTONIC;
+ 	    break;
+ #else
+-	    failwith("Netsys_posix: CLOCK_MONOTONIC is not supported");
++	    caml_failwith("Netsys_posix: CLOCK_MONOTONIC is not supported");
+ #endif
+ 	}
+     }
+@@ -102,7 +102,7 @@
+    
+     CAMLreturn(Val_unit);
+ #else
+-    invalid_argument("Netsys_posix.nanosleep not available");
++    caml_invalid_argument("Netsys_posix.nanosleep not available");
+ #endif
+ }
+ 
+@@ -124,7 +124,7 @@
+     
+     CAMLreturn(tsout);
+ #else
+-    invalid_argument("Netsys_posix.clock_gettime not available");
++    caml_invalid_argument("Netsys_posix.clock_gettime not available");
+ #endif
+ }
+ 
+@@ -145,7 +145,7 @@
+     
+     CAMLreturn(Val_unit);
+ #else
+-    invalid_argument("Netsys_posix.clock_settime not available");
++    caml_invalid_argument("Netsys_posix.clock_settime not available");
+ #endif
+ }
+ 
+@@ -168,7 +168,7 @@
+     
+     CAMLreturn(tsout);
+ #else
+-    invalid_argument("Netsys_posix.clock_getres not available");
++    caml_invalid_argument("Netsys_posix.clock_getres not available");
+ #endif
+ }
+ 
+@@ -191,7 +191,7 @@
+ 
+     CAMLreturn(v);
+ #else
+-    invalid_argument("Netsys_posix.clock_getcpuclockid not available");
++    caml_invalid_argument("Netsys_posix.clock_getcpuclockid not available");
+ #endif
+ }
+ 
+@@ -263,7 +263,7 @@
+ 	    sev.sigev_value.sival_ptr = ne;
+ 	    break;
+ #else
+-	    failwith("Netsys_posix.timer_create: unsupported type of timer");
++	    caml_failwith("Netsys_posix.timer_create: unsupported type of timer");
+ #endif
+ #endif
+ 	}
+@@ -280,7 +280,7 @@
+ 	    sev.sigev_value.sival_ptr = ne;
+ 	    break;
+ #else
+-	    failwith("Netsys_posix.timer_create: unsupported type of timer");
++	    caml_failwith("Netsys_posix.timer_create: unsupported type of timer");
+ #endif
+ 	case 1:
+ 	    /* TEXP_SIGNAL */
+@@ -313,7 +313,7 @@
+     Store_field(v, 1, v_event);
+     CAMLreturn(v);
+ #else
+-    invalid_argument("Netsys_posix.timer_create not available");
++    caml_invalid_argument("Netsys_posix.timer_create not available");
+ #endif
+ }
+ 
+@@ -363,7 +363,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.timer_settime not available");
++    caml_invalid_argument("Netsys_posix.timer_settime not available");
+ #endif
+ }
+ 
+@@ -398,7 +398,7 @@
+ 			    it.it_value.tv_nsec);
+     return r;
+ #else
+-    invalid_argument("Netsys_posix.timer_gettime not available");
++    caml_invalid_argument("Netsys_posix.timer_gettime not available");
+ #endif
+ }
+ 
+@@ -424,7 +424,7 @@
+     }
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.timer_delete not available");
++    caml_invalid_argument("Netsys_posix.timer_delete not available");
+ #endif
+ }
+ 
+@@ -435,9 +435,9 @@
+ 	return Field(timer,1);
+     }
+     else {
+-	failwith("Netsys_posix.timer_event: timer is not connected with event");
++	caml_failwith("Netsys_posix.timer_event: timer is not connected with event");
+     }
+ #else
+-    invalid_argument("Netsys_posix.timer_delete not available");
++    caml_invalid_argument("Netsys_posix.timer_delete not available");
+ #endif
+ }
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_event.c ocamlnet-4.1.9-work/src/netsys/netsys_c_event.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_event.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_event.c	2023-06-02 16:14:43
+@@ -224,7 +224,7 @@
+ #endif
+     return r;
+ #else
+-    invalid_argument("Netsys_posix.create_event not available");
++    caml_invalid_argument("Netsys_posix.create_event not available");
+ #endif
+ }
+ 
+@@ -268,7 +268,7 @@
+     ne = *(Not_event_val(nev));
+ 
+     if (ne->fd1 == -1) 
+-	failwith("Netsys_posix.set_nonblock_event: already destroyed");
++	caml_failwith("Netsys_posix.set_nonblock_event: already destroyed");
+     
+     x = fcntl(ne->fd1, F_GETFL, 0);
+     if (x == -1) uerror("fcntl", Nothing);
+@@ -278,7 +278,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.set_nonblock_event not available");
++    caml_invalid_argument("Netsys_posix.set_nonblock_event not available");
+ #endif
+ }
+ 
+@@ -290,10 +290,10 @@
+     int fd, code;
+     ne = *(Not_event_val(nev));
+     if (ne->fd1 == -1) 
+-	failwith("Netsys_posix.get_event_fd_nodup: already destroyed");
++	caml_failwith("Netsys_posix.get_event_fd_nodup: already destroyed");
+     return Val_int(ne->fd1);
+ #else
+-    invalid_argument("Netsys_posix.get_event_fd not available");
++    caml_invalid_argument("Netsys_posix.get_event_fd not available");
+ #endif
+ }
+ 
+@@ -306,11 +306,11 @@
+     int fd;
+     ne = *(Not_event_val(nev));
+     if (ne->fd1 == -1) 
+-	failwith("Netsys_posix.get_event_fd: already destroyed");
++	caml_failwith("Netsys_posix.get_event_fd: already destroyed");
+     fd = ne->fd1;
+     return fd;
+ #else
+-    invalid_argument("Netsys_posix.get_event_fd not available");
++    caml_invalid_argument("Netsys_posix.get_event_fd not available");
+ #endif
+ }
+ 
+@@ -350,15 +350,15 @@
+     CAMLparam1(nev);
+     ne = *(Not_event_val(nev));
+     if (ne->fd1 == -1) 
+-	failwith("Netsys_posix.set_event: already destroyed");
++	caml_failwith("Netsys_posix.set_event: already destroyed");
+     if (!ne->allow_user_add)
+-	failwith("Netsys_posix.set_event: not allowed for this type of event");
++	caml_failwith("Netsys_posix.set_event: not allowed for this type of event");
+     caml_enter_blocking_section();
+     netsys_not_event_signal(ne);
+     caml_leave_blocking_section();
+     CAMLreturn(Val_unit);
+ #else
+-    invalid_argument("Netsys_posix.set_event not available");
++    caml_invalid_argument("Netsys_posix.set_event not available");
+ #endif
+ }
+ 
+@@ -373,7 +373,7 @@
+     ne = *(Not_event_val(nev));
+     
+     if (ne->fd1 == -1) 
+-	failwith("Netsys_posix.wait_event: already destroyed");
++	caml_failwith("Netsys_posix.wait_event: already destroyed");
+ 
+     caml_enter_blocking_section();
+     p.fd = ne->fd1;
+@@ -386,7 +386,7 @@
+     if (code == -1) unix_error(e, "poll", Nothing);
+     CAMLreturn(Val_unit);
+ #else
+-    invalid_argument("Netsys_posix.wait_event not available");
++    caml_invalid_argument("Netsys_posix.wait_event not available");
+ #endif
+ }
+ 
+@@ -402,7 +402,7 @@
+     ne = *(Not_event_val(nev));
+     
+     if (ne->fd1 == -1) 
+-	failwith("Netsys_posix.consume_event: already destroyed");
++	caml_failwith("Netsys_posix.consume_event: already destroyed");
+ 
+     caml_enter_blocking_section();
+ 
+@@ -436,6 +436,6 @@
+ 
+     CAMLreturn(Val_unit);
+ #else
+-    invalid_argument("Netsys_posix.wait_event not available");
++    caml_invalid_argument("Netsys_posix.wait_event not available");
+ #endif
+ }
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_fadvise.c ocamlnet-4.1.9-work/src/netsys/netsys_c_fadvise.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_fadvise.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_fadvise.c	2023-06-02 16:01:20
+@@ -35,7 +35,7 @@
+     case 3: case 9: adv_int = POSIX_FADV_NOREUSE; break;
+     case 4: case 10: adv_int = POSIX_FADV_WILLNEED; break;
+     case 5: case 11: adv_int = POSIX_FADV_DONTNEED; break;
+-    default: invalid_argument("Netsys.fadvise");
++    default: caml_invalid_argument("Netsys.fadvise");
+     };
+ 
+     start_int = Int64_val(start);
+@@ -51,10 +51,10 @@
+ 
+     r = posix_fadvise(Int_val(fd), start_off, len_off, adv_int);
+     if (r == -1) 
+-	uerror("posix_fadvise64", Nothing);
++	caml_uerror("posix_fadvise64", Nothing);
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys.fadvise not available");
++    caml_invalid_argument("Netsys.fadvise not available");
+ #endif
+ }
+ 
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_fallocate.c ocamlnet-4.1.9-work/src/netsys/netsys_c_fallocate.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_fallocate.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_fallocate.c	2023-06-02 13:24:53
+@@ -41,7 +41,7 @@
+ 	unix_error(r, "posix_fallocate64", Nothing);
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys.fallocate not available");
++    caml_invalid_argument("Netsys.fallocate not available");
+ #endif
+ }
+ 
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_ioprio.c ocamlnet-4.1.9-work/src/netsys/netsys_c_ioprio.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_ioprio.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_ioprio.c	2023-06-02 16:01:32
+@@ -93,7 +93,7 @@
+     }
+ 
+     if (ioprio == -1)
+-	uerror("ioprio_get", Nothing);
++	caml_uerror("ioprio_get", Nothing);
+ 
+     ioprio_class = ioprio >> IOPRIO_CLASS_SHIFT;
+     ioprio_data = ioprio & IOPRIO_PRIO_MASK;
+@@ -180,7 +180,7 @@
+     }
+ 
+     if (sysres == -1)
+-	uerror("ioprio_set", Nothing);
++	caml_uerror("ioprio_set", Nothing);
+ 
+     return Val_unit;
+ #else
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_locale.c ocamlnet-4.1.9-work/src/netsys/netsys_c_locale.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_locale.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_locale.c	2023-06-02 13:26:25
+@@ -39,28 +39,28 @@
+ 
+     old_locale = setlocale(LC_ALL, NULL);
+     if (old_locale == NULL)
+-	failwith("Netsys_posix.query_locale: no locale support");
+-    oldcopy_locale = stat_alloc(strlen(old_locale) + 1);
++	caml_failwith("Netsys_posix.query_locale: no locale support");
++    oldcopy_locale = caml_stat_alloc(strlen(old_locale) + 1);
+     strcpy(oldcopy_locale, old_locale);
+ 
+     new_locale = setlocale(LC_ALL, String_val(locale));
+     if (new_locale == NULL) {
+-	stat_free(oldcopy_locale);
+-	failwith("Netsys_posix.query_locale: cannot set this locale");
++	caml_stat_free(oldcopy_locale);
++	caml_failwith("Netsys_posix.query_locale: cannot set this locale");
+     }
+     
+     n = sizeof(locale_items_table) / sizeof(locale_items_table[0]);
+-    s = alloc(n,0);
++    s = caml_alloc(n,0);
+     for (k=0; k<n; k++) {
+-	Store_field(s,k,copy_string(nl_langinfo(locale_items_table[k])));
++	Store_field(s,k,caml_copy_string(nl_langinfo(locale_items_table[k])));
+     };
+     
+     setlocale(LC_ALL, oldcopy_locale);
+-    stat_free(oldcopy_locale);
++    caml_stat_free(oldcopy_locale);
+ 
+     CAMLreturn (s);
+ #else
+-    invalid_argument("Netsys_posix.query_locale not available");
++    caml_invalid_argument("Netsys_posix.query_locale not available");
+ #endif
+ }
+ 
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_mem.c ocamlnet-4.1.9-work/src/netsys/netsys_c_mem.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_mem.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_mem.c	2023-06-02 17:12:32
+@@ -15,11 +15,14 @@
+ #undef DEBUG
+ 
+ #if OCAML_VERSION < 41100
+-#define BIGARRAY_MARSHAL_ID "_bigarray"
++#define CAML_BA_MARSHAL_ID "_bigarray"
+ #else
+-#define BIGARRAY_MARSHAL_ID "_bigarr02"
++#define CAML_BA_MARSHAL_ID "_bigarr02"
+ #endif
+ 
++#define Color_hd(hd) ((color_t) ((hd) & (3 << 8)))
++#define caml_allocated_words Caml_state->allocated_words
++
+ /**********************************************************************/
+ /* Bigarray helpers                                                   */
+ /**********************************************************************/
+@@ -30,7 +33,7 @@
+ 					    value soffv,
+ 					    value lenv)
+ {
+-    struct caml_bigarray *mem = Bigarray_val(memv);
++    struct caml_ba_array *mem = Caml_ba_array_val(memv);
+     char * s = Bytes_val(sv);
+     long memoff = Long_val(memoffv);
+     long soff = Long_val(soffv);
+@@ -48,7 +51,7 @@
+ 					    value memoffv,
+ 					    value lenv)
+ {
+-    struct caml_bigarray *mem = Bigarray_val(memv);
++    struct caml_ba_array *mem = Caml_ba_array_val(memv);
+     const char * s = String_val(sv);
+     long memoff = Long_val(memoffv);
+     long soff = Long_val(soffv);
+@@ -62,7 +65,7 @@
+ 
+ CAMLprim value netsys_memory_address(value memv)
+ {
+-    struct caml_bigarray *mem = Bigarray_val(memv);
++    struct caml_ba_array *mem = Caml_ba_array_val(memv);
+     return caml_copy_nativeint((intnat) mem->data);
+ }
+ 
+@@ -72,7 +75,7 @@
+ #ifdef HAVE_SYSCONF
+     return Val_long(sysconf(_SC_PAGESIZE));
+ #else
+-    invalid_argument("Netsys_mem.getpagesize not available");
++    caml_invalid_argument("Netsys_mem.getpagesize not available");
+ #endif
+ }
+ 
+@@ -83,7 +86,7 @@
+ 
+     start = (void *) Nativeint_val(addrv);
+     length = Long_val(lenv);
+-    return alloc_bigarray_dims(BIGARRAY_C_LAYOUT | BIGARRAY_UINT8,
++    return caml_ba_alloc_dims(CAML_BA_C_LAYOUT | CAML_BA_UINT8,
+ 			       1, start, length);
+ }
+ 
+@@ -111,13 +114,13 @@
+ 		MAP_PRIVATE | MAP_ANON, (-1), 0);
+     if (data == (void *) -1) uerror("mmap", Nothing);
+ 
+-    r = alloc_bigarray_dims(BIGARRAY_C_LAYOUT | BIGARRAY_UINT8 | 
+-			    BIGARRAY_MAPPED_FILE,
++    r = caml_ba_alloc_dims(CAML_BA_C_LAYOUT | CAML_BA_UINT8 | 
++			    CAML_BA_MAPPED_FILE,
+ 			    1, data, length);
+ 
+     return r;
+ #else
+-    invalid_argument("Netsys_mem.alloc_memory_pages not available");
++    caml_invalid_argument("Netsys_mem.alloc_memory_pages not available");
+ #endif
+ }
+ 
+@@ -125,7 +128,7 @@
+ CAMLprim value netsys_zero_pages(value memv, value offsv, value lenv)
+ {
+ #if defined(HAVE_MMAP) && defined(HAVE_SYSCONF) && defined(MAP_ANON) && defined (MAP_FIXED)
+-    struct caml_bigarray *mem = Bigarray_val(memv);
++    struct caml_ba_array *mem = Caml_ba_array_val(memv);
+     long offs = Long_val(offsv);
+     long len = Long_val(lenv);
+     long pgsize = sysconf(_SC_PAGESIZE);
+@@ -139,15 +142,15 @@
+ 			 (-1), 0);
+ 	    if (data2 == (void *) -1) uerror("mmap", Nothing);
+ 	    if (((void *) data) != data2)
+-		failwith("Netsys_mem.zero_pages assertion failed");
++		caml_failwith("Netsys_mem.zero_pages assertion failed");
+ 	}
+     }
+     else
+-	invalid_argument("Netsys_mem.zero_pages only for whole pages");
++	caml_invalid_argument("Netsys_mem.zero_pages only for whole pages");
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_mem.zero_pages not available");
++    caml_invalid_argument("Netsys_mem.zero_pages not available");
+ #endif
+ }
+ 
+@@ -164,12 +167,12 @@
+     e = posix_memalign(&addr, align, size);
+     if (e != 0) unix_error(e, "posix_memalign", Nothing);
+ 
+-    r = alloc_bigarray_dims(BIGARRAY_C_LAYOUT | BIGARRAY_UINT8 | 
+-			    BIGARRAY_MANAGED,
++    r = caml_ba_alloc_dims(CAML_BA_C_LAYOUT | CAML_BA_UINT8 | 
++			    CAML_BA_MANAGED,
+ 			    1, addr, size);
+     return r;
+ #else
+-    invalid_argument("Netsys_mem.alloc_aligned_memory not available");
++    caml_invalid_argument("Netsys_mem.alloc_aligned_memory not available");
+ #endif
+ }
+ 
+@@ -197,7 +200,7 @@
+     fd = Int_val(fdv);
+     pos0 = Int64_val(posv);
+     if (((int64_t) ((off_t) pos0)) != pos0)
+-	failwith("Netsys_mem: large files not supported on this OS");
++	caml_failwith("Netsys_mem: large files not supported on this OS");
+     pos = pos0;
+     addr = (void *) Nativeint_val(addrv);
+     if (addr == 0) addr = NULL;
+@@ -211,15 +214,15 @@
+     
+     if (size == -1) {
+ 	if (eofpos < pos) 
+-	    failwith("Netsys_mem: cannot mmap - file position exceeds file size");
++	    caml_failwith("Netsys_mem: cannot mmap - file position exceeds file size");
+ 	basize0 = eofpos - pos;
+ 	if (((off_t) ((uintnat) basize0)) != basize0)
+-	    failwith("Netsys_mem: cannot mmap - file too large");
++	    caml_failwith("Netsys_mem: cannot mmap - file too large");
+ 	basize = (uintnat) basize0;
+     }
+     else {
+ 	if (size < 0)
+-	    invalid_argument("netsys_map_file");
++	    caml_invalid_argument("netsys_map_file");
+ 	if (eofpos - pos < size) {
+ 	    if (ftruncate(fd, pos + size) == -1)
+ 		uerror("ftruncate", Nothing);
+@@ -232,10 +235,10 @@
+     if (eff_addr == (void*) MAP_FAILED) uerror("mmap", Nothing);
+     eff_addr = (void *) ((uintnat) eff_addr + delta);
+ 
+-    return alloc_bigarray_dims(BIGARRAY_UINT8 | BIGARRAY_C_LAYOUT | 
+-			       BIGARRAY_MAPPED_FILE, 1, eff_addr, basize);
++    return caml_ba_alloc_dims(CAML_BA_UINT8 | CAML_BA_C_LAYOUT | 
++			       CAML_BA_MAPPED_FILE, 1, eff_addr, basize);
+ #else
+-    invalid_argument("Netsys_mem.memory_map_file not available");
++    caml_invalid_argument("Netsys_mem.memory_map_file not available");
+ #endif
+ }
+ 
+@@ -254,20 +257,20 @@
+ 
+ CAMLprim value netsys_memory_unmap_file(value memv) 
+ {
+-    struct caml_bigarray *b = Bigarray_val(memv);
+-    if ((b->flags & BIGARRAY_MANAGED_MASK) == BIGARRAY_MAPPED_FILE) {
++    struct caml_ba_array *b = Caml_ba_array_val(memv);
++    if ((b->flags & CAML_BA_MANAGED_MASK) == CAML_BA_MAPPED_FILE) {
+ 	if (b->proxy == NULL) {
+ 	    ba_unmap_file(b->data, b->dim[0]);
+ 	    b->data = NULL;
+ 	    b->flags = 
+-		(b->flags & ~BIGARRAY_MANAGED_MASK) | BIGARRAY_EXTERNAL;
++		(b->flags & ~CAML_BA_MANAGED_MASK) | CAML_BA_EXTERNAL;
+ 	}
+ 	else if (b->proxy->refcount == 1) {
+ 	    ba_unmap_file(b->proxy->data, b->dim[0]);
+ 	    b->proxy->data = NULL;
+ 	    b->data = NULL;
+ 	    b->flags = 
+-		(b->flags & ~BIGARRAY_MANAGED_MASK) | BIGARRAY_EXTERNAL;
++		(b->flags & ~CAML_BA_MANAGED_MASK) | CAML_BA_EXTERNAL;
+ 	}
+     }
+     return Val_unit;
+@@ -278,26 +281,26 @@
+ 
+ CAMLprim value netsys_reshape(value bv)
+ {
+-    struct caml_bigarray *b;
+-    struct caml_bigarray *mem;
++    struct caml_ba_array *b;
++    struct caml_ba_array *mem;
+     uintnat size;
+     int i,k;
+     CAMLparam1(bv);
+     CAMLlocal2(memv,dimv);
+ 
+-    b = Bigarray_val(bv);
++    b = Caml_ba_array_val(bv);
+ 
+     /* We dont't have access to caml_ba_update_proxy. The workaround is
+        to call caml_ba_reshape, and to fix the returned bigarray descriptor
+        afterward.
+     */
+-    dimv = alloc(b->num_dims,0);
++    dimv = caml_alloc(b->num_dims,0);
+     for (k=0; k < b->num_dims; k++) {
+ 	Store_field(dimv, k, Val_long(b->dim[k]));
+     };
+     
+     memv = caml_ba_reshape(bv, dimv);
+-    mem = Bigarray_val(memv);
++    mem = Caml_ba_array_val(memv);
+ 
+     /* Compute the size of the data area: */
+     size = caml_ba_element_size[b->flags & CAML_BA_KIND_MASK];
+@@ -356,7 +359,10 @@
+ {
+     int col;
+     col = Int_val(colv);
+-    Hd_val(objv) = Whitehd_hd(Hd_val(objv)) | (col << 8);
++    //Hd_val(objv) = Whitehd_hd(Hd_val(objv)) | (col << 8);
++    atomic_store_explicit(Hp_atomic_val(objv),
++                          Whitehd_hd(Hd_val(objv)) | (col << 8),
++                          memory_order_relaxed);
+     return Val_unit;
+ }
+ 
+@@ -375,20 +381,20 @@
+ #endif
+ 
+     numbytes = Long_val(lenv);
+-    data = ((char *) (Bigarray_val(memv)->data)) + Long_val(offv);
++    data = ((char *) (Caml_ba_array_val(memv)->data)) + Long_val(offv);
+ #ifdef _WIN32
+     if (Descr_kind_val(fdv) == KIND_SOCKET) {
+ 	SOCKET h = Socket_val(fdv);
+-	enter_blocking_section();
++	caml_enter_blocking_section();
+ 	ret = recv(h, data, numbytes, 0);
+ 	if (ret == SOCKET_ERROR) err = WSAGetLastError();
+-	leave_blocking_section();
++	caml_leave_blocking_section();
+ 	ret = n;
+     } else {
+ 	HANDLE h = Handle_val(fdv);
+-	enter_blocking_section();
++	caml_enter_blocking_section();
+ 	if (! ReadFile(h, data, numbytes, &n, NULL)) err = GetLastError();
+-	leave_blocking_section();
++	caml_leave_blocking_section();
+ 	ret = n;
+     }
+     if (err) {
+@@ -396,9 +402,9 @@
+ 	ret = -1;
+     }
+ #else
+-    enter_blocking_section();
++    caml_enter_blocking_section();
+     ret = read(Int_val(fdv), data, (int) numbytes);
+-    leave_blocking_section();   /* keeps errno intact */
++    caml_leave_blocking_section();   /* keeps errno intact */
+ #endif
+     if (ret == -1) uerror("mem_read", Nothing);
+     return Val_long(ret);
+@@ -416,20 +422,20 @@
+ #endif
+ 
+     numbytes = Long_val(lenv);
+-    data = ((char *) (Bigarray_val(memv)->data)) + Long_val(offv);
++    data = ((char *) (Caml_ba_array_val(memv)->data)) + Long_val(offv);
+ #ifdef _WIN32
+     if (Descr_kind_val(fdv) == KIND_SOCKET) {
+ 	SOCKET h = Socket_val(fdv);
+-	enter_blocking_section();
++	caml_enter_blocking_section();
+ 	ret = send(h, data, numbytes, 0);
+ 	if (ret == SOCKET_ERROR) err = WSAGetLastError();
+-	leave_blocking_section();
++	caml_leave_blocking_section();
+ 	ret = n;
+     } else {
+ 	HANDLE h = Handle_val(fdv);
+-	enter_blocking_section();
++	caml_enter_blocking_section();
+ 	if (! WriteFile(h, data, numbytes, &n, NULL)) err = GetLastError();
+-	leave_blocking_section();
++	caml_leave_blocking_section();
+ 	ret = n;
+     }
+     if (err) {
+@@ -437,9 +443,9 @@
+ 	ret = -1;
+     }
+ #else
+-    enter_blocking_section();
++    caml_enter_blocking_section();
+     ret = write(Int_val(fdv), data, (int) numbytes);
+-    leave_blocking_section();
++    caml_leave_blocking_section();
+ #endif
+     if (ret == -1) uerror("mem_write", Nothing);
+     return Val_long(ret);
+@@ -466,8 +472,8 @@
+ #endif
+ 
+     numbytes = Long_val(lenv);
+-    data = ((char *) (Bigarray_val(memv)->data)) + Long_val(offv);
+-    flags = convert_flag_list(flagsv, msg_flag_table);
++    data = ((char *) (Caml_ba_array_val(memv)->data)) + Long_val(offv);
++    flags = caml_convert_flag_list(flagsv, msg_flag_table);
+ 
+ #ifdef _WIN32
+     s = Socket_val(fdv);
+@@ -475,15 +481,15 @@
+     s = Int_val(fdv);
+ #endif
+ 
+-    enter_blocking_section();
++    caml_enter_blocking_section();
+     ret = recv(s, data, (int) numbytes, flags);
+ 
+ #ifdef _WIN32
+     if (ret == -1) err = WSAGetLastError();
+-    leave_blocking_section();
++    caml_leave_blocking_section();
+     if (ret == -1) win32_maperr(err);
+ #else
+-    leave_blocking_section();
++    caml_leave_blocking_section();
+ #endif
+ 
+     if (ret == -1) uerror("mem_recv", Nothing);
+@@ -506,8 +512,8 @@
+ #endif
+ 
+     numbytes = Long_val(lenv);
+-    data = ((char *) (Bigarray_val(memv)->data)) + Long_val(offv);
+-    flags = convert_flag_list(flagsv, msg_flag_table);
++    data = ((char *) (Caml_ba_array_val(memv)->data)) + Long_val(offv);
++    flags = caml_convert_flag_list(flagsv, msg_flag_table);
+ 
+ #ifdef _WIN32
+     s = Socket_val(fdv);
+@@ -515,15 +521,15 @@
+     s = Int_val(fdv);
+ #endif
+ 
+-    enter_blocking_section();
++    caml_enter_blocking_section();
+     ret = send(s, data, (int) numbytes, flags);
+ 
+ #ifdef _WIN32
+     if (ret == -1) err = WSAGetLastError();
+-    leave_blocking_section();
++    caml_leave_blocking_section();
+     if (ret == -1) win32_maperr(err);
+ #else
+-    leave_blocking_section();
++    caml_leave_blocking_section();
+ #endif
+ 
+     if (ret == -1) uerror("mem_send", Nothing);
+@@ -537,44 +543,44 @@
+ 
+ CAMLprim value netsys_as_value(value memv, value offv) 
+ {
+-    struct caml_bigarray *b = Bigarray_val(memv);
++    struct caml_ba_array *b = Caml_ba_array_val(memv);
+     return (value) (b->data + Long_val(offv));
+ }
+ 
+ CAMLprim value netsys_value_area_add(value memv) 
+ {
+ #ifdef FANCY_PAGE_TABLES
+-    struct caml_bigarray *b = Bigarray_val(memv);
++    struct caml_ba_array *b = Caml_ba_array_val(memv);
+     int code;
+     code = caml_page_table_add(In_static_data,
+ 			       b->data,
+ 			       b->data + b->dim[0]);
+     if (code != 0) 
+-	failwith("Netsys_mem.value_area: error");
++	caml_failwith("Netsys_mem.value_area: error");
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_mem.value_area");
++    caml_invalid_argument("Netsys_mem.value_area");
+ #endif
+ }
+ 
+ CAMLprim value netsys_value_area_remove(value memv) 
+ {
+ #ifdef FANCY_PAGE_TABLES
+-    struct caml_bigarray *b = Bigarray_val(memv);
++    struct caml_ba_array *b = Caml_ba_array_val(memv);
+     caml_page_table_remove(In_static_data,
+                            b->data,
+                            b->data + b->dim[0]);
+     /* Silently ignore errors... */
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_mem.value_area");
++    caml_invalid_argument("Netsys_mem.value_area");
+ #endif
+ }
+ 
+ CAMLprim value netsys_init_header(value memv, value offv, value tagv,
+ 				  value sizev)
+ {
+-    struct caml_bigarray *b = Bigarray_val(memv);
++    struct caml_ba_array *b = Caml_ba_array_val(memv);
+     intnat off = Long_val(offv);
+     intnat size = Long_val(sizev);
+     int tag = Int_val(tagv);
+@@ -582,10 +588,10 @@
+ 
+ #ifdef ARCH_SIXTYFOUR
+     if (off % 8 != 0)
+-	invalid_argument("Netsys_mem.init_header");
++	caml_invalid_argument("Netsys_mem.init_header");
+ #else
+     if (off % 4 != 0)
+-	invalid_argument("Netsys_mem.init_header");
++	caml_invalid_argument("Netsys_mem.init_header");
+ #endif
+ 
+     m = (value *) (((char *) b->data) + off);
+@@ -619,7 +625,7 @@
+ 
+ CAMLprim value netsys_init_string(value memv, value offv, value lenv) 
+ {
+-    struct caml_bigarray *b = Bigarray_val(memv);
++    struct caml_ba_array *b = Caml_ba_array_val(memv);
+     intnat off = Long_val(offv);
+     intnat len = Long_val(lenv);
+     value *m;
+@@ -629,10 +635,10 @@
+ 
+ #ifdef ARCH_SIXTYFOUR
+     if (off % 8 != 0)
+-	invalid_argument("Netsys_mem.init_string");
++	caml_invalid_argument("Netsys_mem.init_string");
+ #else
+     if (off % 4 != 0)
+-	invalid_argument("Netsys_mem.init_string");
++	caml_invalid_argument("Netsys_mem.init_string");
+ #endif
+ 
+     m = (value *) (((char *) b->data) + off);
+@@ -751,7 +757,7 @@
+     nativeint_target_ops = NULL;
+     ops_ptr = target_custom_ops;
+     while (ops_ptr != NULL) {
+-	if (strcmp(ops_ptr->name, BIGARRAY_MARSHAL_ID) == 0)
++	if (strcmp(ops_ptr->name, CAML_BA_MARSHAL_ID) == 0)
+ 	    bigarray_target_ops = ops_ptr->ops;
+ 	else if (strcmp(ops_ptr->name, "_i") == 0)
+ 	    int32_target_ops = ops_ptr->ops;
+@@ -836,7 +842,10 @@
+ 		    memcpy(copy_header, work_header, work_bytes);
+ 		    copy = Val_hp(copy_header);
+ 		    copy_addr = (void *) copy;
+-		    Hd_val(copy) = Whitehd_hd(Hd_val(copy)) | color;
++		    //Hd_val(copy) = Whitehd_hd(Hd_val(copy)) | color;
++                    atomic_store_explicit(Hp_atomic_val(copy),
++                                          Whitehd_hd(Hd_val(copy)) | color,
++                                          memory_order_relaxed);
+ 		}
+ 
+ 		/* Add the association (work_addr -> copy_addr) to t: */
+@@ -915,7 +924,7 @@
+ #endif
+                                     return (-2);
+                                 };
+-				if (strcmp(id, BIGARRAY_MARSHAL_ID) == 0) {
++				if (strcmp(id, CAML_BA_MARSHAL_ID) == 0) {
+ 				    caml_id = 'b';
+ 				    break;
+ 				}
+@@ -976,7 +985,11 @@
+ 			memcpy(copy_header, work_header, work_bytes);
+ 			copy = Val_hp(copy_header);
+ 			copy_addr = (void *) copy;
+-			Hd_val(copy) = Whitehd_hd(Hd_val(copy)) | color;
++			//Hd_val(copy) = Whitehd_hd(Hd_val(copy)) | color;
++                        atomic_store_explicit(Hp_atomic_val(copy),
++                                              Whitehd_hd(Hd_val(copy)) | color,
++                                              memory_order_relaxed);
++
+ 			if (target_ops != NULL)
+ 			    Custom_ops_val(copy) = target_ops;
+ 		    }
+@@ -999,14 +1012,14 @@
+ 		    size_t size = 1;
+ 		    size_t size_aligned;
+ 		    size_t size_words;
+-		    b_work = Bigarray_val(work);
+-		    b_copy = Bigarray_val(copy);
++		    b_work = Caml_ba_array_val(work);
++		    b_copy = Caml_ba_array_val(copy);
+ 		    for (i = 0; i < b_work->num_dims; i++) {
+ 			size = size * b_work->dim[i];
+ 		    };
+ 		    size = 
+ 			size * 
+-			caml_ba_element_size[b_work->flags & BIGARRAY_KIND_MASK];
++			caml_ba_element_size[b_work->flags & CAML_BA_KIND_MASK];
+ 
+ 		    size_aligned = size;
+ 		    if (size%sizeof(void *) != 0)
+@@ -1035,7 +1048,7 @@
+ 			dest_cur += size_aligned;
+ 		    } else if (!simulation) {
+ 			data_header = NULL;
+-			data_copy = stat_alloc(size_aligned);
++			data_copy = caml_stat_alloc(size_aligned);
+ 		    };
+ 
+ 		    if (!simulation) {
+@@ -1254,16 +1267,16 @@
+ 	old_ops = ops;
+ 	pair = Field(target_custom_ops,0);
+ 	ops = (struct named_custom_ops*) 
+-	          stat_alloc(sizeof(struct named_custom_ops));
+-	ops->name = stat_alloc(caml_string_length(Field(pair,0))+1);
++	          caml_stat_alloc(sizeof(struct named_custom_ops));
++	ops->name = caml_stat_alloc(caml_string_length(Field(pair,0))+1);
+ 	strcmp(ops->name, String_val(Field(pair,0)));
+ 	ops->ops = (void *) Nativeint_val(Field(pair,1));
+ 	ops->next = old_ops;
+ 	target_custom_ops = Field(target_custom_ops,1);
+     };
+ 
+-    mem_data = ((char *) Bigarray_val(memv)->data) + off;
+-    mem_end = mem_data + Bigarray_val(memv)->dim[0];
++    mem_data = ((char *) Caml_ba_array_val(memv)->data) + off;
++    mem_end = mem_data + Caml_ba_array_val(memv)->dim[0];
+ 
+     /* note: the color of the new values does not matter because bigarrays
+        are ignored by the GC. So we pass 0 (white).
+@@ -1287,8 +1300,8 @@
+ 
+     while (ops != NULL) {
+ 	next_ops = ops->next;
+-	stat_free(ops->name);
+-	stat_free(ops);
++	caml_stat_free(ops->name);
++	caml_stat_free(ops);
+ 	ops = next_ops;
+     };
+     
+@@ -1309,11 +1322,11 @@
+ #ifdef DEBUG
+         fprintf(stderr, "Lib err\n");
+ #endif
+-	failwith("Netsys_mem.init_value: Library error");
++	caml_failwith("Netsys_mem.init_value: Library error");
+     case (-4):
+ 	caml_raise_constant(*caml_named_value("Netsys_mem.Out_of_space"));
+     default:
+-	failwith("Netsys_mem.init_value: Unknown error");
++	caml_failwith("Netsys_mem.init_value: Unknown error");
+     }
+ }
+ 
+@@ -1387,9 +1400,9 @@
+     /* set up the custom ops. We always set this, because we assume that
+        the values in [orig] are not trustworthy
+     */
+-    bigarray_ops.name = BIGARRAY_MARSHAL_ID;
++    bigarray_ops.name = CAML_BA_MARSHAL_ID;
+     bigarray_ops.ops = 
+-	Custom_ops_val(alloc_bigarray_dims(CAML_BA_UINT8 | BIGARRAY_C_LAYOUT, 
++	Custom_ops_val(caml_ba_alloc_dims(CAML_BA_UINT8 | CAML_BA_C_LAYOUT, 
+ 					   1, NULL, 1));
+     bigarray_ops.next = &int32_ops;
+ 
+@@ -1413,17 +1426,7 @@
+     /* shamelessly copied from intern.c */
+     wosize = Wosize_bhsize(bytelen);
+     /* fprintf (stderr, "wosize=%ld\n", wosize); */
+-    if (wosize > Max_wosize) {
+-	/* Round desired size up to next page */
+-	asize_t request = ((bytelen + Page_size - 1) >> Page_log) << Page_log;
+-	extra_block = caml_alloc_for_heap(request);
+-	if (extra_block == NULL) caml_raise_out_of_memory();
+-	extra_block_end = extra_block + request;
+-	color = caml_allocation_color(extra_block);
+-	dest = extra_block;
+-	dest_end = dest + bytelen;
+-	block = Val_hp(extra_block);
+-    } else {
++    if (wosize <= Max_young_wosize && wosize != 0) {
+ 	if (wosize <= Max_young_wosize){
+ 	    block = caml_alloc_small (wosize, String_tag);
+ 	}else{
+@@ -1432,6 +1435,8 @@
+ 	color = Color_hd(Hd_val(block));
+ 	dest = (char *) Hp_val(block);
+ 	dest_end = dest + bytelen;
++    } else {
++      goto exit;
+     }
+ 
+     /* fprintf (stderr, "done alloc\n"); */
+@@ -1492,11 +1497,11 @@
+     case (-1):
+ 	unix_error(errno, "netsys_copy_value", Nothing);
+     case (-2):
+-	failwith("Netsys_mem.copy_value: Library error");
++	caml_failwith("Netsys_mem.copy_value: Library error");
+     case (-4):
+ 	caml_raise_constant(*caml_named_value("Netsys_mem.Out_of_space"));
+     default:
+-	failwith("Netsys_mem.copy_value: Unknown error");
++	caml_failwith("Netsys_mem.copy_value: Unknown error");
+     }
+ }
+ 
+@@ -1509,12 +1514,12 @@
+ 
+     if (Is_block(v) && Tag_val(v) == Custom_tag) {
+ 	custom_ops = Custom_ops_val(v);
+-	r = alloc_small(2,0);
++	r = caml_alloc_small(2,0);
+ 	Field(r,0) = caml_copy_string(custom_ops->identifier);
+ 	Field(r,1) = caml_copy_nativeint((intnat) custom_ops);
+     }
+     else 
+-	invalid_argument("Netsys_mem.get_custom_ops");
++	caml_invalid_argument("Netsys_mem.get_custom_ops");
+ 
+     CAMLreturn(r);
+ }
+@@ -1527,7 +1532,7 @@
+ 
+     if (Is_block(v) && Tag_val(v) == Custom_tag) {
+ 	custom_ops = Custom_ops_val(v);
+-        r = Val_bool(strcmp(custom_ops->identifier, BIGARRAY_MARSHAL_ID)==0);
++        r = Val_bool(strcmp(custom_ops->identifier, CAML_BA_MARSHAL_ID)==0);
+     }
+     else
+         r = Val_bool(0);
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_multicast.c ocamlnet-4.1.9-work/src/netsys/netsys_c_multicast.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_multicast.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_multicast.c	2023-06-02 16:12:36
+@@ -43,7 +43,7 @@
+         return PF_INET6;
+ #endif
+     default:
+-	invalid_argument("Not an Internet socket");
++	caml_invalid_argument("Not an Internet socket");
+     }
+ 
+     return 0;
+@@ -77,7 +77,7 @@
+ #endif
+ #endif
+     default:
+-	invalid_argument("Netsys.mcast_set_loop");
++	caml_invalid_argument("Netsys.mcast_set_loop");
+     };
+ 
+     if (r == -1)
+@@ -93,7 +93,7 @@
+ 
+ #ifdef _WIN32
+     if (Descr_kind_val(fd) != KIND_SOCKET)
+-	invalid_argument("Netsys.mcast_set_ttl");
++	caml_invalid_argument("Netsys.mcast_set_ttl");
+     fd_sock = Socket_val(fd);
+ #else
+     fd_sock = Int_val(fd);
+@@ -123,7 +123,7 @@
+ #endif
+ #endif
+     default:
+-	invalid_argument("Netsys.mcast_set_ttl");
++	caml_invalid_argument("Netsys.mcast_set_ttl");
+     };
+ 
+     if (r == -1)
+@@ -141,7 +141,7 @@
+ 
+ #ifdef _WIN32
+     if (Descr_kind_val(fd) != KIND_SOCKET)
+-	invalid_argument("Netsys.mcast_add_membership");
++	caml_invalid_argument("Netsys.mcast_add_membership");
+     fd_sock = Socket_val(fd);
+ #else
+     fd_sock = Int_val(fd);
+@@ -154,8 +154,8 @@
+ #ifdef IP_ADD_MEMBERSHIP
+     case PF_INET: {
+         struct ip_mreq mreq;
+-        if (string_length(group_addr) != 4 || string_length(if_addr) != 4 )
+-            invalid_argument("Netsys.mcast_add_membership: Not an IPV4 address");
++        if (caml_string_length(group_addr) != 4 || caml_string_length(if_addr) != 4 )
++            caml_invalid_argument("Netsys.mcast_add_membership: Not an IPV4 address");
+         memcpy(&mreq.imr_multiaddr,
+                &GET_INET_ADDR(group_addr),
+                4);
+@@ -173,8 +173,8 @@
+ #ifdef IPV6_ADD_MEMBERSHIP
+     case PF_INET6: {
+         struct ipv6_mreq mreq;
+-        if (string_length(group_addr) != 16 || string_length(if_addr) != 16 )
+-            invalid_argument("Netsys.mcast_add_membership: Not an IPV6 address");
++        if (caml_string_length(group_addr) != 16 || caml_string_length(if_addr) != 16 )
++            caml_invalid_argument("Netsys.mcast_add_membership: Not an IPV6 address");
+         memcpy(&mreq.ipv6mr_multiaddr,
+                &GET_INET6_ADDR(group_addr),
+                16);
+@@ -193,7 +193,7 @@
+ #endif
+ #endif
+     default:
+-	invalid_argument("Netsys.mcast_add_membership");
++	caml_invalid_argument("Netsys.mcast_add_membership");
+     };
+     if (r == -1)
+         uerror("setsockopt",Nothing);
+@@ -210,7 +210,7 @@
+ 
+ #ifdef _WIN32
+     if (Descr_kind_val(fd) != KIND_SOCKET)
+-	invalid_argument("Netsys.mcast_drop_membership");
++	caml_invalid_argument("Netsys.mcast_drop_membership");
+     fd_sock = Socket_val(fd);
+ #else
+     fd_sock = Int_val(fd);
+@@ -223,8 +223,8 @@
+ #ifdef IP_DROP_MEMBERSHIP
+     case PF_INET: {
+         struct ip_mreq mreq;
+-        if (string_length(group_addr) != 4 || string_length(if_addr) != 4 )
+-            invalid_argument("Netsys.mcast_drop_membership: Not an IPV4 address");
++        if (caml_string_length(group_addr) != 4 || caml_string_length(if_addr) != 4 )
++            caml_invalid_argument("Netsys.mcast_drop_membership: Not an IPV4 address");
+         memcpy(&mreq.imr_multiaddr,
+                &GET_INET_ADDR(group_addr),
+                4);
+@@ -242,8 +242,8 @@
+ #ifdef IPV6_DROP_MEMBERSHIP
+     case PF_INET6: {
+         struct ipv6_mreq mreq;
+-        if (string_length(group_addr) != 16 || string_length(if_addr) != 16 )
+-            invalid_argument("Netsys.mcast_drop_membership: Not an IPV6 address");
++        if (caml_string_length(group_addr) != 16 || caml_string_length(if_addr) != 16 )
++            caml_invalid_argument("Netsys.mcast_drop_membership: Not an IPV6 address");
+         memcpy(&mreq.ipv6mr_multiaddr,
+                &GET_INET6_ADDR(group_addr),
+                16);
+@@ -262,7 +262,7 @@
+ #endif
+ #endif
+     default:
+-	invalid_argument("Netsys.mcast_drop_membership");
++	caml_invalid_argument("Netsys.mcast_drop_membership");
+     };
+ 
+     if (r == -1)
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_poll.c ocamlnet-4.1.9-work/src/netsys/netsys_c_poll.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_poll.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_poll.c	2023-06-02 16:12:21
+@@ -75,7 +75,7 @@
+     };
+     return s;
+ #else
+-    invalid_argument("netsys_mk_poll_mem");
++    caml_invalid_argument("netsys_mk_poll_mem");
+ #endif
+ }
+ 
+@@ -89,7 +89,7 @@
+     (*(Poll_mem_val(s)))[Int_val(k)] = p;
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_set_poll_mem");
++    caml_invalid_argument("netsys_set_poll_mem");
+ #endif
+ 
+ }
+@@ -106,7 +106,7 @@
+     Store_field(triple, 2, Val_int(p.revents));
+     return triple;
+ #else
+-    invalid_argument("netsys_get_poll_mem");
++    caml_invalid_argument("netsys_get_poll_mem");
+ #endif
+ }
+ 
+@@ -120,7 +120,7 @@
+     memmove(p2 + Int_val(k2), p1 + Int_val(k1), l*sizeof(struct pollfd));
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_blit_poll_mem");
++    caml_invalid_argument("netsys_blit_poll_mem");
+ #endif
+ };
+ 
+@@ -148,15 +148,15 @@
+     n = Int_val(nv);
+     tmo = Long_val(tv);
+     
+-    enter_blocking_section();
++    caml_enter_blocking_section();
+     r = poll(p, n, tmo);
+-    leave_blocking_section();
++    caml_leave_blocking_section();
+ 
+     if (r == -1) uerror("poll", Nothing);
+     
+     return Val_int(r);
+ #else
+-     invalid_argument("netsys_poll");
++     caml_invalid_argument("netsys_poll");
+ #endif
+ }
+ 
+@@ -266,7 +266,7 @@
+ #endif
+     return r;
+ #else
+-    invalid_argument("Netsys_posix.create_event_aggregator not available");
++    caml_invalid_argument("Netsys_posix.create_event_aggregator not available");
+ #endif
+ }
+ 
+@@ -286,7 +286,7 @@
+     };
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.destroy_event_aggregator not available");
++    caml_invalid_argument("Netsys_posix.destroy_event_aggregator not available");
+ #endif
+ }
+ 
+@@ -299,7 +299,7 @@
+     pa = *(Poll_aggreg_val(pav));
+     return Val_int(pa->fd);
+ #else
+-    invalid_argument("Netsys_posix.event_aggregator_fd not available");
++    caml_invalid_argument("Netsys_posix.event_aggregator_fd not available");
+ #endif
+ }
+ 
+@@ -353,7 +353,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.add_event_source not available");
++    caml_invalid_argument("Netsys_posix.add_event_source not available");
+ #endif
+ }
+ 
+@@ -378,7 +378,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.del_event_source not available");
++    caml_invalid_argument("Netsys_posix.del_event_source not available");
+ #endif
+ }
+ 
+@@ -398,7 +398,7 @@
+     };
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.interrupt_event_aggregator not available");
++    caml_invalid_argument("Netsys_posix.interrupt_event_aggregator not available");
+ #endif
+ }
+ 
+@@ -432,7 +432,7 @@
+     };
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.push_event_sources not available");
++    caml_invalid_argument("Netsys_posix.push_event_sources not available");
+ #endif
+ }
+ 
+@@ -486,6 +486,6 @@
+ 
+     CAMLreturn(r);
+ #else
+-    invalid_argument("Netsys_posix.pull_event_sources not available");
++    caml_invalid_argument("Netsys_posix.pull_event_sources not available");
+ #endif
+ }
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_sem.c ocamlnet-4.1.9-work/src/netsys/netsys_c_sem.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_sem.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_sem.c	2023-06-02 16:12:53
+@@ -120,7 +120,7 @@
+     int flags;
+ 
+     init = Long_val(initv);
+-    flags = convert_flag_list(flagsv, sem_open_flag_table);
++    flags = caml_convert_flag_list(flagsv, sem_open_flag_table);
+     s = sem_open(String_val(namev),
+ 		 flags,
+ 		 Int_val(modev),
+@@ -129,7 +129,7 @@
+     r = alloc_sem_block(s, 1);
+     return r;
+ #else
+-    invalid_argument("Netsys.sem_open not available");
++    caml_invalid_argument("Netsys.sem_open not available");
+ #endif
+ }
+ 
+@@ -141,13 +141,13 @@
+ 
+     sb = Sem_block_val(srv);
+     if (sb->sem_ptr == NULL)
+-	invalid_argument ("Netsys.sem_close: stale semaphore");
++	caml_invalid_argument ("Netsys.sem_close: stale semaphore");
+     code = sem_close(sb->sem_ptr);
+     if (code == -1) uerror("sem_close", Nothing);
+     sb->sem_ptr = NULL;
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys.sem_close not available");
++    caml_invalid_argument("Netsys.sem_close not available");
+ #endif
+ }
+ 
+@@ -159,7 +159,7 @@
+     if (code == -1) uerror("sem_unlink", Nothing);
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys.sem_unlink not available");
++    caml_invalid_argument("Netsys.sem_unlink not available");
+ #endif
+ }
+ 
+@@ -181,7 +181,7 @@
+     r = alloc_sem_block(s, 0);
+     return r;
+ #else
+-    invalid_argument("Netsys.sem_init not available");
++    caml_invalid_argument("Netsys.sem_init not available");
+ #endif
+ }
+ 
+@@ -196,7 +196,7 @@
+     r = alloc_sem_block(s, 0);
+     return r;
+ #else
+-    invalid_argument("Netsys.as_sem not available");
++    caml_invalid_argument("Netsys.as_sem not available");
+ #endif
+ }
+ 
+@@ -209,13 +209,13 @@
+ 
+     sb = Sem_block_val(srv);
+     if (sb->sem_ptr == NULL)
+-	invalid_argument ("Netsys.sem_destroy: stale semaphore");
++	caml_invalid_argument ("Netsys.sem_destroy: stale semaphore");
+     code = sem_destroy(sb->sem_ptr);
+     if (code == -1) uerror("sem_destroy", Nothing);
+     sb->sem_ptr = NULL;
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys.sem_destroy not available");
++    caml_invalid_argument("Netsys.sem_destroy not available");
+ #endif
+ }
+ 
+@@ -229,16 +229,16 @@
+ 
+     sb = Sem_block_val(srv);
+     if (sb->sem_ptr == NULL)
+-	invalid_argument ("Netsys.sem_getvalue: stale semaphore");
++	caml_invalid_argument ("Netsys.sem_getvalue: stale semaphore");
+     code = sem_getvalue(sb->sem_ptr, &sval);
+     if (code == -1) uerror("sem_getvalue", Nothing);
+     if (sval < 0) sval = 0;
+ #ifndef ARCH_SIXTYFOUR
+-    if (sval > 1073741823) unix_error(EINVAL, "sem_getvalue", Nothing);
++    if (sval > 1073741823) caml_unix_error(EINVAL, "sem_getvalue", Nothing);
+ #endif
+     return Val_int(sval);
+ #else
+-    invalid_argument("Netsys.sem_getvalue not available");
++    caml_invalid_argument("Netsys.sem_getvalue not available");
+ #endif
+ }
+ 
+@@ -250,12 +250,12 @@
+ 
+     sb = Sem_block_val(srv);
+     if (sb->sem_ptr == NULL)
+-	invalid_argument ("Netsys.sem_post: stale semaphore");
++	caml_invalid_argument ("Netsys.sem_post: stale semaphore");
+     code = sem_post(sb->sem_ptr);
+     if (code == -1) uerror("sem_post", Nothing);
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys.sem_post not available");
++    caml_invalid_argument("Netsys.sem_post not available");
+ #endif
+ }
+ 
+@@ -270,19 +270,19 @@
+ 
+     sb = Sem_block_val(srv);
+     if (sb->sem_ptr == NULL)
+-	invalid_argument ("Netsys.sem_wait: stale semaphore");
++	caml_invalid_argument ("Netsys.sem_wait: stale semaphore");
+     tag = Int_val(bv);
+     s = sb->sem_ptr;
+-    enter_blocking_section();
++    caml_enter_blocking_section();
+     if (tag == 0)
+ 	code = sem_wait(s);
+     else
+ 	code = sem_trywait(s);
+-    leave_blocking_section();
++    caml_leave_blocking_section();
+     if (code == -1) uerror("sem_wait", Nothing);
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys.sem_wait not available");
++    caml_invalid_argument("Netsys.sem_wait not available");
+ #endif
+ }
+ 
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_shm.c ocamlnet-4.1.9-work/src/netsys/netsys_c_shm.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_shm.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_shm.c	2023-06-02 16:13:11
+@@ -36,15 +36,15 @@
+     int ret, cv_flags;
+     char * p;
+ 
+-    cv_flags = convert_flag_list(flags, shm_open_flag_table);
+-    p = stat_alloc(string_length(path) + 1);
++    cv_flags = caml_convert_flag_list(flags, shm_open_flag_table);
++    p = caml_stat_alloc(caml_string_length(path) + 1);
+     strcpy(p, String_val(path));
+     ret = shm_open(p, cv_flags, Int_val(perm));
+-    stat_free(p);
++    caml_stat_free(p);
+     if (ret == -1) uerror("shm_open", path);
+     CAMLreturn (Val_int(ret));
+ #else
+-    invalid_argument("Netsys.shm_open not available");
++    caml_invalid_argument("Netsys.shm_open not available");
+ #endif
+ }
+ 
+@@ -58,7 +58,7 @@
+     if (ret == -1) uerror("shm_unlink", path);
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys.shm_unlink not available");
++    caml_invalid_argument("Netsys.shm_unlink not available");
+ #endif
+ }
+ 
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_spawn.c ocamlnet-4.1.9-work/src/netsys/netsys_c_spawn.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_spawn.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_spawn.c	2023-06-02 16:13:51
+@@ -477,7 +477,7 @@
+ 
+     return return_value;
+ #else
+-     invalid_argument("netsys_spawn");
++     caml_invalid_argument("netsys_spawn");
+ #endif
+ }
+ 
+@@ -614,7 +614,7 @@
+ 	    flags |= POSIX_SPAWN_SETPGROUP;
+ 	    break;
+ 	case 2: /* Pg_new_fg_group */
+-	    invalid_argument
++	    caml_invalid_argument
+ 		("Netsys_posix.posix_spawn: Pg_new_fg_group not supported");
+ 	    break;
+ 	default:
+@@ -638,7 +638,7 @@
+ 	    flags |= POSIX_SPAWN_SETSIGDEF;
+ 	    break;
+ 	case 1: /* Sig_ignore */
+-	    invalid_argument
++	    caml_invalid_argument
+ 		("Netsys_posix.posix_spawn: Sig_ignore not supported");
+ 	    break;
+ 	case 2: /* Sig_mask */
+@@ -803,12 +803,12 @@
+ 	unix_error(uerror_errno, uerror_function, Nothing);
+ 
+     if (use_fork_exec != 0)
+-	failwith("USE_FORK_EXEC");
++	caml_failwith("USE_FORK_EXEC");
+ 
+     return return_value;
+ 
+ #else
+-     invalid_argument("netsys_posix_spawn not available");
++     caml_invalid_argument("netsys_posix_spawn not available");
+ #endif
+ }
+ 
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_subprocess.c ocamlnet-4.1.9-work/src/netsys/netsys_c_subprocess.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_subprocess.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_subprocess.c	2023-06-02 16:14:17
+@@ -282,7 +282,7 @@
+ 	    (struct sigchld_atom *) malloc(sigchld_list_len * 
+ 					   sizeof(struct sigchld_atom));
+ 	if (sigchld_list == NULL) 
+-	    failwith("Cannot allocate memory");
++	    caml_failwith("Cannot allocate memory");
+ 
+ 	for (k=0; k<sigchld_list_len; k++)
+ 	    sigchld_list[k].pid = 0;
+@@ -302,7 +302,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.install_subprocess_handler not available");
++    caml_invalid_argument("Netsys_posix.install_subprocess_handler not available");
+ #endif
+ }
+ 
+@@ -349,7 +349,7 @@
+     int status, code, kill_flag;
+     
+     if (sigchld_list == NULL)
+-	failwith("Netsys_posix.watch_subprocess: uninitialized");
++	caml_failwith("Netsys_posix.watch_subprocess: uninitialized");
+ 
+     if (pipe(pfd) == -1)
+ 	uerror("pipe", Nothing);
+@@ -425,7 +425,7 @@
+ 	    sigchld_unlock(1);
+ 	    close(pfd[0]);
+ 	    close(pfd[1]);
+-	    failwith("Cannot allocate memory");
++	    caml_failwith("Cannot allocate memory");
+ 	};
+ 
+ 	for (k=old_size; k<sigchld_list_len; k++)
+@@ -469,13 +469,13 @@
+ 
+     sigchld_unlock(1);
+ 
+-    r = alloc(2,0);
++    r = caml_alloc(2,0);
+     Field(r,0) = Val_int(pfd[0]);
+     Field(r,1) = Val_int(atom_idx);
+     
+     return r;
+ #else
+-    invalid_argument("Netsys_posix.watch_subprocess not available");
++    caml_invalid_argument("Netsys_posix.watch_subprocess not available");
+ #endif
+ }
+ 
+@@ -498,7 +498,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.ignore_subprocess not available");
++    caml_invalid_argument("Netsys_posix.ignore_subprocess not available");
+ #endif
+ }
+ 
+@@ -521,7 +521,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.forget_subprocess not available");
++    caml_invalid_argument("Netsys_posix.forget_subprocess not available");
+ #endif
+ }
+ 
+@@ -554,15 +554,15 @@
+ 
+     if (copy.terminated) {
+ 	if (WIFEXITED(copy.status)) {
+-	    st = alloc_small(1, TAG_WEXITED);
++	    st = caml_alloc_small(1, TAG_WEXITED);
+ 	    Field(st, 0) = Val_int(WEXITSTATUS(copy.status));
+ 	}
+ 	else {
+-	    st = alloc_small(1, TAG_WSIGNALED);
++	    st = caml_alloc_small(1, TAG_WSIGNALED);
+ 	    Field(st, 0) = 
+ 		Val_int(caml_rev_convert_signal_number(WTERMSIG(copy.status)));
+ 	};
+-	r = alloc(1,0);
++	r = caml_alloc(1,0);
+ 	Field(r, 0) = st;
+     }
+     else {
+@@ -571,7 +571,7 @@
+ 
+     return r;
+ #else
+-    invalid_argument("Netsys_posix.forget_subprocess not available");
++    caml_invalid_argument("Netsys_posix.forget_subprocess not available");
+ #endif
+ }
+ 
+@@ -597,7 +597,7 @@
+     return Val_unit;
+ 
+ #else
+-    invalid_argument("Netsys_posix.kill_subprocess not available");
++    caml_invalid_argument("Netsys_posix.kill_subprocess not available");
+ #endif
+ }
+ 
+@@ -634,7 +634,7 @@
+     return Val_unit;
+ 
+ #else
+-    invalid_argument("Netsys_posix.killpg_subprocess not available");
++    caml_invalid_argument("Netsys_posix.killpg_subprocess not available");
+ #endif
+ }
+ 
+@@ -648,7 +648,7 @@
+     int k;
+ 
+     if (sigchld_list == NULL)
+-	failwith("Netsys_posix.watch_subprocess: uninitialized");
++	caml_failwith("Netsys_posix.watch_subprocess: uninitialized");
+ 
+     sig = caml_convert_signal_number(Int_val(sig_v));
+     o_flag = Bool_val(o_flag_v);
+@@ -672,7 +672,7 @@
+     return Val_unit;
+ 
+ #else
+-    invalid_argument("Netsys_posix.kill_all_subprocesses not available");
++    caml_invalid_argument("Netsys_posix.kill_all_subprocesses not available");
+ #endif
+ }
+ 
+@@ -686,7 +686,7 @@
+     pid_t pgid;
+ 
+     if (sigchld_list == NULL)
+-	failwith("Netsys_posix.watch_subprocess: uninitialized");
++	caml_failwith("Netsys_posix.watch_subprocess: uninitialized");
+ 
+     sig = caml_convert_signal_number(Int_val(sig_v));
+     o_flag = Bool_val(o_flag_v);
+@@ -722,7 +722,7 @@
+     return Val_unit;
+ 
+ #else
+-    invalid_argument("Netsys_posix.killpg_all_subprocesses not available");
++    caml_invalid_argument("Netsys_posix.killpg_all_subprocesses not available");
+ #endif
+ }
+ 
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_syslog.c ocamlnet-4.1.9-work/src/netsys/netsys_c_syslog.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_syslog.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_syslog.c	2023-06-02 13:32:00
+@@ -86,7 +86,7 @@
+     id=NULL;
+     if (Is_block(ident)) {
+ 	if (ident_buf == NULL) {
+-	    ident_buf = stat_alloc(IDENT_BUF_LEN);
++	    ident_buf = caml_stat_alloc(IDENT_BUF_LEN);
+ 	};
+ 	strncpy(ident_buf, 
+ 		String_val(Field(ident, 0)),
+@@ -94,12 +94,12 @@
+ 	ident_buf[IDENT_BUF_LEN-1] = 0;
+ 	id=ident_buf;
+     };
+-    options = convert_flag_list(opts, syslog_opt_flags);
++    options = caml_convert_flag_list(opts, syslog_opt_flags);
+     facility = syslog_fac_flags[Int_val(fac)];
+     openlog(id, options, facility);
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.openlog not available");
++    caml_invalid_argument("Netsys_posix.openlog not available");
+ #endif
+ }
+ 
+@@ -114,7 +114,7 @@
+     syslog(facility | level, "%s", String_val(msg));
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.syslog not available");
++    caml_invalid_argument("Netsys_posix.syslog not available");
+ #endif
+ }
+ 
+@@ -125,7 +125,7 @@
+     closelog();
+     return Val_unit;
+ #else
+-    invalid_argument("Netsys_posix.closelog not available");
++    caml_invalid_argument("Netsys_posix.closelog not available");
+ #endif
+ }
+ 
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_c_win32.c ocamlnet-4.1.9-work/src/netsys/netsys_c_win32.c
+--- ocamlnet-4.1.9/src/netsys/netsys_c_win32.c	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_c_win32.c	2023-06-02 16:05:36
+@@ -45,7 +45,7 @@
+ 				 PROV_RSA_FULL,
+ 				 CRYPT_VERIFYCONTEXT)) {
+ 	    win32_maperr(GetLastError());
+-	    uerror("netsys_fill_random/CryptAcquireContext", Nothing);
++	    caml_uerror("netsys_fill_random/CryptAcquireContext", Nothing);
+ 	};
+ 	crypt_provider_init = 1;
+     }
+@@ -53,11 +53,11 @@
+ 		       string_length(s),
+ 		       String_val(s))) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_fill_random/CryptGenRandom", Nothing);
++	caml_uerror("netsys_fill_random/CryptGenRandom", Nothing);
+     };
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_fill_random");
++    caml_invalid_argument("netsys_fill_random");
+ #endif
+ }
+ 
+@@ -72,11 +72,11 @@
+                         buffer,
+                         NULL) == 0) {
+         win32_maperr(GetLastError());
+-	uerror("GetFullPathName", Nothing);
++	caml_uerror("GetFullPathName", Nothing);
+     };
+     return caml_copy_string(buffer);
+ #else
+-    invalid_argument("netsys_get_full_path_name");
++    caml_invalid_argument("netsys_get_full_path_name");
+ #endif
+ }
+ 
+@@ -90,11 +90,11 @@
+                         buffer, 
+                         4096) == 0) {
+         win32_maperr(GetLastError());
+-	uerror("GetLongPathName", Nothing);
++	caml_uerror("GetLongPathName", Nothing);
+     };
+     return caml_copy_string(buffer);
+ #else
+-    invalid_argument("netsys_get_long_path_name");
++    caml_invalid_argument("netsys_get_long_path_name");
+ #endif
+ }
+ 
+@@ -108,11 +108,11 @@
+     if (!SetHandleInformation(Handle_val(fd), HANDLE_FLAG_INHERIT,
+ 			      flag ? 0 : HANDLE_FLAG_INHERIT)) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_modify_close_on_exec/SetHandleInformation", Nothing);
++	caml_uerror("netsys_modify_close_on_exec/SetHandleInformation", Nothing);
+     }
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_modify_close_on_exec");
++    caml_invalid_argument("netsys_modify_close_on_exec");
+ #endif
+ }
+ 
+@@ -124,14 +124,14 @@
+     dprintf("netsys_test_close_on_exec fd=%u\n", Handle_val(fd));
+     if (!GetHandleInformation(Handle_val(fd), &flags)) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_test_close_on_exec/GetHandleInformation", Nothing);
++	caml_uerror("netsys_test_close_on_exec/GetHandleInformation", Nothing);
+     }
+     r = (flags & HANDLE_FLAG_INHERIT) != 0;
+     dprintf("netsys_test_close_on_exec fd=%u result=%s\n", 
+ 	    Handle_val(fd), r ? "true" : "false");
+     return Val_bool(r);
+ #else
+-    invalid_argument("netsys_test_close_on_exec");
++    caml_invalid_argument("netsys_test_close_on_exec");
+ #endif
+ }
+ 
+@@ -145,7 +145,7 @@
+     else
+ 	return Val_bool(fd1 == Int_val(crt_fd));
+ #else
+-    invalid_argument("netsys_is_crt_fd");
++    caml_invalid_argument("netsys_is_crt_fd");
+ #endif
+ }
+ 
+@@ -193,7 +193,7 @@
+ 			   DUPLICATE_SAME_ACCESS);
+     if (!flag) {
+ 	win32_maperr(GetLastError());
+-	uerror("alloc_event/DuplicateHandle", Nothing);
++	caml_uerror("alloc_event/DuplicateHandle", Nothing);
+     };
+ 
+     r = caml_alloc_custom(&event_ops, sizeof(struct event), 1, 0);
+@@ -219,12 +219,12 @@
+     e = CreateEvent(NULL, 1, 0, NULL);
+     if (e == NULL) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_create_event/CreateEvent", Nothing);
++	caml_uerror("netsys_create_event/CreateEvent", Nothing);
+     };
+ 
+     return alloc_event(e);
+ #else
+-    invalid_argument("netsys_create_event");
++    caml_invalid_argument("netsys_create_event");
+ #endif
+ }
+ 
+@@ -246,7 +246,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_close_event");
++    caml_invalid_argument("netsys_close_event");
+ #endif
+ }
+ 
+@@ -259,7 +259,7 @@
+     e->auto_close = Bool_val(flag);
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_set_auto_close_event_proxy");
++    caml_invalid_argument("netsys_set_auto_close_event_proxy");
+ #endif
+ }
+ 
+@@ -271,12 +271,12 @@
+     e = event_val(ev);
+     if (!SetEvent(e->ev)) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_set_event/SetEvent", Nothing);
++	caml_uerror("netsys_set_event/SetEvent", Nothing);
+     }
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_set_event");
++    caml_invalid_argument("netsys_set_event");
+ #endif
+ }
+ 
+@@ -287,12 +287,12 @@
+     e = event_val(ev);
+     if (!ResetEvent(e->ev)) {
+ 	win32_maperr(GetLastError());
+-	uerror(" netsys_reset_event/ResetEvent", Nothing);
++	caml_uerror(" netsys_reset_event/ResetEvent", Nothing);
+     }
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_reset_event");
++    caml_invalid_argument("netsys_reset_event");
+ #endif
+ }
+ 
+@@ -307,12 +307,12 @@
+     n = WaitForSingleObject(e->ev, 0);
+     if (n == WAIT_FAILED) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_test_event/WaitForSingleObject", Nothing);
++	caml_uerror("netsys_test_event/WaitForSingleObject", Nothing);
+     };
+ 
+     return Val_bool(n == WAIT_OBJECT_0);
+ #else
+-    invalid_argument("netsys_test_event");
++    caml_invalid_argument("netsys_test_event");
+ #endif
+ }
+ 
+@@ -337,12 +337,12 @@
+     leave_blocking_section();
+     if (n == WAIT_FAILED) {
+ 	win32_maperr(err);
+-	uerror("netsys_event_wait/WaitForSingleObject", Nothing);
++	caml_uerror("netsys_event_wait/WaitForSingleObject", Nothing);
+     };
+ 
+     return Val_bool(n == WAIT_OBJECT_0);
+ #else
+-    invalid_argument("netsys_event_wait");
++    caml_invalid_argument("netsys_event_wait");
+ #endif
+ }
+ 
+@@ -353,7 +353,7 @@
+     e = event_val(ev);
+     return netsysw32_win_alloc_handle(e->ev_proxy);
+ #else
+-    invalid_argument("netsys_event_descr");
++    caml_invalid_argument("netsys_event_descr");
+ #endif
+ }
+ 
+@@ -378,12 +378,12 @@
+ 
+     if (WSAEventSelect(s, e->ev, m_win32) != 0) {
+ 	win32_maperr(WSAGetLastError());
+-	uerror("netsys_wsa_event_select/WSAEventSelect", Nothing);
++	caml_uerror("netsys_wsa_event_select/WSAEventSelect", Nothing);
+     }
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_wsa_event_select");
++    caml_invalid_argument("netsys_wsa_event_select");
+ #endif
+ }
+ 
+@@ -391,7 +391,7 @@
+ #ifdef _WIN32
+     return Val_int(WSA_MAXIMUM_WAIT_EVENTS);
+ #else
+-    invalid_argument("netsys_wsa_maximum_wait_events");
++    caml_invalid_argument("netsys_wsa_maximum_wait_events");
+ #endif
+ }
+ 
+@@ -413,7 +413,7 @@
+ 
+     if (n > WSA_MAXIMUM_WAIT_EVENTS) {
+ 	win32_maperr(EINVAL);
+-	uerror("netsys_wsa_wait_for_multiple_events", Nothing);
++	caml_uerror("netsys_wsa_wait_for_multiple_events", Nothing);
+     };
+ 
+     for (k=0; k < n; k++) {
+@@ -434,7 +434,7 @@
+ 	
+ 	if (r == WAIT_IO_COMPLETION) {
+ 	    win32_maperr(EINTR);
+-	    uerror("netsys_wsa_wait_for_multiple_events/SleepEx", Nothing);
++	    caml_uerror("netsys_wsa_wait_for_multiple_events/SleepEx", Nothing);
+ 	}
+ 
+ 	return Val_int(0);    /* None */
+@@ -457,7 +457,7 @@
+ 	    if (err == 0) 
+ 		return Val_int(0);
+ 	    win32_maperr(err);
+-	    uerror("netsys_wsa_wait_for_multiple_events/WSAWaitForMultipleEvents", Nothing);
++	    caml_uerror("netsys_wsa_wait_for_multiple_events/WSAWaitForMultipleEvents", Nothing);
+ 	}
+ 	
+ 	if (r == WSA_WAIT_TIMEOUT)
+@@ -466,7 +466,7 @@
+ 	if (r == WSA_WAIT_IO_COMPLETION) {
+ 	    dprintf("WSAWaitForMultipleEvents error=EINTR\n");
+ 	    win32_maperr(EINTR);
+-	    uerror("netsys_wsa_wait_for_multiple_events/WSAWaitForMultipleEvents", Nothing);
++	    caml_uerror("netsys_wsa_wait_for_multiple_events/WSAWaitForMultipleEvents", Nothing);
+ 	}
+ 	
+ 	if (r >= WSA_WAIT_EVENT_0 && r < WSA_WAIT_EVENT_0 + n) {
+@@ -476,9 +476,9 @@
+ 	}
+     }
+     
+-    invalid_argument("netsys_wsa_wait_for_multiple_events: bad return value from Win32");
++    caml_invalid_argument("netsys_wsa_wait_for_multiple_events: bad return value from Win32");
+ #else
+-    invalid_argument("netsys_wsa_wait_for_multiple_events");
++    caml_invalid_argument("netsys_wsa_wait_for_multiple_events");
+ #endif
+ }
+ 
+@@ -494,7 +494,7 @@
+ 
+     if (WSAEnumNetworkEvents(s, e->ev, &ne) != 0) {
+ 	win32_maperr(WSAGetLastError());
+-	uerror("netsys_wsa_enum_network_events/WSAEnumNetworkEvents", Nothing);
++	caml_uerror("netsys_wsa_enum_network_events/WSAEnumNetworkEvents", Nothing);
+     }
+ 
+     /* printf("NetworkEvents=%ld\n", ne.lNetworkEvents); */
+@@ -538,7 +538,7 @@
+ 
+     return Val_int(r);
+ #else
+-    invalid_argument("netsys_wsa_enum_network_events");
++    caml_invalid_argument("netsys_wsa_enum_network_events");
+ #endif
+ }
+ 
+@@ -611,19 +611,19 @@
+     rd_ev = CreateEvent(NULL, 1, 0, NULL);
+     if (rd_ev == NULL) {
+ 	win32_maperr(GetLastError());
+-	uerror("alloc_pipe_helper/CreateEvent", Nothing);
++	caml_uerror("alloc_pipe_helper/CreateEvent", Nothing);
+     };
+ 
+     wr_ev = CreateEvent(NULL, 1, 0, NULL);
+     if (wr_ev == NULL) {
+ 	win32_maperr(GetLastError());
+-	uerror("alloc_pipe_helper/CreateEvent", Nothing);
++	caml_uerror("alloc_pipe_helper/CreateEvent", Nothing);
+     };
+ 
+     pd = CreateEvent(NULL, 1, 0, NULL);
+     if (pd == NULL) {
+ 	win32_maperr(GetLastError());
+-	uerror("alloc_pipe_helper/CreateEvent", Nothing);
++	caml_uerror("alloc_pipe_helper/CreateEvent", Nothing);
+     };
+ 
+     rd_ovrlp = stat_alloc(sizeof(OVERLAPPED));
+@@ -888,7 +888,7 @@
+ 				     &world_sid);
+ 	if (e == 0) {
+ 	    win32_maperr(GetLastError());
+-	    uerror("setup_sid/AllocateAndInitializeSid", Nothing);
++	    caml_uerror("setup_sid/AllocateAndInitializeSid", Nothing);
+ 	};
+     };
+ 
+@@ -899,7 +899,7 @@
+ 				     &network_sid);
+ 	if (e == 0) {
+ 	    win32_maperr(GetLastError());
+-	    uerror("setup_sid/AllocateAndInitializeSid", Nothing);
++	    caml_uerror("setup_sid/AllocateAndInitializeSid", Nothing);
+ 	};
+     }
+ }
+@@ -950,7 +950,7 @@
+ 			NULL);
+     if ( h == INVALID_HANDLE_VALUE ) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_create_local_named_pipe/CreateNamedPipe", Nothing);
++	caml_uerror("netsys_create_local_named_pipe/CreateNamedPipe", Nothing);
+     }
+ 
+     // ACE's must be added to pipe's DACL for:
+@@ -997,14 +997,14 @@
+     if (e != ERROR_SUCCESS) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(h);
+-	uerror("netsys_create_local_named_pipe/GetSecurityInfo", Nothing);
++	caml_uerror("netsys_create_local_named_pipe/GetSecurityInfo", Nothing);
+     };
+ 
+     e = SetEntriesInAcl(2, explicit_access_list, pACL, &pNewACL);
+     if (e != ERROR_SUCCESS) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(h);
+-	uerror("netsys_create_local_named_pipe/SetEntriesinAcl", Nothing);
++	caml_uerror("netsys_create_local_named_pipe/SetEntriesinAcl", Nothing);
+     };
+ 
+     e = SetSecurityInfo(h, SE_KERNEL_OBJECT, DACL_SECURITY_INFORMATION, 
+@@ -1013,7 +1013,7 @@
+ 	win32_maperr(GetLastError());
+ 	LocalFree(pNewACL);
+ 	CloseHandle(h);
+-	uerror("netsys_create_local_named_pipe/SetSecurityInfo", Nothing);
++	caml_uerror("netsys_create_local_named_pipe/SetSecurityInfo", Nothing);
+     };
+ 
+     LocalFree(pNewACL);
+@@ -1032,7 +1032,7 @@
+ 	    ph->pipe_handle);
+     return r;
+ #else
+-    invalid_argument("netsys_create_local_named_pipe");
++    caml_invalid_argument("netsys_create_local_named_pipe");
+ #endif
+ }
+ 
+@@ -1053,22 +1053,22 @@
+ 
+     if (!ph->pipe_is_open) {
+ 	errno = EBADF;
+-	uerror("netsys_pipe_listen", Nothing);
++	caml_uerror("netsys_pipe_listen", Nothing);
+     };
+ 
+     if (!ph->pipe_is_server) {
+ 	errno = EPERM;
+-	uerror("netsys_pipe_listen", Nothing);
++	caml_uerror("netsys_pipe_listen", Nothing);
+     };
+ 
+     if (ph->pipe_conn_state != PIPE_DEAF) {
+ 	errno = EISCONN;
+-	uerror("netsys_pipe_listen", Nothing);
++	caml_uerror("netsys_pipe_listen", Nothing);
+     };
+ 
+     if (ph->pipe_cn_ovrlp_started) {
+ 	errno = EALREADY;
+-	uerror("netsys_pipe_listen", Nothing);
++	caml_uerror("netsys_pipe_listen", Nothing);
+     };
+ 
+     dprintf("PIPE listen %u connecting\n",
+@@ -1085,7 +1085,7 @@
+ 	n = WaitForSingleObject(ph->pipe_cn_ev, 0);
+ 	if (n == WAIT_FAILED) {
+ 	    win32_maperr(GetLastError());
+-	    uerror("netsys_pipe_listen/WaitForSingleObject", Nothing);
++	    caml_uerror("netsys_pipe_listen/WaitForSingleObject", Nothing);
+ 	};
+ 	if (n == WAIT_OBJECT_0)
+ 	    set_cn_ev = 1;
+@@ -1121,7 +1121,7 @@
+ 	    dprintf("PIPE listen %u error err=%u\n",
+ 		    ph->pipe_handle, err);
+ 	    win32_maperr(err);
+-	    uerror("netsys_pipe_listen/ConnectNamedPipe", Nothing);
++	    caml_uerror("netsys_pipe_listen/ConnectNamedPipe", Nothing);
+ 	};
+     };
+ 
+@@ -1130,7 +1130,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_pipe_listen");
++    caml_invalid_argument("netsys_pipe_listen");
+ #endif
+ }
+ 
+@@ -1150,17 +1150,17 @@
+ 
+     if (!ph->pipe_is_open) {
+ 	errno = EBADF;
+-	uerror("netsys_pipe_deafen", Nothing);
++	caml_uerror("netsys_pipe_deafen", Nothing);
+     };
+ 
+     if (!ph->pipe_is_server) {
+ 	errno = EPERM;
+-	uerror("netsys_pipe_deafen", Nothing);
++	caml_uerror("netsys_pipe_deafen", Nothing);
+     };
+ 
+     if (ph->pipe_conn_state == PIPE_DEAF) {
+ 	errno = ENOTCONN;
+-	uerror("netsys_pipe_deafen", Nothing);
++	caml_uerror("netsys_pipe_deafen", Nothing);
+     };
+ 
+     dprintf("PIPE deafen %u disconnecting\n",
+@@ -1169,19 +1169,19 @@
+     flag = DisconnectNamedPipe(ph->pipe_handle);
+     if (!flag) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_pipe_deafen/DisconnectNamedPipe", Nothing);
++	caml_uerror("netsys_pipe_deafen/DisconnectNamedPipe", Nothing);
+     }
+ 
+     /* Check whether the overlapped ops are done: */
+     check_for_pending_operations(ph);
+     if (ph->pipe_cn_ovrlp_started) {
+-	failwith("netsys_pipe_unlisten: cannot stop pending ConnectNamedPipe");
++	caml_failwith("netsys_pipe_unlisten: cannot stop pending ConnectNamedPipe");
+     };
+     if (ph->pipe_rd_ovrlp_started) {
+-	failwith("netsys_pipe_unlisten: cannot stop pending ReadFile");
++	caml_failwith("netsys_pipe_unlisten: cannot stop pending ReadFile");
+     };
+     if (ph->pipe_wr_ovrlp_started) {
+-	failwith("netsys_pipe_unlisten: cannot stop pending WriteFile");
++	caml_failwith("netsys_pipe_unlisten: cannot stop pending WriteFile");
+     };
+ 
+     dprintf("PIPE deafen %u successful\n",
+@@ -1202,7 +1202,7 @@
+     return Val_unit;
+ 
+ #else
+-    invalid_argument("netsys_pipe_unlisten");
++    caml_invalid_argument("netsys_pipe_unlisten");
+ #endif
+ }
+ 
+@@ -1251,7 +1251,7 @@
+ 	    errno = EAGAIN;
+ 	else
+ 	    win32_maperr(err);
+-	uerror("netsys_pipe_connect/CreateFile", Nothing);
++	caml_uerror("netsys_pipe_connect/CreateFile", Nothing);
+     };
+ 
+     ph = alloc_pipe_helper(h, INVALID_HANDLE_VALUE);
+@@ -1272,7 +1272,7 @@
+     return r;
+ 
+ #else
+-    invalid_argument("netsys_pipe_connect");
++    caml_invalid_argument("netsys_pipe_connect");
+ #endif
+ }
+ 
+@@ -1294,7 +1294,7 @@
+ 
+     if (ph->pipe_error_rd != 0) {
+ 	win32_maperr(ph->pipe_error_rd);
+-	uerror("netsys_pipe_read", Nothing);
++	caml_uerror("netsys_pipe_read", Nothing);
+     };
+ 
+     if (l == 0) 
+@@ -1302,12 +1302,12 @@
+ 
+     if (!ph->pipe_is_open || !ph->pipe_mode_rd) {
+ 	errno = EBADF;
+-	uerror("netsys_pipe_read", Nothing);
++	caml_uerror("netsys_pipe_read", Nothing);
+     };
+ 
+     if (ph->pipe_conn_state != PIPE_CONNECTED) {
+ 	errno = ENOTCONN;
+-	uerror("netsys_pipe_read", Nothing);
++	caml_uerror("netsys_pipe_read", Nothing);
+     };
+ 
+     if (ph->pipe_rd_ovrlp_started) {
+@@ -1315,7 +1315,7 @@
+ 		ph->pipe_handle);
+ 
+ 	errno = EAGAIN;
+-	uerror("netsys_pipe_read", Nothing);
++	caml_uerror("netsys_pipe_read", Nothing);
+     };
+ 
+     if (ph->pipe_rd_buf_size < l) 
+@@ -1333,7 +1333,7 @@
+ 
+     return Val_int(l);
+ #else
+-    invalid_argument("netsys_pipe_read");
++    caml_invalid_argument("netsys_pipe_read");
+ #endif
+ }
+ 
+@@ -1363,7 +1363,7 @@
+ 	}
+ 	else
+ 	    win32_maperr(ph->pipe_error_wr);
+-	uerror("netsys_pipe_write", Nothing);
++	caml_uerror("netsys_pipe_write", Nothing);
+     };
+ 
+     if (l == 0) 
+@@ -1371,19 +1371,19 @@
+ 
+     if (!ph->pipe_is_open || !ph->pipe_mode_wr) {
+ 	errno = EBADF;
+-	uerror("netsys_pipe_write", Nothing);
++	caml_uerror("netsys_pipe_write", Nothing);
+     };
+ 
+     if (ph->pipe_conn_state != PIPE_CONNECTED) {
+ 	errno = ENOTCONN;
+-	uerror("netsys_pipe_write", Nothing);
++	caml_uerror("netsys_pipe_write", Nothing);
+     };
+ 
+     if (ph->pipe_wr_ovrlp_started) {
+ 	dprintf("PIPE write %u eagain\n",
+ 	       ph->pipe_handle);
+ 	errno = EAGAIN;
+-	uerror("netsys_pipe_write", Nothing);
++	caml_uerror("netsys_pipe_write", Nothing);
+     };
+ 
+     if (l > PIPE_HELPER_BUF_SIZE) 
+@@ -1400,7 +1400,7 @@
+ 
+     return Val_int(l);
+ #else
+-    invalid_argument("netsys_pipe_write");
++    caml_invalid_argument("netsys_pipe_write");
+ #endif
+ }
+ 
+@@ -1418,13 +1418,13 @@
+     if (ph->pipe_is_open) {
+ 	if (ph->pipe_conn_state == PIPE_DEAF) {
+ 	    errno = ENOTCONN;
+-	    uerror("netsys_pipe_shutdown", Nothing);
++	    caml_uerror("netsys_pipe_shutdown", Nothing);
+ 	};
+ 
+ 	flag = CloseHandle(ph->pipe_handle);
+ 	if (!flag) {
+ 	    win32_maperr(GetLastError());
+-	    uerror("netsys_pipe_shutdown/CloseHandle", Nothing);
++	    caml_uerror("netsys_pipe_shutdown/CloseHandle", Nothing);
+ 	};
+ 	ph->pipe_is_open = 0;
+ 	ph->pipe_conn_state = PIPE_DOWN;
+@@ -1438,7 +1438,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_pipe_shutdown");
++    caml_invalid_argument("netsys_pipe_shutdown");
+ #endif
+ }
+ 
+@@ -1453,7 +1453,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_pipe_free");
++    caml_invalid_argument("netsys_pipe_free");
+ #endif
+ }
+ 
+@@ -1469,7 +1469,7 @@
+ 
+     return Val_int(ph->pipe_conn_state);
+ #else
+-    invalid_argument("netsys_pipe_conn_state");
++    caml_invalid_argument("netsys_pipe_conn_state");
+ #endif
+ }
+ 
+@@ -1482,12 +1482,12 @@
+ 
+     if (!ph->pipe_is_open) {
+ 	errno = EBADF;
+-	uerror("netsys_pipe_rd_event", Nothing);
++	caml_uerror("netsys_pipe_rd_event", Nothing);
+     };
+ 
+     return alloc_event(ph->pipe_rd_ev);
+ #else
+-    invalid_argument("netsys_pipe_rd_event");
++    caml_invalid_argument("netsys_pipe_rd_event");
+ #endif
+ }
+ 
+@@ -1500,12 +1500,12 @@
+ 
+     if (!ph->pipe_is_open) {
+ 	errno = EBADF;
+-	uerror("netsys_pipe_wr_event", Nothing);
++	caml_uerror("netsys_pipe_wr_event", Nothing);
+     };
+ 
+     return alloc_event(ph->pipe_wr_ev);
+ #else
+-    invalid_argument("netsys_pipe_wr_event");
++    caml_invalid_argument("netsys_pipe_wr_event");
+ #endif
+ }
+ 
+@@ -1518,7 +1518,7 @@
+ 
+     return netsysw32_win_alloc_handle(ph->pipe_descr);
+ #else
+-    invalid_argument("netsys_pipe_descr");
++    caml_invalid_argument("netsys_pipe_descr");
+ #endif
+ }
+ 
+@@ -1530,7 +1530,7 @@
+     ph->pipe_descr_auto_close = Bool_val(flag);
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_set_auto_close_pipe_proxy");
++    caml_invalid_argument("netsys_set_auto_close_pipe_proxy");
+ #endif
+ }
+ 
+@@ -1546,7 +1546,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_pipe_signal");
++    caml_invalid_argument("netsys_pipe_signal");
+ #endif
+ }
+ 
+@@ -1582,7 +1582,7 @@
+     e_proxy = CreateEvent(NULL, 1, 0, NULL);
+     if (e_proxy == NULL) {
+ 	win32_maperr(GetLastError());
+-	uerror("alloc_process/CreateEvent", Nothing);
++	caml_uerror("alloc_process/CreateEvent", Nothing);
+     };
+ 
+     p0->proc = proc;
+@@ -1658,7 +1658,7 @@
+ 	      pass_std_handles = 1;
+ 	      break;
+ 	  default:
+-	      invalid_argument("netsys_create_process [1]");
++	      caml_invalid_argument("netsys_create_process [1]");
+ 	  }
+       }
+       else {
+@@ -1687,7 +1687,7 @@
+ 	      pg_flags = 0;
+ 	      break;
+ 	  default:
+-	      invalid_argument("netsys_create_process [2]");
++	      caml_invalid_argument("netsys_create_process [2]");
+ 	  }
+       };
+       opts_hd = Field(opts_hd,1);
+@@ -1709,14 +1709,14 @@
+ 		       &pi);
+   if (!code) {
+       win32_maperr(GetLastError());
+-      uerror("create_process/CreateProcess", cmd);
++      caml_uerror("create_process/CreateProcess", cmd);
+   };
+   CloseHandle(pi.hThread);
+   dprintf("netsys_create_process hProcess=%u processId=%u\n",
+ 	  pi.hProcess, pi.dwProcessId);
+   return alloc_process(pi.hProcess, pi.dwProcessId);
+ #else
+-    invalid_argument("netsys_create_process");
++    caml_invalid_argument("netsys_create_process");
+ #endif
+ }
+ 
+@@ -1770,14 +1770,14 @@
+     if (code == 0) {
+ 	stat_free(fullname);
+ 	errno = ENOENT;
+-	uerror("netsys_search_path", file_v);
++	caml_uerror("netsys_search_path", file_v);
+     };
+ 
+     r = caml_copy_string(fullname);
+     stat_free(fullname);
+     return r;
+ #else
+-    invalid_argument("netsys_search_path");
++    caml_invalid_argument("netsys_search_path");
+ #endif
+ }
+ 
+@@ -1790,11 +1790,11 @@
+ 	    p0->proc, p0->win_pid);
+     if (!TerminateProcess(p0->proc, 126)) {
+       win32_maperr(GetLastError());
+-      uerror("terminate_process/TerminateProcess", Nothing);
++      caml_uerror("terminate_process/TerminateProcess", Nothing);
+     }
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_terminate_process");
++    caml_invalid_argument("netsys_terminate_process");
+ #endif
+ }
+ 
+@@ -1807,7 +1807,7 @@
+     p0 = process_val(pv);
+     return netsysw32_win_alloc_handle(p0->proc_proxy);
+ #else
+-    invalid_argument("netsys_process_descr");
++    caml_invalid_argument("netsys_process_descr");
+ #endif
+ }
+ 
+@@ -1819,7 +1819,7 @@
+     p0->auto_close = Bool_val(flag);
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_set_auto_close_process_proxy");
++    caml_invalid_argument("netsys_set_auto_close_process_proxy");
+ #endif
+ }
+ 
+@@ -1834,7 +1834,7 @@
+     };
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_close_process");
++    caml_invalid_argument("netsys_close_process");
+ #endif
+ }
+ 
+@@ -1849,7 +1849,7 @@
+     stat_free(p0);
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_close_process");
++    caml_invalid_argument("netsys_close_process");
+ #endif
+ }
+ 
+@@ -1867,22 +1867,22 @@
+     };
+     if (code == WAIT_FAILED) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_get_process_status/WaitForSingleObject", Nothing);
++	caml_uerror("netsys_get_process_status/WaitForSingleObject", Nothing);
+     };
+     if (code != WAIT_OBJECT_0) {
+-	invalid_argument("netsys_get_process_status [1]");
++	caml_invalid_argument("netsys_get_process_status [1]");
+     };
+     /* Now get the status: */
+     code = GetExitCodeProcess(p0->proc, &status);
+     if (!code) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_get_process_status/getExitCodeProcess", Nothing);
++	caml_uerror("netsys_get_process_status/getExitCodeProcess", Nothing);
+     }
+     
+     return Val_int(status);
+ 
+ #else
+-    invalid_argument("netsys_get_process_status");
++    caml_invalid_argument("netsys_get_process_status");
+ #endif
+ }
+ 
+@@ -1893,7 +1893,7 @@
+     p0 = process_val(pv);
+     return alloc_event(p0->proc);
+ #else
+-    invalid_argument("netsys_as_process_event");
++    caml_invalid_argument("netsys_as_process_event");
+ #endif
+ }
+ 
+@@ -1911,11 +1911,11 @@
+ 			FALSE,
+ 			DUPLICATE_SAME_ACCESS)) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_emulated_pid/DuplicateHandle", Nothing);
++	caml_uerror("netsys_emulated_pid/DuplicateHandle", Nothing);
+     };
+     return Val_int(d);
+ #else
+-    invalid_argument("netsys_emulated_pid");
++    caml_invalid_argument("netsys_emulated_pid");
+ #endif
+ }
+ 
+@@ -1926,7 +1926,7 @@
+     p0 = process_val(pv);
+     return Val_int(p0->win_pid);
+ #else
+-    invalid_argument("netsys_win_pid");
++    caml_invalid_argument("netsys_win_pid");
+ #endif
+ }
+ 
+@@ -1935,7 +1935,7 @@
+ #ifdef _WIN32
+     return Val_bool(has_console());
+ #else
+-    invalid_argument("netsys_has_console");
++    caml_invalid_argument("netsys_has_console");
+ #endif
+ }
+ 
+@@ -1950,7 +1950,7 @@
+     else
+ 	return Val_bool(1);
+ #else
+-    invalid_argument("netsys_is_console");
++    caml_invalid_argument("netsys_is_console");
+ #endif
+ }
+ 
+@@ -1958,11 +1958,11 @@
+ #ifdef _WIN32
+     if (!AllocConsole()) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_alloc_console/AllocConsole", Nothing);
++	caml_uerror("netsys_alloc_console/AllocConsole", Nothing);
+     }
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_alloc_console");
++    caml_invalid_argument("netsys_alloc_console");
+ #endif
+ }
+ 
+@@ -1978,17 +1978,17 @@
+ 			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+     if (conout == INVALID_HANDLE_VALUE) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_get_console_attr/CreateFile", Nothing);
++	caml_uerror("netsys_get_console_attr/CreateFile", Nothing);
+     }
+     if (!GetConsoleCursorInfo(conout, &cci)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conout);
+-	uerror("netsys_get_console_attr/GetConsoleCursorInfo", Nothing);
++	caml_uerror("netsys_get_console_attr/GetConsoleCursorInfo", Nothing);
+     }
+     if (!GetConsoleScreenBufferInfo(conout, &csbi)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conout);
+-	uerror("netsys_get_console_attr/GetConsoleScreenBufferInfo", Nothing);
++	caml_uerror("netsys_get_console_attr/GetConsoleScreenBufferInfo", Nothing);
+     }
+     CloseHandle(conout);
+ 
+@@ -2001,7 +2001,7 @@
+ 
+     return r;
+ #else
+-    invalid_argument("netsys_get_console_attr");
++    caml_invalid_argument("netsys_get_console_attr");
+ #endif
+ }
+ 
+@@ -2025,7 +2025,7 @@
+ 			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+     if (conout == INVALID_HANDLE_VALUE) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_set_console_attr/CreateFile", Nothing);
++	caml_uerror("netsys_set_console_attr/CreateFile", Nothing);
+     }
+     
+     cci.dwSize = csize;
+@@ -2033,13 +2033,13 @@
+     if (!SetConsoleCursorInfo(conout, &cci)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conout);
+-	uerror("netsys_set_console_attr/SetConsoleCursorInfo", Nothing);
++	caml_uerror("netsys_set_console_attr/SetConsoleCursorInfo", Nothing);
+     }
+   
+     if (!GetConsoleScreenBufferInfo(conout, &csbi)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conout);
+-	uerror("netsys_set_console_attr/GetConsoleScreenBufferInfo", Nothing);
++	caml_uerror("netsys_set_console_attr/GetConsoleScreenBufferInfo", Nothing);
+     }
+ 
+     pos.X = cx + csbi.srWindow.Left;
+@@ -2047,20 +2047,20 @@
+     if (!SetConsoleCursorPosition(conout, pos)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conout);
+-	uerror("netsys_set_console_attr/SetConsoleCursorPosition", Nothing);
++	caml_uerror("netsys_set_console_attr/SetConsoleCursorPosition", Nothing);
+     }
+ 
+     if (!SetConsoleTextAttribute(conout, tattr)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conout);
+-	uerror("netsys_set_console_attr/SetConsoleTextAttributes", Nothing);
++	caml_uerror("netsys_set_console_attr/SetConsoleTextAttributes", Nothing);
+     }
+ 
+     CloseHandle(conout);
+   
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_set_console_attr");
++    caml_invalid_argument("netsys_set_console_attr");
+ #endif
+ }
+ 
+@@ -2076,13 +2076,13 @@
+ 			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+     if (conout == INVALID_HANDLE_VALUE) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_get_console_info/CreateFile", Nothing);
++	caml_uerror("netsys_get_console_info/CreateFile", Nothing);
+     }
+     
+     if (!GetConsoleScreenBufferInfo(conout, &csbi)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conout);
+-	uerror("netsys_get_console_info/GetConsoleScreenBufferInfo", Nothing);
++	caml_uerror("netsys_get_console_info/GetConsoleScreenBufferInfo", Nothing);
+     }
+     CloseHandle(conout);
+ 
+@@ -2092,7 +2092,7 @@
+ 
+     return r;
+ #else
+-    invalid_argument("netsys_get_console_info");
++    caml_invalid_argument("netsys_get_console_info");
+ #endif
+ }
+ 
+@@ -2108,13 +2108,13 @@
+ 		       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+     if (conin == INVALID_HANDLE_VALUE) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_get_console_mode/CreateFile", Nothing);
++	caml_uerror("netsys_get_console_mode/CreateFile", Nothing);
+     }
+     
+     if (!GetConsoleMode(conin, &modein)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conin);
+-	uerror("netsys_get_console_mode/GetConsoleMode", Nothing);
++	caml_uerror("netsys_get_console_mode/GetConsoleMode", Nothing);
+     }
+ 
+     CloseHandle(conin);
+@@ -2124,13 +2124,13 @@
+ 			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+     if (conout == INVALID_HANDLE_VALUE) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_get_console_mode/CreateFile", Nothing);
++	caml_uerror("netsys_get_console_mode/CreateFile", Nothing);
+     }
+     
+     if (!GetConsoleMode(conout, &modeout)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conout);
+-	uerror("netsys_get_console_mode/GetConsoleMode", Nothing);
++	caml_uerror("netsys_get_console_mode/GetConsoleMode", Nothing);
+     }
+ 
+     CloseHandle(conout),
+@@ -2146,7 +2146,7 @@
+ 
+     return r;
+ #else
+-    invalid_argument("netsys_get_console_mode");
++    caml_invalid_argument("netsys_get_console_mode");
+ #endif
+ }
+ 
+@@ -2162,13 +2162,13 @@
+ 		       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+     if (conin == INVALID_HANDLE_VALUE) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_set_console_mode/CreateFile", Nothing);
++	caml_uerror("netsys_set_console_mode/CreateFile", Nothing);
+     }
+     
+     if (!GetConsoleMode(conin, &modein)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conin);
+-	uerror("netsys_set_console_mode/GetConsoleMode", Nothing);
++	caml_uerror("netsys_set_console_mode/GetConsoleMode", Nothing);
+     }
+ 
+     modein &= ~ENABLE_ECHO_INPUT & ~ENABLE_INSERT_MODE & ~ENABLE_LINE_INPUT &
+@@ -2183,7 +2183,7 @@
+     if (!SetConsoleMode(conin, modein)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conin);
+-	uerror("netsys_set_console_mode/SetConsoleMode", Nothing);
++	caml_uerror("netsys_set_console_mode/SetConsoleMode", Nothing);
+     };
+ 
+     CloseHandle(conin);
+@@ -2193,13 +2193,13 @@
+ 			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+     if (conout == INVALID_HANDLE_VALUE) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_set_console_mode/CreateFile", Nothing);
++	caml_uerror("netsys_set_console_mode/CreateFile", Nothing);
+     }
+     
+     if (!GetConsoleMode(conout, &modeout)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conout);
+-	uerror("netsys_set_console_mode/GetConsoleMode", Nothing);
++	caml_uerror("netsys_set_console_mode/GetConsoleMode", Nothing);
+     }
+ 
+     modeout &= ~ENABLE_PROCESSED_OUTPUT & ~ENABLE_WRAP_AT_EOL_OUTPUT;
+@@ -2209,13 +2209,13 @@
+     if (!SetConsoleMode(conout, modeout)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conout);
+-	uerror("netsys_set_console_mode/SetConsoleMode", Nothing);
++	caml_uerror("netsys_set_console_mode/SetConsoleMode", Nothing);
+     };
+ 
+     CloseHandle(conout);
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_set_console_mode");
++    caml_invalid_argument("netsys_set_console_mode");
+ #endif
+ }
+ 
+@@ -2224,7 +2224,7 @@
+ #ifdef _WIN32
+     return Val_int(GetACP());
+ #else
+-    invalid_argument("netsys_getacp");
++    caml_invalid_argument("netsys_getacp");
+ #endif
+ }
+ 
+@@ -2235,15 +2235,15 @@
+     cp = GetACP();
+     if (!SetConsoleCP(cp)) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_init_console_codepage/SetConsoleCP", Nothing);
++	caml_uerror("netsys_init_console_codepage/SetConsoleCP", Nothing);
+     }
+     if (!SetConsoleOutputCP(cp)) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_init_console_codepage/SetConsoleOutputCP", Nothing);
++	caml_uerror("netsys_init_console_codepage/SetConsoleOutputCP", Nothing);
+     }
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_init_console_codepage");
++    caml_invalid_argument("netsys_init_console_codepage");
+ #endif
+ }
+ 
+@@ -2257,13 +2257,13 @@
+ 				    p, &nact)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conout);
+-	uerror("netsys_clear_console/FillConsoleOutputCharacter", Nothing);
++	caml_uerror("netsys_clear_console/FillConsoleOutputCharacter", Nothing);
+     }
+     if (!FillConsoleOutputAttribute(conout, attr, n, 
+ 				    p, &nact)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conout);
+-	uerror("netsys_clear_console/FillConsoleOutputAttribute", Nothing);
++	caml_uerror("netsys_clear_console/FillConsoleOutputAttribute", Nothing);
+     }
+ }
+ #endif
+@@ -2282,13 +2282,13 @@
+ 			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+     if (conout == INVALID_HANDLE_VALUE) {
+ 	win32_maperr(GetLastError());
+-	uerror("netsys_clear_console/CreateFile", Nothing);
++	caml_uerror("netsys_clear_console/CreateFile", Nothing);
+     }
+ 
+     if (!GetConsoleScreenBufferInfo(conout, &csbi)) {
+ 	win32_maperr(GetLastError());
+ 	CloseHandle(conout);
+-	uerror("netsys_clear_console/GetConsoleScreenBufferInfo", Nothing);
++	caml_uerror("netsys_clear_console/GetConsoleScreenBufferInfo", Nothing);
+     }
+ 
+     switch (Int_val(mode)) {
+@@ -2318,7 +2318,7 @@
+ 	if (!SetConsoleCursorPosition(conout, p)) {
+ 	    win32_maperr(GetLastError());
+ 	    CloseHandle(conout);
+-	    uerror("netsys_clear_console/SetConsoleCursorPosition", Nothing);
++	    caml_uerror("netsys_clear_console/SetConsoleCursorPosition", Nothing);
+ 	};
+ 	width = csbi.srWindow.Right - csbi.srWindow.Left  + 1;
+ 	height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+@@ -2329,7 +2329,7 @@
+ 	if (!SetConsoleWindowInfo(conout, TRUE, &new_win)) {
+ 	    win32_maperr(GetLastError());
+ 	    CloseHandle(conout);
+-	    uerror("netsys_clear_console/SetConsoleWindowInfo", Nothing);
++	    caml_uerror("netsys_clear_console/SetConsoleWindowInfo", Nothing);
+ 	}
+ 	break;
+     };
+@@ -2338,7 +2338,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_clear_console");
++    caml_invalid_argument("netsys_clear_console");
+ #endif
+ }
+ 
+@@ -2347,7 +2347,7 @@
+ #ifdef _WIN32
+     return caml_copy_int32(GetCurrentThreadId());
+ #else
+-    invalid_argument("netsys_get_current_thread_id");
++    caml_invalid_argument("netsys_get_current_thread_id");
+ #endif
+ }
+ 
+@@ -2377,7 +2377,7 @@
+ 	thread = OpenThread(THREAD_TERMINATE,FALSE,thread_id);
+ 	if (thread == NULL) {
+ 	    win32_maperr(GetLastError());
+-	    uerror("netsys_cancel_synchronous_io/OpenThread", Nothing);
++	    caml_uerror("netsys_cancel_synchronous_io/OpenThread", Nothing);
+ 	}
+ 	code = cancel_io_func(thread);
+ 	if (!code) {
+@@ -2385,7 +2385,7 @@
+ 	    if (code != ERROR_NOT_FOUND) {  /* hide ERROR_NOT_FOUND */
+ 		CloseHandle(thread);
+ 		win32_maperr(GetLastError());
+-		uerror("netsys_cancel_synchronous_io/CancelSynchronousIo",
++		caml_uerror("netsys_cancel_synchronous_io/CancelSynchronousIo",
+ 		       Nothing);
+ 	    }
+ 	};
+@@ -2394,7 +2394,7 @@
+ 
+     return Val_unit;
+ #else
+-    invalid_argument("netsys_cancel_synchronous_io");
++    caml_invalid_argument("netsys_cancel_synchronous_io");
+ #endif
+ }
+ 
+@@ -2493,7 +2493,7 @@
+       leave_blocking_section();
+       if (err) {
+ 	win32_maperr(err);
+-	uerror("select", Nothing);
++	caml_uerror("select", Nothing);
+       }
+       read_list = fdset_to_fdlist(readfds, &read);
+       write_list = fdset_to_fdlist(writefds, &write);
+@@ -2507,6 +2507,6 @@
+   End_roots();
+   return res;
+ #else
+-    invalid_argument("netsys_real_select");
++    caml_invalid_argument("netsys_real_select");
+ #endif
+ }
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_impl_util.ml ocamlnet-4.1.9-work/src/netsys/netsys_impl_util.ml
+--- ocamlnet-4.1.9/src/netsys/netsys_impl_util.ml	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_impl_util.ml	2023-06-02 13:14:20
+@@ -67,7 +67,7 @@
+   let rec search l h =
+     if l < h then (
+       let m = (l+h) / 2 in
+-      let r = Pervasives.compare x a.(m) in
++      let r = Stdlib.compare x a.(m) in
+       if r = 0 then
+ 	true
+       else
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_pollset_win32.ml ocamlnet-4.1.9-work/src/netsys/netsys_pollset_win32.ml
+--- ocamlnet-4.1.9/src/netsys/netsys_pollset_win32.ml	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_pollset_win32.ml	2023-06-02 13:14:20
+@@ -27,9 +27,9 @@
+   let in_arr  = Array.of_list in_set in
+   let out_arr = Array.of_list out_set in
+   let pri_arr = Array.of_list pri_set in
+-  Array.sort Pervasives.compare in_arr;
+-  Array.sort Pervasives.compare out_arr;
+-  Array.sort Pervasives.compare pri_arr;
++  Array.sort Stdlib.compare in_arr;
++  Array.sort Stdlib.compare out_arr;
++  Array.sort Stdlib.compare pri_arr;
+   Hashtbl.fold
+     (fun fd (ev,_) l ->
+        let m_in = Netsys_impl_util.mem_sorted_array fd in_arr in
+diff -ur ocamlnet-4.1.9/src/netsys/netsys_posix.ml ocamlnet-4.1.9-work/src/netsys/netsys_posix.ml
+--- ocamlnet-4.1.9/src/netsys/netsys_posix.ml	2021-03-25 00:20:14
++++ ocamlnet-4.1.9-work/src/netsys/netsys_posix.ml	2023-06-02 13:14:20
+@@ -337,9 +337,9 @@
+ 	let a_inp = Array.of_list o_inp in
+ 	let a_out = Array.of_list o_out in
+ 	let a_pri = Array.of_list o_pri in
+-	Array.sort Pervasives.compare a_inp;
+-	Array.sort Pervasives.compare a_out;
+-	Array.sort Pervasives.compare a_pri;
++	Array.sort Stdlib.compare a_inp;
++	Array.sort Stdlib.compare a_out;
++	Array.sort Stdlib.compare a_pri;
+ 	let n = ref 0 in
+ 	for j = 0 to k-1 do
+ 	  let c = e.(j) in
+@@ -679,7 +679,7 @@
+ 
+ module PFH = struct
+   type t = post_fork_handler
+-  let compare = Pervasives.compare
++  let compare = Stdlib.compare
+ end
+ 
+ module PFH_Set = Set.Make(PFH)
+diff -ur ocamlnet-4.1.9/src/nettls-gnutls/META.in ocamlnet-4.1.9-work/src/nettls-gnutls/META.in
+--- ocamlnet-4.1.9/src/nettls-gnutls/META.in	2021-03-25 00:20:15
++++ ocamlnet-4.1.9-work/src/nettls-gnutls/META.in	2023-06-02 15:52:47
+@@ -1,5 +1,5 @@
+ description = "Ocamlnet - GnuTLS bindings"
+-requires = "unix,bigarray,netsys,netstring"
++requires = "unix,netsys,netstring"
+ version = "@VERSION@"
+ archive(byte) = "nettls-gnutls.cma"
+ archive(native) = "nettls-gnutls.cmxa"
+diff -ur ocamlnet-4.1.9/src/nettls-gnutls/nettls_gnutls.ml ocamlnet-4.1.9-work/src/nettls-gnutls/nettls_gnutls.ml
+--- ocamlnet-4.1.9/src/nettls-gnutls/nettls_gnutls.ml	2021-03-25 00:20:15
++++ ocamlnet-4.1.9-work/src/nettls-gnutls/nettls_gnutls.ml	2023-06-02 13:14:20
+@@ -4,7 +4,7 @@
+ 
+ module StrMap = Map.Make(String)
+ module StrSet = Set.Make(String)
+-module OID = struct type t = Netoid.t let compare = Pervasives.compare end
++module OID = struct type t = Netoid.t let compare = Stdlib.compare end
+ module OIDMap = Map.Make(OID)
+ 
+ module type GNUTLS_PROVIDER =
+diff -ur ocamlnet-4.1.9/src/rpc/rpc_client.ml ocamlnet-4.1.9-work/src/rpc/rpc_client.ml
+--- ocamlnet-4.1.9/src/rpc/rpc_client.ml	2021-03-25 00:20:15
++++ ocamlnet-4.1.9-work/src/rpc/rpc_client.ml	2023-06-02 13:14:20
+@@ -49,7 +49,7 @@
+ 
+ module SessionUint4 = struct
+   type t = uint4
+-  let compare = (Pervasives.compare : uint4 -> uint4 -> int)
++  let compare = (Stdlib.compare : uint4 -> uint4 -> int)
+ end
+ 
+ module SessionMap =
+diff -ur ocamlnet-4.1.9/src/rpc/rpc_proxy.ml ocamlnet-4.1.9-work/src/rpc/rpc_proxy.ml
+--- ocamlnet-4.1.9/src/rpc/rpc_proxy.ml	2021-03-25 00:20:15
++++ ocamlnet-4.1.9-work/src/rpc/rpc_proxy.ml	2023-06-02 13:14:20
+@@ -414,7 +414,7 @@
+       | `Up up -> up.serial
+ 
+   let compare mc1 mc2 =
+-    Pervasives.compare mc1.id mc2.id
++    Stdlib.compare mc1.id mc2.id
+ 
+   let pending_calls mc =
+     mc.pending_calls
+@@ -1037,7 +1037,7 @@
+ 	  (* Sort the services by total load first: *)
+ 	  Array.sort 
+ 	    (fun j1 j2 ->
+-	       Pervasives.compare 
++	       Stdlib.compare 
+ 		 mset.total_load.(j1)
+ 		 mset.total_load.(j2)
+ 	    )
+diff -ur ocamlnet-4.1.9/src/rpc/rpc_server.ml ocamlnet-4.1.9-work/src/rpc/rpc_server.ml
+--- ocamlnet-4.1.9/src/rpc/rpc_server.ml	2021-03-25 00:20:15
++++ ocamlnet-4.1.9-work/src/rpc/rpc_server.ml	2023-06-02 13:14:20
+@@ -107,7 +107,7 @@
+ module Uint4 = struct
+   type t = uint4
+   let compare (a:uint4) (b:uint4) =
+-    (* avoid calling Pervasives.compare *)
++    (* avoid calling Stdlib.compare *)
+     let a' = logical_int32_of_uint4 a in
+     let b' = logical_int32_of_uint4 b in
+     if a' = b' then
+diff -ur ocamlnet-4.1.9/src/rpc-auth-local/rpclocal.c ocamlnet-4.1.9-work/src/rpc-auth-local/rpclocal.c
+--- ocamlnet-4.1.9/src/rpc-auth-local/rpclocal.c	2021-03-25 00:20:15
++++ ocamlnet-4.1.9-work/src/rpc-auth-local/rpclocal.c	2023-06-02 16:23:42
+@@ -101,7 +101,7 @@
+ #endif
+ 
+     /* Allocate a pair, and put the result into it: */
+-    result = alloc_tuple(2);
++    result = caml_alloc_tuple(2);
+     Store_field(result, 0, Val_int(uid));
+     Store_field(result, 1, Val_int(gid));
+ 
+@@ -246,7 +246,7 @@
+ #endif
+ 
+     /* Allocate a pair, and put the result into it: */
+-    result = alloc_tuple(2);
++    result = caml_alloc_tuple(2);
+     Store_field(result, 0, Val_int(uid));
+     Store_field(result, 1, Val_int(gid));
+ 
+diff -ur ocamlnet-4.1.9/src/shell/Makefile ocamlnet-4.1.9-work/src/shell/Makefile
+--- ocamlnet-4.1.9/src/shell/Makefile	2021-03-25 00:20:15
++++ ocamlnet-4.1.9-work/src/shell/Makefile	2023-06-02 15:14:45
+@@ -10,6 +10,8 @@
+ OCAMLC_OPTIONS += $(STRING_OPTS)
+ OCAMLOPT_OPTIONS += $(STRING_OPTS)
+ 
++REQUIRES += camlp-streams
++
+ PP_OPTIONS = -pp "$(CPPO) $(PP_BYTES) $(PP_DEPRECATED)"
+ 
+ INCLUDES += $(INC_EQUEUE) $(INC_NETSYS) $(INC_NETSTRING)
+diff -ur ocamlnet-4.1.9/tools/stubgen.ml ocamlnet-4.1.9-work/tools/stubgen.ml
+--- ocamlnet-4.1.9/tools/stubgen.ml	2021-03-25 00:20:13
++++ ocamlnet-4.1.9-work/tools/stubgen.ml	2023-06-02 17:44:05
+@@ -503,10 +503,10 @@
+   try
+     let l = String.length n in
+     let p = String.index n '|' in
+-    String.capitalize (String.lowercase (String.sub n (p+1) (l-p-1)))
++    String.capitalize_ascii (String.lowercase_ascii (String.sub n (p+1) (l-p-1)))
+   with
+     | Not_found ->
+-         String.capitalize (String.lowercase n)
++         String.capitalize_ascii (String.lowercase_ascii n)
+ 
+ 
+ let is_opt_case n =

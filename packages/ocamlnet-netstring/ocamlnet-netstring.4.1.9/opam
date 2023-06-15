@@ -1,0 +1,54 @@
+opam-version: "2.0"
+authors: "Gerd Stolpmann"
+maintainer: "gerd@gerd-stolpmann.de"
+homepage: "http://projects.camlcity.org/projects/ocamlnet.html"
+license: ["zlib-acknowledgement" "BSD-3-Clause" "GPL-2.0-only"]
+doc: "http://projects.camlcity.org/projects/dl/ocamlnet-4.1.9/doc/html-main/index.html"
+bug-reports: "https://gitlab.com/gerdstolpmann/lib-ocamlnet3/-/issues"
+dev-repo: "git+https://gitlab.com/gerdstolpmann/lib-ocamlnet3.git"
+patches: "500.netstring.patch" {ocaml:version >= "5.0.0"}
+build: [
+  [
+    "env" "MAKE=%{make}%"
+    "./configure"
+    "-bindir" bin
+    "-disable-core"
+    "-enable-netsys"
+    "-enable-netstring"
+    "-%{pcre:enable}%-pcre"
+    "-%{camlzip:enable}%-zip"
+  ]
+  [make "all"]
+  [make "opt"]
+]
+depends: [
+  "ocaml" {>= "5.00"}
+  "ocamlfind"
+  "ocamlbuild" {build}
+  "base-bytes"
+]
+depopts: [
+  "pcre"
+  "camlzip"
+]
+install: [make "install"]
+synopsis:
+  "Internet protocols (HTTP, CGI, e-mail etc.) and helper data structures"
+description: """
+(mail messages, character sets, etc.)
+
+Ocamlnet is an enhanced system platform library for Ocaml. As the name
+suggests, large parts of it have to do with network programming, but
+it is actually not restricted to this. Other parts deal with the
+management of multiple worker processes, and the interaction with
+other programs running on the same machine. You can also view Ocamlnet
+as an extension of the system interface as provided by the Unix module
+of the standard library."""
+extra-files: [
+  ["500.netstring.patch" "sha256=4725ce691d2ec899fa98310bbee3ccae47721a731d4dfb2bdb3beff890eef758"]
+]
+url {
+  src: "http://download.camlcity.org/download/ocamlnet-4.1.9.tar.gz"
+  checksum: "sha256=f98ed19979848f1949b1b001e30ac132b254d0f4a705150c6dcf9094bbec9cee"
+  mirrors: "http://download2.camlcity.org/download/ocamlnet-4.1.9.tar.gz"
+}
