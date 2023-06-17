@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis: "Reason: Syntax & Toolchain for OCaml"
+description: """
+Reason gives OCaml a new syntax that is remniscient of languages like
+JavaScript. It's also the umbrella project for a set of tools for the OCaml &
+JavaScript ecosystem."""
+maintainer: [
+  "Jordan Walke <jordojw@gmail.com>"
+  "Antonio Nuno Monteiro <anmonteiro@gmail.com>"
+]
+authors: ["Jordan Walke <jordojw@gmail.com>"]
+license: "MIT"
+homepage: "https://reasonml.github.io/"
+bug-reports: "https://github.com/reasonml/reason/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.03" & < "5.1"}
+  "ocamlfind" {build}
+  "dune-build-info" {>= "2.9.3"}
+  "menhir" {>= "20180523"}
+  "merlin-extend" {>= "0.6"}
+  "fix"
+  "ppx_derivers"
+  "ppxlib" {>= "0.28.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/reasonml/reason.git"
+url {
+  src:
+    "https://github.com/reasonml/reason/releases/download/3.9.0/reason-3.9.0.tbz"
+  checksum: [
+    "sha256=8527aafa233e878e08cde756d91e68d140630d2affcdd1d7bbbecd7d1fa32959"
+    "sha512=ad8e13f26b31d3342987b3a148ca1ab1d93b0dea7623809242cba9c2259630c191c878bb6da0743f9fc5924f29e027fa746a7d2dd36dc46c3aa0857d5680a30e"
+  ]
+}
+x-commit-hash: "8af1e160522da691aed27f47bf300fca7a80a510"
