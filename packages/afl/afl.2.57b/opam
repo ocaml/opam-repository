@@ -1,0 +1,31 @@
+opam-version: "2.0"
+maintainer: "meetup@yomimono.org"
+homepage: "https://github.com/google/AFL"
+dev-repo: "git+https://github.com/google/AFL.git"
+bug-reports: "https://groups.google.com/forum/#!forum/afl-users"
+license: "Apache-2.0"
+build: [
+  [make] {arch = "x86_64"}
+  [make "AFL_NO_X86=1"] {arch != "x86_64"}
+]
+install: [
+  [make "PREFIX=%{prefix}%" "install"] {arch = "x86_64"}
+  [make "AFL_NO_X86=1" "PREFIX=%{prefix}%" "install"] {arch != "x86_64"}
+]
+remove: [
+  [make "PREFIX=%{prefix}%" "uninstall"]
+]
+patches: [
+  "add-uninstall-target.patch"
+]
+synopsis:
+    "American Fuzzy Lop fuzzer by Michal Zalewski, repackaged for convenient use in opam"
+authors: "Michal Zalewski"
+depends: ["ocaml"]
+extra-files: [
+  "add-uninstall-target.patch" "md5=2c41a9cb71830813fd4e700b5aacc3b5"
+]
+url {
+  src: "https://github.com/google/AFL/archive/v2.57b.tar.gz"
+       checksum: "sha256=6f05a6515c07abe49f6f292bd13c96004cc1e016bda0c3cc9c2769dd43f163ee"
+}
