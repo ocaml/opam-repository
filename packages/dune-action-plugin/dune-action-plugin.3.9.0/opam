@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis: "[experimental] API for writing dynamic Dune actions"
+description: """
+
+This library is experimental. No backwards compatibility is implied.
+
+dune-action-plugin provides an API for writing dynamic Dune actions.
+Dynamic dune actions do not need to declare their dependencies
+upfront; they are instead discovered automatically during the
+execution of the action.
+"""
+maintainer: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+license: "MIT"
+homepage: "https://github.com/ocaml/dune"
+doc: "https://dune.readthedocs.io/"
+bug-reports: "https://github.com/ocaml/dune/issues"
+depends: [
+  "dune" {>= "3.5"}
+  "dune-glob" {= version}
+  "csexp" {>= "1.5.0"}
+  "ppx_expect" {with-test}
+  "stdune" {= version}
+  "dune-private-libs" {= version}
+  "dune-rpc" {= version}
+  "base-unix"
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/ocaml/dune.git"
+build: [
+  ["dune" "subst"] {dev}
+  ["rm" "-rf" "vendor/csexp"]
+  ["rm" "-rf" "vendor/pp"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src: "https://github.com/ocaml/dune/releases/download/3.9.0/dune-3.9.0.tbz"
+  checksum: [
+    "sha256=c4825a9de454aedf450c2db25ac353033e31d326a9d1b4b7a2cd7260639bd544"
+    "sha512=55d83bfee7c741cb5b74187674f9ef992ddf0b149f8d22a0a392c4c8ddf1075e9192eebd81cf36c115331cd96e10824100c6c338835d26c25e965e68ed94673d"
+  ]
+}
+x-commit-hash: "891fa5a7d72655634378425d51a1cf703ff93336"
