@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis:
+  "Portable OCaml interface to macOS/Linux/Windows native IO event notification mechanisms"
+description:
+  "poll provides a portable OCaml interface to IO event notification mechanisms on macOS, Linux and Windows. It uses kqueue on macOS, epoll on Linux, and uses a vendored copy of wepoll on Windows."
+maintainer: ["Anurag Soni <anurag@sonianurag.com>"]
+authors: ["Anurag Soni"]
+license: "MIT"
+tags: ["epoll" "kqueue" "wepoll"]
+homepage: "https://github.com/anuragsoni/poll"
+doc: "https://anuragsoni.github.io/poll"
+bug-reports: "https://github.com/anuragsoni/poll/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "base-unix"
+  "ppx_optcomp"
+  "kqueue" {>= "0.2.0"}
+  "dune-configurator"
+  "ppx_expect" {with-test}
+  "ocaml" {>= "4.13"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/anuragsoni/poll.git"
+conflicts: [
+  "ppxlib" {< "0.14.0"}
+]
+available: [ arch != "s390x" ]
+url {
+  src:
+    "https://github.com/anuragsoni/poll/releases/download/0.3.1/poll-0.3.1.tbz"
+  checksum: [
+    "sha256=217e928af2bf20c41a1a03205a222c3605123073facf513f4d20749a2690f29c"
+    "sha512=5c47ac2cb4fb52c116a190b323c4e537c8cc1d4d4689653fc1a863cfb19e215468c8c2d93180402fccf83a5e23def540f1f52f2975b7e391155afa593ae5e127"
+  ]
+}
+x-commit-hash: "303cd7b5254b6a7f1557507651d9ae34eecf8f14"
