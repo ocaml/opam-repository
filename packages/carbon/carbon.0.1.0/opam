@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "OCaml library for accessing various Carbon Intensity APIs"
+description: "Carbon provides access to various APIs to discover carbon intensity information for different countries."
+maintainer: ["patrick@sirref.org"]
+authors: ["Patrick Ferris"]
+license: "MIT"
+homepage: "https://github.com/geocaml/carbon-intensity"
+bug-reports: "https://github.com/geocaml/carbon-intensity/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "eio"
+  "cohttp-eio" {>= "6.0.0~alpha1"}
+  "ezjsonm"
+  "ptime"
+  "tls-eio"
+  "uri"
+  "mirage-crypto-rng-eio" {with-test}
+  "mdx" {with-test}
+  "eio_main" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/geocaml/carbon-intensity.git"
+url {
+  src:
+    "https://github.com/geocaml/carbon-intensity/releases/download/0.1.0/carbon-0.1.0.tbz"
+  checksum: [
+    "sha256=7fa704f5c5ff3bbc17d8e1cb8360e1dcb8e12fe909d5eac43a1242232560a97a"
+    "sha512=88cd08f1f12911bfc8651297111a45972e972278ae137b4bc3e28fddd02f57ced1d10b25fafc57fb760b9424cfd686d4ca48f3292ed4030838e2f66021440d8b"
+  ]
+}
+x-commit-hash: "082940a268dc5b5ae53090804fc8a92259fec467"
