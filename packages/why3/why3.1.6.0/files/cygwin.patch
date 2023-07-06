@@ -1,0 +1,183 @@
+diff --git a/configure.in b/configure.in
+index 0002665c0..9cb7151eb 100644
+--- a/configure.in
++++ b/configure.in
+@@ -320,7 +320,7 @@ if test "$enable_ocamlfind" != no; then
+    if test "$OCAMLFIND" = no; then
+       reason_ocamlfind=" (not found)"
+    else
+-      OCAMLFINDLIB=$(ocamlfind printconf stdlib)
++      OCAMLFINDLIB=$(ocamlfind printconf stdlib | tr -d '\r')
+       if test "$OCAMLFINDLIB" != "$OCAMLLIB"; then
+          found_ocamlfind=no
+          reason_ocamlfind=" (incompatible with OCaml)"
+@@ -341,7 +341,7 @@ fi
+ 
+ if test "$enable_ocamlfind" != no; then
+    #if ocamlfind is used it gives the install path for ocaml library
+-   OCAMLINSTALLLIB=$($OCAMLFIND printconf destdir)
++   OCAMLINSTALLLIB=$($OCAMLFIND printconf destdir | tr -d '\r')
+    enable_ocamlfind=yes
+ else
+    OCAMLINSTALLLIB=$OCAMLLIB
+@@ -356,7 +356,7 @@ else
+    fi
+    WHY3LIB=why3
+    AC_MSG_CHECKING([for Why3 using ocamlfind])
+-   DIR=$($OCAMLFIND query why3 2> /dev/null)
++   DIR=$($OCAMLFIND query why3 | tr -d '\r' 2> /dev/null)
+    if test -n "$DIR"; then
+       AC_MSG_RESULT([yes])
+       WHY3INCLUDE="-I $DIR"
+@@ -375,7 +375,7 @@ fi
+ # ppx
+ if test "$enable_ocamlfind" = yes; then
+   AC_MSG_CHECKING([for compiler-libs using ocamlfind])
+-  COMPILERLIBS=$($OCAMLFIND query compiler-libs 2> /dev/null)
++  COMPILERLIBS=$($OCAMLFIND query compiler-libs | tr -d '\r' 2> /dev/null)
+   if test -n "$COMPILERLIBS"; then
+     AC_MSG_RESULT([yes])
+     enable_ppx=yes
+@@ -425,7 +425,7 @@ fi
+ found_num=no
+ if test "$enable_ocamlfind" = yes; then
+    AC_MSG_CHECKING([for num using ocamlfind])
+-   DIR=$($OCAMLFIND query num 2> /dev/null)
++   DIR=$($OCAMLFIND query num | tr -d '\r' 2> /dev/null)
+    if test -z "$DIR"; then
+       AC_MSG_RESULT([no])
+       AC_MSG_ERROR([cannot find library Num using ocamlfind.])
+@@ -456,7 +456,7 @@ else
+    found_zarith=yes
+    if test "$enable_ocamlfind" = yes; then
+       AC_MSG_CHECKING([for zarith using ocamlfind])
+-      DIR=$($OCAMLFIND query zarith 2> /dev/null)
++      DIR=$($OCAMLFIND query zarith | tr -d '\r' 2> /dev/null)
+       if test -n "$DIR"; then
+          AC_MSG_RESULT([yes])
+          BIGINTINCLUDE="-I $DIR"
+@@ -496,7 +496,7 @@ fi
+ if test "$enable_bddinfer" = yes; then
+    if test "$enable_ocamlfind" = yes; then
+       # gmp is a dependency of apron
+-      INFERINCLUDE=$($OCAMLFIND query -separator ' ' -i-format apron 2> /dev/null)
++      INFERINCLUDE=$($OCAMLFIND query -separator ' ' -i-format apron | tr -d '\r' 2> /dev/null)
+    fi
+    if test -n "$INFERINCLUDE"; then
+       echo "ocamlfind found apron in $INFERINCLUDE"
+@@ -515,14 +515,14 @@ fi
+ if test "$enable_infer" = yes; then
+    if test "$enable_ocamlfind" = yes; then
+       # gmp is a dependency of apron
+-      INFERINCLUDE=$($OCAMLFIND query apron camllib 2> /dev/null)
++      INFERINCLUDE=$($OCAMLFIND query apron camllib | tr -d '\r' 2> /dev/null)
+    fi
+    if test -n "$INFERINCLUDE"; then
+       echo "ocamlfind found apron, camllib in $INFERINCLUDE"
+-      INFERINCLUDE=$($OCAMLFIND query fixpoint 2> /dev/null)
++      INFERINCLUDE=$($OCAMLFIND query fixpoint | tr -d '\r' 2> /dev/null)
+       if test -n "$INFERINCLUDE"; then
+          echo "ocamlfind found fixpoint in $INFERINCLUDE"
+-         INFERINCLUDE="$($OCAMLFIND query -separator ' ' -i-format apron fixpoint camllib gmp 2> /dev/null)"
++         INFERINCLUDE="$($OCAMLFIND query -separator ' ' -i-format apron fixpoint camllib gmp | tr -d '\r' 2> /dev/null)"
+          INFERLIB="apron fixpoint"
+          INFERPKG="apron fixpoint apron.boxMPQ apron.octMPQ apron.polkaMPQ"
+       else
+@@ -547,7 +547,7 @@ else
+    found_zip=yes
+    if test "$enable_ocamlfind" = yes; then
+       AC_MSG_CHECKING([for camlzip using ocamlfind])
+-      DIR=$($OCAMLFIND query zip 2> /dev/null)
++      DIR=$($OCAMLFIND query zip | tr -d '\r' 2> /dev/null)
+       if test -n "$DIR"; then
+          AC_MSG_RESULT([yes])
+          ZIPINCLUDE="-I $DIR"
+@@ -586,7 +586,7 @@ found_menhirlib=yes
+ DIR=
+ if test "$enable_ocamlfind" = yes; then
+    AC_MSG_CHECKING([for menhirLib using ocamlfind])
+-   DIR=$($OCAMLFIND query menhirLib 2> /dev/null)
++   DIR=$($OCAMLFIND query menhirLib | tr -d '\r' 2> /dev/null)
+    if test -n "$DIR"; then
+       AC_MSG_RESULT([yes])
+       MENHIRINCLUDE="-I $DIR"
+@@ -618,7 +618,7 @@ else
+    DIR=
+    if test "$enable_ocamlfind" = yes; then
+       AC_MSG_CHECKING([for re using ocamlfind])
+-      DIR=$($OCAMLFIND query re 2> /dev/null)
++      DIR=$($OCAMLFIND query re | tr -d '\r' 2> /dev/null)
+       if test -n "$DIR"; then
+          AC_MSG_RESULT([yes])
+          REINCLUDE="-I $DIR"
+@@ -667,7 +667,7 @@ fi
+ found_lablgtk=no
+ if test "$enable_ide" != no; then
+    AC_MSG_CHECKING([for lablgtk3 using ocamlfind])
+-   DIR=$($OCAMLFIND query lablgtk3 2> /dev/null)
++   DIR=$($OCAMLFIND query lablgtk3 | tr -d '\r' 2> /dev/null)
+    if test -n "$DIR"; then
+       AC_MSG_RESULT([yes])
+       found_lablgtk=yes
+@@ -687,7 +687,7 @@ found_lablgtksourceview=no
+ if test "$found_lablgtk" = yes; then
+    for p in $PKGS_SOURCEVIEW; do
+       AC_MSG_CHECKING([for $p using ocamlfind])
+-      DIR=$($OCAMLFIND query $p 2> /dev/null)
++      DIR=$($OCAMLFIND query $p | tr -d '\r' 2> /dev/null)
+       if test -n "$DIR"; then
+          AC_MSG_RESULT([yes])
+          AC_CHECK_FILE($DIR/gSourceView$GTKVERSION.cmi,,p=)
+@@ -732,7 +732,7 @@ if test "$enable_hypothesis_selection" != no -o "$enable_stackify" != no; then
+    DIR=
+    if test "$enable_ocamlfind" = yes; then
+       AC_MSG_CHECKING([for ocamlgraph using ocamlfind])
+-      DIR=$($OCAMLFIND query ocamlgraph 2> /dev/null)
++      DIR=$($OCAMLFIND query ocamlgraph | tr -d '\r' 2> /dev/null)
+       if test -n "$DIR"; then
+          AC_MSG_RESULT([yes])
+          OCAMLGRAPHLIB="$DIR"
+@@ -802,14 +802,14 @@ elif test "$enable_js_of_ocaml" = yes -o "$enable_web_ide" = yes; then
+ else
+    found_mlmpfr=yes
+    AC_MSG_CHECKING([for mlmpfr])
+-   DIR=$($OCAMLFIND query mlmpfr 2> /dev/null)
++   DIR=$($OCAMLFIND query mlmpfr | tr -d '\r' 2> /dev/null)
+    if test -n "$DIR"; then
+       AC_MSG_RESULT([yes])
+       old_mpfr=no
+       echo "ocamlfind found mlmpfr in $DIR"
+       # Test that MPFR version is higher than 4.0.0 (because of
+       # Faithful constructor incompatibility).
+-      MPFRVERSION=$($OCAMLFIND query -format "%v" mlmpfr 2> /dev/null)
++      MPFRVERSION=$($OCAMLFIND query -format "%v" mlmpfr | tr -d '\r' 2> /dev/null)
+       AX_VERSION_GE([$MPFRVERSION], 4.0.0, [], [
+          found_mlmpfr=no
+          reason_mpfr=" (mlmpfr >= 4.0.0 not found)"])
+@@ -848,7 +848,7 @@ else
+    found_js_of_ocaml=yes
+    for p in js_of_ocaml js_of_ocaml-ppx; do
+       AC_MSG_CHECKING([for $p])
+-      DIR=$($OCAMLFIND query $p 2> /dev/null)
++      DIR=$($OCAMLFIND query $p | tr -d '\r' 2> /dev/null)
+       if test -z "$DIR"; then
+          AC_MSG_RESULT([no])
+          found_js_of_ocaml=no
+@@ -891,7 +891,7 @@ if test "$enable_statmemprof" = yes; then
+       enable_statmemprof=no
+       reason_statmemprof=" (ocamlfind not available)"
+    else
+-      DIR=$($OCAMLFIND query statmemprof-emacs 2> /dev/null)
++      DIR=$($OCAMLFIND query statmemprof-emacs | tr -d '\r' 2> /dev/null)
+       if test -z "$DIR"; then
+          enable_statmemprof=no
+          reason_statmemprof=" (statmemprof-emacs not found)"
+@@ -915,7 +915,7 @@ else
+     else
+         for p in ppx_sexp_conv sexplib ppx_deriving; do
+             AC_MSG_CHECKING([for $p using ocamlfind])
+-            DIR=$($OCAMLFIND query $p 2> /dev/null)
++            DIR=$($OCAMLFIND query $p | tr -d '\r' 2> /dev/null)
+             if test -z "$DIR"; then
+                AC_MSG_RESULT([no])
+                enable_pp_sexp=no
