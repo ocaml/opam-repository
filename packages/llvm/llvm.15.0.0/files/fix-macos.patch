@@ -1,0 +1,30 @@
+From 98ca3c8802d0ae92a5baf34ffdc454d680276845 Mon Sep 17 00:00:00 2001
+From: Kate <kit.ty.kate@disroot.org>
+Date: Sat, 25 Dec 2021 18:21:57 +0000
+Subject: [PATCH 2/2] Fix support for building the OCaml binding on macOS
+
+The output of ocamlmklib is always .a and .so
+---
+ llvm-project/llvm/cmake/modules/AddOCaml.cmake | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/llvm-project/llvm/cmake/modules/AddOCaml.cmake b/llvm-project/llvm/cmake/modules/AddOCaml.cmake
+index b7e2ba430344..dc80abcc6e75 100644
+--- a/llvm/cmake/modules/AddOCaml.cmake
++++ b/llvm/cmake/modules/AddOCaml.cmake
+@@ -40,10 +40,10 @@ function(add_ocaml_library name)
+   set(ocaml_outputs "${bin}/${name}.cma")
+   if( ARG_C )
+     list(APPEND ocaml_outputs
+-         "${bin}/lib${name}${CMAKE_STATIC_LIBRARY_SUFFIX}")
++         "${bin}/lib${name}.a")
+     if ( BUILD_SHARED_LIBS )
+       list(APPEND ocaml_outputs
+-           "${bin}/dll${name}${CMAKE_SHARED_LIBRARY_SUFFIX}")
++           "${bin}/dll${name}.so")
+     endif()
+   endif()
+   if( HAVE_OCAMLOPT )
+-- 
+2.34.0
+

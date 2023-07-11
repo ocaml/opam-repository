@@ -1,0 +1,45 @@
+From 58e8402f9000d0dfe67b3df99ed8cd21b8325acd Mon Sep 17 00:00:00 2001
+From: Kate <kit.ty.kate@disroot.org>
+Date: Sun, 26 Dec 2021 05:09:10 +0000
+Subject: [PATCH] Handle RHEL-based distributions (do not have
+ libLLVM-<VERSION>.so, only libLLVM.so)
+
+---
+ llvm/cmake/modules/AddOCaml.cmake | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/llvm/cmake/modules/AddOCaml.cmake b/llvm/cmake/modules/AddOCaml.cmake
+index dc80abcc6e75..f51a339f084b 100644
+--- a/llvm/cmake/modules/AddOCaml.cmake
++++ b/llvm/cmake/modules/AddOCaml.cmake
+@@ -66,20 +66,22 @@ function(add_ocaml_library name)
+     list(APPEND ocaml_flags "-custom")
+   endif()
+ 
++  if(LLVM_OCAML_OUT_OF_TREE)
++    list(APPEND ocaml_flags "-L${LLVM_OCAML_EXTERNAL_LLVM_LIBDIR}" )
++  endif()
++
+   if(LLVM_LINK_LLVM_DYLIB)
+     list(APPEND ocaml_flags "-lLLVM")
+   else()
+     explicit_map_components_to_libraries(llvm_libs ${ARG_LLVM})
+-    if( BUILD_SHARED_LIBS )
+-      list(APPEND ocaml_flags "-lLLVM-${LLVM_VERSION_MAJOR}${LLVM_VERSION_SUFFIX}")
++
++    if(BUILD_SHARED_LIBS AND LLVM_OCAML_OUT_OF_TREE)
++      list(APPEND ocaml_flags ${LLVM_OCAML_EXTERNAL_LLVM_LIBS})
+     else()
+       foreach( llvm_lib ${llvm_libs} )
+         list(APPEND ocaml_flags "-l${llvm_lib}" )
+       endforeach()
+     endif()
+-    if(LLVM_OCAML_OUT_OF_TREE)
+-      list(APPEND ocaml_flags "-L${LLVM_OCAML_EXTERNAL_LLVM_LIBDIR}" )
+-    endif()
+ 
+     get_property(system_libs TARGET LLVMSupport PROPERTY LLVM_SYSTEM_LIBS)
+     foreach(system_lib ${system_libs})
+-- 
+2.34.0
+

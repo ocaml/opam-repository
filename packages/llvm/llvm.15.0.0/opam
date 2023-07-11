@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "Kate <kit.ty.kate@disroot.org>"
+authors: [
+  "whitequark <whitequark@whitequark.org>"
+  "The LLVM team"
+]
+license: "MIT"
+doc: "http://llvm.moe/ocaml"
+bug-reports: "http://llvm.org/bugs/"
+dev-repo: "git+http://llvm.org/git/llvm.git"
+homepage: "http://llvm.moe"
+build: ["bash" "-ex" "install.sh" "%{conf-llvm:config}%" lib "%{conf-cmake:cmd}%" make "build"]
+install: ["bash" "-ex" "install.sh" "%{conf-llvm:config}%" lib "%{conf-cmake:cmd}%" make "install"]
+depends: [
+  "ocaml" {>= "4.00.0"}
+  "ctypes" {>= "0.4"}
+  "ounit" {with-test}
+  "ocamlfind" {build}
+  "conf-llvm" {build & = version}
+  "conf-python-3" {build}
+  "conf-cmake" {build}
+]
+patches: [
+  "fix-shared.patch"
+  "fix-macos.patch"
+  "fix-rhel.patch"
+]
+synopsis: "The OCaml bindings distributed with LLVM"
+description: "Note: LLVM should be installed first."
+extra-files: [
+  ["link-META.patch" "md5=bbb99db647b80baaa34054e1a957f218"]
+  ["install.sh" "md5=2db75a6673ad476cdb464dd90021d51a"]
+  ["META.patch" "md5=c63515a9c59101ebf71ecf83ddf6ec9f"]
+  ["fix-macos.patch" "md5=86664021a2819e4a0a9ebe5f3cafe819"]
+  ["fix-shared.patch" "md5=bdc3f688681e9c56d92514ba4ef68cb9"]
+  ["fix-rhel.patch" "md5=e1db49b76f8795f3d3e276fd9e10db72"]
+]
+url {
+  src: "https://github.com/alan-j-hu/llvm-project/archive/refs/tags/release/15.x+nnp+depr.1.tar.gz"
+  checksum: "sha256=5831ee20bc5455b73859d8c36c013875888eca03d3c65735aa6e7cb401f203e3"
+}
