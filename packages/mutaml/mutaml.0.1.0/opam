@@ -1,0 +1,48 @@
+opam-version: "2.0"
+
+synopsis:    "A mutation tester for OCaml"
+license:     "BSD-2-Clause"
+homepage:    "https://github.com/jmid/mutaml"
+doc:         "https://github.com/jmid/mutaml"
+bug-reports: "https://github.com/jmid/mutaml/issues"
+
+dev-repo:    "git+https://github.com/jmid/mutaml.git"
+authors:     "Jan Midtgaard <mail@janmidtgaard.dk>"
+maintainer:  "Jan Midtgaard <mail@janmidtgaard.dk>"
+tags: [
+  "test"
+  "mutation testing"
+]
+
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "subst"] {dev}
+]
+
+depends: [
+  "ocaml" { >= "4.12.0" }
+  "dune" { >= "3.0.0" }
+  "ppxlib" { >= "0.26.0" & < "0.28.0" }
+  "ppx_yojson_conv" { >= "v0.14.0" }
+  "stdlib-random"
+  "conf-timeout"
+  "conf-which"
+  "conf-diffutils"
+  "ounit2" {with-test}
+]
+
+description: """
+Mutaml is a mutation testing tool for OCaml.
+It uses a ppxlib-based preprocessor to make a series of small
+breaking changes to a program's source code and then runs
+the program's testsuite for each of them to catch uncaught
+misbehaviour.
+"""
+url {
+  src: "https://github.com/jmid/mutaml/archive/0.1.tar.gz"
+  checksum: [
+    "md5=c1f93a13b88ca927b5d35dbcc4a230f3"
+    "sha512=f663c82dd83c9644e46ec16a1cd940513d6c0cde03b56cf3b993880e48544d3dc1546ddf5197851049fa5babeb96e9e6b9fff6ec4d6585f5709928e934eb87e5"
+  ]
+}
