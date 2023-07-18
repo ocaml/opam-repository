@@ -1,0 +1,69 @@
+opam-version: "2.0"
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+homepage: "https://diskuv.gitlab.io/diskuv-ocaml"
+bug-reports: "https://github.com/diskuv/dkml-runtime-apps/issues"
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+depends: [
+  # should dkml-runtime-common-native be a flags:conf package since it is a dependency
+  # of a flags:conf package?
+  "dkml-runtime-common-native" {>= "1.0.2~prerel17"}
+]
+build: [
+  [ "sh" "-eufxc" "echo '%{dkml-sys-opam-exe}%' > opam-exe"]  { ?dkml-sys-opam-exe}
+  [ "sh" "-eufxc" "command -v opam > opam-exe"]               {!?dkml-sys-opam-exe}
+
+  # Load crossplatform-functions.sh to get a sha256 tool.
+  [
+    "sh"
+    "-eufxc"
+    """
+    # Load common functions
+    . '%{dkml-runtime-common-native:lib}%/unix/crossplatform-functions.sh'
+
+    OPAM_EXE=$(cat opam-exe)
+    # Translate the opam executable location into different path styles
+    # * We use long paths (not DOS 8.3) for the file-depends:[] since opam as of
+    #   2.1 gives frequent warnings of missing files when DOS 8.3 is used.
+    if [ -x /usr/bin/cygpath ]; then
+      /usr/bin/cygpath -alm "$OPAM_EXE" > var.exe.location.mixed
+      /usr/bin/cygpath -aw "$OPAM_EXE"  > var.exe.location.native
+    else
+      printf '%s\n' "$OPAM_EXE" > var.exe.location.mixed
+      printf '%s\n' "$OPAM_EXE" > var.exe.location.native
+    fi
+
+    # Get sha256 checksum
+    sha256compute $(cat var.exe.location.mixed) > opam-exe.sha256
+
+    # Write <pkgname>.config
+    #   confer: https://opam.ocaml.org/doc/Manual.html#lt-pkgname-gt-config
+    backslash='\\'
+    {
+      printf 'opam-version: "2.0"\n'
+      printf 'file-depends: [ [ "%s" "sha256=%s" ] ]\n' "$(< var.exe.location.mixed )" "$(< opam-exe.sha256 )"
+      printf 'variables {\n'
+      printf '  location-native: "%s"\n' "$(< var.exe.location.native)" | sed "s/[$backslash]/$backslash$backslash$backslash$backslash/g"
+      printf '  location-mixed: "%s"\n' "$(< var.exe.location.mixed )"
+      printf '}\n'
+    } > '%{name}%.config'
+    """
+  ]
+]
+synopsis: "Virtual package relying on the opam executable"
+description:
+  """\
+This package will set package variables with the location of the opam
+executable.
+
+If the opam variable 'dkml-sys-opam-exe' is available, its value will become
+the location of the opam executable. Otherwise the PATH is searched to find
+opam.
+
+A 'file-depends' trigger will reinstall conf-dkml-sys-opam when the opam executable changes.
+
+The %{conf-dkml-sys-opam:location-native}% variable will be the native (Win32, Unix) location
+of opam, while %{conf-dkml-sys-opam:location-mixed}% will be the
+location of opam using only forward slashes (/).
+"""
+flags: conf
