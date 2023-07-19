@@ -12,6 +12,7 @@ doc:
 bug-reports:
   "https://gitlab.com/diskuv-ocaml/components/dkml-component-desktop/-/issues"
 depends: [
+  "conf-dkml-sys-opam"
   "dkml-build-desktop" {= version}
   "dkml-install" {>= "0.2.0"}
   "diskuvbox" {>= "0.1.0"}
@@ -57,7 +58,6 @@ depends: [
 depopts: ["conf-withdkml"]
 dev-repo:
   "git+https://gitlab.com/diskuv-ocaml/components/dkml-component-desktop.git"
-available: [ ?dkml-sys-opam-exe ]
 build: [
   ["dune" "subst"] {dev}
   [
@@ -120,13 +120,13 @@ build: [
   #   The files C:/Users/WDAGUT~1/AppData/Local/Programs/DISKUV~1/lib/ocaml\stdlib.cmi
   #      and C:\Users\WDAGUT~1\AppData\Local\Programs\DISKUV~1\desktop\bc\lib\logs\logs.cmi
   #      make inconsistent assumptions over interface CamlinternalFormatBasics
-  [ "sh" "-c" "'%{dkml-sys-opam-exe}%' show --list-files dkml-base-compiler | awk -f scripts/stdlib.awk > opamshow-stdlib.txt" ]
+  [ "sh" "-c" "'%{conf-dkml-sys-opam:location-mixed}%' show --list-files dkml-base-compiler | awk -f scripts/stdlib.awk > opamshow-stdlib.txt" ]
 
   # Need ocaml.exe and other binaries for "offline" installer
-  [ "sh" "-c" "'%{dkml-sys-opam-exe}%' show --list-files dkml-base-compiler | awk -f scripts/ocamlexe.awk > opamshow-ocamlexe.txt" ]
+  [ "sh" "-c" "'%{conf-dkml-sys-opam:location-mixed}%' show --list-files dkml-base-compiler | awk -f scripts/ocamlexe.awk > opamshow-ocamlexe.txt" ]
 
   # Overwrite opamshow-dkml-apps.txt to exclude what we staged in staging-dkmlconfdir. There should not be overlap.
-  [ "sh" "-c" "'%{dkml-sys-opam-exe}%' show --list-files dkml-apps | grep -v dkml-confdir > opamshow-dkml-apps.txt" ]
+  [ "sh" "-c" "'%{conf-dkml-sys-opam:location-mixed}%' show --list-files dkml-apps | grep -v dkml-confdir > opamshow-dkml-apps.txt" ]
 ]
 install: [
   # BEGIN install-flavor-full. DO NOT EDIT THE LINES IN THIS SECTION
@@ -180,6 +180,6 @@ install: [
 url {
   src: "https://gitlab.com/diskuv-ocaml/distributions/dkml/-/releases/2.0.0/downloads/src.dkml-component-desktop.tar.gz"
   checksum: [
-    "sha512=6074a4181003df88ef2ecae84e433cd9434c09ffb223fd78432d9d268497f751b1851c042ae97f22fd0a5501a1034e407cce0ecd7edb5f7decb85670e6efe46a"
+    "sha512=fd31a9438de3acb6399d2bc945a7e7cde819dfabf11020b9bef4c6bfca2fa7c9e0b19f8226d435dacb12397826247106131e8eaf2520ff599d0835305954c2a5"
   ]
 }
