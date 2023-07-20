@@ -14,9 +14,15 @@ depends: [
 ]
 dev-repo: "git+https://github.com/diskuv/dkml-component-ocamlrun.git"
 available: [ os = "macos" | (os = "linux" & (arch = "x86_32" | arch = "x86_64")) | os = "win32" ]
+build-env: [
+  [HOMEBREW_NO_AUTO_UPDATE = "1"]
+]
 build: [
   # Homebrew's bundle tap, needed for reproducible build auditing in drc's crossplatform-functions.sh.
-  ["sh" "src/opamtime/brewbundle.sh"] {os = "macos"}
+  # TODO: Move the brewbundle.sh to drc, or in drc skip reproducible build auditing if bundle tap is not installable
+  # WAS: ["sh" "src/opamtime/brewbundle.sh"] {os = "macos"}
+  # NOW: Use an empty Brewfule
+  ["touch" "Brewfile"] {os = "macos"}
 
   # OCaml source code
   ["install" "-d" "dl/ocaml/flexdll"]
