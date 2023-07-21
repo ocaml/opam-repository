@@ -1,0 +1,62 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+]
+synopsis: "An OCaml library for HTTP clients and servers"
+description: """
+Cohttp is an OCaml library for creating HTTP daemons. It has a portable
+HTTP parser, and implementations using various asynchronous programming
+libraries.
+
+See the cohttp-async, cohttp-lwt, cohttp-lwt-unix, cohttp-lwt-jsoo and
+cohttp-mirage libraries for concrete implementations for particular
+targets.
+
+You can implement other targets using the parser very easily. Look at the `IO`
+signature in `lib/s.mli` and implement that in the desired backend.
+
+You can activate some runtime debugging by setting `COHTTP_DEBUG` to any
+value, and all requests and responses will be written to stderr.  Further
+debugging of the connection layer can be obtained by setting `CONDUIT_DEBUG`
+to any value."""
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "dune" {>= "2.0"}
+  "re" {>= "1.9.0"}
+  "uri" {>= "2.0.0"}
+  "uri-sexp"
+  "sexplib0"
+  "ppx_sexp_conv" {>= "v0.13.0"}
+  "stringext"
+  "base64" {>= "3.1.0"}
+  "fmt" {with-test}
+  "jsonm" {build}
+  "alcotest" {with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v4.1.2/cohttp-4.1.2.tbz"
+  checksum: [
+    "sha256=f027f48e132f214b3e27b63c99b247b150549e70bd6e27ad16da947ed392fa20"
+    "sha512=c8fbf840141faecb207af3ad7d2bfcdf8b8bced6c6ca4d5a22b6982d1be13f748fa6e3997c6d97351285cd3a30f57f20fd418b7195a735a13d48ba3bcdf8e23c"
+  ]
+}
+x-commit-hash: "4819af50a7903cff8fe45e87ead2e39dd33a727f"
