@@ -1,0 +1,58 @@
+opam-version: "2.0"
+synopsis: "Combinators for binding to C libraries without writing any C"
+description: """
+
+ctypes is a library for binding to C libraries using pure OCaml. The primary
+aim is to make writing C extensions as straightforward as possible.
+The core of ctypes is a set of combinators for describing the structure of C
+types -- numeric types, arrays, pointers, structs, unions and functions. You
+can use these combinators to describe the types of the functions that you want
+to call, then bind directly to those functions -- all without writing or
+generating any C!
+
+To install the optional `ctypes-foreign` interface (which uses `libffi` to
+provide dynamic access to foreign libraries), you will need to also install
+the `ctypes-foreign` package.
+
+    opam install ctypes-foreign
+
+This will make the `ctypes-foreign` ocamlfind subpackage available."""
+maintainer: ["Jeremy Yallop <yallop@gmail.com>"]
+authors: ["Jeremy Yallop"]
+license: "MIT"
+tags: ["org:mirage"]
+homepage: "https://github.com/yallop/ocaml-ctypes"
+doc: "https://yallop.github.io/ocaml-ctypes/"
+bug-reports: "https://github.com/yallop/ocaml-ctypes/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.03.0"}
+  "integers"
+  "dune-configurator"
+  "bigarray-compat"
+  "ounit2" {with-test}
+  "conf-fts" {with-test & os != "win32"}
+  "conf-pkg-config" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/yallop/ocaml-ctypes.git"
+url {
+  src: "https://github.com/yallop/ocaml-ctypes/archive/refs/tags/0.21.1.tar.gz"
+  checksum: "md5=8b201d932741c5096854e5eb39139b90"
+}
