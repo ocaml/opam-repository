@@ -11,7 +11,7 @@ for llvm_config in llvm-config-$version llvm-config-${version}.0 llvm-config${ve
     llvm_version="`$llvm_config --version`" || true
     case $llvm_version in
     $version*)
-        echo "config: \"$(command -v '$llvm_config')\"" >> conf-llvm.config
+        echo "config: \"$(command -v $llvm_config)\"" >> conf-llvm.config
         echo "version: \"$llvm_version\"" >> conf-llvm.config
         exit 0;;
     *)
