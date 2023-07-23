@@ -1,0 +1,195 @@
+opam-version: "2.0"
+synopsis: "DKML staging component for ocamlrun"
+description:
+  "Standalone bytecode distribution of OCaml in <share>/staging-files containing just ocamlrun, the OCaml Stdlib and the other OCaml libraries (str, unix, bigarray, etc.)"
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-component-ocamlrun"
+bug-reports: "https://github.com/diskuv/dkml-component-ocamlrun/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "dkml-install" {>= "0.2.0"}
+  "dkml-runtime-common" {>= "1.0.2~prerel9"}
+  "dkml-compiler-src"
+  "diskuvbox" {>= "0.1.0"}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/diskuv/dkml-component-ocamlrun.git"
+available: [ os = "macos" | (os = "linux" & (arch = "x86_32" | arch = "x86_64")) | os = "win32" ]
+build: [
+  # OCaml source code
+  ["install" "-d" "dl/ocaml/flexdll"]
+  ["tar" "xCfz" "dl/ocaml"          "dl/ocaml.tar.gz"   "--strip-components=1"]
+  ["tar" "xCfz" "dl/ocaml/flexdll"  "dl/flexdll.tar.gz" "--strip-components=1"]
+
+  # Create a DKMLDIR. Its structure mimics a git submodule setup.
+  #   <dkmldir>/vendor/drc/
+  ["diskuvbox" "copy-dir" "%{dkml-runtime-common:lib}%/all" "dkmldir/vendor/drc/all"]
+  ["diskuvbox" "copy-dir" "%{dkml-runtime-common:lib}%/unix" "dkmldir/vendor/drc/unix"]
+  #   <dkmldir>/.dkmlroot
+  ["diskuvbox" "copy-file" "%{dkml-runtime-common:lib}%/template.dkmlroot" "dkmldir/.dkmlroot"]
+
+  #   <dkmldir>/vendor/dkml-compiler/
+  ["diskuvbox" "copy-dir" "%{dkml-compiler-src:lib}%/src" "dkmldir/vendor/dkml-compiler"]
+
+  # If brew is installed, try to capture list of bundles for reproducible build auditing in drc's crossplatform-functions.sh.
+  ["sh" "%{dkml-runtime-common:lib}%/macos/brewbundle.sh"] {os-distribution = "homebrew"}
+
+  # Developers:
+  #   Uncomment to test your own scripts
+  #[ "diskuvbox" "copy-file" "r-c-ocaml-1-setup.sh" "dkmldir/vendor/dkml-compiler/src/r-c-ocaml-1-setup.sh" ]
+
+  # --------------
+  # Build component and .api library
+  # --------------
+
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+install: [
+  # --------------
+  # First pass
+  # --------------
+
+  # [0] Avoid permission denied copying onto read-only files in step [1]
+  [
+    "sh" "-eufxc" """
+    if [ -e '%{_:share}%/staging-files' ]; then
+      chmod -R u+w '%{_:share}%/staging-files'
+      rm -rf '%{_:share}%/staging-files'
+    fi
+    """
+  ]
+
+  # [1] Run r-c-ocaml-1-setup.sh
+  [
+    "env" "TOPDIR=dkmldir/vendor/drc/all/emptytop"
+      "DKML_REPRODUCIBLE_SYSTEM_BREWFILE=%{_:build}%/Brewfile"
+      "bash"
+      "dkmldir/vendor/dkml-compiler/src/r-c-ocaml-1-setup.sh"
+      "-d" "dkmldir"
+      "-f" "src/ocaml-1"
+      "-k" "vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh"
+      "-v" "dl/ocaml"
+      #   Host-compile into staging-files/<host-abi>
+      "-t" "%{_:share}%/staging-files"
+      "-pwindows_x86_64"  { os = "win32" }
+      "-plinux_x86"       { os = "linux" & arch = "x86_32" }
+      "-plinux_x86_64"    { os = "linux" & arch = "x86_64" }
+      "-pdarwin_x86_64"   { os = "macos" & arch = "x86_64" }
+      "-pdarwin_arm64"    { os = "macos" & arch = "arm64" }
+      #   ABIs
+      "-ewindows_x86_64"  { os = "win32" }
+      "-elinux_x86"       { os = "linux" & arch = "x86_32" }
+      "-elinux_x86_64"    { os = "linux" & arch = "x86_64" }
+      "-edarwin_x86_64"   { os = "macos" & arch = "x86_64" }
+      "-edarwin_arm64"    { os = "macos" & arch = "arm64" }
+      #   Cross-compile into staging-files/<cross-abi>
+      "-g" "."
+      #   Target architectures (if cross-compiling; similar to dkml-base-compiler.opam)
+      #     TODO: With the -adarwin_x86_64 configuration below, an Apple Silicon machine will produce an arm64 ocamlopt.opt
+      #     in the staging-files/darwin_arm64 directory,
+      #     and that ocamlopt.opt will create x86_64 OCaml native executables. So that darwin_arm64/bin/ocamlopt.opt will not
+      #     run on an x86_64 machine.
+      #     The -adarwin_arm64 configuration is similar but has one important difference. The config will produce an x86_64
+      #     ocamlopt.opt, in the staging-files/darwin_x86_64 directory, and that ocamlopt.opt will create arm64 OCaml native
+      #     executables. But that darwin_x86_64/bin/ocamlopt.opt _will_ run on almost _all_ Apple Silicon (arm64) machines
+      #     because of Rosetta2. The only major exception is Opam CI has disabled Rosetta2 as of Nov 8, 2022.
+      #     Ideally we would have [-aHOST] and [-aHOST-TARGET]. That is: -adarwin_x86_64, -adarwin_arm64 and
+      #     -adarwin_x86_64-darwin_arm64. But that cross specification has ripple effects that needs time (technical debt) to
+      #     get right. Luckily our build machines are always Apple x86_64 (GitHub Actions and GitLab CI/CD), and even if the
+      #     build machines were Apple Silicon we typically only care about the generated artifacts (the target ABI).
+      "-adarwin_x86_64=vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh" { os = "macos" & arch = "arm64" }
+      "-adarwin_arm64=vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh"  { os = "macos" & arch = "x86_64" }
+      #     For any non cross-compiling platforms we save time and space by
+      #     only building the runtime.
+      "-r"                                        { os = "win32" | (os = "linux" & (arch = "x86_32" | arch = "x86_64")) }
+  ]
+
+  # [1] Run r-c-ocaml-2-build_host-noargs.sh
+  [
+    "sh" "-eufc"
+    "cd '%{_:share}%/staging-files' && echo 1 - host && share/dkml/repro/100co/vendor/dkml-compiler/src/r-c-ocaml-2-build_host-noargs.sh"
+  ]
+
+  # [1] Run r-c-ocaml-3-build_cross-noargs.sh if cross-compiling,
+  # which will place its output into staging-files/<cross-abi>
+  # (confer: "-g" "%{_:share}%/staging-files")
+  [
+    "sh" "-eufc"
+    "cd '%{_:share}%/staging-files' && echo 1 - cross && share/dkml/repro/100co/vendor/dkml-compiler/src/r-c-ocaml-3-build_cross-noargs.sh"
+  ] { os = "macos" }
+
+  # --------------
+  # Second pass
+  #   For platforms that can do multiple _host_ ABIs _without_ cross-compiling.
+  #   * MSVC can trivially do 32-bit and 64-bit without cross-compiling.
+  #   * Most often Linux can as well as long as `gcc -m32` is configured.
+  #     However for ease of use in GitHub Actions we expect Linux 32-bit and
+  #     Linux 64-bit to be done with different Opam switches.
+  # --------------
+
+  # [2] Run r-c-ocaml-1-setup.sh
+  [
+    "env" "TOPDIR=dkmldir/vendor/drc/all/emptytop"
+      "DKML_REPRODUCIBLE_SYSTEM_BREWFILE=%{_:build}%/Brewfile"
+      "bash"
+      "dkmldir/vendor/dkml-compiler/src/r-c-ocaml-1-setup.sh"
+      "-d" "dkmldir"
+      "-f" "src/ocaml-2"
+      "-r" # Build runtime only
+      "-k" "vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh"
+      "-v" "dl/ocaml"
+      #   Host-compile into staging-files/<host-abi>
+      "-t" "%{_:share}%/staging-files"
+      "-pwindows_x86"     { os = "win32" }
+      #   ABIs
+      "-ewindows_x86"     { os = "win32" }
+  ] { !(os = "macos") & !(os = "linux") }
+
+  # [2] Run r-c-ocaml-2-build_host-noargs.sh
+  [
+    "sh" "-eufc"
+    "cd '%{_:share}%/staging-files' && echo 2 - host && share/dkml/repro/100co/vendor/dkml-compiler/src/r-c-ocaml-2-build_host-noargs.sh"
+  ] { !(os = "macos") & !(os = "linux") }
+
+  # --------------
+  # Clean build files
+  # --------------
+
+  [ "rm" "-rf" "%{_:share}%/staging-files/share" ]
+  [ "rm" "-rf" "%{_:share}%/staging-files/src" ]
+]
+extra-source "dl/ocaml.tar.gz" {
+  src: "https://github.com/ocaml/ocaml/archive/4.14.0.tar.gz"
+  checksum: "sha256=39f44260382f28d1054c5f9d8bf4753cb7ad64027da792f7938344544da155e8"
+}
+extra-source "dl/flexdll.tar.gz" {
+  src: "https://github.com/alainfrisch/flexdll/archive/0.42.tar.gz"
+  checksum: "sha256=a2dce0a0d2f2c5c9f52f65e281db7405f51ff22dc71cdbf494eb241c8a4bdf0f"
+}
+extra-source "dl/homebrew-bundle.tar.gz" {
+  src: "https://github.com/Homebrew/homebrew-bundle/archive/437c67db2f160369fec3a3892e3c577b6b3a4d2c.tar.gz"
+  checksum: [
+    "sha256=ecb6b03b2d0210369f23e3f8f64cd939a4bba633db08db62a49894653e053df4"
+  ]
+}
+url {
+  src: "https://gitlab.com/diskuv-ocaml/distributions/dkml/-/releases/2.0.1/downloads/src.dkml-component-ocamlrun.tar.gz"
+  checksum: [
+    "sha512=0bc5880ae0c53edfc6ffc0e4d7ea038954b561dd79aa670d5a0fa069ea36f00aea5e6725273e28c25af37532c79d114b7ba5f3cebf7fac4c04b561dab7152804"
+  ]
+}

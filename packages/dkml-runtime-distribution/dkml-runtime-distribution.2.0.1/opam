@@ -1,0 +1,34 @@
+opam-version: "2.0"
+synopsis: "Scripts used by the Diskuv OCaml distribution during installation"
+description: """
+Scripts used by the Diskuv OCaml distribution during the installation of:
+* a local project (ie. a Opam switch created with `dkml init`)
+* a user profile (ex. OCaml binaries installed within the user's home directory)
+* a machine (ex. system or Administrator assembly/C compilers)"""
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-runtime-distribution"
+bug-reports: "https://github.com/diskuv/dkml-runtime-distribution/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.12.1~" & < "4.12.2~" | >= "4.14.0~" & < "4.14.1~"}
+  "diskuvbox" {>= "0.1.0" & build}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/diskuv/dkml-runtime-distribution.git"
+# Until Dune 3+ the auto-generated '.opam' will have an invalid ["dune" "install" ...] step
+# that messes up with cross-compilation. Customized it to remove it.
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs "@install" "@runtest" {with-test} "@doc" {with-doc}]
+]
+install: [
+  ["diskuvbox" "copy-dir" "src" "%{_:lib}%/src"]
+]
+url {
+  src: "https://gitlab.com/diskuv-ocaml/distributions/dkml/-/releases/2.0.1/downloads/src.dkml-runtime-distribution.tar.gz"
+  checksum: [
+    "sha512=e35c4b1c091bc1b7861824b0ca664ec8eebe0c00ea81127c9bd547294a5b22022327a5c1cd6c88811f7cac7bfc4100bc54225412cc41d7ef958624f5c87e702f"
+  ]
+}

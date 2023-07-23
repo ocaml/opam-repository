@@ -1,0 +1,92 @@
+opam-version: "2.0"
+synopsis: "DkML network installer generator for OCaml"
+description:
+  "Generates a network installer for OCaml, including Visual Studio and Git on Windows, and including a OCaml compiler built during installation time"
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-installer-ocaml"
+bug-reports: "https://github.com/diskuv/dkml-installer-ocaml/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "odoc" {>= "1.5.3" & with-doc}
+  "ocaml" {>= "4.12.1~"}
+  "dkml-component-ocamlcompiler-network" {>= "4.14.0~" & < "4.14.1~"}
+  "dkml-component-offline-desktop-full" {>= "0.1.0"}
+  "dkml-component-offline-opamshim" {>= "2.2.0~alpha0~20221104"}
+  "dkml-install-installer" {>= "0.3.0"}
+  "dkml-package-console" {>= "0.3.0"}
+  "dkml-workflows" {>= "1.1.0" & build}
+  "alcotest" {>= "1.4.0" & with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-installer-ocaml.git"
+install: [
+  # Create the installer executable after `dune install` (which is after
+  # `build:[]` section) so Dune can do plugin rewriting since Dune edits (yes!)
+  # the executables.
+  # The installers will be in $OPAM/share/dkml-installer-ocaml/.
+  # For the benefit of Windows and macOS we keep the build directory name ("iw")
+  # small.
+  [ "install" "-d" "%{_:share}%/w" "%{_:share}%/t" ]
+  [
+    "_build/install/default/bin/dkml-installer-network-ocaml-create-installers%{exe}%"
+    #   Debug logs
+    "-vv"
+    "--program-version"
+    "2.0.1"
+    "--component"
+    "ocamlcompiler-network"
+    "--component"
+    "offline-desktop-full"
+
+    # Only Windows, Linux (dockcross manylinux2014) and Darwin Intel which
+    # corresponds to the build environments of GitHub workflow setup-dkml.yml.
+    # Later can add Dune cross-compiler to get Darwin ARM64.
+    "--abi=windows_x86"
+    "--abi=windows_x86_64"
+    # "--abi=linux_x86"
+    # "--abi=linux_x86_64"
+    # "--abi=darwin_x86_64"
+
+    "--work-dir"
+    "%{_:share}%/w"
+    "--target-dir"
+    "%{_:share}%/t"
+
+    "--runner-admin-exe"
+    "_build/install/$(dune-context)/bin/dkml-installer-network-ocaml-admin-runner%{exe}%"
+    "--runner-user-exe"
+    "_build/install/$(dune-context)/bin/dkml-installer-network-ocaml-user-runner%{exe}%"
+
+    "--packager-install-exe"
+    "_build/install/$(dune-context)/bin/dkml-installer-network-ocaml-package-install%{exe}%"
+    "--packager-uninstall-exe"
+    "_build/install/$(dune-context)/bin/dkml-installer-network-ocaml-package-uninstall%{exe}%"
+    "--packager-setup-bytecode"
+    "_build/install/$(dune-context)/bin/dkml-installer-network-ocaml-package-setup.bc%{exe}%"
+    "--packager-uninstaller-bytecode"
+    "_build/install/$(dune-context)/bin/dkml-installer-network-ocaml-package-uninstaller.bc%{exe}%"
+  ]
+]
+url {
+  src: "https://gitlab.com/diskuv-ocaml/distributions/dkml/-/releases/2.0.1/downloads/src.dkml-installer-ocaml.tar.gz"
+  checksum: [
+    "sha512=625aa194ab8130323938a8303a01a2ff88e5e581ba5e204330c521d5b0889e9c480c1cfebbb52ec9c2951b883f43c919b2bc2740ffdff5393330c049cb9ee752"
+  ]
+}
