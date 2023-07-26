@@ -1,0 +1,61 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: ["Tezos devteam"]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.0" }
+  "ocaml" { >= "4.14" & < "5.0" }
+  "tezos-stdlib-unix" { = version }
+  "tezos-base" { = version }
+  "tezos-crypto" { = version }
+  "tezos-shell-services" { = version }
+  "aches" { >= "1.0.0" }
+  "aches-lwt" { >= "1.0.0" }
+  "tezos-validation" { = version }
+  "tezos-version" { = version }
+  "index" { >= "1.6.0" & < "1.7.0" }
+  "irmin-pack" { >= "3.6.1" & < "3.7.0" }
+  "tezos-protocol-environment" { = version }
+  "tezos-context" { = version }
+  "tezos-context-ops" { = version }
+  "tezos-shell-context" { = version }
+  "tezos-protocol-updater" { = version }
+  "tezos-stdlib" { = version }
+  "lwt-watcher" { = "0.2" }
+  "camlzip" { >= "1.11" & < "1.12" }
+  "tar"
+  "tar-unix" { >= "2.0.1" & < "3.0.0" }
+  "prometheus" { >= "1.2" }
+  "tezos-rpc" { = version }
+  "tezt" { with-test & >= "3.1.0" }
+  "tezos-embedded-protocol-demo-noops" { with-test & = version }
+  "tezos-embedded-protocol-genesis" { with-test & = version }
+  "tezos-embedded-protocol-alpha" { with-test & = version }
+  "tezos-protocol-alpha" { with-test & = version }
+  "tezos-protocol-plugin-alpha" { with-test & = version }
+  "octez-alcotezt" { with-test & = version }
+  "tezos-test-helpers" { with-test & = version }
+]
+conflicts: [
+  "checkseum" { = "0.5.0" }
+]
+build: [
+  ["rm" "-r" "vendors"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] { with-test & ocaml:native }
+]
+synopsis: "Tezos: store for `octez-node`"
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v17.2/tezos-17.2.tar.gz"
+  checksum: [
+    "sha256=451f30679472dcd47ce7ab48289efdaf6a250f5b851e61cdf18191f9f44c7a5d"
+    "sha512=7144b0e67228429685ea335d0a6f15ce312f06042712eeeb39cef6473cf60542d486c7480c2df44d3b62069db626503f1de8aeac527ed2b391f2a6ec8e3f67cb"
+  ]
+}
+description: "This library provides abstraction for storing and iterating over blocks.
+tezos-store is a virtual library that provides two implementations:
+- tezos-store.real is the default implementation, used in production
+- tezos-store.mocked is used for testing purposes."
