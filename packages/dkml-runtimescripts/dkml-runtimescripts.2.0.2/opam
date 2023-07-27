@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis:
+  "Runtime scripts used by CLI applications and Opam plugins in a Diskuv OCaml installation"
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://diskuv.gitlab.io/diskuv-ocaml"
+bug-reports: "https://github.com/diskuv/dkml-runtime-apps/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.12.1"}
+  "bos" {>= "0.2.1"}
+  "fpath" {>= "0.7.0"}
+  "re" {>= "1.10.0"}
+  "rresult" {>= "0.7.0"}
+  "dkml-compiler-env" {= version}
+  "dkml-runtime-common" {= version}
+  "dkml-runtime-distribution" {= version}
+  "crunch" {>= "3.3.1"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-runtime-apps.git"
+url {
+  src: "https://gitlab.com/diskuv-ocaml/distributions/dkml/-/releases/2.0.2/downloads/src.dkml-runtime-apps.tar.gz"
+  checksum: [
+    "sha512=e684b7580293725e8b2bb6763f76d695c8bea30288bf867faf6bc1ed3d800c5dafb6927d0bc6a3c13683b3dca7e12f75c062b27b376396586d3397c3ba4f11cd"
+  ]
+}

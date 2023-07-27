@@ -1,0 +1,85 @@
+opam-version: "2.0"
+synopsis: "DkML offline installer generator for OCaml"
+description:
+  "Generates an offline installer for OCaml. The offline installer only supports bytecode unless the end-user machine has a C + ASM compilers (ex. Visual Studio on Windows) at the same location as the build machine"
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-installer-ocaml"
+bug-reports: "https://github.com/diskuv/dkml-installer-ocaml/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "odoc" {>= "1.5.3" & with-doc}
+  "ocaml" {>= "4.12.1~"}
+  "dkml-component-ocamlcompiler-offline" {>= "4.14.0~" & < "4.14.1~"}
+  "dkml-component-offline-desktop-full" {>= "0.1.0"}
+  "dkml-install-installer" {>= "0.5.0"}
+  "dkml-workflows" {>= "1.1.0" & build}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-installer-ocaml.git"
+install: [
+  # Create the installer executable after `dune install` (which is after
+  # `build:[]` section) so Dune can do plugin rewriting since Dune edits (yes!)
+  # the executables.
+  # The installers will be in $OPAM/share/dkml-installer-ocaml/.
+  # For the benefit of Windows and macOS we keep the build directory name ("iw")
+  # small.
+  [ "install" "-d" "%{_:share}%/w" "%{_:share}%/t" ]
+  [
+    "_build/install/default/bin/dkml-installer-ocaml-offline-create-installers%{exe}%"
+    #   Debug logs
+    "-vv"
+    "--program-version"
+    "2.0.2"
+
+    # Only Windows, Linux (dockcross manylinux2014) and Darwin Intel which
+    # corresponds to the build environments of GitHub workflow setup-dkml.yml.
+    # Later can add Dune cross-compiler to get Darwin ARM64.
+    "--abi=windows_x86"
+    "--abi=windows_x86_64"
+    # "--abi=linux_x86"
+    # "--abi=linux_x86_64"
+    # "--abi=darwin_x86_64"
+
+    "--work-dir"
+    "%{_:share}%/w"
+    "--target-dir"
+    "%{_:share}%/t"
+
+    "--runner-admin-exe"
+    "_build/install/$(dune-context)/bin/dkml-installer-ocaml-offline-admin-runner%{exe}%"
+    "--runner-user-exe"
+    "_build/install/$(dune-context)/bin/dkml-installer-ocaml-offline-user-runner%{exe}%"
+
+    "--packager-install-exe"
+    "_build/install/$(dune-context)/bin/dkml-installer-ocaml-offline-package-install%{exe}%"
+    "--packager-uninstall-exe"
+    "_build/install/$(dune-context)/bin/dkml-installer-ocaml-offline-package-uninstall%{exe}%"
+    "--packager-setup-bytecode"
+    "_build/install/$(dune-context)/bin/dkml-installer-ocaml-offline-package-setup.bc%{exe}%"
+    "--packager-uninstaller-bytecode"
+    "_build/install/$(dune-context)/bin/dkml-installer-ocaml-offline-package-uninstaller.bc%{exe}%"
+  ]
+]
+url {
+  src: "https://gitlab.com/diskuv-ocaml/distributions/dkml/-/releases/2.0.2/downloads/src.dkml-installer-ocaml-byte.tar.gz"
+  checksum: [
+    "sha512=bf257018ab1d4d9768756d1a7db5d0429c7c4bde1932f4c4fe909253cd5ac26dd9ceb4f4f4bfd6380914d44ce104304b28eefd515d616e0a4b8cb0ec8e0f05e5"
+  ]
+}

@@ -1,0 +1,36 @@
+opam-version: "2.0"
+synopsis: "Common code for the network and offline DkML installers for OCaml"
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-installer-ocaml"
+bug-reports: "https://github.com/diskuv/dkml-installer-ocaml/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "odoc" {>= "1.5.3" & with-doc}
+  "dkml-package-console" {>= "0.5.0"}
+  "dkml-workflows" {>= "1.1.0" & build}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-installer-ocaml.git"
+url {
+  src: "https://gitlab.com/diskuv-ocaml/distributions/dkml/-/releases/2.0.2/downloads/src.dkml-installer-ocaml.tar.gz"
+  checksum: [
+    "sha512=0827241a0fb7a11039f18450ac066697c166cec1e246742c9d69ecee4dffdd95b49a6cf679e98e4f26ea52ae28979d15e1059bf8e086eaee9f3a85d1a813673f"
+  ]
+}
