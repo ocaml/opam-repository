@@ -1,0 +1,72 @@
+synopsis: "Parsing library based on combinators and ppx extension to write languages"
+description:
+"""
+Pacomb is a parsing library that compiles grammars to combinators prior to
+parsing together with a PPX extension to write parsers inside OCaml files.
+
+The advantages of Pacomb are
+
+- Grammars as first class values defined in your OCaml files. This is
+  an example from the distribution:
+
+(* The three levels of priorities *)
+type p = Atom | Prod | Sum
+let%parser rec
+              (* This includes each priority level in the next one *)
+     expr p = Atom < Prod < Sum
+            (* all other rule are selected by their priority level *)
+            ; (p=Atom) (x::FLOAT)                        => x
+            ; (p=Atom) '(' (e::expr Sum) ')'             => e
+            ; (p=Prod) (x::expr Prod) '*' (y::expr Atom) => x*.y
+            ; (p=Prod) (x::expr Prod) '/' (y::expr Atom) => x/.y
+            ; (p=Sum ) (x::expr Sum ) '+' (y::expr Prod) => x+.y
+            ; (p=Sum ) (x::expr Sum ) '-' (y::expr Prod) => x-.y
+
+- Good performances:
+  - on non ambiguous grammars, 2 to 3 time slower compared to ocamlyacc
+  - on ambiguous grammars O(N^3 ln(N)) can be achieved.
+
+- Parsing from left to right (despite the use of combinators) allowing not
+  to keep the whole input in memory and allowing to parse streams.
+
+- Dependant sequence allowing for self extensible grammars (like new infix
+  with a given priority in a given example).
+
+- Managing of blanks that for instance allows for nested language using
+  different kind of comments or blanks.
+
+- Support for cache and merge for ambiguous grammars (to get O(N^3 ln(N)))
+
+- Enough support for utf8 to write parser for a language using utf8.
+
+- Comes with documentation and various examples illustrating most possibilities.
+
+All this makes Pacomb a promising solution to write languages in OCaml.
+"""
+
+opam-version: "2.0"
+maintainer: "Christophe Raffalli <christophe@raffalli.eu>"
+bug-reports: "https://github.com/craff/pacomb/issues"
+homepage: "https://github.com/craff/pacomb"
+dev-repo: "git+https://github.com/craff/pacomb.git"
+authors: [
+  "Christophe Raffalli <christophe@raffalli.eu>"
+  "Rodolphe Lepigre <lepigre@mpi-sws.org>" ]
+license: "MIT"
+
+depends: [
+  "ocaml" { >= "4.04.1" }
+  "dune"  { >= "1.9.0" }
+  "ppxlib" { >= "0.10.0" }
+  "stdlib-shims"
+]
+
+build: [ [ "dune" "build" "-p" name "-j" jobs ] ]
+run-test: [ [ "dune" "runtest" "-p" name "-j" jobs ] ]
+url {
+  src: "https://github.com/craff/pacomb/archive/refs/tags/1.3.tar.gz"
+  checksum: [
+    "md5=e48dc9fae5b96632bd1de929a49af71c"
+    "sha512=e4bf5dcfb0d4c5225a81fffe8e74cd9c147221eb9c8278b05d22391da0e06c6997e5b9a83a6431d72829f07f402da2449778cfe0bd56e7e2d3c8e08bbc1a73d5"
+  ]
+}
