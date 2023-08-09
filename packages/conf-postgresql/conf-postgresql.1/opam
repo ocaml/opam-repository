@@ -24,9 +24,12 @@ depexts: [
   ["postgresql14-dev"] {os-distribution = "alpine" & os-version >= "3.15"}
   ["postgresql"] {os = "win32" & os-distribution = "cygwinports"}
   ["postgresql-libs"] {os-family = "arch"}
-  ["postgresql"] {os = "macos" & os-distribution = "homebrew"}
+  ["postgresql@15"] {os = "macos" & os-distribution = "homebrew"}
   ["postgresql96"] {os = "macos" & os-distribution = "macports"}
   ["postgresql"] {os-distribution = "nixos"}
+]
+post-messages: [
+  """If this package failed with "Command not found: pg_config", you might need to call "brew link postgresql@15" and retry to install this package afterwards.""" {failure & os = "macos" & os-distribution = "homebrew"}
 ]
 synopsis: "Virtual package relying on a PostgreSQL system installation"
 description:
