@@ -1,0 +1,74 @@
+
+synopsis: "PPX Rewriters for Ocaml, written using Camlp5"
+description:
+"""
+This is a collection of PPX rewriters, re-implementing those based on ppxlib
+and other libraries, but instead based on Camlp5.  Included is also a collection
+of support libraries for writing new PPX rewriters.  Included are:
+
+pa_assert: ppx_assert
+pa_ppx.deriving, pa_ppx.deriving_plugins (enum, eq, fold, iter, make, map, ord, sexp, show, yojson):
+  ppx_deriving, plugins, ppx_sexp_conv, ppx_deriving_yojson
+pa_ppx.expect_test: ppx_expect_test
+pa_ppx.here: ppx_here
+pa_ppx.import: ppx_import
+pa_ppx.inline_test: ppx_inline_test
+
+pa_ppx.undo_deriving: pa_ppx.deriving expands [@@deriving ...] into code; this rewriter undoes that.
+pa_ppx.unmatched_vala: expands to match-cases (support library for camlp5-based PPX rewriters)
+pa_ppx.hashrecons: support for writing AST rewriters that automatically fills in hash-consing boilerplate
+pa_dock: implements doc-comment extraction for camlp5 preprocessors
+
+Many of the reimplementations in fact offer significant enhanced
+function, described in the pa_ppx documentation.  In addition, there
+is an extensive test-suite, much of it slightly modified versions of
+the tests for the respective PPX rewriters.
+
+"""
+opam-version: "2.0"
+maintainer: "Chet Murthy <chetsky@gmail.com>"
+authors: ["Chet Murthy"]
+homepage: "https://github.com/camlp5/pa_ppx"
+license: "BSD-3-Clause"
+bug-reports: "https://github.com/camlp5/pa_ppx/issues"
+dev-repo: "git+https://github.com/camlp5/pa_ppx.git"
+doc: "https://github.com/camlp5/pa_ppx/doc"
+
+depends: [
+  "ocaml"       { >= "4.10.0" & < "5.02.0" }
+  "conf-perl"
+  "camlp5-buildscripts" { >= "0.03" }
+  "camlp5"      { >= "8.02.00" }
+  "not-ocamlfind" { >= "0.10" }
+  "pcre" { >= "7.4.3" }
+  "result" { >= "1.5" }
+  "yojson" { >= "1.7.0" }
+  "sexplib0"
+  "bos" { >= "0.2.0" }
+  "fmt"
+  "uint" { >= "2.0.1" }
+  "ounit"
+  "sexplib" { with-test & >= "v0.14.0" }
+  "ppx_import" { with-test & >= "1.7.1" }
+  "ppx_deriving" { with-test }
+  "ppx_deriving_yojson" { with-test & >= "3.5.2" }
+  "ppx_here" { with-test & >= "v0.13.0" }
+  "ppx_sexp_conv" { with-test & >= "v0.13.0" }
+#  "expect_test_helpers" { with-test & >= "v0.13.0" }
+]
+conflicts: [
+  "base-effects"
+  "ocaml-option-bytecode-only"
+]
+build: [
+  [make "get-generated"]
+  [make "-j%{jobs}%" "DEBUG=-g" "sys"]
+  [make "DEBUG=-g" "test"] {with-test}
+]
+install: [make "install"]
+url {
+  src: "https://github.com/camlp5/pa_ppx/archive/refs/tags/0.13.tar.gz"
+  checksum: [
+    "sha512=b6215cae67472238f1f6a418920149b0572f28c7f3c4ff1889027b4a294f3d24154439929255d71ae844ca8fbb7d68eca11721a6e9d4e0cbb35d26ed9df7d41f"
+  ]
+}
