@@ -1,0 +1,74 @@
+opam-version: "2.0"
+synopsis: "CoHTTP implementation for the Async concurrency library"
+description: """
+An implementation of an HTTP client and server using the Async
+concurrency library. See the `Cohttp_async` module for information
+on how to use this.  The package also installs `cohttp-curl-async`
+and a `cohttp-server-async` binaries for quick uses of a HTTP(S)
+client and server respectively.
+"""
+maintainer: ["Anil Madhavapeddy <anil@recoil.org>"]
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+  "Anurag Soni"
+]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.14"}
+  "http" {= version}
+  "cohttp" {= version}
+  "async_kernel" {>= "v0.16.0"}
+  "async_unix" {>= "v0.16.0"}
+  "async" {>= "v0.16.0"}
+  "base" {>= "v0.16.0"}
+  "core" {with-test}
+  "core_unix" {>= "v0.14.0"}
+  "conduit-async" {>= "1.2.0"}
+  "magic-mime"
+  "mirage-crypto" {with-test}
+  "logs"
+  "fmt" {>= "0.8.2"}
+  "sexplib0"
+  "ppx_sexp_conv" {>= "v0.13.0"}
+  "ounit" {with-test}
+  "uri" {>= "2.0.0"}
+  "uri-sexp"
+  "ipaddr"
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@cohttp-async/runtest" {with-test & os != "macos"}
+    "@doc" {with-doc}
+  ]
+]
+available: opam-version >= "2.1.0" & arch != "s390x"
+flags: [ avoid-version ]
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v6.0.0_alpha2/cohttp-6.0.0.alpha2.tbz"
+  checksum: [
+    "sha256=2f00d14832c1c13427c12007e5b45a8f121e06e46d556a76904359ab26c0cff6"
+    "sha512=342034580418d55e7b9657c09cf187c415e562fc041e8f5eaa489cfae08f60b98afcddbc77632b479755cdfb2d30b5653ed5250b5b7dbde01f0be93f4e828bcc"
+  ]
+}
+x-commit-hash: "bc9c78549a32d49be5fb51589331da51e86de269"
