@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis:
+  "An opam plugin to check for npm depexts inside the node_modules folder"
+description:
+  "Provides the `opam check-npm-deps` command, which given an opam switch, gathers all the depexts belonging to the npm platform and their version constraints, and checks the `node_modules` folder to see if the constraints are satisfied."
+maintainer: ["Javier Chávarri"]
+authors: ["Javier Chávarri"]
+license: "MIT"
+homepage: "https://github.com/jchavarri/opam-check-npm-deps"
+bug-reports: "https://github.com/jchavarri/opam-check-npm-deps/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "reason" {>= "3.8.1" & < "4.0.0"}
+  "dune" {>= "3.8"}
+  "opam-client" {>= "2.1.3" & < "2.2"}
+  "mccs" {>= "1.1+14"}
+  "angstrom" {>= "0.15.0"}
+  "fmt" {>= "0.9.0"}
+  "bos"
+  "lwt_ppx"
+  "ppx_deriving_yojson"
+  "ppx_expect"
+  "ppx_inline_test"
+  "ppx_let"
+  "ppx_sexp_conv"
+  "odoc" {with-doc}
+]
+available: opam-version >= "2.1" & opam-version < "2.2"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/jchavarri/opam-check-npm-deps.git"
+flags: plugin
+url {
+  src:
+    "https://github.com/jchavarri/opam-check-npm-deps/releases/download/1.0.0/opam-check-npm-deps-1.0.0.tbz"
+  checksum: [
+    "sha256=dce793b588d997b299e371847c9a4c85c3e446a55f6c6e56f99d71cfaf31c967"
+    "sha512=4cef4b1456d9da7a2539d43344c81aed6f19332125cfc08e183a18b3085bf421eee20e93fcaee4ff6cb7f4add295e343d2def877eb9680fe62a5d9fe23b88bbb"
+  ]
+}
+x-commit-hash: "1978cca0ea36d79f5f05a5c3b80f930f4922921e"
