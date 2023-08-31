@@ -2,7 +2,14 @@ opam-version: "2.0"
 license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
 synopsis: "Second release candidate of OCaml 5.1.0"
 maintainer: "platform@lists.ocaml.org"
-authors: ["Xavier Leroy" "Damien Doligez" "Alain Frisch" "Jacques Garrigue" "Didier Rémy" "Jérôme Vouillon"]
+authors: [
+  "Xavier Leroy"
+  "Damien Doligez"
+  "Alain Frisch"
+  "Jacques Garrigue"
+  "Didier Rémy"
+  "Jérôme Vouillon"
+]
 homepage: "https://ocaml.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "git+https://github.com/ocaml/ocaml.git#5.1"
@@ -43,15 +50,9 @@ build: [
     "CC=clang -fsanitize=address -fno-omit-frame-pointer -O1 -g" {ocaml-option-address-sanitizer:installed & os="macos"}
     "CC=gcc -m32" {ocaml-option-32bit:installed & os="linux"}
     "CC=gcc -Wl,-read_only_relocs,suppress -arch i386 -m32" {ocaml-option-32bit:installed & os="macos"}
-    "ASPP=cc -c" {!ocaml-option-32bit:installed & !ocaml-option-musl:installed & (os="openbsd"|os="macos")}
     "ASPP=musl-gcc -c" {ocaml-option-musl:installed & os-distribution!="alpine"}
-    "ASPP=gcc -m32 -c" {ocaml-option-32bit:installed & os="linux"}
-    "ASPP=gcc -arch i386 -m32 -c" {ocaml-option-32bit:installed & os="macos"}
-    "AS=as --32" {ocaml-option-32bit:installed & os="linux"}
-    "AS=as -arch i386" {ocaml-option-32bit:installed & os="macos"}
     "--host=i386-linux" {ocaml-option-32bit:installed & os="linux"}
     "--host=i386-apple-darwin13.2.0" {ocaml-option-32bit:installed & os="macos"}
-    "PARTIALLD=ld -r -melf_i386" {ocaml-option-32bit:installed & os="linux"}
     "LIBS=-static" {ocaml-option-static:installed}
     "--disable-warn-error"
   ]
@@ -63,15 +64,6 @@ url {
   checksum: "sha256=a147c847a897bfd9a004c976a8f89f2d83c8a11cf8a6ad694cbf4d90808b0dc7"
 }
 extra-files: ["ocaml-variants.install" "md5=3e969b841df1f51ca448e6e6295cb451"]
-post-messages: [
-  "A failure in the middle of the build may be caused by build parallelism
-   (enabled by default).
-   Please file a bug report at https://github.com/ocaml/opam-repository/issues"
-  {failure & jobs > 1}
-  "You can try installing again including --jobs=1
-   to force a sequential build instead."
-  {failure & jobs > 1 & opam-version >= "2.0.5"}
-]
 depopts: [
   "ocaml-option-32bit"
   "ocaml-option-afl"
