@@ -1,0 +1,31 @@
+diff --git a/framaCIRGen_src/CMakeLists.txt b/framaCIRGen_src/CMakeLists.txt
+index 6ba2fd3c..9e59699c 100644
+--- a/framaCIRGen_src/CMakeLists.txt
++++ b/framaCIRGen_src/CMakeLists.txt
+@@ -20,7 +20,7 @@
+ #                                                                        #
+ ##########################################################################
+ 
+-cmake_minimum_required(VERSION 3.6)
++cmake_minimum_required(VERSION 3.18)
+ 
+ project(FramaCIRGen C CXX)
+ 
+@@ -28,6 +28,17 @@ set(CMAKE_CXX_STANDARD 17)
+ set(CMAKE_CXX_STANDARD_REQUIRED ON)
+ set(CMAKE_CXX_EXTENSIONS OFF)
+ 
++find_program(LLVM_CONFIG
++  NAMES llvm-config llvm-config-15 llvm-config-14
++        llvm-config-13 llvm-config-12 llvm-config-11
++  REQUIRED)
++
++execute_process(COMMAND ${LLVM_CONFIG} --cmakedir OUTPUT_VARIABLE CMAKE_LLVM_PREFIX)
++
++cmake_path(GET CMAKE_LLVM_PREFIX PARENT_PATH CMAKE_LLVM_CLANG_PREFIX)
++set(Clang_DIR ${CMAKE_LLVM_CLANG_PREFIX}/clang)
++set(LLVM_DIR ${CMAKE_LLVM_CLANG_PREFIX}/llvm)
++
+ find_package(Clang REQUIRED)
+ find_package(LLVM REQUIRED)
+ 
