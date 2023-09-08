@@ -1,0 +1,154 @@
+From abb8fdb186773b2fc6e4e41b122d1df4c29b058c Mon Sep 17 00:00:00 2001
+From: Olivier Nicole <olivier@chnik.fr>
+Date: Fri, 8 Sep 2023 17:12:07 +0200
+Subject: [PATCH] Better error message if a needed TSan flag is missing
+
+---
+ aclocal.m4                         |  1 +
+ build-aux/ax_check_compile_flag.m4 | 53 ++++++++++++++++++++++++++++++
+ configure                          | 41 +++++++++++++++++++++++
+ configure.ac                       |  7 ++++
+ 4 files changed, 102 insertions(+)
+ create mode 100644 build-aux/ax_check_compile_flag.m4
+
+diff --git a/aclocal.m4 b/aclocal.m4
+index aefc1112db466f980b64d38a4f275087f3837f44..c7b94fed7501f306883e0a714f2aa368130738f2 100644
+--- a/aclocal.m4
++++ b/aclocal.m4
+@@ -26,6 +26,7 @@ m4_include([build-aux/ltoptions.m4])
+ m4_include([build-aux/ltsugar.m4])
+ m4_include([build-aux/ltversion.m4])
+ m4_include([build-aux/lt~obsolete.m4])
++m4_include([build-aux/ax_check_compile_flag.m4])
+ 
+ # Macros from the autoconf macro archive
+ m4_include([build-aux/ax_func_which_gethostbyname_r.m4])
+diff --git a/build-aux/ax_check_compile_flag.m4 b/build-aux/ax_check_compile_flag.m4
+new file mode 100644
+index 0000000000000000000000000000000000000000..bd753b34d7dc57063b0b65f1441dde0889e1cd26
+--- /dev/null
++++ b/build-aux/ax_check_compile_flag.m4
+@@ -0,0 +1,53 @@
++# ===========================================================================
++#  https://www.gnu.org/software/autoconf-archive/ax_check_compile_flag.html
++# ===========================================================================
++#
++# SYNOPSIS
++#
++#   AX_CHECK_COMPILE_FLAG(FLAG, [ACTION-SUCCESS], [ACTION-FAILURE], [EXTRA-FLAGS], [INPUT])
++#
++# DESCRIPTION
++#
++#   Check whether the given FLAG works with the current language's compiler
++#   or gives an error.  (Warnings, however, are ignored)
++#
++#   ACTION-SUCCESS/ACTION-FAILURE are shell commands to execute on
++#   success/failure.
++#
++#   If EXTRA-FLAGS is defined, it is added to the current language's default
++#   flags (e.g. CFLAGS) when the check is done.  The check is thus made with
++#   the flags: "CFLAGS EXTRA-FLAGS FLAG".  This can for example be used to
++#   force the compiler to issue an error when a bad flag is given.
++#
++#   INPUT gives an alternative input source to AC_COMPILE_IFELSE.
++#
++#   NOTE: Implementation based on AX_CFLAGS_GCC_OPTION. Please keep this
++#   macro in sync with AX_CHECK_{PREPROC,LINK}_FLAG.
++#
++# LICENSE
++#
++#   Copyright (c) 2008 Guido U. Draheim <guidod@gmx.de>
++#   Copyright (c) 2011 Maarten Bosmans <mkbosmans@gmail.com>
++#
++#   Copying and distribution of this file, with or without modification, are
++#   permitted in any medium without royalty provided the copyright notice
++#   and this notice are preserved.  This file is offered as-is, without any
++#   warranty.
++
++#serial 6
++
++AC_DEFUN([AX_CHECK_COMPILE_FLAG],
++[AC_PREREQ(2.64)dnl for _AC_LANG_PREFIX and AS_VAR_IF
++AS_VAR_PUSHDEF([CACHEVAR],[ax_cv_check_[]_AC_LANG_ABBREV[]flags_$4_$1])dnl
++AC_CACHE_CHECK([whether _AC_LANG compiler accepts $1], CACHEVAR, [
++  ax_check_save_flags=$[]_AC_LANG_PREFIX[]FLAGS
++  _AC_LANG_PREFIX[]FLAGS="$[]_AC_LANG_PREFIX[]FLAGS $4 $1"
++  AC_COMPILE_IFELSE([m4_default([$5],[AC_LANG_PROGRAM()])],
++    [AS_VAR_SET(CACHEVAR,[yes])],
++    [AS_VAR_SET(CACHEVAR,[no])])
++  _AC_LANG_PREFIX[]FLAGS=$ax_check_save_flags])
++AS_VAR_IF(CACHEVAR,yes,
++  [m4_default([$2], :)],
++  [m4_default([$3], :)])
++AS_VAR_POPDEF([CACHEVAR])dnl
++])dnl AX_CHECK_COMPILE_FLAGS
+diff --git a/configure b/configure
+index 5831ac9fd73568fc5fe1b45cbbbba8bd3285d23a..de5db32f5e796ccf60ac3e0f44f530385a249c70 100755
+--- a/configure
++++ b/configure
+@@ -16613,6 +16613,47 @@ then :
+       mksharedlib="$mksharedlib $extra_flags"
+ fi
+ 
++    as_CACHEVAR=`printf "%s\n" "ax_cv_check_cflags_-Werror_$oc_tsan_cflags" | $as_tr_sh`
++{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts $oc_tsan_cflags" >&5
++printf %s "checking whether C compiler accepts $oc_tsan_cflags... " >&6; }
++if eval test \${$as_CACHEVAR+y}
++then :
++  printf %s "(cached) " >&6
++else $as_nop
++
++  ax_check_save_flags=$CFLAGS
++  CFLAGS="$CFLAGS -Werror $oc_tsan_cflags"
++  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
++/* end confdefs.h.  */
++
++int
++main (void)
++{
++
++  ;
++  return 0;
++}
++_ACEOF
++if ac_fn_c_try_compile "$LINENO"
++then :
++  eval "$as_CACHEVAR=yes"
++else $as_nop
++  eval "$as_CACHEVAR=no"
++fi
++rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
++  CFLAGS=$ax_check_save_flags
++fi
++eval ac_res=\$$as_CACHEVAR
++	       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
++printf "%s\n" "$ac_res" >&6; }
++if eval test \"x\$"$as_CACHEVAR"\" = x"yes"
++then :
++  :
++else $as_nop
++  as_fn_error $? "The C compiler does not support the tsan-distinguish-volatile option. Try upgrading to GCC 11 or later, or Clang 11 or later." "$LINENO" 5
++fi
++
++
+ fi
+ 
+ ## Sockets
+diff --git a/configure.ac b/configure.ac
+index 371275e15b71ad66587bb1861a7c5b2ae27a9776..6889c88b49d8c1ddeb01a13be5cb65a4e5e4d726 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1691,6 +1691,13 @@ AS_IF([$tsan],
+       [extra_flags="-Wl,-keep_dwarf_unwind"
+       mkexe="$mkexe $extra_flags"
+       mksharedlib="$mksharedlib $extra_flags"])
++
++    AX_CHECK_COMPILE_FLAG([$oc_tsan_cflags],
++      [],
++      [AC_MSG_ERROR(m4_normalize([The C compiler does not support the
++        tsan-distinguish-volatile option. Try upgrading to GCC 11 or later, or
++        Clang 11 or later.]))],
++      [-Werror])
+   ])
+ 
+ ## Sockets
