@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "OCaml C stub wrapper generator"
+description:
+  "Generates a C model for how OCaml C primitives can be called. Link with a C model of the OCaml runtime, or run a static analyzer to find incorrect API/macro usage that leads to race conditions."
+maintainer: ["Edwin Török <edwin.torok@cloud.com>"]
+authors: ["Edwin Török <edwin.torok@cloud.com>"]
+license: "LGPL-2.1-or-later"
+homepage: "https://github.com/edwintorok/lintcstubs"
+bug-reports: "https://github.com/edwintorok/lintcstubs/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.14"}
+  "lintcstubs-arity" {>= "0.2.2"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/edwintorok/lintcstubs.git"
+url {
+  src:
+    "https://github.com/edwintorok/lintcstubs/releases/download/0.3.1/lintcstubs-0.3.1.tbz"
+  checksum: [
+    "sha256=ebc0dbeae56ba51572e77e7b22dbea235b81ad605e1bb234c9330a4756e962cc"
+    "sha512=06face2e72cb71585578444c2d84cc52c6871c57182485d1e841c54e607afb4a0b3603d6f38921802e827db7126adb6a9fe2f1c8b5af884dfad925343ac226ba"
+  ]
+}
+x-commit-hash: "4c9838fd2bc9f86966db3633dd365e247af1f69b"
