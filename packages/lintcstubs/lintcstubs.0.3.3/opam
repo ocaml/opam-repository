@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "OCaml C stub static analyzer"
+description:
+  "Uses a generated C model for how OCaml C primitives can be called. Run a static analyzer to find incorrect API/macro usage that leads to race conditions."
+maintainer: ["Edwin Török <edwin.torok@cloud.com>"]
+authors: ["Edwin Török <edwin.torok@cloud.com>"]
+license: "LGPL-2.1-or-later"
+homepage: "https://github.com/edwintorok/lintcstubs"
+bug-reports: "https://github.com/edwintorok/lintcstubs/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.14"}
+  "lintcstubs-gen" {= version}
+  "goblint" {>= "2.1.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/edwintorok/lintcstubs.git"
+url {
+  src:
+    "https://github.com/edwintorok/lintcstubs/releases/download/0.3.3/lintcstubs-0.3.3.tbz"
+  checksum: [
+    "sha256=cdd597bdabdad3e6b3b189d4b132ccf62cfd07a60d44708e1c7bcf233020987a"
+    "sha512=ae835149ea5311267dd6ccca42a03e636858c02c6b1a8fecdcac0abced3f80fd3f467e729f1ac88bd1e7c72f6e596731f880708d42f2dfd92b73a3e3116d5d66"
+  ]
+}
+x-commit-hash: "71ec385e8380f7a71238f336350ca20052094c21"
