@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "Generate dune rules for lintcstubs integration"
+description: "Generates dune rules for running the static analyzer"
+maintainer: ["Edwin Török <edwin.torok@cloud.com>"]
+authors: ["Edwin Török <edwin.torok@cloud.com>"]
+license: "LGPL-2.1-or-later"
+homepage: "https://github.com/edwintorok/lintcstubs"
+bug-reports: "https://github.com/edwintorok/lintcstubs/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.14"}
+  "lintcstubs-arity" {>= "0.2.2"}
+  "lintcstubs-gen" {= version}
+  "lintcstubs" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/edwintorok/lintcstubs.git"
+url {
+  src:
+    "https://github.com/edwintorok/lintcstubs/releases/download/0.4.3/lintcstubs-0.4.3.tbz"
+  checksum: [
+    "sha256=c69c6c7cfbee21af6608c75ec3d2e88c6b5d96e5d9fd1009181328cdf9b0c041"
+    "sha512=0127994720a0132bdaa68b8de320e0212778468e1cecb3b16366b4c318a46260431eec4c1fcf3c8fe5ad840793ebfda27893a8e563604a94e940d6867b036614"
+  ]
+}
+x-commit-hash: "9e36fffaf09f813d31b02f4fcdf0ee64784933fa"
