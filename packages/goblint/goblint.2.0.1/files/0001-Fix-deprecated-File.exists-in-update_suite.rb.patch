@@ -1,0 +1,39 @@
+From 1128aba94f87b95031bef9929dea7294c78b880f Mon Sep 17 00:00:00 2001
+From: Simmo Saan <simmo.saan@gmail.com>
+Date: Mon, 11 Sep 2023 15:30:40 +0300
+Subject: [PATCH] Fix deprecated File.exists? in update_suite.rb
+
+---
+ scripts/update_suite.rb | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/scripts/update_suite.rb b/scripts/update_suite.rb
+index aeac52698..ca408a513 100755
+--- a/scripts/update_suite.rb
++++ b/scripts/update_suite.rb
+@@ -41,7 +41,7 @@ end
+ 
+ $goblint = File.join(Dir.getwd,"goblint")
+ goblintbyte = File.join(Dir.getwd,"goblint.byte")
+-if File.exists?(goblintbyte) then
++if File.exist?(goblintbyte) then
+   puts "Running the byte-code version! Continue? (y/n)"
+   exit unless $stdin.gets()[0] == 'y'
+   $goblint = goblintbyte
+@@ -50,11 +50,11 @@ elsif not File.exist?($goblint) then
+ end
+ $vrsn = `#{$goblint} --version`
+ 
+-if not File.exists? "linux-headers" then
++if not File.exist? "linux-headers" then
+   puts "Missing linux-headers, will download now!"
+   `make headers`
+ end
+-has_linux_headers = File.exists? "linux-headers" # skip kernel tests if make headers failed (e.g. on opam-repository opam-ci where network is forbidden)
++has_linux_headers = File.exist? "linux-headers" # skip kernel tests if make headers failed (e.g. on opam-repository opam-ci where network is forbidden)
+ 
+ #Command line parameters
+ #Either only run a single test, or
+-- 
+2.41.0
+
