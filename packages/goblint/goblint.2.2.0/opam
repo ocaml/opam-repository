@@ -1,0 +1,93 @@
+opam-version: "2.0"
+synopsis: "Static analysis framework for C"
+maintainer: [
+  "Simmo Saan <simmo.saan@gmail.com>"
+  "Michael Schwarz <michael.schwarz93@gmail.com>"
+]
+authors: [
+  "Simmo Saan"
+  "Michael Schwarz"
+  "Julian Erhard"
+  "Sarah Tilscher"
+  "Ralf Vogler"
+  "Kalmer Apinis"
+  "Vesal Vojdani"
+]
+license: "MIT"
+homepage: "https://goblint.in.tum.de"
+doc: "https://goblint.readthedocs.io/en/latest/"
+bug-reports: "https://github.com/goblint/analyzer/issues"
+depends: [
+  "dune" {>= "3.6"}
+  "ocaml" {>= "4.10"}
+  "goblint-cil" {>= "2.0.2"}
+  "batteries" {>= "3.4.0"}
+  "zarith" {>= "1.8"}
+  "yojson" {>= "2.0.0"}
+  "qcheck-core" {>= "0.19"}
+  "ppx_deriving"
+  "ppx_deriving_hash"
+  "ppx_deriving_yojson" {>= "3.7.0"}
+  "ounit2" {with-test}
+  "qcheck-ounit" {with-test}
+  "odoc" {with-doc}
+  "fpath"
+  "dune-site"
+  "dune-build-info"
+  "json-data-encoding"
+  "jsonrpc" {>= "1.12"}
+  "sha" {>= "1.12"}
+  "fileutils" {>= "0.6.4"}
+  "cpu"
+  "arg-complete"
+  "yaml" {>= "3.0.0"}
+  "uuidm"
+  "catapult"
+  "catapult-file"
+  "conf-gmp" {>= "3"}
+  "conf-ruby" {with-test}
+  "benchmark" {with-test}
+  "conf-gcc"
+]
+depopts: ["apron" "z3"]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/goblint/analyzer.git"
+# on `dune build` goblint.opam will be generated from goblint.opam.template and dune-project
+# also remember to generate/adjust goblint.opam.locked!
+available: os-distribution != "alpine" & arch != "arm64"
+# pin-depends: [
+  # published goblint-cil 2.0.2 is currently up-to-date, so no pin needed
+  # [ "goblint-cil.2.0.2" "git+https://github.com/goblint/cil.git#98598d94f796a63751e5a9d39c6b3a9fe1f32330" ]
+  # TODO: add back after release, only pinned for optimization (https://github.com/ocaml-ppx/ppx_deriving/pull/252)
+  # [ "ppx_deriving.5.2.1" "git+https://github.com/ocaml-ppx/ppx_deriving.git#0a89b619f94cbbfc3b0fb3255ab4fe5bc77d32d6" ]
+# ]
+post-messages: [
+  "Do not benchmark Goblint on OCaml 5 (https://goblint.readthedocs.io/en/latest/user-guide/benchmarking/)." {ocaml:version >= "5.0.0"}
+]
+url {
+  src:
+    "https://github.com/goblint/analyzer/releases/download/v2.2.0/goblint-2.2.0.tbz"
+  checksum: [
+    "sha256=33eb081049a15b3db884b370766517dd9e79394873079b9d9f7b10cb6e6453d0"
+    "sha512=5ead207f73ee022957a1c98191278bf6942f8e4e3351da8e34fa90b3ff76c33b055269b67f5a869695549f55c7aeed1f1cbe848c961f11cad590eeadea9df7fc"
+  ]
+}
+x-commit-hash: "b46aeda9eaecd3ec42ec14c977d1550faad0de23"
