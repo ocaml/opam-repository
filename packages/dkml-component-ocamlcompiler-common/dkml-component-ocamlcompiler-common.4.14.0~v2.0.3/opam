@@ -1,0 +1,89 @@
+opam-version: "2.0"
+synopsis: "DkML common code for ocamlcompiler"
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://gitlab.com/dkml/components/dkml-component-ocamlcompiler"
+doc:
+  "https://gitlab.com/dkml/components/dkml-component-ocamlcompiler/-/blob/main/README.md"
+bug-reports:
+  "https://gitlab.com/dkml/components/dkml-component-ocamlcompiler/-/issues"
+depends: [
+  "dune" {>= "3.6"}
+  "dkml-install" {>= "0.2.0"}
+  "crunch" {>= "3.3.1"}
+  "re" {>= "1.10.0"}
+  "dkml-compiler-src" {>= "2.0.2"}
+  "dkml-component-staging-dkmlconfdir" {>= "0.1.0"}
+  "dkml-component-staging-ocamlrun" {>= "4.12.1~"}
+  "dkml-runtime-common" {>= "2.0.2"}
+  "dkml-runtime-distribution" {>= "2.0.2"}
+  "alcotest" {>= "1.4.0" & with-test}
+  "odoc" {with-doc}
+]
+depopts: ["dkml-option-vcpkg"]
+dev-repo:
+  "git+https://gitlab.com/dkml/components/dkml-component-ocamlcompiler.git"
+build: [
+  # Portable shell scripts for OCaml compiling
+  #
+  # ** The only portable shell scripts needed are that that compile the bytecode
+  # ** interpreter for use in the dkml-component-staging-ocamlrun build:[] section.
+  # ** Any other logic needed for compiling the full native-code compiler
+  # ** can be done in OCaml bytecode. But since the portable shell scripts
+  # ** do 90% of the work needed for the native-code compiler, no strong
+  # ** reason (yet) to convert the native-code compiler installation into OCaml
+  # ** bytecode.
+  #
+  #   Create a minimal DKMLDIR (no dkml-runtime-distribution) that can build
+  #   the r-c-ocaml-* OCaml compiler. Its structure mimics a
+  #   git submodule setup.
+  #
+  #   <dkmldir>/vendor/drc/
+  ["diskuvbox" "copy-dir" "%{dkml-runtime-common:lib}%/all" "dkmldir/vendor/drc/all"]
+  ["diskuvbox" "copy-dir" "%{dkml-runtime-common:lib}%/unix" "dkmldir/vendor/drc/unix"]
+  #   <dkmldir>/.dkmlroot
+  ["diskuvbox" "copy-file" "%{dkml-runtime-common:lib}%/template.dkmlroot" "dkmldir/.dkmlroot"]
+
+  #   <dkmldir>/vendor/dkml-compiler/
+  ["diskuvbox" "copy-dir" "%{dkml-compiler-src:lib}%/src" "dkmldir/vendor/dkml-compiler"]
+
+  # Build component
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+install: [
+  # Copy minimal dkmldir into staging, adding distribution which has
+  # PowerShell scripts and other Unix scripts needed by setup-userprofile.ps1
+
+  #   Clone minimal dkmldir
+  ["diskuvbox" "copy-dir" "dkmldir" "%{_:share}%/staging-files/windows_x86/dkmldir"]
+  ["diskuvbox" "copy-dir" "dkmldir" "%{_:share}%/staging-files/windows_x86_64/dkmldir"]
+  #   Unpack runtime-distribution
+  ["diskuvbox" "copy-dir" "%{dkml-runtime-distribution:lib}%/src/none" "%{_:share}%/staging-files/windows_x86/dkmldir/vendor/drd/src/none"]
+  ["diskuvbox" "copy-dir" "%{dkml-runtime-distribution:lib}%/src/none" "%{_:share}%/staging-files/windows_x86_64/dkmldir/vendor/drd/src/none"]
+  ["diskuvbox" "copy-dir" "%{dkml-runtime-distribution:lib}%/src/unix" "%{_:share}%/staging-files/windows_x86/dkmldir/vendor/drd/src/unix"]
+  ["diskuvbox" "copy-dir" "%{dkml-runtime-distribution:lib}%/src/unix" "%{_:share}%/staging-files/windows_x86_64/dkmldir/vendor/drd/src/unix"]
+  ["diskuvbox" "copy-dir" "%{dkml-runtime-distribution:lib}%/src/windows" "%{_:share}%/staging-files/windows_x86/dkmldir/vendor/drd/src/windows"]
+  ["diskuvbox" "copy-dir" "%{dkml-runtime-distribution:lib}%/src/windows" "%{_:share}%/staging-files/windows_x86_64/dkmldir/vendor/drd/src/windows"]
+
+  # Copy assets
+  ["diskuvbox" "copy-dir" "assets/staging-files/win32" "%{_:share}%/staging-files/windows_x86"]
+  ["diskuvbox" "copy-dir" "assets/staging-files/win32" "%{_:share}%/staging-files/windows_x86_64"]
+]
+url {
+  src: "https://gitlab.com/dkml/distributions/dkml/-/releases/2.0.3/downloads/src.dkml-component-ocamlcompiler.tar.gz"
+  checksum: [
+    "sha512=4536259e816365f5d15f32ec8e447e4a9afeb1cdc14b8b9a43b1a6a2cbe6e898984056b07124a16a13ec49596a29cf40d6f3d2200adc19657deb36b1c5d43ec8"
+  ]
+}
