@@ -1,0 +1,60 @@
+opam-version: "2.0"
+maintainer:   "e@x80.org"
+homepage:     "https://github.com/ejgallego/coq-serapi"
+bug-reports:  "https://github.com/ejgallego/coq-serapi/issues"
+dev-repo:     "git+https://github.com/ejgallego/coq-serapi.git"
+license:      "GPL-3.0-or-later"
+doc:          "https://ejgallego.github.io/coq-serapi/"
+
+synopsis:     "Serialization library and protocol for machine interaction with the Coq proof assistant"
+description:  """
+SerAPI is a library for machine-to-machine interaction with the
+Coq proof assistant, with particular emphasis on applications in IDEs,
+code analysis tools, and machine learning. SerAPI provides automatic
+serialization of Coq's internal OCaml datatypes from/to JSON or
+S-expressions (sexps).
+"""
+
+authors: [
+  "Emilio Jesús Gallego Arias"
+  "Karl Palmskog"
+  "Clément Pit-Claudel"
+  "Kaiyu Yang"
+]
+
+depends: [
+  "ocaml"               {           >= "4.09.0"              }
+  "coq"                 {           >= "8.18" & < "8.19"     }
+  "cmdliner"            {           >= "1.1.0"               }
+  "ocamlfind"           {           >= "1.8.0"               }
+  "sexplib"             {           >= "v0.13.0"             }
+  "dune"                {           >= "2.0.1"               }
+  "ppx_import"          { build   & >= "1.5-3" & < "2.0"     }
+  "ppx_deriving"        {           >= "4.2.1"               }
+  "ppx_sexp_conv"       {           >= "v0.13.0"             }
+  "ppx_compare"         {           >= "v0.13.0"             }
+  "ppx_hash"            {           >= "v0.13.0"             }
+  "yojson"              {           >= "1.7.0"               }
+  "ppx_deriving_yojson" {           >= "3.4"                 }
+
+  # math-comp ssreflect is needed to run the tests.
+  #
+  # We can't enable this due to coq-mathcomp-ssreflect not being in
+  # the main opam repos, that would make opam's CI fail.
+  # "coq-mathcomp-ssreflect" { with-test & >= "1.15" }
+]
+
+conflicts: [
+  "result" {< "1.5"}
+]
+
+build: [ "dune" "build" "-p" name "-j" jobs ]
+url {
+  src:
+    "https://github.com/ejgallego/coq-serapi/releases/download/8.18.0%2B0.18.1/coq-serapi-8.18.0.0.18.1.tbz"
+  checksum: [
+    "sha256=3958ec27603e3f927a74f11d02d98390e8ecda942bb23f37ff6fa575b31a8158"
+    "sha512=d33f9340de6e1426a42192da3610a7636b0201baa166cf788926b866738ae299219439bc22112cc81591c565dd857f66e53a41a3cfe420844f31fb6077abe57b"
+  ]
+}
+x-commit-hash: "532a5429cf6c0664a6fbf08589e3cdd792544a3a"
