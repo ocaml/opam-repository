@@ -1,0 +1,35 @@
+opam-version: "2.0"
+synopsis: "Common runtime code used in DKML"
+description: "Common runtime code used in DKML.
+
+This package has no dependencies and is what you should include
+in dependencies of custom OCaml compilers.
+
+The runtime code will be available in the 'lib/dkml-runtime-common-native' folder
+of your Opam switch or findlib installation.
+
+If you use opam-monorepo you should install dkml-runtime-common instead."
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-runtime-common"
+bug-reports: "https://github.com/diskuv/dkml-runtime-common/issues"
+dev-repo: "git+https://github.com/diskuv/dkml-runtime-common.git"
+build: [
+  ["sh" "tests/crossplatform-tests.sh"] { with-test & !(os = "win32") }
+]
+install: [
+  # TODO: opam does not pass to Command Prompt correctly when there is a
+  # space in the _:lib so we have to avoid the (correct) Command Prompt
+  # shell. https://github.com/ocaml/opam/issues/5673
+  #[".\\install.cmd" "\"%{_:lib}%\""] { os = "win32"}
+  ["sh" "./install.sh"   "%{_:lib}%"] # {!(os = "win32")}
+]
+url {
+  src:
+    "https://github.com/diskuv/dkml-runtime-common/archive/refs/tags/2.0.3-r2.tar.gz"
+  checksum: [
+    "md5=626bdd0ad0d40b8e159a3cbfdb5b4443"
+    "sha512=f17617d40e128a0943ed33390eb5c8bc7751d4667fbec7ef711d11433f3be3e6137e9710b0a1001ee0c5810c86fdc3b690f13a7ce252af845efea193148585fc"
+  ]
+}
