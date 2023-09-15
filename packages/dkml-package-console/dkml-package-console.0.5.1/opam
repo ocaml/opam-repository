@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Console setup and uninstall executables for DkML installation"
+description:
+  "The setup and uninstall executables are responsible for launching the DkML runners."
+maintainer: "opensource+dkml@support.diskuv.com"
+authors: "Diskuv, Inc. <opensource+dkml@support.diskuv.com>"
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-install-api"
+bug-reports: "https://github.com/diskuv/dkml-install-api/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "alcotest" {>= "1.4.0" & with-test}
+  "dkml-install" {= version}
+  "dkml-install-runner" {= version}
+  "diskuvbox" {>= "0.1.1"}
+  "crunch" {>= "3.3.1"}
+  "dkml-component-xx-console" {>= "0.1.1"}
+  "odoc" {with-doc}
+]
+available: os = "win32" | os = "linux" | os = "macos"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-install-api.git"
+url {
+  src:
+    "https://github.com/diskuv/dkml-install-api/releases/download/0.5.1/src.tar.gz"
+  checksum: [
+    "md5=4636532b5971d7aa058b492448b02908"
+    "sha512=66e28e6c47b3de638601f0002289849d9af6bcbb9a2eb816d1dfe640bf3e5a350ad16b99d88b474b7be2482de480b5dd1fad4dbf87c702ee421bc033a3ca1327"
+  ]
+}
