@@ -6,12 +6,10 @@ bug-reports: "https://github.com/oven-sh/bun/issues"
 dev-repo: "git+https://github.com/oven-sh/bun.git"
 license: "MIT"
 build: [
-  [ "unzip" "bun-linux-x64.zip" ]
-  [ "chmod" "-R" "+x" "bun-linux-x64" ]
-  [ "mv" "bun-linux-x64/bun" "." ]
+  [ "unzip" "bun-linux-x64-baseline.zip" ]
+  [ "mv" "bun-linux-x64-baseline/bun" "." ]
   [ "./bun" "--version" ] {with-test}
   [ "ln" "-s" "./bun" "bunx" ]
-  [ "chmod" "+x" "bunx" ]
   [ "./bunx" "bun" "--version" ] {with-test}
   [ "bash" "-c" "echo 'bin: [ \"bun\" \"bunx\" ]' > %{name}%.install" ]
 ]
@@ -29,8 +27,8 @@ Homepage: <https://github.com/oven-sh/bun>
 Release Notes: <https://api.github.com/repos/oven-sh/bun/releases/120820201>
 """
 post-messages: [ "Command `bun` and `bunx`  (v1.0.1) is installed by the bunjs package." ]
-extra-source "bun-linux-x64.zip" {
-  src: "https://github.com/oven-sh/bun/releases/download/bun-v1.0.1/bun-linux-x64.zip"
-  checksum: "sha256=4668275931ba91379b63021afd5030bef2666cbf8044d0be1e46c5e2624f17ba"
+extra-source "bun-linux-x64-baseline.zip" {
+  src: "https://github.com/oven-sh/bun/releases/download/bun-v1.0.1/bun-linux-x64-baseline.zip"
+  checksum: "sha256=c16f0bcae387e252e187ef6019cbb7b6abab64b3300d4131ff8f5a07b5aa9ee3"
 }
-available: os = "linux" & arch = "x86_64"
+available: os = "linux" & arch = "x86_64" & os-distribution != "alpine"

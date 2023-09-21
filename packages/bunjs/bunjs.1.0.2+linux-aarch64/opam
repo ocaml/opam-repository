@@ -7,11 +7,9 @@ dev-repo: "git+https://github.com/oven-sh/bun.git"
 license: "MIT"
 build: [
   [ "unzip" "bun-linux-aarch64.zip" ]
-  [ "chmod" "-R" "+x" "bun-linux-aarch64" ]
   [ "mv" "bun-linux-aarch64/bun" "." ]
   [ "./bun" "--version" ] {with-test}
   [ "ln" "-s" "./bun" "bunx" ]
-  [ "chmod" "+x" "bunx" ]
   [ "./bunx" "bun" "--version" ] {with-test}
   [ "bash" "-c" "echo 'bin: [ \"bun\" \"bunx\" ]' > %{name}%.install" ]
 ]
@@ -33,4 +31,4 @@ extra-source "bun-linux-aarch64.zip" {
   src: "https://github.com/oven-sh/bun/releases/download/bun-v1.0.2/bun-linux-aarch64.zip"
   checksum: "sha256=8b356d5b6f1013b4edcba0df4032a6c35a2a0f918ea254f309e2149ad808d54c"
 }
-available: os = "linux" & arch = "arm64"
+available: os = "linux" & arch = "arm64" & os-distribution != "alpine"
