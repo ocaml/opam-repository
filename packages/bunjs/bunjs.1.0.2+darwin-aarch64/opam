@@ -7,8 +7,11 @@ dev-repo: "git+https://github.com/oven-sh/bun.git"
 license: "MIT"
 build: [
   [ "unzip" "bun-darwin-aarch64.zip" ]
-  [ "bash" "-c" "echo 'bin: [ \"bun-darwin-aarch64/bun\" ]' > %{name}%.install" ]
-  [ "bun-darwin-aarch64/bun" "--version" ] {with-test}
+  [ "mv" "bun-darwin-aarch64/bun" "." ]
+  [ "./bun" "--version" ] {with-test}
+  [ "ln" "-s" "./bun" "bunx" ]
+  [ "./bunx" "bun" "--version" ] {with-test}
+  [ "bash" "-c" "echo 'bin: [ \"bun\" \"bunx\" ]' > %{name}%.install" ]
 ]
 depends: []
 synopsis: "Incredibly fast JavaScript runtime, bundler, test runner, and package all in one"
@@ -23,7 +26,7 @@ dramatically reducing startup times and memory usage.
 Homepage: <https://github.com/oven-sh/bun>
 Release Notes: <https://api.github.com/repos/oven-sh/bun/releases/121316652>
 """
-post-messages: [ "Command `bun` (v1.0.2) is installed by the bunjs package." ]
+post-messages: [ "Command `bun` and `bunx`  (v1.0.2) is installed by the bunjs package." ]
 extra-source "bun-darwin-aarch64.zip" {
   src: "https://github.com/oven-sh/bun/releases/download/bun-v1.0.2/bun-darwin-aarch64.zip"
   checksum: "sha256=42fa046a47d1e7098fd7477a303a5f4bc4c791ef7be5b57265ce692d596251b4"
