@@ -1,0 +1,253 @@
+opam-version: "2.0"
+# Composite version format is M.N.O~vA.B.C[~prelP]
+# where:
+# - M.N.O is OCaml compiler version
+# - A.B.C is the DKML version of the dkml-runtime-common
+# - P is optional DKML prerelease version
+# Examples:
+# - 4.14.0~prerel69 (legacy format) < 4.14.0~v0.4.0 < 4.14.0~v0.4.1~prerel69 < 4.14.0~v0.4.1
+# Confer: Version Ordering in https://opam.ocaml.org/doc/Manual.html#Package-Formulas
+synopsis: "OCaml cross-compiler and libraries from the DKML distribution that works with at least Win32 and macOS"
+description:
+  """The DKML distribution of the OCaml bytecode and native compiler, Stdlib and the other OCaml libraries (str, unix, bigarray, etc.).
+A cross-compiler for macOS x86_64 to macOS arm64 is included; for build consistency the regular OCaml compiler will be for x86_64 regardless of whether the build machine is Apple Silicon.
+Install with something like: opam switch create dkml-4.14.0 '--formula="dkml-base-compiler" {>= "4.14.0~" & < "4.13.0~"}'"""
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-compiler"
+bug-reports: "https://github.com/diskuv/dkml-compiler/issues"
+depends: [
+  "ocaml" {= "4.14.0" & post}
+
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+
+  "dkml-runtime-common-native" {= "2.0.3"}
+]
+depopts: [
+  "ocaml-option-32bit"
+  "dkml-option-debuginfo"
+  "dkml-option-minsize"
+]
+conflict-class: "ocaml-core-compiler"
+flags: [ compiler avoid-version ]
+available: [
+  opam-version >= "2.1.0" &
+  ( (arch = "x86_64" & (os = "linux" | os = "win32" | os = "macos")) |
+    (arch = "x86_32" & (os = "linux" | os = "win32")) |
+    (arch = "arm64" & os = "macos") )
+]
+build: [
+  # Dump Homebrew, which is needed for reproducible build auditing in drc's crossplatform-functions.sh.
+  # TODO: Move the brewbundle.sh to drc, or in drc skip reproducible build auditing if bundle tap is not installable
+  # WAS: ["sh" "scripts/macos-bundle-dump.sh"] {os = "macos"}
+  ["touch" "Brewfile"] {os = "macos"}
+
+  # OCaml source code
+  ["install" "-d" "dl/ocaml/flexdll"]
+  ["tar" "xCfz" "dl/ocaml"          "dl/ocaml.tar.gz"   "--strip-components=1"]
+  ["tar" "xCfz" "dl/ocaml/flexdll"  "dl/flexdll.tar.gz" "--strip-components=1"]
+
+  # Debugging for 4.14.0 `Env.Error(_)` and `Persistent_env.Error(_)`
+  # Example:
+  #   Fatal error: exception Persistent_env.Error(_)
+  #   Raised at Persistent_env.error in file "typing/persistent_env.ml", line 33, characters 16-33
+  #   Called from Persistent_env.acknowledge_pers_struct in file "typing/persistent_env.ml", line 196, characters 2-109
+  #   Called from Persistent_env.find_pers_struct in file "typing/persistent_env.ml", line 227, characters 17-64
+  #   Called from Persistent_env.find in file "typing/persistent_env.ml", line 266, characters 6-41
+  #   Called from Env.lookup_ident_module in file "typing/env.ml", line 2764, characters 16-31
+  #   Called from Env.lookup_module_path in file "typing/env.ml", line 3045, characters 12-62
+  #   Called from Typemod.type_open_ in file "typing/typemod.ml", line 108, characters 13-71
+  #   Called from Typemod.initial_env.open_module in file "typing/typemod.ml", line 130, characters 12-51
+  #   Called from Typemod.initial_env in file "typing/typemod.ml", line 165, characters 9-26
+  #   Called from Topcommon.initialize_toplevel_env in file "toplevel/topcommon.ml", line 281, characters 18-40
+  #   Called from UTop_main.common_init in file "src/lib/uTop_main.ml", line 1384, characters 2-1921
+  #   Called from UTop_main.main_aux in file "src/lib/uTop_main.ml", line 1476, characters 6-30
+  #   Called from UTop_main.main_internal in file "src/lib/uTop_main.ml", line 1497, characters 4-25  
+  ["install" "debug/env.ml" "debug/persistent_env.ml" "dl/ocaml/typing/"] {dkml-debug-env-failures & version > "4.14.0~v1.2.1~" & version <= "4.14.0"}
+
+  # Create a DKMLDIR. Its structure mimics a git submodule setup.
+  #   <dkmldir>/.dkmlroot
+  ["install" "-d" "dkmldir"]
+  #     4.14.0~v0.4.1          --dkml-semver--> 0.4.1
+  #     4.14.0~v0.4.1~prerel69 --dkml-semver--> 0.4.1-prerel69
+  ["sh" "-eufc" "printf 'dkml_root_version=%s\\n' '%{version}%' | sed 's/[0-9.]*~v//; s/~/-/' > dkmldir/.dkmlroot"]
+
+  #   <dkmldir>/vendor/drc/
+  ["install" "-d" "dkmldir/vendor/drc"]
+  #     tar through pipe is essentially an rsync (without requiring rsync)
+  ["sh" "-eufc" "tar cCf '%{dkml-runtime-common-native:lib}%/' - . | tar xCf dkmldir/vendor/drc/ -"]
+
+  #   <dkmldir>/vendor/dkml-compiler/
+  ["install" "-d" "dkmldir/vendor/dkml-compiler/src" "dkmldir/vendor/dkml-compiler/env"]
+  #     only the standard compiler environment is needed for the base compiler. However options play a part.
+  ["install"
+    # default (unpatched) options
+    "env/standard-compiler-env-to-ocaml-configure-env.sh"
+    "dkmldir/vendor/dkml-compiler/env/"
+  ]
+  ["sh" "-eufc"
+    # https://learn.microsoft.com/en-us/cpp/build/reference/z7-zi-zi-debug-information-format?view=msvc-170
+    # https://learn.microsoft.com/en-us/cpp/assembler/masm/ml-and-ml64-command-line-reference?view=msvc-170
+    """
+    sed 's/^INJECT_CFLAGS=$/INJECT_CFLAGS=-Z7/; s/^DEFAULT_AS=$/DEFAULT_AS=ml/; s/^INJECT_ASFLAGS=$/INJECT_ASFLAGS="-Zd -Zi"/' \
+      env/standard-compiler-env-to-ocaml-configure-env.sh > \
+      dkmldir/vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh
+    """
+  ] {dkml-option-debuginfo:installed & os = "win32" & arch = "x86_32"}
+  ["sh" "-eufc"
+    """
+    sed 's/^INJECT_CFLAGS=$/INJECT_CFLAGS=-Z7/; s/^DEFAULT_AS=$/DEFAULT_AS=ml64/; s/^INJECT_ASFLAGS=$/INJECT_ASFLAGS="-Zd -Zi"/' \
+      env/standard-compiler-env-to-ocaml-configure-env.sh > \
+      dkmldir/vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh
+    """
+  ] {dkml-option-debuginfo:installed & os = "win32" & arch = "x86_64"}
+  ["sh" "-eufc"
+    """
+    sed 's/^INJECT_CFLAGS=$/INJECT_CFLAGS=-Z7/; s/^DEFAULT_AS=$/DEFAULT_AS=armasm64/; s/^INJECT_ASFLAGS=$/INJECT_ASFLAGS="-Zd -Zi"/' \
+      env/standard-compiler-env-to-ocaml-configure-env.sh > \
+      dkmldir/vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh
+    """
+  ] {dkml-option-debuginfo:installed & os = "win32" & arch = "arm64"}
+  ["sh" "-eufc"
+    """
+    sed 's/^INJECT_CFLAGS=$/INJECT_CFLAGS="-g -O0"/; s/^INJECT_ASFLAGS=$/INJECT_ASFLAGS="-g -O0"/' \
+      env/standard-compiler-env-to-ocaml-configure-env.sh > \
+      dkmldir/vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh
+    """
+  ] {dkml-option-debuginfo:installed & os = "linux"}
+  ["sh" "-eufc"
+    # -Os optimizes for size. Useful for CPUs with small cache sizes. Confer https://wiki.gentoo.org/wiki/GCC_optimization
+    "sed 's/^INJECT_CFLAGS=$/INJECT_CFLAGS=-Os/ \
+      env/standard-compiler-env-to-ocaml-configure-env.sh > \
+      dkmldir/vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh"
+  ] {dkml-option-minsize:installed & os = "linux"}
+  #     tar through pipe is essentially an rsync (without requiring rsync)
+  ["sh" "-eufc" "tar cCf src/ - . | tar xCf dkmldir/vendor/dkml-compiler/src/ -"]
+
+  #   <dkmldir>/vendor/dkml-compiler/bin/bootstrap-ocamlc.opt.exe
+  #   to speed up compile
+  ["install" "-d" "dkmldir/vendor/dkml-compiler/bin"]
+  ["install" "dl/windows_x86-ocamlc.opt.exe" "dkmldir/vendor/dkml-compiler/bin/bootstrap-ocamlc.opt.exe"]     { os = "win32" & (arch = "x86_32" |  ocaml-option-32bit:installed) }
+  ["install" "dl/windows_x86_64-ocamlc.opt.exe" "dkmldir/vendor/dkml-compiler/bin/bootstrap-ocamlc.opt.exe"]  { os = "win32" & (arch = "x86_64" & !ocaml-option-32bit:installed) }
+  ["install" "dl/linux_x86-ocamlc.opt" "dkmldir/vendor/dkml-compiler/bin/bootstrap-ocamlc.opt.exe"]           { os = "linux" & (arch = "x86_32" |  ocaml-option-32bit:installed) }
+  ["install" "dl/linux_x86_64-ocamlc.opt" "dkmldir/vendor/dkml-compiler/bin/bootstrap-ocamlc.opt.exe"]        { os = "linux" & (arch = "x86_64" & !ocaml-option-32bit:installed) }
+  ["install" "dl/darwin_x86_64-ocamlc.opt" "dkmldir/vendor/dkml-compiler/bin/bootstrap-ocamlc.opt.exe"]       { os = "macos" & arch = "x86_64" }
+  ["install" "dl/darwin_arm64-ocamlc.opt" "dkmldir/vendor/dkml-compiler/bin/bootstrap-ocamlc.opt.exe"]        { os = "macos" & arch = "arm64" }
+]
+install: [
+  # Run r-c-ocaml-1-setup.sh
+  [
+    "env" "TOPDIR=dkmldir/vendor/drc/all/emptytop"
+      "DKML_REPRODUCIBLE_SYSTEM_BREWFILE=%{_:build}%/Brewfile"
+      "bash"
+      "dkmldir/vendor/dkml-compiler/src/r-c-ocaml-1-setup.sh"
+      "-d" "dkmldir"
+      "-t" "%{prefix}%"
+      "-f" "src-ocaml"
+      "-g" "%{_:share}%/mlcross"
+      "-v" "dl/ocaml"
+      #   If the ocamlc.opt is not present (perhaps not available on the platform),
+      #   the option will be dropped by r-c-ocaml-1-setup.sh. Just an optimization!
+      "-c" "vendor/dkml-compiler/bin/bootstrap-ocamlc.opt.exe"
+      "-z"
+      #   Windows flexlink flags that affect the built ocaml.exe, ocamlc.opt.exe, etc.
+      #   It is nice with the toplevel ocaml.exe to be able to debug it when the toplevel
+      #   loads in other (stublib) DLLs, for example.
+      "-l"                  { os = "win32" & dkml-option-debuginfo:installed }
+      " -link /DEBUG:FULL"  { os = "win32" & dkml-option-debuginfo:installed }
+      #   No debug/instrumented runtime when dkml-option-debuginfo not installed
+      "-m"                                                      { !dkml-option-debuginfo:installed }
+      "--disable-debug-runtime --disable-instrumented-runtime"  { !dkml-option-debuginfo:installed }
+      "-n"                                                      { !dkml-option-debuginfo:installed }
+      "--disable-debug-runtime --disable-instrumented-runtime"  { !dkml-option-debuginfo:installed }
+      #   Host architectures
+      "-ewindows_x86"     { os = "win32" & (arch = "x86_32" |  ocaml-option-32bit:installed) }
+      "-ewindows_x86_64"  { os = "win32" & (arch = "x86_64" & !ocaml-option-32bit:installed) }
+      "-elinux_x86"       { os = "linux" & (arch = "x86_32" |  ocaml-option-32bit:installed) }
+      "-elinux_x86_64"    { os = "linux" & (arch = "x86_64" & !ocaml-option-32bit:installed) }
+      "-edarwin_x86_64"   { os = "macos" & arch = "x86_64" }
+      "-edarwin_arm64"    { os = "macos" & arch = "arm64" }
+      #   Target architectures (if cross-compiling; similar to dkml-component-staging-ocamlrun.opam)
+      #     TODO: With the -adarwin_x86_64 configuration below, an Apple Silicon machine will produce an arm64 ocamlopt.opt
+      #     in the staging-files/darwin_arm64 directory,
+      #     and that ocamlopt.opt will create x86_64 OCaml native executables. So that darwin_arm64/bin/ocamlopt.opt will not
+      #     run on an x86_64 machine.
+      #     The -adarwin_arm64 configuration is similar but has one important difference. The config will produce an x86_64
+      #     ocamlopt.opt, in the staging-files/darwin_x86_64 directory, and that ocamlopt.opt will create arm64 OCaml native
+      #     executables. But that darwin_x86_64/bin/ocamlopt.opt _will_ run on almost _all_ Apple Silicon (arm64) machines
+      #     because of Rosetta2. The only major exception is Opam CI has disabled Rosetta2 as of Nov 8, 2022.
+      #     Ideally we would have [-aHOST] and [-aHOST-TARGET]. That is: -adarwin_x86_64, -adarwin_arm64 and
+      #     -adarwin_x86_64-darwin_arm64. But that cross specification has ripple effects that needs time (technical debt) to
+      #     get right. Luckily our build machines are always Apple x86_64 (GitHub Actions and GitLab CI/CD), and even if the
+      #     build machines were Apple Silicon we typically only care about the generated artifacts (the target ABI).
+      "-adarwin_x86_64=vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh" { os = "macos" & arch = "arm64" }
+      "-adarwin_arm64=vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh"  { os = "macos" & arch = "x86_64" }
+      #     TODO: Would be nice to bundle the 3 Android cross-compilers here since they are already supported
+      #     by DKML, but I (jonahbeckford@) doubt there is an Android NDK available on the Opam hosts.
+      #     Confer: https://github.com/diskuv/diskuv-ocaml-ghmirror/runs/4831077050
+      #     Perhaps the Android NDK should just be downloaded via an 'android-option-ndk23' package? That would give control of the NDK version.
+      # "-aandroid_arm64v8a=vendor/dkml-compiler/env/github-actions-ci-to-ocaml-configure-env.sh;android_x86_64=vendor/dkml-compiler/env/github-actions-ci-to-ocaml-configure-env.sh"] { os = "linux" & !ocaml-option-32bit:installed }
+      # "-aandroid_arm32v7a=vendor/dkml-compiler/env/github-actions-ci-to-ocaml-configure-env.sh" { os = "linux" & ocaml-option-32bit:installed }
+      "-k" "vendor/dkml-compiler/env/standard-compiler-env-to-ocaml-configure-env.sh"
+  ]
+
+  # Run r-c-ocaml-2-build_host-noargs.sh
+  [
+    "sh" "scripts/build.sh"
+    "-p" "%{prefix}%"
+    "-s" "r-c-ocaml-2-build_host-noargs.sh"
+  ]
+
+  # Run r-c-ocaml-3-build_cross-noargs.sh (typically a no-op unless we are cross-compiling)
+  [
+    "sh" "scripts/build.sh"
+    "-p" "%{prefix}%"
+    "-s" "r-c-ocaml-3-build_cross-noargs.sh"
+  ]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-compiler.git"
+extra-source "dl/ocaml.tar.gz" {
+  src: "https://github.com/ocaml/ocaml/archive/4.14.0.tar.gz"
+  checksum: "sha256=39f44260382f28d1054c5f9d8bf4753cb7ad64027da792f7938344544da155e8"
+}
+extra-source "dl/flexdll.tar.gz" {
+  src: "https://github.com/ocaml/flexdll/archive/0.43.tar.gz"
+  checksum: "sha256=10e171ab7d2f8b2f238b53bb9944d4b26686f5703fbc1c059532791bc91be949"
+}
+extra-source "dl/homebrew-bundle.tar.gz" {
+  src: "https://github.com/Homebrew/homebrew-bundle/archive/437c67db2f160369fec3a3892e3c577b6b3a4d2c.tar.gz"
+  checksum: [
+    "sha256=ecb6b03b2d0210369f23e3f8f64cd939a4bba633db08db62a49894653e053df4"
+  ]
+}
+# BEGIN: Managed by `dune build '@gen-opam' --auto-promote`
+extra-source "dl/windows_x86-ocamlc.opt.exe" {
+  src: "https://github.com/diskuv/dkml-compiler/releases/download/1.2.0-prep4/windows_x86-ocamlc.opt.exe"
+  checksum: "sha256=e6f3b091200c094b3f4c667a4333276a1e806b6a4dc60d3b576067f2f60b85e1"
+}
+extra-source "dl/windows_x86_64-ocamlc.opt.exe" {
+  src: "https://github.com/diskuv/dkml-compiler/releases/download/1.2.0-prep4/windows_x86_64-ocamlc.opt.exe"
+  checksum: "sha256=bd37004e7a9c94ac79c56824e056ad122d919065e7c10c390a43b5e33cece6ab"
+}
+extra-source "dl/linux_x86-ocamlc.opt" {
+  src: "https://github.com/diskuv/dkml-compiler/releases/download/1.2.0-prep4/linux_x86-ocamlc.opt"
+  checksum: "sha256=df8eb4e4d3a4e2e01ea0a37561ec999b64edb688ebed420b30451923bd68fc6b"
+}
+extra-source "dl/linux_x86_64-ocamlc.opt" {
+  src: "https://github.com/diskuv/dkml-compiler/releases/download/1.2.0-prep4/linux_x86_64-ocamlc.opt"
+  checksum: "sha256=a5d2914c0901e9bc9ca481fd4c9ea7fd8b79becc2d12dcd8c74142e43e18349f"
+}
+extra-source "dl/darwin_x86_64-ocamlc.opt" {
+  src: "https://github.com/diskuv/dkml-compiler/releases/download/1.2.0-prep4/darwin_x86_64-ocamlc.opt"
+  checksum: "sha256=98744a85497cba6670feb0f6d1e705286b5fddfa47f56ea180517733f4c6a54b"
+}
+# END: Managed by `dune build '@gen-opam' --auto-promote`
+url {
+  src: "https://gitlab.com/dkml/distributions/dkml/-/releases/2.0.3/downloads/src.dkml-compiler.tar.gz"
+  checksum: [
+    "sha512=aee86bc5aee04c6853ca1220d5ebbb2d08830c95506da241a93a492de79b3d61fbe893e12bbfa9e50851b988224fa803e2b538070cbd06d3f77bbdabc77a9c78"
+  ]
+}

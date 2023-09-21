@@ -1,0 +1,39 @@
+opam-version: "2.0"
+synopsis: "CLI applications available in Diskuv OCaml installations"
+description:
+  "'dkml-fswatch' is a Windows port of fswatch suitable for 'dune --watch'."
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://diskuv.gitlab.io/diskuv-ocaml"
+bug-reports: "https://github.com/diskuv/dkml-runtime-apps/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.12.1"}
+  "bos" {>= "0.2.1"}
+  "dune-configurator" {>= "2.9.3"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-runtime-apps.git"
+url {
+  src: "https://gitlab.com/dkml/distributions/dkml/-/releases/2.0.3/downloads/src.dkml-runtime-apps.tar.gz"
+  checksum: [
+    "sha512=2ce9072b22f1f5d7c5131ecba558f5a09fceed6b9e15bf24bdf5edad0d1d328bab27928405850a7402326105bd2ebe7d34787efb739caf7bc5723f140966a56d"
+  ]
+}

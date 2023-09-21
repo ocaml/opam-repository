@@ -1,0 +1,82 @@
+opam-version: "2.0"
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+homepage: "https://diskuv.gitlab.io/diskuv-ocaml"
+bug-reports: "https://github.com/diskuv/dkml-runtime-apps/issues"
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+depends: [
+  # should dkml-runtime-common-native be a flags:conf package since it is a dependency
+  # of a flags:conf package?
+  "dkml-runtime-common-native" {>= "1.0.2~prerel17"}
+]
+build: [
+  # Load crossplatform-functions.sh to get the canonical with-dkml.exe location.
+  # Don't just use whatever is in the PATH since with-dkml.exe may be
+  # inside the Opam switch.
+  # TODO: All of this should work directly using Command Prompt syntax when
+  # {os = "win32"}
+
+  #   <dkmldir>/vendor/drc/
+  ["rm" "-rf" "dkmldir/vendor/drc"]
+  ["install" "-d" "dkmldir/vendor/drc"]
+  ["cp" "-r" "%{dkml-runtime-common-native:lib}%/all" "dkmldir/vendor/drc"]
+  ["cp" "-r" "%{dkml-runtime-common-native:lib}%/unix" "dkmldir/vendor/drc"]
+  #   <dkmldir>/.dkmlroot
+  ["install" "%{dkml-runtime-common-native:lib}%/template.dkmlroot" "dkmldir/.dkmlroot"]
+
+  [
+    "sh"
+    "-eufxc"
+    """
+    # Load common functions
+    . dkmldir/vendor/drc/unix/crossplatform-functions.sh
+
+    # Set WITHDKMLEXE_BUILDHOST and WITHDKMLEXE_DOS83_OR_BUILDHOST
+    autodetect_withdkmlexe
+
+    # Translate with-dkml location into different path styles
+    # * We use long paths (not DOS 8.3) for the file-depends:[] since opam as of
+    #   2.1 gives frequent warnings of missing files when DOS 8.3 is used.
+    if [ -x /usr/bin/cygpath ]; then
+      /usr/bin/cygpath -alm "$WITHDKMLEXE_BUILDHOST"          > var.with-dkml.location.mixed
+      /usr/bin/cygpath -aw "$WITHDKMLEXE_DOS83_OR_BUILDHOST"  > var.with-dkml.location.native
+    else
+      printf '%s\n' "$WITHDKMLEXE_BUILDHOST"          > var.with-dkml.location.mixed
+      printf '%s\n' "$WITHDKMLEXE_DOS83_OR_BUILDHOST" > var.with-dkml.location.native
+    fi
+
+    # Get sha256 checksum
+    sha256compute $(cat var.with-dkml.location.mixed) > with-dkml.sha256
+
+    # Write <pkgname>.config
+    #   confer: https://opam.ocaml.org/doc/Manual.html#lt-pkgname-gt-config
+    backslash='\\'
+    {
+      printf 'opam-version: "2.0"\n'
+      printf 'file-depends: [ [ "%s" "sha256=%s" ] ]\n' "$(< var.with-dkml.location.mixed )" "$(< with-dkml.sha256 )"
+      printf 'variables {\n'
+      printf '  location-native: "%s"\n' "$(< var.with-dkml.location.native)" | sed "s/[$backslash]/$backslash$backslash$backslash$backslash/g"
+      printf '  location-mixed: "%s"\n' "$(< var.with-dkml.location.mixed )"
+      printf '}\n'
+    } > '%{name}%.config'
+    """
+  ]
+]
+synopsis: "Virtual package relying on with-dkml.exe"
+description:
+  """\
+This package can only install if the with-dkml.exe program is installed in
+a DKML home or a DKSDK noabi directory.
+
+A 'file-depends' trigger will reinstall conf-withdkml when with-dkml.exe changes.
+
+The %{conf-withdkml:location-native}% variable will be the native (Win32, Unix) location
+of with-dkml.exe, while %{conf-withdkml:location-mixed}% will be the
+location of with-dkml.exe using only forward slashes (/).
+"""
+flags: conf
+# DkML 2.0.3: checking for MSYS2 CLANG64 is the best way to detect DkML
+# using opam variables. Would really prefer that [conf-withdkml] could
+# be surrounded by an opam try-catch construct, but that sounds like a
+# big change (introduce a new, early prepare phase?) to the opam solver.
+available: msystem = "CLANG64"
