@@ -1,0 +1,39 @@
+opam-version: "2.0"
+version: "1"
+maintainer: "bobot"
+homepage: "http://flint.org"
+bug-reports: "https://github.com/flintlib/flint2.git"
+license: "LGPL-2.1-only"
+build: [
+  ["sh" "-exc" "echo \"#include  \\\"flint/fmpz_poly.h\\\"\" > test.c"]
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos" & os != "win32"}
+  [
+		"sh"
+		"-exc"
+		"$(ocamlc -config-var c_compiler) -c $CFLAGS -I/usr/local/include test.c"
+	] {os = "win32" & os-distribution = "cygwinports"}
+  [
+    "sh"
+    "-exc"
+    "cc -c $CFLAGS -I/opt/homebrew/include -I/opt/local/include -I/usr/local/include test.c"
+  ] {os = "macos"}
+]
+depexts: [
+  ["libflint-dev"] {os-family = "debian"}
+  ["libflint-dev"] {os-family = "ubuntu"}
+  ["flint"] {os = "macos" & os-distribution = "homebrew"}
+  ["flint"] {os-distribution = "macports" & os = "macos"}
+  ["flint" "flint-devel"] {os-distribution = "centos"}
+  ["flint" "flint-devel"] {os-distribution = "fedora"}
+  ["flint" "flint-devel"] {os-distribution = "ol"}
+  ["flint-dev"] {os-distribution = "alpine"}
+  ["flint-devel"] {os-family = "suse"}
+  ["libflint-devel"] {os = "win32" & os-distribution = "cygwinports"}
+  ["flint"] {os-distribution = "nixos"}
+]
+synopsis: "Virtual package relying on a Flint lib system installation"
+description:
+  "This package can only install if the Flint lib is installed on the system."
+authors: ["William Hart" "Sebastian Pancratz" "Andy Novocin" "Fredrik Johansson"
+          "Tom Bachmann" "Mike Hansen" "Daniel Schultz"]
+flags: conf

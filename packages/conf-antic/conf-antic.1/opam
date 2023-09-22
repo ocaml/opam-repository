@@ -1,0 +1,35 @@
+opam-version: "2.0"
+version: "1"
+maintainer: "bobot"
+homepage: "https://github.com/flintlib/antic.git"
+bug-reports: "https://github.com/flintlib/antic.git"
+license: "LGPL-2.1-only"
+build: [
+  ["sh" "-exc" "echo \"#include  \\\"antic/qfb.h\\\"\" > test.c"]
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos" & os != "win32"}
+  [
+		"sh"
+		"-exc"
+		"$(ocamlc -config-var c_compiler) -c $CFLAGS -I/usr/local/include test.c"
+	] {os = "win32" & os-distribution = "cygwinports"}
+  [
+    "sh"
+    "-exc"
+    "cc -c $CFLAGS -I/opt/homebrew/include -I/opt/local/include -I/usr/local/include test.c"
+  ] {os = "macos"}
+]
+depexts: [
+  ["libantic-dev"] {os-family = "debian"}
+  ["libantic-dev"] {os-family = "ubuntu"}
+  ["antic" "antic-devel"] {os-distribution = "centos"}
+  ["antic" "antic-devel"] {os-distribution = "fedora"}
+  ["antic" "antic-devel"] {os-distribution = "ol"}
+  ["libantic-dev"] {os-distribution = "alpine"}
+  ["antic-devel"] {os-family = "suse"}
+  ["antic"] {os-distribution = "nixos"}
+]
+synopsis: "Virtual package relying on a Antic lib system installation"
+description:
+  "This package can only install if the Antic lib is installed on the system."
+authors: [ "Fredrik Johansson" "William Hart" "Michael Jacobson" "Claus Fieke"]
+flags: conf
