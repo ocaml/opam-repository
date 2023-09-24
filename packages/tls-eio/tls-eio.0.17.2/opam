@@ -1,0 +1,55 @@
+opam-version: "2.0"
+homepage:     "https://github.com/mirleft/ocaml-tls"
+dev-repo:     "git+https://github.com/mirleft/ocaml-tls.git"
+bug-reports:  "https://github.com/mirleft/ocaml-tls/issues"
+doc:          "https://mirleft.github.io/ocaml-tls/doc"
+authors:      ["Thomas Leonard"]
+maintainer:   ["Hannes Mehnert <hannes@mehnert.org>" "David Kaloper <david@numm.org>"]
+license:      "BSD-2-Clause"
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & os != "macos"}
+]
+
+depends: [
+  "ocaml" {>= "5.0.0"}
+  "dune" {>= "3.0"}
+  "tls" {= "0.17.1"}
+  "mirage-crypto-rng" {>= "0.11.2"}
+  "mirage-crypto-rng-eio" {>= "0.11.2" with-test}
+  "x509" {>= "0.15.0"}
+  "eio" {>= "0.12"}
+  "eio_main" {>= "0.12" with-test}
+  "mdx" {with-test}
+  "crowbar" {>= "0.2.1" with-test}
+  "logs" {>= "0.7.0" with-test}
+  "ptime" {>= "1.0.0"}
+]
+tags: [ "org:mirage"]
+synopsis: "Transport Layer Security purely in OCaml - Eio"
+description: """
+Transport Layer Security (TLS) is probably the most widely deployed security
+protocol on the Internet. It provides communication privacy to prevent
+eavesdropping, tampering, and message forgery. Furthermore, it optionally
+provides authentication of the involved endpoints. TLS is commonly deployed for
+securing web services ([HTTPS](http://tools.ietf.org/html/rfc2818)), emails,
+virtual private networks, and wireless networks.
+
+TLS uses asymmetric cryptography to exchange a symmetric key, and optionally
+authenticate (using X.509) either or both endpoints. It provides algorithmic
+agility, which means that the key exchange method, symmetric encryption
+algorithm, and hash algorithm are negotiated.
+
+Read [further](https://nqsb.io) and our [Usenix Security 2015 paper](https://usenix15.nqsb.io).
+"""
+url {
+  src:
+    "https://github.com/mirleft/ocaml-tls/releases/download/v0.17.2/tls-0.17.2.tbz"
+  checksum: [
+    "sha256=1f2f579acf3f6d5a17d1fabf8511853665c7b44afc47cd17d56781f5c733f154"
+    "sha512=75e31d1db89203e6b5b2450e2e63a2c76566e1bb619e4cfbd9b7e9d3db6b145334bd1ad0675ed44d3d7485295c2445db3281aed086cbffee466564095f1e7a2b"
+  ]
+}
+x-commit-hash: "1175137a29fbad550f47e0982845b826c2253e10"
