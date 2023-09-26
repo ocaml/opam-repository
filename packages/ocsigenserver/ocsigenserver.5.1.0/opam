@@ -1,0 +1,75 @@
+opam-version: "2.0"
+maintainer: "dev@ocsigen.org"
+synopsis: "A full-featured and extensible Web server"
+description: "Ocsigen Server implements most features of the HTTP protocol, and has a very powerful extension mechanism that makes it very easy to plug your own OCaml modules for generating pages. Many extensions are already implemented, like a reverse proxy, content compression, access control, authentication, etc."
+authors: "dev@ocsigen.org"
+homepage: "http://ocsigen.org/ocsigenserver/"
+bug-reports: "https://github.com/ocsigen/ocsigenserver/issues/"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+dev-repo: "git+https://github.com/ocsigen/ocsigenserver.git"
+build: [
+  [
+    "sh"
+    "configure"
+    "--prefix"
+    "%{prefix}%"
+    "--ocsigen-user"
+    "%{user}%"
+    "--ocsigen-group"
+    "%{group}%"
+    "--commandpipe"
+    "%{lib}%/ocsigenserver/var/run/ocsigenserver_command"
+    "--logdir"
+    "%{lib}%/ocsigenserver/var/log/ocsigenserver"
+    "--mandir"
+    "%{man}%/man1"
+    "--docdir"
+    "%{lib}%/ocsigenserver/share/doc/ocsigenserver"
+    "--commandpipe"
+    "%{lib}%/ocsigenserver/var/run/ocsigenserver_command"
+    "--staticpagesdir"
+    "%{lib}%/ocsigenserver/var/www"
+    "--datadir"
+    "%{lib}%/ocsigenserver/var/lib/ocsigenserver"
+    "--temproot"
+    ""
+    "--sysconfdir"
+    "%{lib}%/ocsigenserver/etc/ocsigenserver"
+  ]
+  [make "-C" "src" "confs"]
+  ["dune" "build" "-p" name "-j" jobs]
+]
+install:[make "install.files"]
+depends: [
+  "ocaml" {>= "4.08.1"}
+  "dune" {>= "2.7"}
+  "ocamlfind"
+  "base-unix"
+  "base-threads"
+  "react"
+  "ssl" {>= "0.5.8"}
+  "lwt" {>= "3.0.0"}
+  "lwt_ssl"
+  "lwt_react"
+  "lwt_log"
+  "re" {>= "1.11.0"}
+  "cryptokit"
+  "ipaddr" {>= "2.1"}
+  "cohttp-lwt-unix" {>= "5.0.0" & < "6.0.0~"}
+  "conduit-lwt-unix" {>= "2.0.0"}
+  "hmap"
+  "xml-light"
+  "camlzip"
+]
+conflicts: [
+  "camlzip" {< "1.04"}
+  "pgocaml" {< "2.2"}
+]
+url {
+  src:
+    "https://github.com/ocsigen/ocsigenserver/archive/refs/tags/5.1.0.tar.gz"
+  checksum: [
+    "md5=72c9e8479d7e4473e0d26ef10e620870"
+    "sha512=ed466e88a61c17d8b4e4cc392efc7b703ef1f4396bf41015fc85063bfe1644ace9b5361d804fb17da4957830c3584ad610f717eb1a90ccec002d3d87f79f41c4"
+  ]
+}
