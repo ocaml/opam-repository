@@ -6,11 +6,14 @@ bug-reports: "https://github.com/kandu/ocaml-fswatch/issues"
 license: "MIT"
 dev-repo: "git+https://github.com/kandu/ocaml-fswatch"
 build: [
-  ["sh" "-exec" "echo \\(-I/usr/local/include/libfswatch/c -I/usr/include/libfswatch/c\\) > fswatch/src/inc_cflags"] { !(os-distribution = "homebrew" & arch = "arm64") }
-  ["sh" "-exec" "echo -lfswatch > fswatch/src/inc_libs"] { !(os-distribution = "homebrew" & arch = "arm64") }
+  ["sh" "-exec" "echo \\(-I/usr/local/include/libfswatch/c -I/usr/include/libfswatch/c\\) > fswatch/src/inc_cflags"] { !(os-distribution = "homebrew" & arch = "arm64") & os-family != "bsd" }
+  ["sh" "-exec" "echo -lfswatch > fswatch/src/inc_libs"] { !(os-distribution = "homebrew" & arch = "arm64") & os-family != "bsd" }
 
   ["sh" "-exec" "echo -I$(brew --prefix)/include/libfswatch/c > fswatch/src/inc_cflags"] { os-distribution = "homebrew" & arch = "arm64" }
   ["sh" "-exec" "echo \\(-L$(brew --prefix)/lib -lfswatch\\) > fswatch/src/inc_libs"] { os-distribution = "homebrew" & arch = "arm64" }
+
+  ["sh" "-exec" "echo -I/usr/local/include/libfswatch/c > fswatch/src/inc_cflags"] { os-family = "bsd" }
+  ["sh" "-exec" "echo \\(-L/usr/local/lib -lfswatch\\) > fswatch/src/inc_libs"] { os-family = "bsd" }
 
   ["dune" "build" "-p" name "-j" jobs]
 ]
