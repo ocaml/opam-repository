@@ -4,22 +4,8 @@ homepage: "http://openbabel.org/"
 license: "GPL-1.0-or-later"
 authors: "http://openbabel.org/wiki/THANKS"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-build: [
-  [ "c++"
-    "-I/usr/include/openbabel-2.0"
-    "-I/usr/include/openbabel3"
-    "test.cpp"
-    "-lopenbabel"
-  ] {os != "macos"}
-  [
-    "c++"
-    "-I/usr/local/include/openbabel-2.0"
-    "-I/usr/local/include/openbabel3"
-    "test.cpp"
-    "-L/usr/local/lib"
-    "-lopenbabel"
-  ] {os = "macos"}
-]
+build: [["pkg-config" "openbabel-3"]]
+depends: ["conf-pkg-config" {build}]
 x-ci-accept-failures: ["debian-11" "debian-unstable" "alpine-3.18"]
 depexts: [
   ["libopenbabel-dev"] {os-family = "debian" | os-family = "ubuntu"}
@@ -34,5 +20,4 @@ synopsis: "Virtual package relying on openbabel library installation"
 description: """
 This package can only install if the openbabel devel library is installed
 on the system."""
-extra-files: ["test.cpp" "md5=0a2f6ad381a1624089cd12718bfbfdd8"]
 flags: conf
