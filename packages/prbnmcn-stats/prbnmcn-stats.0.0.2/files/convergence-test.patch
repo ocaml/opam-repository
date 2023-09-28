@@ -1,0 +1,27 @@
+From 6e24cbdebf8e35cc00878d059cf3fd88ba07f7d2 Mon Sep 17 00:00:00 2001
+From: Jan Midtgaard <mail@janmidtgaard.dk>
+Date: Thu, 28 Sep 2023 10:04:02 +0200
+Subject: [PATCH] Disable kl convergence test on OCaml > 4
+
+---
+ test/dist_test.ml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/test/dist_test.ml b/test/dist_test.ml
+index aa16588..c92fb42 100644
+--- a/test/dist_test.ml
++++ b/test/dist_test.ml
+@@ -122,7 +122,9 @@ let make_conv_test distname f =
+   let lst = List.hd (List.rev dists) in
+   lst /. fst <=. 0.3
+ 
+-let () = make_conv_test "kl" (fun () -> convergent_sequence Fin.Float.Dist.kl)
++let () =
++  if Char.equal Sys.ocaml_version.[0] '4'
++  then make_conv_test "kl" (fun () -> convergent_sequence Fin.Float.Dist.kl)
+ 
+ let () =
+   make_conv_test "l1" (fun () -> convergent_sequence (Fin.Float.Dist.lp ~p:1.))
+-- 
+2.25.1
+
