@@ -4,7 +4,7 @@ homepage: "https://www.nongnu.org/libunwind/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: ["David Mosberger, Dave Watson, et al"]
 license: "MIT"
-build: [["pkg-config" "--short-errors" "--print-errors" "libunwind"]]
+build: [["pkg-config" "--short-errors" "--print-errors" "libunwind"] {os != "macos"}]
 depends: ["conf-pkg-config" {build}]
 depexts: [
   ["libunwind-dev"] {os-family = "debian" | os-family = "ubuntu"}
@@ -12,7 +12,16 @@ depexts: [
   ["libunwind-devel"] {os-distribution = "rhel"}
   ["libunwind-devel"] {os-distribution = "fedora"}
   ["libunwind-dev"] {os-distribution = "alpine"}
+  ["libunwind"] {os-distribution = "arch"}
+  ["libunwind-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["libunwind-devel"] {os-distribution = "ol"}
   ["libunwind-headers"] {os-distribution = "homebrew" & os = "macos"}
+  ["libunwind"] {os = "freebsd"}
+]
+x-ci-accept-failures: [
+￼ "oraclelinux-7"
+￼ "oraclelinux-8"
+￼ "oraclelinux-9"
 ]
 synopsis: "Virtual package relying on libunwind"
 description:"
