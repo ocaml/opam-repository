@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "A RISC-V simulator"
+description: """
+A RISC-V simulator  with an integrated debugger.
+Support full RV32IM instruction set,
+along with pseudo instruction and several environmental calls."""
+maintainer: ["mvalo@proton.me" "gurvan@debauss.art"]
+authors: ["Valeran Maytié" "Gurvan Debaussart"]
+license: "CeCILL-2.1"
+tags: [
+  "RISC-V" "simulator" "emulation" "RV32IM" "education" "debugger" "debug"
+]
+homepage: "https://gitlab.com/valoranM/arrakis"
+doc: "https://gitlab.com/valoranM/arrakis/-/wikis/"
+bug-reports: "https://gitlab.com/valoranM/arrakis/-/issues"
+depends: [
+  "dune" {>= "3.10"}
+  "ocaml" {>= "4.14.0"}
+  "menhir" {>= "20180528"}
+  "alcotest"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://gitlab.com/valoranM/arrakis.git"
+
+url {
+    src: "https://gitlab.com/valoranM/arrakis/-/archive/1.0.0/arrakis-1.0.0.tar.gz"
+    checksum: "md5=1d25123c6e7cccdbd0d0b92589071023"
+}
+available: arch != "arm32" & arch != "x86_32"
