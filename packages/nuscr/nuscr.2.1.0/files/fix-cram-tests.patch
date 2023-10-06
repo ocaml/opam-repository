@@ -1,0 +1,105 @@
+From ba4c7b2513f40c8c1c39ff5a448c4295d463dd13 Mon Sep 17 00:00:00 2001
+From: Fangyi Zhou <me@fangyi.io>
+Date: Wed, 20 Sep 2023 09:35:48 +0100
+Subject: [PATCH] Fix mysterious test failures
+
+---
+ test/cram-tests/codegen/ocaml-codegen.t/run.t              | 2 ++
+ test/cram-tests/codegen/ocaml-monadic-codegen.t/run.t      | 2 ++
+ test/cram-tests/refinements/annotated-fsm.t/run.t          | 1 +
+ test/cram-tests/refinements/state-var-contract.t/run.t     | 1 +
+ test/cram-tests/refinements/state-var-higher-lower.t/run.t | 3 +++
+ 5 files changed, 9 insertions(+)
+
+diff --git a/test/cram-tests/codegen/ocaml-codegen.t/run.t b/test/cram-tests/codegen/ocaml-codegen.t/run.t
+index 68db5895..5b00c385 100644
+--- a/test/cram-tests/codegen/ocaml-codegen.t/run.t
++++ b/test/cram-tests/codegen/ocaml-codegen.t/run.t
+@@ -15,6 +15,7 @@ Show EFSM for Client and Server
+     6 -> 7 [label="S?bye()", ];
+     
+     }
++  
+   $ nuscr --fsm=S@Adder Adder.nuscr
+   digraph G {
+     0;
+@@ -31,6 +32,7 @@ Show EFSM for Client and Server
+     6 -> 7 [label="C!bye()", ];
+     
+     }
++  
+ Generate OCaml code for Adders Client
+   $ nuscr --gencode-ocaml=C@Adder Adder.nuscr > C.ml
+ Generate OCaml code for Adders Server
+diff --git a/test/cram-tests/codegen/ocaml-monadic-codegen.t/run.t b/test/cram-tests/codegen/ocaml-monadic-codegen.t/run.t
+index ed459018..8ad25927 100644
+--- a/test/cram-tests/codegen/ocaml-monadic-codegen.t/run.t
++++ b/test/cram-tests/codegen/ocaml-monadic-codegen.t/run.t
+@@ -15,6 +15,7 @@ Show EFSM for Client and Server
+     6 -> 7 [label="S?bye()", ];
+     
+     }
++  
+   $ nuscr --fsm=S@Adder Adder.nuscr
+   digraph G {
+     0;
+@@ -31,6 +32,7 @@ Show EFSM for Client and Server
+     6 -> 7 [label="C!bye()", ];
+     
+     }
++  
+ Generate OCaml code for Adders Client
+   $ nuscr --gencode-ocaml-monadic=C@Adder Adder.nuscr > C.ml
+ Generate OCaml code for Adders Server
+diff --git a/test/cram-tests/refinements/annotated-fsm.t/run.t b/test/cram-tests/refinements/annotated-fsm.t/run.t
+index e3d0db1a..5bf61826 100644
+--- a/test/cram-tests/refinements/annotated-fsm.t/run.t
++++ b/test/cram-tests/refinements/annotated-fsm.t/run.t
+@@ -13,6 +13,7 @@ Expecting recursion expressions to be correctly attached.
+     5 -> 6 [label="A!Total(sum: (sum:int{sum = count}))", ];
+     
+     }
++  
+ 
+ Var info should be as follows:
+ 0 should have rec var: count
+diff --git a/test/cram-tests/refinements/state-var-contract.t/run.t b/test/cram-tests/refinements/state-var-contract.t/run.t
+index 6e7b753c..2b761191 100644
+--- a/test/cram-tests/refinements/state-var-contract.t/run.t
++++ b/test/cram-tests/refinements/state-var-contract.t/run.t
+@@ -28,6 +28,7 @@ Print FSM for C@Contract
+     9 -> 10 [label="P?confirm()", ];
+     
+     }
++  
+ Print State Variables:
+   $ nuscr --gencode-fstar C@Contract Contract.nuscr
+   module Generated
+diff --git a/test/cram-tests/refinements/state-var-higher-lower.t/run.t b/test/cram-tests/refinements/state-var-higher-lower.t/run.t
+index a4a09620..9c449147 100644
+--- a/test/cram-tests/refinements/state-var-higher-lower.t/run.t
++++ b/test/cram-tests/refinements/state-var-higher-lower.t/run.t
+@@ -412,6 +412,7 @@ Show HigherLower FSM and State variables.
+     2 -> 9 [label="B?win()<ignore: (ignore:unit{n <> x && t = 1})>", ];
+     
+     }
++  
+   digraph G {
+     0;
+     1;
+@@ -439,6 +440,7 @@ Show HigherLower FSM and State variables.
+     13 -> 14 [label="A!win()", ];
+     
+     }
++  
+   digraph G {
+     0 [label="!silent t<B>: (t:int{0 < t}) =
+   t0", ];
+@@ -455,6 +457,7 @@ Show HigherLower FSM and State variables.
+     2 -> 8 [label="B?lose(ignore: (ignore:unit{n <> x && t = 1}))", ];
+     
+     }
++  
+   State 0 has variables: (empty)
+   State 1 has variables: {n: (n:int{0 <= n && n < 100})}
+   State 2 has variables: {n: (n:int{0 <= n && n < 100}); t0: (t0:int{0 < t0}); t: (t:int{0 < t})}
