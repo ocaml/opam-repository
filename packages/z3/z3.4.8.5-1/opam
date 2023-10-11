@@ -1,0 +1,37 @@
+opam-version: "2.0"
+maintainer: "simon@aestheticintegration.com"
+authors: "MSR"
+homepage: "https://github.com/Z3prover/z3"
+bug-reports: "https://github.com/Z3prover/z3/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Z3prover/z3.git"
+patches: ["4468.patch"]
+depexts: [
+  ["python3-distutils"] {os-family = "debian"}
+]
+build: [
+  [ "python3" "scripts/mk_make.py" "--ml" "--staticlib" ]
+  [ make "-C" "build" "-j" jobs ]
+]
+install: [
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/* build/libz3-static.a"]
+  [ "cp" "build/z3" "%{bin}%/z3"]
+]
+
+depends: [
+  "ocaml" {< "5.0"}
+  "ocamlfind" {build}
+  "num"
+  "conf-gmp"
+  "conf-python-3" {build}
+  "conf-c++" {build}
+]
+synopsis: "Z3 solver"
+extra-files: [
+  ["4468.patch" "sha512=5fdf023a793f857d79497ad0c68b2a55b7ec0e14243cfd1874b3dd0ee09538bf46bedf39caf8380deb85a2f6d06472fa982faa1e4cc9ec9c8b88291cbf97ab5e"]
+]
+
+url {
+  src: "https://github.com/Z3Prover/z3/archive/Z3-4.8.5.tar.gz"
+  checksum: "sha512=ca36e1a0332bd473a64f41dfdb31656fb3486178473e4fd4934dccce109a84c9686c08f94998df74bacb588eb12ea5db25dc17a564ee76f82fd2559349697309"
+}
