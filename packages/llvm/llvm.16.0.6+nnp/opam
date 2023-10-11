@@ -1,0 +1,36 @@
+opam-version: "2.0"
+synopsis: "The OCaml bindings distributed with LLVM"
+description: "Note: LLVM should be installed first."
+maintainer: "Alan Hu <alanh@ccs.neu.edu>"
+authors: [
+  "Alan Hu <alanh@ccs.neu.edu>"
+  "Kate <kit-ty-kate@outlook.com>"
+  "Gordon Henriksen <gordonhenriksen@mac.com>"
+  "whitequark <whitequark@whitequark.org>"
+  "The LLVM team"
+]
+license: "Apache-2.0 WITH LLVM-exception"
+homepage: "http://llvm.moe"
+doc: "http://llvm.moe/ocaml"
+bug-reports: "http://llvm.org/bugs/"
+depends: [
+  "ocaml" {>= "4.00.0"}
+  "dune" {>= "2.7"}
+  "ctypes" {>= "0.4"}
+  "conf-llvm" {build & = "16"}
+]
+build: [
+  ["./setup.sh" conf-llvm:config]
+  ["dune" "build" "--release" "-j" jobs]
+  ["rm" "%{name}%.install"]
+]
+install: ["./install.sh" prefix]
+dev-repo: "git+https://github.com/alan-j-hu/llvm-dune.git"
+url {
+  src:
+    "https://github.com/alan-j-hu/llvm-dune/releases/download/v16.0.6%2Bnnp/llvm-dune-full-minified-16.0.6.tar.gz"
+  checksum: [
+    "md5=d2bf13c08c943c69f1a29ec5b830c143"
+    "sha512=6abc12221eeea6bb26f457dee5f8a077d945583a48891bef7249e6129b8125a5151b92dec0cefc09b124fe988cea8c521123c95d74dd4cd9d87a282c17865fe2"
+  ]
+}
