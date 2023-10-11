@@ -1,0 +1,53 @@
+opam-version: "2.0"
+maintainer:   "thomas@gazagnaire.org"
+authors:      ["Thomas Gazagnaire" "Thomas Leonard"]
+license:      "ISC"
+homepage:     "https://github.com/mirage/irmin"
+bug-reports:  "https://github.com/mirage/irmin/issues"
+dev-repo:     "git+https://github.com/mirage/irmin.git"
+doc:          "https://mirage.github.io/irmin/"
+
+build: [
+ ["dune" "subst"] {dev}
+ ["dune" "build" "-p" name "-j" jobs]
+ # Tests disabled on 32-bit platforms as the Dune build fails in CI:
+ ["dune" "runtest" "-p" name "-j" jobs] {with-test & arch != "arm32" & arch != "x86_32"}
+]
+
+depends: [
+  "ocaml"      {>= "4.02.3"}
+  "dune"       {>= "2.9.0"}
+  "irmin"      {= version}
+  "ppx_irmin"  {= version}
+  "git"        {>= "3.14.0"}
+  "git-unix"   {>= "3.14.0"}
+  "digestif"   {>= "0.9.0"}
+  "cstruct"
+  "fmt"
+  "astring"
+  "cohttp-lwt-unix"
+  "fpath"
+  "logs"
+  "lwt"        {>= "5.3.0"}
+  "uri"
+  "mimic"
+  "irmin-test" {with-test & = version}
+  "mtime"      {with-test & >= "2.0.0"}
+  "alcotest"   {with-test}
+  "irmin-watcher" {>= "0.2.0"}
+]
+
+synopsis: "Git backend for Irmin"
+description: """
+`Irmin_git` expose a bi-directional bridge between Git repositories and
+Irmin stores.
+"""
+url {
+  src:
+    "https://github.com/mirage/irmin/releases/download/3.9.0/irmin-3.9.0.tbz"
+  checksum: [
+    "sha256=8e073abe1b5ffb5b6d58c32606c9d7dabc32c53501756be80a92ed4777ad51a0"
+    "sha512=70769a8d36520626fecd6f68e5f3abe6a0d67a65af915312206cc3f4da230df48512faee178aa6e899d3fb640b9340f6c92486185be5432a1a1a161c70386c99"
+  ]
+}
+x-commit-hash: "00e663fecf14e7cfcd36f6bb312695bbac092648"
