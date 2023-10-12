@@ -1,0 +1,36 @@
+opam-version: "2.0"
+version: "1"
+maintainer: "bobot"
+homepage: "http://arblib.org/"
+bug-reports: "https://github.com/fredrik-johansson/arb"
+license: "LGPL-2.1-only"
+build: [
+  ["sh" "-exc" "echo \"#include  \\\"arb.h\\\"\" > test.c"]
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos" & os != "win32"}
+  [
+		"sh"
+		"-exc"
+		"$(ocamlc -config-var c_compiler) -c $CFLAGS -I/usr/local/include test.c"
+	] {os = "win32" & os-distribution = "cygwinports"}
+  [
+    "sh"
+    "-exc"
+    "cc -c $CFLAGS -I/opt/homebrew/include -I/opt/local/include -I/usr/local/include test.c"
+  ] {os = "macos"}
+]
+depexts: [
+  ["libflint-arb-dev"] {os-family = "debian"}
+  ["libflint-arb-dev"] {os-family = "ubuntu"}
+  ["arb"] {os = "macos" & os-distribution = "homebrew"}
+  ["arb" "arb-devel"] {os-distribution = "centos"}
+  ["arb" "arb-devel"] {os-distribution = "fedora"}
+  ["arb" "arb-devel"] {os-distribution = "ol"}
+  ["libarb-dev"] {os-distribution = "alpine"}
+  ["arb-devel"] {os-family = "suse"}
+  ["arb"] {os-distribution = "nixos"}
+]
+synopsis: "Virtual package relying on a Arb lib system installation"
+description:
+  "This package can only install if the Arb lib is installed on the system."
+authors: ["Fredrik Johansson" "Pascal Molin" "Alex Griffing" "Marc Mezzarobba"]
+flags: conf
