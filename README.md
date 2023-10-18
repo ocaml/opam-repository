@@ -7,7 +7,7 @@ The state of the package ecosystem can be explored using opam-health-check<sup>[
 
 * If you have an issue or a feature request for opam-CI (used for all PRs), please open a ticket at https://github.com/ocurrent/opam-repo-ci/issues
 * If you think there is an issue in the CI infrastructure, please open a ticket at https://github.com/ocaml/infrastructure/issues
-* If you have an issue or a feature request for opam-health-check, please open a ticket at: https://github.com/ocurrent/opam-health-check/issues
+* If you have an issue or a feature request for opam-health-check, please open a ticket at https://github.com/ocurrent/opam-health-check/issues
 
 ## How to Contribute
 
