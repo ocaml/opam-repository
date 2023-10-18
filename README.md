@@ -3,6 +3,8 @@ used by the default installation of [opam](https://opam.ocaml.org/).
 
 The state of the package ecosystem can be explored using opam-health-check<sup>[[1]]</sup>: http://check.ci.ocaml.org/
 
+If you have an issue with the CI, please open a ticket at https://github.com/ocurrent/opam-repo-ci/issues
+
 ## How to Contribute
 
 Contributions are welcome !
