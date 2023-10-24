@@ -1,0 +1,56 @@
+opam-version: "2.0"
+synopsis:
+  "Ortac (OCaml Runtime Assertion Checking) core tool and library based on Gospel"
+description: """\
+Ortac (OCaml Runtime Assertion Checking) is a tool to turn
+executable Gospel specifications into code to test they hold.
+
+Ortac Core provides:
+- a library to turn Gospel terms and types into OCaml expressions
+  and types,
+- and a command-line tool.
+You will need at least one of the Ortac plugins to actually
+generate test code."""
+maintainer: "Clément Pascutto <clement@pascutto.fr>"
+authors: [
+  "Clément Pascutto <clement@pascutto.fr>"
+  "Nicolas Osborne <nicolas.osborne@tarides.com>"
+  "Samuel Hym <samuel.hym@rustyne.lautre.net>"
+]
+license: "MIT"
+homepage: "https://github.com/ocaml-gospel/ortac"
+doc: "https://ocaml-gospel.github.io/ortac/ortac-core/"
+bug-reports: "https://github.com/ocaml-gospel/ortac/issues"
+depends: [
+  "ocaml" {>= "4.11.0"}
+  "dune" {>= "3.8"}
+  "dune-site"
+  "cmdliner" {>= "1.1.0"}
+  "fmt"
+  "ppxlib" {>= "0.26.0"}
+  "gospel" {>= "0.2.0"}
+  "alcotest" {with-test & >= "0.8.1"}
+  "ortac-runtime" {with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-gospel/ortac.git"
+url {
+  src: "https://github.com/ocaml-gospel/ortac/archive/refs/tags/0.1.0.tar.gz"
+  checksum: [
+    "md5=665760e43919a9da2b33bb896033b011"
+    "sha512=f1f45cd3534ca040eb7e0f0f86c6c905a972d5ff7918946f1a8f04fa7c9947def46b3ede68fa0c2297706832a807389c2964f9bfd8d40bcd06acdf5e3004d57f"
+  ]
+}
