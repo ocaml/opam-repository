@@ -1,0 +1,61 @@
+opam-version: "2.0"
+homepage: "http://github.com/ocaml/odoc"
+doc: "https://ocaml.github.io/odoc/"
+bug-reports: "https://github.com/ocaml/odoc/issues"
+license: "ISC"
+
+authors: [
+  "Thomas Refis <trefis@janestreet.com>"
+  "David Sheets <sheets@alum.mit.edu>"
+  "Leo White <leo@lpw25.net>"
+  "Anton Bachin <antonbachin@yahoo.com>"
+  "Jon Ludlam <jon@recoil.org>"
+  "Jules Aguillon <juloo.dsi@gmail.com>"
+  "Lubega Simon <lubegasimon73@gmail.com>"
+]
+maintainer: "Jon Ludlam <jon@recoil.org>"
+dev-repo: "git+https://github.com/ocaml/odoc.git"
+
+synopsis: "OCaml documentation generator"
+description: """
+Odoc is a documentation generator for OCaml. It reads doc comments,
+delimited with `(** ... *)`, and outputs HTML. 
+"""
+
+depends: [
+  "odoc-parser" {>= "2.0.0" & < "2.3.0"}
+  "astring"
+  "cmdliner" {>= "1.0.0"}
+  "cppo" {build & >= "1.1.0"}
+  "dune" {>= "3.0.2"}
+  "fpath"
+  "ocaml" {>= "4.02.0"}
+  "result"
+  "tyxml" {>= "4.3.0"}
+  "fmt"
+
+  "ocamlfind" {with-test}
+  "yojson" {< "2.0.0" & with-test}
+  ("ocaml" {< "4.04.1" & with-test} | "sexplib0" {with-test})
+  "conf-jq" {with-test}
+
+  "ppx_expect" {with-test}
+  "bos" {with-test}
+  "crunch" {with-test}
+
+  ("ocaml" {< "4.07.0" & with-test} | "bisect_ppx" {with-test & > "2.5.0"})
+  ("ocaml" {< "4.03.0" & with-test} | "mdx" {with-test})
+]
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+url {
+  src: "https://github.com/ocaml/odoc/releases/download/2.2.2/odoc-2.2.2.tbz"
+  checksum: [
+    "sha256=6ec331a1da22ec8b8feca73d4b8b6269043f4b36b10dd49f557f42449633672b"
+    "sha512=5bf48555f84d17f61e58cad16703e47c07effde44d1e232f7f227c638f51d57a3d8ec2e71804876c8fbf1035384478e79382d8bdc5a271ea599e42c9cd1d6ab2"
+  ]
+}
+x-commit-hash: "34a48e2543f6ea5716e9ee922954fa0917561dd7"
