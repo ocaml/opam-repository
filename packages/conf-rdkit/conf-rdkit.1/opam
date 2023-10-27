@@ -6,7 +6,7 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "BSD-3-Clause"
 build: [
   ["sh" "-c" "c++ test.cpp -o test -I/usr/local/include/rdkit -L/usr/local/lib -lRDKitRDGeneral -DSWIG"] {os = "macos"}
-  ["sh" "-c" "c++ test.cpp -o test -I/usr/include/rdkit -lRDKitRDGeneral -DSWIG || c++ test.cpp -o test -I/usr/include/rdkit -lRDGeneral -DSWIG"] {os = "linux"}
+  ["sh" "-c" "c++ test.cpp -o test -I/usr/include/rdkit -lRDKitRDGeneral -DSWIG || c++ test.cpp -o test -I/usr/include/rdkit -lRDGeneral -DSWIG"] {os = "linux" | os = "freebsd"}
   ["./test"]
 ]
 depexts: [
@@ -16,6 +16,7 @@ depexts: [
   ["librdkit-dev" "python3-rdkit"] {os-distribution = "ubuntu" & os-version >= "20.04"}
   ["librdkit-dev" "python3-rdkit"] {(os-family = "debian" | os-family = "ubuntu") & os-distribution != "debian" & os-distribution != "ubuntu"}
   ["rdkit-devel" "python3-rdkit"] {os-distribution = "fedora"}
+  ["rdkit"] {os = "freebsd"}
 ]
 x-ci-accept-failures: [ # RDKit does not exist by default on these distributions
   "alpine-3.12"
