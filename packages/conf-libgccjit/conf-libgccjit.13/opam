@@ -20,13 +20,28 @@ build: [
   ] {os = "macos"}
 ]
 depends: [ "conf-gcc" ]
+available: [
+  (os-family = "debian" & (os-version > "12")) |
+  (os-family = "ubuntu" & (os-version >= "23.10")) |
+  (os-family = "fedora" & (os-version >= "38")) |
+  (os-family = "ol" & (os-version > "8")) |
+  (os-family != "debian" & os-family != "ubuntu" & os-family != "fedora" &
+   os-family != "ol" & os != "macos" & os-family != "freebsd")
+]
 depexts: [
+  ["gcc-13"] {os-distribution = "centos" | os-distribution = "fedora"
+             | os-distribution = "debian" | os-distribution = "ubuntu"
+             | os-distribution = "nixos" | os-distribution = "archlinux"}
+  ["gcc-13"] {os-family = "suse" | os-distribution = "opensuse"}
+  ["gcc-13"] {os = "macos" & os-distribution = "homebrew"}
+  ["gcc-13"] {os = "freebsd"}
+  ["gcc-core"] {os = "win32" & os-distribution = "cygwinports"}
   ["libgccjit-13-dev"] {os-family = "debian"}
   ["libgccjit-13-dev"] {os-family = "ubuntu"}
   ["gcc-toolset-13-libgccjit-devel"] {os-distribution = "centos"}
-  ["libgccjit-devel-13"] {os-distribution = "fedora"}
+  ["libgccjit-devel.13"] {os-distribution = "fedora"}
   ["gcc-toolset-13-libgccjit-devel"] {os-distribution = "ol"}
-  ["libgccjit-dev-13"] {os-distribution = "alpine"}
+  ["libgccjit-dev.13"] {os-distribution = "alpine"}
   ["libgccjit13-devel"] {os-family = "suse"}
   ["libgccjit-13-dev"] {os-family = "opensuse"}
   ["libgccjit-13"] {os-distribution = "nixos"}
