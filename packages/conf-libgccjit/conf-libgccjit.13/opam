@@ -12,7 +12,12 @@ license: "GNU"
 build: [
   ["sh" "-exc" "gcc --version | grep 13"]
   ["sh" "-exc" "echo \"#include  \\\"libgccjit.h\\\"\" > test.c"]
-  ["sh" "-exc" "gcc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos" & os != "win32"}
+  ["sh" "-exc" "gcc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos"}
+  [
+    "sh"
+    "-exc"
+    "cc -c $CFLAGS -I/opt/homebrew/include -I/opt/local/include -I/usr/local/include test.c"
+  ] {os = "macos"}
 ]
 depends: [ conf-gcc ]
 depexts: [
