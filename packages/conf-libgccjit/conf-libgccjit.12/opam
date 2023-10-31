@@ -21,21 +21,11 @@ build: [
 ]
 depends: [ "conf-gcc" ]
 # Check that the default version of gcc is not too high.
-available: [
-  (os-family = "debian" &
-   (os-version = "12")) |
-  (os-family = "ubuntu" & (os-version = "23.04")) |
-  (os-family = "fedora" & (os-version = "37")) |
-  (os-family = "freebsd") |
-  (os-family = "ol" & (os-version > "8")) |
-  (os-family != "debian" & os-family != "ubuntu" & os-family != "fedora" &
-   os-family != "archlinux" & os-family != "ol" & os != "macos" & os-family != "freebsd")
-]
 # By depending on the specific version of gcc below, we might upgrade
 # the default gcc binary, but we will not downgrade it.
 depexts: [
   ["gcc-12"] {os-distribution = "centos" | os-distribution = "fedora"
-             | os-distribution = "debian" | os-distribution = "ubuntu"
+             | os-family = "debian" | os-family = "ubuntu"
              | os-distribution = "nixos" | os-distribution = "archlinux"}
   ["gcc-12"] {os-family = "suse" | os-distribution = "opensuse"}
   ["gcc-12"] {os = "macos" & os-distribution = "homebrew"}
@@ -45,7 +35,7 @@ depexts: [
   ["gcc-toolset-12-libgccjit-devel"] {os-distribution = "centos"}
   ["libgccjit-devel.12"] {os-distribution = "fedora"}
   ["gcc-toolset-12-libgccjit-devel"] {os-distribution = "ol" | os-distribution = "oraclelinux"}
-  ["libgccjit-dev.12"] {os-distribution = "alpine"}
+             | os-family = "debian" | os-family = "ubuntu"
   ["libgccjit12-devel"] {os-family = "suse"}
   ["libgccjit-12-dev"] {os-family = "opensuse"}
   ["libgccjit-12"] {os-distribution = "nixos"}
