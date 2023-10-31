@@ -10,7 +10,8 @@ license: "GPL-2.0-or-later"
 # systems. There is libgccjit0, but not libgccjit0-dev (even though there is
 # libgccjit-devel on Fedora, libgccjit on NixOS, libgccjit-dev on Alpine).
 build: [
-  ["sh" "-exc" "gcc --version | grep 13"]
+  ["sh" "-exc" "gcc --version | grep 13"] {os != "macos"}
+  ["sh" "-exc" "gcc --version"] {os = "macos"}
   ["sh" "-exc" "echo \"#include  \\\"libgccjit.h\\\"\" > test.c"]
   ["sh" "-exc" "gcc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos"}
   [
