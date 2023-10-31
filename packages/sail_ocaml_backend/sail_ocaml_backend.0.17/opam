@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "Sail to OCaml translation"
+maintainer: ["Sail Devs <cl-sail-dev@lists.cam.ac.uk>"]
+authors: [
+  "Alasdair Armstrong"
+  "Thomas Bauereiss"
+  "Brian Campbell"
+  "Shaked Flur"
+  "Jonathan French"
+  "Kathy Gray"
+  "Robert Norton"
+  "Christopher Pulte"
+  "Peter Sewell"
+  "Mark Wassell"
+]
+license: "BSD-2-Clause"
+homepage: "https://github.com/rems-project/sail"
+bug-reports: "https://github.com/rems-project/sail/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "libsail" {= version}
+  "base64" {>= "3.1.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/rems-project/sail.git"
+url {
+  src:
+    "https://github.com/rems-project/sail/releases/download/0.17/sail-0.17.tbz"
+  checksum: [
+    "sha256=115a7bb139d9694af901f4deb638cd1622d2987ff1d2bafab7e802a038850f3f"
+    "sha512=ec54691ca2bf53bfb9879fb603c17c6fd270ca61c5880c07cbf5ba457c58fc2e49ff12ed9c988a3a4285d69a3759fb848c2a701a606e83f5db8b304067b2986d"
+  ]
+}
+x-commit-hash: "4437a673e8144576ddd594c0b98a1038ee54374a"
