@@ -26,6 +26,7 @@ depends: [
   "ppx_jane"
   "ppx_typed_fields"
 ]
+dev-repo: "git+https://github.com/mt-caret/polars-ocaml.git"
 build: [
   ["dune" "subst"] {dev}
   [
@@ -36,11 +37,12 @@ build: [
     "-j"
     jobs
     "@install"
-    "@runtest" {with-test}
+    # We do not run the @runtest target, since some of our tests depend on
+    # polars-async, and this causes opam's CI to complain about missing dependencies
+    # "@runtest" {with-test}
     "@doc" {with-doc}
   ]
 ]
-dev-repo: "git+https://github.com/mt-caret/polars-ocaml.git"
 # 32bit is not supported, and the combination of macos+arm64 is known to not
 # work due to issues in DWARF unwinding in OCaml
 available: (os = "linux" & (arch = "x86_64" | arch = "arm64")) | (os = "macos" & arch = "x86_64")
