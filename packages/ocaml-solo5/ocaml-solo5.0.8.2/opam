@@ -1,0 +1,49 @@
+opam-version: "2.0"
+maintainer: "Martin Lucina <martin@lucina.net>"
+authors: "Martin Lucina <martin@lucina.net>"
+homepage: "https://github.com/mirage/ocaml-solo5"
+bug-reports: "https://github.com/mirage/ocaml-solo5/issues/"
+license: "MIT"
+tags: "org:mirage"
+dev-repo: "git+https://github.com/mirage/ocaml-solo5.git"
+build: [
+  ["./configure.sh"
+   "--prefix=%{prefix}%"
+   "--target=x86_64-solo5-none-static" { arch = "x86_64" }
+   "--target=aarch64-solo5-none-static" { arch = "arm64" }
+   "--ocaml-configure-option=--disable-flat-float-array" {ocaml-option-no-flat-float-array:installed}
+   "--ocaml-configure-option=--enable-flambda" {ocaml-option-flambda:installed}
+   "--ocaml-configure-option=--disable-naked-pointers" {ocaml-option-nnp:installed}
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [make "install" ]
+depends: [
+  "conf-which" {build}
+  "ocamlfind" {build} # needed by dune context (for tests)
+  "ocaml-src" {build}
+  "ocaml" {>= "4.12.1" & < "4.15.0"}
+  "solo5" {>= "0.7.0"}
+]
+conflicts: [
+  "sexplib" {= "v0.9.0"}
+  "solo5-kernel-ukvm"
+  "solo5-kernel-virtio"
+  "solo5-kernel-muen"
+]
+available: [
+  ((os = "linux" & (arch = "x86_64" | arch = "arm64"))
+  | (os = "freebsd" & arch = "x86_64")
+  | (os = "openbsd" & arch = "x86_64"))
+]
+synopsis: "Freestanding OCaml compiler"
+description:
+  "This package provides a OCaml cross-compiler, suitable for linking with a Solo5 unikernel."
+url {
+  src:
+    "https://github.com/mirage/ocaml-solo5/archive/refs/tags/v0.8.2.tar.gz"
+  checksum: [
+    "sha256=d143f65fee5d95d056b79e05729a5e4029b07586e96827a449b21584fa2ff12d"
+    "sha512=f38e1f5616938460deb5f36272991f8b3060b04b77d9674051abcc508f0233cf85053e2d19fd3b257638c9e108b65840b97a2dd75cdfac666fd2ea4183d1c62d"
+  ]
+}
