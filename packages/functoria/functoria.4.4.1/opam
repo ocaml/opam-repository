@@ -1,0 +1,60 @@
+opam-version: "2.0"
+maintainer:   "Gabriel Radanne <drupyog@zoho.com>"
+authors:      [ "Thomas Gazagnaire"
+                "Anil Madhavapeddy"
+                "Dave Scott"
+                "Thomas Leonard"
+                "Gabriel Radanne" ]
+homepage:     "https://github.com/mirage/mirage"
+bug-reports:  "https://github.com/mirage/mirage/issues"
+dev-repo:     "git+https://github.com/mirage/mirage.git"
+doc:          "https://mirage.github.io/mirage/"
+license:      "ISC"
+tags:         ["org:mirage"]
+available: opam-version >= "2.1.0"
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["env" "INSIDE_FUNCTORIA_TESTS=1" "dune" "exec" "-p" name "-j" jobs "--"
+     "test/functoria/e2e/test.exe"] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.9.0"}
+  "dune" {with-test & >= "3.0.0"}
+  "base-unix"
+  "cmdliner" {>= "1.1.1"}
+  "cmdliner" {with-test & >= "1.2.0"}
+  "rresult" {>= "0.7.0"}
+  "result" {>= "1.5"}
+  "astring"
+  "fmt" {>= "0.8.7"}
+  "logs"
+  "bos"
+  "fpath"
+  "emile" {>= "1.1"}
+  "uri" {>= "4.2.0"}
+  "alcotest" {with-test}
+  "functoria-runtime" {= version & with-test}
+  "bigstringaf" {with-test & >= "0.5.0"}
+]
+synopsis: "A DSL to organize functor applications"
+description: """
+Functoria is a DSL to describe a set of modules and functors, their types and
+how to apply them in order to produce a complete application.
+
+The main use case is mirage. See the [mirage](https://github.com/mirage/mirage)
+repository for details.
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage/releases/download/v4.4.1/mirage-4.4.1.tbz"
+  checksum: [
+    "sha256=14a09dceb44956952b096aab4e213c974d19289398b2f23d98dcc9d19c430708"
+    "sha512=47caff67e93f03a9b45da33edc2574a8a97c6b7fff92d2ba10afc5ed0bc8c44741a871f1db6293b0144159f98112b900be02450e8fb4b454e88d065c6417d2f1"
+  ]
+}
+x-commit-hash: "ec12b06aedc4e31115f145d049bfb656e89abc85"
