@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: ["Tezos devteam" "WebAssembly Authors"]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "Apache-2.0"
+depends: [
+  "dune" { >= "3.0" & < "3.11" }
+  "ocaml" { >= "4.14" }
+  "ppx_deriving"
+  "octez-libs" { = version }
+  "zarith" { >= "1.12" & < "1.13" }
+  "lwt" { >= "5.6.0" }
+  "ctypes" { >= "0.18.0" }
+  "ctypes-foreign" { >= "0.18.0" }
+  "tezos-rust-libs" { = "1.6" }
+  "data-encoding" { >= "0.7.1" & < "1.0.0" }
+  "index" { >= "1.6.0" & < "1.7.0" }
+  "irmin-pack" { >= "3.7.2" & < "3.8.0" }
+  "irmin" { >= "3.7.2" & < "3.8.0" }
+  "aches-lwt" { >= "1.0.0" }
+  "ppx_import"
+  "qcheck-alcotest" { >= "0.20" }
+  "octez-alcotezt" { = version }
+  "tezt" { >= "3.1.1" & < "4.0.0" }
+]
+x-opam-monorepo-opam-provided: [
+  "tezos-rust-libs"
+]
+conflicts: [
+  "checkseum" { = "0.5.0" }
+]
+build: [
+  ["rm" "-r" "vendors" "contrib"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Octez layer2 libraries"
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v18.1/tezos-18.1.tar.gz"
+  checksum: [
+    "sha256=aa2f5bc99cc4ca2217c52a1af2a2cdfd3b383208cb859ca2e79ca0903396ca1d"
+    "sha512=d68bb3eb615e3dcccc845fddfc9901c95b3c6dc8e105e39522ce97637b1308a7fa7aa1d271351d5933febd7476b2819e1694f31198f1f0919681f1f9cc97cb3a"
+  ]
+}
