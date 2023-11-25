@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "API and registry for DkML installation components"
+description:
+  "All DkML installation components implement the interfaces exposed in this API."
+maintainer: "opensource+dkml@support.diskuv.com"
+authors: "Diskuv, Inc. <opensource+dkml@support.diskuv.com>"
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dkml-install-api"
+bug-reports: "https://github.com/diskuv/dkml-install-api/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08.0"}
+  "alcotest" {>= "1.4.0" & with-test}
+  "ppx_deriving" {>= "5.2.1"}
+  "result" {>= "1.5"}
+  "astring" {>= "0.8.5"}
+  "bos" {>= "0.2.0"}
+  "cmdliner" {>= "1.1.1"}
+  "fmt" {>= "0.8.9"}
+  "tsort" {>= "2.1.0"}
+  "diskuvbox" {>= "0.1.1" & with-test}
+  "odoc" {with-doc}
+]
+available: os = "win32" | os = "linux" | os = "macos"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/diskuv/dkml-install-api.git"
+url {
+  src:
+    "https://github.com/diskuv/dkml-install-api/releases/download/0.5.2/dkml-install-0.5.2.tbz"
+  checksum: [
+    "md5=5b294da54e4474f8d260c7190fec8c85"
+    "sha512=33274eafb995b4ba9d1bdb05e63b466e621255155fe5c6df7f368b086e6658634eff07079a51c0501cd1ab6817ba637f3222a00e146b8c360e24b7488ca66b63"
+  ]
+}
