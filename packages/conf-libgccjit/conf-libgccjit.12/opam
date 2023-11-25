@@ -10,13 +10,17 @@ license: "GPL-2.0-or-later"
 # systems. There is libgccjit0, but not libgccjit0-dev (even though there is
 # libgccjit-devel on Fedora, libgccjit on NixOS, libgccjit-dev on Alpine).
 build: [
-  ["sh" "-exc" "gcc --version | grep 12"]
+  ["sh" "-exc" "gcc --version | grep 12"] {os != "macos"}
+  # Unfortunately on MacOS, the default compiler is clang, even for the
+  # gcc command. Therefore this check does not guarantee out-of-the-box
+  # integration with OCaml.
+  ["sh" "-exc" "gcc-12 --version"] {os = "macos"}
   ["sh" "-exc" "echo \"#include  \\\"libgccjit.h\\\"\" > test.c"]
   ["sh" "-exc" "gcc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos"}
   [
     "sh"
     "-exc"
-    "cc -c $CFLAGS -I/opt/homebrew/include -I/opt/local/include -I/usr/local/include test.c"
+    "gcc-12 -c $CFLAGS -I/opt/homebrew/include -I/opt/local/include -I/usr/local/include test.c"
   ] {os = "macos"}
 ]
 depends: [ "conf-gcc" ]
@@ -29,13 +33,15 @@ depexts: [
   ["libgccjit12-devel"] {os-family = "suse"}
   ["libgccjit-12-dev"] {os-family = "opensuse"}
   ["libgccjit-12"] {os-distribution = "nixos"}
-  # For the following distributions, we cannot install version 12 specifically
-  # for some reason, e.g. because `rpm -q --whatprovides` can only locate the unqualified
-  # package name. While misleading, this is preferable for usability.
+  # For the following distributions, we can install a generic package.
+  # While misleading, this is preferable for usability.
+  # Some distributions cannot install version 12 specifically, e.g. because
+  # `rpm -q --whatprovides` can only locate the unqualified package name.
   ["libgccjit-devel"] {os-distribution = "centos"}
   ["libgccjit-devel"] {os-distribution = "fedora"}
   ["libgccjit-devel"] {os-distribution = "ol" | os-distribution = "oraclelinux"}
   ["libgccjit"] {os-family = "arch"}
+  ["libgccjit"] {os = "macos"}
   ["libgccjit-devel"] {os-family = "opensuse"}
 ]
 post-messages: [
