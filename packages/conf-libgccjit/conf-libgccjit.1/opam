@@ -8,7 +8,10 @@ license: "GPL-2.0-or-later"
 # On Debian systems, there is libgccjit0, but not libgccjit0-dev, so we need
 # to explicitly match the libgccjit-dev version to the gcc version.
 # On MacOS, both cc and gcc bind to the clang compiler, so the gccjit bindings
-# might not work out-of-the-box.
+# might not work out-of-the-box and we use a specific version of gcc below.
+available: [
+  ((os-distribution != "ol" & os-distribution != "oraclelinux") | os-version >= "9")
+]
 build: [
   # Unfortunately on MacOS, the default compiler is clang, even for the
   # gcc command. Therefore this check does not guarantee out-of-the-box
@@ -22,10 +25,9 @@ build: [
   ] {os = "macos"}
 ]
 depends: [ "conf-gcc" ]
-available: [
-  ((os-distribution != "ol" & os-distribution != "oraclelinux") | os-version >= "9")
-]
 depexts: [
+  # Pin gcc to match the version used in the build-time test above.
+  ["gcc@13" "libgccjit"] {os = "macos"}
   ["libgccjit-8-dev"] {os-distribution = "debian" & os-version = "10"}
   ["libgccjit-10-dev"] {os-distribution = "debian" & os-version = "11"}
   ["libgccjit-12-dev"] {os-distribution = "debian" & os-version = "12"}
@@ -41,7 +43,6 @@ depexts: [
   ["libgccjit-devel"] {(os-distribution = "ol" | os-distribution = "oraclelinux") & os-version >= "9"}
   ["libgccjit"] {os-family = "arch"}
   ["libgccjit-dev"] {os-family = "alpine"}
-  ["libgccjit"] {os = "macos"}
   # Note: opam's automatic resolution of OS variables can be inconsistent across OS installations.
   ["libgccjit-devel"] {os-family = "opensuse" | os-distribution = "opensuse-leap" | 
                        os-distribution = "opensuse-tumbleweed"}
