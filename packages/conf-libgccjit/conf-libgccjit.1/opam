@@ -5,43 +5,40 @@ authors: [
 ]
 homepage: "https://gcc.gnu.org/wiki/JIT"
 license: "GPL-2.0-or-later"
-# Unfortunately, we cannot rely on the OS for selecting the right version
-# of libgccjit-dev, the generic dev package does not seem to exist on some
-# systems. There is libgccjit0, but not libgccjit0-dev (even though there is
-# libgccjit-devel on Fedora, libgccjit on NixOS, libgccjit-dev on Alpine).
+# On Debian systems, there is libgccjit0, but not libgccjit0-dev, so we need
+# to explicitly match the libgccjit-dev version to the gcc version.
+# On MacOS, both cc and gcc bind to the clang compiler, so the gccjit bindings
+# might not work out-of-the-box.
 build: [
-  ["sh" "-exc" "gcc --version | grep 11"] {os != "macos"}
   # Unfortunately on MacOS, the default compiler is clang, even for the
   # gcc command. Therefore this check does not guarantee out-of-the-box
   # integration with OCaml.
-  ["sh" "-exc" "gcc-11 --version"] {os = "macos"}
   ["sh" "-exc" "echo \"#include  \\\"libgccjit.h\\\"\" > test.c"]
   ["sh" "-exc" "gcc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos"}
   [
     "sh"
     "-exc"
-    "gcc-11 -c $CFLAGS -I/opt/homebrew/include -I/opt/local/include -I/usr/local/include test.c"
+    "gcc-13 -c $CFLAGS -I/opt/homebrew/include -I/opt/local/include -I/usr/local/include test.c"
   ] {os = "macos"}
 ]
 depends: [ "conf-gcc" ]
-# Check that the default version of gcc is not too high.
-# By depending on the specific version of gcc below, we might upgrade
-# the default gcc binary, but we will not downgrade it.
 depexts: [
-  ["libgccjit-11-dev"] {os-family = "debian"}
-  ["libgccjit-11-dev"] {os-family = "ubuntu"}
-  ["libgccjit11-devel"] {os-family = "suse"}
-  ["libgccjit-11-dev"] {os-family = "opensuse"}
-  ["libgccjit-11"] {os-distribution = "nixos"}
-  # For the following distributions, we can install a generic package.
-  # While misleading, this is preferable for usability.
-  # Some distributions cannot install version 11 specifically, e.g. because
-  # `rpm -q --whatprovides` can only locate the unqualified package name.
+  ["libgccjit-13-dev"] {os-distribution = "debian" & (os-version = "13" | os-version = "unknown")}
+  ["libgccjit-12-dev"] {os-distribution = "debian" & os-version = "12"}
+  ["libgccjit-9-dev"] {os-distribution = "ubuntu" & os-version = "20.04"}
+  ["libgccjit-11-dev"] {os-distribution = "ubuntu" & os-version = "22.04"}
+  ["libgccjit-11-dev"] {os-distribution = "ubuntu" & os-version = "22.04"}
+  ["libgccjit-13-dev"] {os-distribution = "ubuntu" & os-version = "23.10"}
+  ["libgccjit"] {os-family = "nixos"}
   ["libgccjit-devel"] {os-distribution = "centos"}
   ["libgccjit-devel"] {os-distribution = "fedora"}
   ["libgccjit-devel"] {os-distribution = "ol" | os-distribution = "oraclelinux"}
   ["libgccjit"] {os-family = "arch"}
-  ["libgccjit-devel"] {os-family = "opensuse"}
+  ["libgccjit-dev"] {os-family = "alpine"}
+  ["libgccjit"] {os = "macos"}
+  # Note: opam's automatic resolution of OS variables can be inconsistent across OS installations.
+  ["libgccjit-devel"] {os-family = "opensuse" | os-distribution = "opensuse-leap" | 
+                       os-distribution = "opensuse-tumbleweed"}
 ]
 post-messages: [
   "libgccjit version must correspond to the gcc version; consider upgrading gcc or pinning a different version of conf-libgccjit"
@@ -51,6 +48,6 @@ post-messages: [
 ]
 synopsis: "Virtual package relying on a libgccjit system installation"
 description:
-  "This package can only install if libgccjit-11 is installed on the system."
+  "This package can only install if libgccjit-13 is installed on the system."
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 flags: conf
