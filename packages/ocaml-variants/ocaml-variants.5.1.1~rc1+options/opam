@@ -1,0 +1,78 @@
+opam-version: "2.0"
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+synopsis: "First release candidate of OCaml 5.1.1"
+maintainer: "platform@lists.ocaml.org"
+authors: [
+  "Xavier Leroy"
+  "Damien Doligez"
+  "Alain Frisch"
+  "Jacques Garrigue"
+  "Didier Rémy"
+  "Jérôme Vouillon"
+]
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git+https://github.com/ocaml/ocaml.git#5.1"
+depends: [
+  "ocaml" {= "5.1.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-domains" {post}
+  "base-nnp" {post}
+  "ocaml-option-bytecode-only" {arch != "arm64" & arch != "x86_64" & arch != "s390x" & arch != "riscv64"}
+  "ocaml-beta" {opam-version < "2.1.0"}
+]
+conflict-class: "ocaml-core-compiler"
+flags: [ compiler avoid-version ]
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build-env: [
+  [LSAN_OPTIONS = "detect_leaks=0,exitcode=0"]
+  [ASAN_OPTIONS = "detect_leaks=0,exitcode=0"]
+]
+build: [
+  [
+    "./configure"
+    "--prefix=%{prefix}%"
+    "--docdir=%{doc}%/ocaml"
+    "-C"
+    "--with-afl" {ocaml-option-afl:installed}
+    "--disable-native-compiler" {ocaml-option-bytecode-only:installed}
+    "--disable-flat-float-array" {ocaml-option-no-flat-float-array:installed}
+    "--enable-flambda" {ocaml-option-flambda:installed}
+    "--enable-frame-pointers" {ocaml-option-fp:installed}
+    "CC=cc" {!ocaml-option-32bit:installed & !ocaml-option-musl:installed & (os="openbsd"|os="macos")}
+    "CC=musl-gcc" {ocaml-option-musl:installed & os-distribution!="alpine"}
+    "CFLAGS=-Os" {ocaml-option-musl:installed}
+    "LDFLAGS=-Wl,--no-as-needed,-ldl" {ocaml-option-leak-sanitizer:installed | (ocaml-option-address-sanitizer:installed & os!="macos")}
+    "CC=gcc -ldl -fsanitize=leak -fno-omit-frame-pointer -O1 -g" {ocaml-option-leak-sanitizer:installed}
+    "CC=gcc -ldl -fsanitize=address -fno-omit-frame-pointer -O1 -g" {ocaml-option-address-sanitizer:installed & os!="macos"}
+    "CC=clang -fsanitize=address -fno-omit-frame-pointer -O1 -g" {ocaml-option-address-sanitizer:installed & os="macos"}
+    "CC=gcc -m32" {ocaml-option-32bit:installed & os="linux"}
+    "CC=gcc -Wl,-read_only_relocs,suppress -arch i386 -m32" {ocaml-option-32bit:installed & os="macos"}
+    "ASPP=musl-gcc -c" {ocaml-option-musl:installed & os-distribution!="alpine"}
+    "--host=i386-linux" {ocaml-option-32bit:installed & os="linux"}
+    "--host=i386-apple-darwin13.2.0" {ocaml-option-32bit:installed & os="macos"}
+    "LIBS=-static" {ocaml-option-static:installed}
+    "--disable-warn-error"
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/5.1.1-rc1.tar.gz"
+  checksum: "sha256=abef810bbe0e8f10f56438d58f57e442e024bca724815c113f8c481ad518827b"
+}
+extra-files: ["ocaml-variants.install" "md5=3e969b841df1f51ca448e6e6295cb451"]
+depopts: [
+  "ocaml-option-32bit"
+  "ocaml-option-afl"
+  "ocaml-option-bytecode-only"
+  "ocaml-option-no-flat-float-array"
+  "ocaml-option-flambda"
+  "ocaml-option-fp"
+  "ocaml-option-musl"
+  "ocaml-option-leak-sanitizer"
+  "ocaml-option-address-sanitizer"
+  "ocaml-option-static"
+]
