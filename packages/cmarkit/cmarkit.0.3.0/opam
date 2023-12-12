@@ -1,0 +1,57 @@
+opam-version: "2.0"
+synopsis: "CommonMark parser and renderer for OCaml"
+description: """\
+Cmarkit parses the [CommonMark specification]. It provides:
+
+- A CommonMark parser for UTF-8 encoded documents. Link label resolution
+  can be customized and a non-strict parsing mode can be activated to add: 
+  strikethrough, LaTeX math, footnotes, task items and tables.
+  
+- An extensible abstract syntax tree for CommonMark documents with
+  source location tracking and best-effort source layout preservation.
+
+- Abstract syntax tree mapper and folder abstractions for quick and
+  concise tree transformations.
+  
+- Extensible renderers for HTML, LaTeX and CommonMark with source
+  layout preservation.
+
+Cmarkit is distributed under the ISC license. It has no dependencies.
+
+[CommonMark specification]: https://spec.commonmark.org/
+
+Homepage: <https://erratique.ch/software/cmarkit>"""
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: "The cmarkit programmers"
+license: "ISC"
+tags: ["codec" "commonmark" "markdown" "org:erratique"]
+homepage: "https://erratique.ch/software/cmarkit"
+doc: "https://erratique.ch/software/cmarkit/doc"
+bug-reports: "https://github.com/dbuenzli/cmarkit/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "1.0.3"}
+  "uucp" {dev}
+  "b0" {dev & with-test}
+]
+depopts: ["cmdliner"]
+conflicts: [
+  "cmdliner" {< "1.1.0"}
+]
+build: [
+  "ocaml"
+  "pkg/pkg.ml"
+  "build"
+  "--dev-pkg"
+  "%{dev}%"
+  "--with-cmdliner"
+  "%{cmdliner:installed}%"
+]
+dev-repo: "git+https://erratique.ch/repos/cmarkit.git"
+url {
+  src: "https://erratique.ch/software/cmarkit/releases/cmarkit-0.3.0.tbz"
+  checksum:
+    "sha512=42fa920e84f2b7d45f5cf1251d3308daa7becff2590f7ce84186cb22335415b02cc9bc44179095bf0d37624fb5a0e66d1c96fcc1b12f1106f567247a71c79039"
+}
