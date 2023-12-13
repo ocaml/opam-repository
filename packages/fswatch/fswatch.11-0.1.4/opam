@@ -1,0 +1,32 @@
+opam-version: "2.0"
+maintainer: "zandoye@gmail.com"
+authors: [ "ZAN DoYe" ]
+homepage: "https://github.com/kandu/ocaml-fswatch/"
+bug-reports: "https://github.com/kandu/ocaml-fswatch/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/kandu/ocaml-fswatch"
+build: [
+  ["sh" "-exec" "echo \\(-I/usr/local/include/libfswatch/c -I/usr/include/libfswatch/c\\) > fswatch/src/inc_cflags"] { !(os-distribution = "homebrew" & arch = "arm64") & os-family != "bsd" }
+  ["sh" "-exec" "echo -lfswatch > fswatch/src/inc_libs"] { !(os-distribution = "homebrew" & arch = "arm64") & os-family != "bsd" }
+
+  ["sh" "-exec" "echo -I$(brew --prefix)/include/libfswatch/c > fswatch/src/inc_cflags"] { os-distribution = "homebrew" & arch = "arm64" }
+  ["sh" "-exec" "echo \\(-L$(brew --prefix)/lib -lfswatch\\) > fswatch/src/inc_libs"] { os-distribution = "homebrew" & arch = "arm64" }
+
+  ["sh" "-exec" "echo -I/usr/local/include/libfswatch/c > fswatch/src/inc_cflags"] { os-family = "bsd" }
+  ["sh" "-exec" "echo \\(-L/usr/local/lib -lfswatch\\) > fswatch/src/inc_libs"] { os-family = "bsd" }
+
+  ["dune" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "conf-fswatch"
+  "dune" {>= "1.4"}
+]
+
+synopsis: "Bindings for libfswatch -- file change monitor"
+description: """fswatch is a file change monitor that receives notifications when the contents of the specified files or directories are modified."""
+
+url {
+  src: "https://github.com/kandu/ocaml-fswatch/archive/11-0.1.4.tar.gz"
+  checksum: "md5=3f360cc189a7b067aea5f664c32bd6ca"
+}
