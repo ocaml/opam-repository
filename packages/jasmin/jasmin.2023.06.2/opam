@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "Compiler for High-Assurance and High-Speed Cryptography"
+description: """
+Jasmin is a workbench for high-assurance and high-speed cryptography. Jasmin
+implementations aim at being efficient, safe, correct, and secure.
+"""
+maintainer: "Jean-Christophe Léchenet <jean-christophe.lechenet@inria.fr>"
+author: "Jasmin authors and contributors"
+license: "MIT"
+homepage: "https://github.com/jasmin-lang/jasmin"
+bug-reports: "https://github.com/jasmin-lang/jasmin/issues"
+dev-repo: "git+https://github.com/jasmin-lang/jasmin.git"
+
+depends: [
+  "ocaml" {>= "4.11" & build}
+  "batteries" {>= "3.4.0"}
+  "menhir" {>= "20160825" & build}
+  "menhirLib"
+  "camlidl"
+  "zarith" {>= "1.9.0"}
+  "apron" {>= "v0.9.12"}
+  "conf-ppl"
+  "yojson" {>= "1.6.0"}
+  "dune" {>= "3.2"}
+  "cmdliner" {>= "1.1" & build }
+  "ocamlfind" { build }
+]
+build: [
+  [make "-C" "compiler" "build"]
+]
+install: [
+  ["mkdir" "-p" "%{prefix}%/bin"]
+  ["cp" "compiler/_build/default/entry/jasminc.exe" "%{prefix}%/bin/jasminc"]
+  ["cp" "compiler/_build/default/entry/jazz2tex.exe" "%{prefix}%/bin/jazz2tex"]
+  ["mkdir" "-p" "%{prefix}%/lib/jasmin/easycrypt"]
+  ["sh" "-c" "cp eclib/*.ec \"%{prefix}%/lib/jasmin/easycrypt/\""]
+]
+url {
+  src: "https://github.com/jasmin-lang/jasmin/releases/download/v2023.06.2/jasmin-compiler-v2023.06.2.tar.bz2"
+  checksum: "sha256=237f8c3f643b10d39d41dbef0aa7320fe23c22617a73ef47403a58e90516b98f"
+}
