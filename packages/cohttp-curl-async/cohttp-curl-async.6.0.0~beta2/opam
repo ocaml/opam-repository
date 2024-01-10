@@ -1,0 +1,63 @@
+opam-version: "2.0"
+synopsis: "Cohttp client using Curl & Async as the backend"
+description: """
+An HTTP client that relies on Curl + Async for the backend. Does not require
+conduit for SSL."""
+maintainer: ["Anil Madhavapeddy <anil@recoil.org>"]
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+  "Anurag Soni"
+]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocurl"
+  "http" {= version}
+  "stringext"
+  "cohttp-curl" {= version}
+  "core" {>= "v0.16.0"}
+  "core_unix" {>= "v0.14.0"}
+  "async_kernel"
+  "async_unix"
+  "cohttp-async" {with-test & = version}
+  "uri" {with-test & >= "4.2.0"}
+  "fmt" {with-test}
+  "ounit" {with-test}
+  "alcotest" {with-test}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@cohttp-curl-async/runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+available: opam-version >= "2.1.0"
+flags: [ avoid-version ]
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v6.0.0_beta2/cohttp-v6.0.0_beta2.tbz"
+  checksum: [
+    "sha256=90ecec8bd580411b4272c031b2f6b9c0a50485d20683c6a9c615242f3724b017"
+    "sha512=83ef539469d982862174a929e9baeb5b2a34e9323ee577d8be7148ebed9e785d835d59cc22982bc083bb872e4544616e2bf531ed7edf96bc397151c28bf618d6"
+  ]
+}
+x-commit-hash: "5da40ec181f8afb2ba6788d20c4d35bc8736c649"
