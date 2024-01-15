@@ -10,6 +10,16 @@ build: [
   [
     "sh"
     "-exc"
+    "printf 'opam-version: \"2.0\"\\nvariables {\\n  pkg-config-homebrew: \"%s/lib/pkgconfig\"\\n}' \"$(brew --prefix openblas)\" > %{_:name}%.config"
+  ] {os = "macos" & os-distribution = "homebrew"}
+  [
+    "sh"
+    "-exc"
+    "printf 'opam-version: \"2.0\"\\nvariables {\\n  pkg-config-homebrew: \"\"\\n}' > %{_:name}%.config"
+  ] {os != "macos" | os-distribution != "homebrew"}
+  [
+    "sh"
+    "-exc"
     "cc $CFLAGS $(PKG_CONFIG_PATH=\"$(brew --prefix openblas)/lib/pkgconfig:$PKG_CONFIG_PATH\" pkg-config --cflags openblas) test.c $(PKG_CONFIG_PATH=\"$(brew --prefix openblas)/lib/pkgconfig:$PKG_CONFIG_PATH\" pkg-config --libs openblas)"
   ] {os = "macos" & os-distribution = "homebrew"}
   ["sh" "-exc" "cc $CFLAGS test.c -lcblas"]
@@ -37,6 +47,9 @@ depexts: [
 x-ci-accept-failures: [
   "oraclelinux-7"
   "oraclelinux-8"
+]
+setenv: [
+  PKG_CONFIG_PATH += "%{_:pkg-config-homebrew}%"
 ]
 synopsis: "Virtual package to install OpenBLAS and LAPACKE"
 description:
