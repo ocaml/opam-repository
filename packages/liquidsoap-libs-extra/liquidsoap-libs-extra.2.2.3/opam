@@ -1,0 +1,38 @@
+opam-version: "2.0"
+synopsis: "Liquidosap standard library -- extra functionalities"
+maintainer: "The Savonet Team <savonet-users@lists.sourceforge.net>"
+authors: "The Savonet Team <savonet-users@lists.sourceforge.net>"
+license: "GPL-2.0-or-later"
+homepage: "https://github.com/savonet/liquidsoap"
+bug-reports: "https://github.com/savonet/liquidsoap/issues"
+depends: [
+  "dune" {>= "3.6"}
+  "liquidsoap-libs" {= version}
+  "liquidsoap-lang" {build}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/savonet/liquidsoap.git"
+url {
+  src:
+    "https://github.com/savonet/liquidsoap-release-assets/releases/download/v2.2.3/liquidsoap-2.2.3.tar.gz"
+  checksum: [
+    "md5=988ffcff06b32998c0810cc667247121"
+    "sha512=5e256f5413e933eecffa6a53ef17a0f586df1dcbb18de70c627b344f21d6f2c92ea770e4d9a416ac0a1aa4d21ce8872849cbe81c1ba6d9acfb973913a8dbb36c"
+  ]
+}

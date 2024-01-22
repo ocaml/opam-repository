@@ -1,0 +1,64 @@
+opam-version: "2.0"
+maintainer: "Lukasz Stafiniak <lukstafi@gmail.com>"
+authors: [
+    "David Malcolm <dmalcolm@redhat.com>"
+]
+homepage: "https://gcc.gnu.org/wiki/JIT"
+license: "GPL-2.0-or-later"
+# On Debian systems, there is libgccjit0, but not libgccjit0-dev, so we need
+# to explicitly match the libgccjit-dev version to the gcc version.
+# On MacOS, both cc and gcc bind to the clang compiler, so the gccjit bindings
+# might not work out-of-the-box and we use a specific version of gcc below.
+available: [
+  ((os-distribution != "ol" & os-distribution != "oraclelinux") | os-version >= "9")
+]
+build: [
+  # Unfortunately on MacOS, the default compiler is clang, even for the
+  # gcc command. Therefore this check does not guarantee out-of-the-box
+  # integration with OCaml.
+  ["sh" "-exc" "echo \"#include  \\\"libgccjit.h\\\"\" > test.c"]
+  ["sh" "-exc" "gcc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos"}
+  [
+    "sh"
+    "-exc"
+    "gcc-13 -c $CFLAGS -I/opt/homebrew/include -I/opt/local/include -I/usr/local/include test.c"
+  ] {os = "macos"}
+]
+depends: [ "conf-gcc" ]
+depexts: [
+  # Pin gcc to match the version used in the build-time test above.
+  ["gcc@13" "libgccjit"] {os = "macos"}
+  ["libgccjit-8-dev"] {os-distribution = "debian" & os-version = "10"}
+  ["libgccjit-10-dev"] {os-distribution = "debian" & os-version = "11"}
+  ["libgccjit-12-dev"] {os-distribution = "debian" & os-version = "12"}
+  ["libgccjit-13-dev"] {os-distribution = "debian" & (os-version >= "13" | os-version = "unknown")}
+  ["libgccjit-9-dev"] {os-distribution = "ubuntu" & os-version = "20.04"}
+  ["libgccjit-11-dev"] {os-distribution = "ubuntu" & os-version = "22.04"}
+  ["libgccjit-12-dev"] {os-distribution = "ubuntu" & os-version = "22.10"}
+  ["libgccjit-12-dev"] {os-distribution = "ubuntu" & os-version = "23.04"}
+  ["libgccjit-13-dev"] {os-distribution = "ubuntu" & os-version >= "23.10"}
+  ["libgccjit-9-dev"] {os-distribution = "linuxmint" & os-version >= "20" & os-version < "21"}
+  ["libgccjit-11-dev"] {os-distribution = "linuxmint" & os-version >= "21" & os-version < "22"}
+  ["libgccjit-13-dev"] {os-distribution = "linuxmint" & os-version >= "22"}
+  ["libgccjit"] {os-family = "nixos"}
+  ["libgccjit-devel"] {os-distribution = "centos"}
+  ["libgccjit-devel"] {os-distribution = "fedora"}
+  ["libgccjit-devel"] {(os-distribution = "ol" | os-distribution = "oraclelinux") & os-version >= "9"}
+  ["libgccjit"] {os-family = "arch"}
+  ["libgccjit-dev"] {os-family = "alpine"}
+  # Note: opam's automatic resolution of OS variables can be inconsistent across OS installations.
+  ["libgccjit-devel"] {os-family = "opensuse" | os-distribution = "opensuse-leap" | 
+                       os-distribution = "opensuse-tumbleweed"}
+  # Note: on FreeBSD, libgccjit is included in the gcc package.
+]
+post-messages: [
+  "libgccjit version must correspond to the gcc version; consider upgrading gcc"
+  {failure & os != "macos"}
+  "libgccjit version must correspond to the gcc version; for a stdio.h problem, ensure XCode tools are installed: xcode-select --install"
+  {failure & os = "macos"}
+]
+synopsis: "Virtual package relying on a libgccjit system installation"
+description:
+  "This package can only install if libgccjit-13 is installed on the system."
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+flags: conf

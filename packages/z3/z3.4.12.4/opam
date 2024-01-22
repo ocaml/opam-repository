@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer: "weng@cs.jhu.edu"
+authors: "MSR"
+homepage: "https://github.com/Z3prover/z3"
+bug-reports: "https://github.com/Z3prover/z3/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Z3prover/z3.git"
+depexts: [
+  ["python3-distutils"] {os-family = "debian"}
+]
+patches: ["optional-python-bytecode.patch"]
+build: [
+  [ "python3" "scripts/mk_make.py" "--ml" ]
+  [ make "-C" "build" "-j" jobs ]
+]
+
+install: [
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/* -dll build/libz3.*"]
+  [ "cp" "build/z3" "%{bin}%/z3"]
+]
+
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "ocamlfind" {build}
+  "zarith"
+  "conf-gmp"
+  "conf-python-3" {build}
+  "conf-c++" {build}
+]
+x-ci-accept-failures: [
+  "centos-7" "oraclelinux-7" # C compiler is too old
+]
+conflicts: [
+  "ocaml-option-bytecode-only"
+]
+synopsis: "Z3 solver"
+extra-files: [
+  ["optional-python-bytecode.patch" "md5=109de0c68786d4739c93ad71f8bda86c"]
+]
+url {
+  src:
+    "https://github.com/Z3Prover/z3/archive/refs/tags/z3-4.12.4.tar.gz"
+  checksum: [
+    "sha256=25e9b18d04ee22f1d872dfe0daaf4c39034744525214e34fedd206e25140e96e"
+    "sha512=fcb778d2e3e0d13fc68afcd8724548279f9edbbb4aac1bbb93e00959c33330ab2fd84f2c2e4b0b78f767819725a90b845fc606a9adc931ae1f0a11f4deae433b"
+  ]
+}

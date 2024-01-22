@@ -1,0 +1,189 @@
+opam-version: "2.0"
+synopsis: "Platform dedicated to the analysis of source code written in C"
+description:"""
+Frama-C gathers several analysis techniques in a single collaborative
+framework, based on analyzers (called "plug-ins") that can build upon the
+results computed by other analyzers in the framework.
+Thanks to this approach, Frama-C provides sophisticated tools, including:
+- an analyzer based on abstract interpretation (Eva plug-in);
+- a program proof framework based on weakest precondition calculus (WP plug-in);
+- a program slicer (Slicing plug-in);
+- a tool for verification of temporal (LTL) properties (Aoraï plug-in);
+- a runtime verification tool (E-ACSL plug-in);
+- several tools for code base exploration and dependency analysis
+  (plug-ins From, Impact, Metrics, Occurrence, Scope, etc.).
+These plug-ins communicate between each other via the Frama-C API
+and via ACSL (ANSI/ISO C Specification Language) properties.
+"""
+maintainer: "frama-ci-bot@frama-c.com"
+authors: [
+  "Michele Alberti"
+  "Thibaud Antignac"
+  "Gergö Barany"
+  "Patrick Baudin"
+  "Thibaut Benjamin"
+  "Allan Blanchard"
+  "Lionel Blatter"
+  "François Bobot"
+  "Richard Bonichon"
+  "Quentin Bouillaguet"
+  "David Bühler"
+  "Zakaria Chihani"
+  "Loïc Correnson"
+  "Julien Crétin"
+  "Pascal Cuoq"
+  "Zaynah Dargaye"
+  "Basile Desloges"
+  "Jean-Christophe Filliâtre"
+  "Philippe Herrmann"
+  "Maxime Jacquemin"
+  "Florent Kirchner"
+  "Alexander Kogtenkov"
+  "Tristan Le Gall"
+  "Jean-Christophe Léchenet"
+  "Matthieu Lemerre"
+  "Dara Ly"
+  "David Maison"
+  "Claude Marché"
+  "André Maroneze"
+  "Thibault Martin"
+  "Fonenantsoa Maurica"
+  "Melody Méaulle"
+  "Benjamin Monate"
+  "Yannick Moy"
+  "Pierre Nigron"
+  "Anne Pacalet"
+  "Valentin Perrelle"
+  "Guillaume Petiot"
+  "Dario Pinto"
+  "Virgile Prevosto"
+  "Armand Puccetti"
+  "Félix Ridoux"
+  "Virgile Robles"
+  "Jan Rochel"
+  "Muriel Roger"
+  "Julien Signoles"
+  "Nicolas Stouls"
+  "Kostyantyn Vorobyov"
+  "Boris Yakobowski"
+]
+homepage: "https://frama-c.com/"
+license: "LGPL-2.1-only"
+dev-repo: "git+https://git.frama-c.com/pub/frama-c.git"
+doc: "http://frama-c.com/download/user-manual-28.0-Nickel.pdf"
+bug-reports: "https://git.frama-c.com/pub/frama-c/issues"
+tags: [
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "interactive theorem prover"
+  "C"
+  "plugins"
+  "abstract interpretation"
+  "slicing"
+  "weakest precondition"
+  "ACSL"
+  "dataflow analysis"
+  "runtime verification"
+]
+
+build: [
+  ["bash" "dev/disable-plugins.sh" "e-acsl"] { os-family = "windows" }
+  ["bash" "dev/disable-plugins.sh" "gui"] { os = "macos" }
+  ["dune" "build" "-j%{jobs}%" "--release" "--promote-install-files=false"
+   "@install"
+   "@doc" { with-doc }
+  ]
+]
+
+install: [
+  [make
+   "RELEASE=yes" "PREFIX=%{prefix}%" "MANDIR=%{man}%"
+   "DOCDIR=%{doc}%" { with-doc }
+   "install"
+  ]
+]
+
+remove: [
+  [make "PREFIX=%{prefix}%" "-f" "ivette/Makefile.installation" "uninstall"]
+]
+
+run-test: [
+  ["dune" "exec" "--" "frama-c-ptests" "tests" "src/plugins/*/tests"
+  ] { arch != "ppc64" & arch != "x86_32" & arch != "arm32" & os != "macos" }
+  ["dune" "build" "-j%{jobs}%" "@ptests_config"
+  ] { arch != "ppc64" & arch != "x86_32" & arch != "arm32" & os != "macos" }
+]
+
+depends: [
+  "dune" { >= "3.7.0" }
+  "dune-configurator"
+  "dune-site" { >= "3.7.0" }
+
+  ( "alt-ergo-free" | "alt-ergo" )
+  "conf-graphviz" { post }
+  "conf-time" { with-test }
+  "menhir" { >= "20181006" & build }
+  "ocaml" { >= "4.13.1" }
+  "ocamlgraph" { >= "1.8.8" }
+  "ocamlgraph" { with-test & >= "2.1.0" }
+  "odoc" { with-doc }
+  "unionFind" { >= "20220107" }
+  "why3" { >= "1.6.0" & ( < "1.7.0" | !with-test ) }
+  "yaml" { >= "3.0.0" }
+  "yojson" {>= "1.6.0" & (>= "2.0.1" | !with-test)}
+  "zarith" { >= "1.5" }
+
+  # PPXs
+  "ppx_deriving"
+  "ppx_deriving_yojson"
+  "ppx_deriving_yaml" { >= "0.2.0" }
+  "ppx_import"
+
+  # GTK3 disabled on macOS (segfaults), and made optional on Windows
+  # (due to complex situation with Cygwin + MinGW).
+  "lablgtk3" { >= "3.1.0" & os!="macos" & os-family!="windows" }
+  "lablgtk3-sourceview3" { os!="macos" & os-family!="windows" }
+  "conf-gtksourceview3" { os!="macos" & os-family!="windows" }
+]
+
+# Note: do not put particular versions here, if some version is *incompatible*,
+# use the field 'conflicts'.
+depopts: [
+  "apron"
+  "mlmpfr"
+  "zmq"
+  "lablgtk3" { os-family="windows" }
+  "lablgtk3-sourceview3" { os-family="windows" }
+  "conf-gtksourceview3" { os-family="windows" }
+]
+
+conflicts: [
+  "cairo2" { < "0.6.2" }
+  "mlmpfr" { < "4.1.0-bugfix2" }
+  "pilat"  { <= "1.6" }
+  "result" { < "1.5" }
+]
+
+post-messages: [
+"The Frama-C/WP plug-in requires one or more external prover(s).
+Recommended provers are:
+- Alt-Ergo (https://alt-ergo.ocamlpro.com)
+- CVC4     (https://cvc4.github.io)
+- Z3       (https://github.com/Z3Prover/z3)
+Use 'why3 config detect' to configure new provers.
+ " { success }
+"Ivette is a new GUI for Frama-C, currently in development.
+Run 'ivette' once to finalize installation (requires an internet connection).
+Once finalized, 'ivette' will work offline.
+Finalization also requires Node v16 and Yarn:
+- install NVM (https://github.com/nvm-sh/nvm)
+- run 'nvm use 16'
+- run 'npm install --global yarn'" { success }
+]
+
+url {
+  src: "https://www.frama-c.com/download/frama-c-28.0-Nickel.tar.gz"
+  checksum: "sha256=29612882330ecb6eddd0b4ca3afc0492b70d0feb3379a1b8e893194c6e173983"
+}

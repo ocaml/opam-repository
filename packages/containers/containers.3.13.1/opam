@@ -1,0 +1,38 @@
+opam-version: "2.0"
+synopsis:
+  "A modular, clean and powerful extension of the OCaml standard library"
+maintainer: ["c-cube"]
+authors: ["c-cube"]
+license: "BSD-2-Clause"
+tags: ["stdlib" "containers" "iterators" "list" "heap" "queue"]
+homepage: "https://github.com/c-cube/ocaml-containers/"
+bug-reports: "https://github.com/c-cube/ocaml-containers/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08"}
+  "either"
+  "dune-configurator"
+  "qcheck-core" {>= "0.18" & with-test}
+  "yojson" {with-test}
+  "iter" {with-test}
+  "gen" {with-test}
+  "csexp" {with-test}
+  "uutf" {with-test}
+  "odoc" {with-doc}
+]
+depopts: ["base-unix" "base-threads"]
+dev-repo: "git+https://github.com/c-cube/ocaml-containers.git"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "@doc" "-p" name ] {with-doc}
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & arch != "x86_32" & arch != "arm32"}
+]
+url {
+  src:
+    "https://github.com/c-cube/ocaml-containers/releases/download/v3.13.1/containers-3.13.1.tbz"
+  checksum: [
+    "sha256=eb9b26eb2c3cf04fc5157d256eb49c43552ccb5c59c568772d70315db9669784"
+    "sha512=7f4cf5112c8047fd789c04129745dbe9783aa94390e8983f86408053b0af637e2a9cfce1559ce466b1b6ff7c01fd52d8685f5db1d1c0dda2c0aa138f90606a50"
+  ]
+}
+x-commit-hash: "60bb2c8c68e3fce3d77c0e521fd6a1861ce6701e"
