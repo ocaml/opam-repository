@@ -1,0 +1,39 @@
+diff --git a/test-suite/misc/non-marshalable-state.sh b/test-suite/misc/non-marshalable-state.sh
+index fa4a8b77a6..510d607e2e 100755
+--- a/test-suite/misc/non-marshalable-state.sh
++++ b/test-suite/misc/non-marshalable-state.sh
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env bash
+ 
+-set -e
++set -ex
+ 
+ export COQBIN=$BIN
+ export PATH=$COQBIN:$PATH
+@@ -17,17 +17,18 @@ make clean
+ make src/evil_plugin.cmxs
+ make src/good_plugin.cmxs
+ 
+-RC=1
+-# must fail
+-coqc -async-proofs on  -I src -Q theories Marshal theories/evil.v 2> log1 1>&2 || RC=0
+-#   for this reason
+-grep -q 'Marshalling error' log1 || RC=1
++if coqc -async-proofs on  -I src -Q theories Marshal theories/evil.v 2> log1 1>&2; then
++  >&2 echo "evil.v with async proofs on should have failed!"
++  exit 1
++fi
++if ! grep -q 'Marshalling error' log1; then
++  >&2 echo "evil.v with async proofs on failed with unexpected log:"
++  >&2 cat log1
++  exit 1
++fi
+ 
+ # must work
+ coqc -async-proofs off -I src -Q theories Marshal theories/evil.v
+ 
+ # must work
+ coqc -async-proofs on  -I src -Q theories Marshal theories/good.v
+-
+-
+-exit $RC
