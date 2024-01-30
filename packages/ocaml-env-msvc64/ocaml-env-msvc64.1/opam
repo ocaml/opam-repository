@@ -1,0 +1,35 @@
+opam-version: "2.0"
+synopsis: "Microsoft C Compiler OCaml Runtime Dependency (64-bit)"
+description: """
+This package is an internal part of the implementation of the OCaml compiler in
+opam-repository. It is used to store the active environment variable settings
+for Microsoft Visual Studio and adds them to the environment.
+"""
+maintainer: "David Allsopp <david@tarides.com>"
+authors: "David Allsopp"
+license: "CC0-1.0+"
+homepage: "https://opam.ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+# opam-repository mandates 2.2.0+ when setenv may perform `+= ""`, since some
+# versions of 2.0.x and 2.1.x crash on these updates.
+available: opam-version >= "2.2.0~"
+depends: [
+  "host-system-msvc" {post}
+  "host-arch-x86_64" {post}
+  "conf-msvc64"
+]
+conflict-class: "ocaml-env-msvc"
+flags: conf
+build: [
+  ["xcopy" "%{conf-msvc64:share}%\\conf-msvc64.config" "%{_:name}%.config*"]
+]
+setenv: [
+  [PATH += "%{_:msvs-bin}%"]
+  [INCLUDE += "%{_:msvs-inc}%"]
+  [LIB += "%{_:msvs-lib}%"]
+]
+x-env-path-rewrite: [
+  [ PATH false ]
+  [ INCLUDE false ]
+  [ LIB false ]
+]

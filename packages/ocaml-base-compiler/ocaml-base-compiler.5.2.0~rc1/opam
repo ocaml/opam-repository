@@ -10,24 +10,65 @@ homepage: "https://ocaml.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "git+https://github.com/ocaml/ocaml#5.2"
 depends: [
+  # This is OCaml 5.2.0
   "ocaml" {= "5.2.0" & post}
+
+  # General base- packages
   "base-unix" {post}
   "base-bigarray" {post}
   "base-threads" {post}
   "base-domains" {post}
   "base-nnp" {post}
+
+  "ocaml-beta" {opam-version < "2.1.0"}
+
+  # Architecture (non-Windows)
+  # opam-repository at present requires that ocaml-base-compiler is installed
+  # using an architecture which matches the machine's, since arch is used in
+  # available fields. Cross-compilation at this stage is an unstable accident.
+  "host-arch-arm32" {arch = "arm32" & post}
+  "host-arch-arm64" {arch = "arm64" & post}
+  "host-arch-ppc64" {arch = "ppc64" & post}
+  "host-arch-riscv64" {arch = "riscv64" & post}
+  "host-arch-s390x" {arch = "s390x" & post}
+  # The Windows ports explicitly select the architecture (see below) this
+  # facility is not yet available for other platforms.
+  "host-arch-x86_32" {os != "win32" & arch = "x86_32" & post}
+  "host-arch-x86_64" {os != "win32" & arch = "x86_64" & post}
+  "host-arch-unknown" {os != "win32" & arch != "arm32" & arch != "arm64" & arch != "ppc64" & arch != "riscv64" & arch != "s390x" & arch != "x86_32" & arch != "x86_64" & post}
+
+  # Port selection (Windows)
+  # amd64 mingw-w64 only
+  ("arch-x86_64" {os = "win32" & arch = "x86_64"} &
+    "system-mingw" & "mingw-w64-shims" {os-distribution = "cygwin" & build} |
+  # i686 mingw-w64 only
+   "arch-x86_32" {os = "win32"} & "ocaml-option-bytecode-only" &
+    "system-mingw" & "mingw-w64-shims" {os-distribution = "cygwin" & build} |
+  # Non-Windows systems
+   "host-system-other" {os != "win32" & post})
+
+  # OCaml with default configuration (no flambda, TSAN, etc.)
   "ocaml-options-vanilla" {post}
   "ocaml-option-bytecode-only" {arch != "arm64" & arch != "x86_64" & arch != "s390x" & arch != "riscv64" & arch != "ppc64"}
-  "ocaml-beta" {opam-version < "2.1.0"}
+
+  # Support Packages
+  "flexdll" {>= "0.42" & os = "win32"}
 ]
+conflicts: "system-msvc"
 conflict-class: "ocaml-core-compiler"
 flags: [ compiler avoid-version ]
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+x-env-path-rewrite: [
+  [CAML_LD_LIBRARY_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
+]
 build: [
   [
     "./configure"
+    "--host=x86_64-w64-mingw32" {os-distribution = "cygwin" & system-mingw:installed & arch-x86_64:installed}
+    "--host=i686-w64-mingw32"   {os-distribution = "cygwin" & system-mingw:installed & arch-x86_32:installed}
     "--prefix=%{prefix}%"
     "--docdir=%{doc}%/ocaml"
+    "--with-flexdll=%{flexdll:share}%" {os = "win32" & flexdll:installed}
     "-C"
     "CC=cc" {os = "openbsd" | os = "macos"}
     "ASPP=cc -c" {os = "openbsd" | os = "macos"}

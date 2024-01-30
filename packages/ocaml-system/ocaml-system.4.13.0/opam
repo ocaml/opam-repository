@@ -10,13 +10,49 @@ homepage: "https://ocaml.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "git+https://github.com/ocaml/ocaml"
 depends: [
-  "ocaml" {post}
+  # This is OCaml 4.13.0
+  "ocaml" {= "4.13.0" & post}
+
+  # General base- packages
   "base-unix" {post}
   "base-threads" {post}
   "base-bigarray" {post}
+
+  # Architecture
+  "host-arch-arm32" {?sys-ocaml-arch & sys-ocaml-arch = "arm" & post}
+  "host-arch-arm64" {?sys-ocaml-arch & sys-ocaml-arch = "arm64" & post}
+  "host-arch-ppc64" {?sys-ocaml-arch & sys-ocaml-arch = "power" & post}
+  "host-arch-riscv64" {?sys-ocaml-arch & sys-ocaml-arch = "riscv" & post}
+  "host-arch-s390x" {?sys-ocaml-arch & sys-ocaml-arch = "s390x" & post}
+  "host-arch-x86_32" {?sys-ocaml-arch & sys-ocaml-arch = "i686" & post}
+  "host-arch-x86_64" {?sys-ocaml-arch & sys-ocaml-arch = "x86_64" & post}
+  "host-arch-unknown" {!(?sys-ocaml-arch) |
+                       sys-ocaml-arch != "arm" &
+                       sys-ocaml-arch != "arm64" &
+                       sys-ocaml-arch != "power" &
+                       sys-ocaml-arch != "riscv" &
+                       sys-ocaml-arch != "s390x" &
+                       sys-ocaml-arch != "i686" &
+                       sys-ocaml-arch != "x86_64" & post}
+
+  # System (Windows-only at present)
+  "host-system-mingw" {?sys-ocaml-arch & sys-ocaml-libc = "msvc" & sys-ocaml-cc = "cc" & post}
+  "host-system-msvc" {?sys-ocaml-arch & sys-ocaml-cc = "msvc" & post}
+  "host-system-other" {?sys-ocaml-arch & sys-ocaml-libc != "msvc" & post}
+
+  # Environment configuration (Windows-only)
+  # NB There are not "system" distributions of OCaml on Windows; the support
+  # here is intended for binary caching setups, choosing to install a build
+  # of OCaml external to opam, but still using opam to provide the C compiler
+  # configuration.
+  "conf-mingw-w64-gcc-x86_64" {?sys-ocaml-arch & sys-ocaml-arch = "x86_64" & sys-ocaml-libc = "msvc" & sys-ocaml-cc = "cc" & post}
+  "conf-mingw-w64-gcc-i686" {?sys-ocaml-arch & sys-ocaml-arch = "i686" & sys-ocaml-libc = "msvc" & sys-ocaml-cc = "cc" & post}
+  "mingw-w64-shims" {?sys-ocaml-arch & sys-ocaml-libc = "msvc" & sys-ocaml-cc = "cc" & os-distribution = "cygwin" & post}
+  "ocaml-env-msvc32" {?sys-ocaml-arch & sys-ocaml-arch = "i686" & sys-ocaml-cc = "msvc" & post}
+  "ocaml-env-msvc64" {?sys-ocaml-arch & sys-ocaml-arch = "x86_64" & sys-ocaml-cc = "msvc" & post}
 ]
 conflict-class: "ocaml-core-compiler"
-available: sys-ocaml-version = "4.13.0"
+available: sys-ocaml-version = "4.13.0" & (os != "win32" | sys-ocaml-libc = "msvc")
 flags: compiler
 build: ["ocaml" "gen_ocaml_config.ml"]
 substs: "gen_ocaml_config.ml"

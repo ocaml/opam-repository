@@ -15,7 +15,13 @@ depends: [
 conflicts: [
   "ocaml-option-32bit"
   "ocaml-option-afl"
-  "ocaml-option-bytecode-only" {arch = "arm64" | arch = "x86_64" }
+  # See equivalent constraint in ocaml-option-bytecode-only
+  # Windows is permitted to install 32-bit versions of ocaml-base-compiler on
+  # 64-bit systems hence the (temporary) addition of the `os = "win32"` here,
+  # at least until the ocaml-option- / base- mess is fixed. Note that this puts
+  # 64-bit Windows into the same class as ppc64, riscv64 and s390x where
+  # ocaml-option-bytecode-only can be installed, but has no effect.
+  "ocaml-option-bytecode-only" {arch = "arm64" | (arch = "x86_64" & os != "win32") }
   "ocaml-option-default-unsafe-string"
   "ocaml-option-flambda"
   "ocaml-option-fp"

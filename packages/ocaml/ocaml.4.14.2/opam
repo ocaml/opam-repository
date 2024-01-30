@@ -17,6 +17,9 @@ setenv: [
   [CAML_LD_LIBRARY_PATH += "%{lib}%/stublibs"]
   [OCAML_TOPLEVEL_PATH = "%{toplevel}%"]
 ]
+x-env-path-rewrite: [
+  [CAML_LD_LIBRARY_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
+]
 build: ["ocaml" "%{ocaml-config:share}%/gen_ocaml_config.ml" _:version _:name]
 build-env: CAML_LD_LIBRARY_PATH = ""
 homepage: "https://ocaml.org"
