@@ -1,0 +1,84 @@
+opam-version: "2.0"
+synopsis: "Distribute build jobs to workers"
+description: """
+OCluster manages a pool of build workers.
+A build scheduler service accepts build jobs from clients and distributes them to worker machines using Cap'n Proto.
+Workers register themselves by connecting to the scheduler (and workers do not need to be able to accept incoming network connections).
+
+The scheduler can manage multiple pools (e.g. `linux-x86_64` and `linux-arm32`).
+Clients say which pool should handle their requests.
+At the moment, two build types are provided: building a Dockerfile, or building an OBuilder spec.
+In either case, the build may done in the context of some Git commit.
+The scheduler tries to schedule similar builds on the same machine, to benefit from caching."""
+maintainer: ["Tim McGilchrist <timmcgil@gmail.com>"]
+authors: [
+  "Antonin Décimo <antonin@tarides.com>"
+  "David Allsopp <david.allsopp@metastack.com>"
+  "Kate <kit.ty.kate@disroot.org>"
+  "Lucas Pluvinage <lucas@tarides.com>"
+  "Mark Elvers <mark.elvers@tunbury.org>"
+  "Patrick Ferris <patrick@sirref.org>"
+  "Thomas Leonard <talex5@gmail.com>"
+  "Tim McGilchrist <timmcgil@gmail.com>"
+]
+license: "Apache-2.0"
+homepage: "https://github.com/ocurrent/ocluster"
+doc: "https://ocurrent.github.io/ocluster/"
+bug-reports: "https://github.com/ocurrent/ocluster/issues"
+depends: [
+  "dune" {>= "3.7"}
+  "ocluster-api" {= version}
+  "ocluster-worker" {= version}
+  "ocaml" {>= "4.14.1"}
+  "capnp-rpc-lwt" {>= "1.2.3"}
+  "capnp-rpc-net" {>= "1.2.3"}
+  "capnp-rpc-unix" {>= "1.2.3"}
+  "cmdliner" {>= "1.2.0"}
+  "conf-libev" {os != "win32"}
+  "digestif" {>= "0.8"}
+  "dune-build-info"
+  "fmt"
+  "fpath"
+  "logs"
+  "lwt" {>= "5.6.1"}
+  "lwt-dllist"
+  "mirage-crypto" {>= "0.8.5"}
+  "obuilder" {>= "0.5.1"}
+  "ppx_expect" {>= "v0.14.1"}
+  "ppx_sexp_conv"
+  "prometheus"
+  "prometheus-app" {>= "1.2"}
+  "psq" {>= "0.2.1"}
+  "sqlite3"
+  "winsvc" {>= "1.0.1" & os = "win32"}
+  "current_ocluster" {= version & with-test}
+  "alcotest" {>= "1.7.0" & with-test}
+  "alcotest-lwt" {>= "1.7.0" & with-test}
+  "mirage-crypto-rng" {>= "0.11.0" & with-test}
+  "mirage-crypto-rng-lwt" {>= "0.11.0" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocurrent/ocluster.git"
+url {
+  src:
+    "https://github.com/ocurrent/ocluster/releases/download/v0.3.0/ocluster-0.3.0.tbz"
+  checksum: [
+    "sha256=8879c113a6ec6a1d96bbda4e7f1e2f2cfba8f57630cdf715c770b3dc72628a96"
+    "sha512=74c42d68c2b741a6394913f1ef9af784f3bcfae164eb5e88d9d87d635032c52b4b0c196fb2bd9db8127dd5c1aff103baecc791d2c081df82275ef5c5cdec7c8a"
+  ]
+}
+x-commit-hash: "912ecfd38f003c6f537abca7e5313973b15ba615"
