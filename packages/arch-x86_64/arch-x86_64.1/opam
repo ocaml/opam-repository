@@ -12,7 +12,14 @@ license: "CC0-1.0+"
 homepage: "https://opam.ocaml.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 flags: compiler
-available: os = "win32"
+# The architecture selection is somewhat belt-and-braces while this system is
+# only available for Windows. The dependency of the OCaml ecosystem on either
+# Cygwin or MSYS2 means that OCaml cannot be used on 32-bit Windows, although
+# 32-bit is fully supported as a target.
+# When these packages are extended to all platforms, the available field would
+# ensure that this package becomes unavailable on a 32-bit system, and the
+# avoid-version in arch-x86_32 will be ignored.
+available: os = "win32" & (arch = "x86_64" | arch = "arm64")
 depends: [
   ("ocaml-base-compiler" {post & >= "4.13.0~"} | "ocaml-variants" {post & >= "4.13.0~"})
   "host-arch-x86_64" {post}
