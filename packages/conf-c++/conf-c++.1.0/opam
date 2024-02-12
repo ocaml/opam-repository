@@ -4,7 +4,12 @@ authors: "C++ compiler developers"
 homepage: "https://github.com/ocaml/opam-repository"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "GPL-2.0-or-later"
-build: ["c++" "--version"]
+build: [
+  "i686-w64-mingw32-c++" {os = "win32" & host-arch-x86_32:installed}
+  "x86_64-w64-mingw32-c++" {os = "win32" & host-arch-x86_64:installed}
+  "c++" {os != "win32" | (!host-arch-x86_32:installed & !host-arch-x86_64:installed)}
+  "--version"
+]
 depexts: [
   ["gcc-c++"] {os-distribution = "centos"}
   ["gcc-c++"] {os-distribution = "fedora"}
@@ -16,6 +21,9 @@ depexts: [
   ["gcc"] {os-distribution = "arch"}
   ["gcc-g++"] {os = "win32" & os-distribution = "cygwinports"}
 ]
+depends:
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-g++-i686" {os = "win32" & os-distribution != "cygwinports"}) |
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-g++-x86_64" {os = "win32" & os-distribution != "cygwinports"})
 synopsis: "Virtual package relying on the c++ compiler"
 description:
   "This package can only install if the c++ compiler is installed on the system."
