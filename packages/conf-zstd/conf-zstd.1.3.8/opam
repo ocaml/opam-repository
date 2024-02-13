@@ -5,9 +5,17 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: ["Facebook"]
 license: "BSD-3-Clause"
 build: [
-  ["pkg-config" "--atleast-version=1.3.8" "libzstd"]
+  ["pkgconf" {os = "win32" & os-distribution = "cygwin"}
+   "--personality=i686-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_32:installed}
+   "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_64:installed}
+   "pkg-config" {os != "win32" | os-distribution != "cygwin"}
+   "--atleast-version=1.3.8" "libzstd"]
 ]
-depends: ["conf-pkg-config" {build}]
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-zstd-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-zstd-x86_64" {os = "win32" & os-distribution != "cygwinports"})
+]
 depexts: [
   ["libzstd-dev"] {os-family = "debian"}
   ["libzstd-dev"] {os-family = "ubuntu"}
