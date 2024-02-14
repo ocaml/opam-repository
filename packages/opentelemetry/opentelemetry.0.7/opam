@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "Instrumentation for https://opentelemetry.io"
+maintainer: [
+  "Simon Cruanes <simon.cruanes.2007@m4x.org>"
+  "Matt Bray <mattjbray@gmail.com>"
+  "ELLIOTTCABLE <opam@ell.io>"
+]
+authors: ["the Imandra team and contributors"]
+license: "MIT"
+tags: ["instrumentation" "tracing" "opentelemetry" "datadog" "jaeger"]
+homepage: "https://github.com/imandra-ai/ocaml-opentelemetry"
+bug-reports: "https://github.com/imandra-ai/ocaml-opentelemetry/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08"}
+  "ptime"
+  "ambient-context"
+  "odoc" {with-doc}
+  "alcotest" {with-test}
+  "pbrt" {>= "3.0" & < "4.0"}
+  "ocaml-lsp-server" {with-dev-setup}
+  "ocamlformat" {with-dev-setup & >= "0.24" & < "0.25"}
+]
+depopts: ["trace"]
+conflicts: [
+  "trace" {< "0.4" | >= "0.7"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/imandra-ai/ocaml-opentelemetry.git"
+url {
+  src:
+    "https://github.com/imandra-ai/ocaml-opentelemetry/releases/download/v0.7/opentelemetry-0.7.tbz"
+  checksum: [
+    "sha256=a5de04aa33f5b66e4a63377fd868a839814a4ee229c98c84a04bd49926a38e1d"
+    "sha512=f0f9956cb6a605826018794a8fa866b5bda622d2aaa82c4cca5e10262ae163a99512ee22ed4ef0c3af0bb4eeabc7aee736fe7830c585879b029b5ef6d4ef2b05"
+  ]
+}
+x-commit-hash: "5a78805addcc09f08e374a4d7b37a4128bcabe69"
