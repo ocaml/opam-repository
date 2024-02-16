@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: ["Tezos devteam"]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.11.1" }
+  "ocaml" { >= "4.14" }
+  "octez-libs" { = version }
+  "octez-shell-libs" { = version }
+  "cohttp-lwt-unix" { >= "5.2.0" }
+  "octez-node-config" { = version }
+  "prometheus-app" { >= "1.2" }
+  "camlzip" { >= "1.11" & < "1.12" }
+  "tar"
+  "tar-unix" { >= "2.0.1" & < "3.0.0" }
+  "tezos-dal-node-lib" { = version }
+  "tezos-dac-lib" { = version }
+  "tezos-dac-client-lib" { = version }
+  "octez-injector" { = version }
+  "octez-version" { = version }
+  "octez-l2-libs" { = version }
+  "octez-crawler" { = version }
+]
+build: [
+  ["rm" "-r" "vendors" "contrib"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Octez: library for Smart Rollup node"
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v19.1/octez-19.1.tar.gz"
+  checksum: [
+    "sha256=55ea1fb8bb3273a7fc270ca8f650d45c56449665619482aad9bc12f3ea736b7e"
+    "sha512=fec850fc2d17d7490bbabd5147d62aad13b3aaed8774270f8a38ab419670ed03e0fd30cf8642a97984eca5c2446726fe590ad99c015f7ec50919dc7652f25053"
+  ]
+}
+conflicts: [
+  "stdcompat" {< "19"}
+]
