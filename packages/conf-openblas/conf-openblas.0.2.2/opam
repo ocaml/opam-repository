@@ -10,7 +10,7 @@ build: [
   [
     "sh"
     "-exc"
-    "cc $CFLAGS $(pkg-config --cflags openblas) test.c $(pkg-config --libs openblas)"
+    "cc $CFLAGS $(PKG_CONFIG_PATH=\"$(brew --prefix openblas)/lib/pkgconfig:$PKG_CONFIG_PATH\" pkg-config --cflags openblas) test.c $(PKG_CONFIG_PATH=\"$(brew --prefix openblas)/lib/pkgconfig:$PKG_CONFIG_PATH\" pkg-config --libs openblas)"
   ] {os = "macos" & os-distribution = "homebrew"}
   ["sh" "-exc" "cc $CFLAGS test.c -lcblas"]
     {os-family = "arch"}
@@ -20,6 +20,10 @@ build: [
     {os = "win32" & os-distribution = "cygwinports"}
   ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"]
     {os-distribution != "fedora" & os-distribution != "centos" & os-family != "suse" & os-family != "opensuse" & os != "macos" & os-family != "arch" & os != "freebsd" & os != "win32"}
+]
+depends: [
+  "conf-pkg-config" {os = "macos" & os-distribution = "homebrew"}
+  "conf-openblas-macOS-env" {post & os = "macos" & os-distribution = "homebrew"}
 ]
 depexts: [
   ["libc-dev" "openblas-dev" "lapack-dev"] {os-distribution = "alpine"}
@@ -40,4 +44,3 @@ description:
   "The package prepares OpenBLAS (CBLAS) and LAPACKE backend for Owl (OCaml numerical library). It can only be installed if OpenBLAS and LAPACKE are installed on the system."
 extra-files: ["test.c" "md5=8eb3463bce56366f0506721ca5c4e29c"]
 flags: conf
-available: os != "macos" | os-distribution != "homebrew"
