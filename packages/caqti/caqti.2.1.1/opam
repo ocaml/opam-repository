@@ -28,7 +28,6 @@ depends: [
   "tls"
   "uri" {>= "2.2.0"}
   "x509"
-  "caqti-driver-sqlite3" {post & with-test}
 ]
 conflicts: [
   "result" {< "1.5"}
@@ -36,7 +35,9 @@ conflicts: [
 build: [
   ["dune" "build" "-p" name "-j" jobs "@install"]
   ["dune" "install" "-p" name "--create-install-file" name]
-  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  # The runtest invocation has been restricted to the caqti directory for
+  # this release due to a dependency issue in the testsuite directory.
+  ["dune" "runtest" "-p" name "-j" jobs "caqti"] {with-test}
   ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
 ]
 dev-repo: "git+https://github.com/paurkedal/ocaml-caqti.git"
