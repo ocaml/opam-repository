@@ -10,8 +10,9 @@ license: ["LGPL-2.1-only WITH OCaml-LGPL-linking-exception" "BSD-3-Clause" "GPL-
 dev-repo: "git+https://github.com/AltGr/ocaml-mccs.git"
 build: [
   ["dune" "build" "-p" name "-j" jobs]
-  ["sh" "-c" "dune build @settests --auto-promote --profile=release || true"] {with-test}
-  ["dune" "runtest" "--profile=release"] {with-test}
+  # Tests fail on these platforms without ocaml-opam/ocaml-mccs#50 in 1.1+17
+  ["sh" "-c" "dune build @settests --auto-promote --profile=release || true"] {with-test & os != "freebsd" & os != "macos"}
+  ["dune" "runtest" "--profile=release"] {with-test & os != "freebsd" & os != "macos"}
 ]
 depends: [
   "ocaml" {< "4.10"}
