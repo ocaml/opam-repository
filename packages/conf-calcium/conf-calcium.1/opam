@@ -5,8 +5,10 @@ homepage: "https://fredrikj.net/calcium/"
 bug-reports: "https://github.com/fredrik-johansson/calcium"
 license: "LGPL-2.1-only"
 build: [
-  ["sh" "-exc" "echo \"#include  \\\"calcium/calcium.h\\\"\" > test.c"]
-  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos" & os != "win32"}
+  ["sh" "-exc" "echo \"#include  \\\"calcium.h\\\"\" > test.c"] {os-distribution = "arch"}
+  ["sh" "-exc" "echo \"#include  \\\"calcium/calcium.h\\\"\" > test.c"] {os-distribution != "arch"}
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/include/flint test.c"] {os != "macos" & os != "win32" & os-distribution = "arch"}
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos" & os != "win32" & os-distribution != "arch"}
   [
 		"sh"
 		"-exc"
@@ -30,6 +32,7 @@ depexts: [
   ["calcium" "calcium-devel"] {os-distribution = "ol"}
   ["calcium-devel"] {os-family = "suse"}
   ["calcium"] {os-distribution = "nixos"}
+  ["flint"] {os-distribution = "arch"}
 ]
 synopsis: "Virtual package relying on a Calcium lib system installation"
 description:

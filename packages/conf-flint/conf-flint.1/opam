@@ -4,8 +4,10 @@ homepage: "http://flint.org"
 bug-reports: "https://github.com/flintlib/flint2.git"
 license: "LGPL-2.1-only"
 build: [
-  ["sh" "-exc" "echo \"#include  \\\"flint/fmpz_poly.h\\\"\" > test.c"]
-  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos" & os != "win32"}
+  ["sh" "-exc" "echo \"#include  \\\"fmpz_poly.h\\\"\" > test.c"] {os-distribution = "arch"}
+  ["sh" "-exc" "echo \"#include  \\\"flint/fmpz_poly.h\\\"\" > test.c"] {os-distribution != "arch"}
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/include/flint test.c"] {os != "macos" & os != "win32" & os-distribution = "arch"}
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos" & os != "win32" & os-distribution != "arch"}
   [
 		"sh"
 		"-exc"
@@ -30,6 +32,7 @@ depexts: [
   ["libflint-devel"] {os = "win32" & os-distribution = "cygwinports"}
   ["flint"] {os-distribution = "nixos"}
   ["flint2"] {os = "freebsd"}
+  ["flint"] {os-distribution = "arch"}
 ]
 synopsis: "Virtual package relying on a Flint lib system installation"
 description:

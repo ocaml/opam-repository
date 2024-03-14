@@ -5,8 +5,10 @@ homepage: "https://github.com/flintlib/antic.git"
 bug-reports: "https://github.com/flintlib/antic.git"
 license: "LGPL-2.1-only"
 build: [
-  ["sh" "-exc" "echo \"#include  \\\"antic/qfb.h\\\"\" > test.c"]
-  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos" & os != "win32"}
+  ["sh" "-exc" "echo \"#include  \\\"qfb.h\\\"\" > test.c"] {os-distribution = "arch"}
+  ["sh" "-exc" "echo \"#include  \\\"antic/qfb.h\\\"\" > test.c"] {os-distribution != "arch"}
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/include/flint test.c"] {os != "macos" & os != "win32" & os-distribution = "arch"}
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos" & os != "win32" & os-distribution != "arch"}
   [
 		"sh"
 		"-exc"
@@ -28,6 +30,7 @@ depexts: [
   ["antic-devel"] {os-family = "suse"}
   ["antic"] {os-distribution = "nixos"}
   ["antic"] {os = "freebsd"}
+  ["flint"] {os-distribution = "arch"}
 ]
 synopsis: "Virtual package relying on a Antic lib system installation"
 description:
