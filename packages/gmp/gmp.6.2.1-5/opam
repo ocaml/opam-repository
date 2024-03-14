@@ -7,9 +7,15 @@ bug-reports: "https://github.com/mirage/ocaml-gmp/issues"
 dev-repo: "git+https://github.com/mirage/ocaml-gmp.git"
 substs: [ "src/build.sh" ]
 build: [
+ [
+   "sed"
+   "-ib"
+   "-e"
+   "s/.\\/configure/.\\/configure --libdir \\${HOMEBREW\\_PREFIX}\\/opt\\/gmp\\/lib/g"
+   "src/build.sh"]
  [ "dune" "build" "-p" name "-j" jobs ]
  [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
-]
+] {os = "macos" & os-distribution = "homebrew"}
 depends: [
   "ocaml" {>= "4.02.0"}
   "dune" {>= "2.6"}
