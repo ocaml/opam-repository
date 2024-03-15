@@ -10,7 +10,7 @@ license: "GPL-2.0-or-later"
 # On MacOS, both cc and gcc bind to the clang compiler, so the gccjit bindings
 # might not work out-of-the-box and we use a specific version of gcc below.
 available: [
-  ((os-distribution != "ol" & os-distribution != "oraclelinux") | os-version >= "9")
+  !(os-distribution = "ol" & os-version < "9")
 ]
 build: [
   # Unfortunately on MacOS, the default compiler is clang, even for the
@@ -43,7 +43,7 @@ depexts: [
   ["libgccjit"] {os-family = "nixos"}
   ["libgccjit-devel"] {os-distribution = "centos"}
   ["libgccjit-devel"] {os-distribution = "fedora"}
-  ["libgccjit-devel"] {(os-distribution = "ol" | os-distribution = "oraclelinux") & os-version >= "9"}
+  ["libgccjit-devel"] {os-distribution = "ol" & os-version >= "9"}
   ["libgccjit"] {os-family = "arch"}
   ["libgccjit-dev"] {os-family = "alpine"}
   # Note: opam's automatic resolution of OS variables can be inconsistent across OS installations.
