@@ -132,7 +132,7 @@ git commit -pm "Release yourpkg.version"
 git remote add your-github-handle git@github.com:your-github-handle/opam-repository.git
 git push your-github-handle release-yourpkg-version
 ```
-and open a PR on opam-repository on GitHub. Congratulation!
+and open a PR on opam-repository on GitHub. Congratulations!
 
 For more technical information about opam files, please read the [opam manual](https://opam.ocaml.org/doc/Manual.html)
 
