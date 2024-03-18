@@ -139,7 +139,7 @@ For more technical information about opam files, please read the [opam manual](h
 Fixing packages
 ---------------
 
-Packages are fixed as they show up as broken, if the opam-repository maintainers have time.
+Packages are fixed as soon as they show up as broken in opam-repository CI or in the repository issues, if the opam-repository maintainers have time.
 If, as an external contributor, you are willing to help out, you can send a PR to fix the packages that are broken. This is extremely helpful.
 
 There are several types of fixes:
