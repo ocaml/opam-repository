@@ -17,7 +17,7 @@ Add a new package
 
 There are several ways to add a new package to opam-repository.
 You can either use a tool such as `dune-release` or `opam-publish`, or open a PR manually.
-Each ones have their strenghts and weaknesses. For example:
+Each ones have their strengths and weaknesses. For example:
 * `dune-release` is a tool more focused into helping people do their whole release process from start to finish for them. To that end it:
   * helps with tagging
   * parses (and enforces a format, can be good or bad) for the changelog, to put it in the tag
@@ -143,7 +143,7 @@ Packages are fixed as soon as they show up as broken in opam-repository CI or in
 If, as an external contributor, you are willing to help out, you can send a PR to fix the packages that are broken. This is extremely helpful.
 
 There are several types of fixes:
-* **Changes to the metadata** (e.g. `homepage`, `synopsis`, …) are simple, usualy harmless and easy to do and get merged.
+* **Changes to the metadata** (e.g. `homepage`, `synopsis`, …) are simple, usually harmless and easy to do and get merged.
 * **Changes to the dependencies or availibility** require some scrutiny from the opam-repository maintainers to verify that the new constraints are correct and do not break existing working installations.
 * **Changes to the way the package is built** (e.g. changes to the build rules, addition of patches, …) require a lot more scrutiny from the opam-repository maintainers and maybe a new revision.
 * **Changes to the source archive(s)** is prohibited but in the case where there is no other choice and the checksum is not the same, the difference with the original must be negligable.
@@ -155,9 +155,9 @@ There are several types of fixes:
 #### Revisions
 
 Revision versions are packages whose version is of the form `<version>-<revision>` with the revision number typically starting at 1.
-They typically privide a slightly modified version of an original release.
+They typically provide a slightly modified version of an original release.
 
-For example `pkg.1.0.0` is not maintained anymore (be it this specific version or the package as a whole), and someone would like to privide a patch to fix something that some people might rely on even if it might be a buggy behivour. In this case the package is duplicated into the original version (left untouched) and the revision with the fix. This way, if the fix broke someone's setup they case still use the original version.
+For example `pkg.1.0.0` is not maintained anymore (be it this specific version or the package as a whole), and someone would like to provide a patch to fix something that some people might rely on even if it might be a buggy behaviour. In this case the package is duplicated into the original version (left untouched) and the revision with the fix. This way, if the fix broke someone's setup they case still use the original version.
 
 #### Patches
 
