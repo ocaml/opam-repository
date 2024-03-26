@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Lwt-compatible instrumentation for https://opentelemetry.io"
+maintainer: [
+  "Simon Cruanes <simon.cruanes.2007@m4x.org>"
+  "Matt Bray <mattjbray@gmail.com>"
+  "ELLIOTTCABLE <opam@ell.io>"
+]
+authors: ["the Imandra team and contributors"]
+license: "MIT"
+tags: ["instrumentation" "tracing" "opentelemetry" "datadog" "lwt"]
+homepage: "https://github.com/imandra-ai/ocaml-opentelemetry"
+bug-reports: "https://github.com/imandra-ai/ocaml-opentelemetry/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08"}
+  "ambient-context"
+  "opentelemetry" {= version}
+  "cohttp-lwt-unix" {with-test}
+  "odoc" {with-doc}
+  "lwt" {>= "5.3"}
+  "lwt_ppx" {>= "2.0"}
+  "alcotest" {with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/imandra-ai/ocaml-opentelemetry.git"
+url {
+  src:
+    "https://github.com/imandra-ai/ocaml-opentelemetry/releases/download/v0.9/opentelemetry-0.9.tbz"
+  checksum: [
+    "sha256=400e6fcaff55b92e65d5c082d0262a7c2fc91b385dac0f18ed28405db2669978"
+    "sha512=9f4d2329dec682bb2a839d1c7065f35bc557fc8ef5996c5923cf05af716e6519b0ce66316687e74232cf93baa5c1df4899d1bdd4b4f4b44468bb8b3f57619913"
+  ]
+}
+x-commit-hash: "f9233113b130b7426e5d14ec3eee5c24c4bdd71e"
