@@ -181,3 +181,185 @@ index 0002665c0..9cb7151eb 100644
              if test -z "$DIR"; then
                 AC_MSG_RESULT([no])
                 enable_pp_sexp=no
+--- a/configure
++++ b/configure
+@@ -4564,7 +4564,7 @@
+    if test "$OCAMLFIND" = no; then
+       reason_ocamlfind=" (not found)"
+    else
+-      OCAMLFINDLIB=$(ocamlfind printconf stdlib)
++      OCAMLFINDLIB=$(ocamlfind printconf stdlib | tr -d '\r')
+       if test "$OCAMLFINDLIB" != "$OCAMLLIB"; then
+          found_ocamlfind=no
+          reason_ocamlfind=" (incompatible with OCaml)"
+@@ -4585,7 +4585,7 @@
+ 
+ if test "$enable_ocamlfind" != no; then
+    #if ocamlfind is used it gives the install path for ocaml library
+-   OCAMLINSTALLLIB=$($OCAMLFIND printconf destdir)
++   OCAMLINSTALLLIB=$($OCAMLFIND printconf destdir | tr -d '\r')
+    enable_ocamlfind=yes
+ else
+    OCAMLINSTALLLIB=$OCAMLLIB
+@@ -4601,7 +4601,7 @@
+    WHY3LIB=why3
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for Why3 using ocamlfind" >&5
+ printf %s "checking for Why3 using ocamlfind... " >&6; }
+-   DIR=$($OCAMLFIND query why3 2> /dev/null)
++   DIR=$($OCAMLFIND query why3 | tr -d '\r' 2> /dev/null)
+    if test -n "$DIR"; then
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ printf "%s\n" "yes" >&6; }
+@@ -4623,7 +4623,7 @@
+ if test "$enable_ocamlfind" = yes; then
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for compiler-libs using ocamlfind" >&5
+ printf %s "checking for compiler-libs using ocamlfind... " >&6; }
+-  COMPILERLIBS=$($OCAMLFIND query compiler-libs 2> /dev/null)
++  COMPILERLIBS=$($OCAMLFIND query compiler-libs | tr -d '\r' 2> /dev/null)
+   if test -n "$COMPILERLIBS"; then
+     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ printf "%s\n" "yes" >&6; }
+@@ -4810,7 +4810,7 @@
+ if test "$enable_ocamlfind" = yes; then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for num using ocamlfind" >&5
+ printf %s "checking for num using ocamlfind... " >&6; }
+-   DIR=$($OCAMLFIND query num 2> /dev/null)
++   DIR=$($OCAMLFIND query num | tr -d '\r' 2> /dev/null)
+    if test -z "$DIR"; then
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+ printf "%s\n" "no" >&6; }
+@@ -4940,7 +4940,7 @@
+    if test "$enable_ocamlfind" = yes; then
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for zarith using ocamlfind" >&5
+ printf %s "checking for zarith using ocamlfind... " >&6; }
+-      DIR=$($OCAMLFIND query zarith 2> /dev/null)
++      DIR=$($OCAMLFIND query zarith | tr -d '\r' 2> /dev/null)
+       if test -n "$DIR"; then
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ printf "%s\n" "yes" >&6; }
+@@ -5031,7 +5031,7 @@
+ if test "$enable_bddinfer" = yes; then
+    if test "$enable_ocamlfind" = yes; then
+       # gmp is a dependency of apron
+-      INFERINCLUDE=$($OCAMLFIND query -separator ' ' -i-format apron 2> /dev/null)
++      INFERINCLUDE=$($OCAMLFIND query -separator ' ' -i-format apron | tr -d '\r' 2> /dev/null)
+    fi
+    if test -n "$INFERINCLUDE"; then
+       echo "ocamlfind found apron in $INFERINCLUDE"
+@@ -5051,14 +5051,14 @@
+ if test "$enable_infer" = yes; then
+    if test "$enable_ocamlfind" = yes; then
+       # gmp is a dependency of apron
+-      INFERINCLUDE=$($OCAMLFIND query apron camllib 2> /dev/null)
++      INFERINCLUDE=$($OCAMLFIND query apron camllib | tr -d '\r' 2> /dev/null)
+    fi
+    if test -n "$INFERINCLUDE"; then
+       echo "ocamlfind found apron, camllib in $INFERINCLUDE"
+-      INFERINCLUDE=$($OCAMLFIND query fixpoint 2> /dev/null)
++      INFERINCLUDE=$($OCAMLFIND query fixpoint | tr -d '\r' 2> /dev/null)
+       if test -n "$INFERINCLUDE"; then
+          echo "ocamlfind found fixpoint in $INFERINCLUDE"
+-         INFERINCLUDE="$($OCAMLFIND query -separator ' ' -i-format apron fixpoint camllib gmp 2> /dev/null)"
++         INFERINCLUDE="$($OCAMLFIND query -separator ' ' -i-format apron fixpoint camllib gmp | tr -d '\r' 2> /dev/null)"
+          INFERLIB="apron fixpoint"
+          INFERPKG="apron fixpoint apron.boxMPQ apron.octMPQ apron.polkaMPQ"
+       else
+@@ -5086,7 +5086,7 @@
+    if test "$enable_ocamlfind" = yes; then
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for camlzip using ocamlfind" >&5
+ printf %s "checking for camlzip using ocamlfind... " >&6; }
+-      DIR=$($OCAMLFIND query zip 2> /dev/null)
++      DIR=$($OCAMLFIND query zip | tr -d '\r' 2> /dev/null)
+       if test -n "$DIR"; then
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ printf "%s\n" "yes" >&6; }
+@@ -5177,7 +5177,7 @@
+ if test "$enable_ocamlfind" = yes; then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for menhirLib using ocamlfind" >&5
+ printf %s "checking for menhirLib using ocamlfind... " >&6; }
+-   DIR=$($OCAMLFIND query menhirLib 2> /dev/null)
++   DIR=$($OCAMLFIND query menhirLib | tr -d '\r' 2> /dev/null)
+    if test -n "$DIR"; then
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ printf "%s\n" "yes" >&6; }
+@@ -5280,7 +5280,7 @@
+    if test "$enable_ocamlfind" = yes; then
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for re using ocamlfind" >&5
+ printf %s "checking for re using ocamlfind... " >&6; }
+-      DIR=$($OCAMLFIND query re 2> /dev/null)
++      DIR=$($OCAMLFIND query re | tr -d '\r' 2> /dev/null)
+       if test -n "$DIR"; then
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ printf "%s\n" "yes" >&6; }
+@@ -5381,7 +5381,7 @@
+ if test "$enable_ide" != no; then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for lablgtk3 using ocamlfind" >&5
+ printf %s "checking for lablgtk3 using ocamlfind... " >&6; }
+-   DIR=$($OCAMLFIND query lablgtk3 2> /dev/null)
++   DIR=$($OCAMLFIND query lablgtk3 | tr -d '\r' 2> /dev/null)
+    if test -n "$DIR"; then
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ printf "%s\n" "yes" >&6; }
+@@ -5428,7 +5428,7 @@
+    for p in $PKGS_SOURCEVIEW; do
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $p using ocamlfind" >&5
+ printf %s "checking for $p using ocamlfind... " >&6; }
+-      DIR=$($OCAMLFIND query $p 2> /dev/null)
++      DIR=$($OCAMLFIND query $p | tr -d '\r' 2> /dev/null)
+       if test -n "$DIR"; then
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ printf "%s\n" "yes" >&6; }
+@@ -5502,7 +5502,7 @@
+    if test "$enable_ocamlfind" = yes; then
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for ocamlgraph using ocamlfind" >&5
+ printf %s "checking for ocamlgraph using ocamlfind... " >&6; }
+-      DIR=$($OCAMLFIND query ocamlgraph 2> /dev/null)
++      DIR=$($OCAMLFIND query ocamlgraph | tr -d '\r' 2> /dev/null)
+       if test -n "$DIR"; then
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ printf "%s\n" "yes" >&6; }
+@@ -5625,7 +5625,7 @@
+    found_mlmpfr=yes
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mlmpfr" >&5
+ printf %s "checking for mlmpfr... " >&6; }
+-   DIR=$($OCAMLFIND query mlmpfr 2> /dev/null)
++   DIR=$($OCAMLFIND query mlmpfr | tr -d '\r' 2> /dev/null)
+    if test -n "$DIR"; then
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ printf "%s\n" "yes" >&6; }
+@@ -5633,7 +5633,7 @@
+       echo "ocamlfind found mlmpfr in $DIR"
+       # Test that MPFR version is higher than 4.0.0 (because of
+       # Faithful constructor incompatibility).
+-      MPFRVERSION=$($OCAMLFIND query -format "%v" mlmpfr 2> /dev/null)
++      MPFRVERSION=$($OCAMLFIND query -format "%v" mlmpfr | tr -d '\r' 2> /dev/null)
+       as_arg_v1=$MPFRVERSION
+ as_arg_v2=4.0.0
+ awk "$as_awk_strverscmp" v1="$as_arg_v1" v2="$as_arg_v2" /dev/null
+@@ -5732,7 +5732,7 @@
+    for p in js_of_ocaml js_of_ocaml-ppx; do
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $p" >&5
+ printf %s "checking for $p... " >&6; }
+-      DIR=$($OCAMLFIND query $p 2> /dev/null)
++      DIR=$($OCAMLFIND query $p | tr -d '\r' 2> /dev/null)
+       if test -z "$DIR"; then
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+ printf "%s\n" "no" >&6; }
+@@ -5777,7 +5777,7 @@
+       enable_statmemprof=no
+       reason_statmemprof=" (ocamlfind not available)"
+    else
+-      DIR=$($OCAMLFIND query statmemprof-emacs 2> /dev/null)
++      DIR=$($OCAMLFIND query statmemprof-emacs | tr -d '\r' 2> /dev/null)
+       if test -z "$DIR"; then
+          enable_statmemprof=no
+          reason_statmemprof=" (statmemprof-emacs not found)"
+@@ -5802,7 +5802,7 @@
+         for p in ppx_sexp_conv sexplib ppx_deriving; do
+             { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $p using ocamlfind" >&5
+ printf %s "checking for $p using ocamlfind... " >&6; }
+-            DIR=$($OCAMLFIND query $p 2> /dev/null)
++            DIR=$($OCAMLFIND query $p | tr -d '\r' 2> /dev/null)
+             if test -z "$DIR"; then
+                { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+ printf "%s\n" "no" >&6; }

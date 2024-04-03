@@ -1,0 +1,55 @@
+opam-version: "2.0"
+synopsis: "An actor-model multi-core scheduler for OCaml 5"
+description:
+  "Riot is an actor-model multi-core scheduler for OCaml 5. It brings Erlang-style concurrency to the language, where lighweight process communicate via message passing"
+maintainer: ["Leandro Ostera <leandro@abstractmachines.dev>"]
+authors: ["Leandro Ostera <leandro@abstractmachines.dev>"]
+license: "MIT"
+tags: ["multicore" "erlang" "actor" "message-passing" "processes"]
+homepage: "https://github.com/riot-ml/riot"
+bug-reports: "https://github.com/riot-ml/riot/issues"
+depends: [
+  "bytestring" {= version}
+  "castore" {with-test & >= "0.0.2"}
+  "config" {>= "0.0.1"}
+  "gluon" {= version}
+  "rio" {= version}
+  "mdx" {with-test & >= "2.3.1"}
+  "mirage-crypto" {>= "0.11.2"}
+  "mirage-crypto-rng" {>= "0.11.2"}
+  "mtime" {>= "2.0.0"}
+  "ocaml" {>= "5.1"}
+  "odoc" {with-doc & >= "2.2.2"}
+  "ptime" {>= "1.1.0"}
+  "randomconv" {>= "0.1.3" & < "0.2.0"}
+  "telemetry" {>= "0.0.1"}
+  "tls" {>= "0.17.3" & < "0.17.4"}
+  "uri" {>= "4.4.0"}
+  "x509" {with-test & >= "0.16.5"}
+  "dune" {>= "3.11"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/riot-ml/riot.git"
+available: arch != "x86_32" & arch != "arm32" & arch != "ppc64" & arch != "s390x" & os != "freebsd"
+url {
+  src:
+    "https://github.com/riot-ml/riot/releases/download/0.0.8/riot-0.0.8.tbz"
+  checksum: [
+    "sha256=4ac883cf9ddbf5b3084fd4372300dd07758acbdf1649df5f8a2794e35a99a5e1"
+    "sha512=52043592d567b66398d864f3f5c0a3f923007f0125f69a077a34677c60548d5bfb160074bc1847d1153d2c73eb592e2c2488d34fcde4a745fbe72804ad6fcab1"
+  ]
+}
+x-commit-hash: "a9201dee30ae4a38c429d374fd04b5fd0a610b8c"

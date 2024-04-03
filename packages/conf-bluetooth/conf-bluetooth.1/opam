@@ -10,7 +10,7 @@ build: [
   ["sh" "-exc" "${CC:-gcc} $CFLAGS -c test-unix.c"] {os = "freebsd"}
 ]
 depexts: [
-  ["libbluetooth-dev"] {os-family = "debian"}
+  ["libbluetooth-dev"] {os-family = "debian" | os-family = "ubuntu"}
   ["bluez-libs-devel"] {os-distribution = "centos"}
   ["bluez-libs-devel"] {os-distribution = "fedora"}
   ["bluez-libs-devel"] {os-distribution = "mageia"}
@@ -18,8 +18,10 @@ depexts: [
   ["bluez-dev"] {os-distribution = "alpine"}
   ["bluez-libs"] {os-distribution = "arch"}
 ]
+# build test uses linux-specific <bluetooth/bluetooth.h>...
+available: [ os != "freebsd" ]
 x-ci-accept-failures: [
-  "oraclelinux-7" "oraclelinux-8" # not available
+  "oraclelinux-7" "oraclelinux-8" "oraclelinux-9" # not available
 ]
 synopsis: "Virtual package for Bluetooth library"
 description: """

@@ -4,14 +4,16 @@ authors: [ "Markus W. Weissmann <markus.weissmann@in.tum.de>" ]
 homepage: "https://mosquitto.org/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: [ "EPL-1.0" "Eclipse Distribution License 1.0" ]
-build: [
-  ["ls" "/usr/include/mosquitto.h"] {os != "macos"}
-  ["brew" "ls" "--versions" "mosquitto"] {os = "macos"}
-]
+build: ["pkg-config" "libmosquitto"]
+depends: ["conf-pkg-config" {build}]
 depexts: [
-  ["libmosquitto-dev"] {os-family = "debian"}
+  ["mosquitto"] {os-distribution = "arch"}
+  ["libmosquitto-dev"] {os-family = "debian" | os-family = "ubuntu"}
   ["mosquitto-dev"] {os-distribution = "alpine"}
+  ["mosquitto-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["mosquitto-devel"] {os-distribution = "fedora"}
   ["mosquitto"] {os = "macos" & os-distribution = "homebrew"}
+  ["mosquitto"] {os = "freebsd"}
 ]
 synopsis: "Virtual package relying on a libmosquitto system installation"
 description:

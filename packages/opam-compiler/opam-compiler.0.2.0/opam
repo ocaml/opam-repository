@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis: "Plugin to create switches using custom compilers"
+description:
+  "This plugin can manage switches using various sources for compilers, such as git branches, github PRs, etc"
+maintainer: ["Etienne Millon <me@emillon.org>"]
+authors: ["Etienne Millon <me@emillon.org>"]
+license: "ISC"
+homepage: "https://github.com/ocaml-opam/opam-compiler"
+bug-reports: "https://github.com/ocaml-opam/opam-compiler/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.08.0"}
+  "bos"
+  "cmdliner" {>= "1.1.0"}
+  "cmdliner" {>= "1.2.0" & with-test}
+  "curly" {>= "0.2.0"}
+  "either" {with-test}
+  "github-data"
+  "ocaml-version" {>= "3.0.0"}
+  "re" {>= "1.5.0"}
+  "rresult" {>= "0.6.0"}
+  "alcotest" {>= "1.2.0" & with-test}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-opam/opam-compiler.git"
+flags: plugin
+url {
+  src:
+    "https://github.com/ocaml-opam/opam-compiler/releases/download/0.2.0/opam-compiler-0.2.0.tbz"
+  checksum: [
+    "sha256=56e800aac18ebd97226f75815627e30b5673e23873951b4fc84d79b4fdfb409d"
+    "sha512=0943ffbd80068ee5603e1542d37087a5841c54764f36e99a1c5fdb703674c5153949d9111a04788e225cd7c1045c2953554decdc261cd7d4ec8716eaa5233fc3"
+  ]
+}
+x-commit-hash: "c09b015b7c4cbc0ffa2b1008b7dc148a4c88b2b4"

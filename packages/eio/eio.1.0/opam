@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "Effect-based direct-style IO API for OCaml"
+description: "An effect-based IO API for multicore OCaml with fibers."
+maintainer: ["anil@recoil.org"]
+authors: ["Anil Madhavapeddy" "Thomas Leonard"]
+license: "ISC"
+homepage: "https://github.com/ocaml-multicore/eio"
+doc: "https://ocaml-multicore.github.io/eio/"
+bug-reports: "https://github.com/ocaml-multicore/eio/issues"
+depends: [
+  "dune" {>= "3.9"}
+  "ocaml" {>= "5.1.0"}
+  "bigstringaf" {>= "0.9.0"}
+  "cstruct" {>= "6.0.1"}
+  "lwt-dllist"
+  "optint" {>= "0.1.0"}
+  "psq" {>= "0.2.0"}
+  "fmt" {>= "0.8.9"}
+  "hmap" {>= "0.8.1"}
+  "domain-local-await" {>= "0.1.0"}
+  "crowbar" {>= "0.2" & with-test}
+  "mtime" {>= "2.0.0"}
+  "mdx" {>= "2.2.0" & < "2.4.0" & with-test}
+  "dscheck" {>= "0.1.0" & with-test}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "seq" {< "0.3"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-multicore/eio.git"
+url {
+  src:
+    "https://github.com/ocaml-multicore/eio/releases/download/v1.0/eio-1.0.tbz"
+  checksum: [
+    "sha256=da260d9da38b3dde9f316652a20b13a261cf90b85a2498ac669b7d564e61942d"
+    "sha512=5886e1159f48ede237769baa1d8b5daafa0310e4192d7fe0e8c32aef70f2b6378cef72d0fbae308457e25d87a69802b9ee83a5e8f23e0591d83086a92d701c46"
+  ]
+}
+x-commit-hash: "edfe8debb26ab6a372103c859a27bf8738cb611f"

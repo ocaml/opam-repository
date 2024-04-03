@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "Raw definitions and bindings to platforms system libraries"
+description:
+  "`libc provides definitions (and in the future bindings) to easily interoperate with C code (or C-like code) on several platforms, and it does this with a target and architecture aware API."
+maintainer: ["Leandro Ostera <leandro@abstractmachines.dev>"]
+authors: ["Leandro Ostera <leandro@abstractmachines.dev>"]
+license: "MIT"
+tags: ["libc" "platform" "bindings" "raw bindings"]
+homepage: "https://github.com/ocaml-sys/libc.ml"
+bug-reports: "https://github.com/ocaml-sys/libc.ml/issues"
+depends: [
+  "config" {>= "0.0.1"}
+  "ocaml" {>= "5.1.1"}
+  "dune" {>= "3.12"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-sys/libc.ml.git"
+available: arch != "x86_32" & arch != "arm32" & arch != "ppc64" & arch != "s390x" & arch != "riscv64"
+url {
+  src:
+    "https://github.com/ocaml-sys/libc.ml/releases/download/0.0.1/libc-0.0.1.tbz"
+  checksum: [
+    "sha256=7b9c7961a7bb57aa8ea6af9a2d9695fba2fd95dcbda83a9df4a73c9e402c10d8"
+    "sha512=8e9a9dfbd1a0fb51b93cd6e2237bc16eecb894298de73e33f0ce6ad572880ba20548d60b05eaed53574d662cf68126bdb88cebf1982fab8d11d53dbf3e3d2f9a"
+  ]
+}
+x-commit-hash: "03c72cb8048469a26ad9cd55293d7b61581c36e5"

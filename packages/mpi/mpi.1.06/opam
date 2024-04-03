@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "Timothy Bourke <tim@tbrk.org>"
+authors: ["Xavier Leroy"]
+homepage: "https://github.com/xavierleroy/ocamlmpi"
+bug-reports: "https://github.com/xavierleroy/ocamlmpi/issues"
+dev-repo: "git+https://github.com/xavierleroy/ocamlmpi"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+build: [
+  [make "all"
+    "MPIINCDIR=%{conf-mpi:includedir}%"
+    "MPILIBDIR=%{conf-mpi:libdir}%"
+    "MPICC=%{conf-mpi:binpath}%mpicc"
+    "MPIRUN=%{conf-mpi:binpath}%mpirun"
+  ]
+  [make "opt"
+    "MPIINCDIR=%{conf-mpi:includedir}%"
+    "MPILIBDIR=%{conf-mpi:libdir}%"
+    "MPICC=%{conf-mpi:binpath}%mpicc"
+    "MPIRUN=%{conf-mpi:binpath}%mpirun"
+  ] { ocaml:native }
+]
+install: [[make "install"]]
+remove: [[make "uninstall"]]
+x-ci-accept-failures: ["debian-unstable"]
+depends: [
+  "ocaml" {>= "4.06.0"}
+  "base-bigarray"
+  "conf-mpi"
+  "ocamlfind" {build}
+]
+synopsis: "OCaml binding to the Message Passing Interface (MPI)"
+url {
+  src: "https://github.com/xavierleroy/ocamlmpi/archive/rel106.tar.gz"
+  checksum: [
+    "md5=2b8f648d6142bcdfdf15974c08a48d83"
+    "sha512=946b1b8a1fca679a76af8f0d573392f796550e0f712724843c4af2611dd8c50afc1ba3b0d7dff084620ecffea4f1e0cff8901847adaeff2d4e226ef4d77d122a"
+  ]
+}

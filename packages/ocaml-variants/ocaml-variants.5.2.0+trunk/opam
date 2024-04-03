@@ -1,6 +1,6 @@
 opam-version: "2.0"
 license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
-synopsis: "Current trunk"
+synopsis: "Latest 5.2 development"
 maintainer: "platform@lists.ocaml.org"
 authors: [
   "Xavier Leroy"
@@ -12,7 +12,7 @@ authors: [
 ]
 homepage: "https://ocaml.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-dev-repo: "git+https://github.com/ocaml/ocaml.git#trunk"
+dev-repo: "git+https://github.com/ocaml/ocaml.git#5.2"
 depends: [
   "ocaml" {= "5.2.0" & post}
   "base-unix" {post}
@@ -41,8 +41,10 @@ build: [
     "--disable-flat-float-array" {ocaml-option-no-flat-float-array:installed}
     "--enable-flambda" {ocaml-option-flambda:installed}
     "--enable-frame-pointers" {ocaml-option-fp:installed}
+    "--without-zstd" {ocaml-option-no-compression:installed}
     "--enable-tsan" {ocaml-option-tsan:installed}
     "CC=cc" {!ocaml-option-32bit:installed & !ocaml-option-musl:installed & (os="openbsd"|os="macos")}
+    "CC=clang" {ocaml-option-tsan:installed & (os="macos")}
     "CC=musl-gcc" {ocaml-option-musl:installed & os-distribution!="alpine"}
     "CFLAGS=-Os" {ocaml-option-musl:installed}
     "LDFLAGS=-Wl,--no-as-needed,-ldl" {ocaml-option-leak-sanitizer:installed | (ocaml-option-address-sanitizer:installed & os!="macos")}
@@ -61,7 +63,7 @@ build: [
 ]
 install: [make "install"]
 url {
-  src: "https://github.com/ocaml/ocaml/archive/trunk.tar.gz"
+  src: "https://github.com/ocaml/ocaml/archive/5.2.tar.gz"
 }
 depopts: [
   "ocaml-option-32bit"
@@ -70,6 +72,7 @@ depopts: [
   "ocaml-option-no-flat-float-array"
   "ocaml-option-flambda"
   "ocaml-option-fp"
+  "ocaml-option-no-compression"
   "ocaml-option-musl"
   "ocaml-option-leak-sanitizer"
   "ocaml-option-address-sanitizer"

@@ -1,0 +1,68 @@
+opam-version: "2.0"
+synopsis: "Declarative 2D vector graphics for OCaml"
+description: """\
+Vg is a declarative 2D vector graphics library. Images are values that
+denote functions mapping points of the cartesian plane to colors and
+combinators are provided to define and compose them.
+
+Renderers for PDF, SVG, Cairo and the HTML canvas are distributed with the
+module. An API allows to implement new renderers.
+
+Vg is distributed under the ISC license. Vg and the SVG renderer
+depend on [Gg]. The PDF renderer depends on [Otfm], the HTML canvas
+renderer depends on [Brr], the Cairo renderer depends on [cairo2].
+     
+[Gg]: http://erratique.ch/software/gg
+[Otfm]: http://erratique.ch/software/otfm
+[Brr]: http://erratique.ch/software/brr
+[cairo2]: https://github.com/Chris00/ocaml-cairo
+
+Home page: http://erratique.ch/software/vg"""
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: "The vg programmers"
+license: "ISC"
+tags: [
+  "pdf"
+  "svg"
+  "canvas"
+  "cairo"
+  "browser"
+  "declarative"
+  "graphics"
+  "org:erratique"
+]
+homepage: "https://erratique.ch/software/vg"
+doc: "https://erratique.ch/software/vg/doc"
+bug-reports: "https://github.com/dbuenzli/vg/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "1.0.3"}
+  "gg" {>= "1.0.0"}
+]
+depopts: ["brr" "cairo2" "otfm"]
+conflicts: [
+  "brr" {< "0.0.6"}
+  "cairo2" {< "0.6"}
+  "otfm" {< "0.3.0"}
+]
+build: [
+  "ocaml"
+  "pkg/pkg.ml"
+  "build"
+  "--dev-pkg"
+  "%{dev}%"
+  "--with-brr"
+  "%{brr:installed}%"
+  "--with-cairo2"
+  "%{cairo2:installed}%"
+  "--with-otfm"
+  "%{otfm:installed}%"
+]
+dev-repo: "git+https://erratique.ch/repos/vg.git"
+url {
+  src: "https://erratique.ch/software/vg/releases/vg-0.9.5.tbz"
+  checksum:
+    "sha512=ccd0d0f61cdbdb3420b5f4d747fe6e6b95e487738f70163a6e26396b1eeb9a42118306bc9c2c9afc9256171d57f81fbdf08ec558625eb5d723230aa0e9564fb6"
+}

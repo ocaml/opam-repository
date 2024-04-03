@@ -1,0 +1,48 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: ["Tezos devteam"]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.11.1" }
+  "ocaml" { >= "4.14" }
+  "ppx_expect"
+  "octez-libs" { = version }
+  "tezos-protocol-018-Proxford" { = version }
+  "octez-shell-libs" { = version }
+  "uri" { >= "3.1.0" }
+  "qcheck-alcotest" { >= "0.20" }
+  "octez-proto-libs" { = version }
+  "octez-version" { = version }
+  "tezos-dal-node-services" { = version }
+  "lwt-canceler" { >= "0.3" & < "0.4" }
+  "lwt-exit"
+  "data-encoding" { >= "0.7.1" & < "1.0.0" }
+  "octez-protocol-compiler" { = version }
+  "tezos-dal-node-lib" { = version }
+  "tezos-dac-lib" { = version }
+  "tezos-dac-client-lib" { = version }
+  "octez-injector" { = version }
+  "octez-l2-libs" { = version }
+  "tezt" { with-test & >= "4.0.0" & < "5.0.0" }
+  "octez-alcotezt" { with-test & = version }
+  "tezos-dac-node-lib" { with-test & = version }
+]
+build: [
+  ["rm" "-r" "vendors" "contrib"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Octez protocol 018-Proxford libraries"
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v19.0/octez-19.0.tar.gz"
+  checksum: [
+    "sha256=c6df840ebbf115e454db949028c595bec558a59a66cade73b52a6d099d6fa4d4"
+    "sha512=d8aee903b9fe130d73176bc8ec38b78c9ff65317da3cb4f3415f09af0c625b4384e7498201fdb61aa39086a7d5d409d0ab3423f9bc3ab989a680cf444a79bc13"
+  ]
+}
+conflicts: [
+  "stdcompat" {< "19"}
+]

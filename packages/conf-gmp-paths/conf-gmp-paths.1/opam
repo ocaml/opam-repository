@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "Virtual package relying on a GMP lib system installation"
+description:
+  "This package can only install if the GMP lib is installed on the system."
+maintainer: "Nicolas Berthier <m@nberth.space>"
+authors: "https://gmplib.org/manual/Contributors"
+homepage: "http://gmplib.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "GPL-1.0-or-later"
+build: [
+  [ "sh" ez-conf-lib:exe "gmp" "gmp.h" "test-gmp.c"
+         "--package-name" "conf-gmp-paths"
+         "--"
+         "/usr/local" {os != "macos" & os != "win32"}
+         "/opt/homebrew" {os = "macos"}
+         "/opt/local" {os = "macos"} ]
+]
+depends: [
+  "ez-conf-lib" {build}
+]
+post-messages: [
+  "header file found in %{_:incdir}%"  { success }
+  "library file found in %{_:libdir}%" { success }
+]
+depexts: [
+  ["libgmp-dev"] {os-family = "debian"}
+  ["libgmp-dev"] {os-family = "ubuntu"}
+  ["gmp"] {os = "macos" & os-distribution = "homebrew"}
+  ["gmp"] {os-distribution = "macports" & os = "macos"}
+  ["gmp" "gmp-devel"] {os-distribution = "centos"}
+  ["gmp" "gmp-devel"] {os-distribution = "fedora"}
+  ["gmp" "gmp-devel"] {os-distribution = "ol"}
+  ["gmp"] {os = "openbsd"}
+  ["gmp"] {os = "freebsd"}
+  ["gmp-dev"] {os-distribution = "alpine"}
+  ["gmp-devel"] {os-family = "suse"}
+  ["gmp"] {os = "win32" & os-distribution = "cygwinports"}
+  ["gmp"] {os-distribution = "nixos"}
+]
+extra-files: ["test-gmp.c" "md5=f87da5edbfcb8f70ef0297d78ca37aef"]
+flags: conf

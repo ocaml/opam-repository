@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "ZIP archive and deflate codec for OCaml"
+description: """\
+Zipc is an in-memory [ZIP archive] and [deflate] compression
+codec. Other compression formats in ZIP archives can be supported by
+using third-party libraries.
+
+Zipc has no dependencies and no C code. It is distributed under the
+ISC license.
+
+[ZIP archive]: https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT
+[deflate]: https://www.rfc-editor.org/rfc/rfc1951
+
+Homepage: <https://erratique.ch/software/zipc>"""
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: "The zipc programmers"
+license: "ISC"
+tags: ["codec" "zip" "deflate" "zlib" "org:erratique"]
+homepage: "https://erratique.ch/software/zipc"
+doc: "https://erratique.ch/software/zipc/doc"
+bug-reports: "https://github.com/dbuenzli/zipc/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "1.0.3"}
+  "b0" {dev & with-test}
+]
+depopts: ["cmdliner"]
+conflicts: [
+  "cmdliner" {< "1.1.0"}
+]
+build: [
+  "ocaml"
+  "pkg/pkg.ml"
+  "build"
+  "--dev-pkg"
+  "%{dev}%"
+  "--with-cmdliner"
+  "%{cmdliner:installed}%"
+]
+dev-repo: "git+https://erratique.ch/repos/zipc.git"
+url {
+  src: "https://erratique.ch/software/zipc/releases/zipc-0.1.0.tbz"
+  checksum:
+    "sha512=879a44af411488b618edba2881f4431a2a2e57b9c98aa6aa3df41187742cb86ebd7513693cf7c08560ef686b0148ffd80451602a9e8bada0f4de4caae4c31746"
+}

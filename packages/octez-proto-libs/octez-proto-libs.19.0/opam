@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: ["Tezos devteam"]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.11.1" }
+  "ocaml" { >= "4.14" }
+  "octez-libs" { = version }
+  "octez-l2-libs" { = version }
+  "data-encoding" { >= "0.7.1" & < "1.0.0" }
+  "bls12-381" { = version }
+  "zarith" { >= "1.12" & < "1.13" }
+  "zarith_stubs_js"
+  "class_group_vdf" { >= "0.0.4" }
+  "aches" { >= "1.0.0" }
+  "aches-lwt" { >= "1.0.0" }
+  "tezt" { with-test & >= "4.0.0" & < "5.0.0" }
+  "octez-alcotezt" { with-test & = version }
+  "qcheck-alcotest" { with-test & >= "0.20" }
+  "lwt" { with-test & >= "5.7.0" }
+]
+build: [
+  ["rm" "-r" "vendors" "contrib"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Octez protocol libraries"
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/v19.0/octez-19.0.tar.gz"
+  checksum: [
+    "sha256=c6df840ebbf115e454db949028c595bec558a59a66cade73b52a6d099d6fa4d4"
+    "sha512=d8aee903b9fe130d73176bc8ec38b78c9ff65317da3cb4f3415f09af0c625b4384e7498201fdb61aa39086a7d5d409d0ab3423f9bc3ab989a680cf444a79bc13"
+  ]
+}
+conflicts: [
+  "stdcompat" {< "19"}
+]

@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "Traced Atomics"
+maintainer: ["Sadiq Jaffer"]
+authors: ["Sadiq Jaffer"]
+license: "ISC"
+homepage: "https://github.com/ocaml-multicore/dscheck"
+bug-reports: "https://github.com/ocaml-multicore/dscheck/issues"
+depends: [
+  "ocaml" {>= "5.0.0"}
+  "dune" {>= "2.9"}
+  "containers"
+  "tsort"
+  "oseq"
+  "alcotest" {>= "1.6.0" & with-test}
+  "cmdliner"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/ocaml-multicore/dscheck.git"
+url {
+  src:
+    "https://github.com/ocaml-multicore/dscheck/releases/download/0.3.0/dscheck-0.3.0.tbz"
+  checksum: [
+    "sha256=4d0568f976f6749fff2f003b5586efccb6fd0c51926aae61d9f1a75c63d3de9d"
+    "sha512=527c1f9bcd55b9277b311bd9034b6dc3a8147eaf87e57dc4c4d7b06ababbe9c095bcb52021348b59d933bb1fbc9c2c1f0caaaa4ce7064fe87d03239bdafc0048"
+  ]
+}
+x-commit-hash: "ef68b1f4446dd3d5e5c3ff14196e5eac83a86196"
