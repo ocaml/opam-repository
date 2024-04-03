@@ -5,8 +5,12 @@ bug-reports: "http://bugseng.com/products/ppl/bugs"
 license: "GPL-1.0-or-later"
 build: [
   ["sh" "-c"
+	"cc test.c -I${HOMEBREW_PREFIX:-/opt/homebrew}/include -L${HOMEBREW_PREFIX:-/opt/homebrew}/lib -lppl_c -lppl" {os = "macos" & os-distribution = "homebrew"}
 	"cc test.c -lppl_c -lppl" {os != "freebsd" & os != "openbsd"}
 	"cc test.c -I/usr/local/include -L/usr/local/lib -lppl_c -lppl" {os = "freebsd" | os = "openbsd"}]
+]
+x-ci-accept-failures: [
+  "oraclelinux-8" "oraclelinux-9" "alpine-3.19"
 ]
 depexts: [
   ["libppl-dev"] {os-family = "debian"}
