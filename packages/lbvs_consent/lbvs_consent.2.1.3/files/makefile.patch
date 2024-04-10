@@ -1,0 +1,28 @@
+From 72b06302f05f20ae6eb9fb045bacc651c0c2257c Mon Sep 17 00:00:00 2001
+From: Jan Midtgaard <mail@janmidtgaard.dk>
+Date: Thu, 26 Oct 2023 09:46:09 +0200
+Subject: [PATCH] Support openbabel-2.0 and openbabel-3 via pkg-config
+
+---
+ src/Makefile | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/src/Makefile b/src/Makefile
+index c075908..0e8b4f5 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -1,6 +1,9 @@
++CFLAGS := `pkg-config --silence-errors --cflags openbabel-2.0 || pkg-config --cflags openbabel-3`
++LDFLAGS := `pkg-config --silence-errors --libs openbabel-2.0 || pkg-config --libs openbabel-3`
++
+ ob_maccs: ob_maccs.cpp
+-	c++ -W -Wall -I/usr/include/openbabel-2.0 ob_maccs.cpp \
+-	  -o lbvs_consent_ob_maccs -lopenbabel -Wl,-R/usr/lib
++	c++ -W -Wall $(CFLAGS) ob_maccs.cpp \
++	  -o lbvs_consent_ob_maccs $(LDFLAGS) -Wl,-R/usr/lib
+ 
+ clean:
+ 	\rm -f lbvs_consent_ob_maccs
+-- 
+2.34.1
+
