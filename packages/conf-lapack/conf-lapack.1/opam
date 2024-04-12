@@ -5,7 +5,8 @@ homepage: "http://www.netlib.org/lapack"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
 build: [
-  ["sh" "-exc" "cc $CFLAGS test.c ${LACAML_LIBS:--llapack}"] {os != "macos" & os != "freebsd" & os != "win32"}
+  ["sh" "-exc" "cc $CFLAGS test.c ${LACAML_LIBS:--llapack}"] {os != "macos" & os != "freebsd" & os != "win32" & os-distribution != "alpine"}
+  ["sh" "-exc" "cc $CFLAGS test.c ${LACAML_LIBS:--llapack -lopenblas}"] {os-distribution = "alpine"}
   ["sh" "-exc" "${CC:-gcc} $CFLAGS test.c ${LACAML_LIBS:--llapack} $LDFLAGS"] {os = "freebsd"}
   ["sh" "-exc" "cc -framework Accelerate $CFLAGS test.c ${LACAML_LIBS:--llapack}"] {os = "macos"}
   ["%{build}%/test-win.sh"] {os = "win32"}
@@ -22,6 +23,9 @@ depexts: [
   ["lapack" "gcc"] {os = "freebsd"}
   ["lapack"] {os = "win32" & os-distribution = "cygwinports"}
 ]
+depends: [
+  "conf-openblas" {os-distribution = "alpine"}  
+]
 synopsis: "Virtual package for LAPACK configuration"
 description: """
 Virtual package relying on a LAPACK (Linear Algebra) library installation.
@@ -32,3 +36,4 @@ extra-files: [
   ["test-win.sh" "md5=8143befd9947d11f4baecf3dbf0167f5"]
 ]
 flags: conf
+
