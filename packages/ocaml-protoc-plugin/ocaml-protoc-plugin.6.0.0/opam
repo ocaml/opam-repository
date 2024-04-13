@@ -1,0 +1,59 @@
+opam-version: "2.0"
+maintainer: "Anders Fugmann"
+authors: "Anders Fugmann <anders@fugmann.net>"
+license: "APACHE-2.0"
+homepage: "https://github.com/andersfugmann/ocaml-protoc-plugin"
+dev-repo: "git+https://github.com/andersfugmann/ocaml-protoc-plugin"
+bug-reports: "https://github.com/andersfugmann/ocaml-protoc-plugin/issues"
+doc: "https://andersfugmann.github.io/ocaml-protoc-plugin/"
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & arch != "arm32" & arch != "x86_32"}
+]
+
+depends: [
+  "conf-protoc" {>= "1.0.0"}
+  "conf-pkg-config"
+  "conf-protoc-dev" {with-test}
+  "dune" {>= "3.2"}
+  "ocaml" {>= "4.08.0"}
+  "ppx_expect"
+  "ppx_inline_test"
+  "ppx_deriving" {with-test}
+  "bisect_ppx" {with-test}
+  "odoc" {with-doc}
+  "conf-pkg-config" {build}
+  "dune-configurator" {with-test}
+  "yojson" {with-test}
+  "base64"
+  "ptime"
+]
+
+
+synopsis: "Plugin for protoc protobuf compiler to generate ocaml definitions from a .proto file"
+
+description: """ The plugin generates ocaml type definitions,
+serialization and deserialization functions from a protobuf file.
+The types generated aims to create ocaml idiomatic types;
+- messages are mapped into modules
+- oneof constructs are mapped to polymorphic variants
+- enums are mapped to adt's
+- map types are mapped to assoc lists
+- all integer types are mapped to int by default (exact mapping is also possible)
+- all floating point types are mapped to float.
+- packages are mapped to nested modules
+
+The package aims to be a 100% compliant protobuf implementation.
+It also includes serializing to and from json (Yojson format) based on
+protobuf json specification
+"""
+url {
+  src:
+    "https://github.com/andersfugmann/ocaml-protoc-plugin/releases/download/6.0.0/ocaml-protoc-plugin-6.0.0.tbz"
+  checksum: [
+    "sha256=aaaf3beaa6c22c86a4d7e311c6531d3d3c0c02768c08985d35a2a2f6fe9b36a0"
+    "sha512=5726b052754420af8ca52cc6b519980d24b08fbe99d938fbe46f76c4136f86a909cdd9dbb2efc56d0fa25915b7c1c9ed51f859633c7e70604daf818f34253fe2"
+  ]
+}
+x-commit-hash: "3dc72f98678c1c29f0d45ccb9560d02afd3edd57"
