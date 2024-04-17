@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "Communicate with dune using rpc and Lwt"
+description: "Specialization of dune-rpc to Lwt"
+maintainer: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+license: "MIT"
+homepage: "https://github.com/ocaml/dune"
+doc: "https://dune.readthedocs.io/"
+bug-reports: "https://github.com/ocaml/dune/issues"
+depends: [
+  "dune" {>= "3.12"}
+  "dune-rpc" {= version}
+  "csexp" {>= "1.5.0"}
+  "lwt" {>= "5.6.0"}
+  "base-unix"
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/ocaml/dune.git"
+build: [
+  ["dune" "subst"] {dev}
+  ["rm" "-rf" "vendor/csexp"]
+  ["rm" "-rf" "vendor/pp"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/ocaml/dune/releases/download/3.15.1/dune-3.15.1.tbz"
+  checksum: [
+    "sha256=b5b78a4a02d4dd0894234dbf718bff477fcd85e7dfdffe8ece00b9a0cf3d547b"
+    "sha512=9eed374bae6d1d4d99d312d5a746ec22cfe4a238d7bab1b548d09a4b25c2cd513a1ab8779e398ac1319bddfdd6e013928768febed8cc175180b0ef3f7f4f286f"
+  ]
+}
+x-commit-hash: "5eb7bb0d90104ea46de143c3a8c6b083077eb04e"
