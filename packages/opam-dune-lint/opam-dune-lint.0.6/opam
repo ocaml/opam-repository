@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Ensure dune and opam dependencies are consistent"
+description:
+  "opam-dune-lint checks that all ocamlfind libraries listed as dune dependencies have corresponding opam dependencies listed in the opam files. If not, it offers to add them (either to your opam files, or to your dune-project if you're generating your opam files from that)."
+maintainer: ["alpha@tarides.com" "Tim McGilchrist <timmcgil@gmail.com>"]
+authors: ["talex5@gmail.com"]
+license: "ISC"
+homepage: "https://github.com/ocurrent/opam-dune-lint"
+bug-reports: "https://github.com/ocurrent/opam-dune-lint/issues"
+depends: [
+  "dune" {>= "3.10"}
+  "fpath" {>= "0.7.3"}
+  "astring" {>= "0.8.5"}
+  "sexplib" {>= "v0.14.0"}
+  "cmdliner" {>= "1.1.0"}
+  "stdune" {>= "3.10.0"}
+  "ocaml" {>= "4.08.0"}
+  "bos" {>= "0.2.0"}
+  "fmt" {>= "0.8.9"}
+  "opam-state" {>= "2.1.0"}
+  "opam-format"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocurrent/opam-dune-lint.git"
+flags: plugin
+url {
+  src:
+    "https://github.com/ocurrent/opam-dune-lint/releases/download/v0.6/opam-dune-lint-0.6.tbz"
+  checksum: [
+    "sha256=24af97827d2f85d9cf210be8c892818114aa3812daaec2e187a07dd1a3308feb"
+    "sha512=61deaf9420646a9bfd9fa73ae890b2c71f65f03adcd7e883a45014124de3a4ab5fea448615fb15e96da3852cdac1ca0ecd34abeec7498f48964ddb8e1aa55b2f"
+  ]
+}
+x-commit-hash: "55408399f0cacc09f4b4c04e88a6c954e7642e80"
