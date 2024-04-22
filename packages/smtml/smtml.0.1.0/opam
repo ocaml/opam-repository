@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "A Front-end library for SMT solvers in OCaml"
+description: "A Multi Back-end Front-end for SMT Solvers in OCaml."
+maintainer: ["Filipe Marques <filipe.s.marques@tecnico.ulisboa.pt>"]
+authors: ["Filipe Marques <filipe.s.marques@tecnico.ulisboa.pt>"]
+license: "GPL-3.0-only"
+homepage: "https://github.com/formalsec/smtml"
+doc: "https://formalsec.github.io/smtml/smtml/index.html"
+bug-reports: "https://github.com/formalsec/smtml/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.14.0"}
+  "ocaml_intrinsics"
+  "z3" {>= "4.12.2" & < "4.13"}
+  "menhir" {build & >= "20220210"}
+  "cmdliner" {>= "1.2.0"}
+  "zarith" {>= "1.5"}
+  "odoc" {with-doc}
+  "hc" {>= "0.3"}
+  "bisect_ppx" {with-test & >= "2.5.0" & dev}
+]
+depopts: [
+  "colibri2"
+  "bitwuzla-cxx" {>= "0.4.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/formalsec/smtml.git"
+available: arch != "arm32" & arch != "x86_32"
+pin-depends: [
+  ["colibri2.0.4.0" "git+https://git.frama-c.com/pub/colibrics.git#ae18d699b19e7967a81ccae6db454edfa968feae"]
+  ["colibrilib.0.4.0" "git+https://git.frama-c.com/pub/colibrics.git#ae18d699b19e7967a81ccae6db454edfa968feae"]
+]
+url {
+  src:
+    "https://github.com/formalsec/smtml/archive/refs/tags/v0.1.0.tar.gz"
+  checksum: [
+    "md5=f759570e77c816bd753b5f9d0a99a8e1"
+    "sha512=b40ec4258ad54da38165ad4e7f6dababb05040a3e98edeaea8f7019ff08ed52fa63f9066d876ae7a48efe1cc35e247da4e09b77f2b195dbcc237a7fae3bcf01c"
+  ]
+}
