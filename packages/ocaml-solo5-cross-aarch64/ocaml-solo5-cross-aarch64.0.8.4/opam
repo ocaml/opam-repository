@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "OCaml cross-compiler to the freestanding 64-bit ARM Solo5 backend"
+description:
+  "This package provides a OCaml cross-compiler for ARM64, suitable for linking with a Solo5 unikernel."
+maintainer: "Martin Lucina <martin@lucina.net>"
+authors: "Martin Lucina <martin@lucina.net>"
+license: "MIT"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/ocaml-solo5"
+bug-reports: "https://github.com/mirage/ocaml-solo5/issues/"
+depends: [
+  "conf-which" {build}
+  "ocamlfind" {build}
+  "ocaml-src" {build}
+  "ocaml" {>= "4.12.1" & < "4.15.0"}
+  "solo5" {>= "0.7.0"}
+  "solo5-cross-aarch64" {>= "0.7.0"}
+]
+conflicts: [
+  "ocaml-solo5"
+  "sexplib" {= "v0.9.0"}
+  "solo5-kernel-ukvm"
+  "solo5-kernel-virtio"
+  "solo5-kernel-muen"
+]
+available:
+  os = "linux" & (arch = "x86_64" | arch = "arm64") |
+  os = "freebsd" & arch = "x86_64" |
+  os = "openbsd" & arch = "x86_64"
+build: [
+  [
+    "./configure.sh"
+    "--prefix=%{prefix}%"
+    "--target=aarch64-solo5-none-static"
+    "--ocaml-configure-option=--disable-flat-float-array"
+      {ocaml-option-no-flat-float-array:installed}
+    "--ocaml-configure-option=--enable-flambda"
+      {ocaml-option-flambda:installed}
+    "--ocaml-configure-option=--disable-naked-pointers"
+      {ocaml-option-nnp:installed}
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [make "install"]
+dev-repo: "git+https://github.com/mirage/ocaml-solo5.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-solo5/archive/refs/tags/v0.8.4.tar.gz"
+  checksum: [
+    "md5=617659df62834f8ca2c061a715ccca54"
+    "sha512=8c715b1135d904d7c9a206a64ce78c5040cd068864f9ee5ebdbbc576879c3f67f525805e089d2c02ad87d39924a5183fb039a20b468245080ab36a5e13a5fd1f"
+  ]
+}
