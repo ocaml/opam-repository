@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer: "dave@recoil.org"
+authors: ["Anil Madhavapeddy" "David Scott"]
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/shared-memory-ring"
+doc: "https://mirage.github.io/shared-memory-ring/"
+bug-reports: "https://github.com/mirage/shared-memory-ring/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune"
+  "cstruct" {>= "6.0.0"}
+  "ounit" {with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+available: [ arch != "s390x" & arch != "ppc64" ]
+dev-repo: "git+https://github.com/mirage/shared-memory-ring.git"
+synopsis: "Shared memory rings for RPC and bytestream communications"
+description: """
+This package contains a set of libraries for creating shared memory
+producer/consumer rings. The rings follow the Xen ABI and may be used
+to create or implement Xen virtual devices.
+
+Example use:
+
+One program wishes to create data records and push them efficiently
+to a second process on the same physical machine for
+sampling/analysis/archiving.
+
+Example use:
+
+A Xen virtual machine wishes to send and receive network packets to
+and from a backend driver domain.
+"""
+url {
+  src:
+    "https://github.com/mirage/shared-memory-ring/releases/download/v3.2.0/shared-memory-ring-3.2.0.tbz"
+  checksum: [
+    "sha256=ab6447ada15c066da71d5701b3a0c9277a44f10118062316ff3f486b2d33bf8a"
+    "sha512=e2b7a9f20fc4d53b61c26cd38c2190760593303d88a2863db7ce312aff241dd1a20238de5aee61df07234e6cdad1b659841147102304d753ec78c8af095cc4ee"
+  ]
+}
+x-commit-hash: "32d19ad13f80aa56c2bcd97e9e760d55171b6906"
