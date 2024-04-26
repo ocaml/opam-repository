@@ -1,0 +1,78 @@
+opam-version: "2.0"
+synopsis:
+  "OCaml toolchain to work with WebAssembly, including an interpreter"
+description:
+  "owi is an OCaml toolchain to work with WebAssembly. It provides an interpreter as an executable and a library."
+maintainer: ["Léo Andrès <contact@ndrs.fr>"]
+authors: [
+  "Léo Andrès <contact@ndrs.fr>"
+  "Pierre Chambart <pierre.chambart@ocamlpro.com>"
+  "Filipe Marques <filipe.s.marques@tecnico.ulisboa.pt>"
+  "Eric Patrizio <epatrizio@mpns.fr>"
+  "Arthur Carcano <arthur.carcano@ocamlpro.com"
+]
+license: "AGPL-3.0-or-later"
+tags: ["owi" "ocaml" "webassembly" "wasm" "interpreter" "compiler"]
+homepage: "https://github.com/ocamlpro/owi"
+bug-reports: "https://github.com/ocamlpro/owi/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "5.1"}
+  "integers" {>= "0.5.1"}
+  "cmdliner"
+  "conf-clang"
+  "conf-python-3-dev"
+  "sedlex"
+  "menhir" {build & >= "20220210"}
+  "ocaml_intrinsics"
+  "uutf"
+  "bisect_ppx" {with-test & >= "2.5" & dev}
+  "ocb" {with-test & >= "0.1" & dev}
+  "odoc" {with-doc}
+  "crunch" {dev}
+  "bos"
+  "smtml"
+  "mdx" {with-test & >= "2.1"}
+  "graphics" {dev}
+  "tiny_httpd" {dev}
+  "ocamlformat" {dev}
+  "digestif"
+  "xmlm"
+  "pyml"
+  "re2"
+  "hc" {>= "0.3"}
+  "dune-site"
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/ocamlpro/owi.git"
+available: (arch = "x86_32" | arch = "x86_64" | arch = "arm64") & os != "win32"
+depexts: [
+  [ "llvm" "lld" "wabt"]  {os-family = "debian"}
+  [ "llvm" "wabt"]  {os-family = "homebrew"}
+  [ "llvm" "lld" "wabt" ] {os-family = "arch"}
+  [ "llvm" "lld" "wabt" ] {os-family = "fedora"}
+  [ "llvm" "lld" ] {os-family = "opensuse"}
+  [ "llvm" "lld" "wabt" ] {os-family = "bsd"}
+]
+url {
+  src: "https://github.com/ocamlpro/owi/archive/refs/tags/0.2.tar.gz"
+  checksum: [
+    "sha256=ae5f43a855d35e3362d7ae4f5d26a2e99f5abbbafceb9e970a9ac9ec48eca791"
+    "sha512=2cbd28275e1c65aa8f16d945d8ed679f070e1409f45796a272c8d58eb806890ad686184c95e1b6b16b96734c3d2c1d885c9894b3386f55cc0fd3fb4a40d68a8d"
+  ]
+}
