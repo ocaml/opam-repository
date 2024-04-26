@@ -1,5 +1,6 @@
 #include <stdio.h>
-#ifdef DARWIN
+#include <sys/param.h>
+#if defined DARWIN || defined __FreeBSD__
 #include <svm.h>
 #else
 #include <libsvm/svm.h>
