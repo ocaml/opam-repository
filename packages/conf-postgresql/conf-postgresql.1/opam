@@ -4,7 +4,10 @@ authors: "Markus Mottl <markus.mottl@gmail.com>"
 homepage: "https://www.postgresql.org"
 dev-repo: "git+https://github.com/mmottl/postgresql-ocaml.git"
 license: "PD"
-build: [["pg_config"]]
+build: [
+  ["pg_config"] {os != "macos" | os-distribution != "homebrew"}
+  ["$(brew --prefix postgresql@15)/bin/pg_config"] {os = "macos" & os-distribution = "homebrew"}
+]
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 
 depexts: [
