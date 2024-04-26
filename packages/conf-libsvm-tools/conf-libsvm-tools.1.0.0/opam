@@ -10,13 +10,20 @@ build: [
   ["bash" "-c" "command -v svm-predict 2>&1 > /dev/null"]
 ]
 depexts: [
-  ["libsvm-tools"] {os-family = "debian"}
-  ["libsvm-tools"] {os-distribution = "fedora"}
+  ["libsvm-tools"] {os-family = "debian" | os-family = "ubuntu"}
+  ["libsvm"] {os-distribution = "fedora" & os-version >= "38"}
+  ["libsvm-tools"] {os-distribution = "fedora" & os-version < "38"}
   ["libsvm-tools"] {os-distribution = "centos"}
   ["sci-libs/libsvm"] {os-distribution = "gentoo"}
   ["libsvm"] {os-distribution = "arch"}
   ["svm-tools"] {os-family = "suse" | os-family = "opensuse"}
   ["libsvm"] {os = "macos" & os-distribution = "homebrew"}
+  ["libsvm"] {os = "freebsd"}
+]
+x-ci-accept-failures: [
+  "alpine-3.19"
+  "oraclelinux-8"
+  "oraclelinux-9"
 ]
 synopsis: "Virtual package relying on libsvm-tools installation"
 description: """
