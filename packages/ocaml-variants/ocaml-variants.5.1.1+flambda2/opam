@@ -1,0 +1,36 @@
+opam-version: "2.0"
+version: "5.1.1+flambda2"
+synopsis: "Jane Street compiler variant with Flambda2 backend"
+depends: [
+  "ocaml" {= "5.1.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "dune-secondary" {="3.8.1"}
+  "menhir-secondary"
+  "conf-autoconf" {build}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build-env: [ PATH += "%{ocaml-secondary-compiler:share}%/bin:%{dune-secondary:share}%/bin:%{menhir-secondary:share}%/bin" ]
+build: [
+  ["autoconf"]
+  ["./configure" "--prefix=%{prefix}%" "--enable-flambda2" "--enable-runtime5=yes"]
+  [make "-j%{jobs}%"]
+]
+install: [make "install"]
+maintainer: "anil@recoil.org"
+homepage: "https://github.com/ocaml-flambda/flambda-backend/"
+bug-reports: "https://github.com/ocaml-flambda/flambda-backend/issues"
+url {
+  src: "https://github.com/ocaml-flambda/flambda-backend/archive/main.tar.gz"
+}
+authors: [ "The Jane Street compiler team"
+  "Xavier Leroy"
+  "Damien Doligez"
+  "Alain Frisch"
+  "Jacques Garrigue"
+  "Didier Rémy"
+  "Jérôme Vouillon"
+]
