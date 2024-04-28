@@ -3,8 +3,9 @@ maintainer: "gabriel.scherer@inria.fr"
 homepage: "https://google.github.io/snappy/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 build: [
-  ["c++" "test.cpp" "-lsnappy" "-std=c++11"] {os != "freebsd"}
+  ["c++" "test.cpp" "-lsnappy" "-std=c++11"] {os = "linux"}
   ["c++" "test.cpp" "-I/usr/local/include" "-L/usr/local/lib" "-lsnappy" "-std=c++11"] {os = "freebsd"}
+  ["c++" "test.cpp" "-I$(brew --prefix snappy)/include" "-L$(brew --prefix snappy)/lib"  "-lsnappy" "-std=c++11"] {os = "macos" & os-distribution = "homebrew"}
 ]
 depexts: [
   ["snappy"] {os-distribution = "arch"}
