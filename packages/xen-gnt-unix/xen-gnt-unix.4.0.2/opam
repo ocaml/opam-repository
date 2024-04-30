@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "john.else@citrix.com"
+authors: [
+  "Anil Madhavapeddy"
+  "John Else"
+  "Thomas Leonard"
+  "Andrew Cooper"
+  "David Scott"
+]
+homepage: "https://github.com/mirage/ocaml-gnt"
+doc: "https://mirage.github.io/ocaml-gnt/"
+bug-reports: "https://github.com/mirage/ocaml-gnt/issues"
+license: "ISC"
+depends: [
+  "ocaml" {>= "4.08.0" & < "5"}
+  "dune" {>= "1.0"}
+  "xen-gnt" {= version}
+  "lwt"
+  "conf-xen"
+]
+available: [ arch != "s390x" & arch != "ppc64" & arch != "riscv64" & os != "freebsd" ]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-gnt.git"
+synopsis: "Xen grant table bindings for OCaml"
+description: """
+These are used to create Xen device driver "backends" (servers)
+and "frontends" (clients).
+
+This library can be used in both kernelspace (via Mirage) or in userspace
+(on Linux). To see a concrete example, have a look at [mirage/ocaml-vchan]
+"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-gnt/releases/download/v4.0.2/xen-gnt-4.0.2.tbz"
+  checksum: [
+    "sha256=8afceb5955d20c0630fbfb7d255df1796873b112e33aeb7197540f5099a9e6a3"
+    "sha512=d85ca83e98e5ff3331638a9bdde33776b5e29c2863da6c962a8ffe18ebf773af97e310b8eea29ba2c9509bbb308ad2932b5bc7b388b7af32763c76db3adec661"
+  ]
+}
+x-commit-hash: "11264ada5f552748f63b96a8254a3399a6518a1b"
