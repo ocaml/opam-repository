@@ -3,7 +3,9 @@ maintainer: "gabriel.scherer@inria.fr"
 homepage: "https://google.github.io/snappy/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 build: [
-  ["c++" "test.cpp" "-lsnappy" "-std=c++11"]
+  ["c++" "test.cpp" "-lsnappy" "-std=c++11"] {os = "linux"}
+  ["c++" "test.cpp" "-I/usr/local/include" "-L/usr/local/lib" "-lsnappy" "-std=c++11"] {os = "freebsd"}
+  ["sh" "-c" "c++ test.cpp -I\"$(brew --prefix snappy)/include\" -L\"$(brew --prefix snappy)/lib\" -lsnappy -std=c++11"] {os = "macos" & os-distribution = "homebrew"}
 ]
 depexts: [
   ["snappy"] {os-distribution = "arch"}
@@ -14,6 +16,10 @@ depexts: [
   ["snappy-devel"] {os-distribution = "fedora"}
   ["snappy"] {os-family = "suse" | os-family = "opensuse"}
   ["snappy"] {os = "freebsd"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-8"
+  "oraclelinux-9"
 ]
 synopsis: "Virtual package relying on snappy"
 description:
