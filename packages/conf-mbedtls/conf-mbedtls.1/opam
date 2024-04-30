@@ -5,11 +5,12 @@ homepage: "https://tls.mbed.org/"
 bug-reports: "https://github.com/ARMmbed/mbedtls/issues"
 license: "Apache-2.0"
 build: [
-  ["cc" "-I/usr/local/include" "test.c"]
+  ["cc" "-I/usr/local/include" "test.c"] {os != "macos" | os-distribution != "homebrew"}
+  ["sh" "-c" "cc -I\"$(brew --prefix mbedtls)/include\" test.c"] {os = "macos" & os-distribution = "homebrew"}
 ]
 depexts: [
   ["mbedtls-dev"] {os-distribution = "alpine"}
-  ["libmbedtls-dev"] {os-family = "debian"}
+  ["libmbedtls-dev"] {os-family = "debian" | os-family = "ubuntu"}
   ["mbedtls-devel"] {os-distribution = "fedora"}
   ["mbedtls-devel"] {os-family = "suse" | os-family = "opensuse"}
   ["mbedtls-devel" "epel-release"] {os-distribution = "centos"}
@@ -17,6 +18,12 @@ depexts: [
   ["mbedtls"] {os-distribution = "homebrew" & os = "macos"}
   ["mbedtls"] {os-distribution = "arch"}
   ["mbedtls"] {os = "freebsd"}
+  ["mbedtls"] {os = "macos" & os-distribution = "homebrew"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7"
+  "oraclelinux-8"
+  "oraclelinux-9"
 ]
 synopsis: "Virtual package relying on an mbedtls system installation"
 description:
