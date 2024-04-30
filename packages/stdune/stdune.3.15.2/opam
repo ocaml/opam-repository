@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Dune's unstable standard library"
+description:
+  "This library offers no backwards compatibility guarantees. Use at your own risk."
+maintainer: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+license: "MIT"
+homepage: "https://github.com/ocaml/dune"
+doc: "https://dune.readthedocs.io/"
+bug-reports: "https://github.com/ocaml/dune/issues"
+depends: [
+  "dune" {>= "3.12"}
+  "ocaml" {>= "4.08.0"}
+  "base-unix"
+  "dyn" {= version}
+  "ordering" {= version}
+  "pp" {>= "1.2.0"}
+  "csexp" {>= "1.5.0"}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/ocaml/dune.git"
+build: [
+  ["dune" "subst"] {dev}
+  ["rm" "-rf" "vendor/csexp"]
+  ["rm" "-rf" "vendor/pp"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/ocaml/dune/releases/download/3.15.2/dune-3.15.2.tbz"
+  checksum: [
+    "sha256=f959980542ca85909b3f3f8e9be65c2b8a375f3a4e3bd83c7ad7a07f2e077933"
+    "sha512=d752b8c09130cf3d564b3a524e3148783b581daa3f9a61d0f52bf4d6995ef73258e71877dbfd8b7516f9a4bac5ad973e80f4fed596df9446e704acc724aac55e"
+  ]
+}
+x-commit-hash: "c28817c416ac0b381f6a6938236419ab5d86d6e1"
