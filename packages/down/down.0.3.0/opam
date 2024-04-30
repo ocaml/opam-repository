@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "An OCaml toplevel (REPL) upgrade"
+description: """\
+Down is an unintrusive user experience upgrade for the `ocaml`
+toplevel (REPL). 
+
+Simply load the zero dependency `Down` library in the `ocaml` toplevel
+and you get line edition, history, session support and identifier
+completion and documentation (courtesy of [`ocp-index`][ocp-index]).
+
+Add this to your `~/.ocamlinit`:
+
+    #use "down.top"
+
+![tty](doc/tty.png)
+
+Down is distributed under the ISC license.
+
+Homepage: http://erratique.ch/software/down
+
+[ocp-index]: https://github.com/OCamlPro/ocp-index"""
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: "The down programmers"
+license: "ISC"
+tags: ["dev" "toplevel" "repl" "org:erratique"]
+homepage: "https://erratique.ch/software/down"
+doc: "https://erratique.ch/software/down/doc/"
+bug-reports: "https://github.com/dbuenzli/down/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "1.0.3"}
+  "uucp" {dev}
+]
+build: [
+  "ocaml" "pkg/pkg.ml" "build" "--dev-pkg" "%{dev}%" "--lib-dir" "%{lib}%"
+]
+install: [
+  ["install" "-d" "%{lib}%/ocaml/"]
+  ["install" "src/down.top" "src/down.nattop" "%{lib}%/ocaml/"]
+]
+dev-repo: "git+https://erratique.ch/repos/down.git"
+url {
+  src: "https://erratique.ch/software/down/releases/down-0.3.0.tbz"
+  checksum:
+    "sha512=03d4a5e82da97ac7814f93385d1a216976976ed7b00693c1e4fa24f6ea2e15121b39344bc599b82e1d2fea12d87663810c2aaca920af1d8b4db5682c6ec61dc6"
+}
