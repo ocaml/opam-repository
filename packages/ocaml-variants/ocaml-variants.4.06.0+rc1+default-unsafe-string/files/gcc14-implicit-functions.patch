@@ -1,0 +1,20 @@
+diff --git a/configure b/configure
+index 1316b3c1e1a8..bca681fb31cf 100755
+--- a/configure
++++ b/configure
+@@ -947,6 +947,15 @@ case "$cc,$target" in
+         fi;;
+ esac
+ 
++# GCC 14 makes implicit function declaration an error rather than a warning
++# Turn off the check to allow ./hasgot to work
++
++case "$cc" in
++    *gcc*)
++        if sh ./hasgot -Wno-implicit-function-declaration; then
++            export cflags="-Wno-implicit-function-declaration $cflags";
++        fi;;
++esac
+ 
+ # Configure the native-code compiler
+ 
