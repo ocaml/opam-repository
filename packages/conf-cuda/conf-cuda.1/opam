@@ -1,0 +1,30 @@
+opam-version: "2.0"
+maintainer: "Lukasz Stafiniak <lukstafi@gmail.com>"
+authors: [
+    "NVidia"
+]
+homepage: "https://docs.nvidia.com/cuda/"
+license: "CUDA Toolkit End User License Agreement <https://docs.nvidia.com/cuda/eula/index.html>"
+# We do not restrict availability to let users install CUDA themselves.
+build: [
+  ["sh" "-exc" "echo \"#include  \\\"cuda.h\\\"\\n#include  \\\"nvrtc.h\\\"\" > test.c"]
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/cuda/include test.c"]
+]
+# Note: the minimal set of packages directly from NVidia repositories, e.g. for cudajit:
+# "cuda-cudart-X-Y" "cuda-cudart-dev-X-Y" "cuda-runtime-X-Y" "cuda-nvrtc-X-Y" "cuda-nvrtc-dev-X-Y"
+# where e.g. X=12, Y=4 is the CUDA version.
+depexts: [
+  ["nvidia-cuda-dev" "nvidia-cuda-toolkit"] {os-family = "debian"}
+  ["CUDA" "CUDA-tools"] {os-family = "opensuse" | os-distribution = "opensuse-leap" | 
+                         os-distribution = "opensuse-tumbleweed"}
+  ["cuda"] {os-family = "arch"}
+]
+messages: [
+  "WARNING: under WSL, manually install CUDA before installing this package, see https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#network-repo-installation-for-wsl"
+  {os = "linux"}
+]
+synopsis: "Virtual package relying on a CUDA system installation"
+description:
+  "This package can only install if CUDA is installed on the system."
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+flags: conf
