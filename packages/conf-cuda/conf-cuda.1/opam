@@ -29,9 +29,24 @@ setenv: [
   [ CUDA_PATH = "%{conf-cuda-config:cuda_path}%" ]
 ]
 post-messages: [
-  "NOTE: under WSL, manually install CUDA, this package will not install it. See https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#network-repo-installation-for-wsl Failing configuration: cuda preinstalled %{conf-cuda-config:cuda_preinstalled}%, CUDA_PATH=%{conf-cuda-config:cuda_path}%, is-WSL %{conf-cuda-config:is_wsl}%"
+  "DEBUG: [1] {!conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os-family = debian}"
+  {!conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os-family = "debian"}
+  "DEBUG: [2] {!conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os-family = arch}"
+  {!conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os-family = "arch"}
+  "DEBUG: [3] {!conf-cuda-config:is_wsl}"
+  {!conf-cuda-config:is_wsl}
+  "DEBUG: [4] {!conf-cuda-config:cuda_preinstalled}"
+  {!conf-cuda-config:cuda_preinstalled}
+  "DEBUG: [5] {conf-cuda-config:is_wsl}"
+  {conf-cuda-config:is_wsl}
+  "DEBUG: [6] {conf-cuda-config:cuda_preinstalled}"
+  {conf-cuda-config:cuda_preinstalled}
+  "DEBUG: [7] {os-family = debian}"
+  {os-family = "debian"}
+
+  "NOTE: under WSL, manually install CUDA, this package will not install it. See https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#network-repo-installation-for-wsl Failing configuration: cuda preinstalled %{conf-cuda-config:cuda_preinstalled}%, CUDA_PATH=%{conf-cuda-config:cuda_path}%, is-WSL %{conf-cuda-config:is_wsl}%, OS family %{os-family}%"
   {failure & conf-cuda-config:is_wsl}
-  "Manually install CUDA, set the CUDA_PATH environment variable if different from /usr/local/cuda, re-install opam package conf-cuda-config, when installing this package ignore request for external dependencies if any (answer 3, or nny). See: https://docs.nvidia.com/cuda/ Failing configuration: cuda preinstalled %{conf-cuda-config:cuda_preinstalled}%, CUDA_PATH=%{conf-cuda-config:cuda_path}%, is-WSL %{conf-cuda-config:is_wsl}%"
+  "Manually install CUDA, set the CUDA_PATH environment variable if different from /usr/local/cuda, re-install opam package conf-cuda-config, when installing this package ignore request for external dependencies if any (answer 3, or nny). See: https://docs.nvidia.com/cuda/ Failing configuration: cuda preinstalled %{conf-cuda-config:cuda_preinstalled}%, CUDA_PATH=%{conf-cuda-config:cuda_path}%, is-WSL %{conf-cuda-config:is_wsl}%, OS family %{os-family}%"
   {failure & !conf-cuda-config:is_wsl}
 ]
 synopsis: "Virtual package relying on a CUDA system installation"
