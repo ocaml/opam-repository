@@ -11,7 +11,7 @@ build: [
    #include  \"cuda.h\"
    #include  \"nvrtc.h\"
    "]
-  ["sh" "-exc" "cc -c $CFLAGS -I$(CUDA_PATH)/include test.c"]
+  ["sh" "-exc" "cc -c $CFLAGS -I%{conf-cuda-config:cuda_path}%/include test.c"]
 ]
 # Note: the minimal set of packages directly from NVidia repositories, e.g. for cudajit:
 # "cuda-cudart-X-Y" "cuda-cudart-dev-X-Y" "cuda-runtime-X-Y" "cuda-nvrtc-X-Y" "cuda-nvrtc-dev-X-Y"
@@ -26,9 +26,6 @@ depexts: [
   ["cuda"] {!conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os-family = "arch"}
 ]
 setenv: [
-  [ CUDA_PATH = "%{conf-cuda-config:cuda_path}%" ]
-]
-build-env: [
   [ CUDA_PATH = "%{conf-cuda-config:cuda_path}%" ]
 ]
 post-messages: [
