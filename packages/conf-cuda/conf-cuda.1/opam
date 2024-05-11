@@ -16,17 +16,20 @@ build: [
 # Note: the minimal set of packages directly from NVidia repositories, e.g. for cudajit:
 # "cuda-cudart-X-Y" "cuda-cudart-dev-X-Y" "cuda-runtime-X-Y" "cuda-nvrtc-X-Y" "cuda-nvrtc-dev-X-Y"
 # where e.g. X=12, Y=4 is the CUDA version.
+depends: [ "conf-cuda-config" ]
 depexts: [
-  ["nvidia-cuda-dev" "nvidia-cuda-toolkit"] {os-family = "debian"}
-  ["CUDA" "CUDA-tools"] {os-family = "opensuse" | os-distribution = "opensuse-leap" | 
-                         os-distribution = "opensuse-tumbleweed"}
-  ["cuda"] {os-family = "arch"}
+  ["nvidia-cuda-dev" "nvidia-cuda-toolkit"]
+  {!conf-cuda-config:is_wsl & !conf-cuda-config:has_cuda & os-family = "debian"}
+  ["CUDA" "CUDA-tools"]
+  {!conf-cuda-config:is_wsl & !conf-cuda-config:has_cuda &
+   (os-family = "opensuse" | os-distribution = "opensuse-leap" | os-distribution = "opensuse-tumbleweed")}
+  ["cuda"] {!conf-cuda-config:is_wsl & !conf-cuda-config:has_cuda & os-family = "arch"}
 ]
 setenv: [
-  [CUDA_PATH = "/opt/cuda"] {os-family = "arch"}
+  [ CUDA_PATH = "%{conf-cuda-config:cuda_path}%" ]
 ]
 build-env: [
-  [CUDA_PATH = "/opt/cuda"] {os-family = "arch"}
+  [ CUDA_PATH = "%{conf-cuda-config:cuda_path}%" ]
 ]
 messages: [
   "WARNING: under WSL, manually install CUDA, when installing this package ignore request for external dependencies if any (answer 3, or nny). See https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#network-repo-installation-for-wsl"

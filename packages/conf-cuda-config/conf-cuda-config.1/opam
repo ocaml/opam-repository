@@ -1,0 +1,43 @@
+opam-version: "2.0"
+maintainer: "Lukasz Stafiniak <lukstafi@gmail.com>"
+authors: [
+    "Lukasz Stafiniak <lukstafi@gmail.com>"
+]
+homepage: "https://docs.nvidia.com/cuda/"
+license: "MIT"
+build: [
+  ["sh" "-exc" """
+    if [ -z "$CUDA_PATH" ]; then
+      if [ -d "/usr/local/cuda" ]; then
+        CUDA_PATH="/usr/local/cuda"
+        HAS_CUDA="true"
+      elif [ -d "/opt/cuda" ]; then
+        CUDA_PATH="/opt/cuda"
+        HAS_CUDA="true"
+      else
+        HAS_CUDA="false"
+      fi
+    else
+      HAS_CUDA="false"
+    fi
+    if [ -z "$WSL_DISTRO_NAME" ]; then
+      IS_WSL="false"
+    else
+      IS_WSL="false"
+    fi
+    cat <<EOF > conf-cuda-config.config
+opam-version: "2.0"
+variables {
+  has_cuda: "$HAS_CUDA"
+  cuda_path: "$CUDA_PATH"
+  is_wsl: "$IS_WSL"
+  wsl_distro_name: "$WSL_DISTRO_NAME"
+}
+EOF
+    """]
+]
+synopsis: "Preparatory steps for the conf-cuda package"
+description:
+  "This package checks if CUDA is already installed on the system, and if the OS runs under WSL."
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+flags: conf
