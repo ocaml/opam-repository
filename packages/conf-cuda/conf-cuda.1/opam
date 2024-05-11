@@ -11,7 +11,7 @@ build: [
    #include  \"cuda.h\"
    #include  \"nvrtc.h\"
    "]
-  ["sh" "-exc" "cc -c $CFLAGS -I$(CUDA_PATH)/include -I/usr/local/cuda/include test.c"]
+  ["sh" "-exc" "cc -c $CFLAGS -I$(CUDA_PATH)/include test.c"]
 ]
 # Note: the minimal set of packages directly from NVidia repositories, e.g. for cudajit:
 # "cuda-cudart-X-Y" "cuda-cudart-dev-X-Y" "cuda-runtime-X-Y" "cuda-nvrtc-X-Y" "cuda-nvrtc-dev-X-Y"
@@ -19,11 +19,11 @@ build: [
 depends: [ "conf-cuda-config" ]
 depexts: [
   ["nvidia-cuda-dev" "nvidia-cuda-toolkit"]
-  {!conf-cuda-config:is_wsl & !conf-cuda-config:has_cuda & os-family = "debian"}
+  {!conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os-family = "debian"}
   ["CUDA" "CUDA-tools"]
-  {!conf-cuda-config:is_wsl & !conf-cuda-config:has_cuda &
+  {!conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled &
    (os-family = "opensuse" | os-distribution = "opensuse-leap" | os-distribution = "opensuse-tumbleweed")}
-  ["cuda"] {!conf-cuda-config:is_wsl & !conf-cuda-config:has_cuda & os-family = "arch"}
+  ["cuda"] {!conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os-family = "arch"}
 ]
 setenv: [
   [ CUDA_PATH = "%{conf-cuda-config:cuda_path}%" ]

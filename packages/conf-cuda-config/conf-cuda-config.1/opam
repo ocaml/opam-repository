@@ -10,15 +10,24 @@ build: [
     if [ -z "$CUDA_PATH" ]; then
       if [ -d "/usr/local/cuda" ]; then
         CUDA_PATH="/usr/local/cuda"
-        HAS_CUDA="true"
+        CUDA_PREINSTALLED="true"
       elif [ -d "/opt/cuda" ]; then
         CUDA_PATH="/opt/cuda"
-        HAS_CUDA="true"
+        CUDA_PREINSTALLED="true"
+      elif [ -d "/usr/cuda" ]; then
+        CUDA_PATH="/usr/cuda"
+        CUDA_PREINSTALLED="true"
+      elif [ "arch" = %{os-family}% ]; then
+        CUDA_PATH="/opt/cuda"
+        CUDA_PREINSTALLED="false"
       else
-        HAS_CUDA="false"
+        CUDA_PATH="/usr/local/cuda"
+        CUDA_PREINSTALLED="false"
       fi
     else
-      HAS_CUDA="false"
+      if [ -d "$CUDA_PATH" ]; then
+        CUDA_PREINSTALLED="true"
+      fi
     fi
     if [ -z "$WSL_DISTRO_NAME" ]; then
       IS_WSL="false"
@@ -28,13 +37,17 @@ build: [
     cat <<EOF > conf-cuda-config.config
 opam-version: "2.0"
 variables {
-  has_cuda: "$HAS_CUDA"
+  cuda_preinstalled: "$CUDA_PREINSTALLED"
   cuda_path: "$CUDA_PATH"
   is_wsl: "$IS_WSL"
   wsl_distro_name: "$WSL_DISTRO_NAME"
 }
 EOF
     """]
+]
+post-message: [
+  [ "NOTE: assuming CUDA will be installed under %{conf-cuda-config:cuda_path}%" ]
+  { !conf-cuda-path:cuda_preinstalled }
 ]
 synopsis: "Preparatory steps for the conf-cuda package"
 description:
