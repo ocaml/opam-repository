@@ -1,0 +1,51 @@
+opam-version: "2.0"
+maintainer: "igor@ahrefs.com"
+authors: "Ahrefs <github@ahrefs.com>"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/ahrefs/devkit"
+dev-repo: "git+https://github.com/ahrefs/devkit.git"
+bug-reports: "https://github.com/ahrefs/devkit/issues"
+synopsis: "Development kit - general purpose library"
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs "@install" "@runtest"{with-test} "@doc"{with-doc}]
+]
+depends: [
+  "ocaml" {>= "4.13.0"}
+  "dune" {>= "2.0"}
+  ("extlib" {>= "1.7.1"} | "extlib-compat" {>= "1.7.1"})
+  "ounit2"
+  "camlzip"
+  "libevent" {>= "0.8.0"}
+  "ocurl" {>= "0.7.2"}
+  "pcre"
+  "trace" {>= "0.4"}
+  "extunix" {>= "0.1.4"}
+  "lwt" {>= "2.5.2"}
+  "lwt_ppx"
+  "base-bytes"
+  "base-unix"
+  "base-threads"
+  "stdlib-shims"
+  "yojson" {>= "1.6.0"}
+  "odoc" {with-doc}
+]
+depopts: [
+  "gperftools"
+  "jemalloc"
+  "opentelemetry"
+]
+conflicts: [
+  "jemalloc" {< "0.2"}
+  "opentelemetry" {< "0.6"}
+]
+available: arch != "arm32" & arch != "x86_32"
+url {
+  src:
+    "https://github.com/ahrefs/devkit/releases/download/1.20240429/devkit-1.20240429.tbz"
+  checksum: [
+    "sha256=222f8ac131b1d970dab7eeb2714bfd6b9338b88b1082e6e01c136ae19e7eaef4"
+    "sha512=c9e6d93e3d21e5530c0f4d5baca51bf1f0a5d19248f8af7678d0665bb5cdf295d7aaaaa3e50eb2e44b8720e55097cc675af4dc8ec45acf9da39feb3eae1405d5"
+  ]
+}
+x-commit-hash: "b2944d95a27d17ccd5edc01bc536a1f415ee09d4"
