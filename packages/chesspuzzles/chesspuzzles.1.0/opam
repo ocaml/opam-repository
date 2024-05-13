@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "I am a chess puzzle solving game"
+description: """
+Offline chess puzzle solving game using SDL, with particular focus on
+energy efficiency. Puzzles comes from the lichess.org puzzle database"""
+maintainer: ["Seb https://github.com/ssbx"]
+authors: ["Seb https://github.com/ssbx"]
+license: "GPL-3.0-or-later"
+tags: ["game" "board" "chess" "puzzle" "lichess" "sdl"]
+homepage: "https://github.com/ssbx/chesspuzzles"
+bug-reports: "https://github.com/ssbx/chesspuzzles"
+depends: [
+  "dune" {>= "3.11"}
+  "ocaml" {>= "4.08"}
+  "tsdl" {>= "1.0.0"}
+  "tsdl-image" {>= "0.6"}
+  "tsdl-mixer" {>= "0.6"}
+  "ctypes" {>= "0.14.0"}
+  "ctypes-foreign"
+  "dune-site" {>= "3.15.2"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/ssbx/chesspuzzles.git"
+x-ci-accept-failures: [ "opensuze-15.5" "opensuse-tumbleweed" "oraclelinux-8" "oraclelinux-9" ]
+url {
+  src:
+    "https://github.com/ssbx/chesspuzzles/releases/download/1.0/chesspuzzles-1.0.tbz"
+  checksum: [
+    "sha256=71f896be9344140e42b0f8c948fcd6d88cd890c9780b8a1fba00caf416473c5e"
+    "sha512=9a1cb0b66733d54290ad5b61c64601043dc2bdfb3633d9bbf6387ecc27fac53664769abe83255b1eb979dd4c59aaab56b25a0270de67c86aac6b6691b95f3c51"
+  ]
+}
+x-commit-hash: "e4b88d6f40cb1fc7d7826cc7fb591714c2bfde84"
