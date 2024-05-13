@@ -23,17 +23,23 @@ setenv: [
 post-messages: [
   "Make sure that CUDA is properly installed under the path %{conf-cuda-config:cuda_path}%; or properly set the CUDA_PATH environment variable and re-install opam package conf-cuda-config. See: https://docs.nvidia.com/cuda/ Failing configuration: CUDA_PATH=%{conf-cuda-config:cuda_path}%, is-WSL %{conf-cuda-config:is_wsl}%, OS family %{os-family}%"
   {failure & conf-cuda-config:cuda_preinstalled}
-  "Do: `sudo add-apt-repository multiverse; sudo apt update; sudo apt-get install nvidia-cuda-dev nvidia-cuda-toolkit`. Or manually install CUDA, see https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html"
+  "Execute: $ sudo add-apt-repository multiverse; sudo apt update; sudo apt-get install nvidia-cuda-dev nvidia-cuda-toolkit"
   {failure & !conf-cuda-config:cuda_preinstalled & !conf-cuda-config:is_wsl & os-family = "debian" & os-distribution != "ubuntu"}
-  "Do: `sudo apt-get install nvidia-cuda-dev nvidia-cuda-toolkit`. Or manually install CUDA, see https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html"
+  "Execute: $ sudo apt-get install nvidia-cuda-dev nvidia-cuda-toolkit"
   {failure & !conf-cuda-config:cuda_preinstalled & !conf-cuda-config:is_wsl & os-distribution = "ubuntu"}
   "Under WSL, manually install CUDA. See https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#network-repo-installation-for-wsl"
   {failure & !conf-cuda-config:cuda_preinstalled & conf-cuda-config:is_wsl}
-  "Do: `sudo zypper in CUDA CUDA-tools`. Or manually install CUDA, see https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html"
+  "Execute: $ sudo zypper in CUDA CUDA-tools"
   {failure & !conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled &
    (os-family = "opensuse" | os-distribution = "opensuse-leap" | os-distribution = "opensuse-tumbleweed")}
-  "Do: `sudo pacman -Sy cuda`. Or manually install CUDA, see https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html"
+  "Execute: $ sudo pacman -Sy cuda"
    {failure & !conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os-family = "arch"}
+   "Alternatively: manually install CUDA or verify that CUDA_PATH is set properly, and re-install opam package conf-cuda-config. See: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html"
+   {failure & !conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os = "linux"}
+   "Manually install CUDA or verify that CUDA_PATH is set properly, and re-install opam package conf-cuda-config. See: https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html"
+   {failure & !conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os = "windows"}
+   "If CUDA is supported on your system, manually install CUDA or verify that CUDA_PATH is set properly, and re-install opam package conf-cuda-config. See: https://docs.nvidia.com/cuda/"
+   {failure & !conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os != "linux" & os != "windows"}
 ]
 synopsis: "Virtual package relying on a CUDA system installation"
 description:
