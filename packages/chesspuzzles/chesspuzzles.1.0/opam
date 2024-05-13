@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "I am a chess puzzle solving game"
+description: """
+Offline chess puzzle solving game using SDL, with particular focus on
+energy efficiency. Puzzles comes from the lichess.org puzzle database"""
+maintainer: ["Seb https://github.com/ssbx"]
+authors: ["Seb https://github.com/ssbx"]
+license: "GPL-3.0-or-later"
+tags: ["game" "board" "chess" "puzzle" "lichess" "sdl"]
+homepage: "https://github.com/ssbx/chesspuzzles"
+bug-reports: "https://github.com/ssbx/chesspuzzles"
+depends: [
+  "dune" {>= "3.11"}
+  "tsdl"
+  "tsdl-image"
+  "tsdl-mixer"
+  "dune-site"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/ssbx/chesspuzzles.git"
+url {
+  src:
+    "https://github.com/ssbx/chesspuzzles/releases/download/1.0/chesspuzzles-1.0.tbz"
+  checksum: [
+    "sha256=d2307a8de294466229d59d02584e0d8dff072d7c79377ec8ae182943d1735a9e"
+    "sha512=57d85dd2eda60c85fc14f661d2c892e6858d43b7af5c1683146d9d5a0fb2f961e04590a41e07a746435409c3fcb3620017126483d28aba460a9fe64787fbeb30"
+  ]
+}
+x-commit-hash: "a6c7318f7accf0cd6c547a400caaad881f504872"
