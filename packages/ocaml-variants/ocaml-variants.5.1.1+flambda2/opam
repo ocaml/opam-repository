@@ -14,13 +14,18 @@ depends: [
 conflict-class: "ocaml-core-compiler"
 flags: [ compiler avoid-version ]
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build-env: [
+  [PATH += "%{ocaml-secondary-compiler:share}%/bin"]
+  [PATH += "%{dune-secondary:share}%/bin"]
+  [PATH += "%{menhir-secondary:share}%/bin"]
+]
 build: [
   ["autoconf"]
-  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:%{dune-secondary:share}%/bin:%{menhir-secondary:share}%/bin:$PATH ./configure --prefix=%{prefix}% --enable-flambda2 --enable-runtime5=yes"]
-  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:%{dune-secondary:share}%/bin:%{menhir-secondary:share}%/bin:$PATH make -j"]
+  ["./configure" "--prefix=%{prefix}%" "--enable-flambda2" "--enable-runtime5=yes"]
+  [make "-j%{jobs}%"]
 ]
 install:
-  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:%{dune-secondary:share}%/bin:%{menhir-secondary:share}%/bin:$PATH make install"]
+  [make "install"]
 maintainer: "anil@recoil.org"
 homepage: "https://github.com/ocaml-flambda/flambda-backend/"
 bug-reports: "https://github.com/ocaml-flambda/flambda-backend/issues"
@@ -35,3 +40,4 @@ authors: [ "The Jane Street compiler team"
   "Didier Rémy"
   "Jérôme Vouillon"
 ]
+available: opam-version >= "2.1.5"
