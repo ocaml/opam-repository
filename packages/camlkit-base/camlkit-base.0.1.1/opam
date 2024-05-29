@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings to the Objective-C runtime and some base frameworks"
+description: """
+This package provides OCaml bindings to the Objective-C runtime and
+the following Cocoa frameworks: Foundation, WebKit, Vision, CoreImage, and Photos."""
+maintainer: ["Boris D. <borisd@gmx.com>"]
+authors: ["Boris D. <borisd@gmx.com>"]
+license: "ISC"
+tags: ["objc" "bindings" "cocoa" "macos" "gnustep"]
+homepage: "https://github.com/dboris/camlkit"
+bug-reports: "https://github.com/dboris/camlkit/issues"
+depends: [
+  "ocaml" {>= "4.13"}
+  "dune" {>= "3.13"}
+  "ctypes" {>= "0.22.0"}
+  "ctypes-foreign" {>= "0.22.0"}
+  "alcotest" {with-test}
+  "odoc" {with-doc}
+  "conf-gnustep-base" {os != "macos"}
+  "conf-libobjc2" {os != "macos"}
+  "conf-clang" {os != "macos"}
+]
+available: (arch = "arm64" | arch = "x86_64") & (os = "macos" | os = "freebsd")
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+build-env: [
+  [CC = "clang"]
+]
+dev-repo: "git+https://github.com/dboris/camlkit.git"
+url {
+  src: "https://github.com/dboris/camlkit/archive/refs/tags/v0.1.1-alpha.6.tar.gz"
+  checksum: "sha256=343a50bd7b890d4626d2d815d9c100c237083d7c9f90d24f5c3f4da1ebdd2927"
+}
