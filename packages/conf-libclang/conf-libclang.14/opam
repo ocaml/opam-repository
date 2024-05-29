@@ -2,53 +2,60 @@ opam-version: "2.0"
 maintainer: "Thierry Martinez <martinez@nsup.org>"
 authors: "The LLVM team"
 homepage: "http://llvm.org"
-bug-reports: "https://llvm.org/bugs/"
+bug-reports: "https://github.com/thierry-martinez/conf-libclang"
 license: "MIT"
 build-env: [
   [HOMEBREW_NO_AUTO_UPDATE = "1"]
 ]
 build: [
-  ["bash" "-ex" "configure.sh" version]
+  ["ocamlfind" "ocamlopt" "-package" "unix,stdcompat" "-linkpkg" "-o" "configure" "utils.ml" "configure.ml"]
+  ["./configure" "14"]
 ]
 depends: [
-  "conf-bash" {build}
+  "ocamlfind" {build}
+  "stdcompat" {build & >= "19"}
 ]
 depexts: [
   ["llvm@14"] {os = "macos"}
   ["llvm14" "clang14"] {os-distribution = "arch"}
   ["libclang-14-dev" "libclang-cpp14-dev" "llvm-14-dev"]
-    {(os-distribution = "debian" & os-version >= "12") |
-     (os-distribution = "ubuntu" & os-version >= "22.04")}
-  ["libclang-dev" "libclang-cpp-dev" "llvm-dev"] {
-     os-distribution = "debian" & os-version >= "11"}
-  ["libclang-dev" "llvm-dev"] {
-     os-family = "debian" &
-     !(os-distribution = "debian" & os-version >= "11") &
-     !(os-distribution = "ubuntu" & os-version >= "22.04")}
+    {os-distribution = "ubuntu" & os-version >= "22.04"}
+  ["libclang-13-dev" "libclang-cpp13-dev" "llvm-13-dev"]
+    {os-distribution = "ubuntu" & os-version = "21.10"}
+  ["libclang-13-dev" "libclang-cpp13-dev" "llvm-13-dev"]
+    {os-distribution = "ubuntu" & os-version = "21.04"}
+  ["libclang-12-dev" "libclang-cpp12-dev" "llvm-12-dev"]
+    {os-distribution = "ubuntu" & os-version = "20.10"}
+  ["libclang-12-dev" "libclang-cpp12-dev" "llvm-12-dev"]
+    {os-distribution = "ubuntu" & os-version = "20.04"}
+  ["libclang-14-dev" "libclang-cpp14-dev" "llvm-14-dev"] { os-distribution = "debian" & os-version >= "14" }
+  ["libclang-14-dev" "libclang-cpp14-dev" "llvm-14-dev"] { os-distribution = "debian" & os-version = "12" }
+  ["libclang-13-dev" "libclang-cpp13-dev" "llvm-13-dev"] { os-distribution = "debian" & os-version = "11" }
+  ["libclang-13-dev" "libclang-cpp13-dev" "llvm-13-dev"] { os-distribution = "debian" & os-version = "10" }
+  ["clang-devel-14.0.6" "llvm-devel-14.0.6" "llvm-static-14.0.6" "zlib-devel"]
+    {os-distribution = "ol" & os-version >= 8}
+  ["clang14-devel" "llvm14-devel" "llvm14-static" "zlib-devel" "redhat-rpm-config"]
+    {os-distribution = "fedora"}
   ["clang-dev" "llvm-dev" "clang-static"] {os-distribution = "alpine"}
   ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
     {os-distribution = "centos"}
-  ["clang14-devel" "llvm14-devel" "zlib-devel" "redhat-rpm-config"]
-    {os-distribution = "fedora" & os-version >= "37"}
-  ["clang-devel" "llvm-devel" "zlib-devel" "redhat-rpm-config"]
-    {os-distribution = "fedora" & os-version < "37"}
-  ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
-    {os-distribution = "ol" & os-version >= "8"}
   ["llvm-clang-devel"] {os-family = "suse" | os-family = "opensuse"}
-  ["devel/llvm14"] {os = "freebsd"}
   ["sys-devel/clang"] {os-distribution = "gentoo"}
+  ["devel/llvm14"] {os = "freebsd"}
 ]
 x-ci-accept-failures: [
   "oraclelinux-7" # clang-devel is not available
   "alpine-3.13" # unavailable system package 'llvm-dev'
   "alpine-3.14" # unavailable system package 'llvm-dev'
+  "alpine-3.15" # unavailable system package 'llvm-dev'
+  "alpine-3.16" # unavailable system package 'llvm-dev'
   "opensuse-15.3" # unavailable system package 'llvm-clang-devel'
+  "debian-13" "debian-testing" # libclang-n-dev is not available
+  "fedora-40" # clang-devel is not available
+]
+extra-files: [
+  ["utils.ml" "sha512=7c6fc56abc8ee9b85b787aaee8b28b54087c4af748b15c3c03de5dbcd253ade2e52930e0b180b883364c7302de000b2f37f9171b687868c7c52b77ced1cb00eb"]
+  ["configure.ml" "sha512=094741c35cb509803bf76307335b86ebb11a01563b3d3cb1a88091856381a553eadbd5dffa272a1fe9ad9c62eefc45cce97d598e575e877f0d5fe1c164b30b91"]
 ]
 synopsis: "Virtual package relying on the installation of llvm and clang libraries (<= 14.0.x)"
 flags: conf
-extra-source "configure.sh" {
-  src:
-    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-libclang/configure.sh.14"
-  checksum:
-    "sha512=27a0ddec4e5ccf895a279b910c7e0fe130f9b680d4771c409161d6ed5ebefcdc94d54fcb7625c40e49f83a6e1c5c4511b29ab8ddc3ce09f27ca8f77daf2c65be"
-}
