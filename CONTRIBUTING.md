@@ -85,9 +85,6 @@ An opam repository is a tree-like structure of directories and files as follow:
    |- another-pkgname/
       |- another-pkgname.1.0.0/
       |  |- opam
-      |  |- files/
-      |     |- fix1.patch
-      |     |- fix2.patch
       |- another-pkgname.1.0.1/
          |- opam
 |- ...
@@ -109,22 +106,26 @@ url {
 ```
 we recommend using more than one checksum and at least sha256 or stronger. Opam currently supports only md5, sha256 and sha512.
 
-Optionally you might want to integrate files (such as patches) in the repository.
-To do so, create a `files` directory in the directory of your package
-```
-mkdir packages/pkgname/pkgname.version/files/
-```
-then add the files you want to add to this directory. Note that large files are forbidden and the [extra-source](https://opam.ocaml.org/doc/Manual.html#opamsection-extra-sources) section should be used instead.
+Optionally you might want to integrate external files (such as patches). You will need to host them on your server, or https://gist.github.com, or https://github.com/ocaml/opam-source-archives.
 
-Each time you add a file to the `files` directory, you must edit the associated opam file to add the file to the `extra-files` field as follow:
+Add the file you uploaded to the [extra-source](https://opam.ocaml.org/doc/Manual.html#opamsection-extra-sources) section of the opam file as follow:
 ```
-extra-files: [
-  ["the-filename" "md5=the-checksum-for-that-file"]
-  ...
-]
+extra-source "the-filename" {
+  src: "https://my-server/my-file"
+  checksum: [
+    "sha256=the-checksum-for-my-file"
+  ]
+}
 ```
 
-Once all that is done, you need to create a new git branch, commit your change, push it to your own fork 
+If you like to have this file being applied as a patch to the source tree after unpacking, you also need to specify in the opam file:
+```
+patches: [ "the-filename" ]
+```
+
+If you don't specify it as `patches`, the file will be copied to the source directory after unpacking - and be available when building the package.
+
+Once all that is done, you need to create a new git branch, commit your change, push it to your own fork
 ```
 git switch -c release-yourpkg-version
 git add packages/yourpkg/yourpkg.version/
@@ -161,7 +162,7 @@ For example `pkg.1.0.0` is not maintained anymore (be it this specific version o
 
 #### Patches
 
-To fix packages, patches might sometimes be useful. This can be given to a package through the [patches field](https://opam.ocaml.org/doc/Manual.html#opamfield-patches), and either added through the [extra-source section](https://opam.ocaml.org/doc/Manual.html#opamsection-extra-sources) or the [extra-files field and the files/ subdirectory](https://opam.ocaml.org/doc/Manual.html#opamfield-extra-files) (`extra-source` is preferred to avoid making opam-repository too big).
+To fix packages, patches might sometimes be useful. This can be given to a package through the [patches field](https://opam.ocaml.org/doc/Manual.html#opamfield-patches), and added through the [extra-source section](https://opam.ocaml.org/doc/Manual.html#opamsection-extra-sources).
 
 As a rule of thumb, unless urgent, the patch should go through upstream first and only if the maintainer is not responding in a reasonable timeframe, we can then think about including the patch in opam-repository, the focus should be for upstream to do a new release.
 
