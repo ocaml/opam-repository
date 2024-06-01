@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Library to build LDP applications"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "LGPL-3.0-only"
+tags: ["rdf" "semantic web" "solid" "ldp"]
+homepage: "https://zoggy.frama.io/ocaml-ldp/"
+doc: "https://zoggy.frama.io/ocaml-ldp/"
+bug-reports: "https://framagit.org/zoggy/ocaml-ldp/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "cohttp-lwt" {>= "4.0.0"}
+  "fmt" {>= "0.8.9"}
+  "logs" {>= "0.7.0"}
+  "lwt" {>= "5.4.0"}
+  "lwt_ppx" {>= "2.0.3"}
+  "ocaml" {>= "4.14.0"}
+  "ocf" {>= "0.8.0"}
+  "ocf_ppx" {>= "0.8.0"}
+  "rdf" {>= "1.0.0"}
+  "rdf_ppx" {>= "1.0.0"}
+  "sedlex" {>= "2.3"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/ocaml-ldp.git"
+url {
+  src: "https://zoggy.frama.io/ocaml-ldp/releases/ocaml-ldp-0.2.0.tar.gz"
+  checksum: [
+    "md5=7f82ccbdcb07a75f6d2bb7ca226d02df"
+    "sha512=42f8e53d6634de4b19ac5249fcd8e3d2bde13de7a3963e6821eae9e7b46ff914458d3bfde201352fd18b6de14bb276705561d8fd09a09ddd16f001d0f25cf209"
+  ]
+}
