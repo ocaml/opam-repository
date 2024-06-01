@@ -1,0 +1,61 @@
+synopsis: "Language Server Protocol native server for Coq"
+description:
+"""
+Language Server Protocol native server for Coq
+"""
+opam-version: "2.0"
+maintainer: "e@x80.org"
+bug-reports: "https://github.com/ejgallego/coq-lsp/issues"
+homepage: "https://github.com/ejgallego/coq-lsp"
+dev-repo: "git+https://github.com/ejgallego/coq-lsp.git"
+authors: [
+  "Emilio Jesús Gallego Arias <e@x80.org>"
+  "Ali Caglayan <alizter@gmail.com>"
+  "Shachar Itzhaky <shachari@cs.technion.ac.il>"
+  "Ramkumar Ramachandra <r@artagnon.com>"
+]
+license: "LGPL-2.1-or-later"
+doc: "https://ejgallego.github.io/coq-lsp/"
+
+depends: [
+
+  ("ocaml" {>= "5.0"} | ("ocaml" {<= "5.0"} & "memprof-limits" { >= "0.2.1" } ))
+
+  "dune"         { >= "3.2.0" }
+
+  # lsp dependencies
+  "cmdliner"     { >= "1.1.0" }
+  "yojson"       { >= "1.7.0" }
+  "uri"          { >= "4.2.0" }
+  "dune-build-info" { >= "3.2.0" }
+
+  # Petanque deps
+  "ppx_import"          { >= "1.10.0"   }
+
+  # waterproof parser
+  "menhir"       { >= "20220210" }
+
+  # unit testing
+  "ppx_inline_test"     { >= "0.14.1" }
+
+  # Uncomment this for releases
+  "coq"          { >= "8.17" < "8.18"  }
+  "coq-serapi"   { >= "8.17.0+0.17.2" < "8.18"  }
+]
+
+depopts: ["lwt" "logs"]
+
+build: [
+  [ "rm" "-rf" "vendor" ]
+  [ "dune" "build" "-p" name "-j" jobs ]
+]
+run-test: [ [ "dune" "runtest" "-p" name "-j" jobs ] ]
+url {
+  src:
+    "https://github.com/ejgallego/coq-lsp/releases/download/0.1.9%2B8.17/coq-lsp-0.1.9.8.17.tbz"
+  checksum: [
+    "sha256=a89d86ed8b19d09bf3a06acbed690ae2859a7343d9faa03537c76cd492371651"
+    "sha512=edae491b284d5ab586c82cea4003a5b477f41ab25a4659431d4bc8caaee39b62de03b64d088ab8c528416210f88f73d4dfe5efbd32b22c70b75c9d18999c1e00"
+  ]
+}
+x-commit-hash: "674603c5c506e7221244ef6b7b34a73e5a340015"
