@@ -6,10 +6,21 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "Apache-2.0"
 
 depexts: [
-  ["librocksdb-dev"] {os-family = "debian"}
+  ["rocksdb"] {os-distribution = "arch"}
+  ["rocksdb-dev"] {os-distribution = "alpine"} # community package
+  ["librocksdb-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["rocksdb-devel"] {os-distribution = "fedora"}
+  ["rocksdb-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["rocksdb"] {os-distribution = "homebrew" & os = "macos"}
+  ["rocksdb"] {os = "freebsd"}
 ]
 build: [
   ["cc" "-lrocksdb" "main.c"]
+]
+x-ci-accept-failures: [
+  "oraclelinux-7"
+  "oraclelinux-8"
+  "oraclelinux-9"
 ]
 synopsis: "Virtual package relying on a system installation of RocksDB"
 flags: conf
