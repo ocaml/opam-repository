@@ -1,0 +1,61 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: ["Tezos devteam"]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.11.1" }
+  "ocaml" { >= "4.14" }
+  "octez-libs" { = version }
+  "lwt-watcher" { = "0.2" }
+  "lwt-canceler" { >= "0.3" & < "0.4" }
+  "ringo" { >= "1.0.0" }
+  "aches" { >= "1.0.0" }
+  "prometheus" { >= "1.2" }
+  "tezt" { >= "4.0.0" & < "5.0.0" }
+  "tezt-tezos" { with-test & = version }
+  "octez-alcotezt" { with-test & = version }
+  "astring" {with-test}
+  "octez-proto-libs" { = version }
+  "octez-protocol-compiler" { = version }
+  "lwt-exit"
+  "octez-version" { = version }
+  "aches-lwt" { >= "1.0.0" }
+  "index" { >= "1.6.0" & < "1.7.0" }
+  "octez-internal-libs" { = version }
+  "camlzip" { >= "1.11" & < "1.12" }
+  "tar"
+  "tar-unix" { >= "2.0.1" & < "3.0.0" }
+  "ppx_expect"
+  "uri" { >= "3.1.0" }
+  "ocplib-endian"
+  "fmt" { >= "0.8.7" }
+  "data-encoding" { >= "1.0.1" & < "1.1" }
+  "resto-cohttp-self-serving-client" { >= "1.2" }
+  "tezos-benchmark" { = version }
+  "qcheck-alcotest" { with-test & >= "0.20" }
+  "qcheck-core" {with-test}
+  "lwt" { with-test & >= "5.7.0" }
+]
+depopts: [
+  "ledgerwallet-tezos"
+]
+conflicts: [
+  "checkseum" { = "0.5.0" }
+  "ledgerwallet-tezos" { < "0.4.0" }
+]
+build: [
+  ["rm" "-r" "vendors" "contrib"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Octez shell libraries"
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/octez-v20.0/octez-v20.0.tar.bz2"
+  checksum: [
+    "sha256=a1826aa6a424e31c8cb32b9617211f4689dc04739de1be7e7faead404ffac057"
+    "sha512=2aae2802c4bdbce7a949418e0e8e18984eda502d9976ff5ff1c2635a4246ca3a099965c9a79fe758e90eba4a92ac86b8bfdf26dd980b6b612f22f2c0b608f764"
+  ]
+}
