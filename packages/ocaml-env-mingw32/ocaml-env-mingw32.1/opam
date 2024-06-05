@@ -1,0 +1,28 @@
+opam-version: "2.0"
+synopsis: "GCC mingw-w64 OCaml Runtime Dependency (32-bit)"
+description: """
+This package is an internal part of the implementation of the OCaml compiler in
+opam-repository.
+
+This package is used to create an indirection between the OCaml compiler
+packages and conf-mingw-w64-gcc-x86_64. The compiler packages must have one of
+conf-mingw-w64-gcc-i686 or conf-mingw-w64-gcc-x86_64 depending on configuration,
+but if they directly refer to both packages in their depends fields then the
+subsequent installation of the _other_ C compiler package would trigger a
+rebuild of the OCaml compiler package, because it changes its dependency cone.
+By having the compiler packages instead depend on either ocaml-env-mingw64 or
+ocaml-env-mingw32, the installation of conf-mingw-w64-gcc-x86_64 into a switch
+already containing ocaml-env-mingw32 does not trigger a rebuild of the OCaml
+compiler, because ocaml-env-mingw64 is not installed."""
+maintainer: "David Allsopp <david@tarides.com>"
+authors: "David Allsopp"
+license: "CC0-1.0+"
+homepage: "https://opam.ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+depends: [
+  "host-system-mingw" {post}
+  "host-arch-x86_32" {post}
+  "conf-mingw-w64-gcc-i686"
+]
+conflict-class: "ocaml-env-mingw"
+flags: conf

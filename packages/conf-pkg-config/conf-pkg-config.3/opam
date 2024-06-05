@@ -4,9 +4,13 @@ authors: ["Francois Berenger"]
 homepage: "http://www.freedesktop.org/wiki/Software/pkg-config/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "GPL-1.0-or-later"
+depends: [
+  ("host-arch-x86_64" {os = "win32" & os-distribution = "msys2"} & "conf-mingw-w64-pkgconf-x86_64" {os = "win32" & os-distribution = "msys2"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution = "msys2"} & "conf-mingw-w64-pkgconf-i686" {os = "win32" & os-distribution = "msys2"})
+]
 build: [
   ["pkg-config" "--help"] {os != "openbsd" & os != "win32"}
-  ["pkgconf" "--version"] {os = "win32"}
+  ["pkgconf" "--version"] {os = "win32" & os-distribution != "msys2"}
 ]
 depexts: [
   ["pkg-config"] {os-family = "debian" | os-family = "ubuntu"}
