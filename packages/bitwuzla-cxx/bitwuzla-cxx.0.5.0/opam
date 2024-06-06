@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "SMT solver for AUFBVFP (C++ API)"
+description: """
+
+OCaml binding for the SMT solver Bitwuzla C++ API.
+
+Bitwuzla is a Satisfiability Modulo Theories (SMT) solver for the theories of fixed-size bit-vectors, arrays and uninterpreted functions and their combinations. Its name is derived from an Austrian dialect expression that can be translated as “someone who tinkers with bits”."""
+maintainer: ["Frédéric Recoules <frederic.recoules@cea.fr>"]
+authors: ["Frédéric Recoules"]
+license: "MIT"
+tags: ["SMT solver" "AUFBVFP"]
+homepage: "https://bitwuzla.github.io"
+doc: "https://bitwuzla.github.io/docs/ocaml/"
+bug-reports: "https://github.com/bitwuzla/ocaml-bitwuzla/issues"
+depends: [
+  "dune" {>= "3.7"}
+  "ocaml" {>= "4.12"}
+  "conf-git" {build}
+  "conf-gcc" {build}
+  "conf-g++" {build}
+  "zarith"
+  "ppx_inline_test" {with-test & >= "v0.13"}
+  "ppx_expect" {with-test & >= "v0.13"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/bitwuzla/ocaml-bitwuzla.git"
+available: [ arch != "arm32" & (os = "linux" & (os-distribution != "ol" & os-distribution != "centos" | os-version >= 8) | os = "macos" & os-distribution = "homebrew") ]
+url {
+  src:
+    "https://github.com/bitwuzla/ocaml-bitwuzla/releases/download/0.5.0/bitwuzla-cxx-0.5.0.tbz"
+  checksum: [
+    "sha256=aa1c32619e7e4a50467da1b7ba0a8e2629a245713a498e0bf4fc8bf68355895d"
+    "sha512=5e11656a0a41c6102352671b95d4fb347dbeb72925d1cefedbad7f708cee26e9f548bc5f06c5eed1cc52545bd4aa13ffc8ba8ea57a4bcb420c49d1a2412a121c"
+  ]
+}
+x-commit-hash: "c0b2316360544d5ca9b79e950e0e6f4ef96a07f6"
