@@ -14,9 +14,9 @@ jobs:
       - name: Checkout tree
         uses: actions/checkout@v4
 
-      - name: Cache opam
+      - name: Restore opam cache
         id: cache-opam
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: |
             D:\opam\bin
@@ -32,6 +32,15 @@ jobs:
       - name: Init opam
         if: steps.cache-opam.outputs.cache-hit != 'true'
         run: opam init -yn .
+
+      - name: Save opam cache
+        if: steps.cache-opam.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            D:\opam\bin
+            D:\opamroot
+          key: ${{ steps.cache-opam.outputs.cache-primary-key }}
 
       - name: Get changed files
         id: changed-files
