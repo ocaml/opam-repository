@@ -1,6 +1,8 @@
 name: Windows CI
 on:
   pull_request:
+env:
+  OPAMROOT: D:\opamroot
 jobs:
   build:
     strategy:
@@ -17,15 +19,15 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            C:\Program Files\opam\bin
-            C:\Users\runneradmin\AppData\Local\opam
+            D:\opam\bin
+            D:\opamroot
           key: ${{ runner.os }}-opam
 
       - name: Install opam
         if: steps.cache-opam.outputs.cache-hit != 'true'
         run: |
-          Invoke-Expression "& { $(Invoke-RestMethod https://raw.githubusercontent.com/kit-ty-kate/opam/windows-installer.debug/shell/install.ps1) } -OpamBinDir 'C:\Program Files\opam\bin' -NoSetPath -NoAdmin"
-          "C:\Program Files\opam\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          Invoke-Expression "& { $(Invoke-RestMethod https://raw.githubusercontent.com/kit-ty-kate/opam/windows-installer.debug/shell/install.ps1) } -OpamBinDir 'D:\opam\bin' -NoSetPath -NoAdmin"
+          "D:\opam\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Init opam
         if: steps.cache-opam.outputs.cache-hit != 'true'
