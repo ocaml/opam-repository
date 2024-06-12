@@ -28,6 +28,10 @@ jobs:
         run: |
           Invoke-Expression "& { $(Invoke-RestMethod https://raw.githubusercontent.com/kit-ty-kate/opam/windows-installer.debug/shell/install.ps1) } -OpamBinDir 'D:\opam\bin' -NoSetPath -NoAdmin"
 
+      - name: Add opam to PATH
+        run: |
+          "D:\opam\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
       - name: Init opam
         if: steps.cache-opam.outputs.cache-hit != 'true'
         run: opam init --yes --no-setup .
@@ -40,10 +44,6 @@ jobs:
             D:\opam\bin
             D:\opamroot
           key: ${{ steps.cache-opam.outputs.cache-primary-key }}
-
-      - name: Add opam to PATH
-        run: |
-          "D:\opam\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Get changed files
         id: changed-files
