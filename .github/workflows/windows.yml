@@ -1,0 +1,87 @@
+name: Windows CI
+on:
+  pull_request:
+env:
+  OPAMROOT: D:\opamroot
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout tree
+        uses: actions/checkout@v4
+
+      - name: Restore opam cache
+        id: cache-opam
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            D:\opam\bin
+            D:\opamroot
+          key: ${{ runner.os }}-opam
+
+      - name: Install opam
+        if: steps.cache-opam.outputs.cache-hit != 'true'
+        run: |
+          Invoke-Expression "& { $(Invoke-RestMethod https://raw.githubusercontent.com/kit-ty-kate/opam/windows-installer.debug/shell/install.ps1) } -OpamBinDir 'D:\opam\bin' -NoSetPath -NoAdmin"
+
+      - name: Init opam
+        if: steps.cache-opam.outputs.cache-hit != 'true'
+        run: opam init --yes --no-setup .
+
+      - name: Save opam cache
+        if: steps.cache-opam.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            D:\opam\bin
+            D:\opamroot
+          key: ${{ steps.cache-opam.outputs.cache-primary-key }}
+
+      - name: Add opam to PATH
+        run: |
+          "D:\opam\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+
+      - name: List all changed packages
+        id: changed-packages
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        run: |
+          $output = @()
+          Foreach ($file in ($env:ALL_CHANGED_FILES).Split(" ")) {
+            switch -Regex ($file) {
+              '^packages\\[^\\]*\\([^\\]*)\\.*' { $output += "$($matches[1])"; Break }
+              default { Write-Host "$file skipped"; Break }
+            }
+          }
+          $outputJson = $output | ConvertTo-Json
+          "data<<@@@" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          $outputJson | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "@@@" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Install packages
+        env:
+          ALL_CHANGED_PACKAGES: ${{ steps.changed-packages.outputs.data }}
+        run: |
+          $pkgs = $env:ALL_CHANGED_PACKAGES | ConvertFrom-Json
+          $failed = $false
+          opam update
+          Foreach ($pkg in $pkgs) {
+            opam install --confirm-level=unsafe-yes "$pkg"
+            switch ($LASTEXITCODE) {
+              0 { Break }
+              20 { Write-Host "$pkg is not installable. Skip."; Break }
+              31 { Write-Host "$pkg failed to build."; $failed = $true; Break }
+              default { throw "Unexpected error $_" }
+            }
+          }
+          if ($failed) {
+            throw "build failed"
+          }
