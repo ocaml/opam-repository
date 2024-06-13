@@ -1,5 +1,8 @@
 name: Windows CI
 on:
+  push:
+    branches:
+      - 'master'
   pull_request:
 env:
   OPAMROOT: D:\opamroot
@@ -47,10 +50,12 @@ jobs:
 
       - name: Get changed files
         id: changed-files
+        if: github.event_name != 'push'
         uses: tj-actions/changed-files@v44
 
       - name: List all changed packages
         id: changed-packages
+        if: github.event_name != 'push'
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
@@ -69,6 +74,7 @@ jobs:
       - name: Install packages
         env:
           ALL_CHANGED_PACKAGES: ${{ steps.changed-packages.outputs.data }}
+        if: github.event_name != 'push'
         run: |
           $pkgs = $env:ALL_CHANGED_PACKAGES | ConvertFrom-Json
           $failed = $false
