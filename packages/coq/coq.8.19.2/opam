@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "The Coq Proof Assistant"
+description: """
+Coq is a formal proof management system. It provides
+a formal language to write mathematical definitions, executable
+algorithms and theorems together with an environment for
+semi-interactive development of machine-checked proofs.
+
+Typical applications include the certification of properties of
+programming languages (e.g. the CompCert compiler certification
+project, or the Bedrock verified low-level programming library), the
+formalization of mathematics (e.g. the full formalization of the
+Feit-Thompson theorem or homotopy type theory) and teaching."""
+maintainer: ["The Coq development team <coqdev@inria.fr>"]
+authors: ["The Coq development team, INRIA, CNRS, and contributors"]
+license: "LGPL-2.1-only"
+homepage: "https://coq.inria.fr/"
+doc: "https://coq.github.io/doc/"
+bug-reports: "https://github.com/coq/coq/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "coq-core" {= version}
+  "coq-stdlib" {= version}
+  "coqide-server" {= version}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/coq/coq.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+
+url {
+  src: "https://github.com/coq/coq/releases/download/V8.19.2/coq-8.19.2.tar.gz"
+  checksum: [
+    "md5=5d1187d5e44ed0163f76fb12dabf012e"
+    "sha512=91bc81530fa4f6498961583ad51eac5001f139881788b88e360a866ad8e2a6e2c5bce86d1a580ab4cd4782bf49d48318767df82471ce33ba3ac143e5569ad33c"
+  ]
+}
