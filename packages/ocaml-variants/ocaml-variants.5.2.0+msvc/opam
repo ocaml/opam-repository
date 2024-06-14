@@ -1,0 +1,97 @@
+opam-version: "2.0"
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+synopsis: "OCaml 5.2.0 with MSVC ports restored"
+description: """
+This package backports #12839, #12896, #12909 and #12954 on to OCaml 5.2.0,
+allowing the MSVC ports to be used."""
+maintainer: "David Allsopp <david@tarides.com>"
+authors: [
+  "Xavier Leroy"
+  "Damien Doligez"
+  "Alain Frisch"
+  "Jacques Garrigue"
+  "Didier Rémy"
+  "Jérôme Vouillon"
+]
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git+https://github.com/ocaml/ocaml.git#5.2"
+depends: [
+  # This is OCaml 5.2.0
+  "ocaml" {= "5.2.0" & post}
+
+  # General base- packages
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-domains" {post}
+  "base-nnp" {post}
+
+  # The Windows ports explicitly select the architecture (see below) this
+  # facility is not yet available for other platforms.
+  "host-arch-x86_32" {os != "win32" & arch = "x86_32" & post}
+  ("host-arch-x86_64" {os != "win32" & arch = "x86_64" & post} |
+   ("host-arch-x86_32" {os != "win32" & arch = "x86_64" & post} & "ocaml-option-32bit" {os != "win32" & arch = "x86_64"}))
+  "host-arch-unknown" {os != "win32" & arch != "arm32" & arch != "arm64" & arch != "ppc64" & arch != "riscv64" & arch != "s390x" & arch != "x86_32" & arch != "x86_64" & post}
+
+  # Port selection (Windows)
+  # amd64 MSVC only
+  ("arch-x86_64" {os = "win32" & arch = "x86_64"} &
+    "system-msvc" & "ocaml-option-no-compression" {os = "win32"} |
+  # i686 MSVC only
+   "arch-x86_32" {os = "win32"} & "ocaml-option-bytecode-only" {os = "win32"} &
+     "system-msvc" & "ocaml-option-no-compression" {os = "win32"})
+
+  # Support Packages
+  "flexdll" {>= "0.42" & os = "win32"}
+  "winpthreads"
+]
+conflict-class: "ocaml-core-compiler"
+flags: [ compiler avoid-version ]
+build-env: MSYS2_ARG_CONV_EXCL = "*"
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+x-env-path-rewrite: [
+  [CAML_LD_LIBRARY_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
+]
+build: [
+  [
+    "./configure"
+    "--host=x86_64-pc-windows"  {system-msvc:installed & arch-x86_64:installed}
+    "--host=i686-pc-windows"    {system-msvc:installed & arch-x86_32:installed}
+    "--prefix=%{prefix}%"
+    "--docdir=%{doc}%/ocaml"
+    "--with-flexdll=%{flexdll:share}%" {os = "win32" & flexdll:installed}
+    "--with-winpthreads-msvc=%{winpthreads:share}%" {system-msvc:installed}
+    "-C"
+    "--with-afl" {ocaml-option-afl:installed}
+    "--disable-native-compiler" {ocaml-option-bytecode-only:installed}
+    "--disable-flat-float-array" {ocaml-option-no-flat-float-array:installed}
+    "--enable-flambda" {ocaml-option-flambda:installed}
+    "--enable-frame-pointers" {ocaml-option-fp:installed}
+    "--without-zstd" {ocaml-option-no-compression:installed}
+    "--disable-warn-error"
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/dra27/ocaml/archive/reb27-5.2.tar.gz"
+  checksum: "sha256=7886724949f985bcf2b050cfcabc3a6126de5a18f8bc6f3d853781aaa910e2b8"
+}
+depopts: [
+  "ocaml-option-32bit"
+  "ocaml-option-afl"
+  "ocaml-option-bytecode-only"
+  "ocaml-option-no-flat-float-array"
+  "ocaml-option-flambda"
+  "ocaml-option-fp"
+  "ocaml-option-no-compression"
+]
+extra-source "ocaml-variants.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/ocaml-variants/ocaml-variants.install"
+  checksum: [
+    "sha256=79f2a1a5044a91350a0eb6ce12e261a72a2855c094c425cddf3860e58c486678"
+    "md5=3e969b841df1f51ca448e6e6295cb451"
+  ]
+}
