@@ -18,12 +18,17 @@ build-env: [
   [PATH += "%{ocaml-secondary-compiler:share}%/bin"]
 ]
 build: [
-  ["autoconf"]
-  ["./configure" "--prefix=%{prefix}%" "--enable-flambda2" "--enable-runtime5=yes"]
-  [make "-j%{jobs}%"]
+  ["autoconf"] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH autoconf"] { opam-version < "2.1.5" }
+  ["./configure" "--prefix=%{prefix}%" "--enable-flambda2" "--enable-runtime5=yes"] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH ./configure --prefix=%{prefix}% --enable-flambda2 --enable-runtime5=yes"] { opam-version < "2.1.5" }
+  [make "-j%{jobs}%"] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH make -j%{jobs}%"] { opam-version < "2.1.5" }
 ]
-install:
-  [make "install"]
+install: [
+  [make "install"] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH make install"] { opam-version < "2.1.5" }
+]
 maintainer: "anil@recoil.org"
 homepage: "https://github.com/ocaml-flambda/flambda-backend/"
 bug-reports: "https://github.com/ocaml-flambda/flambda-backend/issues"
@@ -38,4 +43,3 @@ authors: [ "The Jane Street compiler team"
   "Didier Rémy"
   "Jérôme Vouillon"
 ]
-available: opam-version >= "2.1.5"
