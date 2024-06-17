@@ -12,10 +12,12 @@ build-env: [
   [PATH += "%{ocaml-secondary-compiler:share}%/bin"]
 ]
 build: [
-  ["dune" "build"]
+  ["dune" "build"] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin dune build"] { opam-version < "2.1.5"}
 ]
 install: [
-  ["dune" "install" "--prefix" ocaml-secondary-compiler:share]
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin dune install --prefix %{ocaml-secondary-compiler:share}%"] { opam-version < "2.1.5"}
+  ["dune" "install" "--prefix" ocaml-secondary-compiler:share] { opam-version >= "2.1.5" }
 ]
 depends: [
   "dune-secondary"
@@ -30,4 +32,3 @@ url {
     "sha512=37a88b3ea0bde6089e5fbf0c1f10c1867c4edcd033ed3d5b75e7ed93e14ddd4f4c4db96baf638a054f65e294b83411497615c7fc14c6ff3a2a007e70f9d12c98"
   ]
 }
-available: opam-version >= "2.1.5"

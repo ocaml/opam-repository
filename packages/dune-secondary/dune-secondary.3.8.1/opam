@@ -37,11 +37,14 @@ conflicts: [
 dev-repo: "git+https://github.com/ocaml/dune.git"
 build-env: [PATH += "%{ocaml-secondary-compiler:share}%/bin"]
 build: [
-  ["ocaml" "boot/bootstrap.ml" "-j" jobs]
-  ["./_boot/dune.exe" "build" "dune.install" "--release" "--profile" "dune-bootstrap" "-j" jobs]
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin ocaml boot/bootstrap.ml -j %{jobs}%"] { opam-version < "2.1.5"}
+  ["ocaml" "boot/bootstrap.ml" "-j" jobs] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin ./_boot/dune.exe build dune.install --release --profile dune-bootstrap -j %{jobs}%" ] { opam-version < "2.1.5" }
+  ["./_boot/dune.exe" "build" "dune.install" "--release" "--profile" "dune-bootstrap" "-j" jobs] { opam-version >= "2.1.5" }
 ]
 install: [
-  ["./_boot/dune.exe" "install" "dune" "--prefix" "%{ocaml-secondary-compiler:share}%"]
+  ["./_boot/dune.exe" "install" "dune" "--prefix" "%{ocaml-secondary-compiler:share}%"] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin ./_boot/dune.exe install dune --prefix %{ocaml-secondary-compiler:share}%"] { opam-version < "2.1.5" }
 ]
 depends: [
   "ocaml-secondary-compiler" {>="4.14.1"}
@@ -55,4 +58,3 @@ url {
     "sha512=6857b64e7ca8ba452937539d5996c8d0941b25d82313cfad9e1e6b835a04fb86605beccdc86400cc705ad6a969171524091ab6981df87629b542cc172b38746b"
   ]
 }
-available: opam-version >= "2.1.5"
