@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "Configuration for the mingw-w64 Cygwin packages in opam"
+description: """
+The mingw-w64 ports of OCaml require access to both GCC and the assembler. This
+package performs two tasks. Firstly, it adds the directory containing the
+runtime DLLS to PATH; for example, a typical Cygwin installation requires
+C:\\cygwin64\\usr\\x86_64-w64-mingw32\\sys-root\\mingw\\bin
+to be added to PATH.
+
+Secondly, for opam's internally managed Cygwin installation, it installs shim
+executables to provide the cygpath utility along with all tool-prefixed
+programs from the -gcc-core, -gcc-g++ and -binutils packages from the
+mingw64-i686 and mingw64-x86_64 package sets."""
+maintainer: "David Allsopp <david@tarides.com>"
+authors: "David Allsopp"
+license: "CC0-1.0+"
+homepage: "https://opam.ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+# os = "win32" & os-distribution = "cygwin" => opam-version >= "2.2.0"
+available: os = "win32" & os-distribution = "cygwin"
+dev-repo: "git+https://github.com/dra27/mingw-w64-shims.git"
+build: [
+  # i686-gcc-core must appear before x86_64-gcc-core in this list
+  ["sh" "./gen_config.sh" name
+        "i686-binutils" {conf-mingw-w64-gcc-i686:installed}
+        "i686-gcc-core" {conf-mingw-w64-gcc-i686:installed}
+        "i686-gcc-g++-%{?conf-mingw-w64-g++-i686:installed:}%"
+        "x86_64-binutils" {conf-mingw-w64-gcc-x86_64:installed}
+        "x86_64-gcc-core" {conf-mingw-w64-gcc-x86_64:installed}
+        "x86_64-gcc-g++-%{?conf-mingw-w64-g++-x86_64:installed:}%"
+        "pkgconf" {conf-pkg-config:installed}]
+]
+depends: ("conf-mingw-w64-gcc-x86_64" | "conf-mingw-w64-gcc-i686")
+depopts: [
+  "conf-mingw-w64-g++-i686"
+  "conf-mingw-w64-g++-x86_64"
+  "conf-pkg-config"
+]
+setenv: [
+  [ PATH += "%{_:runtime-x86_64}%" ]
+  [ PATH += "%{_:runtime-i686}%" ]
+]
+url {
+  src:
+    "https://github.com/dra27/mingw-w64-shims/archive/refs/tags/0.2.0.tar.gz"
+  checksum: [
+    "sha256=c152e3fcc7f22d61880a2f7f044027e6707ad7c22e5a75651e99925cc09ad5b8"
+    "sha512=8390a07266755f284c8cb8c57e821ec19b2abf3a0d278c48799b4c038585a5607f98cc3ea57fa06323d176a86013fd1fd05321daab6e539d914c0477befa2f20"
+  ]
+}
