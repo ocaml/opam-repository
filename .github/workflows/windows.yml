@@ -80,14 +80,17 @@ jobs:
           $failed = $false
           opam update
           Foreach ($pkg in $pkgs) {
-            opam install --confirm-level=unsafe-yes "$pkg"
+            Write-Host "::group::Testing `e[1;34m$pkg`e[0m"
+            opam install --color=always --confirm-level=unsafe-yes "$pkg"
+            Write-Host "::endgroup::"
             switch ($LASTEXITCODE) {
               0 { Break }
-              5 { Write-Host "$pkg is not installable. Skip."; Break } # TODO: Remove when https://github.com/ocaml/opam/issues/6017 is fixed
-              20 { Write-Host "$pkg is not installable. Skip."; Break }
-              31 { Write-Host "$pkg failed to build."; $failed = $true; Break }
+              5 { Write-Host "$pkg is not installable. `e[1;33mSkip`e[0m."; Break } # TODO: Remove when https://github.com/ocaml/opam/issues/6017 is fixed
+              20 { Write-Host "$pkg is not installable. `e[1;33mSkip`e[0m."; Break }
+              31 { Write-Host "`e[1;31m$pkg failed to build`e[0m."; $failed = $true; Break }
               default { throw "Unexpected error $_" }
             }
+            Write-Host
           }
           if ($failed) {
             throw "build failed"
