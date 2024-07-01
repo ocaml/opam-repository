@@ -1,0 +1,65 @@
+opam-version: "2.0"
+synopsis: "Libbpf bindings"
+description: "Wrapped libbpf api's for writing BPF user programs in OCaml"
+maintainer: ["Lee Koon Wen"]
+authors: ["Lee Koon Wen"]
+license: ["ISC" "BSD-3-Clause"]
+tags: ["bindings" "bpf" "libbpf"]
+homepage: "https://github.com/koonwen/ocaml-libbpf"
+doc: "https://koonwen.github.io/ocaml-libbpf"
+bug-reports: "https://github.com/koonwen/ocaml-libbpf/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "dune" {>= "3.13"}
+  "ctypes" {>= "0.22.0"}
+  "ppx_deriving"
+  "ppx_expect"
+  "conf-zlib"
+  "conf-clang"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/koonwen/ocaml-libbpf.git"
+# eBPF features by kernel version https://github.com/iovisor/bcc/blob/master/docs/kernel-versions.md
+# Fix to kernel >= 5.15 to allow executing syscalls
+available: [ os = "linux" &
+	   (( os-distribution = "debian" & os-version >= "12" )    |      # Linux 6.1
+ 	    ( os-distribution = "ubuntu" & os-version >= "23.04" ) |      # Linux 6.2
+	    ( os-distribution = "fedora" & os-version >= "38" )    |      # Linux 6.2
+	    ( os-distribution = "opensuse-leap" & os-version >= "15.6" )) # Linux 6.4
+	   ]
+
+# Need to extend to the rest of the linux distros
+depexts: [
+  # libbpf headers and library archive
+  ["libbpf-dev"] { os-distribution = "ubuntu"     # 1.1.0
+                 | os-distribution = "debian"     # 1.1.0
+		 | os-distribution = "opensuse"}  # 1.2.2
+  ["libbpf-devel"] {os-distribution = "fedora"}   # 1.1.0
+
+  # bpftool to generate vmlinux.h
+  [ "linux-tools-common" ] {os-distribution = "ubuntu"}
+  ["bpftool"] {os-distribution = "debian" | "fedora" | "opensuse-leap" }
+]
+url {
+  src:
+    "https://github.com/koonwen/ocaml-libbpf/releases/download/v0.1.0/ocaml_libbpf-0.1.0.tbz"
+  checksum: [
+    "sha256=7c935588670addc08f75be1ec0297484673a71ef70bf1feb726ea45320baa5b1"
+    "sha512=04172dc27d1e8fb5a2c6ba17abd5019d2937fc9121fe664a254d676447247ec6c18867f8f43e8299d137925d94b86e9deee02194ee5249a4824ab6ee36862cc2"
+  ]
+}
+x-commit-hash: "2c59a47546256d679875d4c21a095e73239f5ed3"
