@@ -4,8 +4,17 @@ homepage: "http://www.zlib.net/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: ["Jean-loup Gailly" "Mark Adler"]
 license: "zlib"
-build: ["pkg-config" "zlib"] {os != "macos"}
-depends: ["conf-pkg-config" {build}]
+build:
+  ["pkgconf" {os = "win32" & os-distribution = "cygwin"}
+   "pkg-config" {os != "win32" | os-distribution != "cygwin"}
+   "--personality=i686-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_32:installed}
+   "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_64:installed}
+   "zlib"]
+depends: [
+  "conf-pkg-config" {build}
+  (("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-zlib-i686" {os = "win32" & os-distribution != "cygwinports"}) |
+   ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-zlib-x86_64" {os = "win32" & os-distribution != "cygwinports"}))
+]
 depexts: [
   ["zlib-dev"] {os-distribution = "alpine"}
   ["zlib1g-dev"] {os-family = "debian"}
