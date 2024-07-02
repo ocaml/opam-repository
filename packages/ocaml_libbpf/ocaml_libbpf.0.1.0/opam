@@ -1,0 +1,65 @@
+opam-version: "2.0"
+synopsis: "Libbpf bindings"
+description: "Wrapped libbpf api's for writing BPF user programs in OCaml"
+maintainer: ["Lee Koon Wen"]
+authors: ["Lee Koon Wen"]
+license: ["ISC" "BSD-3-Clause"]
+tags: ["bindings" "bpf" "libbpf"]
+homepage: "https://github.com/koonwen/ocaml-libbpf"
+doc: "https://koonwen.github.io/ocaml-libbpf"
+bug-reports: "https://github.com/koonwen/ocaml-libbpf/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "dune" {>= "3.13"}
+  "ctypes" {>= "0.22.0"}
+  "ppx_deriving"
+  "ppx_expect"
+  "conf-zlib"
+  "conf-clang"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/koonwen/ocaml-libbpf.git"
+# eBPF features by kernel version https://github.com/iovisor/bcc/blob/master/docs/kernel-versions.md
+# Fix to kernel >= 6.1 to provide bound BPF map types
+available: [ os = "linux" &
+	   (( os-distribution = "debian" & os-version >= "12" )    |      # Linux 6.1
+ 	    ( os-distribution = "ubuntu" & os-version >= "23.04" ) |      # Linux 6.2
+	    ( os-distribution = "fedora" & os-version >= "38" )    |      # Linux 6.2
+	    ( os-distribution = "opensuse-leap" & os-version >= "15.6" )) # Linux 6.4
+	   ]
+
+# Need to extend to the rest of the linux distros
+depexts: [
+  # libbpf headers and library archive
+  ["libbpf-dev"] { os-distribution = "ubuntu"     # 1.1.0
+                 | os-distribution = "debian" }   # 1.1.0
+  ["libbpf-devel"] {os-distribution = "fedora"    # 1.1.0
+  		  | os-distribution = "opensuse"} # 1.2.2
+
+  # bpftool to generate vmlinux.h
+  [ "linux-tools-common" ] {os-distribution = "ubuntu"}
+  ["bpftool"] {os-distribution = "debian" | "fedora" | "opensuse-leap" }
+]
+url {
+  src:
+    "https://github.com/koonwen/ocaml-libbpf/releases/download/v0.1.0/ocaml_libbpf-0.1.0.tbz"
+  checksum: [
+    "sha256=5577bdec4179d1b9a68e48163af0fce7ebbbae60f363c51dc1a6467f5f3abbb4"
+    "sha512=da1b2c697e56bf2b1096369006f4f3c898d68c5d55093c1142d5223fcbf1345ff48a7b96ae912a92d8273696be84ec7f61fc30e406b703299835facf42f37ba2"
+  ]
+}
+x-commit-hash: "e4e4ef0baf9bd8c762bcd6e447405284dd3c482d"
