@@ -1,0 +1,69 @@
+opam-version: "2.0"
+maintainer: "contact@tezos.com"
+authors: ["Tezos devteam"]
+homepage: "https://www.tezos.com/"
+bug-reports: "https://gitlab.com/tezos/tezos/issues"
+dev-repo: "git+https://gitlab.com/tezos/tezos.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.11.1" }
+  "ocaml" { >= "4.14" }
+  "data-encoding" { >= "1.0.1" & < "1.1" }
+  "octez-libs" { = version }
+  "octez-shell-libs" { = version }
+  "octez-node-config" { = version }
+  "octez-version" { = version }
+]
+depopts: [
+  "octez-protocol-005-PsBabyM1-libs"
+  "octez-protocol-006-PsCARTHA-libs"
+  "octez-protocol-007-PsDELPH1-libs"
+  "octez-protocol-008-PtEdo2Zk-libs"
+  "octez-protocol-009-PsFLoren-libs"
+  "octez-protocol-010-PtGRANAD-libs"
+  "octez-protocol-011-PtHangz2-libs"
+  "octez-protocol-012-Psithaca-libs"
+  "octez-protocol-013-PtJakart-libs"
+  "octez-protocol-014-PtKathma-libs"
+  "octez-protocol-015-PtLimaPt-libs"
+  "octez-protocol-016-PtMumbai-libs"
+  "octez-protocol-017-PtNairob-libs"
+  "octez-protocol-018-Proxford-libs"
+  "octez-protocol-019-PtParisB-libs"
+  "octez-protocol-020-PsParisC-libs"
+  "octez-protocol-alpha-libs"
+]
+conflicts: [
+  "octez-protocol-005-PsBabyM1-libs" { != version }
+  "octez-protocol-006-PsCARTHA-libs" { != version }
+  "octez-protocol-007-PsDELPH1-libs" { != version }
+  "octez-protocol-008-PtEdo2Zk-libs" { != version }
+  "octez-protocol-009-PsFLoren-libs" { != version }
+  "octez-protocol-010-PtGRANAD-libs" { != version }
+  "octez-protocol-011-PtHangz2-libs" { != version }
+  "octez-protocol-012-Psithaca-libs" { != version }
+  "octez-protocol-013-PtJakart-libs" { != version }
+  "octez-protocol-014-PtKathma-libs" { != version }
+  "octez-protocol-015-PtLimaPt-libs" { != version }
+  "octez-protocol-016-PtMumbai-libs" { != version }
+  "octez-protocol-017-PtNairob-libs" { != version }
+  "octez-protocol-018-Proxford-libs" { != version }
+  "octez-protocol-019-PtParisB-libs" { != version }
+  "octez-protocol-020-PsParisC-libs" { != version }
+  "octez-protocol-alpha-libs" { != version }
+  "stdcompat" {< "19"}
+]
+build: [
+  ["rm" "-r" "vendors" "contrib"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Tezos: `octez-codec` binary to encode and decode values"
+url {
+  src: "https://gitlab.com/tezos/tezos/-/archive/octez-v20.1/tezos-octez-v20.1.tag.bz2"
+  checksum: [
+    "sha256=ddfb5076eeb0b32ac21c1eed44e8fc86a6743ef18ab23fff02d36e365bb73d61"
+    "sha512=d22a827df5146e0aa274df48bc2150b098177ff7e5eab52c6109e867eb0a1f0ec63e6bfbb0e3645a6c2112de3877c91a17df32ccbff301891ce4ba630c997a65"
+  ]
+}
+available: os != "win32"
