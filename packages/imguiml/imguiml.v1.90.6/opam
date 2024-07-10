@@ -1,0 +1,66 @@
+opam-version: "2.0"
+synopsis: "ImGUI bindings to OCaml"
+description: """
+Imguiml provides bindings to ImGui and ImGui_Impl for GLFW and OpenGL3 in OCaml,
+through cimgui.
+The version follows the version of ImGui for which the package is providing
+bindings.
+The docking branch is the only one for which we provide bindings.
+"""
+maintainer: ["Emilien Lemaire <emilien.lem@icloud.com>"]
+authors: ["Emilien Lemaire <emilien.lem@icloud.com>"]
+license: "MIT"
+tags: ["graphics" "imgui" "ctypes" "bindings"]
+homepage: "https://github.com/emilienlemaire/imguiml"
+doc: "https://emilienlemaire.github.io/imguiml"
+bug-reports: "https://github.com/emilienlemaire/imguiml/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "dune" {>= "3.15"}
+  "goblint-cil" {>= "2.0.0"}
+  "ctypes"
+  "ctypes-foreign" {>= "0.21.1"}
+  "odoc" {with-doc}
+  "sherlodoc" {with-doc}
+  "ppx_expect" {with-test}
+  "conf-cmake"
+  "conf-glew"
+  "conf-glfw3"
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ] { os != "macos"}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+    "--profile"
+    "macosx"
+  ] { os = "macos" }
+]
+dev-repo: "git+https://github.com/emilienlemaire/imguiml.git"
+available: arch != "s390x" & arch != "arm64"
+url {
+  src:
+    "https://github.com/emilienlemaire/imguiml/archive/refs/tags/v1.90.6.tar.gz"
+  checksum: [
+    "sha256=1df5295465d7a4aace1eb8e79cca533bd2a33639db638961dc98ab21bc402349"
+    "sha512=ad8f8527d9e58f39b7ca4d985beae322887c65cc0388fd72b367b247bbc4dd45c1da04ad045dd3649b38bf96fca42b8c3f903e8f11aa5f5800a0a542084c2c22"
+  ]
+}
