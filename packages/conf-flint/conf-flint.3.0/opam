@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer: "bobot"
+homepage: "http://flint.org"
+bug-reports: "https://github.com/flintlib/flint2.git"
+license: "LGPL-2.1-only"
+build: [
+  ["sh" "-exc" "printf \"#include  <flint/flint.h>\\n#if __FLINT_VERSION < 3\\n#error \\\"Flint (>= 3.0) is not accessible\\\"\\n#endif\" > test.c"]
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos" & os != "win32"}
+  [
+		"sh"
+		"-exc"
+		"$(ocamlc -config-var c_compiler) -c $CFLAGS -I/usr/local/include test.c"
+	] {os = "win32" & os-distribution = "cygwinports"}
+  [
+    "sh"
+    "-exc"
+    "cc -c $CFLAGS -I/opt/homebrew/include -I/opt/local/include -I/usr/local/include test.c"
+  ] {os = "macos"}
+]
+depexts: [
+  ["libflint-dev"] {os-distribution = "debian"}
+  ["libflint-dev"] {os-distribution = "ubuntu" }
+  ["flint"] {os = "macos" & os-distribution = "homebrew"}
+  ["flint"] {os-distribution = "macports" & os = "macos"}
+  ["flint" "flint-devel"] {os-distribution = "centos"}
+  ["flint" "flint-devel"] {os-distribution = "fedora"}
+  ["flint" "flint-devel"] {os-distribution = "ol"}
+  ["flint-dev"] {os-distribution = "alpine"}
+  ["flint-devel"] {os-family = "opensuse"}
+  ["libflint-devel"] {os = "win32" & os-distribution = "cygwinports"}
+  ["flint"] {os-distribution = "nixos"}
+  ["flint"] {os-distribution = "arch"}
+]
+available: [
+   !(os-distribution = "ubuntu" & os-version < "24.04") &
+   !(os-distribution = "debian" & os-version <= "12") &
+   !(os-distribution = "fedora" & os-version <= "39") &
+   !(os-family = "suse")
+]
+
+synopsis: "Virtual package relying on a Flint lib system installation"
+description:
+  "This package can only install if the Flint lib version 3 is installed on the system."
+post-messages: "You can try to install conf-flint.1 which works with version 2 of the library" { failure }
+authors: ["William Hart" "Sebastian Pancratz" "Andy Novocin" "Fredrik Johansson"
+          "Tom Bachmann" "Mike Hansen" "Daniel Schultz"]
+flags: conf
