@@ -30,18 +30,20 @@ depends: [
   "dune" {>= "3.7"}
   "ocamlfind"
   "apron" {>= "0.9.15"}
-  "menhir"
+  "menhir" {>= "20180528"}
   "mlgmpidl"
   "yojson" {>= "1.6.0"}
-  "zarith" {>= "1.4"}
+  "zarith" {>= "1.10"}
   "odoc" {with-doc}
 ]
 depopts: ["elina"]
 available: !(arch = "x86_32")
 build: [
-  ["./configure"]
+  ["./configure"] {os != "macosx"}
+  ["./configure" "CLANG=/usr/local/opt/llvm/bin/clang" "LLVMCONFIG=/usr/local/opt/llvm/bin/llvm-config"] {os = "macosx" & arch = "x86_64"}
+  ["./configure" "CLANG=/opt/homebrew/opt/llvm/bin/clang" "LLVMCONFIG=/opt/homebrew/opt/llvm/bin/llvm-config"] {os = "macosx" & arch = "arm64"}
   [make]
-  [make tests] {with-test}
+  [make "tests"] {with-test}
 ]
 install: [make "install"]
 depexts: [
@@ -73,6 +75,7 @@ depexts: [
     {os-distribution = "opensuse-leap"}
   ["sys-devel/clang"] {os-distribution = "gentoo"}
   ["llvm"] {os = "macos"}
+  ["devel/llvm"] {os = "freebsd"}
 ]
 dev-repo: "git+https://gitlab.com/mopsa/mopsa-analyzer.git"
 url {
