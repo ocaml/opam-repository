@@ -85,3 +85,11 @@ extra-source "ocaml-variants.install" {
   ]
 }
 available: os != "win32"
+# Back-ported ocaml/ocaml#13100 (5.2.0) - fixes the misdetection of zstd with
+# ocaml-option-musl
+patches: ["zstd-detection.patch"]
+extra-source "zstd-detection.patch" {
+  src: "https://github.com/ocaml/ocaml/commit/baf65b91c51bb04b09ecc98b94ddd4ba3b446912.patch?full_index=1"
+  checksum: "sha256=958e061bc3b967e32a5606d5109ed7faacb9b793fe2de0e8f8697c23a178c5cf"
+}
+available: arch = "x86_64" & (os = "linux" | os = "macos")
