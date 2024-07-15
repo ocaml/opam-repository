@@ -20,6 +20,8 @@ build: [
     "-debug"
     "-native-compiler" "yes" {coq-native:installed} "no" {!coq-native:installed}
   ]
+  # Applying this upstream fix: https://github.com/coq/coq/pull/17459
+  ["sed" "-e" "s/CAMLP4DEPS=.*$/CAMLP4DEPS=$\\{shell LC_ALL=C sed -n -e 's@^(\\\\*.*camlp4deps: \"\\\\(.*\\\\)\".*@\\\\1@p' $\\{1}}/" "-i.bak" "Makefile.build"]
   [make "-j%{jobs}%"]
 ]
 remove: ["rm" "-R" "%{lib}%/coq"]
