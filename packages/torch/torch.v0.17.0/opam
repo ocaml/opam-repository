@@ -1,0 +1,55 @@
+opam-version: "2.0"
+maintainer: "Jane Street developers"
+authors: ["Jane Street Group, LLC"]
+homepage: "https://github.com/janestreet/torch"
+bug-reports: "https://github.com/janestreet/torch/issues"
+dev-repo: "git+https://github.com/janestreet/torch.git"
+doc: "https://ocaml.janestreet.com/ocaml-core/latest/doc/torch/index.html"
+license: "MIT"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml"               {>= "5.1.0"}
+  "base"                {>= "v0.17" & < "v0.18"}
+  "core"                {>= "v0.17" & < "v0.18"}
+  "core_unix"           {>= "v0.17" & < "v0.18"}
+  "ppx_bench"           {>= "v0.17" & < "v0.18"}
+  "ppx_inline_test"     {>= "v0.17" & < "v0.18"}
+  "ppx_jane"            {>= "v0.17" & < "v0.18"}
+  "ppx_string"          {>= "v0.17" & < "v0.18"}
+  "stdio"               {>= "v0.17" & < "v0.18"}
+  "ctypes"              {>= "0.18.0"}
+  "ctypes-foreign"
+  "dune"                {>= "3.11.0"}
+  "dune-configurator"
+  "ocaml-compiler-libs" {>= "v0.11.0"}
+  "libtorch"            {with-test}
+]
+depopts: [
+  "libtorch"
+]
+available: arch != "arm32" & arch != "x86_32"
+conflicts: [
+  "libtorch" {< "2.1.0" | >= "2.2.0"}
+]
+synopsis: "Torch bindings for OCaml"
+description: "
+The ocaml-torch project provides some OCaml bindings for the Torch library.
+This brings to OCaml NumPy-like tensor computations with GPU acceleration and
+tape-based automatic differentiation.
+"
+url {
+  src: "https://github.com/janestreet/torch/archive/refs/tags/v0.17.0.tar.gz"
+  checksum: [
+    "md5=8e189f338b454bbefc4965d827f5a0cc"
+    "sha512=f96155624705bc500734d5dbb18255436c1e4646f89ddc0c47260d79003543126c68e206267b3487bdf25c4f7168ab694ba89b661304c4735c159a91630f97cd"
+  ]
+}
+post-messages: [
+    "Installation of ocaml-torch failed. This likely happened
+because there is no system installation of libtorch to compile
+OCaml bindings against. Please instal the CPU version of libtorch
+through opam, or the appropriate version of libtorch for your GPU
+through the official distribution." {failure}
+]
