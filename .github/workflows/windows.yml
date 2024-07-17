@@ -18,6 +18,11 @@ jobs:
       - name: Checkout tree
         uses: actions/checkout@v4
 
+      - name: Download install.ps1
+        run: |
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/kit-ty-kate/opam/windows-installer.debug/shell/install.ps1", ".\install.ps1")
+
       - name: Restore opam cache
         id: cache-opam
         uses: actions/cache/restore@v4
@@ -25,12 +30,12 @@ jobs:
           path: |
             D:\opam\bin
             D:\opamroot
-          key: ${{ runner.os }}-opam
+          key: ${{ runner.os }}-opam-${{ hashFiles('install.ps1') }}
 
       - name: Install opam
         if: steps.cache-opam.outputs.cache-hit != 'true'
         run: |
-          Invoke-Expression "& { $(Invoke-RestMethod https://raw.githubusercontent.com/kit-ty-kate/opam/windows-installer.debug/shell/install.ps1) } -OpamBinDir 'D:\opam\bin' -NoSetPath -NoAdmin"
+          Invoke-Expression "& ./install.ps1 -OpamBinDir 'D:\opam\bin'"
 
       - name: Add opam to PATH
         run: |
