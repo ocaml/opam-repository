@@ -18,6 +18,11 @@ jobs:
       - name: Checkout tree
         uses: actions/checkout@v4
 
+      - name: Download install.ps1
+        run: |
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/ocaml/opam/master/shell/install.ps1", ".\install.ps1")
+
       - name: Restore opam cache
         id: cache-opam
         uses: actions/cache/restore@v4
@@ -25,20 +30,26 @@ jobs:
           path: |
             D:\opam\bin
             D:\opamroot
-          key: ${{ runner.os }}-opam
+          key: ${{ runner.os }}-opam-${{ hashFiles('install.ps1') }}
 
       - name: Install opam
         if: steps.cache-opam.outputs.cache-hit != 'true'
         run: |
-          Invoke-Expression "& { $(Invoke-RestMethod https://raw.githubusercontent.com/kit-ty-kate/opam/windows-installer.debug/shell/install.ps1) } -OpamBinDir 'D:\opam\bin' -NoSetPath -NoAdmin"
+          Invoke-Expression "& ./install.ps1 -OpamBinDir 'D:\opam\bin'"
 
       - name: Add opam to PATH
         run: |
+          D:\opam\bin\opam --version
           "D:\opam\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Init opam
         if: steps.cache-opam.outputs.cache-hit != 'true'
         run: opam init --yes --no-setup .
+
+      - name: Restrict testing to available compilers
+        if: steps.cache-opam.outputs.cache-hit != 'true'
+        # TODO Amend this lowerbound as older compiler packages are updated
+        run: opam switch set-invariant --formula "`"ocaml`" {>= `"4.13`"}"
 
       - name: Save opam cache
         if: steps.cache-opam.outputs.cache-hit != 'true'
