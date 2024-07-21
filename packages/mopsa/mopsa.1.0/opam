@@ -1,0 +1,97 @@
+opam-version: "2.0"
+synopsis:
+  "MOPSA: A Modular and Open Platform for Static Analysis using Abstract Interpretation"
+description: """\
+MOPSA is a generic framework for building sound static analyzers based on Abstract Interpretation.
+It features a modular architecture to support different kinds of languages, iterators, and abstract domains.
+For the moment, MOPSA can analyze programs written in a subset of C and Python.
+It reports run-time errors on C programs and uncaught exceptions on Python programs."""
+maintainer: [
+  "Antoine Miné <antoine.mine@lip6.fr>"
+  "Abdelraouf Ouadjaout <ouadjaout@gmail.com>"
+  "Raphaël Monat <raphael.monat@inria.fr>"
+]
+authors: [
+  "Antoine Miné"
+  "Abdelraouf Ouadjaout"
+  "Matthieu Journault"
+  "Aymeric Fromherz"
+  "Raphaël Monat"
+  "Francesco Parolini"
+  "Marco Milanese"
+  "Jérôme Boillot"
+]
+license: "LGPL-3.0-or-later"
+homepage: "https://gitlab.com/mopsa/mopsa-analyzer"
+doc: "https://mopsa.gitlab.io/mopsa-analyzer/user-manual/"
+bug-reports: "https://gitlab.com/mopsa/mopsa-analyzer/issues"
+depends: [
+  "ocaml" {>= "4.12.0"}
+  "dune" {>= "3.7"}
+  "ocamlfind"
+  "apron" {>= "0.9.15"}
+  "menhir" {>= "20180528"}
+  "mlgmpidl"
+  "yojson" {>= "1.6.0"}
+  "zarith" {>= "1.10"}
+  "odoc" {with-doc}
+]
+depopts: ["elina"]
+available:
+  !(arch = "x86_32") & !(os-family = "windows") & opam-version >= "2.1.0"
+build: [
+  ["./configure"] {os != "macos"}
+  [
+    "./configure"
+    "CLANG=/usr/local/opt/llvm/bin/clang"
+    "LLVMCONFIG=/usr/local/opt/llvm/bin/llvm-config"
+  ] {os = "macos" & arch = "x86_64"}
+  [
+    "./configure"
+    "CLANG=/opt/homebrew/opt/llvm/bin/clang"
+    "LLVMCONFIG=/opt/homebrew/opt/llvm/bin/llvm-config"
+  ] {os = "macos" & arch = "arm64"}
+  [make]
+  [make "tests"] {with-test}
+]
+install: [make "install"]
+depexts: [
+  ["clang" "libclang-cpp-dev" "libclang-dev" "llvm-dev"]
+    {os-distribution = "ubuntu" & os-version >= "21.04"}
+  ["clang" "libclang-11-dev" "libclang-cpp11-dev" "llvm-11-dev"]
+    {os-distribution = "ubuntu" & os-version = "20.10"}
+  ["clang" "libclang-12-dev" "libclang-cpp12-dev" "llvm-12-dev"]
+    {os-distribution = "ubuntu" & os-version = "20.04"}
+  ["clang" "libclang-16-dev" "libclang-cpp16-dev" "llvm-16-dev"]
+    {os-distribution = "debian" & os-version >= "13"}
+  ["clang" "libclang-14-dev" "libclang-cpp14-dev" "llvm-14-dev"]
+    {os-distribution = "debian" & os-version = "12"}
+  ["clang-13" "libclang-13-dev" "libclang-cpp13-dev" "llvm-13-dev"]
+    {os-distribution = "debian" & os-version = "11"}
+  ["clang-13" "libclang-13-dev" "libclang-cpp13-dev" "llvm-13-dev"]
+    {os-distribution = "debian" & os-version = "10"}
+  ["clang-devel" "llvm-devel" "redhat-rpm-config"] {os-family = "fedora"}
+  ["clang" "llvm"] {os-family = "arch"}
+  ["clang17-dev" "llvm17-dev"]
+    {os-distribution = "alpine" & os-version >= "3.19"}
+  ["clang16-dev" "llvm16-dev"]
+    {os-distribution = "alpine" & os-version >= "3.18" & os-version < "3.19"}
+  ["clang15-dev" "llvm15-dev"]
+    {os-distribution = "alpine" & os-version >= "3.17" & os-version < "3.18"}
+  ["clang" "clang-devel" "llvm" "llvm-devel" "mpfr-devel"]
+    {os-distribution = "opensuse-tumbleweed"}
+  ["clang" "clang-devel" "llvm" "llvm-devel" "mpfr-devel"]
+    {os-distribution = "opensuse-leap"}
+  ["sys-devel/clang"] {os-distribution = "gentoo"}
+  ["llvm"] {os = "macos"}
+  ["devel/llvm"] {os = "freebsd"}
+]
+dev-repo: "git+https://gitlab.com/mopsa/mopsa-analyzer.git"
+url {
+  src:
+    "https://www.gitlab.com/mopsa/mopsa-analyzer/-/archive/v1.0/mopsa-analyzer-v1.0.tar.gz"
+  checksum: [
+    "md5=9f673f79708b44a7effb3b6bb3618d2c"
+    "sha512=cb91cb428e43a22f1abbcb8219710d0c10a5b3756d0da392d4084b3b3a6157350776c596983e63def344f617d39964e91f244f60c07958695ee5c8c809a9f0f4"
+  ]
+}
