@@ -1,0 +1,63 @@
+opam-version: "2.0"
+synopsis: "Proof assistant for the λΠ-calculus modulo rewriting"
+description: """
+Lambdapi is an interactive proof assistant for the λΠ-calculus modulo
+rewriting. It can call external automated theorem provers via Why3.
+The user manual is on https://lambdapi.readthedocs.io/.
+A standard library and other developments are available on
+https://github.com/Deducteam/opam-lambdapi-repository/. An extension
+for Emacs is available on MELPA. An extension for VSCode is available
+on the VSCode Marketplace. Lambdapi can read Dedukti files. It
+includes checkers for local confluence and subject reduction. It also
+provides commands to export Lambdapi files to other formats or
+systems: Dedukti, Coq, HRS, CPF.
+"""
+maintainer: ["dedukti-dev@inria.fr"]
+authors: ["Deducteam"]
+license: "CECILL-2.1"
+homepage: "https://github.com/Deducteam/lambdapi"
+bug-reports: "https://github.com/Deducteam/lambdapi/issues"
+dev-repo: "git+https://github.com/Deducteam/lambdapi.git"
+depends: [
+  "dune" {>= "3.7"}
+  "ocaml" {>= "4.08.0"}
+  "menhir" {>= "20200624"}
+  "sedlex" {>= "3.2"}
+  "alcotest" {with-test}
+  "dedukti" {with-test & >= "2.7"}
+  "bindlib" {>= "6.0.0"}
+  "timed" {>= "1.0"}
+  "pratter" {>= "3.0.0" & < "4"}
+  "camlp-streams" {>= "5.0"}
+  "why3" {>= "1.6.0" & < "1.8~"}
+  "yojson" {>= "1.6.0"}
+  "cmdliner" {>= "1.1.0"}
+  "stdlib-shims" {>= "0.1.0"}
+  "odoc" {with-doc}
+  "lwt_ppx" {>= "1.0.0"}
+  "dream" {>= "1.0.0~alpha3"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+conflicts: [ "ocaml-option-bytecode-only" ]
+url {
+  src:
+    "https://github.com/Deducteam/lambdapi/releases/download/2.5.1/lambdapi-2.5.1.tbz"
+  checksum: [
+    "sha256=2c251021b6fac40c05282ca183902da5b1008e69d9179d7a9543905c2c21a28a"
+    "sha512=69535f92766e6fedc2675fc214f0fb699bde2a06aa91d338c93c99756235a293cf16776f6328973dda07cf2ad402e58fe3104a08f1a896990c1778b42f7f9fcf"
+  ]
+}
+x-commit-hash: "e119c8cee3647e1d17fa6fdaf1bb6129f42927bc"
