@@ -88,7 +88,8 @@ build: [
     "CC=cc" {!ocaml-option-32bit:installed & !ocaml-option-musl:installed & (os="openbsd"|os="macos")}
     "CC=clang" {ocaml-option-tsan:installed & (os="macos")}
     "CC=musl-gcc" {ocaml-option-musl:installed & os-distribution!="alpine"}
-    "CFLAGS=-Os" {ocaml-option-musl:installed}
+    "CFLAGS=-Os" {ocaml-option-musl:installed & arch!="arm64"}
+    "CFLAGS=-Os -mno-outline-atomics" {ocaml-option-musl:installed & arch="arm64"}
     "LDFLAGS=-Wl,--no-as-needed,-ldl" {ocaml-option-leak-sanitizer:installed | (ocaml-option-address-sanitizer:installed & os!="macos")}
     "CC=gcc -ldl -fsanitize=leak -fno-omit-frame-pointer -O1 -g" {ocaml-option-leak-sanitizer:installed}
     "CC=gcc -ldl -fsanitize=address -fno-omit-frame-pointer -O1 -g" {ocaml-option-address-sanitizer:installed & os!="macos"}
