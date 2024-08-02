@@ -4,7 +4,10 @@ homepage: "https://www.gnu.org/software/automake"
 authors: ["Jim Meyering" "David J. MacKenzie" "https://git.savannah.gnu.org/cgit/automake.git/tree/THANKS"]
 bug-reports: "https://www.gnu.org/software/automake/manual/html_node/Reporting-Bugs.html"
 license: "GPL-2.0-or-later"
-build: [ "automake" "--help" ]
+build: [
+  ["sh" "-exc" "automake --help"] {os = "win32" & os-distribution != "cygwinports"}
+  [ "automake" "--help" ] {os != "win32" | os-distribution = "cygwinports"}
+]
 depends: "conf-autoconf"
 depexts: [
   # The list of supported os-family names can be derived from the opam sources (thanks Enrico)
@@ -29,6 +32,8 @@ depexts: [
   [ "automake" ] {os-family = "suse" | os-family = "opensuse"}
   [ "devel/automake" ] {os-family = "bsd"}
   [ "automake" ] {os-family = "nixos"}
+  [ "system:automake" ] {os = "win32" & os-distribution = "cygwinports"}
+  [ "automake" ] {os-distribution = "cygwin"}
 ]
 synopsis: "Virtual package relying on GNU automake"
 description: "This package can only install if GNU automake is installed on the system."
