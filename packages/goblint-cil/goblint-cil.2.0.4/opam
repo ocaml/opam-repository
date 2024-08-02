@@ -1,0 +1,77 @@
+opam-version: "2.0"
+synopsis:
+  "A front-end for the C programming language that facilitates program analysis and transformation"
+description: """
+This is a fork of the 'cil' package used for 'goblint'. Major changes include:
+* Support for C99 and C11.
+* Compatibility with modern OCaml versions.
+* Use Zarith instead of Num and use that for integer constants.
+* Improved locations with columns and spans.
+* Removal of unmaintained extensions and MSVC support.
+* Use dune instead of make and ocamlbuild.
+* Many bug fixes."""
+maintainer: [
+  "Michael Schwarz <michael.schwarz93@gmail.com>"
+  "Simmo Saan <simmo.saan@gmail.com>"
+]
+authors: [
+  "George Necula"
+  "Scott McPeak"
+  "Westley Weimer"
+  "Gabriel Kerneis"
+  "Ralf Vogler"
+  "Michael Schwarz"
+  "Simmo Saan"
+]
+license: "BSD-3-Clause"
+homepage: "https://github.com/goblint/cil"
+bug-reports: "https://github.com/goblint/cil/issues"
+depends: [
+  "ocaml" {>= "4.05.0"}
+  "ocamlfind" {with-test}
+  "zarith"
+  "hevea" {with-doc}
+  "dune" {>= "2.7"}
+  "dune-configurator"
+  "odoc" {with-doc}
+  "stdlib-shims"
+  "ppx_deriving_yojson" {>= "3.2"}
+  "yojson"
+  "conf-perl"
+  "cppo"
+  "conf-gcc"
+]
+conflicts: ["cil"]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/goblint/cil.git"
+depexts: [
+  ["perl-ExtUtils-MakeMaker"] {os-distribution = "centos" | os-distribution = "fedora" | os-distribution = "ol"}
+  ["perl-FindBin"] {os-distribution = "fedora"}
+  ["build-base"] {os-distribution = "alpine"}
+]
+available: arch = "x86_64" | arch = "arm64"
+url {
+  src:
+    "https://github.com/goblint/cil/releases/download/2.0.4/goblint-cil-2.0.4.tbz"
+  checksum: [
+    "sha256=adea96efdb7611a688849491b363bcd5fc1e1fb8d6a937185560faefb42dd9cb"
+    "sha512=b8d8d835e9425cbbd59aeb06ce457e110cbd91c982d99c51e5a24bd5b7b9362f545db32c33ac6abc87a02015f29c8dc19e97ceb756ae1aefc659914f3598df19"
+  ]
+}
+x-commit-hash: "317e26d48b06d5cdc4acff3df1a6824587052b53"
+x-ci-accept-failures: [
+  "freebsd" # installed cilly binary is not found for some reason (https://github.com/ocaml/opam-repository/pull/24812#issuecomment-1819231335)
+]
