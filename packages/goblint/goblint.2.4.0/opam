@@ -1,0 +1,118 @@
+opam-version: "2.0"
+synopsis: "Static analysis framework for C"
+description: """
+Goblint is a sound static analysis framework for C programs using abstract interpretation.
+It specializes in thread-modular verification of multi-threaded programs, especially regarding data races.
+Goblint includes analyses for assertions, overflows, deadlocks, etc and can be extended with new analyses.
+"""
+maintainer: [
+  "Simmo Saan <simmo.saan@gmail.com>"
+  "Michael Schwarz <michael.schwarz93@gmail.com>"
+  "Karoliine Holter"
+]
+authors: [
+  "Simmo Saan"
+  "Michael Schwarz"
+  "Julian Erhard"
+  "Sarah Tilscher"
+  "Karoliine Holter"
+  "Ralf Vogler"
+  "Kalmer Apinis"
+  "Vesal Vojdani"
+]
+license: "MIT"
+tags: [
+  "program analysis"
+  "program verification"
+  "static analysis"
+  "abstract interpretation"
+  "C"
+  "data race analysis"
+  "concurrency"
+]
+homepage: "https://goblint.in.tum.de"
+doc: "https://goblint.readthedocs.io/en/latest/"
+bug-reports: "https://github.com/goblint/analyzer/issues"
+depends: [
+  "dune" {>= "3.7"}
+  "ocaml" {>= "4.14"}
+  "goblint-cil" {>= "2.0.4"}
+  "batteries" {>= "3.5.1"}
+  "zarith" {>= "1.10"}
+  "yojson" {>= "2.0.0"}
+  "qcheck-core" {>= "0.19"}
+  "ppx_deriving" {>= "6.0.2"}
+  "ppx_deriving_hash" {>= "0.1.2"}
+  "ppx_deriving_yojson" {>= "3.7.0"}
+  "ounit2" {with-test}
+  "qcheck-ounit" {with-test}
+  "odoc" {with-doc}
+  "fpath"
+  "dune-site"
+  "dune-build-info"
+  "json-data-encoding"
+  "jsonrpc" {>= "1.12"}
+  "sha" {>= "1.12"}
+  "fileutils" {>= "0.6.4"}
+  "cpu"
+  "arg-complete"
+  "yaml" {>= "3.0.0"}
+  "uuidm"
+  "catapult"
+  "catapult-file"
+  "conf-gmp" {>= "3"}
+  "conf-ruby" {with-test}
+  "benchmark" {with-test}
+  "conf-gcc"
+]
+depopts: [
+  "apron" {>= "v0.9.15"}
+  "z3"
+]
+conflicts: [
+  "result" {< "1.5"}
+  "ez-conf-lib" {= "1"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/goblint/analyzer.git"
+# on `dune build` goblint.opam will be generated from goblint.opam.template and dune-project
+# also remember to generate/adjust goblint.opam.locked!
+available: os-family != "bsd" & os-distribution != "alpine" & (arch != "arm64" | os = "macos")
+# pin-depends: [
+  # published goblint-cil 2.0.4 is currently up-to-date, so no pin needed
+  # [ "goblint-cil.2.0.3" "git+https://github.com/goblint/cil.git#ae3a4949d478fad77e004c6fe15a7c83427df59f" ]
+# ]
+depexts: [
+  ["libgraph-easy-perl"] {os-distribution = "ubuntu" & with-test}
+]
+post-messages: [
+  "Do not benchmark Goblint on OCaml 5 (https://goblint.readthedocs.io/en/latest/user-guide/benchmarking/)." {ocaml:version >= "5.0.0"}
+]
+url {
+  src:
+    "https://github.com/goblint/analyzer/releases/download/v2.4.0/goblint-2.4.0.tbz"
+  checksum: [
+    "sha256=99b78e6def71534d195eef9084baa26d8334b36084e120aa6afb300c9bf8afa6"
+    "sha512=f3162bd95a03c00358a2991f6152fc6169205bfb4c55e2c483e98cc3935673df9656d025b6f1ea0fa5f1bd0aee037d4f483966b0d2907e3fa9bf11a93a3392af"
+  ]
+}
+x-commit-hash: "b129fab7de3ab5fd85d2f1340b2d9c5a4e4e2653"
+x-ci-accept-failures: [
+  "macos-homebrew" # newer MacOS headers cannot be parsed (https://github.com/ocaml/opam-repository/pull/26307#issuecomment-2258080206)
+  "opensuse-tumbleweed" # not GNU diff, so some cram tests fail (https://discuss.ocaml.org/t/opensuse-and-opam-tests/14641/2)
+]
