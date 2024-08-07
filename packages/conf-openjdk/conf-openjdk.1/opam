@@ -6,14 +6,23 @@ authors: "OpenJDK and Java Community"
 license: "GPLv2 with linking exception"
 build: ["javac" "-version"]
 depexts: [
-  ["default-jdk"] {os-family = "debian"}
+  ["default-jdk"] {os-family = "debian" | os-family = "ubuntu"}
   ["java-latest-openjdk-devel"] {os-distribution = "fedora"}
   ["java-latest-openjdk-devel"] {os-distribution = "rhel"}
   ["java-latest-openjdk-devel"] {os-distribution = "ol"}
   ["java-latest-openjdk-devel"] {os-distribution = "centos"}
   ["jdk-openjdk"] {os-distribution = "arch"}
-  ["openjdk"] {os-distribution = "freebsd"}
   ["openjdk"] {os-distribution = "homebrew" & os = "macos"}
+]
+x-ci-accept-failures: [
+  "freebsd"
+]
+post-messages: [
+  "Please ensure that the javac binary is installed and is available in PATH"
+    {failure}
+  """
+  You may need to first install a version of openjdk, e.g., openjdk19"""
+    {failure & os-distribution = "freebsd"}
 ]
 synopsis: "Virtual package relying on OpenJDK / Javac"
 description:
