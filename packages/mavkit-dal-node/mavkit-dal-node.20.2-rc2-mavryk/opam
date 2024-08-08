@@ -1,0 +1,37 @@
+# This file was automatically generated, do not edit.
+# Edit file manifest/main.ml instead.
+opam-version: "2.0"
+maintainer: "info@mavryk.io"
+authors: ["Mavryk Dynamics" "Tezos devteam"]
+homepage: "https://mavrykdynamics.com/"
+bug-reports: "https://gitlab.com/mavryk-network/mavryk-protocol/issues"
+dev-repo: "git+https://gitlab.com/mavryk-network/mavryk-protocol.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.11.1" }
+  "ocaml" { >= "4.14" }
+  "mavkit-libs" { = version }
+  "cmdliner" { >= "1.1.0" }
+  "mavkit-shell-libs" { = version }
+  "mavryk-dal-node-lib" { = version }
+  "mavryk-dal-node-services" { = version }
+  "mavkit-l2-libs" { = version }
+  "mavkit-internal-libs" { = version }
+  "prometheus-app" { >= "1.2" }
+  "prometheus" { >= "1.2" }
+  "mavkit-protocol-001-PtAtLas-libs" { = version }
+  "mavkit-protocol-002-PtBoreas-libs" { = version }
+]
+depopts: [
+  "mavkit-protocol-alpha-libs"
+]
+conflicts: [
+  "checkseum" { = "0.5.0" }
+  "mavkit-protocol-alpha-libs" { != version }
+]
+build: [
+  ["rm" "-r" "vendors" "contrib"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Mavryk: `mavkit-dal-node` binary"
