@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "opam-devel@lists.ocaml.org"
+authors: [ "Oliver Friedmann"
+           "Martin Lange" ]
+license: "BSD-3-clause"
+homepage: "https://github.com/tcsprojects/pgsolver"
+dev-repo: "git://github.com/tcsprojects/pgsolver.git"
+bug-reports: "https://github.com/tcsprojects/pgsolver/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/pgsolver/setup.ml" "-C" "%{etc}%/pgsolver" "-uninstall"]
+]
+depends: [
+  "ocaml" {>= "4.08.0" & < "5.0"}
+  "TCSLib" {>= "0.2"}
+  "extlib" | "extlib-compat"
+  "minisat"
+  "ocaml-sat-solvers" {>= "0.7.1"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "ounit" {build}
+]
+synopsis:
+  "A collection of tools for generating, manipulating and - most of all - solving parity games"
+description: """\
+A collection of tools for generating, manipulating and - most of all -
+solving parity games."""
+url {
+  src:
+    "https://github.com/tcsprojects/pgsolver/archive/refs/tags/v4.3.tar.gz"
+  checksum: [
+    "md5=2a2351836e74173c48bdcd82ccc8521a"
+    "sha512=d166662ece175b2249ec564fad9eb461c86341e6004c43bd65e4a32943f5e77b1f2eef31533363d4f0fc91f639ab42120ea24f59add23bda50e1cf46c7e709bb"
+  ]
+}
