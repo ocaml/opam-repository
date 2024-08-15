@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "info@mavryk.io"
+authors: ["Mavryk Dynamics" "WebAssembly Authors"]
+homepage: "https://mavrykdynamics.com/"
+bug-reports: "https://gitlab.com/mavryk-network/mavryk-protocol/issues"
+dev-repo: "git+https://gitlab.com/mavryk-network/mavryk-protocol.git"
+license: "Apache-2.0"
+depends: [
+  "dune" { >= "3.11.1" }
+  "ocaml" { >= "4.14" }
+  "ppx_deriving"
+  "mavkit-libs" { = version }
+  "zarith" { >= "1.13" & < "1.14" }
+  "lwt" { >= "5.7.0" }
+  "ctypes" { >= "0.18.0" }
+  "ctypes-foreign" { >= "0.18.0" }
+  "tezos-rust-libs" { = "1.6" }
+  "data-encoding" { >= "1.0.1" & < "1.1" }
+  "index" { >= "1.6.0" & < "1.7.0" }
+  "mavkit-internal-libs" { = version }
+  "aches-lwt" { >= "1.0.0" }
+  "yaml" { >= "3.1.0" }
+  "ppx_import"
+  "qcheck-alcotest" { >= "0.20" }
+  "mavkit-alcotezt" { = version }
+  "tezt" { >= "4.0.0" & < "5.0.0" }
+]
+x-opam-monorepo-opam-provided: [
+  "tezos-rust-libs"
+]
+conflicts: [
+  "checkseum" { = "0.5.0" }
+]
+build: [
+  ["rm" "-r" "vendors" "contrib"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Mavkit layer2 libraries"
+url {
+  src: "https://gitlab.com/mavryk-network/mavryk-protocol/-/archive/mavkit-v20.2-rc2/mavkit-source-20.2-rc2.tar.gz"
+  checksum: [
+    "sha256=c14d6fad6249825b60b355ffd91c36279602fbf13d19f0bda8facf500fc81a1f"
+    "sha512=f537edb3dbf0991fbc318c74d08c24b6e4b2cc4a59ed6eff22ee5a436d48d26d77534a24283ae1e2554c295fda5758a5a48214699b0162aab6d533a7a5dabf15"
+  ]
+}

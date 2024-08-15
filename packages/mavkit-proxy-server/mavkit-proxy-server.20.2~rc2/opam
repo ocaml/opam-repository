@@ -1,0 +1,48 @@
+opam-version: "2.0"
+maintainer: "info@mavryk.io"
+authors: ["Mavryk Dynamics"]
+homepage: "https://mavrykdynamics.com/"
+bug-reports: "https://gitlab.com/mavryk-network/mavryk-protocol/issues"
+dev-repo: "git+https://gitlab.com/mavryk-network/mavryk-protocol.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.11.1" }
+  "ocaml" { >= "4.14" }
+  "mavkit-libs" { = version }
+  "cmdliner" { >= "1.1.0" }
+  "lwt-exit"
+  "lwt" { >= "5.7.0" }
+  "mavkit-shell-libs" { = version }
+  "mavryk-proxy-server-config" { = version }
+  "mavkit-version" { = version }
+  "uri" { >= "3.1.0" }
+]
+depopts: [
+  "mavryk-client-genesis"
+  "mavryk-client-demo-counter"
+  "mavkit-protocol-000-Ps9mPmXa-libs"
+  "mavkit-protocol-001-PtAtLas-libs"
+  "mavkit-protocol-002-PtBoreas-libs"
+  "mavkit-protocol-alpha-libs"
+]
+conflicts: [
+  "mavryk-client-genesis" { != version }
+  "mavryk-client-demo-counter" { != version }
+  "mavkit-protocol-000-Ps9mPmXa-libs" { != version }
+  "mavkit-protocol-001-PtAtLas-libs" { != version }
+  "mavkit-protocol-002-PtBoreas-libs" { != version }
+  "mavkit-protocol-alpha-libs" { != version }
+]
+build: [
+  ["rm" "-r" "vendors" "contrib"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Mavkit: `mavkit-proxy-server` binary"
+url {
+  src: "https://gitlab.com/mavryk-network/mavryk-protocol/-/archive/mavkit-v20.2-rc2/mavkit-source-20.2-rc2.tar.gz"
+  checksum: [
+    "sha256=c14d6fad6249825b60b355ffd91c36279602fbf13d19f0bda8facf500fc81a1f"
+    "sha512=f537edb3dbf0991fbc318c74d08c24b6e4b2cc4a59ed6eff22ee5a436d48d26d77534a24283ae1e2554c295fda5758a5a48214699b0162aab6d533a7a5dabf15"
+  ]
+}

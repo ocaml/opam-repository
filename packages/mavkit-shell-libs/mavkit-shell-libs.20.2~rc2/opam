@@ -1,0 +1,61 @@
+opam-version: "2.0"
+maintainer: "info@mavryk.io"
+authors: ["Mavryk Dynamics"]
+homepage: "https://mavrykdynamics.com/"
+bug-reports: "https://gitlab.com/mavryk-network/mavryk-protocol/issues"
+dev-repo: "git+https://gitlab.com/mavryk-network/mavryk-protocol.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.11.1" }
+  "ocaml" { >= "4.14" }
+  "mavkit-libs" { = version }
+  "lwt-watcher" { = "0.2" }
+  "lwt-canceler" { >= "0.3" & < "0.4" }
+  "ringo" { >= "1.0.0" }
+  "aches" { >= "1.0.0" }
+  "prometheus" { >= "1.2" }
+  "tezt" { >= "4.0.0" & < "5.0.0" }
+  "tezt-mavryk" { with-test & = version }
+  "mavkit-alcotezt" { with-test & = version }
+  "astring" {with-test}
+  "mavkit-proto-libs" { = version }
+  "mavkit-protocol-compiler" { = version }
+  "lwt-exit"
+  "mavkit-version" { = version }
+  "aches-lwt" { >= "1.0.0" }
+  "index" { >= "1.6.0" & < "1.7.0" }
+  "mavkit-internal-libs" { = version }
+  "camlzip" { >= "1.11" & < "1.12" }
+  "tar"
+  "tar-unix" { >= "2.0.1" & < "3.0.0" }
+  "ppx_expect"
+  "uri" { >= "3.1.0" }
+  "ocplib-endian"
+  "fmt" { >= "0.8.7" }
+  "data-encoding" { >= "1.0.1" & < "1.1" }
+  "resto-cohttp-self-serving-client" { >= "1.2" }
+  "mavryk-benchmark" { = version }
+  "qcheck-alcotest" { with-test & >= "0.20" }
+  "qcheck-core" {with-test}
+  "lwt" { with-test & >= "5.7.0" }
+]
+depopts: [
+  "ledgerwallet-tezos"
+]
+conflicts: [
+  "checkseum" { = "0.5.0" }
+  "ledgerwallet-tezos" { < "0.4.0" }
+]
+build: [
+  ["rm" "-r" "vendors" "contrib"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+synopsis: "Mavkit shell libraries"
+url {
+  src: "https://gitlab.com/mavryk-network/mavryk-protocol/-/archive/mavkit-v20.2-rc2/mavkit-source-20.2-rc2.tar.gz"
+  checksum: [
+    "sha256=c14d6fad6249825b60b355ffd91c36279602fbf13d19f0bda8facf500fc81a1f"
+    "sha512=f537edb3dbf0991fbc318c74d08c24b6e4b2cc4a59ed6eff22ee5a436d48d26d77534a24283ae1e2554c295fda5758a5a48214699b0162aab6d533a7a5dabf15"
+  ]
+}
