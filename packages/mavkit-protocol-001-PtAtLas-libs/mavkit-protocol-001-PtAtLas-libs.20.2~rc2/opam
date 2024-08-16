@@ -1,0 +1,49 @@
+opam-version: "2.0"
+maintainer: "info@mavryk.io"
+authors: ["Mavryk Dynamics"]
+homepage: "https://mavrykdynamics.com/"
+bug-reports: "https://gitlab.com/mavryk-network/mavryk-protocol/issues"
+dev-repo: "git+https://gitlab.com/mavryk-network/mavryk-protocol.git"
+license: "MIT"
+depends: [
+  "dune" { >= "3.11.1" }
+  "ocaml" { >= "4.14" }
+  "ppx_expect"
+  "mavkit-libs" { = version }
+  "mavryk-protocol-001-PtAtLas" { = version }
+  "mavkit-shell-libs" { = version }
+  "uri" { >= "3.1.0" }
+  "qcheck-alcotest" { >= "0.20" }
+  "mavkit-proto-libs" { = version }
+  "mavkit-version" { = version }
+  "mavryk-dal-node-services" { = version }
+  "lwt-canceler" { >= "0.3" & < "0.4" }
+  "lwt-exit"
+  "data-encoding" { >= "1.0.1" & < "1.1" }
+  "tezt" { >= "4.0.0" & < "5.0.0" }
+  "mavkit-protocol-compiler" { = version }
+  "mavryk-dal-node-lib" { = version }
+  "mavryk-dac-lib" { = version }
+  "mavryk-dac-client-lib" { = version }
+  "mavkit-injector" { = version }
+  "mavkit-l2-libs" { = version }
+  "mavkit-alcotezt" { with-test & = version }
+  "mavryk-dac-node-lib" { with-test & = version }
+]
+conflicts: [
+  "stdcompat" { < "19" }
+]
+build: [
+  ["rm" "-r" "vendors" "contrib"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+available: os != "win32"
+synopsis: "Mavkit protocol 001-PtAtLas libraries"
+url {
+  src: "https://gitlab.com/mavryk-network/mavryk-protocol/-/archive/mavkit-v20.2-rc2/mavkit-source-20.2-rc2.tar.gz"
+  checksum: [
+    "sha256=a0e6e4fe73cc67887af0377f6309d82d2d3a567680e99a90006c0cd600dd5323"
+    "sha512=e4242355bcd4139e82263a61fcc687f54ec72d86a375f7c8149d66d5f82dc521b05c55e7b633f341939fc7963c5e303e74c9ca8a86054bf591ec67f18d4b9b68"
+  ]
+}
