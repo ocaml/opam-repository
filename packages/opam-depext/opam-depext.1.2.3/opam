@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis: "Install OS distribution packages"
+description: """\
+opam-depext is a simple program intended to facilitate the interaction between
+OPAM packages and the host package management system. It can query OPAM for the
+right external dependencies on a set of packages, depending on the host OS, and
+call the OS's package manager in the appropriate way to install them."""
+maintainer: [
+  "Louis Gesbert <louis.gesbert@ocamlpro.com>"
+  "Anil Madhavapeddy <anil@recoil.org>"
+]
+authors: [
+  "Louis Gesbert <louis.gesbert@ocamlpro.com>"
+  "Anil Madhavapeddy <anil@recoil.org>"
+]
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/ocaml/opam-depext"
+bug-reports: "https://github.com/ocaml/opam-depext/issues"
+depends: [
+  "ocaml" {>= "4.00"}
+  "base-unix"
+  "cmdliner" {>= "0.9.8" & dev}
+  "ocamlfind" {dev}
+]
+available: opam-version >= "2.0.0~beta5"
+flags: plugin
+build: [
+  [make] {!dev}
+  [
+    "ocamlfind"
+    "%{ocaml:native?ocamlopt:ocamlc}%"
+    "-package"
+    "unix,cmdliner"
+    "-linkpkg"
+    "-o"
+    "opam-depext"
+    "depext.ml"
+  ] {dev}
+]
+post-messages:
+  "opam-depext is unnecessary when used with opam >= 2.1. Please use opam install directly instead"
+    {opam-version >= "2.1"}
+dev-repo: "git+https://github.com/ocaml/opam-depext.git#2.0"
+url {
+  src:
+    "https://github.com/ocaml-opam/opam-depext/releases/download/v1.2.3/opam-depext-full-1.2.3.tbz"
+  checksum: [
+    "md5=9e2b6ede3d21ab5062e7d8e16f4ff71d"
+    "sha512=66bad919d86f3c2e5c493ee1df942e9c8653916f154e37dd8253d11189813a4848fe0b8bf22b44174c0210f74affa83803fd06cf2976ab789873335910b49f08"
+  ]
+}
