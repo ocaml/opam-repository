@@ -1,0 +1,57 @@
+opam-version: "2.0"
+synopsis: "A Front-end library for SMT solvers in OCaml"
+description: "A Multi Back-end Front-end for SMT Solvers in OCaml."
+maintainer: "Filipe Marques <filipe.s.marques@tecnico.ulisboa.pt>"
+authors: "Filipe Marques <filipe.s.marques@tecnico.ulisboa.pt>"
+license: "GPL-3.0-only"
+homepage: "https://github.com/formalsec/smtml"
+doc: "https://formalsec.github.io/smtml/smtml/index.html"
+bug-reports: "https://github.com/formalsec/smtml/issues"
+depends: [
+  "dune" {>= "3.10"}
+  "ocaml" {>= "4.14.0"}
+  "prelude" {>= "0.3"}
+  "ocaml_intrinsics"
+  "fmt" {>= "0.8.7"}
+  "cmdliner" {>= "1.2.0"}
+  "zarith" {>= "1.5"}
+  "hc" {>= "0.3"}
+  "menhir" {build & >= "20220210"}
+  "rusage"
+  "yojson" {>= "1.6.0"}
+  "odoc" {with-doc}
+  "bisect_ppx" {with-test & >= "2.5.0"}
+]
+depopts: [
+  "z3"
+  "colibri2"
+  "bitwuzla-cxx"
+  "cvc5"
+]
+conflicts: [
+  "z3" {< "4.12.2" | >= "4.14"}
+  "bitwuzla-cxx" {< "0.4.0"}
+]
+available: arch != "arm32" & arch != "x86_32"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/formalsec/smtml.git"
+url {
+  src: "https://github.com/formalsec/smtml/archive/refs/tags/v0.2.5.tar.gz"
+  checksum: [
+    "md5=6ce9f854ab5f55331ccef35077ee66f9"
+    "sha512=2c72728f7dd482ef462530a9d5b40082b6f6b3cfa226c081775a4875c2a9a39ceabd46660548d73bc0c3f06cadafb7399d25ca7c8354d0e7dbb28feeca3e58f0"
+  ]
+}
