@@ -1,0 +1,78 @@
+opam-version: "2.0"
+maintainer:   "anil@recoil.org"
+homepage:     "https://github.com/mirage/mirage-tcpip"
+dev-repo:     "git+https://github.com/mirage/mirage-tcpip.git"
+bug-reports:  "https://github.com/mirage/mirage-tcpip/issues"
+doc:          "https://mirage.github.io/mirage-tcpip/"
+authors: [
+  "Anil Madhavapeddy" "Balraj Singh" "Richard Mortier" "Nicolas Ojeda Bar"
+  "Thomas Gazagnaire" "Vincent Bernardoff" "Magnus Skjegstad" "Mindy Preston"
+  "Thomas Leonard" "David Scott" "Gabor Pali" "Hannes Mehnert" "Haris Rotsos"
+  "Kia" "Luke Dunstan" "Pablo Polvorin" "Tim Cuthbertson" "lnmx" "pqwy" ]
+license: "ISC"
+tags: ["org:mirage"]
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+conflicts: [
+  "mirage-xen" {< "6.0.0"}
+  "ocaml-freestanding"
+  "result" {< "1.5"}
+]
+depends: [
+  "dune" {>= "2.7.0"}
+  "bisect_ppx" {dev & >= "2.5.0"}
+  "ocaml" {>= "4.08.0"}
+  "cstruct" {>= "6.0.0"}
+  "cstruct-lwt"
+  "mirage-net" {>= "3.0.0"}
+  "mirage-clock" {>= "3.0.0"}
+  "mirage-crypto-rng-mirage" {>= "1.0.0"}
+  "mirage-time" {>= "2.0.0"}
+  "ipaddr" {>= "5.6.0"}
+  "macaddr" {>="4.0.0"}
+  "macaddr-cstruct"
+  "fmt" {>= "0.8.7"}
+  "lwt" {>= "4.0.0"}
+  "lwt-dllist"
+  "logs" {>= "0.6.0"}
+  "duration"
+  "randomconv" {>= "0.2.0"}
+  "ethernet" {>= "3.0.0"}
+  "arp" {>= "3.0.0"}
+  "mirage-flow" {>= "4.0.0"}
+  "mirage-vnetif" {with-test & >= "0.6.2"}
+  "alcotest" {with-test & >="1.5.0"}
+  "pcap-format" {with-test}
+  "mirage-clock-unix" {with-test & >= "3.0.0"}
+  "mirage-crypto-rng" {with-test & >= "1.0.0"}
+  "ipaddr-cstruct"
+  "macaddr-cstruct"
+  "lru" {>= "0.3.0"}
+  "metrics"
+  "cmdliner" {>= "1.1.0"}
+]
+synopsis: "OCaml TCP/IP networking stack, used in MirageOS"
+description: """
+`mirage-tcpip` provides a networking stack for the [Mirage operating
+system](https://mirage.io). It provides implementations for the following module types
+(which correspond with the similarly-named protocols):
+
+* IP (via the IPv4 and IPv6 modules)
+* ICMP
+* UDP
+* TCP
+"""
+url {
+  src:
+    "https://github.com/mirage/mirage-tcpip/releases/download/v8.2.0/tcpip-8.2.0.tbz"
+  checksum: [
+    "sha256=916e688aba897676c444db8129f4963ad739f8d1be631d9e009c6228b4b7d6ed"
+    "sha512=a8f5fa8f7e96758075c93211132839950477b756fba490207a7d630f2766757bbb44bbdd02e2b1f2b4a7d83d4d8b10d34cb03903bbd516e7d7c1a9a987eb1915"
+  ]
+}
+x-commit-hash: "4646190565c59e53e091b325e26210f1dcb1f32d"
+x-ci-accept-failures: ["macos-homebrew"]
