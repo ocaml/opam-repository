@@ -10,17 +10,29 @@ tags: [
 ]
 
 build: [
-  ["sh" "-exec" "cc $CFLAGS test.c -l:libopencc.so.1.1"]
+  ["sh" "-exec" "cc $CFLAGS test.c -l:libopencc.so.1.1"] {os != "macos" & os != "freebsd"}
+  ["sh" "-exec" "cc $CFLAGS test.c -L/usr/local/lib -l:libopencc.so.1.1"] {os = "freebsd"}
+  ["sh" "-exec" "cc $CFLAGS test.c -L/usr/local/lib -lopencc.1.1"] {os = "macos" & arch = "x86_64"}
+  ["sh" "-exec" "cc $CFLAGS test.c -L/opt/homebrew/lib -lopencc.1.1"] {os = "macos" & arch = "arm64"}
 ]
 
 depexts: [
-  ["libopencc1.1"] {os-family = "debian"}
+  ["libopencc1.1"] {os-family = "debian" | os-family = "ubuntu"}
   ["opencc"] {os-family = "suse" | os-family = "opensuse"}
-  ["opencc"] {os-distribution = "archlinux"}
+  ["opencc"] {os-distribution = "arch"}
   ["app-i18n/opencc"] {os-distribution = "gentoo"}
   ["opencc"] {os-distribution = "fedora"}
   ["opencc"] {os-distribution = "centos"}
   ["opencc"] {os = "macos" & os-distribution = "homebrew"}
+  ["chinese/opencc"] {os = "freebsd"}
+]
+x-ci-accept-failures: [ # RDKit does not exist by default on these distributions
+  "alpine-3.18"
+  "alpine-3.19"
+  "alpine-3.20"
+  "oraclelinux-7"
+  "oraclelinux-8"
+  "oraclelinux-9"
 ]
 
 synopsis: "Virtual package relying on opencc v1.1 (libopencc.so.1.1) installation"
