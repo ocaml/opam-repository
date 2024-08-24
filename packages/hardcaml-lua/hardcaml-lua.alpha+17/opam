@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis:
+  "A lua client for interfacing hardcaml to verilator, UHDM, Verible and RTLIL front-ends"
+description:
+  "Verilator, Surelog and Verible do not generate synthesised Verilog code directly. This software bridges the gap and verifies the results using build-in minisat solver, z3 or external eqy script"
+maintainer: ["Jonathan Kimmitt"]
+authors: ["Jonathan Kimmitt"]
+license: "MIT"
+tags: ["Verilator" "Surelog" "UHDM" "Verible" "Yosys" "RTLIL"]
+available: [ os != "win32" ]
+homepage: "https://github.com/jrrk2/hardcaml-lua"
+bug-reports: "https://github.com/jrrk2/hardcaml-lua/issues"
+depends: [
+  "dune" {>= "3.7"}
+  "ocaml-compiler-libs" {>= "v0.17.0"}
+  "xml-light"
+  "msat"
+  "menhir"
+  "hardcaml"
+  "hardcaml_circuits" {>= "v0.17.0"}
+  "lua-ml"
+  "ppx_deriving_yojson"
+  "z3"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/jrrk2/hardcaml-lua.git"
+url {
+  src:
+    "https://github.com/jrrk2/hardcaml-lua/releases/download/alpha%2B17/hardcaml-lua-alpha.17.tbz"
+  checksum: [
+    "sha256=f79386862a7d4099c612892bf977b139572ee7e6ea26b95024af37acb2cfefd0"
+    "sha512=915c880601cc071ebc638a22337fd4183247a452bc5bc4e625b00d885a13ca9895e26d84f3d5f5c7cf7c5498869aeb1365a7cc131e3f7eb3fc47a0ba72e2e190"
+  ]
+}
+x-commit-hash: "8a1374ee9f5422f164bc155bc16ffbb6feb300b9"
