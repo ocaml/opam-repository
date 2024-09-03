@@ -1,0 +1,34 @@
+opam-version: "2.0"
+maintainer: "David Allsopp <david@tarides.com>"
+authors: [
+  "François Pottier <francois.pottier@inria.fr>"
+  "Yann Régis-Gianas <yrg@pps.univ-paris-diderot.fr>"
+]
+homepage: "http://gitlab.inria.fr/fpottier/menhir"
+dev-repo: "git+https://gitlab.inria.fr/fpottier/menhir.git"
+bug-reports: "https://gitlab.inria.fr/fpottier/menhir/-/issues"
+license: "LGPL-2.0-only WITH OCaml-LGPL-linking-exception"
+build-env: [
+  [PATH += "%{ocaml-secondary-compiler:share}%/bin"]
+]
+build: [
+  ["dune" "build"] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH dune build"] { opam-version < "2.1.5"}
+]
+install: [
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH dune install --prefix %{ocaml-secondary-compiler:share}%"] { opam-version < "2.1.5"}
+  ["dune" "install" "--prefix" ocaml-secondary-compiler:share] { opam-version >= "2.1.5" }
+]
+depends: [
+  "dune-secondary"
+  "ocaml-secondary-compiler"
+]
+synopsis: "Adds Menhir to ocaml-secondary-compiler"
+url {
+  src:
+    "https://gitlab.inria.fr/fpottier/menhir/-/archive/20231231/archive.tar.gz"
+  checksum: [
+    "md5=799748bc3b7a542798a85956c7863865"
+    "sha512=620ff3443143535e03ac98c5e8ee2ddf9ba48f8cfe441302118def1da3e03ffac7f48d4d4cb129766b625ecad0fb341da1baa0169dee8b6d07a5b0bbb735cf2f"
+  ]
+}
