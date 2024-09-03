@@ -8,7 +8,7 @@ depends: [
   "base-threads" {post}
   "base-flambda2" {post}
   "dune-secondary" {="3.8.1"}
-  "menhir-secondary"
+  "menhir-secondary" {="20210419"}
   "conf-autoconf" {build}
 ]
 conflict-class: "ocaml-core-compiler"
@@ -20,8 +20,8 @@ build-env: [
 build: [
   ["autoconf"] { opam-version >= "2.1.5" }
   ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH autoconf"] { opam-version < "2.1.5" }
-  ["./configure" "--prefix=%{prefix}%" "--enable-flambda2" "--enable-runtime5=yes"] { opam-version >= "2.1.5" }
-  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH ./configure --prefix=%{prefix}% --enable-flambda2 --enable-runtime5=yes"] { opam-version < "2.1.5" }
+  ["./configure" "--prefix=%{prefix}%" "--enable-flambda2" "--enable-runtime5=yes --disable-naked-pointers"] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH ./configure --prefix=%{prefix}% --enable-flambda2 --enable-runtime5=yes --disable-naked-pointers"] { opam-version < "2.1.5" }
   [make "-j%{jobs}%"] { opam-version >= "2.1.5" }
   ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH make -j%{jobs}%"] { opam-version < "2.1.5" }
 ]
@@ -29,11 +29,11 @@ install: [
   [make "install"] { opam-version >= "2.1.5" }
   ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH make install"] { opam-version < "2.1.5" }
 ]
-maintainer: "anil@recoil.org"
+maintainer: "opensource-contacts@janestreet.com"
 homepage: "https://github.com/ocaml-flambda/flambda-backend/"
 bug-reports: "https://github.com/ocaml-flambda/flambda-backend/issues"
 url {
-  src: "git+https://github.com/ocaml-flambda/flambda-backend.git"
+  src: "git+https://github.com/ocaml-flambda/flambda-backend.git#5.1.1minus-20"
 }
 authors: [ "The Jane Street compiler team"
   "Xavier Leroy"
@@ -43,4 +43,4 @@ authors: [ "The Jane Street compiler team"
   "Didier Rémy"
   "Jérôme Vouillon"
 ]
-available: [ os = "linux" & arch = "x86_64" ]
+available: [ (os = "linux" | os = "macos") & (arch = "x86_64" | arch = "arm64") ]
