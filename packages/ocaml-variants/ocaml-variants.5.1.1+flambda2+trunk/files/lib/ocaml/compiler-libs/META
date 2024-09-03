@@ -1,0 +1,50 @@
+version = "5.1.1"
+description = "compiler-libs support library"
+
+package "common" (
+  requires = "compiler-libs"
+  version = "5.1.1"
+  description = "Common compiler routines"
+  archive(byte) = "ocamlcommon.cma"
+  archive(native) = "ocamlcommon.cmxa"
+)
+
+package "bytecomp" (
+  requires = "compiler-libs.common"
+  version = "5.1.1"
+  description = "Bytecode compiler"
+  archive(byte) = "ocamlbytecomp.cma"
+  archive(native) = "ocamlbytecomp.cmxa"
+)
+
+package "optcomp" (
+  requires = "compiler-libs.common"
+  version = "5.1.1"
+  description = "Native-code compiler"
+  archive(byte) = "ocamloptcomp.cma"
+  archive(native) = "ocamloptcomp.cmxa"
+  exists_if = "ocamloptcomp.cma"
+)
+
+package "toplevel" (
+  requires = "compiler-libs.bytecomp"
+  version = "5.1.1"
+  description = "Toplevel interactions"
+  archive(byte) = "ocamltoplevel.cma"
+)
+
+package "native-toplevel" (
+  requires = "compiler-libs.optcomp dynlink"
+  version = "5.1.1"
+  description = "Toplevel interactions"
+  archive(native) = "ocamltoplevel.cmxa"
+  exists_if = "ocamltoplevel.cmxa"
+)
+
+package "flambda-backend-utils" (
+  requires = "compiler-libs.common"
+  version = "5.1.1"
+  description = "Flambda Backend tools"
+  archive(byte) = "flambda_backend_utils.cma"
+  archive(native) = "flambda_backend_utils.cmxa"
+)
