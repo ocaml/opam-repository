@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "Lwt support for h2"
+description:
+  "h2 is an implementation of the HTTP/2 specification entirely in OCaml. h2-mirage provides an Lwt runtime implementation for h2 that targets MirageOS unikernels."
+maintainer: ["Antonio Nuno Monteiro <anmonteiro@gmail.com>"]
+authors: ["Antonio Nuno Monteiro <anmonteiro@gmail.com>"]
+license: "BSD-3-clause"
+homepage: "https://github.com/anmonteiro/ocaml-h2"
+bug-reports: "https://github.com/anmonteiro/ocaml-h2/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.08.0"}
+  "h2-lwt" {= version}
+  "faraday-lwt"
+  "lwt"
+  "gluten-mirage" {>= "0.3.0"}
+  "mirage-flow" {>= "2.0.0"}
+  "cstruct"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/anmonteiro/ocaml-h2.git"
+url {
+  src:
+    "https://github.com/anmonteiro/ocaml-h2/releases/download/0.13.0/h2-0.13.0.tbz"
+  checksum: [
+    "sha256=775a345c852d15cb093a1df2f4490e0fdc8197ea7a78a7fffbdc07c91007b9e1"
+    "sha512=e116e6473ab6c23a44ac95aafea77db774dfdeddcdce172df6054d1f8437e1232e69d5cd3977320997f1924d9dad1708eee3fa1b785fd255c1ef461db6e45150"
+  ]
+}
+x-commit-hash: "10a06bd792c7f5315b0fb83ee3a738b55225ecdf"
