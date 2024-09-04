@@ -1,0 +1,73 @@
+synopsis: "Language Server Protocol native server for Coq"
+description:
+"""
+Language Server Protocol native server for Coq
+"""
+opam-version: "2.0"
+maintainer: "e@x80.org"
+bug-reports: "https://github.com/ejgallego/coq-lsp/issues"
+homepage: "https://github.com/ejgallego/coq-lsp"
+dev-repo: "git+https://github.com/ejgallego/coq-lsp.git"
+authors: [
+  "Emilio Jesús Gallego Arias <e@x80.org>"
+  "Ali Caglayan <alizter@gmail.com>"
+  "Shachar Itzhaky <shachari@cs.technion.ac.il>"
+  "Ramkumar Ramachandra <r@artagnon.com>"
+]
+license: "LGPL-2.1-or-later"
+doc: "https://ejgallego.github.io/coq-lsp/"
+
+depends: [
+
+  ("ocaml" {>= "5.0"} | ("ocaml" {<= "5.0"} & "memprof-limits" { >= "0.2.1" } ))
+
+  "dune"         { >= "3.2.0" }
+
+  # lsp dependencies
+  "cmdliner"     { >= "1.1.0" }
+  "yojson"       { >= "1.7.0" }
+  "uri"          { >= "4.2.0" }
+  "dune-build-info" { >= "3.2.0" }
+
+  # waterproof parser
+  "menhir"       { >= "20220210" }
+
+  # unit testing
+  "ppx_inline_test"     { >= "0.14.1" }
+
+  # Uncomment this for releases
+  "coq"          { >= "8.18" < "8.19"  }
+
+  # coq deps: remove this for releases
+  "ocamlfind" {>= "1.8.1"}
+  "zarith" {>= "1.11"}
+
+  # result dep, fixed in main, but kept for older releases
+  "result"              { >= "1.5" }
+
+  # serlib deps: see what we need to keep for release
+  "ppx_deriving"        { >= "4.2.1"    }
+  "ppx_deriving_yojson" { >= "3.4"      }
+  "ppx_import"          { >= "1.11.0"   }
+  "sexplib"             { >= "v0.13.0" & < "v0.18" }
+  "ppx_sexp_conv"       { >= "v0.13.0" & < "v0.18" }
+  "ppx_compare"         { >= "v0.13.0" & < "v0.18" }
+  "ppx_hash"            { >= "v0.13.0" & < "v0.18" }
+]
+
+depopts: ["lwt" "logs"]
+
+build: [
+  [ "rm" "-rf" "vendor" ]
+  [ "dune" "build" "-p" name "-j" jobs ]
+]
+run-test: [ [ "dune" "runtest" "-p" name "-j" jobs ] ]
+url {
+  src:
+    "https://github.com/ejgallego/coq-lsp/releases/download/0.2.0%2B8.18/coq-lsp-0.2.0.8.18.tbz"
+  checksum: [
+    "sha256=ba40f92f4c751793265d20f1c217638146e4714e0196a0d2b00c9ed58774abf6"
+    "sha512=0b7c1d98e22017e44d90461ee61081043401387251488ee7113668d24f6a463dca4ce690e30355248a949817c6b8f8a0944489c4d9b66bd239d903a089a1f11f"
+  ]
+}
+x-commit-hash: "fab5732cd0b7a9ff2931dfb5f4f7cc82d40ee77d"
