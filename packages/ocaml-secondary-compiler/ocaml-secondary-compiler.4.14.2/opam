@@ -1,0 +1,68 @@
+opam-version: "2.0"
+synopsis: "OCaml 4.14.2 Secondary Switch Compiler"
+maintainer: "David Allsopp <david@tarides.com>"
+authors: "Xavier Leroy and many contributors"
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git+https://github.com/ocaml/ocaml#4.14"
+depends: [
+  # Architecture (non-Windows)
+  # opam-repository at present requires that ocaml-base-compiler is installed
+  # using an architecture which matches the machine's, since arch is used in
+  # available fields. Cross-compilation at this stage is an unstable accident.
+  "host-arch-arm32" {arch = "arm32" & post}
+  "host-arch-arm64" {arch = "arm64" & post}
+  "host-arch-ppc64" {arch = "ppc64" & post}
+  "host-arch-riscv64" {arch = "riscv64" & post}
+  "host-arch-s390x" {arch = "s390x" & post}
+  # The Windows ports explicitly select the architecture (see below) this
+  # facility is not yet available for other platforms.
+  "host-arch-x86_32" {os != "win32" & arch = "x86_32" & post}
+  "host-arch-x86_64" {os != "win32" & arch = "x86_64" & post}
+  "host-arch-unknown" {os != "win32" & arch != "arm32" & arch != "arm64" & arch != "ppc64" & arch != "riscv64" & arch != "s390x" & arch != "x86_32" & arch != "x86_64" & post}
+
+  # Port selection (Windows)
+  # amd64 mingw-w64 / MSVC
+  (("arch-x86_64" {os = "win32" & arch = "x86_64"} &
+     (("system-mingw" & "mingw-w64-shims" {os-distribution = "cygwin" & post}) |
+      "system-msvc")) |
+  # i686 mingw-w64 / MSVC
+   ("arch-x86_32" {os = "win32"} &
+     (("system-mingw" & "mingw-w64-shims" {os-distribution = "cygwin" & post}) |
+      "system-msvc")) |
+  # Non-Windows systems
+   "host-system-other" {os != "win32" & post})
+
+  # Support Packages
+  "flexdll" {>= "0.36" & os = "win32"}
+]
+build-env: MSYS2_ARG_CONV_EXCL = "*"
+build: [
+  [
+    "./configure"
+    "--host=x86_64-pc-windows"  {system-msvc:installed & arch-x86_64:installed}
+    "--host=x86_64-w64-mingw32" {os-distribution = "cygwin" & system-mingw:installed & arch-x86_64:installed}
+    "--host=i686-pc-windows"    {system-msvc:installed & arch-x86_32:installed}
+    "--host=i686-w64-mingw32"   {os-distribution = "cygwin" & system-mingw:installed & arch-x86_32:installed}
+    "--prefix=%{_:share}%"
+    "--libdir=%{_:share}%/lib"
+    "--disable-stdlib-manpages"
+    "--with-flexdll=%{flexdll:share}%" {os = "win32" & flexdll:installed}
+    "--disable-debugger"
+    "--disable-installing-bytecode-programs"
+    "--disable-debug-runtime"
+    "--disable-instrumented-runtime"
+    "CC=cc" {os = "openbsd" | os = "freebsd" | os = "macos"}
+    "ASPP=cc -c" {os = "openbsd" | os = "freebsd" | os = "macos"}
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.14.2.tar.gz"
+  checksum: "sha256=c2d706432f93ba85bd3383fa451d74543c32a4e84a1afaf3e8ace18f7f097b43"
+}
+description: "Installs an additional compiler to the opam switch in
+%{_:share}%/ocaml-secondary-compiler which can be accessed using
+`ocamlfind -toolchain secondary`."
