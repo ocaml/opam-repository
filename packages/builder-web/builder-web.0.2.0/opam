@@ -1,0 +1,72 @@
+opam-version: "2.0"
+maintainer: "Reynir Björnsson <reynir@reynir.dk>"
+authors: ["Reynir Björnsson <reynir@reynir.dk>"]
+homepage: "https://github.com/robur-coop/builder-web"
+dev-repo: "git+https://github.com/robur-coop/builder-web.git"
+bug-reports: "https://github.com/robur-coop/builder-web/issues"
+license: "ISC"
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["sh" "-ex" "packaging/FreeBSD/create_package.sh"] {os = "freebsd"}
+  ["sh" "-ex" "packaging/debian/create_package.sh"] {os-family = "debian"}
+]
+
+depends: [
+  "ocaml" {>= "4.13.0"}
+  "dune" {>= "2.7.0"}
+  "builder" {>= "0.4.0"}
+  "dream" {>= "1.0.0~alpha7"}
+  "bos"
+  "ohex" {>= "0.2.0"}
+  "lwt" {>= "5.7.0"}
+  "caqti" {>= "2.1.2"}
+  "caqti-lwt"
+  "caqti-driver-sqlite3"
+  "mirage-crypto-rng" {>= "0.11.0"}
+  "kdf"
+  "opam-core"
+  "opam-format" {>= "2.1.0"}
+  "metrics" {>= "0.3.0"}
+  "metrics-lwt" {>= "0.3.0"}
+  "metrics-influx" {>= "0.3.0"}
+  "metrics-rusage" {>= "0.3.0"}
+  "ipaddr"
+  "tyxml" {>= "4.3.0"}
+  "ptime"
+  "duration"
+  "asn1-combinators" {>= "0.3.0"}
+  "logs"
+  "cmdliner" {>= "1.1.0"}
+  "uri"
+  "fmt" {>= "0.8.7"}
+  "cmarkit" {>= "0.3.0"}
+  "tar" {>= "3.0.0"}
+  "tar-unix" {>= "3.0.0"}
+  "owee"
+  "solo5-elftool" {>= "0.3.0"}
+  "decompress" {>= "1.5.0"}
+  "digestif" {>= "1.2.0"}
+  "alcotest" {>= "1.2.0" & with-test}
+  "ppx_deriving" {with-test}
+  "ppx_deriving_yojson" {with-test}
+  "yojson" {with-test}
+]
+
+synopsis: "Web interface for builder"
+description: """
+Builder-web takes in submissions of builds, typically from [builder](https://github.com/robur-coop/builder/), and displays the produced artifacts in a way that makes it easy to compare checksums and build status.
+Produced binaries can be downloaded and executed.
+[builds.robur.coop](https://builds.robur.coop/) itself runs builder-web.
+"""
+url {
+  src:
+    "https://github.com/robur-coop/builder-web/releases/download/v0.2.0/builder-web-0.2.0.tbz"
+  checksum: [
+    "sha256=5f4f388368a6be57ca59a4463f00f0e52262fd45b85d8e8d757f1a0cf84b9df2"
+    "sha512=ce3572c962dc46b68237b62a48da6d8b431a3ac3ff4b786efa482142332f641bcc8793626b6c97b43912a5da1103c6246e97ecd608df75a32bc7c54c47acbe76"
+  ]
+}
+x-commit-hash: "402894405dea558e6ad9bc3466932d78e87d4f71"
