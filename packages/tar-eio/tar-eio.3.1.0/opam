@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "Decode and encode tar format files using Eio"
+description: """
+tar is a library to read and write tar files with an emphasis on
+streaming.  This library uses Eio to provide a portable tar library.
+"""
+maintainer: ["Reynir Björnsson <reynir@reynir.dk>" "dave@recoil.org"]
+authors: [
+  "Dave Scott"
+  "Thomas Gazagnaire"
+  "David Allsopp"
+  "Antonin Décimo"
+  "Reynir Björnsson"
+  "Hannes Mehnert"
+]
+license: "ISC"
+tags: ["org:xapi-project" "org:mirage"]
+homepage: "https://github.com/mirage/ocaml-tar"
+doc: "https://mirage.github.io/ocaml-tar/"
+bug-reports: "https://github.com/mirage/ocaml-tar/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "5.00.0"}
+  "eio" {>= "1.1" & < "1.2"}
+  "tar" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/mirage/ocaml-tar.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-tar/releases/download/V3.1.0/tar-3.1.0.tbz"
+  checksum: [
+    "sha256=cf939b70b1fc79e0b3aa57520ad892e7edb6af7be4a2f309f421c192beff427d"
+    "sha512=a2e6c6ee949bde85167655c103ca4fddc7022b9c7932bbe3df9d707218905906d4693ad0639e65c34004bfec2d794dde90d0c274554ae11d1d8693b35a0a63e0"
+  ]
+}
+x-commit-hash: "41c955a135df59c975fcae56cefa1921ad821dad"
