@@ -1,0 +1,68 @@
+opam-version: "2.0"
+synopsis: "Read and write tar format files via MirageOS interfaces"
+description: """
+tar is a library to read and write tar files with an emphasis on
+streaming.  This library is functorised over external OS dependencies
+to facilitate embedding within MirageOS.
+"""
+maintainer: ["Reynir Björnsson <reynir@reynir.dk>" "dave@recoil.org"]
+authors: [
+  "Dave Scott"
+  "Thomas Gazagnaire"
+  "David Allsopp"
+  "Antonin Décimo"
+  "Reynir Björnsson"
+  "Hannes Mehnert"
+]
+license: "ISC"
+tags: ["org:xapi-project" "org:mirage"]
+homepage: "https://github.com/mirage/ocaml-tar"
+doc: "https://mirage.github.io/ocaml-tar/"
+bug-reports: "https://github.com/mirage/ocaml-tar/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08.0"}
+  "cstruct" {>= "6.0.0"}
+  "lwt" {>= "5.6.0"}
+  "mirage-block" {>= "2.0.0"}
+  "mirage-clock" {>= "4.0.0"}
+  "mirage-kv" {>= "6.0.0"}
+  "optint"
+  "ptime"
+  "tar" {= version}
+  "mirage-block-unix" {with-test & >= "2.13.0"}
+  "mirage-clock-unix" {with-test & >= "4.0.0"}
+  "alcotest" {>= "1.7.0" & with-test}
+  "alcotest-lwt" {>= "1.7.0" & with-test}
+  "tar-unix" {with-test & = version}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/mirage/ocaml-tar.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-tar/releases/download/v3.1.1/tar-3.1.1.tbz"
+  checksum: [
+    "sha256=a58907f52b89af16109359432ff84d24f6a26460a70e58030bd0fc7cca4db054"
+    "sha512=d6752890c2a259108d8a204af78ab7382a63bf06d5c0382cc5342c258aba8f6972ba4761f64a7f1f86c51b7ed82963cd6c5fbdf3e8eaea71ae1e6d946221ae56"
+  ]
+}
+x-commit-hash: "eea1d74620d48851946f841df41b119a7fa8aa8a"
