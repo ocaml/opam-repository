@@ -1,0 +1,68 @@
+opam-version: "2.0"
+homepage: "https://github.com/robur-coop/webauthn"
+dev-repo: "git+https://github.com/robur-coop/webauthn.git"
+bug-reports: "https://github.com/robur-coop/webauthn/issues"
+doc: "https://robur-coop.github.io/webauthn/doc"
+maintainer: [ "team@robur.coop" ]
+authors: [ "Reynir Björnsson <reynir@reynir.dk>" "Hannes Mehnert <hannes@mehnert.org>" ]
+license: "BSD-2-Clause"
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.7"}
+  "dream" {dev & >= "1.0.0~alpha7"}
+  "ppx_blob" {dev}
+  "cmdliner" {dev & >= "1.1.0"}
+  "logs" {dev}
+  "lwt" {dev}
+  "yojson"
+  "ppx_deriving_yojson"
+  "digestif"
+  "mirage-crypto-ec" {>= "1.1.0"}
+  "mirage-crypto-rng" {>= "1.1.0"}
+  "ocplib-endian"
+  "x509" {>= "1.0.2"}
+  "base64" {>= "3.1.0"}
+  "cbor" {>= "0.5"}
+  "ohex" {>= "0.2.0"}
+]
+
+conflicts: [
+  "result" {< "1.5"}
+]
+
+synopsis: "WebAuthn - authenticating users to services using public key cryptography"
+description: """
+WebAuthn is a web standard published by the W3C. Its goal is to
+standardize an interfacefor authenticating users to web-based
+applications and services using public key cryptography. Modern web
+browsers support WebAuthn functionality.
+
+WebAuthn provides two funcitons: register and authenticate. Usually the
+public and private keypair is stored on an external token (Yuikey etc.)
+or part of the platform (TPM). After the public key is registered, it can
+be used to authenticate to the same service.
+
+This module does not preserve a database of registered public keys, their
+credential ID, usernames and pending challenges - instead this data must
+be stored by a client of this API in a database or other persistent
+storage.
+
+[Demo server](https://webauthn-demo.robur.coop)
+[WebAuthn specification at W3C](https://w3c.github.io/webauthn/)
+"""
+url {
+  src:
+    "https://github.com/robur-coop/webauthn/releases/download/v0.2.0/webauthn-0.2.0.tbz"
+  checksum: [
+    "sha256=74a13e1cb421c3e06b18c09e01097edafebd3b5169d600cf1da5449bf013c622"
+    "sha512=71e23aea56e6edc95fa01643cad00c3a3edea2a9cc5c1c921c4afd54bcdeaba4c9768251b8eee9c6a0f5819c9a1780507922d3012b559cf0d5949ca03cac4482"
+  ]
+}
+x-commit-hash: "317ab542200fca0ddda70f4a97c91cb2d5b2c2b8"
