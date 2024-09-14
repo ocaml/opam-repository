@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Parser for ocaml documentation comments"
+description: """
+Odoc_parser is a library for parsing the contents of OCaml documentation
+comments, formatted using 'odoc' syntax, an extension of the language
+understood by ocamldoc."""
+maintainer: ["Jon Ludlam <jon@recoil.org>"]
+authors: ["Anton Bachin <antonbachin@yahoo.com>"]
+license: "ISC"
+homepage: "https://github.com/ocaml/odoc"
+bug-reports: "https://github.com/ocaml/odoc/issues"
+dev-repo: "git+https://github.com/ocaml/odoc.git"
+doc: "https://ocaml.github.io/odoc/odoc_parser"
+depends: [
+  "dune" {>= "3.7"}
+  "ocaml" {>= "4.02.0"}
+  "astring"
+  "result"
+  "camlp-streams"
+  "ppx_expect" {with-test}
+  ("ocaml" {< "4.04.1" & with-test} | "sexplib0" {with-test})
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    # Tests are not all associated with a package and would be run if using the
+    # default '@runtest'.
+    "@src/parser/runtest" {with-test}
+  ]
+]
+url {
+  src: "https://github.com/ocaml/odoc/releases/download/2.4.3/odoc-2.4.3.tbz"
+  checksum: [
+    "sha256=d6bb2cec05b4893ce787d7b7b16110b6583fcdcde840446710befbbf3bbb2b12"
+    "sha512=e78faa68c726db3034c12f0cbf76efb87e73f03430a734f82eeea4fb8813e5ebb8ad176012ed20cc1d56a874c601489ca3f02c929474f925eec6d51ce6bdb856"
+  ]
+}
+x-commit-hash: "09a5562f7b61ed9e7512afdf87421dd17b6e4966"
