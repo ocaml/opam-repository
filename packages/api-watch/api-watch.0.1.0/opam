@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "Libraries and tools to keep watch on your OCaml lib's API changes"
+maintainer: ["Nathan Rebours <nathan.p.rebours@gmail.com>"]
+authors: ["Nathan Rebours <nathan.p.rebours@gmail.com>"]
+license: "ISC"
+homepage: "https://github.com/NathanReb/ocaml-api-watch"
+bug-reports: "https://github.com/NathanReb/ocaml-api-watch/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "5.2.0" & < "5.3.0"}
+  "ppx_expect" {with-test}
+  "ppx_deriving"
+  "logs"
+  "containers"
+  "fmt"
+  "cmdliner" {>= "1.1.0"}
+  "diffutils"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/NathanReb/ocaml-api-watch.git"
+pin-depends: [
+  ["diffutils.dev" "git+https://github.com/panglesd/ocaml-diffutils#0fc293bc0cd2c34742552f7a0c777bfba385bd90"]
+]
+url {
+  src:
+    "https://github.com/NathanReb/ocaml-api-watch/releases/download/0.1.0/api-watch-0.1.0.tbz"
+  checksum: [
+    "sha256=73c9ade91374e9820435e0de6d9fecc18830f3940f239c9fc0519de264d2332e"
+    "sha512=8f3e41d9df31a81f0bd0b8f62aa3fe48590e3f7e8a9c4afc56034a6f02c6b56f23720b11fdb2f12f06c357b06cdf0f53fb417ccadab27a0ef06abd675da93364"
+  ]
+}
+x-commit-hash: "47bd03b3fdd08466e88b0e2d49ac2bf393f77dd8"
