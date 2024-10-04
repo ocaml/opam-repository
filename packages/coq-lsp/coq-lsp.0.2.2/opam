@@ -1,0 +1,71 @@
+synopsis: "Language Server Protocol native server for Coq"
+description:
+"""
+Language Server Protocol native server for Coq
+"""
+opam-version: "2.0"
+maintainer: "e@x80.org"
+bug-reports: "https://github.com/ejgallego/coq-lsp/issues"
+homepage: "https://github.com/ejgallego/coq-lsp"
+dev-repo: "git+https://github.com/ejgallego/coq-lsp.git"
+authors: [
+  "Emilio Jesús Gallego Arias <e@x80.org>"
+  "Ali Caglayan <alizter@gmail.com>"
+  "Shachar Itzhaky <shachari@cs.technion.ac.il>"
+  "Ramkumar Ramachandra <r@artagnon.com>"
+]
+license: "LGPL-2.1-or-later"
+doc: "https://ejgallego.github.io/coq-lsp/"
+
+depends: [
+
+  ("ocaml" {>= "5.0"} | ("ocaml" {<= "5.0"} & "memprof-limits" { >= "0.2.1" } ))
+
+  "dune"         { >= "3.13.0" } # Version interval [3.8-3.12] was
+                                 # broken for composed builds with Coq
+
+  # lsp dependencies
+  "cmdliner"     { >= "1.1.0" }
+  "yojson"       { >= "1.7.0" }
+  "uri"          { >= "4.2.0" }
+  "dune-build-info" { >= "3.2.0" }
+
+  # waterproof parser
+  "menhir"       { >= "20220210" }
+
+  # unit testing
+  "ppx_inline_test"     { >= "v0.15.0" }
+
+  # Uncomment this for releases
+  # "coq"          { >= "8.17" < "8.18"  }
+
+  # coq deps: remove this for releases
+  "ocamlfind" {>= "1.9.1"}
+  "zarith" {>= "1.13"}
+
+  # serlib deps: see what we need to keep for release
+  "ppx_deriving"        { >= "5.2"                 }
+  "ppx_deriving_yojson" { >= "3.7.0"               }
+  "ppx_import"          { >= "1.11.0"              }
+  "sexplib"             { >= "v0.15.0" & < "v0.18" }
+  "ppx_sexp_conv"       { >= "v0.15.0" & < "v0.18" }
+  "ppx_compare"         { >= "v0.15.0" & < "v0.18" }
+  "ppx_hash"            { >= "v0.15.0" & < "v0.18" }
+]
+
+depopts: ["lwt" "logs"]
+
+build: [
+  [ "rm" "-rf" "vendor" ]
+  [ "dune" "build" "-p" name "-j" jobs ]
+]
+run-test: [ [ "dune" "runtest" "-p" name "-j" jobs ] ]
+url {
+  src:
+    "https://github.com/ejgallego/coq-lsp/releases/download/0.2.2%2B8.17/coq-lsp-0.2.2.8.17.tbz"
+  checksum: [
+    "sha256=43f89c85ebbab1a6a502703ad2a6bc533bf0a45e1bed5e549a8154d33da72654"
+    "sha512=b78265a8e16390ecb667ed6940b3aac856bcb06c185ba314acfded6cedf2e6007c6f6576050537bb40cc16f7d22dd284391f00fd5659866a12f0282e31448005"
+  ]
+}
+x-commit-hash: "c4ab154296ebd1430bcfe99e5f0b2103738c00cf"
