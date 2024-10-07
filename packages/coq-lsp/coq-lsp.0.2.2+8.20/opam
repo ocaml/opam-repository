@@ -1,0 +1,74 @@
+synopsis: "Language Server Protocol native server for Coq"
+description:
+"""
+Language Server Protocol native server for Coq
+"""
+opam-version: "2.0"
+maintainer: "e@x80.org"
+bug-reports: "https://github.com/ejgallego/coq-lsp/issues"
+homepage: "https://github.com/ejgallego/coq-lsp"
+dev-repo: "git+https://github.com/ejgallego/coq-lsp.git"
+authors: [
+  "Emilio Jesús Gallego Arias <e@x80.org>"
+  "Ali Caglayan <alizter@gmail.com>"
+  "Shachar Itzhaky <shachari@cs.technion.ac.il>"
+  "Ramkumar Ramachandra <r@artagnon.com>"
+]
+license: "LGPL-2.1-or-later"
+doc: "https://ejgallego.github.io/coq-lsp/"
+
+depends: [
+
+  ("ocaml" {>= "5.0"} | ("ocaml" {<= "5.0"} & "memprof-limits" { >= "0.2.1" } ))
+
+  "dune"         { >= "3.2.0" }
+
+  # lsp dependencies
+  "cmdliner"     { >= "1.1.0" }
+  "yojson"       { >= "1.7.0" }
+  "uri"          { >= "4.2.0" }
+  "dune-build-info" { >= "3.2.0" }
+
+  # waterproof parser
+  "menhir"       { >= "20220210" }
+
+  # unit testing
+  "ppx_inline_test"     { >= "v0.15.0" }
+
+  # Uncomment this for releases
+  "coq"          { >= "8.20" < "8.21"  }
+
+  # coq deps: remove this for releases
+  "ocamlfind" {>= "1.9.1"}
+  "zarith" {>= "1.13"}
+
+  # serlib deps: see what we need to keep for release
+  "ppx_deriving"        { >= "5.2"                 }
+  "ppx_deriving_yojson" { >= "3.7.0"               }
+  "ppx_import"          { >= "1.11.0"              }
+  "sexplib"             { >= "v0.15.0" & < "v0.18" }
+  "ppx_sexp_conv"       { >= "v0.15.0" & < "v0.18" }
+  "ppx_compare"         { >= "v0.15.0" & < "v0.18" }
+  "ppx_hash"            { >= "v0.15.0" & < "v0.18" }
+]
+
+# older results get in mess with ppx_deriving, we cannot control how
+# it gets pulled, often in min-bound rev-dep, so we conflict with it
+conflicts: [ "result" { < "1.5" } ]
+
+depopts: ["lwt" "logs"]
+
+build: [
+  [ "rm" "-rf" "vendor" ]
+  [ "dune" "build" "-p" name "-j" jobs ]
+]
+run-test: [ [ "dune" "runtest" "-p" name "-j" jobs ] ]
+url {
+  src:
+    "https://github.com/ejgallego/coq-lsp/releases/download/0.2.2%2B8.20/coq-lsp-0.2.2.8.20.tbz"
+  checksum: [
+    "sha256=5404b94fbfe8c126470e7ef706001a77da6f6c388c314b6a80981c265a712399"
+    "sha512=1cc67ed0e0f0d5f64dc6e89239045f59e1ec85535496182ff6b7988621ff13e9fdd5e74e30224e37f3832a77435d1f636b15e46cd93e382b1c4256e96e9297c8"
+  ]
+}
+x-commit-hash: "3c8da22551f324d2999991bf4809603a7366c7fd"
