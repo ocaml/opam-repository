@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "Library to build LDP applications using TLS"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "LGPL-3.0-only"
+homepage: "https://zoggy.frama.io/ocaml-ldp/"
+doc: "https://zoggy.frama.io/ocaml-ldp/"
+bug-reports: "https://framagit.org/zoggy/ocaml-ldp/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ldp" {= version}
+  "ocaml" {>= "4.14.0"}
+  "tls-lwt" {>= "1.0.2"}
+  "tls" {>= "1.0.2"}
+  "ppx_sexp_conv"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/ocaml-ldp.git"
+url {
+  src: "https://zoggy.frama.io/ocaml-ldp/releases/ocaml-ldp-0.3.0.tar.gz"
+  checksum: [
+    "md5=8903912748afccb622e88b52d1d89260"
+    "sha512=4924c40cf5f80d7b46e93de848bc52cbe7fa0b864082f93c07c253cd0d81395160339e80533d6b5bd4779c93afd1e37754323e1ca4a5a0b5371c840ee1bf2f67"
+  ]
+}
