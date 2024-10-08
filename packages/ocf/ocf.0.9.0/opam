@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis:
+  "OCaml library to read and write configuration files in JSON syntax"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "GPL-3.0-only"
+tags: ["configuration" "options" "json"]
+homepage: "https://zoggy.frama.io/ocf/"
+doc: "https://zoggy.frama.io/ocf/doc.html"
+bug-reports: "https://framagit.org/zoggy/ocf/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.12.0"}
+  "yojson" {>= "1.7.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/ocf.git"
+url {
+  src: "https://zoggy.frama.io/ocf/releases/ocf-0.9.0.tar.bz2"
+  checksum: [
+    "md5=4f71a321a225bb5dbb0f50cb2355b8f9"
+    "sha512=512b3a3c804008374d8a8f0d48b8c3101012d758b213e81818eb54305435422baf6191252da7d71cea6aa5e73a318ff2aa66ab84adaa31a44a5ea6917ca4420c"
+  ]
+}
