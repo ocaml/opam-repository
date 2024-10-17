@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "Verifiable Delay Functions bindings to Chia's VDF"
+maintainer: "Nomadic Labs <contact@nomadic-labs.com>"
+authors: "Nomadic Labs"
+license: "MIT"
+homepage: "https://gitlab.com/nomadic-labs/cryptography/ocaml-chia-vdf"
+bug-reports:
+  "https://gitlab.com/nomadic-labs/cryptography/ocaml-chia-vdf/-/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "ocaml" {>= "4.14"}
+  "dune-configurator"
+  "zarith" {>= "1.10" & < "2.0"}
+  "integers"
+  "conf-gmp"
+  "conf-g++"
+  "stdlib-random"
+  "conf-pkg-config"
+  "alcotest" {with-test}
+  "bisect_ppx" {with-test & >= "2.5"}
+  "odoc" {with-doc}
+]
+available: arch != "arm32" & arch != "x86_32" & os-family != "windows"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo:
+  "git+https://gitlab.com/nomadic-labs/cryptography/ocaml-chia-vdf.git"
+url {
+  src:
+    "https://gitlab.com/nomadic-labs/cryptography/ocaml-chia-vdf/-/archive/v0.0.5/ocaml-chia-vdf-v0.0.5.tar.gz"
+  checksum: [
+    "md5=a249de2b8e62043a61c7626565dbbe23"
+    "sha512=e224df36e8ce6bc76d9f15e94664224106608100bef0595621793c6208b03afd37114ebf8f733a924e6b560904390cdaa3422e71bc6bb057bcb4cd846320c1eb"
+  ]
+}
