@@ -58,19 +58,18 @@ available: os = "linux" | os = "macos" | os = "cygwin"
 build: [
   [make] {!hol_light_module:installed}
   [make "HOLLIGHT_USE_MODULE=1"] {hol_light_module:installed}
+  ["sh" "-c" "sed \"s^%{hol_light:build}%^%{hol_light:lib}%^g\" hol.sh >hol_new.sh"]
+  ["mv" "hol_new.sh" "hol.sh"]
+  ["chmod" "+x" "hol.sh"]
 ]
 install: [
+  ["mkdir" "-p" "%{hol_light:lib}%"]
+  ["cp" "-r" "." "%{hol_light:lib}%"]
   ["cp" "hol.sh" "%{bin}%/hol.sh"]
-  
-  ["mkdir" "-p" "%{hol_light:lib}%"] {hol_light_module:installed}
-  ["cp" "hol_lib.cma" "hol_lib.cmi" "hol_lib.cmo" "hol_lib.cmx" "hol_lib.cmxa" "hol_lib.o" "hol_lib.a"
-        "bignum.cmi" "bignum.cmo" "bignum.cmx" "bignum.o"
-        "hol_loader.cmi" "hol_loader.cmo" "hol_loader.cmx" "hol_loader.o" "META"
-        "%{hol_light:lib}%"] {hol_light_module:installed}
 ]
 remove: [
   ["rm" "%{bin}%/hol.sh"]
-  ["rm" "-rf" "%{hol_light:lib}%"] {hol_light_module:installed}
+  ["rm" "-rf" "%{hol_light:lib}%"]
 ]
 extra-source "META" {
   src: "https://gist.githubusercontent.com/aqjune/4b77edcc29faeebf15fcd4949f27d7ae/raw/3ff64fa63304e1944e4fc6fef8c7a7a5a2009bc2/META"
