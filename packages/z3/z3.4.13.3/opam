@@ -1,0 +1,52 @@
+opam-version: "2.0"
+maintainer: "weng@cs.jhu.edu"
+authors: "MSR"
+homepage: "https://github.com/Z3prover/z3"
+bug-reports: "https://github.com/Z3prover/z3/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Z3prover/z3.git"
+depexts: [
+  ["python3-distutils"] {os-family = "debian"}
+]
+patches: [
+  "gccstd-2a.patch" { (os-family = "opensuse" | os-family = "suse") | (os-distribution = "ubuntu" & os-version <= "20.04") }
+]
+build: [
+  [ "python3" "scripts/mk_make.py" "--ml" ]
+  [ make "-C" "build" "-j" jobs ]
+]
+
+install: [
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/* -dll build/libz3.*"]
+  [ "cp" "build/z3" "%{bin}%/z3"]
+]
+
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "ocamlfind" {build}
+  "zarith"
+  "conf-gmp"
+  "conf-python-3" {build}
+  "conf-c++" {build}
+]
+x-ci-accept-failures: [
+  "centos-7" "oraclelinux-7" "opensuse-15.6" # C compiler is too old
+]
+conflicts: [
+  "ocaml-option-bytecode-only"
+]
+synopsis: "Z3 solver"
+url {
+  src:
+    "https://github.com/Z3Prover/z3/archive/refs/tags/z3-4.13.3.tar.gz"
+  checksum: [
+    "sha256=f59c9cf600ea57fb64ffeffbffd0f2d2b896854f339e846f48f069d23bc14ba0"
+    "sha512=c899f57d8cb5450801463b07cd651869d766a920e41a4beedc96c4978e940bfadff9af2fbbb5ba10f94f6742bb33f7abaca0a351f3e1803d778e84d735d6829e"
+  ]
+}
+extra-source "gccstd-2a.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/z3/gccstd-2a.patch"
+  checksum:
+    "sha256=ae4088ff14739bcc2cadc90bc428f08277e898b832f6b859a46e23c584d513c8"
+}
