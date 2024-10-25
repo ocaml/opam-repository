@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "GPT headers that are also valid tar headers"
+description: """
+Marshaling GPT headers such that they are a valid tar archive.
+              The archive will contain a dummy file named `GPTAR` whose content
+              is (at least) the GPT header and the partition table entries.
+              Put a tar-partition at the first available space, and you can
+              inspect the tar archive using regular tar utilities on the disk
+              image with the caveat of the added `GPTAR` dummy file."""
+maintainer: ["Reynir Björnsson <reynir@reynir.dk>"]
+authors: ["Reynir Björnsson <reynir@reynir.dk>"]
+license: "BSD-2-Clause"
+tags: ["gpt" "tar" "mirage"]
+homepage: "https://github.com/reynir/gptar"
+bug-reports: "https://github.com/reynir/gptar/issues"
+depends: [
+  "ocaml"
+  "dune" {>= "3.7"}
+  "gpt"
+  "tar" {>= "3.0.0"}
+  "checkseum"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/reynir/gptar.git"
+url {
+  src:
+    "https://github.com/reynir/gptar/releases/download/v1.0.0/gptar-1.0.0.tbz"
+  checksum: [
+    "sha256=f243377c4650ecf75900997c948b518e6d6b1dd99fee8ee84d3c4b404d0badd0"
+    "sha512=f28b4ea53a8902b05dd1d7120056876fd25cefe51c0680083fd9565c530b2efc930b2caf4cf35d3b894d5100b1c33b0b3641c139e6e40a6923fc200ec227e9f2"
+  ]
+}
+x-commit-hash: "f99160b5ac01fd34fbef0c7fe91135d80346e5e0"
