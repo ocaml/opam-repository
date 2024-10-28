@@ -49,7 +49,9 @@ jobs:
       - name: Restrict testing to available compilers
         if: steps.cache-opam.outputs.cache-hit != 'true'
         # TODO Amend this lowerbound as older compiler packages are updated
-        run: opam switch set-invariant --formula "`"ocaml`" {>= `"4.13`"}"
+        run: |
+          opam switch set-invariant --formula "`"ocaml`" {>= `"4.13`"}"
+          opam exec -- ocaml -version
 
       - name: Save opam cache
         if: steps.cache-opam.outputs.cache-hit != 'true'
