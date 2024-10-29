@@ -3,7 +3,10 @@ maintainer: "blue-prawn"
 authors: ["Daniel Stenberg"]
 homepage: "http://curl.haxx.se/"
 license: "BSD-like"
-build: ["curl-config" "--libs"]
+build: [
+  ["sh" "-exc" "curl-config --libs"] {os = "win32" & os-distribution != "cygwinports"}
+  ["curl-config" "--libs"] {os != "win32" | os-distribution = "cygwinports"}
+]
 depexts: [
   ["libcurl4-gnutls-dev"] {os-family = "debian"}
   ["libcurl4-gnutls-dev"] {os-family = "ubuntu"}
@@ -19,6 +22,10 @@ depexts: [
   ["curl"] {os-distribution = "homebrew" & os = "macos"}
   ["curl"] {os-distribution = "macports" & os = "macos"}
   ["curl"] {os = "freebsd"}
+]
+depends: [
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-curl-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-curl-x86_64" {os = "win32" & os-distribution != "cygwinports"})
 ]
 synopsis: "Virtual package relying on a libcurl system installation"
 description:
