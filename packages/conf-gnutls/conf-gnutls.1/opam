@@ -3,8 +3,30 @@ maintainer: "vb@luminar.eu.org"
 homepage: "https://www.gnutls.org"
 authors: ["Nikos Mavrogiannopoulos" "Simon Josefsson"]
 license: "LGPL-2.1-or-later"
-build: [["pkg-config" "gnutls" "nettle"]]
-depends: ["conf-pkg-config" {build}]
+build: [
+  "pkgconf" {os = "win32" & os-distribution != "cygwinports"}
+  "--personality=i686-w64-mingw32"
+    {os = "win32" & os-distribution != "cygwinports" &
+     host-arch-x86_32:installed}
+  "--personality=x86_64-w64-mingw32"
+    {os = "win32" & os-distribution != "cygwinports" &
+     host-arch-x86_64:installed}
+  "pkg-config" {os != "win32" | os-distribution != "cygwin"}
+  "gnutls" "nettle"
+]
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-gnutls-i686"
+     {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-nettle-i686"
+     {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-nettle-x86_64"
+     {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-gnutls-x86_64"
+     {os = "win32" & os-distribution != "cygwinports"})
+]
 depexts: [
   ["libgnutls28-dev" "nettle-dev"] {os-family = "debian" | os-family = "ubuntu"}
   ["gnutls-dev"] {os-distribution = "alpine"}
