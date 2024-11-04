@@ -1,0 +1,47 @@
+opam-version: "2.0"
+
+maintainer: "hello@tweag.io"
+authors: [ "Tweag" ]
+
+homepage: "https://topiary.tweag.io/"
+bug-reports: "https://github.com/tweag/topiary/issues"
+dev-repo: "git+https://github.com/tweag/topiary.git"
+
+license: "MIT"
+depends: ["conf-rust-2021"]
+
+build:[
+  [ "cargo" "build"
+      "--release"
+      "--package" "topiary-cli" ]
+  [ "sh" "make-topiary-wrapper.sh"
+      "--queries-dir" "%{share}%/topiary/queries"
+      "--topiary-wrapped" "%{bin}%/.topiary-wrapped/topiary"
+      "--output-file" "topiary-wrapper" ]
+]
+
+install: [
+  [ "mkdir" "%{bin}%/.topiary-wrapped" ]
+  [ "cp" "target/release/topiary" "%{bin}%/.topiary-wrapped/topiary" ]
+  [ "cp" "topiary-wrapper" "%{bin}%/topiary" ]
+  [ "mkdir" "%{share}%/topiary" ]
+  [ "cp" "-R" "topiary/topiary-queries/queries" "%{share}%/topiary/queries" ]
+]
+
+synopsis: "A formatter for OCaml based on the Topiary universal formatting engine"
+description: """
+Topiary is a tool in the Tree-sitter ecosystem, designed for formatter authors
+and formatter users. Authors can create a formatter without having to write
+their own engine or even their own parser. Users benefit from uniform code style
+and the convenience of using a single formatter tool across multiple languages.
+
+Topiary is written in Rust and developed by Tweag.
+"""
+
+url {
+  src: "https://github.com/tweag/topiary-opam/releases/download/v0.5.1/source-code-with-submodules.tar.xz"
+  checksum: [
+    "md5=50002771c10d4abcb5ee4c70ff0a4a78"
+    "sha512=b67213b53d1ba8a7dfa35493ff7993bda4a56215a4e5f09787e4eabefb9f1b5af9a55d9dad4e4d7c4462eedf9354953ce93fbb10d2d9bf06bb9ab237a690cb14"
+  ]
+}
