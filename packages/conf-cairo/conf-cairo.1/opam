@@ -4,7 +4,8 @@ homepage: "http://cairographics.org/"
 authors: ["Keith Packard" "Carl Worth" "Behdad Esfahbod"]
 license: ["LGPL-2.1-only" "MPL-1.1"]
 build: [
-  ["pkg-config" "cairo"] {os != "macos"}
+  ["pkg-config" "cairo"] {os != "macos" & os != "win32"}
+  ["pkgconf" "--cflags" "cairo"] {os = "win32" & os-distribution != "msys2"}
   ["sh" "-exc"
    "export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/; pkg-config --libs cairo"]
    {os = "macos" & os-distribution = "homebrew"}
