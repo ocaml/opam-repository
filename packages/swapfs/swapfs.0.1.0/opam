@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "Streaming temporary storage for Mirage OS"
+description: """
+Append-only ephemeral, anonymous files.
+Swapfs is useful for temporarily putting large data on persistent storage,
+for example if the data is too large to comfortably sit in memory.
+The data can then be read back in chunks.
+"""
+maintainer: ["Robur Team <team@robur.coop>"]
+authors: ["Reynir Björnsson <reynir@reynir.dk>"]
+license: "MIT"
+tags: ["org:mirage" "org:robur" "swap"]
+homepage: "https://github.com/robur-coop/mirage-swapfs"
+doc: "https://robur-coop.github.io/mirage-swapfs/doc"
+bug-reports: "https://github.com/robur-coop/mirage-swapfs/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "dune" {>= "3.16"}
+  "logs"
+  "mirage-block" {>= "3.0.0"}
+  "lwt" {>= "5.7.0"}
+  "cstruct" {>= "6.0.0"}
+  "alcotest" {with-test & >= "1.0.0"}
+  "alcotest-lwt" {with-test & >= "1.0.0"}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/robur-coop/mirage-swapfs.git"
+url {
+  src:
+    "https://github.com/robur-coop/mirage-swapfs/releases/download/v0.1.0/swapfs-0.1.0.tbz"
+  checksum: [
+    "sha256=76f5fe543f39c6ceec8124382125676bf22bb748cdc45f8736d2af6e10c73c7f"
+    "sha512=f9c60123ad49a78319ac51eba4e1a16a1164c22ff24ccde1e0a06c51a79d694f159a7303a84a43dae092e36d51b70fc80fc3d239d56983eb352d32463c44e8f6"
+  ]
+}
+x-commit-hash: "38907bc693f99b532edc3e72e3192e34e78ad167"
