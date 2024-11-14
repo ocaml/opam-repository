@@ -4,7 +4,11 @@ authors: ["Daniel Stenberg"]
 homepage: "http://curl.haxx.se/"
 license: "BSD-like"
 build: [
-  ["sh" "-exc" "curl-config --libs"] {os = "win32" & os-distribution != "cygwinports"}
+  ["pkgconf" {os = "win32" & os-distribution = "cygwin"}
+   "--personality=i686-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_32:installed}
+   "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_64:installed}
+   "pkg-config" {os != "win32" | os-distribution != "cygwin"}
+   "--print-errors" "--exists" "lbcurl"]
   ["curl-config" "--libs"] {os != "win32" | os-distribution = "cygwinports"}
 ]
 depexts: [
