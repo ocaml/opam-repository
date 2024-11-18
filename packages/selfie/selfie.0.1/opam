@@ -1,0 +1,31 @@
+opam-version: "2.0"
+synopsis: "Unix process snapshotting library"
+description: """
+Selfie exposes a function to write to disk an ELF executable that
+snapshots the current state.  When run, the output file continues
+as if the program had just returned from the selfie library.
+"""
+authors: "Quentin Carbonneaux"
+license: "MIT"
+homepage: "http://c9x.me/git/selfie.git"
+dev-repo: "git://c9x.me/selfie.git"
+bug-reports: "magnet0+opam@c9x.me"
+maintainer: ["magnet0+opam@c9x.me"]
+depends: [
+  "ocaml" {< "5.0.0" }
+  "ocamlfind" {build}
+]
+available: arch = "x86_64" & os = "linux" & os-family != "alpine"
+build: [
+  [make "selfie.cma"]
+]
+install: [
+  ["ocamlfind" "install" "selfie" "META" "selfie.cmi" "selfie.cma" "dllcaml_selfie.so"]
+]
+remove: [
+  ["ocamlfind" "remove" "selfie"]
+]
+url {
+  src: "http://c9x.me/selfie/release/selfie-0.1.tar.xz"
+  checksum: "sha256=3c32c16f70d25c643eef1699bb4e63a5bbd02314f22654766f54df7334e8fff0"
+}
