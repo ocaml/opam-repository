@@ -57,8 +57,8 @@ When it has been decided that a set of package versions (aka "versions") should 
 - A PR will be made to add the archived versions to the archive repo. 
     - The opam file of each version will be extended as follows:
         - Any dependencies without upper bounds will have upper bounds added, recording the latest available version of the dependency in the primary repo at the time of archiving.
-        -  The field `x-reason-for-archival` will be added.
-        -  The field `x-opam-repository-commit-hash-at-time-of-archival` will be added.
+        -  The field `x-reason-for-archiving` will be added.
+        -  The field `x-opam-repository-commit-hash-at-time-of-archiving` will be added.
 - A PR will be made to remove the versions from the primary repo:
   - The removal PR should link to the corresponding archiving PR.
   - The commit message should have the title `Archive packages` and its body should contain the hash of the commit that adds the packages to the archive.
@@ -67,7 +67,7 @@ When it has been decided that a set of package versions (aka "versions") should 
 
 ### Specification of the `x-` fields used in the archiving process
 
-- `x-reason-for-archival`: 
+- `x-reason-for-archiving`:
     - Allowed values: a list of containing one more of the following strings
       `ocaml-version`, `source-unavailable`, `maintenance-intent`, or
       `uninstallable`.
@@ -81,7 +81,7 @@ When it has been decided that a set of package versions (aka "versions") should 
         4. `uninstallable`: The package version is not installable on any
            of the supported platforms.
     - Example: `["ocaml-version", "source-unavailable"]`
-- `x-opam-repository-commit-hash-at-time-of-archival`:
+- `x-opam-repository-commit-hash-at-time-of-archiving`:
     - Allowed values: a string
     - Meaning: Records the commit hash of the primary repo at the time a package version is archived.
     - Example: `"ca32ab3b976aa7abc00c7605548f78a30980d35b"`
