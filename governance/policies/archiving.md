@@ -15,7 +15,7 @@ last-updated: 2024-11-28
 - "Supported platforms" are those listed under [Tier 1 and Tier 2 by the OCaml compiler](https://github.com/ocaml/ocaml?tab=readme-ov-file#overview)
 - A package's "maximum compiler version" is the upper bound of the OCaml compiler versions supported by a package. Support is derived either based on explicit version bounds set on the `ocaml` dependency in a package's dependency cone, or implicitly based on failed installs detected through our CI and health check processes.
 - The "compiler cutoff threshold" is an OCaml compiler versions stipulated by the opam repository maintainers. It sets a lower bound on the compiler versions supported by the primary repo. 
-- A package is said to "meet the compiler cutoff thershold" iff its maximum compiler version is greater then or equal to the compiler cutoff threshold.
+- A package is said to "meet the compiler cutoff threshold" iff its maximum compiler version is greater then or equal to the compiler cutoff threshold.
 - The "maintenance intent" of a package refers to the explicitly declared intent of a maintainer to support versions of a package, recorded in the packages `opam` file metadata.
 
 ## Policy
@@ -31,10 +31,10 @@ This threshold is subject to change by the opam repo maintainers based on the ol
 
 A version of a package may be published on the primary repo, and will continue to remain listed there, so long as the following criteria hold:
 
-1. `ocaml-version`: The package version satisfies the current compiler cutoff threshold.
-2. `source-available`: The sources of the package version are available.
-3. `maintenance-intent`: The package version falls within a package's maintenance intent, or is a dependency of a package satisfying the primary repo criteria.
-4. `installable`: The package version is installable on at least one of the supported platforms. (Note that it is not required that CI tests are passing, since working installation may require manual system configuration.)
+1. The package meets the compiler cutoff threshold.
+2. The sources of the package version are available.
+3. The package version falls within a package's maintenance intent, or is a dependency of a package satisfying the primary repo criteria.
+4. The package version is installable on at least one of the supported platforms. (Note that it is not required that CI tests are passing, since working installation may require manual system configuration.)
 
 Note that this property is transitive along a package's dependency tree: if a package satisfies the primary repo criteria, then its dependencies do as well. 
 
@@ -68,9 +68,19 @@ When it has been decided that a set of package versions (aka "versions") should 
 ### Specification of the `x-` fields used in the archiving process
 
 - `x-reason-for-archival`: 
-    - Allowed values: A list of strings matching the [primary repo criteria](#primary-repo-criteria) IDs. 
-    - Meaning: Records the unmet [primary repo criteria](#primary-repo-criteria) motivating the archiving.
-    - Example: `["ocaml-version", "maintenance-intent"]`
+    - Allowed values: a list of containing one more of the following strings
+      `ocaml-version`, `source-unavailable`, `maintenance-intent`, or
+      `uninstallable`.
+    - Meaning: Records the unmet [primary repo criteria](#primary-repo-criteria)
+      motivating the archiving, as follows:
+        1. `ocaml-version`: The package no longer met the compiler cutoff threshold.
+        2. `source-unavailable`: The sources of the package version became unavailable.
+        3. `maintenance-intent`: The package version falls outside of a
+           package's maintenance intent, and it is not a dependency of a package
+           satisfying any of the primary repo criteria.
+        4. `uninstallable`: The package version is not installable on any
+           of the supported platforms.
+    - Example: `["ocaml-version", "source-unavailable"]`
 - `x-opam-repository-commit-hash-at-time-of-archival`:
     - Allowed values: a string
     - Meaning: Records the commit hash of the primary repo at the time a package version is archived.
