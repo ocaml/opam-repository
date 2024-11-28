@@ -171,8 +171,8 @@ As an external contributor looking to patch a package, whose maintainer do not a
 Governance
 ----------
 
-The current points of contact and the full list of maintainers is available in [wiki/Governance](https://github.com/ocaml/opam-repository/wiki/Governance).
-Informations about the infrastructure is available in [wiki/Infrastructure-info](https://github.com/ocaml/opam-repository/wiki/Infrastructure-info).
+The current points of contact and the full list of maintainers is available in [./governance/README.md](./governance/README.md).
+Information about the infrastructure is available in [wiki/Infrastructure-info](https://github.com/ocaml/opam-repository/wiki/Infrastructure-info).
 
 Typically maintainers gather weekly to discuss ongoing topics, review PRs together and train maintainers in training.
 If you wish to help and become an opam-repository maintainer, you can send a message to the maintainers listed above and you will be invited to the next meeting in which they will explain how things work.
@@ -181,7 +181,7 @@ Policies
 --------
 
 Maintainers enforce a certain number of policies applied on packages in opam-repository.
-You can read about them in [wiki/Policies](https://github.com/ocaml/opam-repository/wiki/Policies).
+You can read about them in [./governance/policies/](./governance/policies/).
 
 How to deal with CI
 -------------------
