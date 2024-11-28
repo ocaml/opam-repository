@@ -9,7 +9,7 @@ of the opam repository.
 ## 0. Packages must meet the criteria for inclusion
 
 Packages in this repository should meet the [criteria for inclusion](./archiving.md#inclusion-criteria)
-enumerated in the [archiving policy](./archiving.md#inclusion-criteria "ttp-equiv='Content-Type' content='text/html; charset=utf-8' /").
+enumerated in the [archiving policy](./archiving.md).
 
 ## 1. Removal of packages should be avoided
 

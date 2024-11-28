@@ -1,8 +1,3 @@
-```
-status: propsal
-last-updated: 2024-11-28
-```
-
 # opam Repository Archiving Policy
 
 *NOTE*: This policy is not static and will be updated as the process matures.
@@ -71,7 +66,7 @@ When it has been decided that a set of package versions (aka "versions") should 
     - Allowed values: a list of containing one more of the following strings
       `ocaml-version`, `source-unavailable`, `maintenance-intent`, or
       `uninstallable`.
-    - Meaning: Records the unmet [primary repo criteria](#primary-repo-criteria)
+    - Meaning: Records the unmet [primary repo criteria](#inclusion-criteria)
       motivating the archiving, as follows:
         1. `ocaml-version`: The package no longer met the compiler cutoff threshold.
         2. `source-unavailable`: The sources of the package version became unavailable.
