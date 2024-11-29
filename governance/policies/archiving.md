@@ -91,7 +91,7 @@ When it has been decided that a set of package versions (aka "versions") should 
         - `["(latest)" "(latest).(latest-1)"]` the maintainer will only maintain the latest `X.Y.Z` version and `X.(Y-1).Z`
         - `["(any).(latest)"]` the maintainer will maintain every major version X for each X.Y.Z
         - `["(latest).(any).(latest)"]` the maintainer will maintain every Y for each X.Y.Z (where X is the latest)
-        - `["(any)"]` the maintainer will maintain every single versions
+        - `["(any)"]` the maintainer will maintain every single version
         - `["(none)"]` the maintainer will not maintain any version
         - `["1.3"]` the maintainer will maintain the latest  version of "1.3.Z"
         - `["2.(latest)"]` the maintainer will maintain the latest minor version specifically of version "2" of the package
