@@ -39,4 +39,4 @@ To contact the maintainers in a more synchronous way you can join the [#opam-rep
 - [@axrwl](https://github.com/axrwl) (triage)
 - [@octachron](https://github.com/Octachron)
 - The opam developement team (for safe-keeping)
-- [@kit-ty-kate](https://github.com/kit-ty-kate) (retiring maintainer)
+- [@kit-ty-kate](https://github.com/kit-ty-kate) (former maintainer)
