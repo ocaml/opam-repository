@@ -1,7 +1,5 @@
 # opam Repository Archiving Policy
 
-*NOTE*: This policy is not static and will be updated as the process matures.
-
 ## Terminology
 
 - The primary opam repository, (referred to here as the "primary repo") is located at [ocaml/opam-repository](https://github.com/ocaml/opam-repository). The primary repo is curated to ensure that compatible packages are co-installable on as many supported platforms as possible, and it is the default package repository.
@@ -19,7 +17,7 @@
 
 The current compiler cutoff threshold is `4.08`.
 
-This threshold is subject to change by the opam repo maintainers based on the oldest compiler available on maintained distributions.
+This threshold is subject to change by the opam repo maintainers based on the oldest compiler available on the maintained[^1] distributions tested in the opam-repository CI.
 
 <a name="inclusion-criteria"></a>
 ### Criteria for inclusion to the primary repo (the default `opam-repository`)
@@ -100,3 +98,5 @@ When it has been decided that a set of package versions (aka "versions") should 
 
 - [Package Archiving: Plan](https://github.com/ocaml/opam-repository/wiki/Package-Archiving:-Plan)
 - [Originating issue and discussion](https://github.com/ocaml/opam-repository/issues/23789)
+
+[^1]: The versions of ocaml shipped by linux distributions are accessible on [repology](https://repology.org/project/ocaml/versions). Both homebrew and macports are usually very fast to move to the latest available. Which LTS are still maintained isn't explicit, but it can be found at endoflife dot software (e.g. <https://endoflife.software/operating-systems/linux/ubuntu>).
