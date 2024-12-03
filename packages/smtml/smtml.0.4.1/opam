@@ -1,0 +1,75 @@
+opam-version: "2.0"
+synopsis: "A Front-end library for SMT solvers in OCaml"
+description: "A Multi Back-end Front-end for SMT Solvers in OCaml."
+maintainer: "Filipe Marques <filipe.s.marques@tecnico.ulisboa.pt>"
+authors: [
+  "João Pereira <joaomhmpereira@tecnico.ulisboa.pt>"
+  "Filipe Marques <filipe.s.marques@tecnico.ulisboa.pt>"
+  "Hichem Rami Ait El Hara <hra@ocamlpro.com>"
+  "Léo Andrès <contact@ndrs.fr>"
+  "Arthur Carcano <arthur.carcano@ocamlpro.com>"
+  "Pierre Chambart <pierre.chambart@ocamlpro.com>"
+  "José Fragoso Santos <jose.fragoso@tecnico.ulisboa.pt>"
+]
+license: "MIT"
+homepage: "https://github.com/formalsec/smtml"
+doc: "https://formalsec.github.io/smtml/smtml/index.html"
+bug-reports: "https://github.com/formalsec/smtml/issues"
+depends: [
+  "cmdliner" {>= "1.2.0"}
+  "dune" {>= "3.10"}
+  "dune-glob" {with-test}
+  "dolmen" {= "0.10"}
+  "dolmen_type" {= "0.10"}
+  "dolmen_model" {= "0.10"}
+  "fmt" {>= "0.8.7"}
+  "hc" {>= "0.3"}
+  "menhir" {build & >= "20220210"}
+  "ocaml" {>= "4.14.0"}
+  "ocaml_intrinsics"
+  "patricia-tree" {>= "0.10.0"}
+  "prelude" {>= "0.3"}
+  "rusage"
+  "scfg"
+  "yojson" {>= "1.6.0"}
+  "zarith" {>= "1.5"}
+  "odoc" {with-doc}
+  "sherlodoc" {with-doc}
+  "bisect_ppx" {with-test & >= "2.5.0"}
+  "benchpress" {with-dev-setup & = "dev"}
+  "cohttp" {with-dev-setup}
+  "cohttp-lwt-unix" {with-dev-setup}
+  "core_unix" {with-dev-setup}
+  "lwt" {with-dev-setup}
+  "mdx" {with-test}
+  "owl" {with-dev-setup}
+  "tls-lwt" {with-dev-setup}
+]
+depopts: ["alt-ergo-lib" "bitwuzla-cxx" "colibri2" "cvc5" "z3"]
+conflicts: [
+  "bitwuzla-cxx" {< "0.6.0"}
+  "z3" {< "4.12.2" | >= "4.14"}
+]
+available: arch != "arm32" & arch != "x86_32"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/formalsec/smtml.git"
+url {
+  src: "https://github.com/formalsec/smtml/archive/refs/tags/v0.4.1.tar.gz"
+  checksum: [
+    "md5=7b095be6411e6ddd5d8e21d7cf1fafdd"
+    "sha512=d3b8dfea7b810cac8ae91e68c64044f28db9dada74f6d46f02ee6ecac7beb936663259bb7571a09a7ec908601da99eeed23eb1af90690c13d24607e9b71f2d4e"
+  ]
+}
