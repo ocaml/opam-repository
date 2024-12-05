@@ -17,7 +17,12 @@
 
 The current compiler cutoff threshold is `4.08`.
 
-This threshold is subject to change by the opam repo maintainers based on the oldest compiler available on the maintained[^1] distributions tested in the opam-repository CI.
+This threshold is subject to change by the opam repo maintainers.
+The threshold is based on the oldest ocaml compiler version available 
+in the maintained[^1] distributions. It determines the minimum
+compiler version used in tests for the opam-repository CI[^2].
+
+[^2]: https://github.com/ocurrent/opam-repo-ci/blob/master/doc/platforms.md#ocaml-versions
 
 <a name="inclusion-criteria"></a>
 ### Criteria for inclusion to the primary repo (the default `opam-repository`)
