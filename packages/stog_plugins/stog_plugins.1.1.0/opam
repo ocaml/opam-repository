@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Virtual package to install all Stog plugins"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "GPL-3.0-only"
+homepage: "https://www.good-eris.net/stog/"
+doc: "https://www.good-eris.net/stog/doc.html"
+bug-reports: "https://framagit.org/zoggy/stog/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "stog_asy" {= version}
+  "stog_dot" {= version}
+  "stog_extern" {= version}
+  "stog_markdown" {= version}
+  "stog_multi_doc" {= version}
+  "stog_nocaml" {= version}
+  "stog_noexec" {= version}
+  "stog_rel_href" {= version}
+  "stog_sitemap" {= version}
+  "stog_writing" {= version}
+  "odoc" {with-doc}
+]
+depopts: [
+  "stog_rdf" {= version}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/stog.git"
+url {
+  src: "https://www.good-eris.net/stog/releases/stog-1.1.0.tar.bz2"
+  checksum: [
+    "md5=9d7012ff976218dcaa174dc9788d1155"
+    "sha512=ce8c04c45be0572aebb1df63f168a28bdd56e2f7b763541fca1e22315f71cf2250e0653fe01e5967cf4ff7f2dde7e53ddd1304e2921420c64e64221a285792fc"
+  ]
+}
