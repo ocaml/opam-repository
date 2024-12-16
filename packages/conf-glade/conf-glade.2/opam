@@ -4,7 +4,17 @@ authors: "The Glade Authors"
 homepage: "https://glade.gnome.org/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "LGPL-2.1-or-later"
-build: [["pkg-config" "libglade-2.0"]]
+build: [
+  "pkgconf" {os = "win32" & os-distribution != "cygwinports"}
+  "--personality=i686-w64-mingw32"
+    {os = "win32" & os-distribution != "cygwinports" &
+     host-arch-x86_32:installed}
+  "--personality=x86_64-w64-mingw32"
+    {os = "win32" & os-distribution != "cygwinports" &
+     host-arch-x86_64:installed}
+  "pkg-config" {os != "win32" | os-distribution != "cygwin"}
+  "libglade-2.0"
+]
 depexts: [
   ["libglade2-dev"] {os-family = "debian" | os-family = "ubuntu"}
   ["libglade2.0"] {os = "win32" & os-distribution = "cygwinports"}
@@ -24,5 +34,13 @@ x-ci-accept-failures: [
 synopsis: "Virtual package relying on a libglade system installation"
 description:
   "This package can only install if libglade2-dev is installed on the system."
-depends: ["conf-pkg-config" {build}]
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-glade-i686"
+     {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-glade-x86_64"
+     {os = "win32" & os-distribution != "cygwinports"})
+]
 flags: conf

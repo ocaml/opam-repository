@@ -1,0 +1,88 @@
+opam-version: "2.0"
+synopsis: "The HOL-Light interactive theorem prover"
+description: """
+HOL Light is a computer program written by John Harrison to help users prove
+interesting mathematical theorems completely formally in higher order logic.
+It sets a very exacting standard of correctness, but provides a number of
+automated tools and pre-proved mathematical theorems (e.g. about arithmetic,
+basic set theory and real analysis) to save the user work. It is also fully
+programmable, so users can extend it with new theorems and inference rules
+without compromising its soundness. There are a number of versions of HOL,
+going back to Mike Gordon’s work in the early 80s. Compared with other HOL
+systems, HOL Light uses a much simpler logical core and has little legacy code,
+giving the system a simple and uncluttered feel. Despite its simplicity, it
+offers theorem proving power comparable to, and in some areas greater than,
+other versions of HOL, and has been used for some significant
+industrial-scale verification applications.
+
+This package will install `hol.sh` which will run OCaml REPL with HOL Light
+loaded.
+To use a compiled module of HOL Light, please install with the
+hol_light_module OPAM package.
+"""
+authors: "HOL Light"
+license: "https://github.com/jrh13/hol-light/blob/master/LICENSE"
+homepage: "https://hol-light.github.io/"
+bug-reports: "https://github.com/jrh13/hol-light/issues"
+dev-repo: "git+https://github.com/jrh13/hol-light.git"
+maintainer: ["John Harrison <jrh013@gmail.com>" "Juneyoung Lee <aqjune@gmail.com>"]
+depopts: [ "hol_light_module" ]
+depends: [
+  ("ocaml" {> "4.02.0" & < "4.04.0"} &
+   "camlp5" {>= "6.15" & <= "7.1"})
+  |
+  ("ocaml" {>= "4.04.0" & < "4.06.0"} &
+   "camlp5" {>= "7.01" & <= "7.1"})
+  |
+  ("ocaml" {>= "4.06.1" & < "4.08.0"} &
+   "num" &
+   "camlp5" {>= "7.06" & < "7.15"} &
+   "ledit")
+  |
+  ("ocaml" {>= "4.08.0" & < "4.10.0"} &
+   "num" &
+   "camlp5" {>= "7.11" & < "8.01"} &
+   "ledit")
+  |
+  ("ocaml" {>= "4.10.0" & < "4.14.0"} &
+   "num" &
+   "camlp5" {>= "7.14"} &
+   "ledit")
+  |
+  ("ocaml" {>= "4.14.0"} &
+   "camlp5" {>= "8.0"} &
+   "zarith" {>= "1.5"} &
+   "ledit")
+]
+available: os = "linux" | os = "macos" | os = "cygwin"
+build: [
+  [make] {!hol_light_module:installed}
+  [make "HOLLIGHT_USE_MODULE=1"] {hol_light_module:installed}
+  ["sh" "-c" "sed \"s^%{hol_light:build}%^%{hol_light:lib}%^g\" hol.sh >hol_new.sh"]
+  ["mv" "hol_new.sh" "hol.sh"]
+  ["chmod" "+x" "hol.sh"]
+]
+install: [
+  ["mkdir" "-p" "%{hol_light:lib}%"]
+  ["cp" "-r" "." "%{hol_light:lib}%"]
+  ["cp" "hol.sh" "%{bin}%/hol.sh"]
+]
+remove: [
+  ["rm" "%{bin}%/hol.sh"]
+  ["rm" "-rf" "%{hol_light:lib}%"]
+]
+extra-source "META" {
+  src: "https://gist.githubusercontent.com/aqjune/4b77edcc29faeebf15fcd4949f27d7ae/raw/3ff64fa63304e1944e4fc6fef8c7a7a5a2009bc2/META"
+  checksum: [
+    "sha256=60ba1ecd6c1b4c7ef96a1547111279cd7c27abefd2a09ae18e3bf0a8fa82698c"
+    "md5=0766bfdee09f7a31b4a36f3038b83fa0"
+  ]
+}
+url {
+  src:
+    "https://github.com/jrh13/hol-light/archive/refs/tags/Release-3.0.0.tar.gz"
+  checksum: [
+    "md5=6b7ece405efe5d891f547042d102f9ee"
+    "sha512=ffedba9a96cd0058a1ec74825c25b22f5b29117c2e7378715c5f8efc576e6008576b0649395e8f5fab8575f7f81f8816fb19a57c81413bc0d9e7d0c49b8a4c99"
+  ]
+}

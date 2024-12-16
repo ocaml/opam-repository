@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Utility for generating Rust static libraries for OCaml projects"
+description:
+  "rust-staticlib-gen is a tool designed to streamline the integration of Rust code into OCaml projects. It automates the generation of build files and orchestrates the build process, allowing OCaml code to seamlessly interface with Rust libraries. This tool extracts Rust crate dependencies from opam files, generates necessary dune and Cargo.toml files, and builds the Rust static libraries. It ensures compatibility between OCaml bindings and Rust crates by specifying exact versions in Cargo.toml."
+maintainer: ["Konstantin Olkhovskiy <lupus@oxnull.net>"]
+authors: ["Konstantin Olkhovskiy <lupus@oxnull.net>"]
+license: "Apache-2.0"
+homepage: "https://github.com/Lupus/rust-staticlib-gen"
+bug-reports: "https://github.com/Lupus/rust-staticlib-gen/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "toml" {>= "7.1.0"}
+  "yojson" {>= "2.2.2"}
+  "sexplib0" {>= "v0.16.0"}
+  "parsexp" {>= "v0.16.0"}
+  "opam-client" {>= "2.2.1" & < "2.3"}
+  "opam-state" {>= "2.2.1" & < "2.3"}
+  "opam-solver" {>= "2.2.1" & < "2.3"}
+  "fpath" {>= "0.7.3"}
+  "cmdliner" {>= "1.3.0"}
+  "ocamlformat" {with-test & >= "0.26.2" & < "0.27.0"}
+  "rust-staticlib-virtual" {= version}
+  "dune-cargo-build" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/Lupus/rust-staticlib-gen.git"
+url {
+  src:
+    "https://github.com/Lupus/rust-staticlib-gen/releases/download/0.2.0/rust-staticlib-gen-0.2.0.tbz"
+  checksum: [
+    "sha256=02d3bb345f83237df6bf68ffd32a277b4afc82cb90eedffb377b16e6ad42ab39"
+    "sha512=9c7df3da32085bfb7751e727148df8b81985d601ff1ede10e6685be3625d96e377e1fa1a5214361f6e857f2c1ffa45222d84bd603f1b90f4a7f593aea46a4101"
+  ]
+}
+x-commit-hash: "278416ae65ba47bbbaeedd507c7bee7ba679ad1d"

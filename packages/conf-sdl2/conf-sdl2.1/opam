@@ -4,7 +4,17 @@ authors: ["Sam Lantinga"]
 homepage: "http://libsdl.org/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "Zlib"
-build: [["pkg-config" "sdl2"]]
+build: [
+  "pkgconf" {os = "win32" & os-distribution != "cygwinports"}
+  "--personality=i686-w64-mingw32"
+    {os = "win32" & os-distribution != "cygwinports" &
+     host-arch-x86_32:installed}
+  "--personality=x86_64-w64-mingw32"
+    {os = "win32" & os-distribution != "cygwinports" &
+     host-arch-x86_64:installed}
+  "pkg-config" {os != "win32" | os-distribution != "cygwin"}
+  "sdl2"
+]
 depexts: [
   ["sdl2-dev"] {os-distribution = "alpine"}
   ["sdl2"] {os-distribution = "arch"}
@@ -25,5 +35,13 @@ depexts: [
 synopsis: "Virtual package relying on a SDL2 system installation"
 description:
   "This package can only install if libSDL2 is installed on the system."
-depends: ["conf-pkg-config" {build}]
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-sdl2-i686"
+     {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-sdl2-x86_64"
+     {os = "win32" & os-distribution != "cygwinports"})
+]
 flags: conf
