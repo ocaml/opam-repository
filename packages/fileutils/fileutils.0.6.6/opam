@@ -1,0 +1,57 @@
+opam-version: "2.0"
+synopsis: "XDG basedir location for data/cache/configuration files"
+description: """
+This library provides an API to perform POSIX like operations on files like:
+
+- mv
+- cp
+- rm
+- mkdir
+- touch
+- which...
+
+It also provides a module to manipulate abstract filenames:
+
+- classification
+- make_relative: made a filename relative to another
+- make_absolute
+"""
+maintainer: ["Sylvain Le Gall <sylvain+ocaml@le-gall.net>"]
+authors: ["Sylvain Le Gall"]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/gildor478/ocaml-fileutils"
+doc: "https://gildor478.github.io/ocaml-fileutils/"
+bug-reports: "https://github.com/gildor478/ocaml-fileutils/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "base-unix"
+  "ounit2" {>= "2.0.0" & with-test}
+  "ocaml" {>= "4.14"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/gildor478/ocaml-fileutils.git"
+url {
+  src:
+    "https://github.com/gildor478/ocaml-fileutils/releases/download/v0.6.6/fileutils-0.6.6.tbz"
+  checksum: [
+    "sha256=796d5791e2bf7b3bff200cf5057a7a1878439ebcd74ed0f1088cf86756d52be6"
+    "sha512=ecc38b1577ab108bd24d1e9f0e83596254e542eefb37020dedcff7ca0109e562411cbb9806fbc6f88f4166569bf061a444971388c26950ec02dfc48b35daed90"
+  ]
+}
+x-commit-hash: "7f007779741f578f2749f1699d47a1c28e9c3f0d"
