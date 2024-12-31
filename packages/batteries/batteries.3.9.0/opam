@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis: "A community-maintained standard library extension"
+maintainer: [
+  "Cedric Cellier <rixed@happyleptic.org>"
+  "Francois Berenger <unixjunkie@sdf.org>"
+  "Gabriel Scherer <gabriel.scherer@gmail.com>"
+  "Thibault Suzanne <thi.suzanne@gmail.com>"
+  "Simmo Saan <simmo.saan@gmail.com>"
+]
+authors: ["OCaml batteries-included team"]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/ocaml-batteries-team/batteries-included"
+doc: "http://ocaml-batteries-team.github.io/batteries-included/hdoc2/"
+bug-reports:
+  "https://github.com/ocaml-batteries-team/batteries-included/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.05" & < "5.4"}
+  "camlp-streams"
+  "ocamlfind" {>= "1.5.3"}
+  "qtest" {with-test & >= "2.5"}
+  "qcheck" {with-test & >= "0.9" & < "0.14"}
+  "benchmark" {with-test & >= "1.6"}
+  "num"
+  "odoc" {with-doc}
+]
+conflicts: ["ocaml-option-no-flat-float-array"]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs {!with-test}
+    "1" {with-test}
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo:
+  "git+https://github.com/ocaml-batteries-team/batteries-included.git"
+url {
+  src: "https://github.com/ocaml-batteries-team/batteries-included/archive/refs/tags/v3.9.0.tar.gz"
+  checksum: [
+    "md5=ea26b5c72e6731e59d856626049cca4d"
+    "sha512=55975b62c26f6db77433a3ac31f97af609fc6789bb62ac38b267249c78fd44ff37fe81901f1cf560857b9493a6046dd37b0d1c0234c66bd59e52843aac3ce6cb"
+  ]
+}
