@@ -1,0 +1,69 @@
+opam-version: "2.0"
+synopsis: "The Coq Proof Assistant -- Core Binaries and Tools"
+description: """
+Coq is a formal proof management system. It provides
+a formal language to write mathematical definitions, executable
+algorithms and theorems together with an environment for
+semi-interactive development of machine-checked proofs.
+
+Typical applications include the certification of properties of
+programming languages (e.g. the CompCert compiler certification
+project, or the Bedrock verified low-level programming library), the
+formalization of mathematics (e.g. the full formalization of the
+Feit-Thompson theorem or homotopy type theory) and teaching.
+
+This package includes the Coq core binaries, plugins, and tools, but
+not the vernacular standard library.
+
+Note that in this setup, Coq needs to be started with the -boot and
+-noinit options, as will otherwise fail to find the regular Coq
+prelude, now living in the coq-stdlib package."""
+maintainer: ["The Coq development team <coqdev@inria.fr>"]
+authors: ["The Coq development team, INRIA, CNRS, and contributors"]
+license: "LGPL-2.1-only"
+homepage: "https://coq.inria.fr/"
+doc: "https://coq.github.io/doc/"
+bug-reports: "https://github.com/coq/coq/issues"
+depends: [
+  "dune" {>= "3.6.1"}
+  "ocaml" {>= "4.09.0"}
+  "ocamlfind" {>= "1.8.1"}
+  "zarith" {>= "1.11"}
+  "conf-linux-libc-dev" {os = "linux"}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "coq"   { < "8.17" }
+]
+depopts: ["coq-native" "memprof-limits" "memtrace"]
+dev-repo: "git+https://github.com/coq/coq.git"
+build: [
+  ["dune" "subst"] {dev}
+  [ "./configure"
+    "-prefix" prefix
+    "-mandir" man
+    "-libdir" "%{lib}%/coq"
+    "-native-compiler" "yes" {coq-native:installed} "no" {!coq-native:installed}
+  ]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+
+url {
+  src: "https://github.com/coq/coq/releases/download/V8.20.1/coq-8.20.1.tar.gz"
+  checksum: [
+    "md5=0cfaa70f569be9494d24c829e6555d46"
+    "sha512=8ee967c636b67b22a4f34115871d8f9b9114df309afc9ddf5f61275251088c6e21f6cf745811df75554d30f4cebb6682f23eeb2e88b771330c4b60ce3f6bf5e2"
+  ]
+}
