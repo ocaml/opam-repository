@@ -4,7 +4,7 @@
 
 - The primary opam repository, (referred to here as the "primary repo") is located at [ocaml/opam-repository](https://github.com/ocaml/opam-repository). The primary repo is curated to ensure that compatible packages are co-installable on as many supported platforms as possible, and it is the default package repository.
 - "Primary repo criteria" refers to the criteria used to decide whether a version of a package is suitable for continued inclusion in the primary repo.
-- The archive opam repository, (referred to here as the "archive repo")" is located at [ocaml/opam-repository-archive](https://github.com/ocaml/opam-repository-archive) and records packages that were once in the primary repo, but no longer meet the primary repo criteria.
+- The archive opam repository, (referred to here as the "archive repo") is located at [ocaml/opam-repository-archive](https://github.com/ocaml/opam-repository-archive) and records packages that were once in the primary repo, but no longer meet the primary repo criteria.
 - "Supported platforms" are those listed under [Tier 1 and Tier 2 by the OCaml compiler](https://github.com/ocaml/ocaml?tab=readme-ov-file#overview)
 - A package's "maximum compiler version" is the upper bound of the OCaml compiler versions supported by a package. Support is derived either based on explicit version bounds set on the `ocaml` dependency in a package's dependency cone, or implicitly based on failed installs detected through our CI and health check processes.
 - The "compiler cutoff threshold" is an OCaml compiler versions stipulated by the opam repository maintainers. It sets a lower bound on the compiler versions supported by the primary repo. 
@@ -15,10 +15,10 @@
 
 ### Compiler cutoff threshold
 
-The current compiler cutoff threshold is `4.08`.
+The current (2025-02-01) compiler cutoff threshold is `4.08`.
 
 This threshold is subject to change by the opam repo maintainers.
-The threshold is based on the oldest ocaml compiler version available 
+The threshold is based on the oldest ocaml compiler version available
 in the maintained[^1] distributions. It determines the minimum
 compiler version used in tests for the opam-repository CI[^2].
 
@@ -34,7 +34,7 @@ A version of a package may be published on the primary repo, and will continue t
 3. The package version falls within a package's maintenance intent, or is a dependency of a package satisfying the primary repo criteria.
 4. The package version is installable on at least one of the supported platforms. (Note that it is not required that CI tests are passing, since working installation may require manual system configuration.)
 
-Note that this property is transitive along a package's dependency tree: if a package satisfies the primary repo criteria, then its dependencies do as well. 
+Note that this property is transitive along a package's dependency tree: if a package satisfies the primary repo criteria, then its dependencies do as well.
 
 ### Periodic pruning process
 
@@ -52,7 +52,7 @@ At regular intervals, no less than every six months, the opam repo maintainers w
 
 When it has been decided that a set of package versions (aka "versions") should be archived, archiving will proceed according to the following process:
 
-- A PR will be made to add the archived versions to the archive repo. 
+- A PR will be made to add the archived versions to the archive repo.
     - The opam file of each version will be extended as follows:
         - Any dependencies without upper bounds will have upper bounds added, recording the latest available version of the dependency in the primary repo at the time of archiving.
         -  The field `x-reason-for-archiving` will be added.
@@ -88,6 +88,7 @@ When it has been decided that a set of package versions (aka "versions") should 
     - Meaning:
         - Expresses the declared intent of the maintainers to maintain only certain versions ranges of a package.
         - The value of the `x-maintenance-intent` on the latest published package will precedence.
+    - Default value: ["(any)"] on 2025-01-17, please note that this default may change
     - Examples:
         - `["(latest)"]` the maintainer will only maintain the latest version
         - `["(latest)" "(latest-1)"]` the maintainer will only maintain the latest `X.Y.Z` version and `(X-1).Y.Z`
@@ -98,6 +99,16 @@ When it has been decided that a set of package versions (aka "versions") should 
         - `["(none)"]` the maintainer will not maintain any version
         - `["1.3"]` the maintainer will maintain the latest  version of "1.3.Z"
         - `["2.(latest)"]` the maintainer will maintain the latest minor version specifically of version "2" of the package
+- `x-maintained`:
+    - Allowed values: `true` and `false`
+    - Meaning:
+        - Expresses that this opam package version is maintained (if `true`) or not (if `false`).
+        - Overwrites the `x-maintenance-intent` field
+        - Useful to abandon pre-releases
+        - Also for packages that are used in private opam-repositories or developments
+    - Examples:
+        - `true # used by @bactrian, added on 2025-01-24` where @bactrian wants to keep this package in the opam-repository
+        - `false` if this meets the `x-maintenance-intent`, but is actually not maintained
 
 ## References
 
