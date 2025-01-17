@@ -88,7 +88,7 @@ When it has been decided that a set of package versions (aka "versions") should 
     - Meaning:
         - Expresses the declared intent of the maintainers to maintain only certain versions ranges of a package.
         - The value of the `x-maintenance-intent` on the latest published package will precedence.
-    - Default value: ["(any)"] on 2025-01-17, please note that this default may change
+    - Default value: ["(any)"] on 2025-01-17, please note that this default is expected to change in the future
     - Examples:
         - `["(latest)"]` the maintainer will only maintain the latest version
         - `["(latest)" "(latest-1)"]` the maintainer will only maintain the latest `X.Y.Z` version and `(X-1).Y.Z`
