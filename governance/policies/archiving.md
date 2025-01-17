@@ -105,7 +105,7 @@ When it has been decided that a set of package versions (aka "versions") should 
         - Expresses that this opam package version is maintained (if `true`) or not (if `false`).
         - Overwrites the `x-maintenance-intent` field
         - Useful to abandon pre-releases
-        - Also for packages that are used in private opam-repositories or developments
+        - Also for packages that are used in private opam-repositories or developments and that a maintainer would like to keep in the repository independently of the global package intent
     - Examples:
         - `true # used by @bactrian, added on 2025-01-24` where @bactrian wants to keep this package in the opam-repository
         - `false` if this meets the `x-maintenance-intent`, but is actually not maintained
