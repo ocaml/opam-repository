@@ -90,7 +90,8 @@ When it has been decided that a set of package versions (aka "versions") should 
         - The value of the `x-maintenance-intent` on the latest published package will precedence.
     - Default value: ["(any)"] on 2025-01-17, please note that this default is expected to change in the future
     - Examples:
-        - `["(latest)"]` the maintainer will only maintain the latest version
+        - `["(latest)"]` the maintainer will only maintain the latest version[^caveat]
+        [^caveat]: note that this will retain the latest versions of this package so that every supported OCaml version will have an installation candidate.
         - `["(latest)" "(latest-1)"]` the maintainer will only maintain the latest `X.Y.Z` version and `(X-1).Y.Z`
         - `["(latest)" "(latest).(latest-1)"]` the maintainer will only maintain the latest `X.Y.Z` version and `X.(Y-1).Z`
         - `["(any).(latest)"]` the maintainer will maintain every major version X for each X.Y.Z
