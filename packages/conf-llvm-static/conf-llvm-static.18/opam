@@ -1,0 +1,34 @@
+opam-version: "2.0"
+maintainer: "Alan <ahulambda@gmail.com>"
+authors: "The LLVM team"
+homepage: "http://llvm.org"
+bug-reports: "https://llvm.org/bugs/"
+license: "MIT"
+build: [
+  ["bash" "configure.sh" version "static"]
+]
+depends: [
+  "conf-bash" {build}
+]
+depexts: [
+  ["llvm@18" "zstd"] {os-distribution = "homebrew" & os = "macos"}
+  ["llvm-18"] {os-distribution = "macports" & os = "macos"}
+  ["llvm-18-dev" "zlib1g-dev" "libzstd-dev"] {os-family = "debian"}
+  ["llvm18-dev"] {os-distribution = "alpine"}
+  ["llvm18"] {os-family = "arch"}
+  ["llvm18-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["llvm18-devel"] {os-distribution = "fedora" & os-version >= "41"}
+  ["llvm-devel"] {os-distribution = "fedora" & os-version = "40"}
+  ["llvm18-devel" "epel-release"] {os-distribution = "centos"}
+  ["devel/llvm18"] {os = "freebsd"}
+]
+synopsis: "Virtual package relying on llvm static library installation"
+flags: conf
+extra-source "configure.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/refs/heads/main/patches/conf-llvm-static/configure.sh.18"
+  checksum: [
+    "sha256=13b22f406b6aa4be03cf5c70a55a8513bdb9bd804877a99c66d79cf0d6b2fbd2"
+    "md5=a64daab3f3768dd671fcd046bd2c1a04"
+  ]
+}
