@@ -104,12 +104,12 @@ When it has been decided that a set of package versions (aka "versions") should 
     - Allowed values: `true` and `false`
     - Meaning:
         - Expresses that this opam package version is maintained (if `true`) or not (if `false`).
-        - Overwrites the `x-maintenance-intent` field
-        - Useful to abandon pre-releases
-        - Also for packages that are used in private opam-repositories or developments and that a maintainer would like to keep in the repository independently of the global package intent
+        - Overrides the `x-maintenance-intent` field
+        - Useful for packages that do not specify the `x-maintenance-field` yet, but would like to mark certain pre-releases or old releases as unmaintained, and thus ok for archival
+        - Also useful if there's need to maintain a specific version (i.e. an OCaml application that is used and maintained which uses a specific package version)
     - Examples:
+        - `false` if this package and version meets the `x-maintenance-intent`, but this version is not maintained and can be archived
         - `true # used by @bactrian, added on 2025-01-24` where @bactrian wants to keep this package in the opam-repository
-        - `false` if this meets the `x-maintenance-intent`, but is actually not maintained
 
 ## References
 
