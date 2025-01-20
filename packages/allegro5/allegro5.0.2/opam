@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "OCaml Allegro 5"
+description: "An OCaml binding of the Allegro 5 game & multimedia C library"
+maintainer: ["Sylvain Chiron <chironsylvain@orange.fr>"]
+authors: ["Sylvain Chiron"]
+license: "LGPL-3.0-or-later"
+homepage: "https://github.com/Frigory33/ocaml-allegro-5"
+bug-reports: "https://github.com/Frigory33/ocaml-allegro-5/issues"
+depends: [
+  "ocaml" {>= "4.12"}
+  "dune" {>= "3.11"}
+  "conf-allegro5"
+  "dune-site" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/Frigory33/ocaml-allegro-5.git"
+post-messages: [
+  """\
+We're sorry that your install failed. Please check in the README.md file
+what minimal version of Allegro this package requires."""
+    {failure}
+]
+url {
+  src:
+    "https://github.com/Frigory33/ocaml-allegro-5/releases/download/0.2/allegro5-0.2.tbz"
+  checksum: [
+    "sha256=d03f41e24f790c7a30820762191a720216c3af98050ffb2273740d3cbb4f908c"
+    "sha512=2ab8dfac803f22a166539939d4845455b5c4e22b470408a1eb97883685265e55d10b29d1c5aa3bb02fbcd821a34affb3041c7bd0e9403449182ab539fdb7ab79"
+  ]
+}
+x-commit-hash: "c9443b4fc802a20cb14679f06ec67f1d7ae2cbf0"
