@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "Bindings to libpg_query for parsing PostgreSQL"
+description:
+  "OCaml bindings to libpg_query for parsing PostgreSQL, and a command-line tool that uses them"
+maintainer: ["Roddy MacSween <github@roddymacsween.co.uk>"]
+authors: ["Roddy MacSween <github@roddymacsween.co.uk>"]
+license: "MIT"
+homepage: "https://github.com/roddyyaga/pg_query-ocaml"
+doc: "https://roddyyaga.github.io/pg_query-ocaml/pg_query-ocaml/index.html"
+bug-reports: "https://github.com/roddyyaga/pg_query-ocaml/issues"
+depends: [
+  "ocaml" {>= "4.07"}
+  "dune" {>= "2.0"}
+  "cmdliner" {>= "1.1.0"}
+  "ctypes"
+  "ctypes-foreign" {>= "0.21.1"}
+  "ppx_deriving"
+  "alcotest" {with-test}
+]
+available: arch != "x86_32" & arch != "arm32"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/roddyyaga/pg_query-ocaml.git"
+url {
+  src:
+    "https://github.com/roddyyaga/pg_query-ocaml/releases/download/0.9.8/pg_query-0.9.8.tbz"
+  checksum: [
+    "sha256=b1d24219ccf7875d7921e81c21159589cade9775b871ab0e22959007820a8385"
+    "sha512=91f4dfae163c6c942c4e5294130751ff7c90ca50529bb9ff6e76b3694740d913a4e35007504682762c7d7178d8781e7ed3df0a625300855ab366d09ee847782f"
+  ]
+}
+x-commit-hash: "4d5b424d1ef80e4637498c2f26390e5d7653c6bd"
