@@ -1,0 +1,62 @@
+opam-version: "2.0"
+synopsis: "Elliptic Curve Cryptography with primitives taken from Fiat"
+description: """
+An implementation of key exchange (ECDH) and digital signature (ECDSA/EdDSA)
+algorithms using code from Fiat (<https://github.com/mit-plv/fiat-crypto>).
+
+The curves P256 (SECP256R1), P384 (SECP384R1),
+P521 (SECP521R1), and 25519 (X25519, Ed25519) are implemented by this package.
+"""
+maintainer: "Hannes Mehnert <hannes@mehnert.org>"
+authors: [
+  "Hannes Mehnert <hannes@mehnert.org>"
+  "Nathan Rebours <nathan.p.rebours@gmail.com>"
+  "Clément Pascutto <clement@tarides.com>"
+  "Etienne Millon <me@emillon.org>"
+  "Virgile Robles <virgile.robles@protonmail.ch>"
+# and from the fiat-crypto AUTHORS file
+  "Andres Erbsen <andreser@mit.edu>"
+  "Google Inc."
+  "Jade Philipoom <jadep@mit.edu> <jade.philipoom@gmail.com>"
+  "Massachusetts Institute of Technology"
+  "Zoe Paraskevopoulou <zoe.paraskevopoulou@gmail.com>"
+]
+license: "MIT"
+homepage: "https://github.com/mirage/mirage-crypto"
+doc: "https://mirage.github.io/mirage-crypto/doc"
+bug-reports: "https://github.com/mirage/mirage-crypto/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.13.0"}
+  "dune-configurator"
+  "eqaf" {>= "0.7"}
+  "mirage-crypto-rng" {=version}
+  "digestif" {>= "1.2.0"}
+  "alcotest" {with-test & >= "0.8.1"}
+  "ppx_deriving_yojson" {with-test}
+  "ppx_deriving" {with-test}
+  "yojson" {with-test & >= "1.6.0"}
+  "asn1-combinators" {with-test & >= "0.3.1"}
+  "ohex" {with-test & >= "0.2.0"}
+  "ounit2" {with-test}
+]
+conflicts: [
+  "ocaml-freestanding"
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/mirage-crypto.git"
+tags: ["org:mirage"]
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mirage/mirage-crypto/releases/download/v1.2.0/mirage-crypto-1.2.0.tbz"
+  checksum: [
+    "sha256=0fec11ff82d8c5b36cc930db91310711c6593a3975ba2f2e59836249e4754e40"
+    "sha512=1770344c7cdce45e40568b1e1730bf2fed5d30600aa9fdb50230953494d1a2c43e5affcdad4cf14b7163358425e3bb04c3a24f0dfe63020abb8b0891d5be4716"
+  ]
+}
+x-commit-hash: "1f334ef97e042b3367d54fbe8fbcf03b84841a38"
