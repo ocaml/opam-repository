@@ -12,6 +12,7 @@ depends: [
   "ocaml-beta"
 ]
 conflict-class: "ocaml-core-compiler"
+flags: compiler
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 build: [
   ["./configure" "--prefix=%{prefix}%"]
@@ -43,8 +44,7 @@ post-messages: [
   {failure & jobs > 1 & os != "cygwin" & opam-version >= "2.0.5"}
 ]
 patches: ["fix-gcc10.patch"]
-available:
-  opam-version >= "2.2.0" & !(os = "macos" & arch = "arm64" | os = "win32")
+available: !(os = "macos" & arch = "arm64" | os = "win32")
 extra-source "fix-gcc10.patch" {
   src:
     "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/ocaml-base-compiler/fix-gcc10.patch.4.08.0"
@@ -53,4 +53,4 @@ extra-source "fix-gcc10.patch" {
     "md5=f406119ae0091835cdf158d7d0ff53f7"
   ]
 }
-flags: [compiler deprecated]
+x-maintained: false
