@@ -23,7 +23,6 @@ Each ones have their strengths and weaknesses. For example:
   * parses (and enforces a format, can be good or bad) for the changelog, to put it in the tag
   * creates the github release with that information
   * builds, run tests, lint
-  * uploads the documentation
   * creates and uploads a separate archive (also has an option to include the git submodules)
   * works only if your project is on GitHub
   * doesn’t support force-pushed tags
@@ -44,7 +43,7 @@ We'll cover each ones in the following subsections:
 
 First, make sure your project is using dune and is hosted on GitHub.
 Then, make sure you’ve forked opam-repository on GitHub. If not go to https://github.com/ocaml/opam-repository/fork
-Then, create a new file in `~/.config/dune/release.yml` with the content as indicated below, change `<username>` by your local username and `<github-user>` by your own github username:
+Then, create a new file in `~/.config/dune/release.yml` with the content as indicated below, change `<username>` by your local username and `<github-username>` by your own github username:
 ```
 remote: git@github.com:<github-username>/opam-repository.git
 local: /home/<username>/.cache/dune/opam-repository/
