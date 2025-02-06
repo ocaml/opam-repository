@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "Bindings for the Leaflet JavaScript library"
+description:
+  "leaflet is an OCaml bindings library for the Leaflet JavaScript library."
+maintainer: ["swrup <swrup@protonmail.com>"]
+authors: [
+  "pukkamustard <pukkamustard@posteo.net>"
+  "swrup <swrup@protonmail.com>"
+  "Léo Andrès <contact@ndrs.fr>"
+]
+license: "BSD-2-Clause"
+tags: ["leaflet" "javascript" "bindings" "interactive" "map" "openstreetmap"]
+homepage: "https://git.zapashcanon.fr/swrup/leaflet"
+bug-reports: "https://git.zapashcanon.fr/swrup/leaflet/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08"}
+  "brr"
+  "js_of_ocaml"
+  "dune-site"
+  "tiny_httpd" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://git.zapashcanon.fr/swrup/leaflet.git"
+url {
+  src: "https://git.zapashcanon.fr/swrup/leaflet/archive/0.2.tar.gz"
+  checksum: [
+    "md5=d386b6700d5a282bc60290d85fe2491b"
+    "sha512=19125c0e180603b15357b9a631d6377c6f07ba34e5936e4a5a2a713f461edb7bdaeb22f816a6e49fdfb9b61e5c8b2e25843e0ce97debdc1a400cc32628c243fd"
+  ]
+}
