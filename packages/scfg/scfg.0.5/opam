@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis:
+  "OCaml library and executable to work with the scfg configuration file format"
+description:
+  "scfg is an OCaml library and executable to work with the scfg configuration file format. It provides a parser, a pretty printer and a module to perform queries."
+maintainer: ["Léo Andrès <contact@ndrs.fr>"]
+authors: ["Léo Andrès <contact@ndrs.fr>"]
+license: "ISC"
+tags: ["scfg" "configuration" "format" "simple" "config" "parser" "printer"]
+homepage: "https://git.zapashcanon.fr/zapashcanon/scfg"
+doc: "https://doc.zapashcanon.fr/scfg"
+bug-reports: "https://git.zapashcanon.fr/zapashcanon/scfg/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "bos" {>= "0.2.1"}
+  "cmdliner" {>= "1.3.0"}
+  "fmt"
+  "fpath"
+  "menhir" {>= "20211230"}
+  "ocaml" {>= "4.13"}
+  "prelude" {>= "0.5"}
+  "sedlex"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://git.zapashcanon.fr/zapashcanon/scfg.git"
+url {
+  src: "https://git.zapashcanon.fr/zapashcanon/scfg/archive/0.5.tar.gz"
+  checksum: [
+  "sha256=930e04c7b16fcc81e203725324ea6ace6586080f53fb87ea24c0e163588c7614"
+  "sha512=753645f5c904d48dd67dceeca12408d8bb3d9ca80ae57e9600573cf2600031c2b661cfcd70331d48cb171ce445e4826e31304ec9796ba424932bba453096c6bb"
+  ]
+}
