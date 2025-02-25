@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis: "HTTP client for MirageOS"
+maintainer: ["team@robur.coop"]
+authors: [
+  "Robur Team <team@robur.coop>"
+]
+license: "MIT"
+homepage: "https://github.com/robur-coop/http-mirage-client"
+bug-reports: "https://github.com/robur-coop/http-mirage-client/issues"
+depends: [
+  "dune" {>= "2.3"}
+  "ocaml" {>= "4.11.0"}
+  "paf" {>= "0.8.0"}
+  "tcpip" {>= "7.0.0"}
+  "lwt" {>= "5.5.0"}
+  "mimic-happy-eyeballs" {>= "0.0.9"}
+  "alcotest-lwt" {with-test & >= "1.0.0"}
+  "mirage-crypto-rng" {with-test}
+  "dns-client-mirage" {with-test & >= "10.0.0"}
+  "happy-eyeballs-mirage" {with-test & >= "2.0.0"}
+  "h2" {>= "0.12.0"}
+  "h1"
+  "tls" {>= "1.0.0"}
+  "tls-mirage"
+  "x509" {>= "1.0.0"}
+  "ca-certs-nss" {>= "3.108-1"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & os != "macos"} # macOS is disabled due to restrictions in sandbox-exec
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/robur-coop/http-mirage-client.git"
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/robur-coop/http-mirage-client/releases/download/v0.0.10/http-mirage-client-0.0.10.tbz"
+  checksum: [
+    "sha256=0171081f54c801ac83e0b905bf4c860fc398bdc742fc02671ae7469648dc58b6"
+    "sha512=761609bf0e6577d461025dc2bcf5e8c045250e660b6f5dc7b2798c595f733572b293fbbc4e074392185db6191a443a98d6beead6a9c320985be3041acf9abef4"
+  ]
+}
+x-commit-hash: "9b1ad183bff72e0aff14028c932b2fe39ff09566"
