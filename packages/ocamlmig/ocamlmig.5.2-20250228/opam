@@ -1,0 +1,69 @@
+opam-version: "2.0"
+synopsis: "OCaml source code rewriting tool"
+description:
+  "Ocamlmig is a command line tool to rewrite ocaml source code, especially to make updating to newer interfaces easier."
+maintainer: ["Valentin Gatien-Baron <valentin.gatienbaron@gmail.com>"]
+authors: ["Valentin Gatien-Baron <valentin.gatienbaron@gmail.com>"]
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/v-gb/ocamlmig"
+doc: "https://github.com/v-gb/ocamlmig/blob/main/README.md"
+bug-reports: "https://github.com/v-gb/ocamlmig/issues"
+depends: [
+  "ocaml" {>= "5.2" & < "5.3"}
+  "dune" {>= "3.15"}
+  "base"
+  "core"
+  "core_unix"
+  "csexp"
+  "ppx_partial"
+  "ocaml" {>= "4.08"}
+  "alcotest" {"1" = "0" & >= "1.3.0"}
+  "base" {>= "v0.12.0"}
+  "cmdliner" {>= "1.1.0"}
+  "dune"
+  "dune-build-info"
+  "either"
+  "fix"
+  "fpath" {>= "0.7.3"}
+  "menhir" {>= "20201216"}
+  "menhirLib" {>= "20201216"}
+  "menhirSdk" {>= "20201216"}
+  "ocaml-version" {>= "3.5.0"}
+  "ocamlformat-rpc-lib" {"1" = "0" & = version}
+  "ocp-indent" {>= "1.8.0" | "1" = "0" & >= "1.8.1"}
+  "stdio"
+  "uuseg" {>= "10.0.0"}
+  "uutf" {>= "1.0.1"}
+  "csexp" {>= "1.4.0"}
+  "astring"
+  "camlp-streams"
+  "re" {>= "1.10.3"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/v-gb/ocamlmig.git"
+# due to core_unix, but why do we need to restate it? Maybe they added windows to
+# the opam CI without ensuring that existing packages work on it.
+available: os != "win32"
+url {
+  src:
+    "https://github.com/v-gb/ocamlmig/releases/download/5.2-20250228/ocamlmig-5.2-20250228.tbz"
+  checksum: [
+    "sha256=b62e6316ed39461c814320282d42484bd8b7a412b861a6f14d2853ceed423005"
+    "sha512=112b09f4ee3c9305c162cb7061d3f84e6017e22f990c60f69bc8ca9a3d0344d2793f6d38b08f43b761a5b2d0d430d7e0d9b71bfe3de2f80a65ce23ce47c8fe06"
+  ]
+}
+x-commit-hash: "8106004d9cb9791bc0c76e52d95f377c1b66515a"
