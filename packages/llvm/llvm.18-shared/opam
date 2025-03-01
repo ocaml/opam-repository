@@ -10,10 +10,24 @@ dev-repo: "git+http://llvm.org/git/llvm.git"
 doc: "http://llvm.org"
 homepage: "http://llvm.org"
 build: [
-  ["bash" "-ex" "install.sh" "%{conf-llvm-shared:config}%" lib "%{conf-cmake:cmd}%" make "build" "shared"]
+  ["bash" "-ex" "install.sh" "build"
+     "--llvm-config" "%{conf-llvm-shared:config}%"
+     "--libdir" lib
+     "--cmake" "%{conf-cmake:cmd}%"
+     "--make" make
+     "--link-mode" "shared"
+     "--use-homebrew" {os-distribution = "homebrew"}
+  ]
 ]
 install: [
-  ["bash" "-ex" "install.sh" "%{conf-llvm-shared:config}%" lib "%{conf-cmake:cmd}%" make "install" "shared"]
+  ["bash" "-ex" "install.sh" "install"
+     "--llvm-config" "%{conf-llvm-shared:config}%"
+     "--libdir" lib
+     "--cmake" "%{conf-cmake:cmd}%"
+     "--make" make
+     "--link-mode" "shared"
+     "--use-homebrew" {os-distribution = "homebrew"}
+  ]
 ]
 depends: [
   "ocaml" {>= "4.00.0"}
@@ -38,15 +52,15 @@ extra-source "install.sh" {
   src:
     "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/install.sh.18"
   checksum: [
-    "sha256=91311c9a90258e6819adda4132f9f64df18f1f0b9df905e7f88be325ed18dce7"
-    "md5=70201a5ad01e104f7572e1fa0d498eaa"
+    "sha256=c1f95d0c7ae539fcbe97327c4ed64e7a86009143c34f7e721319407975965bae"
+    "md5=6e458426d1008d4696662cf7d3432d8b"
   ]
 }
 extra-source "AddOCaml.cmake.patch" {
   src:
-    "https://github.com/alan-j-hu/opam-source-archives/raw/e5d49c1c15149d3a239d237634f5fc85d903718d/patches/llvm/AddOCaml.cmake.patch.18"
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/AddOCaml.cmake.patch.18"
   checksum: [
-    "sha256=a4fac2d6ebfaa707906dc576b99f80efe42ee8857647eb881a07f8fb5ebcddd2"
-    "md5=5a6c39055106cfc700eef2ad0255cba6"
+    "sha256=a532adaa6938818fbd7f5a49d4de21c0a2d240ecb91636a76b2f745b4b8cb58f"
+    "md5=432ec376b6ffbac44e640c8fb659a7df"
   ]
 }
