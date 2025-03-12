@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "The Rocq Prover --- GTK3 IDE"
+description: """
+The Rocq Prover is an interactive theorem prover, or proof assistant. It provides
+a formal language to write mathematical definitions, executable
+algorithms and theorems together with an environment for
+semi-interactive development of machine-checked proofs.
+
+This package provides the RocqIDE, a graphical user interface for the
+development of interactive proofs."""
+maintainer: ["The Rocq development team <coqdev@inria.fr>"]
+authors: ["The Rocq development team, INRIA, CNRS, and contributors"]
+license: "LGPL-2.1-only"
+homepage: "https://rocq-prover.org"
+doc: "https://coq.github.io/doc/"
+bug-reports: "https://github.com/coq/coq/issues"
+depends: [
+  "dune" {>= "3.8"}
+  "ocamlfind" {build}
+  "conf-findutils" {build}
+  "conf-adwaita-icon-theme"
+  "coqide-server" {= version}
+  "cairo2" {>= "0.6.4"}
+  "lablgtk3-sourceview3" {>= "3.1.2" & (>= "3.1.5" | os != "windows")}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/coq/coq.git"
+
+url {
+  src:
+    "https://github.com/coq/coq/releases/download/V9.0.0/rocq-9.0.0.tar.gz"
+  checksum: [
+    "md5=8d522602d23e7a665631826dab9aa92b"
+    "sha512=f4f76a6a178e421c99ee7a331a2fd97a06e9c5d0168d7e60c44e3820d8e1a124370ea104ad90c7f87a9a1e9d87b2d0d7d2d387c998feeaed4a75ed04e176a4be"
+  ]
+}
