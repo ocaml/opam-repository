@@ -1,0 +1,70 @@
+opam-version: "2.0"
+maintainer: [
+  "Stefanie Schirmer @linse"
+  "Hannes Mehnert"
+]
+authors: [
+  "Stefanie Schirmer @linse"
+  "Hannes Mehnert"
+]
+homepage: "https://github.com/robur-coop/caldav"
+bug-reports: "https://github.com/robur-coop/caldav/issues"
+dev-repo: "git+https://github.com/robur-coop/caldav.git"
+tags: ["org:mirage" "org:robur"]
+doc: "https://robur-coop.github.io/caldav/"
+license: "ISC"
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & os != "macos"} # Local network access is forbidden in the macos sandbox
+]
+
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "3.12"}
+  "alcotest" {with-test & >= "0.8.5"}
+  "ounit2" {with-test & >= "2.0.0"}
+  "tcpip" {with-test & >= "3.7.0"}
+  "mirage-kv-mem" {with-test & >= "4.0.0"}
+  "fmt" {>= "0.8.7"}
+  "mirage-kv" {>= "6.0.0"}
+  "ppx_deriving" {>= "4.3"}
+  "lwt" {>= "4.0"}
+  "ptime" {>= "0.8.5"}
+  "cohttp" {>= "6.0.0"}
+  "cohttp-lwt" {>= "6.0.0"}
+  "cohttp-lwt-unix" {with-test & >= "6.0.0"}
+  "digestif" {>= "1.2.0"}
+  "mirage-crypto-rng" {>= "1.2.0"}
+  "base64" {>= "3.0.0"}
+  "xmlm" {>= "1.3.0"}
+  "tyxml" {>= "4.3.0"}
+  "icalendar" {>= "0.1.8"}
+  "sexplib" {>= "v0.12.0"}
+  "ppx_sexp_conv" {>= "v0.12.0"}
+  "logs" {>= "0.6.3"}
+  "ohex" {>= "0.2.0"}
+  "metrics"
+  "re" {>= "1.7.2"}
+  "mirage-ptime" {>= "5.0.0"}
+  #from webmachine
+  "dispatch" {>= "0.5.0"}
+  "uri" {>= "4.0.0"}
+]
+conflicts: [ "result" {< "1.5"} ]
+synopsis: "A CalDAV server"
+description: """
+A CalDAV server (RFC 4791). Supports everything from the robur-coop/icalendar
+library. Also includes a partial WebDAV implementation.
+"""
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/robur-coop/caldav/releases/download/v0.2.4/caldav-0.2.4.tbz"
+  checksum: [
+    "sha256=2213432f79494809a8ea5c7726a0a264ab6770c7be74a929c65c39a27339e0a1"
+    "sha512=9c7ce48fbafa75ea309fcd49a5792976911bea857c9a3a4b334b9b75b3f65199669bacdfe62b98e34a7b5160883fd5b98d7795fd03aefad6434fa99545e26425"
+  ]
+}
+x-commit-hash: "08b4e18f1502288a92c418115c8008e0e8d01cef"
