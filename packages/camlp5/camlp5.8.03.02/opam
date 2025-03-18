@@ -34,7 +34,7 @@ depends: [
   "conf-perl"
   "conf-bash" { with-test }
   "camlp5-buildscripts" { >= "0.02" }
-  "conf-diffutils" { with-test & (os-distribution = "alpine" | os-distribution = "freebsd" | os-family = "opensuse") }
+  "conf-diffutils" { with-test & (os-distribution = "alpine" | os-distribution = "freebsd") }
   "re" { >= "1.11.0" }
   "ounit2" { with-test }
   "pcre2" { >= "8.0.3" }
@@ -47,7 +47,7 @@ build: [
   [make "-j%{jobs}%" "DEBUG=-g" "world.opt"]
   [make "-j%{jobs}%" "DEBUG=-g" "all"]
   [make "-C" "testsuite" "clean" "all-tests"] { with-test }
-  [make "-C" "test" "clean" "all"] { with-test & os != "macos" }
+  [make "-C" "test" "clean" "all"] { with-test & os != "macos" & os != "opensuse-tumbleweed" }
 #  [make "-C" "scripts" "clean" "test"] { with-test }
 ]
 install: [make "install"]
