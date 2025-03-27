@@ -1,0 +1,54 @@
+opam-version: "2.0"
+synopsis: "A lightweight library for modeling tree-shaped state with stateful functions"
+description: """\
+Brisk Reconciler provides an expressive and powerful abstraction for managing **tree-shaped state** using **stateful functions**. This makes it ideal for modeling dynamic structures like the **DOM tree**, **app navigation state**, or even a **rich text document**.
+
+### ✨ **Key Features**
+- **Tree-shaped state modeling**: Represent and update hierarchical structures efficiently.
+- **OutputTree-agnostic hooks**: Support different output representations.
+- **UI-oriented, but flexible**: Designed with UIs in mind but applicable to other domains.
+"""
+maintainer: "brisk-reconciler developers"
+authors: ["Wojtek Czekalski"]
+license: "MIT"
+homepage: "https://github.com/briskml/brisk-reconciler"
+bug-reports: "https://github.com/briskml/brisk-reconciler/issues"
+depends: [
+  "dune" {>= "3.16"}
+  "ocaml" {>= "4.8.0" & < "5.3.0"}
+  "ppxlib" {>= "0.12.0" & < "0.36.0"}
+  "mlx" {with-dev-setup | with-test}
+  "ocamlformat-mlx" {with-dev-setup}
+  "ocamlformat" {with-dev-setup}
+  "ocaml-lsp-server" {with-dev-setup}
+  "alcotest" {with-test}
+  "ppx_deriving" {with-test}
+  "js_of_ocaml" {with-dev-setup}
+  "js_of_ocaml-ppx" {with-dev-setup}
+  "lwt" {with-dev-setup}
+  "lambda-term" {with-dev-setup}
+  "core_bench" {with-dev-setup} & "ocaml" {with-dev-setup & (>= "5.1")}
+  "core_unix" {with-dev-setup} & "ocaml" {with-dev-setup & (>= "5.1")}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/briskml/brisk-reconciler.git"
+url {
+  src: "https://github.com/briskml/brisk-reconciler/archive/refs/tags/v1.0.0-alpha1.tar.gz"
+  checksum:
+    "sha512=3c133d9254b0aa122930fc3145cdef2502c825eaae4d71995919fb4bace19e8d168b8601bd198cd8bf32a0197337dd9ca6f5bafa597ee594bb8cff3a5e057aed"
+}
+x-maintenance-intent: ["(latest)"]

@@ -1,0 +1,61 @@
+opam-version: "2.0"
+synopsis: "Generic programming with extensible transformations"
+description: """
+Yet another library for generic programming. Provides syntax extensions
+both for camlp5 and PPX which allow decoration of type declarations with
+following compile-time code generation. Provides the way for creating
+plugins (compiled separately from the library) for enchancing supported
+type transformations.
+
+Strongly reminds the `visitors` library from François Pottier.
+During desing of a library of these kind there many possible
+design decision and in many cases we decided to implement
+the decision opposite to the one used in `visitors`.
+
+
+P.S. Since 2023 development team is no longer associated with JetBrains Research"""
+maintainer: ["Kakadu@pm.me"]
+authors: ["https://github.com/dboulytchev" "https://github.com/Kakadu"]
+license: "LGPL-2.1-or-later"
+homepage: "https://github.com/PLTools/GT"
+bug-reports: "https://github.com/PLTools/GT/issues"
+depends: [
+  "ocaml" {>= "4.14" & < "5.0.0" | >= "5.3.0" & < "5.4.0"}
+  "dune" {>= "3.16"}
+  "dune-configurator"
+  "ppxlib" {<= "0.34.0"}
+  "camlp5" {>= "8.00.05"}
+  "ocamlgraph"
+  "ppx_inline_test_nobase"
+  "ocamlfind" {build}
+  "logger-p5" {build}
+  "bisect_ppx" {build}
+  "conf-m4" {build}
+  "odoc" {with-doc}
+  "odig" {with-doc}
+  "pa_ppx" {with-doc}
+  "mdx" {with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/PLTools/GT.git"
+url {
+  src: "https://github.com/PLTools/GT/archive/refs/tags/v0.5.4.tar.gz"
+  checksum: [
+    "sha256=d379da5902e2f4017122daf4861dd4f822a862025e9a6d215454ced572da13db"
+    "sha512=fe5cb5306cf220f293c0f81b57a8de90f932d3145538e0a032f4b90b8b465ba5d9414692c194b6213014ee2cd06ce061df4541533550d89c7f63b071015104ba"
+  ]
+}
+x-commit-hash: "f42c7feceb9607bac11314aa0822a29c788fd591"

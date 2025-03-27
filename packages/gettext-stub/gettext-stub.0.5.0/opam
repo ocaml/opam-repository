@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis: "Internationalization using C gettext library (i18n)"
+description: "See gettext package description."
+maintainer: ["Sylvain Le Gall <sylvain+ocaml@le-gall.net>"]
+authors: ["Sylvain Le Gall"]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/gildor478/ocaml-gettext"
+doc: "https://gildor478.github.io/ocaml-gettext/"
+bug-reports: "https://github.com/gildor478/ocaml-gettext/issues"
+depends: [
+  "ocaml" {>= "4.14"}
+  "dune" {>= "3.17"}
+  "gettext" {= version}
+  "dune-configurator" {>= "3.17.0"}
+  "ounit2" {>= "2.2.7" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/gildor478/ocaml-gettext.git"
+depexts: [
+  ["gettext"] {os = "macos" & os-distribution = "homebrew"}
+  ["gettext"] {os = "macos" & os-distribution = "macports"}
+  ["gettext-devel"] {os = "win32" & os-distribution = "cygwinports"}
+  ["gettext-devel"] {os = "win32" & os-distribution = "cygwin"}
+  ["gettext-dev"] {os-distribution = "alpine"}
+  ["libc6-dev"] {os-family = "debian"}
+]
+url {
+  src:
+    "https://github.com/gildor478/ocaml-gettext/releases/download/v0.5.0/gettext-0.5.0.tbz"
+  checksum: [
+    "sha256=08dd9df55b2af1838e2312be4be942b4375dbc18c2aed0ca1924488750e34f5d"
+    "sha512=4a09eab6d6f0d6ec435ca3d70305e2f97cbcc04bea72f85efcf649a0ead2faa322a0b054eb953b719f6dea98fb08de32fc80b4cf967681465c5a51e335aaf8d4"
+  ]
+}
+x-commit-hash: "999e85cadbe675f8e60083241b403438f8d2c869"

@@ -33,12 +33,13 @@ depexts: [
   ["allegro"] {os-distribution = "homebrew"}
   ["allegro5"] {os = "freebsd"}
   ["allegro5"] {os = "netbsd"}
-  ["mingw-w64-allegro"] {os-distribution = "msys2"}
 ]
 synopsis: "Virtual package relying on Allegro 5 development libraries"
 description:
   "This package can only install if Allegro 5 development libraries are accessible through pkg-config."
 depends: [
   "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os-distribution = "msys2"} & "conf-mingw-w64-sdl2-i686" {os-distribution = "msys2"} |
+   "host-arch-x86_64" {os-distribution = "msys2"} & "conf-mingw-w64-sdl2-x86_64" {os-distribution = "msys2"})
 ]
 flags: conf
