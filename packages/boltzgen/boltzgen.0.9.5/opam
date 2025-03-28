@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "Generate random tests using boltzmann sampling"
+description: """
+BoltzGen is a tool to generate Ocaml values. Given a type it generates a random value of this type using Boltzmann sampling
+  BoltzGen can also generate tests, given a function, a set of call of this function on generated random input is generated."""
+maintainer: ["barbot@lacl.fr"]
+authors: ["Benoît Barbot"]
+license: "GPL-3.0-or-later"
+homepage: "https://git.lacl.fr/barbot/boltzgen"
+bug-reports: "https://git.lacl.fr/barbot/boltzgen/-/issues"
+depends: [
+  "ocaml" {>= "5.0.0"}
+  "dune" {>= "3.15" & >= "3.15"}
+  "ocaml-compiler-libs"
+  "cmdliner" {>= "1.1.0"}
+  "base-unix"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://git.lacl.fr/barbot/boltzgen.git"
+url {
+  src:
+    "https://git.lacl.fr/barbot/boltzgen/-/archive/release-0.9.5/boltzgen-release-0.9.5.tar.gz"
+  checksum: [
+    "md5=4a1533435c557fb19665bb0cffa8cfa6"
+    "sha512=8ec7d426663125b4a5ceca895252ebf7afc3c44034730e25ee994a152a049a221a8c3a6472777ec91980c7ceea70abbaf1fd20ff0ac61ca5855b0d600df64b22"
+  ]
+}
