@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Collector client for opentelemetry, using cohttp + lwt"
+maintainer: [
+  "Simon Cruanes <simon.cruanes.2007@m4x.org>"
+  "Matt Bray <mattjbray@gmail.com>"
+  "ELLIOTTCABLE <opam@ell.io>"
+]
+authors: ["the Imandra team and contributors"]
+license: "MIT"
+homepage: "https://github.com/imandra-ai/ocaml-opentelemetry"
+bug-reports: "https://github.com/imandra-ai/ocaml-opentelemetry/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08"}
+  "mtime" {>= "1.4"}
+  "opentelemetry" {= version}
+  "odoc" {with-doc}
+  "lwt" {>= "5.3"}
+  "lwt_ppx" {>= "2.0"}
+  "cohttp-lwt"
+  "cohttp-lwt-unix"
+  "alcotest" {with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/imandra-ai/ocaml-opentelemetry.git"
+url {
+  src:
+    "https://github.com/imandra-ai/ocaml-opentelemetry/releases/download/v0.11.2/opentelemetry-0.11.2.tbz"
+  checksum: [
+    "sha256=716a7407dcbb8d950295f55d2b72fec14bf122558972681d66b4a56352987c1c"
+    "sha512=4cdf5ffe31b6b03741734cda285ec8d5c261fafb7dff1c74e40472bc46ba0e97cb2df88a1557874482918303607e9ae21362ebc064985960bc002517e313d88c"
+  ]
+}
+x-commit-hash: "c313731a70936398d2db923a01f0aef175e986d4"
