@@ -11,7 +11,7 @@ build: [
    #include  \"cuda.h\"
    #include  \"nvrtc.h\"
    "]
-  ["sh" "-exc" "cc -c $CFLAGS -I%{conf-cuda-config:cuda_path}%/include test.c"]
+  ["sh" "-exc" "$(ocamlc -config-var c_compiler) -c $CFLAGS -I'%{conf-cuda-config:cuda_path}%'/include test.c"]  
 ]
 # Note: the minimal set of packages directly from NVidia repositories, e.g. for cudajit:
 # "cuda-cudart-X-Y" "cuda-cudart-dev-X-Y" "cuda-runtime-X-Y" "cuda-nvrtc-X-Y" "cuda-nvrtc-dev-X-Y"
@@ -36,10 +36,10 @@ post-messages: [
    {failure & !conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os-family = "arch"}
    "Alternatively: manually install CUDA or verify that CUDA_PATH is set properly, and re-install opam package conf-cuda-config. See: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html"
    {failure & !conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os = "linux"}
-   "Manually install CUDA or verify that CUDA_PATH is set properly, and re-install opam package conf-cuda-config. See: https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html"
-   {failure & !conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os = "windows"}
+   "Manually install CUDA or verify that CUDA_PATH is set properly. See: https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html"
+   {failure & os-family = "windows"}
    "If CUDA is supported on your system, manually install CUDA or verify that CUDA_PATH is set properly, and re-install opam package conf-cuda-config. See: https://docs.nvidia.com/cuda/"
-   {failure & !conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os != "linux" & os != "windows"}
+   {failure & !conf-cuda-config:is_wsl & !conf-cuda-config:cuda_preinstalled & os != "linux" & os-family != "windows"}
 ]
 synopsis: "Virtual package relying on a CUDA system installation"
 description:
