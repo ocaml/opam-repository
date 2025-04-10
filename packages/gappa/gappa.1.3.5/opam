@@ -1,0 +1,61 @@
+opam-version: "2.0"
+maintainer: "7895506+MSoegtropIMC@users.noreply.github.com"
+authors: "Guillaume Melquiond"
+bug-reports: "https://gitlab.inria.fr/gappa/gappa/-/issues"
+homepage: "https://gitlab.inria.fr/gappa/gappa"
+dev-repo: "git+https://gitlab.inria.fr/gappa/gappa.git"
+license: "CeCILL"
+patches: [
+  "remake.patch"
+  "0001-Added-configure-for-c-11.patch"
+]
+build: [
+  [ "autoreconf" ]
+  # Note: configure.in seems to reference this file
+  [ "touch" "stamp-config_h.in" ]
+  [ "./configure"
+    # If someone knows how to ask MacPorts for the usual include and lib path, please tell me
+    "CXXFLAGS=-I/opt/local/include" { os-distribution = "macports" & os = "macos" }
+    "LDFLAGS=-L/opt/local/lib" { os-distribution = "macports" & os = "macos" }
+    # Support installing on Apple Silicon with Homebrew
+    "CXXFLAGS=-I/opt/homebrew/include" { os-distribution = "homebrew" & os = "macos" & arch = "arm64"}
+    "LDFLAGS=-L/opt/homebrew/lib" { os-distribution = "homebrew" & os = "macos" & arch = "arm64"}
+    "--build=%{arch}%-pc-cygwin" { os = "win32" & os-distribution = "cygwinports" }
+    "--host=%{arch}%-w64-mingw32" { os = "win32" & os-distribution = "cygwinports" }
+    "--target=%{arch}%-w64-mingw32" { os = "win32" & os-distribution = "cygwinports" }
+    "--prefix=%{prefix}%" 
+  ]
+  [ "./remake" "--jobs=%{jobs}%" ]
+]
+install: [ "./remake" "-d" "install" ]
+depends: [
+  "conf-g++" {build}
+  "conf-autoconf" {build}
+  "conf-automake" {build}
+  "conf-gmp"
+  "conf-mpfr"
+  "conf-boost"
+  "conf-bison" {build}
+  "conf-flex" {build}
+]
+synopsis: "Tool intended for formally proving properties on numerical programs dealing with floating-point or fixed-point arithmetic"
+url {
+  src: "https://gappa.gitlabpages.inria.fr/releases/gappa-1.3.5.tar.gz"
+  checksum: "sha512=60b5719e3a321df43e33045fa8f4511fc02a4218d1ae7e476e7c6ebcf90ae208832881f6eea5b99a3296dfcc3a18c7e1f4ea9dbea446fc502e14306b6975f6e6"
+}
+extra-source "remake.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/gappa/remake.patch"
+  checksum: [
+    "sha256=365967b9cd294d485302b6c14a072ac06d3238bfeb313eaae07159a8542fc5ff"
+    "md5=d66b718118ae5bf61c661905f6f0db96"
+  ]
+}
+extra-source "0001-Added-configure-for-c-11.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/gappa/0001-Added-configure-for-c-11.patch"
+  checksum: [
+    "sha256=5d9ff1e6461834c2d3d6c4cb1f9dd7424a4a681b40cab19a6fbbe0ff8d50284e"
+    "md5=b6a6dbe9a12feae79eab038864208a3c"
+  ]
+}
