@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "Minimal HTTP server using threads"
+maintainer: ["c-cube"]
+authors: ["c-cube"]
+license: "MIT"
+tags: [
+  "http" "thread" "server" "tiny_httpd" "http_of_dir" "simplehttpserver"
+]
+homepage: "https://github.com/c-cube/tiny_httpd/"
+bug-reports: "https://github.com/c-cube/tiny_httpd/issues"
+depends: [
+  "dune" {>= "3.2"}
+  "seq"
+  "base-threads"
+  "result"
+  "hmap"
+  "iostream" {>= "0.2"}
+  "ocaml" {>= "4.08"}
+  "odoc" {with-doc}
+  "logs" {with-test}
+  "conf-libcurl" {with-test}
+  "ptime" {with-test}
+  "qcheck-core" {>= "0.9" & with-test}
+]
+depopts: [
+  "logs"
+  "magic-mime"
+  "mtime" {>= "2.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/c-cube/tiny_httpd.git"
+url {
+  src:
+    "https://github.com/c-cube/tiny_httpd/releases/download/v0.18/tiny_httpd-0.18.tbz"
+  checksum: [
+    "sha256=0cd65eb17679dc1f356bc5622e1f34542011d7b80c42a43a9b40f17cedb2b37e"
+    "sha512=f4c8b8d4e7eaba101cda39a5cfcd5d614493307f0105ffc190bc7269bff20fbca31e47438c9691753a5e7a3fa4fc36e8dee23abe4361ee638e2c5f3100ea2713"
+  ]
+}
+x-commit-hash: "0ec213aefc81bf16f6b74d6587631b677389dc11"
