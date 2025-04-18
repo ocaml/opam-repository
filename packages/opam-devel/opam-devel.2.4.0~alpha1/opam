@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis: "Bootstrapped development binary for opam 2.4"
+description:
+  "This package compiles (bootstraps) opam. For consistency and safety of the installation, the binaries are not installed into the PATH, but into lib/opam-devel, from where the user can manually install them system-wide."
+maintainer: "opam-devel@lists.ocaml.org"
+authors: [
+  "David Allsopp <david@tarides.com>"
+  "Vincent Bernardoff <vb@luminar.eu.org>"
+  "Raja Boujbel <raja.boujbel@ocamlpro.com>"
+  "Kate Deplaix <kit-ty-kate@outlook.com>"
+  "Roberto Di Cosmo <roberto@dicosmo.org>"
+  "Thomas Gazagnaire <thomas@gazagnaire.org>"
+  "Louis Gesbert <louis.gesbert@ocamlpro.com>"
+  "Fabrice Le Fessant <Fabrice.Le_fessant@inria.fr>"
+  "Anil Madhavapeddy <anil@recoil.org>"
+  "Guillem Rieu <guillem.rieu@ocamlpro.com>"
+  "Ralf Treinen <ralf.treinen@pps.jussieu.fr>"
+  "Frederic Tuong <tuong@users.gforge.inria.fr>"
+]
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://opam.ocaml.org"
+bug-reports: "https://github.com/ocaml/opam/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "opam-client" {= version}
+  "cmdliner" {>= "1.1.0"}
+  "dune" {>= "2.8.0"}
+  "conf-openssl" {with-test}
+  "conf-diffutils" {with-test}
+]
+available: opam-version >= "2.1.0"
+flags: avoid-version
+build: [
+  ["./configure" "--disable-checks" "--prefix" prefix]
+  [make "%{name}%.install"]
+]
+post-messages:
+  """\
+The development version of opam has been successfully compiled into %{lib}%/%{name}%. You should not run it from there, please install the binaries to your PATH, e.g. with
+    sudo cp %{lib}%/%{name}%/opam /usr/local/bin
+
+If you just want to give it a try without altering your current installation, you could use instead:
+    alias opam2="OPAMROOT=~/.opam2 %{lib}%/%{name}%/opam\""""
+    {success}
+dev-repo: "git+https://github.com/ocaml/opam.git"
+url {
+  src: "https://github.com/ocaml/opam/archive/refs/tags/2.4.0-alpha1.tar.gz"
+  checksum: [
+    "md5=6a0c8a0b5e33757c962dde7c0c5bfce7"
+    "sha512=cc4eb75ee1f0c5dc020e5d07dc2b7f7b0a5ccd8182ff1b799bce15c024f86eb5c97eb194bdb838d107d634e8f0073e2de098d343eab1779038deeeed5abd5879"
+  ]
+}
