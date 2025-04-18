@@ -4,14 +4,19 @@ homepage: "https://github.com/libsndfile/libsndfile"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: "libsndfile developers"
 license: "LGPL-2.1-or-later"
-build: ["pkg-config" "--exists" "sndfile"]
+build: [
+  ["pkg-config" "--exists" "sndfile"] {os != "openbsd" & os != "win32" & !(os = "macos" & os-distribution = "homebrew")}
+  ["pkgconf" "--exists" "sndfile"] {(os = "win32" & os-distribution != "msys2") | (os = "macos" & os-distribution = "homebrew")}
+]
 depends: [
   "conf-pkg-config" {build}
+  ("host-arch-x86_64" {os = "win32" & os-distribution = "msys2"} & "conf-mingw-w64-pkgconf-x86_64" {os = "win32" & os-distribution = "msys2"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution = "msys2"} & "conf-mingw-w64-pkgconf-i686" {os = "win32" & os-distribution = "msys2"})
 ]
 depexts: [
   ["libsndfile-dev"] {os-family = "debian" | os-family = "ubuntu" | os-distribution = "alpine"}
-  ["libsndfile"] {os-family = "arch" | os = "freebsd" | os-distribution = "nixos" | os = "macos" & os-distribution = "homebrew"}
-  ["libsndfile-devel"] {os = "win32" & os-distribution = "cygwinports" | os-family = "suse" | os-family = "opensuse" | os-distribution = "centos" | os-distribution = "fedora"}
+  ["libsndfile"] {os = "win32" & os-distribution = "msys2" | os-family = "arch" | os = "freebsd" | os-distribution = "nixos" | os = "macos" & os-distribution = "homebrew"}
+  ["libsndfile-devel"] {os-family = "suse" | os-family = "opensuse" | os-distribution = "centos" | os-distribution = "fedora"}
 ]
 synopsis: "Virtual package relying on sndfile"
 description:
