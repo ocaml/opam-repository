@@ -13,12 +13,12 @@ depexts: [
   ["java-latest-openjdk-devel"] {os-distribution = "centos"}
   ["jdk-openjdk"] {os-distribution = "arch"}
   ["openjdk"] {os-distribution = "homebrew" & os = "macos"}
+  ["openjdk21@edgecommunity"] {os-family = "alpine"}
 ]
 x-ci-accept-failures: [
   # requires the user to install a specific openjdk version
   "freebsd"
   # these fail CI as PATH does not include javac
-  "alpine-3.20"
   "opensuse-15.6"
   "opensuse-tumbleweed"
   "macos-homebrew"
@@ -28,9 +28,10 @@ x-ci-accept-failures: [
 post-messages: [
   "Please ensure that the javac binary is installed and is available in PATH"
     {failure}
-  """
-  You may need to first install a version of openjdk, e.g., openjdk19"""
+  """You may need to first install a version of openjdk, e.g., openjdk19"""
     {failure & os-distribution = "freebsd"}
+  """You may need to first install a version of openjdk, e.g. winget install Microsoft.OpenJDK.21"""
+    { failure & os = "win32"}
 ]
 synopsis: "Virtual package relying on OpenJDK / Javac"
 description:
