@@ -1,0 +1,34 @@
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+homepage: "https://breakfastquay.com/rubberband/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: "Chris Cannam"
+license: "GPL-2.0-or-later"
+depends: [
+  "conf-pkg-config" {build}
+]
+build: [
+  ["pkg-config" "--exists" "rubberband"] {os != "openbsd" & os != "win32" & !(os = "macos" & os-distribution = "homebrew")}
+  ["pkgconf" "--exists" "rubberband"] {(os = "win32" & os-distribution != "msys2") | (os = "macos" & os-distribution = "homebrew")}
+]
+depexts: [
+  ["librubberband-dev"] {os-family = "debian" | os-family = "ubuntu" | os-family = "opensuse"}
+  ["rubberband-dev"] {os-family = "alpine"}
+  ["rubberband"] {
+        os-family = "arch"
+        | os = "freebsd" 
+        | os-distribution = "nixos"
+        | os = "macos" & os-distribution = "homebrew"
+    }
+  ["rubberband-devel"] { os-family = "fedora" }
+  ["librubberband-devel"] { os-family = "suse" }
+  ["mingw-w64-x86_64-rubberband"] {os = "win32" & os-distribution = "msys2" & arch = "x86_64"}
+]
+synopsis: "Virtual package relying on rubberband"
+description:
+  "This package can only install if the rubberband library is installed on the system."
+flags: conf
+available: !( # librubberband isn't available on cygwin nor on msys2 for the 32 bit arch
+  (os-distribution = "cygwin") |
+  (os = "win32" & os-distribution = "msys2" & arch = "x86_32")
+)
