@@ -1,0 +1,68 @@
+opam-version: "2.0"
+maintainer: "samuel@tarides.com"
+homepage: "https://github.com/mirage/ocaml-unikraft/"
+bug-reports: "https://github.com/mirage/ocaml-unikraft/issues"
+tags: "org:mirage"
+synopsis: "QEMU/arm64 Unikraft backend for OCaml"
+authors: ["Samuel Hym" "Unikraft contributors"]
+license: ["MIT" "BSD-3-Clause" "GPL-2.0-only"]
+depends: [
+  "unikraft" {= version}
+]
+depopts: [
+  "ocaml-unikraft-option-debug"
+]
+depexts: [
+  ["gcc-aarch64-linux-gnu"] {os-family = "debian" & arch != "arm64"}
+  ["aarch64-linux-gnu-gcc"] {os-family = "arch" & arch != "arm64"}
+]
+build: [
+  [
+    make
+    "-j%{jobs}%"
+    "UNIKRAFT=%{unikraft:lib}%"
+    "OCUKPLAT=qemu"
+    "OCUKARCH=arm64"
+    "OCUKEXTLIBS=musl"
+    "OCUKCONFIGOPTS+=debug" {ocaml-unikraft-option-debug:installed}
+    "UK_CFLAGS=-std=gnu17"
+    "%{name}%.install"
+  ]
+]
+extra-source "lib-musl.tar.gz" {
+  src:
+    "https://github.com/unikraft/lib-musl/archive/refs/tags/RELEASE-0.18.0.tar.gz"
+  checksum:
+    "sha256=b51afee0227c0c8c419dd001fb6b6f57b529e5cadcd437afdd05e2e8667a1e2e"
+}
+extra-source "patches/lib-musl/main-tsd.patch" {
+  src:
+    "https://raw.githubusercontent.com/shym/lib-musl/refs/heads/patches/main-tsd.patch"
+  checksum:
+    "sha256=9b87cbf0743492e6949de61af6423b463031da8b14b799a775c34886cabffd28"
+}
+extra-source "patches/lib-musl/arm64.patch" {
+  src:
+    "https://raw.githubusercontent.com/shym/lib-musl/refs/heads/patches/arm64.patch"
+  checksum:
+    "sha256=d83043f534a8da4f0133f4fbde0d78bc3a5d996ca6f7fc91b42ccf2874515514"
+}
+extra-source "patches/lib-musl/exit.patch" {
+  src:
+    "https://raw.githubusercontent.com/shym/lib-musl/refs/heads/patches/exit.patch"
+  checksum:
+    "sha256=41e72b400071b146dde8ecd7be09a4a6187d2ed448ae200581de5405f84db1ee"
+}
+extra-source "musl-1.2.3.tar.gz" {
+  src: "https://www.musl-libc.org/releases/musl-1.2.3.tar.gz"
+  checksum:
+    "sha256=7d5b0b6062521e4627e099e4c9dc8248d32a30285e959b7eecaa780cf8cfd4a4"
+}
+url {
+  src:
+    "https://github.com/mirage/ocaml-unikraft/archive/refs/tags/v1.0.0.tar.gz"
+  checksum:
+    "sha256=1953d51bee391e11676da7234854fb2d87443abb984d625c8e96db47bf5a85e4"
+}
+available: os = "linux"
+x-maintenance-intent: ["(latest)"]

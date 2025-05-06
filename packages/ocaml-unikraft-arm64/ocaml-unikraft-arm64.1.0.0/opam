@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "samuel@tarides.com"
+homepage: "https://github.com/mirage/ocaml-unikraft/"
+bug-reports: "https://github.com/mirage/ocaml-unikraft/issues"
+tags: "org:mirage"
+synopsis: "OCaml cross compiler to the freestanding Unikraft arm64 backends"
+description:
+  "This package provides an OCaml cross compiler, suitable for linking with a Unikraft arm64 unikernel."
+authors: "Samuel Hym"
+license: ["MIT" "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"]
+depends: [
+  "ocaml" {= "5.3.0"}
+  "ocaml-unikraft-toolchain-arm64"
+  "ocamlfind"
+  "ocaml-src" {build}
+  "conf-git" {build}
+]
+build: [
+  [
+    make
+    "-j%{jobs}%"
+    "prefix=%{prefix}%"
+    "BIN=%{bin}%"
+    "LIB=%{lib}%"
+    "SHARE=%{share}%"
+    "OCUKARCH=arm64"
+    "%{name}%.install"
+  ]
+]
+install: [
+  [make "install-ocaml"]
+]
+url {
+  src:
+    "https://github.com/mirage/ocaml-unikraft/archive/refs/tags/v1.0.0.tar.gz"
+  checksum:
+    "sha256=1953d51bee391e11676da7234854fb2d87443abb984d625c8e96db47bf5a85e4"
+}
+available: os = "linux"
+x-maintenance-intent: ["(latest)"]
