@@ -12,6 +12,9 @@ dev-repo: "git+https://github.com/antoinemine/apron.git"
 bug-reports: "https://github.com/antoinemine/apron/issues"
 build: [
   [
+    "sh" "-exec" "./configure --prefix %{share}%/apron --mpfr-prefix ${HOMEBREW_PREFIX:-/opt/homebrew}/ --gmp-prefix ${HOMEBREW_PREFIX:-/opt/homebrew}/ --ppl-prefix ${HOMEBREW_PREFIX:-/opt/homebrew}/ --absolute-dylibs --debug --no-strip"
+  ] { os = "macos" & os-distribution = "homebrew" }
+  [
     "sh"
     "./configure"
     "--prefix"
@@ -22,7 +25,7 @@ build: [
     "--ext-dll" {os = "win32"} "dll" {os = "win32"}
     "--debug"
     "--no-strip"
-  ]
+  ] {!(os = "macos"& os-distribution = "homebrew")}
   [make "-j%{jobs}%"]
 ]
 install: [
@@ -49,3 +52,6 @@ url {
     "sha512=9c1107cea95d56a377f221724064bc65dc605a624171064e681c07e1dece688e06b5511e9974df7c20d883d7dc6cdb25bf1431a8968d721d5c587875ffef751a"
   ]
 }
+x-ci-accept-failures: [
+  "oraclelinux-8" "oraclelinux-9" "alpine-3.19"
+]
