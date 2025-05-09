@@ -6,7 +6,8 @@ bug-reports: "https://jira.mariadb.org/projects/MDEV/issues"
 dev-repo: "git+https://github.com/MariaDB/server.git"
 license: "GPL-2.0-only"
 build: [
-  ["sh" "-exc" "pkg-config --exists libmariadb || pkg-config --exists mariadb"] # libmariadb is a newer library name
+  ["sh" "-exc" "pkg-config --exists libmariadb || pkg-config --exists mariadb"] { os != "win32" } # libmariadb is a newer library name
+  ["pkgconf" "--exists" "libmariadb"] { os = "win32" & os-distribution != msys2" }
 ]
 depends: [
   "conf-pkg-config" {build}
