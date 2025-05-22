@@ -5,11 +5,7 @@ homepage: "https://freeglut.sourceforge.net/"
 license: "X11"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 build: [
-  ["pkgconf" {os = "win32" & os-distribution = "cygwin"}
-   "--personality=i686-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_32:installed}
-   "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_64:installed}
-   "pkg-config" {os != "win32" | os-distribution != "cygwin"}
-   "--print-errors" "--exists" "glut"] {os-distribution != "debian" & os-distribution != "ubuntu" & !(os-distribution = "ol" & os-version < "9")}
+  ["pkg-config" "--print-errors" "--exists" "glut"] {(os != "win32" | os-distribution != "cygwin") & os-distribution != "debian" & os-distribution != "ubuntu" & !(os-distribution = "ol" & os-version < "9")}
 ]
 depends: [
   "conf-pkg-config" {build & os-distribution != "debian" & os-distribution != "ubuntu" & !(os-distribution = "ol" & os-version < "9")}
