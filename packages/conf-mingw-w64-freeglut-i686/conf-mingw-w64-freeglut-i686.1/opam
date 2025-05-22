@@ -8,7 +8,10 @@ homepage: "https://freeglut.sourceforge.net/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 flags: conf
 available: os = "win32"
-build: ["pkgconf" "--personality=i686-w64-mingw32" "freeglut"]
+build: [
+  # Cygwin is missing a pkg-config .pc file https://cygwin.com/packages/x86_64/mingw64-i686-freeglut/mingw64-i686-freeglut-2.8.1-1
+  ["pkg-config" "--personality=i686-w64-mingw32" "freeglut"] {os = "win32" & os-distribution = "msys2"}
+]
 depends: [
   "conf-pkg-config" {build}
   "conf-mingw-w64-gcc-i686" {build}
