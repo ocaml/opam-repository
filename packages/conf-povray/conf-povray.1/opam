@@ -1,0 +1,24 @@
+opam-version: "2.0"
+maintainer: "https://github.com/fccm2"
+homepage: "https://www.povray.org/"
+authors: [ "David Kirk Buck" "Aaron A. Collins" "Alexander Enzmann" "The POV-Team" ]
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "AGPL-3.0-or-later"
+synopsis: "Virtual package relying on a povray system installation"
+description: """
+This package checks if povray is installed on the system.
+"""
+depexts: [
+  ["povray"] {os-family = "debian"}
+  ["povray"] {os-family = "ubuntu"}
+  ["povray"] {os-distribution = "arch"}
+  ["povray"] {os-distribution = "fedora"}
+  ["povray"] {os-family = "suse" | os-family = "opensuse"}
+  ["povray"] {os = "macos" & os-distribution = "homebrew"}
+  ["povray37"] {os = "freebsd"}
+]
+build: [
+  ["sh" "-c" "povray --version"] {os != "freebsd"}
+  ["sh" "-c" "povray37 --version"] {os = "freebsd"}
+]
+flags: conf
