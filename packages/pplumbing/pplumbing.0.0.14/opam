@@ -1,0 +1,86 @@
+opam-version: "2.0"
+synopsis: "Utility libraries to use with [pp]"
+maintainer: ["Mathieu Barbin <opensource@mbarbin.org>"]
+authors: ["Mathieu Barbin"]
+license: "MIT"
+homepage: "https://github.com/mbarbin/pplumbing"
+doc: "https://mbarbin.github.io/pplumbing/"
+bug-reports: "https://github.com/mbarbin/pplumbing/issues"
+depends: [
+  "dune" {>= "3.17"}
+  "ocaml" {>= "4.14"}
+  "cmdlang" {>= "0.0.9"}
+  "cmdlang-to-cmdliner" {>= "0.0.9"}
+  "cmdliner" {>= "1.3.0"}
+  "dyn" {>= "3.17"}
+  "fmt" {>= "0.9.0"}
+  "loc" {>= "0.2.2"}
+  "logs" {>= "0.7.0"}
+  "ordering" {>= "3.17"}
+  "parsexp" {>= "v0.16"}
+  "pp" {>= "2.0.0"}
+  "sexplib0" {>= "v0.16"}
+  "stdune" {>= "3.17"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mbarbin/pplumbing.git"
+description: """\
+
+[pplumbing] defines a set of utility libraries to use with [pp]. It
+is compatible with [logs] and inspired by design choices used by
+[dune] for user messages:
+
+- [Pp_tty] extends [pp] to build colored documents in the user's
+  terminal using ansi escape codes.
+
+- [Err] is an abstraction to report located errors and warnings to
+  the user.
+
+- [Log] is an interface to [logs] using [Pp_tty] rather than [Format].
+
+- [Log_cli] contains functions to work with [Err] on the side of end
+  programs (such as a command line tool). It defines command line
+  helpers to configure the [Err] library, while taking care of setting
+  the [logs] and [fmt] style rendering.
+
+- [Cmdlang_cmdliner_runner] is a library for running command line
+  programs specified with [cmdlang] with [cmdliner] as a backend and
+  making opinionated choices, assuming your dependencies are using
+  [Err].
+
+These libraries are meant to combine nicely into a small ecosystem of
+useful helpers to build CLIs in OCaml.
+
+[cmdlang]: https://github.com/mbarbin/cmdlang
+[cmdliner]: https://github.com/dbuenzli/cmdliner
+[dune]: https://github.com/ocaml/dune
+[fmt]: https://github.com/dbuenzli/fmt
+[logs]: https://github.com/dbuenzli/logs
+[pp]: https://github.com/ocaml-dune/pp
+
+"""
+tags: [ "cli" "cmdlang" "logs" "pp" ]
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mbarbin/pplumbing/releases/download/0.0.14/pplumbing-0.0.14.tbz"
+  checksum: [
+    "sha256=ed7eaba180378a59719e9af63ccdc89dde8e0a20f2cba420abb0080b0bc4a868"
+    "sha512=f168c37c1acd38c92e5b6d59321da4021195b6ddc49dde82de70e9282b55042621bea1b84a677d57f83604c06d6ee9c790b683fd589cd2097ab8f00c293f56af"
+  ]
+}
+x-commit-hash: "e77dc8813860b9d8d19d82725252770a3f55f79d"
