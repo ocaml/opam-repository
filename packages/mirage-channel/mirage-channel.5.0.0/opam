@@ -1,0 +1,64 @@
+opam-version: "2.0"
+maintainer: "Anil Madhavapeddy <anil@recoil.org>"
+authors: ["Anil Madhavapeddy" "Mindy Preston" "Thomas Gazagnaire"]
+license: "ISC"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/mirage-channel"
+doc: "https://mirage.github.io/mirage-channel/"
+bug-reports: "https://github.com/mirage/mirage-channel/issues"
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "dune" {>= "1.0"}
+  "mirage-flow" {>= "4.0.0"}
+  "lwt" {>= "4.0.0"}
+  "cstruct" {>= "6.0.0"}
+  "logs"
+  "fmt" {>= "0.8.7"}
+  "alcotest" {with-test}
+  "mirage-flow-combinators" {with-test & >= "2.0.0"}
+]
+conflicts: [
+  "tcpip" {< "3.0.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/mirage-channel.git"
+synopsis: "Buffered channels for MirageOS FLOW types"
+description: """
+Channels are buffered reader/writers built on top of unbuffered `FLOW`
+implementations.
+
+Example:
+
+```ocaml
+module Channel = Channel.Make(Flow)
+...
+Channel.read_exactly ~len:16 t
+>>= fun bufs -> (* read header of message *)
+let payload_length = Cstruct.(LE.get_uint16 (concat bufs) 0) in
+Channel.read_exactly ~len:payload_length t
+>>= fun bufs -> (* payload of message *)
+
+(* process message *)
+
+Channel.write_buffer t header;
+Channel.write_buffer t payload;
+Channel.flush t
+>>= fun () ->
+```
+
+mirage-channel is distributed under the ISC license.
+"""
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mirage/mirage-channel/releases/download/v5.0.0/mirage-channel-5.0.0.tbz"
+  checksum: [
+    "sha256=2863bf7c8944f8d08052751e32572701bac2c5a4aa35569af61f0a3b83f25389"
+    "sha512=cd4569d7d4d08de3b2565c72eeba2c0e1910664c79f971044d4f94c126aa2aeaac89925fb7f48b321a12517879c21eb998ad3d2551831f838cd64268f50e3877"
+  ]
+}
+x-commit-hash: "de97e5210a1d0d905d5e29f34392d68ede38109e"
