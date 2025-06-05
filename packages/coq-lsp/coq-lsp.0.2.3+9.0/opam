@@ -1,0 +1,74 @@
+synopsis: "Language Server Protocol native server for Coq"
+description:
+"""
+Language Server Protocol native server for Coq
+"""
+opam-version: "2.0"
+maintainer: "e@x80.org"
+bug-reports: "https://github.com/ejgallego/coq-lsp/issues"
+homepage: "https://github.com/ejgallego/coq-lsp"
+dev-repo: "git+https://github.com/ejgallego/coq-lsp.git"
+authors: [
+  "Emilio Jesús Gallego Arias <e@x80.org>"
+  "Ali Caglayan <alizter@gmail.com>"
+  "Shachar Itzhaky <shachari@cs.technion.ac.il>"
+  "Ramkumar Ramachandra <r@artagnon.com>"
+]
+license: "LGPL-2.1-or-later"
+doc: "https://ejgallego.github.io/coq-lsp/"
+
+depends: [
+
+  ("ocaml" {>= "5.0"} | ("ocaml" {<= "5.0"} & "memprof-limits" { >= "0.2.1" } ))
+
+  "dune"         { >= "3.13.0" } # Version interval [3.8-3.12] was
+                                 # broken for composed builds with Coq
+
+  # lsp dependencies
+  "cmdliner"     { >= "1.1.0" }
+  "yojson"       { >= "1.7.0" }
+  "uri"          { >= "4.2.0" }
+  "dune-build-info" { >= "3.2.0" }
+
+  # waterproof json parser
+  "menhir"       { >= "20220210" }
+
+  # unit testing
+  "ppx_inline_test"     { >= "v0.15.0" }
+
+  "rocq-prover"         { >= "9.0" < "9.1" }
+
+  # [release branch] Remove
+  "ocamlfind" {>= "1.9.1" & (>= "1.9.8" | os != "windows") }
+  "zarith" {>= "1.13"}
+
+  # serlib deps: see what we need to keep for release
+  "ppx_deriving"        { >= "5.2"                 }
+  "ppx_deriving_yojson" { >= "3.7.0"               }
+  "ppx_import"          { >= "1.11.0"              }
+  "sexplib"             { >= "v0.15.0" & < "v0.18" }
+  "ppx_sexp_conv"       { >= "v0.15.0" & < "v0.18" }
+  "ppx_compare"         { >= "v0.15.0" & < "v0.18" }
+  "ppx_hash"            { >= "v0.15.0" & < "v0.18" }
+]
+
+# older results get in mess with ppx_deriving, we cannot control how
+# it gets pulled, often in min-bound rev-dep, so we conflict with it
+conflicts: [ "result" { < "1.5" } ]
+
+depopts: ["lwt" "logs"]
+
+build: [
+  [ "rm" "-rf" "vendor" ]
+  [ "dune" "build" "-p" name "-j" jobs ]
+]
+run-test: [ [ "dune" "runtest" "-p" name "-j" jobs ] ]
+url {
+  src:
+    "https://github.com/ejgallego/coq-lsp/releases/download/0.2.3%2B9.0/coq-lsp-0.2.3.9.0.tbz"
+  checksum: [
+    "sha256=8776582dddfe768623870cf540ff6ba1e96a44a36e85db18ab93d238d640f92a"
+    "sha512=2837889bf99bfe715bd0e752782211a76a14aac71ed37a4fb784f4f0abe338352c9c6d8caa37daf79c036997add1cb306c523f793625b38709f3b5e245380223"
+  ]
+}
+x-commit-hash: "17df8cfdf317f9cbf38fe125e465623008b7df39"
