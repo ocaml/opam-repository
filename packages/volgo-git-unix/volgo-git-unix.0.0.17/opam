@@ -1,0 +1,64 @@
+opam-version: "2.0"
+synopsis:
+  "A Git backend for Vcs based on Volgo_git_backend and the Unix library"
+maintainer: ["Mathieu Barbin <opensource@mbarbin.org>"]
+authors: ["Mathieu Barbin"]
+license: "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
+homepage: "https://github.com/mbarbin/vcs"
+doc: "https://mbarbin.github.io/vcs/"
+bug-reports: "https://github.com/mbarbin/vcs/issues"
+depends: [
+  "dune" {>= "3.17"}
+  "ocaml" {>= "4.14"}
+  "fpath" {>= "0.7.3"}
+  "fpath-sexp0" {>= "0.3.1"}
+  "pp" {>= "2.0.0"}
+  "pplumbing" {>= "0.0.14"}
+  "ppx_sexp_conv" {>= "v0.16"}
+  "ppx_sexp_value" {>= "v0.16"}
+  "ppxlib" {>= "0.33"}
+  "sexplib0" {>= "v0.16"}
+  "shexp" {>= "v0.16"}
+  "volgo" {= version}
+  "volgo-git-backend" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mbarbin/vcs.git"
+description: """\
+
+[volgo] is a set of OCaml libraries for interacting with Git
+repositories. It provides a type-safe and direct-style API to
+programmatically perform Git operations, ranging from creating
+commits and branches to loading and navigating commit graphs in
+memory, computing diffs between revisions, and more.
+
+[Volgo_git_unix] implements a Git backend for [volgo] based on the
+OCaml standard library. It runs the [git] CLI as a subprocess in a
+blocking fashion, similar to the Stdlib's [Unix] module.
+
+"""
+tags: [ "git" "vcs" "blocking-io" ]
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mbarbin/vcs/releases/download/0.0.17/volgo-0.0.17.tbz"
+  checksum: [
+    "sha256=8ae8da549d13b4d3b06cfd2232916dc2ed48ca7ba5907b16ed07526446c77122"
+    "sha512=101573cd1b5342708d54e0f90c05a915bec29c4b143df402ef6d98a1aa9ce2ba2503262df3f88d37a72b94206eb609d9df0ba02e4c23ad1dfdfabbd4f1c82564"
+  ]
+}
+x-commit-hash: "49065999bb5f547d8ca65ad8ca6e3b442b89c203"
