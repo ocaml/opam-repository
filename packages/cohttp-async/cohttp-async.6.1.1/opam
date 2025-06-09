@@ -1,0 +1,74 @@
+opam-version: "2.0"
+synopsis: "CoHTTP implementation for the Async concurrency library"
+description: """
+An implementation of an HTTP client and server using the Async
+concurrency library. See the `Cohttp_async` module for information
+on how to use this.  The package also installs `cohttp-curl-async`
+and a `cohttp-server-async` binaries for quick uses of a HTTP(S)
+client and server respectively.
+"""
+maintainer: ["Anil Madhavapeddy <anil@recoil.org>"]
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+  "Anurag Soni"
+]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "dune" {>= "3.8"}
+  "ocaml" {>= "4.14" & < "5.3.0"}
+  "http" {= version}
+  "cohttp" {= version}
+  "async_kernel" {>= "v0.17.0"}
+  "async_unix" {>= "v0.16.0"}
+  "async" {>= "v0.16.0"}
+  "base" {>= "v0.16.0"}
+  "core" {with-test}
+  "core_unix" {>= "v0.14.0"}
+  "conduit-async" {>= "1.2.0"}
+  "magic-mime"
+  "digestif" {with-test}
+  "logs"
+  "fmt" {>= "0.8.2"}
+  "sexplib0"
+  "ppx_sexp_conv" {>= "v0.13.0"}
+  "ounit2" {with-test}
+  "uri" {>= "2.0.0"}
+  "uri-sexp"
+  "ipaddr"
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@cohttp-async/runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+available: arch != "s390x"
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v6.1.1/cohttp-6.1.1.tbz"
+  checksum: [
+    "sha256=6b420c56203b3a0b515964f036bcea0fb9a362876b5791cd7ff50e12366c489c"
+    "sha512=839ff6156658ca6d7922e6eed63ebb84dd09c76107790477be55a1ffc4a3800bf49c435147a0ed628f147eaeccff9a8d34565e3787f32c15e187b6e8855f0b93"
+  ]
+}
+x-commit-hash: "ca90e54281fdaec9765452ca753388f532f5c4cb"
