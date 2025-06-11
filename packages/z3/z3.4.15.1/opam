@@ -13,6 +13,9 @@ patches: [
   "gccstd-2a.patch" { (os-family = "opensuse" | os-family = "suse") | (os-distribution = "ubuntu" & os-version <= "20.04") }
 ]
 build: [
+  [ export PATH="/usr/local/opt/llvm/bin:$PATH"
+    export LDFLAGS="-L/usr/local/opt/llvm/lib"
+    export CPPFLAGS="-I/usr/local/opt/llvm/include"] {os-distribution = "homebrew"}
   [ "python3" "scripts/mk_make.py" "--ml" ]
   [ make "-C" "build" "-j" jobs ]
 ]
