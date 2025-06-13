@@ -1,0 +1,68 @@
+opam-version: "2.0"
+maintainer: "weng@cs.jhu.edu"
+authors: "MSR"
+homepage: "https://github.com/Z3prover/z3"
+bug-reports: "https://github.com/Z3prover/z3/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Z3prover/z3.git"
+depexts: [
+  ["python3-distutils"] {os-family = "debian"}
+  ["llvm"] {os-distribution = "homebrew"}
+]
+patches: [
+  "gccstd-2a.patch" { (os-family = "opensuse" | os-family = "suse") | (os-distribution = "ubuntu" & os-version <= "20.04") }
+]
+build: [
+  [ "python3" "scripts/mk_make.py" "--ml" ] {os-distribution != "homebrew"}
+  [ make "-C" "build" "-j" jobs ] {os-distribution != "homebrew"}
+  [ "sh" "-c" """#!/bin/sh
+    PATH=/usr/local/opt/llvm/bin:$PATH
+    LDFLAGS="-L/usr/local/opt/llvm/lib $LDFLAGS"
+    CPPFLAGS="-I/usr/local/opt/llvm/include $CPPFLAGS"
+    export PATH LDFLAGS CPPFLAGS
+    python3 scripts/mk_make.py --ml
+    make -C build 
+  """] {os-distribution = "homebrew" & arch = "x86_64"}
+  [ "sh" "-c" """#!/bin/sh
+    PATH=/opt/homebrew/opt/llvm/bin:$PATH
+    LDFLAGS="-L/opt/homebrew/opt/llvm/lib $LDFLAGS"
+    CPPFLAGS="-I/opt/homebrew/opt/llvm/include $CPPFLAGS"
+    export PATH LDFLAGS CPPFLAGS
+    python3 scripts/mk_make.py --ml
+    make -C build
+  """] {os-distribution = "homebrew" & arch = "arm64"}
+]
+
+install: [
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/* -dll build/libz3.*"]
+  [ "cp" "build/z3" "%{bin}%/z3"]
+]
+
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "ocamlfind" {build}
+  "zarith"
+  "conf-python-3" {build}
+  "conf-c++" {build}
+]
+x-ci-accept-failures: [
+  "centos-7" "oraclelinux-7" "opensuse-15.6" # C compiler is too old
+]
+conflicts: [
+  "ocaml-option-bytecode-only"
+]
+synopsis: "Z3 solver"
+url {
+  src:
+    "https://github.com/Z3Prover/z3/archive/refs/tags/z3-4.15.1.tar.gz"
+  checksum: [
+    "sha256=ebf6eed5f2cb217d62abddaa94526189ae40bf3c415fb9c2e2128e099f16fda0"
+    "sha512=50af354056b3e796a39f1e53525c1fb4039f4a76c13fbf2ce5d57dc62a941acb5ecc7436a519898ae0af3cc5660bfb50100e0532b3a3b7d6f932308fb639b642"
+  ]
+}
+extra-source "gccstd-2a.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/z3/gccstd-2a.patch"
+  checksum:
+    "sha256=ae4088ff14739bcc2cadc90bc428f08277e898b832f6b859a46e23c584d513c8"
+}
