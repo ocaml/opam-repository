@@ -1,0 +1,52 @@
+opam-version: "2.0"
+maintainer: "taramana@microsoft.com"
+authors: [
+  "Nik Swamy <nswamy@microsoft.com>"
+  "Jonathan Protzenko <protz@microsoft.com>"
+  "Tahina Ramananandro <taramana@microsoft.com>"
+]
+homepage: "http://fstar-lang.org"
+license: "Apache-2.0"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "batteries"
+  "zarith" {>= "1.14"}
+  "stdint"
+  "yojson"
+  "dune" { >= "3.8.0"}
+  "memtrace" {>= "0.2.3"}
+  "menhirLib"
+  "menhir" {build & >= "20230415"}
+  "mtime" {>= "2.1.0"}
+  "pprint"
+  "sedlex" {>= "3.5" }
+  "ppxlib" {>= "0.36.0" }
+  "process"
+  "ppx_deriving" {build}
+  "ppx_deriving_yojson" {build}
+]
+depexts: ["coreutils"] {os = "macos" & os-distribution = "homebrew"}
+build: [
+  [make "-j" jobs "ADMIT=1"]
+]
+install: [
+  [make "PREFIX=%{prefix}%" "install"]
+]
+post-messages: [
+  """
+F* requires specific versions of Z3 to work correctly, and will refuse to run
+if the version string does not match. You should have z3-4.8.5 and z3-4.13.3
+in your $PATH. For details, see
+https://github.com/FStarLang/FStar/blob/master/INSTALL.md#runtime-dependency-particular-version-of-z3.
+""" {success}
+]
+dev-repo: "git+https://github.com/FStarLang/FStar"
+bug-reports: "https://github.com/FStarLang/FStar/issues"
+synopsis: "Verification system for effectful programs"
+url {
+  src: "https://github.com/FStarLang/FStar/archive/refs/tags/v2025.06.20.tar.gz"
+  checksum: [
+    "md5=2f5d7fe10eee74df38c2441af5fddd1b"
+    "sha512=3471450f8f0994dbf45df53519b631a8ad962d137b18b5804e76204df9bbdd35fd5bf3587f5fff0df7ddd0b4c292c222dda4ab9b06fba61ed2f595ee0deccc55"
+  ]
+}
