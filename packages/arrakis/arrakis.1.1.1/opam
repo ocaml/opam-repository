@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "A RISC-V simulator"
+description: """
+A RISC-V simulator with an integrated debugger.
+Support full RV32IM instruction set,
+along with pseudo instruction and several environmental calls."""
+maintainer: ["mvalo@proton.me" "gurvan@debauss.art"]
+authors: ["Valeran Maytié" "Gurvan Debaussart"]
+license: "CeCILL-2.1"
+tags: [
+  "RISC-V" "simulator" "emulation" "RV32IM" "education" "debugger" "debug"
+]
+homepage: "https://codeberg.org/Arrakis/arrakis"
+doc: "https://codeberg.org/Arrakis/arrakis/wiki"
+bug-reports: "https://codeberg.org/Arrakis/arrakis/issues"
+depends: [
+  "dune" {>= "3.11"}
+  "ocaml" {>= "4.14.0"}
+  "menhir" {>= "20180528"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://codeberg.org/Arrakis/arrakis.git"
+
+url {
+  src:
+    "https://codeberg.org/Arrakis/arrakis/archive/1.1.1.tar.gz"
+  checksum: [
+    "sha256=24a951696f6a54c818acaf76ca2f609dd508aaee824b3ba17624e6dec165091c"
+    "md5=05ff3ea80ad7062f98adcf2e22e66559"
+  ]
+}
+available: arch != "arm32" & arch != "x86_32" & os-family != "windows"
