@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "Robur Team <team@robur.coop>"
+authors: [ "Robur Team <team@robur.coop>" ]
+license: "MIT"
+homepage: "https://github.com/robur-coop/git-kv"
+dev-repo: "git+https://git.robur.coop/robur/git-kv.git"
+bug-reports: "https://github.com/robur-coop/git-kv/issues"
+synopsis: "A Mirage_kv implementation using git"
+
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "3.0.0"}
+  "git-kv" {= version}
+  "ca-certs-nss" {>= "3.108-1"}
+  "h1"
+  "paf" {>= "0.8.0"}
+  "uri"
+  "tls" {>= "2.0.0"}
+  "tls-mirage"
+  "awa-mirage" {>= "0.5.2"}
+  "mimic" {>= "0.0.6"}
+  "tcpip"
+  "mimic-happy-eyeballs"
+  "happy-eyeballs-lwt"
+  "alcotest" {with-test}
+]
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs]
+    {with-test & os-distribution != "fedora"
+               & os-distribution != "alpine"
+               & os-distribution != "opensuse"}
+]
+x-maintenance-intent: [ "(latest)" ]
+x-ci-accept-failure: [ "alpine-3.21" "fedora-41" "fedora-42" "opensuse-15.6" "opensuse-tumbleweed" ]
+url {
+  src:
+    "https://github.com/robur-coop/git-kv/releases/download/v0.2.0/git-kv-0.2.0.tbz"
+  checksum: [
+    "sha256=40de3010d82dd8e9229e7df09c0a649e81efd47e991ef6eb31ee0c713dfe400d"
+    "sha512=fe70e3d1ad0f2a07dfd594ea87b4a4fcc1fe5633ced537206e61d566a2f97061dd0b348b1e93b8de1196af5878f307b7a3f595b1b51b25da89ee918328b977d9"
+  ]
+}
+x-commit-hash: "fcc473db97520c55bc1777e7c236904ceb9ccf46"
