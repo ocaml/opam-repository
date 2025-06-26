@@ -2,6 +2,27 @@ This repository contains OCaml package and compiler metadata and is used by the 
 
 The state of the package ecosystem can be explored using opam-health-check<sup>[[1]]</sup>: http://check.ci.ocaml.org/
 
+## Periodic Archival and Troubleshooting
+
+In 2025 we introduced a new mechanism to move package versions that are not required anymore to another place,
+the [GitHub - ocaml/opam-repository-archive](https://github.com/ocaml/opam-repository-archive), so that clients,
+automated tools, etc. have less work to do.
+
+The main downside is that unmaintained packages's version, that are not necessary to build any of the maintained
+ones, will periodically disappear from the repository. You can have a
+[look at the policy here](https://github.com/ocaml/opam-repository/blob/master/governance/policies/archiving.md).
+If this is the case, you may encouter an opam error of the form:
+```
+[ERROR] Package conflict!
+  * Missing dependency:
+    - local-package-foo → local-package-bar → dune = 3.17.2 → dune.3.17.2: no longer available
+```
+
+When this happens, there are three ways to move forward:
+- tell us about your dependencies (open an issue to this repository, please include the package and version, together with a hyperlink where it is used);
+- use in your setup the opam-repository-archive as another repository: `opam repository add archive https://github.com/ocaml/opam-repository-archive`
+- use in your setup the opam-repository before the archiving took place: `opam repo set-url default git+https://github.com/ocaml/opam-repository.git#2025-06-before-archiving-phase3` (where the tag depends on the archival that affected you)
+
 ## How to Contribute
 
 Contributions are welcome !
