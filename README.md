@@ -19,7 +19,7 @@ If this is the case, you may encouter an opam error of the form:
 ```
 
 When this happens, there are three ways to move forward:
-- tell us about your dependencies (open an issue to this repository, please include the package and version, together with a hyperlink where it is used);
+- tell us about your dependencies (open an issue to this repository, please include the package and version, together with a hyperlink where it is used, so that we can "unarchive" it back to this repository);
 - use in your setup the opam-repository-archive as another repository: `opam repository add archive https://github.com/ocaml/opam-repository-archive`
 - use in your setup the opam-repository before the archiving took place: `opam repo set-url default git+https://github.com/ocaml/opam-repository.git#2025-06-before-archiving-phase3` (where the tag depends on the archival that affected you)
 
