@@ -1,0 +1,54 @@
+opam-version: "2.0"
+synopsis: "Meta package for the Raven ML ecosystem"
+description:
+  "Raven is a comprehensive machine learning ecosystem for OCaml. This meta package installs all Raven components including Nx (tensors), Hugin (plotting), Quill (notebooks), Rune (autodiff), Kaun (neural networks), and Sowilo (computer vision)."
+maintainer: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+authors: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+license: "ISC"
+tags: ["machine-learning" "data-science" "numerical-computation"]
+homepage: "https://github.com/raven-ml/raven"
+bug-reports: "https://github.com/raven-ml/raven/issues"
+depends: [
+  "dune" {>= "3.19"}
+  "nx" {= version}
+  "nx-datasets" {= version}
+  "nx-text" {= version}
+  "rune" {= version}
+  "kaun" {= version}
+  "sowilo" {= version}
+  "quill" {= version}
+  "hugin" {= version}
+  "odoc" {with-dev-setup}
+  "odoc-driver" {with-dev-setup}
+  "soupault" {with-dev-setup}
+  "landmarks" {with-dev-setup}
+  "landmarks-ppx" {with-dev-setup}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/raven-ml/raven.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/raven-ml/raven/releases/download/1.0.0_alpha0/raven-1.0.0.alpha0.tbz"
+  checksum: [
+    "sha256=0946c8e6c56a8f763c59838171f18c76f977be72d82f62ab8621f41f11fc976c"
+    "sha512=9a7875ca42646db39c6e02a03b42657b8a06c1f81345d53c5321f8250fb74f0ce4befcc6ed42d0be68890b1fe0629f99582f718c363e929f9aeb44cf0eec725b"
+  ]
+}
+x-commit-hash: "79611c87ddfb0942d3260c019a420f397362222f"
