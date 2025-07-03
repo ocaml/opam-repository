@@ -4,9 +4,7 @@ The state of the package ecosystem can be explored using opam-health-check<sup>[
 
 ## Periodic Archival and Troubleshooting
 
-In 2025 we introduced a new mechanism to move package versions that are not required anymore to another place,
-the [GitHub - ocaml/opam-repository-archive](https://github.com/ocaml/opam-repository-archive), so that clients,
-automated tools, etc. have less work to do.
+In 2025 we introduced a policy and set of processes to move unmaintained or obsolete package versions to the [opam-repository-archive](https://github.com/ocaml/opam-repository-archive). 
 
 The main downside is that unmaintained packages's version, that are not necessary to build any of the maintained
 ones, will periodically disappear from the repository. You can have a
