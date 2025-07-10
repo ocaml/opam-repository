@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Luncov plugin of Frama-C, part of the LTest suite"
+description: """\
+Luncov is a plugin that attempts to identify unreachable and/or redundant
+tests objectives, represented in the code by labels and hyperlabels, as
+defined in the LTest family of Frama-C plug-ins.
+Other plug-ins in LTest include:
+- Lannotate, for introducing (hyper)labels according to various criteria
+- Lreplay, for executing a test suite and computing its coverage status"""
+maintainer: "virgile.prevosto@cea.fr"
+authors: [
+  "Robin David" "Mickaël Delahaye" "Michael Marcozzi" "Thibault Martin"
+]
+license: "LGPL-2.1-only"
+tags: ["software testing" "Frama-C" "LTest"]
+homepage: "https://frama-c.com/"
+bug-reports: "https://git.frama-c.com/pub/ltest/luncov/-/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "dune" {>= "3.13" & > "3.13.0"}
+  "menhir" {>= "20181006"}
+  "frama-c" {>= "31.0~" & < "32.0~"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://git.frama-c.com/pub/ltest/luncov.git"
+url {
+  src:
+    "https://git.frama-c.com/pub/ltest/luncov/-/archive/0.2.4/luncov-0.2.4.tar.bz2"
+  checksum: [
+    "md5=3d50489dbb7640f819afe7b2b508a462"
+    "sha512=cbcd586e971fbcbc4a6bafc435f763988bd66ea0d42ff3d241ad364ca569756fd57be30bdd876576e087fc2d2cb1cc34f477344696ff9fd39b74f7dfa454a1ee"
+  ]
+}
