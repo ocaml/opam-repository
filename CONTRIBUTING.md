@@ -1,7 +1,7 @@
 Contributing to the OCaml opam repository
 -----------------------------------------
 
-Contributions under the form of new packages, issue reports and pull
+Contributions under some form of new packages, issue reports and pull
 requests to fix and enhance the quality of packages are always
 welcome. Thanks for your time and involvement.
 
