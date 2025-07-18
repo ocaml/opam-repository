@@ -7,7 +7,7 @@ There are two ways of using the `ppx_sexp_conv` ppx rewriter:
   $ ocamlfind ocamlc -package ppx_sexp_conv ...
   ```
 
-- the new way, with a driver. Since the v0.9.0 version of
+- a new way, with a driver. Since the v0.9.0 version of
   `ppx_sexp_conv` one can use either the `ocaml-migrate-parsetree`
   driver or `ppx_driver`. Before v0.9.0 one could only use
   `ppx_driver`
