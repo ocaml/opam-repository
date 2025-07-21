@@ -6,7 +6,7 @@ The state of the package ecosystem can be explored using opam-health-check<sup>[
 
 In 2025 we introduced a policy and set of processes to move unmaintained or obsolete package versions to the [opam-repository-archive](https://github.com/ocaml/opam-repository-archive). 
 
-The main downside is that unmaintained packages's version, that are not necessary to build any of the maintained
+The main downside is that unmaintained packages's versions, that are not needed to build any of the maintained
 ones, will periodically disappear from the repository. You can have a
 [look at the policy here](https://github.com/ocaml/opam-repository/blob/master/governance/policies/archiving.md).
 If this is the case, you may encouter an opam error of the form:
