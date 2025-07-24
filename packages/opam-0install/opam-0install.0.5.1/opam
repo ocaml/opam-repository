@@ -1,0 +1,58 @@
+opam-version: "2.0"
+synopsis: "Opam solver using 0install backend"
+description: """
+Opam's default solver is designed to maintain a set of packages
+over time, minimising disruption when installing new programs and
+finding a compromise solution across all packages.
+
+In many situations (e.g. CI, local roots or duniverse builds) this
+is not necessary, and we can get a solution much faster by using
+a different algorithm.
+
+This package uses 0install's solver algorithm with opam packages.
+"""
+maintainer: ["talex5@gmail.com"]
+authors: ["talex5@gmail.com"]
+license: "ISC"
+homepage: "https://github.com/ocaml-opam/opam-0install-solver"
+doc: "https://ocaml-opam.github.io/opam-0install-solver/"
+bug-reports: "https://github.com/ocaml-opam/opam-0install-solver/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "fmt" {>= "0.8.7"}
+  "cmdliner" {>= "1.1.0"}
+  "opam-state" {>= "2.2.1"}
+  "opam-format" {>= "2.2.1"}
+  "ocaml" {>= "4.10.0"}
+  "0install-solver"
+  "opam-file-format" {>= "2.1.1"}
+  "opam-client" {with-test & >= "2.2.1"}
+  "opam-solver" {with-test}
+  "astring" {with-test}
+  "alcotest" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-opam/opam-0install-solver.git"
+url {
+  src:
+    "https://github.com/ocaml-opam/opam-0install-solver/releases/download/v0.5.1/opam-0install-0.5.1.tbz"
+  checksum: [
+    "sha256=1cf307f263623cb7884fba22fd6d250a3fd96477a65e3d56e6bfaa015a4cd2e0"
+    "sha512=f0815b86744cd46a7291b0a54942daed9e5756c22366386c5710e6fe158711bd0ab521de92897eae8380ddae2bad4b12f75ea37368f69f5e7314c07f65e7cd5b"
+  ]
+}
+x-commit-hash: "bb2820066fec4bda3e4f9e30ec2660434a964e79"
