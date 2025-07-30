@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "Embed build information inside executable"
+description: """
+The build-info library allows to access information about how the
+executable was built, such as the version of the project at which it
+was built or the list of statically linked libraries with their
+versions.  It supports reporting the version from the version control
+system during development to get an precise reference of when the
+executable was built.
+"""
+maintainer: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+license: "MIT"
+homepage: "https://github.com/ocaml/dune"
+doc: "https://dune.readthedocs.io/"
+bug-reports: "https://github.com/ocaml/dune/issues"
+depends: [
+  "dune" {>= "3.20"}
+  "ocaml" {>= "4.08"}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/ocaml/dune.git"
+x-maintenance-intent: ["(latest)"]
+build: [
+  ["dune" "subst"] {dev}
+  ["rm" "-rf" "vendor/csexp"]
+  ["rm" "-rf" "vendor/pp"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/ocaml/dune/releases/download/3.20.0_alpha1/dune-3.20.0.alpha1.tbz"
+  checksum: [
+    "sha256=243b3b645aecc1715f3b009a5de6000025e830d4a318188d1a9be2d39780c48d"
+    "sha512=700a97885448bc86f2c32c50180b0a746ccba4e292d64196b34877c3d1d913bfb78ff0c1757044aecdc74459f7b4150608e24e4b34b2e77761dac902c97b99ba"
+  ]
+}
+x-commit-hash: "ad68ef0f637bd02d055d09127075e3da8080b4bc"
