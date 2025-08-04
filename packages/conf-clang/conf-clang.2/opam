@@ -4,7 +4,14 @@ homepage: "https://clang.llvm.org/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: "The LLVM devs"
 license: "University of Illinois/NCSA Open Source License"
-build: ["clang" "--version"]
+build: [
+  "clang" {os-distribution != "alpine" | os-version < "3.18"}
+  "clang17" {os-distribution = "alpine" & os-version = "3.19"}
+  "clang17" {os-distribution = "alpine" & os-version = "3.20"}
+  "clang19" {os-distribution = "alpine" & os-version = "3.21"}
+  "clang20" {os-distribution = "alpine" & os-version >= "3.22"}
+  "--version"
+]
 depexts: [
   ["clang"] {os-family = "debian"}
   ["clang"] {os-family = "ubuntu"}
