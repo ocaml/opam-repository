@@ -1,0 +1,87 @@
+opam-version: "2.0"
+version: "1.0.0~alpha"
+synopsis:
+  "Compiler and library for the literate programming language for tax code specification"
+description:
+  "Catala is a domain-specific language for deriving faithful-by-construction algorithms from legislative texts. See https://catala-lang.org for more information"
+maintainer: "contact@catala-lang.org"
+authors: [
+  "Vincent Botbol"
+  "Nicolas Chataing"
+  "Alain Delaët-Tixeuil"
+  "Louis Gesbert"
+  "Aymeric Fromherz"
+  "Denis Merigoux"
+  "Raphaël Monat"
+  "Romain Primet"
+  "Emile Rolley"
+]
+license: "Apache-2.0"
+homepage: "https://github.com/CatalaLang/catala"
+bug-reports: "https://github.com/CatalaLang/catala/issues"
+depends: [
+  "ocolor" {>= "1.3.0"}
+  "bindlib" {>= "6.0"}
+  "cmdliner" {>= "1.1.0"}
+  "cppo" {>= "1"}
+  "dates_calc" {>= "0.0.7"}
+  "dune" {>= "3.13"}
+  "js_of_ocaml-ppx" {= "4.1.0"}
+  "menhir" {>= "20200211"}
+  "menhirLib" {>= "20200211"}
+  "ocaml" {>= "4.14.0"}
+  "ocamlfind" {!= "1.9.5"}
+  "ocamlgraph" {>= "1.8.8"}
+  "re" {>= "1.11"}
+  "sedlex" {>= "3.2"}
+  "uucp" {>= "10"}
+  "ubase" {>= "0.05"}
+  "zarith" {>= "1.12"}
+  "zarith_stubs_js" {>= "v0.14.1"}
+  "yojson" {>= "2.1.2" }
+  "crunch" {>= "3.0.0"}
+  "alcotest" {>= "1.5.0"}
+  "ninja_utils" {= "0.9.0"}
+  "odoc" {with-doc}
+  "ocamlformat" {with-dev-setup & = "0.26.0"}
+  "obelisk" {with-dev-setup}
+  "conf-npm" {with-dev-setup}
+  "conf-python-3-dev" {with-dev-setup}
+  "conf-openjdk" # Needed because we distribute the Java backend as a .tar file
+  "cpdf" {with-dev-setup}
+  "conf-pandoc" {with-dev-setup}
+  "z3" {catalaz3mode}
+  "conf-ninja"
+  "otoml" {>= "1.0"}
+]
+depopts: ["z3"]
+conflicts: [
+  "z3" {< "4.8.11"}
+  "base" {>= "v0.16.0"}
+]
+build: [
+  "dune"
+  "build"
+  "-p"
+  name
+  "-j"
+  jobs
+  "@install"
+  "@runtest" {with-test}
+  "@doc" {with-doc}
+]
+dev-repo: "git+https://github.com/CatalaLang/catala"
+depexts: [
+  ["groff"] { with-doc }
+  ["python3-pip"] {with-dev-setup & os-family = "debian"}
+  ["py3-pip" "py3-pygments"] {with-dev-setup & os-distribution = "alpine"}
+  ["python-pygments"] {with-dev-setup & os-family = "arch"}
+]
+url {
+  src:
+    "https://github.com/CatalaLang/catala/archive/refs/tags/v1.0.0-alpha.tar.gz"
+  checksum: [
+    "md5=9795b39b4e8422ece13186961cc08127"
+    "sha512=2fb759e8497ed908eb3b2934d6e5aea1f730bb1bf125c3fd9b54e7b0d6a71c8617ccd4bca3c1cb4d8d4ed956701da1b1c2834ee42b425ce837a3279df5aa3f29"
+  ]
+}
