@@ -8,7 +8,11 @@ env:
   OPAMROOT: D:\opamroot
   OPAMSOLVERTIMEOUT: 120
 jobs:
-  build:
+
+# ###############
+# Cygwin workflow
+# ###############
+  build-cygwin:
     strategy:
       fail-fast: false
       matrix:
@@ -116,3 +120,120 @@ jobs:
             throw "build failed"
           }
           Exit
+
+# ###############
+# MSys2 workflow
+# ###############
+  build-msys2:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Setup MSys2
+        uses: msys2/setup-msys2@v2
+        with:
+          # msystem: MINGW64 is the default
+          path-type: inherit
+          update: true
+          install: >-
+            curl
+            git
+            m4
+            make
+            mingw-w64-i686-gcc
+            mingw-w64-x86_64-gcc
+            rsync
+            unzip
+
+      - name: Checkout tree
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
+
+      - name: Download opam installer
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.ps1 > install.ps1
+          powershell -File install.ps1 -OpamBinDir 'D:\opam\bin'
+          /d/opam/bin/opam --version
+          echo "/d/opam/bin" >> "$GITHUB_PATH"
+
+      - name: Restore opam cache
+        id: cache-opam
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            D:\opam\bin
+            D:\opamroot
+          key: ${{ runner.os }}-msys2-opam-${{ hashFiles('install.ps1') }}
+
+      - name: Initialize opam
+        if: steps.cache-opam.outputs.cache-hit != 'true'
+        run: |
+          opam init --yes --no-setup --cygwin-local-install .
+          eval $(opam env)
+          opam exec -- ocaml -version
+
+      - name: Restrict testing to available compilers
+        if: steps.cache-opam.outputs.cache-hit != 'true'
+        # TODO Amend this lowerbound as older compiler packages are updated
+        run: opam switch set-invariant --formula "\"ocaml\" {>= \"4.13\"}"
+
+      - name: Save opam cache
+        if: steps.cache-opam.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            D:\opam\bin
+            D:\opamroot
+          key: ${{ steps.cache-opam.outputs.cache-primary-key }}
+
+      - name: Get changed files
+        id: changed-files
+        if: github.event_name != 'push'
+        uses: tj-actions/changed-files@v47
+        with:
+          files: packages/**
+
+      - name: Install changed packages
+        id: changed-packages
+        if: github.event_name != 'push'
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        run: |
+          set +e
+          failed=false
+          opam update
+          for file in ${ALL_CHANGED_FILES}; do
+            pkg=$(echo $file | cut -d '\' -f 3);
+            echo -e "::group::Testing \e[1;34m$pkg\e[0m";
+            opam install --color=always --confirm-level=unsafe-yes "$pkg";
+            exitcode=$?;
+            echo "::endgroup::";
+            case "$exitcode" in
+              0)
+                echo -e "\e[1;32m$pkg installed successfully\e[0m."
+                ;;
+              5)
+                echo -e "$pkg is not installable. \e[1;33mSkip\e[0m." # TODO: Remove when https://github.com/ocaml/opam/issues/6017 is fixed
+                ;;
+              20)
+                echo -e "$pkg is not installable. \e[1;33mSkip\e[0m."
+                ;;
+              31)
+                echo -e "\e[1;31m$pkg failed to build\e[0m."
+                failed=true
+                ;;
+              *)
+                echo "Unexpected error $exitcode" && exit 1
+                ;;
+            esac
+          done
+          if [ "$failed" = true ] ; then
+            echo "build failed" && exit 1
+          fi
