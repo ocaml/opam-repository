@@ -16,6 +16,7 @@ jobs:
           - windows-latest
         windows_env:
           - cygwin
+          - msys2
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout tree
@@ -37,6 +38,13 @@ jobs:
             D:\opamroot
           key: ${{ runner.os }}-${{ matrix.windows_env }}-opam-${{ hashFiles('install.ps1') }}
 
+      - name: Add MSys2 to PATH and install prerequisites
+        if: matrix.windows_env == 'msys2'
+        run: |
+          "C:\msys64" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          C:\msys64\usr\bin\pacman.exe --noconfirm -Syuu  # Core update (in case any core packages are outdated)
+          C:\msys64\usr\bin\pacman.exe --noconfirm -Syuu m4 make mingw-w64-i686-gcc mingw-w64-x86_64-gcc rsync unzip
+
       - name: Install opam
         if: steps.cache-opam.outputs.cache-hit != 'true'
         run: |
@@ -49,7 +57,7 @@ jobs:
 
       - name: Init opam
         if: steps.cache-opam.outputs.cache-hit != 'true'
-        run: opam init --yes --no-setup .
+        run: opam init --yes --no-setup ${{ matrix.windows_env == 'msys2' && '--cygwin-local-install' || '' }} .
 
       - name: Restrict testing to available compilers
         if: steps.cache-opam.outputs.cache-hit != 'true'
