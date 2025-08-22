@@ -4,9 +4,17 @@ homepage: "https://gtk.org/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: ["The GNOME Project"]
 license: "LGPL-2.1-or-later"
-build: ["pkg-config" "--exists" "gtk+-2.0"]
+build: [
+  ["pkgconf" {os = "win32" & os-distribution = "cygwin"}
+      "--personality=i686-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_32:installed}
+      "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_64:installed}
+   "pkg-config" {os != "win32" | os-distribution != "cygwin"}
+   "--exists" "gtk+-2.0"]
+]
 depends: [
   "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtk2-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtk2-x86_64" {os = "win32" & os-distribution != "cygwinports"})
 ]
 depexts: [
   ["libgtk2.0-dev" "libexpat1-dev"] {os-family = "debian"}
@@ -19,6 +27,7 @@ depexts: [
   ["gtk2"] {os-family = "arch"}
   ["gtk2"] {os-distribution = "nixos"}
   ["gtk2.0"] {os = "win32" & os-distribution = "cygwinports"}
+  ["libgtk2.0-devel"] {os = "cygwin"}
   ["gtk+" "expat"] {os-distribution = "homebrew" & os = "macos"}
   ["gtk2"] {os = "freebsd"}
 ]
