@@ -1,0 +1,64 @@
+opam-version: "2.0"
+maintainer: "Anders Fugmann"
+authors: "Anders Fugmann <anders@fugmann.net>"
+license: "APACHE-2.0"
+homepage: "https://github.com/andersfugmann/ocaml-protoc-plugin"
+dev-repo: "git+https://github.com/andersfugmann/ocaml-protoc-plugin"
+bug-reports: "https://github.com/andersfugmann/ocaml-protoc-plugin/issues"
+doc: "https://andersfugmann.github.io/ocaml-protoc-plugin/"
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & arch != "arm32" & arch != "x86_32"}
+]
+
+depends: [
+  "conf-protoc" {>= "1.0.0"}
+  "conf-protoc-dev" {with-test}
+  "conf-c++" {with-test}
+  "dune" {>= "3.12"}
+  "ocaml" {>= "4.08.0"}
+  "ppx_expect"
+  "ppx_inline_test"
+  "ppx_deriving" {with-test}
+  "bisect_ppx" {with-test}
+  "odoc" {with-doc}
+  "omd"
+  "conf-pkg-config" {build}
+  "dune-configurator" {with-test}
+  "yojson" {with-test}
+  "base64" {>= "3.1.0"}
+  "ptime"
+]
+
+x-ci-accept-failures: [
+  "opensuse-15.5" #  Error during linking (exit code 1)
+  "macos-homebrew" # C++ versions less than C++14 are not supported.
+]
+
+synopsis: "Plugin for protoc protobuf compiler to generate ocaml definitions from a .proto file"
+
+description: """ The plugin generates ocaml type definitions,
+serialization and deserialization functions from a protobuf file.
+The types generated aims to create ocaml idiomatic types;
+- messages are mapped into modules
+- oneof constructs are mapped to polymorphic variants
+- enums are mapped to adt's
+- map types are mapped to assoc lists
+- all integer types are mapped to int by default (exact mapping is also possible)
+- all floating point types are mapped to float.
+- packages are mapped to nested modules
+
+The package aims to be a 100% compliant protobuf implementation.
+It also includes serializing to and from json based on
+protobuf json specification
+"""
+url {
+  src:
+    "https://github.com/andersfugmann/ocaml-protoc-plugin/releases/download/6.2.0/ocaml-protoc-plugin-6.2.0.tbz"
+  checksum: [
+    "sha256=d154334a81db932334fd0213c2b993e71687325997e5b4619149f356447ec8f6"
+    "sha512=ca24ecf99846cfa095e0334759b9ba70fb01dd5862f781e9209e0cf450d82b2a3e1040fd14e7f70e3ac0c76c2861c19b2331a55afa238a78f28988bcaaf092ba"
+  ]
+}
+x-commit-hash: "182d5ebdfa0161f1e6e30479fc4ebb649a62929f"
