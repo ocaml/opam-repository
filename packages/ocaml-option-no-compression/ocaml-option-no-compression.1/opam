@@ -8,7 +8,12 @@ homepage: "https://opam.ocaml.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "CC0-1.0+"
 depends: [
-  "ocaml-variants" {post & >= "5.1.0~"}
+  "ocaml-variants" {post & >= "5.1.0~"} |
+  # The MSVC port OCaml doesn't support compression and for equivalence with the
+  # handling of ocaml-option-bytecode-only pulls in ocaml-option-no-compression.
+  # As with ocaml-option-bytecode-only, this is a temporary fix until
+  # ocaml-option- / base- is sorted out properly.
+  ("ocaml-base-compiler" {post & >= "5.1.0~"} & "host-system-msvc" {post})
 ]
 maintainer: "David Allsopp <david@tarides.com>"
 flags: compiler
