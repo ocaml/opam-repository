@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "Omni IRC: simple raw client (TCP<->AF_UNIX bridge + optional UI)"
+maintainer: ["Jesse Greathouse <jesse.greathouse@gmail.com>"]
+authors: ["Jesse Greathouse"]
+license: "LicenseRef-OmniIRC-ViewOnly-1.0"
+homepage: "https://github.com/jesse-greathouse/omni-irc"
+doc: "https://github.com/jesse-greathouse/omni-irc#readme"
+bug-reports: "https://github.com/jesse-greathouse/omni-irc/issues"
+depends: [
+  "dune" {>= "3.20"}
+  "lwt"
+  "yojson"
+  "omni-irc-sig"
+  "omni-irc-conn"
+  "omni-irc-engine"
+  "omni-irc-io-tcp"
+  "omni-irc-io-tls" {"os" != "win32"}
+  "omni-irc-io-unixsock" {"os" != "win32"}
+  "omni-irc-ui"
+  "omni-irc-ui-notty" {"os" != "win32"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/jesse-greathouse/omni-irc.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/jesse-greathouse/omni-irc/releases/download/0.1.10/omni-irc-0.1.10.tbz"
+  checksum: [
+    "sha256=21756f8fbb99ac82b6ef66c658509b965020a0913eac67d5612b98d61b9ad419"
+    "sha512=7493fce1721d6d8c467e8e28157a2cc5f95474379d55643abc823aed34d68c951fa63af5b205ba7f50adc7cd37211a6db89867768bd5ee0de72420786133b538"
+  ]
+}
+x-commit-hash: "fa1c961b06d4d50a02b1667f7c96f4881dbb8ee1"
