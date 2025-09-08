@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "A parser for Garmin FIT data files"
+description: """
+Fit is library for reading FIT files as they are produced by Garmin and
+other fitness devices. It comes with a small command-line tool to emit
+some of that information as JSON, mostly for debugging. Fit is not
+comprehensive but reads the most important records from a FIT file that
+contains the actual periodic measurements."""
+maintainer: ["Christian Lindig <lindig@gmail.com>"]
+authors: ["Christian Lindig <lindig@gmail.com>"]
+license: "MIT"
+homepage: "https://github.com/lindig/fit"
+bug-reports: "https://github.com/lindig/fit/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.7" & >= "2.0"}
+  "cmdliner" {>= "1.1.0"}
+  "angstrom" {>= "0.15.0"}
+  "yojson" {>= "2.1.0"}
+  "rresult" {>= "0.6.0"}
+  "ptime" {>= "1.1.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/lindig/fit.git"
+
+available: [os-family != "windows"]
+url {
+  src: "https://github.com/lindig/fit/releases/download/1.3.0/fit-1.3.0.tbz"
+  checksum: [
+    "sha256=b1b3889c591630ba64be46268f06188b822f8148da3f49801896fefd4c8ce5ae"
+    "sha512=960827cd86754a52b2593daf84e2702407ddb0ef7ae73ce27a29fd87bb92793bf96b84dde0f754d6d5c153e7644ac0ffd785f7965685090b1cb6f745245184b3"
+  ]
+}
+x-commit-hash: "9edc3c87313ca2ad710abb86c47274380fe6c12e"
