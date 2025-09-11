@@ -4,8 +4,16 @@ homepage: "http://lz4.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: ["Yann Collet"]
 license: ["GPL-2.0-only" "BSD-2-Clause"]
-build: ["pkg-config" "liblz4"]
-depends: ["conf-pkg-config" {build}]
+build: [
+  ["pkgconf" "--personality=i686-w64-mingw32" "liblz4"] {os = "win32" & os-distribution = "cygwin" & host-arch-x86_32:installed}
+  ["pkgconf" "--personality=x86_64-w64-mingw32" "liblz4"] {os = "win32" & os-distribution = "cygwin" & host-arch-x86_64:installed}
+  ["pkg-config" "liblz4"] {os != "win32" | os-distribution != "cygwin"}
+]
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-liblz4-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-liblz4-x86_64" {os = "win32" & os-distribution != "cygwinports"})
+]
 depexts: [
   ["liblz4-dev"] {os-family = "debian"}
   ["liblz4-dev"] {os-family = "ubuntu"}
