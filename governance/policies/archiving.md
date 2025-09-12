@@ -100,6 +100,8 @@ When it has been decided that a set of package versions (aka "versions") should 
         - `["(none)"]` the maintainer will not maintain any version
         - `["1.3"]` the maintainer will maintain the latest  version of "1.3.Z"
         - `["2.(latest)"]` the maintainer will maintain the latest minor version specifically of version "2" of the package
+    - `dune-project` uses [`maintenance_intent`](https://dune.readthedocs.io/en/latest/reference/dune-project/maintenance_intent.html). Example:
+        - `(package ... (maintenance_intent "(latest)") ...)`
 - `x-maintained`:
     - Allowed values: `true` and `false`
     - Meaning:
