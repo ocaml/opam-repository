@@ -2,7 +2,11 @@ opam-version: "2.0"
 maintainer: "https://github.com/ocaml/opam-repository/issues"
 homepage: "http://www.libsdl.org/projects/SDL_net/"
 license: "Zlib"
-build: [["pkg-config" "SDL2_net"]]
+build: [
+  ["pkgconf" "--personality=i686-w64-mingw32" "SDL2_net"] {os = "win32" & os-distribution = "cygwin" & host-arch-x86_32:installed}
+  ["pkgconf" "--personality=x86_64-w64-mingw32" "SDL2_net"] {os = "win32" & os-distribution = "cygwin" & host-arch-x86_64:installed}
+  ["pkg-config" "SDL2_net"] {os != "win32" | os-distribution != "cygwin"}
+]
 depexts: [
   ["sdl2_net"] {os-family = "arch"}
   ["sdl2_net-dev"] {os-distribution = "alpine"}
@@ -22,7 +26,11 @@ x-ci-accept-failures: [
 synopsis: "Virtual package relying on a sdl2-net system installation"
 description:
   "This package can only install if libsdl2-net is installed on the system."
-depends: ["conf-pkg-config" {build}]
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sdl2-net-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sdl2-net-x86_64" {os = "win32" & os-distribution != "cygwinports"})
+]
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: "Sam Lantinga"
 flags: conf
