@@ -1,0 +1,66 @@
+opam-version: "2.0"
+maintainer: "Anders Fugmann"
+authors: "Anders Fugmann <anders@fugmann.net>"
+license: "APACHE-2.0"
+homepage: "https://github.com/andersfugmann/ocaml-protoc-plugin"
+dev-repo: "git+https://github.com/andersfugmann/ocaml-protoc-plugin"
+bug-reports: "https://github.com/andersfugmann/ocaml-protoc-plugin/issues"
+doc: "https://andersfugmann.github.io/ocaml-protoc-plugin/"
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & arch != "arm32" & arch != "x86_32" & os != "win32"}
+]
+
+depends: [
+  "conf-protoc" {>= "1.0.0"}
+  "conf-protoc-dev" {with-test}
+  "conf-c++" {with-test}
+  "dune" {>= "3.12"}
+  "ocaml" {>= "4.08.0"}
+  "ppx_expect"
+  "ppx_inline_test"
+  "ppx_deriving" {with-test}
+  "bisect_ppx" {with-test}
+  "odoc" {with-doc}
+  "omd" {>= "2.0"}
+  "conf-pkg-config" {build}
+  "dune-configurator" {with-test}
+  "yojson" {with-test}
+  "base64" {>= "3.1.0"}
+  "ptime"
+]
+
+x-ci-accept-failures: [
+  "opensuse-15.5" #  Error during linking (exit code 1)
+  "macos-homebrew" # C++ versions less than C++14 are not supported.
+]
+
+x-maintenance-intent: ["(latest)"]
+
+synopsis: "Plugin for protoc protobuf compiler to generate ocaml definitions from a .proto file"
+
+description: """ The plugin generates ocaml type definitions,
+serialization and deserialization functions from a protobuf file.
+The types generated aims to create ocaml idiomatic types;
+- messages are mapped into modules
+- oneof constructs are mapped to polymorphic variants
+- enums are mapped to adt's
+- map types are mapped to assoc lists
+- all integer types are mapped to int by default (exact mapping is also possible)
+- all floating point types are mapped to float.
+- packages are mapped to nested modules
+
+The package aims to be a 100% compliant protobuf implementation.
+It also includes serializing to and from json based on
+protobuf json specification
+"""
+url {
+  src:
+    "https://github.com/andersfugmann/ocaml-protoc-plugin/releases/download/6.2.0/ocaml-protoc-plugin-6.2.0.tbz"
+  checksum: [
+    "sha256=46a87788d39e09d5e824fcab29718f9625787f5b0ffb8fad3bb412567c01ecf6"
+    "sha512=bffcbe124320c028cf30b7ff7a69aa214d29eeae9fea0ace4739bcc040fde3d6896a01a075fb6b66832a061d4f3ab185ddbb03235781ddea4a618f9e29626586"
+  ]
+}
+x-commit-hash: "99fa5b34820490c68355d193bc417052eb8b6929"
