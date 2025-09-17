@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis: "Binding to libarchive for LWT"
+description: """
+ libarchive is a C library for reading and writing tar, cpio, zip, ISO, and
+ other archive formats. This library is its OCaml bindings.
+
+ * Reads a variety of formats, including tar, pax, cpio, zip, xar, lha, ar,
+   cab, mtree, and ISO images.
+ * Writes tar, pax, cpio, zip, xar, ar, ISO, mtree, and shar archives.
+ * Full automatic format detection when reading archives, including
+   compressed archives.
+
+ [libarchive website](http://code.google.com/p/libarchive/)
+"""
+maintainer: ["Sylvain Le Gall <sylvain+ocaml@le-gall.net>"]
+authors: ["Sylvain Le Gall"]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/gildor478/ocaml-archive"
+bug-reports: "https://github.com/gildor478/ocaml-archive/issues"
+depends: [
+  "dune" {>= "3.17"}
+  "ocaml" {>= "4.14"}
+  "archive" {= version}
+  "lwt" {>= "2.3.2"}
+  "extlib" {>= "1.8.0" & with-test}
+  "ounit2" {>= "2.2.7" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/gildor478/ocaml-archive.git"
+url {
+  src:
+    "https://github.com/gildor478/ocaml-archive/releases/download/v3.7.2%2B6/archive-3.7.2.6.tbz"
+  checksum: [
+    "sha256=69ba1f304f986ff05b51699990983f9b0dcf519b3269a49b6adac1c7b68f00f3"
+    "sha512=690b6ed809c43c7b9573f5719350b3ba9f1583ac0db41a4a376ac7e623fab0edff1e2e8070471fd078d6b2b51f8b049abc74e26ae8a1b24a40b5903c7ba03e81"
+  ]
+}
+x-commit-hash: "a4794ab1fadcf4133c57bc41a9684370f91e81f1"
