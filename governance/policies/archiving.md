@@ -43,7 +43,7 @@ At regular intervals, no less than every six months, the opam repo maintainers w
 - If the package version falls outside the package's maintenance intent, it will be archived.
 - The package version's maintainers will be notified of the intent to archive.
   - Maintainers will have two weeks to fix the version so that it satisfies the criteria or approve of the archiving.
-  - If two passes without hearing from the maintainers, the package will be marked as unmaintained and a call for a new maintainer will be submitted to the community via [discuss.ocaml.org under the opam-repository topic](https://discuss.ocaml.org/tag/opam-repository).
+  - If two weeks pass without hearing from the maintainers, the package will be marked as unmaintained and a call for a new maintainer will be submitted to the community via [discuss.ocaml.org under the opam-repository topic](https://discuss.ocaml.org/tag/opam-repository).
   - If a new maintainer steps forward, they will have 1 week to fix the package version.
   - Otherwise, the package will be archived.
 
@@ -60,13 +60,13 @@ When it has been decided that a set of package versions (aka "versions") should 
 - A PR will be made to remove the versions from the primary repo:
   - The removal PR should link to the corresponding archiving PR.
   - The commit message should have the title `Archive packages` and its body should contain the hash of the commit that adds the packages to the archive.
-- A announcement will be made on discuss.ocaml.org
+- An announcement will be made on discuss.ocaml.org
 - After waiting 1 week for feedback, the PRs will be merged.
 
 ### Specification of the `x-` fields used in the archiving process
 
 - `x-reason-for-archiving`:
-    - Allowed values: a list of containing one more of the following strings
+    - Allowed values: a list containing one or more of the following strings
       `ocaml-version`, `source-unavailable`, `maintenance-intent`, or
       `uninstallable`.
     - Meaning: Records the unmet [primary repo criteria](#inclusion-criteria)
