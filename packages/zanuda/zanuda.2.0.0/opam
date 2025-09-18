@@ -1,0 +1,57 @@
+opam-version: "2.0"
+synopsis: "Linter for OCaml+dune projects"
+description:
+  "Lints for OCaml projects. Primary usage is for teaching/education"
+maintainer: ["kakadu@pm.me"]
+authors: ["Kakadu"]
+license: "LGPL-3.0-only"
+tags: ["lint" "test"]
+homepage: "https://github.com/Kakadu/zanuda"
+bug-reports: "https://github.com/Kakadu/zanuda/issues"
+depends: [
+  "dune" {>= "3.4"}
+  "ocaml" {>= "4.14.2" & < "5.0.0" | >= "5.3.0" & < "5.4.0"}
+  "yojson" {>= "2.0.0"}
+  "angstrom" {>= "0.15.0" & <= "0.16.0"}
+  "sexplib"
+  "bisect_ppx"
+  "dune-build-info"
+  "ppx_assert"
+  "ppx_expect_nobase"
+  "ppx_optcomp"
+  "base" {with-test}
+  "ppx_assert" {with-test}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "ppx_fields_conv" {with-test}
+  "ppx_deriving" {with-test}
+  "ppx_blob" {with-test}
+  "menhir" {with-test}
+  "ocamlformat" {= "0.27.0" & with-dev-setup}
+  "odoc" {with-doc}
+  "odig" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/Kakadu/zanuda.git"
+url {
+  src:
+    "https://github.com/Kakadu/zanuda/releases/download/v2.0.0/zanuda-2.0.0.tbz"
+  checksum: [
+    "sha256=0108d8d6e6e23bfe5e5cdade27ae434db921ed4b6f522ea71800f14a7662230e"
+    "sha512=c8d633f4083867dfc73caf3b51b63c8c01771f5c286aa0a8357861044448e0b55df38eb695b997df470267ec921adae6f86c73d251fb3e965ac83ebb2c6b856c"
+  ]
+}
+x-commit-hash: "9e61188f322af5bdda7567b953b065bfc5806a8f"
