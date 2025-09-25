@@ -1,24 +1,15 @@
 opam-version: "2.0"
 synopsis: "Software construction and deployment kit"
 description: """\
-WARNING this package is unstable and work in progress, do not depend on it. 
+WARNING this package is unstable and work in progress, do not depend on it.
 
-B0 describes software construction and deployments using modular and
+b0 describes software construction and deployments using modular and
 customizable definitions written in OCaml.
 
-B0 describes:
+At the core of b0 is the `b0.memo` library which provides arbitrary
+build abstraction with reliable, efficient incremental rebuilds.
 
-* Build environments.
-* Software configuration, build and testing.
-* Source and binary deployments.
-* Software life-cycle procedures.
-
-B0 also provides the B00 build library which provides abitrary build
-abstraction with reliable and efficient incremental rebuilds. The B00
-library can be – and has been – used on its own to devise domain
-specific build systems.
-
-B0 is distributed under the ISC license. It depends on [cmdliner][cmdliner].
+b0 is distributed under the ISC license. It depends on [cmdliner][cmdliner].
 
 [cmdliner]: https://erratique.ch/software/cmdliner"""
 maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
@@ -29,13 +20,34 @@ homepage: "https://erratique.ch/software/b0"
 doc: "https://erratique.ch/software/b0/doc"
 bug-reports: "https://github.com/b0-system/b0/issues"
 depends: [
-  "ocaml" {>= "4.08.0"}
+  "ocaml" {>= "4.14.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "topkg" {build & >= "1.0.3"}
-  "cmdliner" {>= "1.1.0"}
+  "topkg" {build & >= "1.1.0"}
+  "cmdliner" {>= "1.3.0"}
 ]
-build: ["ocaml" "pkg/pkg.ml" "build" "--dev-pkg" "%{dev}%"]
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--dev-pkg" "%{dev}%"]
+  [
+    "cmdliner"
+    "install"
+    "tool-support"
+    "--update-opam-install=%{_:name}%.install"
+    "_build/src/tool/b0_tool_main_run.native:b0" {ocaml:native}
+    "_build/src/tool/b0_tool_main_run.byte:b0" {!ocaml:native}
+    "_build/src/lowtools/show_url.native:show-url" {ocaml:native}
+    "_build/src/lowtools/show_url.byte:show-url" {!ocaml:native}
+    "_build/src/lowtools/b0_cache_tool.native:b0-cache" {ocaml:native}
+    "_build/src/lowtools/b0_cache_tool.byte:b0-cache" {!ocaml:native}
+    "_build/src/lowtools/b0_hash_tool.native:b0-hash" {ocaml:native}
+    "_build/src/lowtools/b0_hash_tool.byte:b0-hash" {!ocaml:native}
+    "_build/src/lowtools/b0_log_tool.native:b0-log" {ocaml:native}
+    "_build/src/lowtools/b0_log_tool.byte:b0-log" {!ocaml:native}
+    "_build/src/lowtools/b0_sttyle.native:b0-sttyle" {ocaml:native}
+    "_build/src/lowtools/b0_sttyle.byte:b0-sttyle" {!ocaml:native}
+    "_build/cmdliner-install"
+  ]
+]
 dev-repo: "git+https://erratique.ch/repos/b0.git"
 url {
   src: "https://erratique.ch/software/b0/releases/b0-0.0.5.tbz"
