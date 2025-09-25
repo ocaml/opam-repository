@@ -4,8 +4,16 @@ authors: "The gtksourceview programmers"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 homepage: "https://projects.gnome.org/gtksourceview/"
 license: "LGPL-2.1-or-later"
-build: [["pkg-config" "--short-errors" "--print-errors" "gtksourceview-3.0"]]
-depends: ["conf-pkg-config" {build}]
+build: [
+  ["pkgconf" "--personality=i686-w64-mingw32" "--short-errors" "--print-errors" "gtksourceview-3.0"] {os = "win32" & os-distribution = "cygwin" & host-arch-x86_32:installed}
+  ["pkgconf" "--personality=x86_64-w64-mingw32" "--short-errors" "--print-errors" "gtksourceview-3.0"] {os = "win32" & os-distribution = "cygwin" & host-arch-x86_64:installed}
+  ["pkg-config" "--short-errors" "--print-errors" "gtksourceview-3.0"] {os != "win32" | os-distribution != "cygwin"}
+]
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtksourceview3-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtksourceview3-x86_64" {os = "win32" & os-distribution != "cygwinports"})
+]
 depexts: [
   ["gtksourceview-dev"] {os-distribution = "alpine"}
   ["gtksourceview3"] {os-distribution = "arch"}
