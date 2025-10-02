@@ -1,0 +1,58 @@
+opam-version: "2.0"
+maintainer: "contact@ocamlpro.com"
+synopsis: "A simple tool to indent OCaml programs"
+description: """
+Ocp-indent is based on an approximate, tolerant OCaml parser and a simple stack
+machine ; this is much faster and more reliable than using regexps. Presets and
+configuration options available, with the possibility to set them project-wide.
+Supports most common syntax extensions, and extensible for others.
+
+Includes:
+- An indentor program, callable from the command-line or from within editors
+- Bindings for popular editors
+- A library that can be directly used by editor writers, or just for
+  fault-tolerant/approximate parsing.
+"""
+authors: [
+  "Louis Gesbert <louis.gesbert@ocamlpro.com>"
+  "Thomas Gazagnaire <thomas@gazagnaire.org>"
+  "Jun Furuse"
+]
+homepage: "http://www.typerex.org/ocp-indent.html"
+bug-reports: "https://github.com/OCamlPro/ocp-indent/issues"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+tags: ["org:ocamlpro" "org:typerex"]
+dev-repo: "git+https://github.com/OCamlPro/ocp-indent.git"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+run-test: [
+  ["dune" "runtest" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml" {>= "4.08"}
+  "dune" {>= "3.20"}
+  "cmdliner" {>= "1.3.0"}
+  "ocamlfind"
+]
+post-messages: [
+  "This package requires additional configuration for use in editors. Install package 'user-setup', or manually:
+
+* for Emacs, add these lines to ~/.emacs:
+  (add-to-list 'load-path \"%{share}%/emacs/site-lisp\")
+  (require 'ocp-indent)
+
+* for Vim, add this line to ~/.vimrc:
+  set rtp^=\"%{share}%/ocp-indent/vim\"
+"
+  {success & !user-setup:installed}
+]
+url {
+  src:
+    "https://github.com/OCamlPro/ocp-indent/releases/download/1.9.0/ocp-indent-1.9.0.tbz"
+  checksum: [
+    "sha256=da4ff552f9fc230d7c07f64a8ef89295907bf8d3c581132f05dcf0dd87a172b3"
+    "sha512=d734487162ab1373110a4c4d4f83128b21c39ec2d6e6cd1f9708178b190553cf60faebf62483113ceed490d1b9948c6241e798ea81ee266f3ed7fd8113552684"
+  ]
+}
+x-commit-hash: "8aeb5cc580106366050de0068c11e20f8a947acc"
