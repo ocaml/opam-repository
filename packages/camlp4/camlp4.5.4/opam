@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis:
+  "Camlp4 is a system for writing extensible parsers for programming languages"
+description: """\
+It provides a set of OCaml libraries that are used to define grammars as well
+as loadable syntax extensions of such grammars. Camlp4 stands for Caml
+Preprocessor and Pretty-Printer and one of its most important applications is
+the definition of domain-specific extensions of the syntax of OCaml.
+
+Camlp4 was part of the official OCaml distribution until its version 4.01.0.
+Since then it has been replaced by a simpler system which is easier to maintain
+and to learn: ppx rewriters and extension points."""
+maintainer: "ygrek@autistici.org"
+authors: ["Daniel de Rauglaudre" "Nicolas Pouillard"]
+license: "LGPL-2.1-only"
+homepage: "https://github.com/camlp4/camlp4"
+bug-reports: "https://github.com/camlp4/camlp4/issues"
+depends: [
+  "ocaml" {>= "5.4" & < "5.5"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "camlp-streams"
+]
+build: [
+  [
+    "./configure"
+    "--bindir=%{bin}%"
+    "--libdir=%{lib}%/ocaml"
+    "--pkgdir=%{lib}%"
+    "--pinned"
+  ]
+  [make "clean"]
+  [make "all"] {ocaml:native-dynlink}
+  [make "byte"] {!ocaml:native-dynlink}
+]
+install: [make "install" "install-META"]
+dev-repo: "git+https://github.com/camlp4/camlp4.git"
+url {
+  src: "https://github.com/camlp4/camlp4/archive/refs/tags/5.4+1.tar.gz"
+  checksum: [
+    "md5=87e3512e0ef4acb6cb41bb7bc958ef22"
+    "sha512=4eddd761f3c81cfd4fbeec0eac661d572a2779d35f4a332d2d8a3c7ee80aeb0a0269535d7b1a2c708963ac03f9cf325f2fe219c4393823843c16c30c975afcc8"
+  ]
+}
