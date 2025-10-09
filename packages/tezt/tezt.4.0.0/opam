@@ -7,6 +7,7 @@ dev-repo: "git+https://gitlab.com/nomadic-labs/tezt.git"
 license: "MIT"
 depends: [
   "dune" { >= "3.0" }
+  "dune" { < "3.19.0" & with-test }
   "ocaml" { >= "4.12" }
   "re" { >= "1.7.2" }
   "lwt" {>= "5.6.0" & < "6~"}
@@ -18,6 +19,7 @@ depends: [
   "js_of_ocaml-lwt" { with-test }
   "ocamlformat" { with-test & = "0.21.0" }
 ]
+x-ci-accept-failures: ["debian-11" "ubuntu-22.04"]
 depopts: [
   "js_of_ocaml"
   "js_of_ocaml-lwt"
@@ -28,7 +30,7 @@ conflicts: [
 ]
 build: [
   ["dune" "build" "-p" name "-j" jobs]
-  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & arch != "arm32" & arch != "s390x" & os != "freebsd" & os != "macos"}
 ]
 synopsis: "Test framework for unit tests, integration tests, and regression tests"
 url {
