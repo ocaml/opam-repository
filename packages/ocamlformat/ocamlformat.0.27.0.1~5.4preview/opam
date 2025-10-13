@@ -1,0 +1,58 @@
+opam-version: "2.0"
+synopsis: "Auto-formatter for OCaml code"
+description: """\
+**ocamlformat** is a code formatter for OCaml. It comes with opinionated default settings but is also fully customizable to suit your coding style.
+
+- **Profiles:** ocamlformat offers profiles we predefined formatting configurations. Profiles include `default`, `ocamlformat`, `janestreet`.
+- **Configurable:** Users can change the formatting profile and configure every option in their `.ocamlformat` configuration file.
+- **Format Comments:** ocamlformat can format comments, docstrings, and even code blocks in your comments.
+- **RPC:** ocamlformat provides an RPC server that can be used by other tools to easily format OCaml Code."""
+maintainer: [
+  "Guillaume Petiot <guillaume@tarides.com>"
+  "Jules Aguillon <jules@j3s.fr>"
+  "Emile Trotignon <emile@tarides.com>"
+]
+authors: [
+  "Josh Berdine <jjb@fb.com>"
+  "Hugo Heuzard <hugo.heuzard@gmail.com>"
+  "Etienne Millon <etienne@tarides.com>"
+  "Guillaume Petiot <guillaume@tarides.com>"
+  "Jules Aguillon <jules@j3s.fr>"
+]
+license: ["MIT" "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"]
+homepage: "https://github.com/ocaml-ppx/ocamlformat"
+bug-reports: "https://github.com/ocaml-ppx/ocamlformat/issues"
+depends: [
+  "ocaml" {>= "5.4" & < "5.5"}
+  "cmdliner" {with-test = "false" & >= "1.1.0" | with-test & >= "1.2.0"}
+  "csexp" {>= "1.4.0"}
+  "dune" {>= "2.8"}
+  "ocamlformat-lib" {= version}
+  "ocamlformat-rpc-lib" {with-test & = version}
+  "re" {>= "1.10.3"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+available: opam-version >= "2.1.0"
+flags: avoid-version
+dev-repo: "git+https://github.com/ocaml-ppx/ocamlformat.git"
+url {
+  src:
+    "https://github.com/ocaml-ppx/ocamlformat/archive/1851bc47e2ba3ff79b66f967986a853c23bed445.tar.gz"
+  checksum: [
+    "md5=8c28d4ca2d66969e0a37dbb587bdc9b1"
+  ]
+}
