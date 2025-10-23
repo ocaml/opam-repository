@@ -18,8 +18,8 @@ the CI results, or something else.
 - [@mseri](https://github.com/mseri)
 - [@raphael-proust](https://github.com/raphael-proust)
 - [@shonfeder](https://github.com/shonfeder)
-- [@haochenx](https://github.com/haochenx) (in training)
-- [@arbipher](https://github.com/arbipher) (in training)
+- [@jmid](https://github.com/jmid)
+- A few more occasional or in-training contributors
 
 To contact the maintainers in a more synchronous way you can join the [#opam-repository channel on the OCaml Discord](https://discord.gg/vDH7bMjjYW)
 
