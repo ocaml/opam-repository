@@ -1,0 +1,23 @@
+opam-version: "2.0"
+authors: "Mbedtls contributors"
+maintainer: "Andy Li <andy@onthewings.net>"
+homepage: "https://www.trustedfirmware.org/projects/mbed-tls/"
+bug-reports: "https://github.com/Mbed-TLS/mbedtls/issues"
+license: "Apache-2.0"
+available: os-distribution != "cygwin"
+build: [
+ "pkgconf" {os = "win32" & os-distribution = "cygwin"}
+  "--personality=x86_64-w64-mingw32"
+    {os = "win32" & os-distribution = "cygwin" & host-arch-x86_64:installed}
+  "pkg-config" {os != "win32" | os-distribution != "cygwin"}
+  "--atleast-version=4.0.0"
+  "mbedtls"
+]
+depends: [
+  "conf-pkg-config" {build}
+  "host-arch-x86_64" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")}
+  "conf-mingw-w64-mbedtls-x86_64" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")}
+  "conf-mbedtls"
+]
+synopsis: "Version constraint for the package conf-mbedtls"
+description: "This package can only install if mbedtls at least 4.0.0 is installed on the system."
