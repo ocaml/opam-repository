@@ -1,0 +1,50 @@
+opam-version: "2.0"
+maintainer: "Hannes Mehnert <hannes@mehnert.org>"
+authors: "Hannes Mehnert <hannes@mehnert.org>"
+license: "BSD-2-Clause"
+homepage: "https://github.com/robur-coop/conex"
+doc: "https://robur-coop.github.io/conex/doc"
+bug-reports: "https://github.com/robur-coop/conex/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.7"}
+  "alcotest" {with-test}
+#  "bisect_ppx" {dev & >= "2.5.0"} #until they support cmdliner >= 2
+  "cmdliner" {>= "1.1.0"}
+  "conex" {= version}
+  "mirage-crypto-pk" {>= "1.0.0"}
+  "mirage-crypto-ec" {>= "1.0.0"}
+  "mirage-crypto-rng" {>= "1.2.0"}
+  "x509" {>= "1.0.0"}
+  "logs"
+  "fmt"
+  "ptime"
+  "base64" {>= "3.4.0"}
+  "digestif" {>= "1.2.0"}
+  "conf-openssl" {with-test}
+]
+conflicts: [ "result" {< "1.5"} ]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/robur-coop/conex.git"
+synopsis: "Establishing trust in community repositories: crypto provided via mirage-crypto"
+description: """
+Conex is a system based on [TUF](https://theupdateframework.github.io/) to
+establish trust in community repositories. Since opam2, the required hooks
+are present.
+
+This package uses the crypto primitives provided by mirage-crypto.
+"""
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/robur-coop/conex/releases/download/v1.0.0/conex-1.0.0.tbz"
+  checksum: [
+    "sha256=8ba730718cbf0a381f0bce3493d18bfea1823bee0f43e4cbddad222b66dc164f"
+    "sha512=a76787c46b7c867e41daba10989841e95e7a2ba142dd09ae078649fd60340fcef703f41ddffc67b9c899fb4a2956906a0c8f9d04db7da435ac502b19851a490a"
+  ]
+}
+x-commit-hash: "2a654143e12270bf8c562771e9f2e9861bd4660a"
