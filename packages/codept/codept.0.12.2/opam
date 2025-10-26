@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Alternative ocaml dependency analyzer"
+description: """
+Codept intends to be a dependency solver for OCaml project and an alternative to ocamldep. Compared to ocamldep, codept major features are:
+
+ * whole project analysis
+ * exhaustive warning and error messages
+ * structured format (s-expression or json) for dependencies
+ * uniform handling of delayed alias dependencies
+ * (experimental) full dependencies,
+   when dependencies up to transitive closure are not enough
+
+Both ocamldep and codept computes an over-approximation of the dependencies graph of OCaml project. However, codept uses whole project analysis to reduce the number of fictitious dependencies inferred at the project scale, whereas ocamldep is, by design, limited to local file analysis."""
+maintainer: ["Florian Angeletti <octa@polychoron.fr>"]
+authors: ["Florian Angeletti <octa@polychoron.fr>"]
+license: "GPL-3.0-or-later"
+homepage: "https://github.com/Octachron/codept"
+bug-reports: "https://github.com/Octachron/codept/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "codept-lib" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/Octachron/codept.git"
+x-maintenance-intent: "(latest)"
+url {
+  src:
+    "https://github.com/Octachron/codept/releases/download/0.12.2/codept-0.12.2.tbz"
+  checksum: [
+    "sha256=50ad202bfaee10b0eed8f43154036f3ba20e363ae9d42a692d0c20fad3075f62"
+    "sha512=78b472d6aeb6554bd6d8a7f8886100141cc06fffa5b37bd38a9c7450a3bf83cffc2a0e51d8a601a6e2f732e3785e888373798f172afb2719ea4f5d60f941f869"
+  ]
+}
+x-commit-hash: "1982dc297dc54e9041b8fa0f439449a50d9f7294"
