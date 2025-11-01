@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "Cram like framework for OCaml (with stripped dependencies)"
+description: """
+Testing framework: fork of ppx_expect, but with less dependecies.
+Original ppx_expect is a part of the Jane Street's PPX rewriters collection."""
+maintainer: ["Jane Street Group, LLC" "Dmitrii Kosarev a.k.a. Kakadu"]
+authors: ["Jane Street Group, LLC"]
+license: "MIT"
+homepage: "https://github.com/Kakadu/ppx_expect_nobase"
+bug-reports: "https://github.com/Kakadu/ppx_expect_nobase/issues"
+depends: [
+  "dune" {>= "3.11"}
+  "ocaml" {>= "4.14.2" & < "5.0.0" | >= "5.3.0" & <= "5.4.0"}
+  "ppx_inline_test_nobase" {>= "v0.17.0.2"}
+  "sexplib"
+  "ppxlib" {>= "0.35.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/Kakadu/ppx_expect_nobase.git"
+url {
+  src:
+    "https://github.com/Kakadu/ppx_expect_nobase/releases/download/0.17.3.0/ppx_expect_nobase-0.17.3.0.tbz"
+  checksum: [
+    "sha256=5775b8327ffd0e43a56d981b6779d83f9f78571f1f2d58ce5b8104c4d081424b"
+    "sha512=118a11ab3f997c1226945e9866d2d8095b860162f6420bb0189810bce30bae08ff47b5e124d317256f9b8d017a1b2af099e4b492a2269361f26ad7106b5d6406"
+  ]
+}
+x-commit-hash: "9e3a42b4c5200930ba50a9d35fdaa06b64635da7"
