@@ -14,15 +14,32 @@ install: [
   [make "install"]
 ]
 depends: [
-  "ocaml" {>= "4.04" & < "5"}
+  "ocaml" {>= "4.04"}
   "ocamlfind"  {build}
   "camlidl"
   "ocamlbuild" {build}
   "conf-m4"    {build}
 ]
+patches : [
+  "compilation_ocaml5.diff" { ocaml:version >= "5" }
+]
 synopsis: "OCaml interface to the CUDD BDD library"
+post-messages: [
+"For supporting ocaml 5 some modules are removed compared to the release"
+ { ocaml:version >= "5" }
+]
+
 available: [ os != "win32" & os != "cygwin" ]
 url {
   src: "https://framagit.org/nberth/mlcuddidl/-/archive/3.0.8/mlcuddidl-3.0.8.tar.gz"
   checksum: "sha512=b039fd1162bef7460bc7cf378a000d35730d5327ec4648dfe7eef88c148fb6812764bf32a1801353a09f59c9bcd6ea386f77e1896e48b53163d4c081fed5a80c"
 }
+
+extra-source "compilation_ocaml5.diff" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/mlcuddidl/compilation_ocaml5.diff"
+  checksum: [
+    "sha256=de3fc5fbb81a6a477d6c2b29e133c3228dfb572bd1d9950d84dfd614221004c5"
+  ]
+}
+
