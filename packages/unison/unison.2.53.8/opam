@@ -1,0 +1,52 @@
+opam-version: "2.0"
+maintainer: "unison-hackers@lists.seas.upenn.edu"
+authors: [
+  "Trevor Jim"
+  "Benjamin C. Pierce"
+  "Jérôme Vouillon"
+]
+license: "GPL-3.0-or-later"
+homepage: "https://www.cis.upenn.edu/~bcpierce/unison/"
+bug-reports: "https://github.com/bcpierce00/unison/issues"
+dev-repo: "git://github.com/bcpierce00/unison.git"
+patches: ["unison.patch"]
+build: [
+  [make "NATIVE=%{ocaml:native}%" "-j" jobs "tui" "fsmonitor" "manpage"] {!host-system-msvc:installed}
+  ["nmake" "NATIVE=%{ocaml:native}%" "tui" "fsmonitor"] {host-system-msvc:installed}
+]
+install: [
+  [make "install" "PREFIX=%{prefix}%"] {os != "win32"}
+  ["cmd" "/c" "copy" "src\\unison*.exe" "%{prefix}%\\bin"] {os = "win32"}
+]
+depends: [
+  "ocaml" {>= "4.08"}
+]
+depopts: [
+  "ocamlfind"
+  "host-system-msvc"
+]
+synopsis: "File-synchronization tool for Unix and Windows"
+description: """
+Unison is a file-synchronization tool for Unix and Windows. It allows
+two replicas of a collection of files and directories to be stored on
+different hosts (or different disks on the same host), modified
+separately, and then brought up to date by propagating the changes in
+each replica to the other.
+
+This package contains the textual user interface and man pages."""
+url {
+  src:
+    "https://github.com/bcpierce00/unison/archive/refs/tags/v2.53.8.tar.gz"
+  checksum: [
+    "md5=30ed70474d660a0a93de74d97ca22d67"
+    "sha512=3e4ea9dc23645ff472c3d7bae79cad042a8ec0bbd57c8e28c49d1ad08cb2f177b09c60fec4853b11390d5825be74adb19334fcd7d2167963a05f67729890408a"
+  ]
+}
+extra-source "unison.patch" {
+  src:
+    "https://patch-diff.githubusercontent.com/raw/bcpierce00/unison/pull/1166.diff?full_index=1"
+  checksum: [
+    "md5=79801715d7b346374cbbe61dc5b3808d"
+    "sha512=80e0f4e39d2b0156aa6f20925760c2502f2ff8f95d0f936b5974188603a9abf4938e67522e9b317605fcc6e55a401efdc4ae912ddf98f79cd2fe60a4e9680445"
+  ]
+}
