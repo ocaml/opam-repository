@@ -8,9 +8,10 @@ To remain in the primary opam repository, a package version must:
   - Be installable (but not necessarily pass tests)
     - on at least one supported platform
     - with at least one recent compiler (currently, meaning 4.08+)
-  - Be marked as a maintained version, e.g. by using `x-maintenance-intent:
-    ["(latest)"]` to mark the latest version as maintained.  (Other values are
-    possible: see below)
+  - Be maintained, according to the metadata of the latest version:
+    - `x-maintenance-intent: ["(latest)"]` means that only the latest version is maintained
+    - No `x-maintenance-intent` field means (for now) that all versions are maintained
+    - Other values are possible (see below for a full list)
 
 Package versions which don't meet these criteria and are not dependencies of
 anything meeting these criteria will be periodically archived, removing them
