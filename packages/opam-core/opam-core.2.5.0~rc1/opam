@@ -1,0 +1,57 @@
+opam-version: "2.0"
+synopsis: "Core library for opam 2.5"
+description:
+  "Small standard library extensions, and generic system interaction modules used by opam."
+maintainer: "opam-devel@lists.ocaml.org"
+authors: [
+  "David Allsopp <david@tarides.com>"
+  "Vincent Bernardoff <vb@luminar.eu.org>"
+  "Raja Boujbel <raja.boujbel@ocamlpro.com>"
+  "Kate Deplaix <kit-ty-kate@outlook.com>"
+  "Roberto Di Cosmo <roberto@dicosmo.org>"
+  "Thomas Gazagnaire <thomas@gazagnaire.org>"
+  "Louis Gesbert <louis.gesbert@ocamlpro.com>"
+  "Fabrice Le Fessant <Fabrice.Le_fessant@inria.fr>"
+  "Anil Madhavapeddy <anil@recoil.org>"
+  "Guillem Rieu <guillem.rieu@ocamlpro.com>"
+  "Ralf Treinen <ralf.treinen@pps.jussieu.fr>"
+  "Frederic Tuong <tuong@users.gforge.inria.fr>"
+]
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://opam.ocaml.org"
+bug-reports: "https://github.com/ocaml/opam/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "base-unix"
+  "ocamlgraph"
+  "re" {>= "1.9.0"}
+  "dune" {>= "2.8.0"}
+  "sha" {>= "1.13"}
+  "jsonm"
+  "swhid_core"
+  "patch" {>= "3.0.0"}
+  "uutf"
+  (("host-system-mingw" {os = "win32" & os-distribution != "cygwinports"} &
+    "conf-mingw-w64-gcc-i686"
+      {os = "win32" & os-distribution != "cygwinports"} &
+    "conf-mingw-w64-gcc-x86_64"
+      {os = "win32" & os-distribution != "cygwinports"}) |
+   ("host-system-msvc" {os = "win32" & os-distribution != "cygwinports"} &
+    "conf-msvc32" {os = "win32" & os-distribution != "cygwinports"} &
+    "conf-msvc64" {os = "win32" & os-distribution != "cygwinports"}))
+]
+conflicts: ["extlib-compat"]
+available: opam-version >= "2.1.0"
+flags: avoid-version
+build: [
+  ["./configure" "--disable-checks" "--prefix" prefix]
+  ["dune" "build" "-p" name "-j" jobs]
+]
+dev-repo: "git+https://github.com/ocaml/opam.git"
+url {
+  src: "https://github.com/ocaml/opam/archive/refs/tags/2.5.0-rc1.tar.gz"
+  checksum: [
+    "md5=fc3e769ecf6acee13e249d6d1ab52b60"
+    "sha512=b57536f4530ed03c8f3cc8cf814af9a2c53b159f58fc1b50be93295f6eb8d53faeef3d916e1a3f5137d35468af15fc2f59a2f8bda5c574532ab523fd945b9781"
+  ]
+}
