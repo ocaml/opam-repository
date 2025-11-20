@@ -5,14 +5,15 @@ bug-reports: "https://gitlab.inria.fr/gappa/gappa/-/issues"
 homepage: "https://gitlab.inria.fr/gappa/gappa"
 dev-repo: "git+https://gitlab.inria.fr/gappa/gappa.git"
 license: "CECILL-2.1"
+x-maintenance-intent: ["(latest)"]
 available: [ arch != "x86_32" ]
 patches: [
   "0001-Added-configure-for-c-11.patch"
 ]
 build: [
-  [ "autoreconf" ]
+  [ "autoreconf" ] {dev}
   # Note: configure.in seems to reference this file
-  [ "touch" "stamp-config_h.in" ]
+  [ "touch" "stamp-config_h.in" ] {dev}
   [ "./configure"
     # If someone knows how to ask MacPorts for the usual include and lib path, please tell me
     "CXXFLAGS=-I/opt/local/include" { os-distribution = "macports" & os = "macos" }
@@ -31,13 +32,13 @@ build: [
 install: [ "./remake" "-d" "install" ]
 depends: [
   "conf-g++" {build}
-  "conf-autoconf" {build}
-  "conf-automake" {build}
+  "conf-autoconf" {build & dev}
+  "conf-automake" {build & dev}
   "conf-gmp"
   "conf-mpfr"
   "conf-boost"
-  "conf-bison" {build}
-  "conf-flex" {build}
+  "conf-bison" {build & dev}
+  "conf-flex" {build & dev}
 ]
 synopsis: "Tool intended for formally proving properties on numerical programs dealing with floating-point or fixed-point arithmetic"
 url {
