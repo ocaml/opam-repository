@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "Write tests, let a fuzzer find failing cases"
+description: """
+Crowbar is a library for testing code, combining QuickCheck-style
+property-based testing and the magical bug-finding powers of
+[afl-fuzz](http://lcamtuf.coredump.cx/afl/).
+"""
+maintainer: ["Stephen Dolan <stedolan@stedolan.net>"]
+authors: ["Stephen Dolan <stedolan@stedolan.net>"]
+license: "MIT"
+homepage: "https://github.com/stedolan/crowbar"
+bug-reports: "https://github.com/stedolan/crowbar/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08"}
+  "cmdliner" {>= "1.1.0"}
+  "afl-persistent" {>= "1.1"}
+  "calendar" {>= "2.00" & with-test}
+  "fpath" {with-test}
+  "pprint" {with-test}
+  "uucp" {with-test}
+  "uunf" {with-test}
+  "uutf" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/stedolan/crowbar.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src: "https://github.com/stedolan/crowbar/archive/v0.2.2.tar.gz"
+  checksum: [
+    "sha256=debd1345ac0116232390af64552d15948b5dc7200e287730235f7ff42098f3c5"
+    "md5=a78f11a66af1fecdf3abf740318d797f"
+  ]
+}
