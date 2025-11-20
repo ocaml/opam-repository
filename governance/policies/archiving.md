@@ -1,5 +1,26 @@
 # opam Repository Archiving Policy
 
+## Summary
+
+To remain in the primary opam repository, a package version must:
+
+  - Have available sources
+  - Be installable (but not necessarily pass tests)
+    - on at least one supported platform
+    - with at least one recent compiler (currently, meaning 4.08+)
+  - Be maintained, according to the metadata of the latest version:
+    - `x-maintenance-intent: ["(latest)"]` means that only the latest version is maintained
+    - No `x-maintenance-intent` field means (for now) that all versions are maintained
+    - Other values are possible (see below for a full list)
+
+Package versions which don't meet these criteria and are not dependencies of
+anything meeting these criteria will be periodically archived, removing them
+from the primary opam repo.
+
+The full policy, including the precise criteria, the archiving process, and how
+package versions may be marked maintained, is detailed below.
+
+
 ## Terminology
 
 - The primary opam repository, (referred to here as the "primary repo") is located at [ocaml/opam-repository](https://github.com/ocaml/opam-repository). The primary repo is curated to ensure that compatible packages are co-installable on as many supported platforms as possible, and it is the default package repository.
