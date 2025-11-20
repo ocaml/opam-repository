@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis: "Virtual package to install all ojs_base packages"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "GPL-3.0-only"
+homepage: "http://zoggy.frama.io/ojs-base/"
+doc: "http://zoggy.frama.io/ojs-base/refdoc/"
+bug-reports: "https://framagit.org/zoggy/ojs-base/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ojs_base" {= version}
+  "ojs_filetree" {= version}
+  "ojs_list" {= version}
+  "ojs_ed" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/ojs-base.git"
+url {
+  src: "https://zoggy.frama.io/ojs-base/releases/ojs-base-0.9.0.tar.bz2"
+  checksum: [
+    "md5=d1280f8b88bd6e03f62084c63027cf47"
+    "sha512=ff933d51b7a64a4d7356442284f0d992de746523fb28217d01c7d4ca0f461920b9f05d2f22ae4ba51f5a819c6b923e64b600150164ae58439b86e186d284b2ee"
+  ]
+}
