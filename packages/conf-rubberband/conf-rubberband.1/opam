@@ -9,7 +9,8 @@ depends: [
 ]
 build: [
   ["pkg-config" "--exists" "rubberband"] {os != "openbsd" & os != "win32" & !(os = "macos" & os-distribution = "homebrew")}
-  ["pkgconf" "--exists" "rubberband"] {(os = "win32" & os-distribution != "msys2") | (os = "macos" & os-distribution = "homebrew")}
+  ["pkgconf" "--exists" "rubberband"] {os = "macos" & os-distribution = "homebrew"}
+  ["pkgconf" "--personality=x86_64-w64-mingw32" "--exists" "rubberband"] {os = "win32" & os-distribution = "msys2"}
 ]
 depexts: [
   ["librubberband-dev"] {os-family = "debian" | os-family = "ubuntu" | os-family = "opensuse"}
