@@ -1,0 +1,54 @@
+opam-version: "2.0"
+synopsis: "Faster, simpler and more portable implementation of `jq` in OCaml"
+description: """
+query-json is a faster and simpler re-implementation of jq's language in OCaml, compiled to a native binary (query-json) and as a JavaScript library (query-json-js).
+
+  query-json is a CLI to run small programs against JSON, the same idea as sed but for JSON files.
+
+  Play with it in the online playground: https://query-json.pages.dev"""
+maintainer: ["David Sancho <dsnxmoreno@gmail.com>"]
+authors: ["David Sancho <dsnxmoreno@gmail.com>"]
+license: "MIT"
+homepage: "https://github.com/davesnx/query-json"
+bug-reports: "https://github.com/davesnx/query-json/issues"
+depends: [
+  "ocaml" {>= "4.14.1"}
+  "dune" {>= "3.17" & >= "3.17"}
+  "dune-build-info"
+  "menhir" {>= "20250903"}
+  "cmdliner"
+  "yojson" {>= "3.0.0"}
+  "sedlex"
+  "ppx_deriving"
+  "easy-format"
+  "alcotest" {with-test}
+  "ocamlformat" {with-dev-setup}
+  "ocaml-lsp-server" {with-dev-setup}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/davesnx/query-json.git"
+conflicts: [ "ocaml-option-bytecode-only" ] # This ensures that the project is only built with the native compiler
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/davesnx/query-json/releases/download/0.6.0/query-json-0.6.0.tbz"
+  checksum: [
+    "sha256=94b14327f19be554e84787cff6798be46997bdf75692c5b12cf8489254eebdd4"
+    "sha512=0b7ed5a2e88e64708ddfcd9931cd79a7dd3e32c1df66dcdf432defb3ab879dd738847e9263ed81d935fe6e29880e9d91ef64a83c63fdfa0f427e994edae313bd"
+  ]
+}
+x-commit-hash: "7583c3bfa208d96e7652a0d729fd20dc030be1c8"
