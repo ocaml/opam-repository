@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "Flax-inspired neural network library for OCaml"
+description:
+  "Kaun brings modern deep learning to OCaml with a flexible, type-safe API for building and training neural networks. It leverages Rune for automatic differentiation and computation graph optimization while maintaining OCaml's functional programming advantages."
+maintainer: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+authors: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+license: "ISC"
+tags: ["neural-networks" "machine-learning" "deep-learning"]
+homepage: "https://github.com/raven-ml/raven"
+doc: "https://raven-ml.dev/docs/"
+bug-reports: "https://github.com/raven-ml/raven/issues"
+depends: [
+  "ocaml" {>= "5.3.0"}
+  "dune" {>= "3.19"}
+  "logs"
+  "yojson" {>= "2.0.0"}
+  "domainslib" {>= "0.5.0"}
+  "saga" {= version}
+  "rune" {= version}
+  "nx-datasets" {= version}
+  "alcotest" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/raven-ml/raven.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/raven-ml/raven/releases/download/1.0.0_alpha2/raven-1.0.0.alpha2.tbz"
+  checksum: [
+    "sha256=93abc49d075a1754442ccf495645bc4fdc83e4c66391ec8aca8fa15d2b4f44d2"
+    "sha512=5eb958c51f30ae46abded4c96f48d1825f79c7ce03f975f9a6237cdfed0d62c0b4a0774296694def391573d849d1f869919c49008acffca95946b818ad325f6f"
+  ]
+}
+x-commit-hash: "85d5214e2f346cb859d31bf5494bdac70961e48d"
