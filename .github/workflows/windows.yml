@@ -2,21 +2,28 @@ name: Windows CI
 on:
   push:
     branches:
-      - 'master'
+      - master
   pull_request:
 env:
   OPAMROOT: D:\opamroot
   OPAMSOLVERTIMEOUT: 120
+  MSYS: winsymlinks:native
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         os:
           - windows-latest
+        windows_env:
+          - cygwin
+          - msys2
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout tree
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
 
       - name: Download install.ps1
         run: |
@@ -30,7 +37,14 @@ jobs:
           path: |
             D:\opam\bin
             D:\opamroot
-          key: ${{ runner.os }}-opam-${{ hashFiles('install.ps1') }}
+          key: ${{ runner.os }}-${{ matrix.windows_env }}-opam-${{ hashFiles('install.ps1') }}
+
+      - name: Add MSys2 to PATH and install prerequisites
+        if: matrix.windows_env == 'msys2'
+        run: |
+          "C:\msys64" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          C:\msys64\usr\bin\pacman.exe --noconfirm -Syuu  # Core update (in case any core packages are outdated)
+          C:\msys64\usr\bin\pacman.exe --noconfirm -Syuu m4 make mingw-w64-i686-gcc mingw-w64-x86_64-gcc rsync unzip
 
       - name: Install opam
         if: steps.cache-opam.outputs.cache-hit != 'true'
@@ -44,7 +58,7 @@ jobs:
 
       - name: Init opam
         if: steps.cache-opam.outputs.cache-hit != 'true'
-        run: opam init --yes --no-setup .
+        run: opam init --yes --no-setup ${{ matrix.windows_env == 'msys2' && '--cygwin-local-install' || '' }} .
 
       - name: Restrict testing to available compilers
         if: steps.cache-opam.outputs.cache-hit != 'true'
@@ -60,10 +74,16 @@ jobs:
             D:\opamroot
           key: ${{ steps.cache-opam.outputs.cache-primary-key }}
 
+      - name: Print version information
+        run: |
+          opam --version
+          opam exec -- ocaml -version
+          opam var
+
       - name: Get changed files
         id: changed-files
         if: github.event_name != 'push'
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@v47
 
       - name: List all changed packages
         id: changed-packages
@@ -96,7 +116,7 @@ jobs:
             opam install --color=always --confirm-level=unsafe-yes "$pkg"
             Write-Host "::endgroup::"
             switch ($LASTEXITCODE) {
-              0 { Break }
+              0 { Write-Host "`e[1;32m$pkg installed successfully`e[0m."; Break }
               5 { Write-Host "$pkg is not installable. `e[1;33mSkip`e[0m."; Break } # TODO: Remove when https://github.com/ocaml/opam/issues/6017 is fixed
               20 { Write-Host "$pkg is not installable. `e[1;33mSkip`e[0m."; Break }
               31 { Write-Host "`e[1;31m$pkg failed to build`e[0m."; $failed = $true; Break }
@@ -105,6 +125,6 @@ jobs:
             Write-Host
           }
           if ($failed) {
-            throw "build failed"
+            throw "One or more packages failed to build"
           }
           Exit

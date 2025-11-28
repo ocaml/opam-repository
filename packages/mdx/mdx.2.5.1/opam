@@ -1,0 +1,63 @@
+opam-version: "2.0"
+synopsis: "Executable code blocks inside markdown files"
+description: """
+`ocaml-mdx` allows to execute code blocks inside markdown files.
+There are (currently) two sub-commands, corresponding
+to two modes of operations: pre-processing (`ocaml-mdx pp`)
+and tests (`ocaml-mdx test`).
+
+The pre-processor mode allows to mix documentation and code,
+and to practice "literate programming" using markdown and OCaml.
+
+The test mode allows to ensure that shell scripts and OCaml fragments
+in the documentation always stays up-to-date."""
+maintainer: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+authors: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+license: "ISC"
+homepage: "https://github.com/realworldocaml/mdx"
+bug-reports: "https://github.com/realworldocaml/mdx/issues"
+depends: [
+  "dune" {>= "3.5"}
+  "ocaml" {>= "4.08.0"}
+  "ocamlfind"
+  "fmt" {>= "0.8.7"}
+  "cppo" {build & >= "1.1.0"}
+  "csexp" {>= "1.3.2"}
+  "astring"
+  "logs" {>= "0.7.0"}
+  "cmdliner" {>= "1.1.0"}
+  "re" {>= "1.7.2"}
+  "ocaml-version" {>= "2.3.0"}
+  "lwt" {with-test}
+  "camlp-streams"
+  "result"
+  "alcotest" {with-test}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/realworldocaml/mdx.git"
+url {
+  src:
+    "https://github.com/realworldocaml/mdx/releases/download/2.5.1/mdx-2.5.1.tbz"
+  checksum: [
+    "sha256=dd82980dd111a4806ff9a91d9d2ed7c26aefb1da7dccbd15e73c3a8f66e863f5"
+    "sha512=6ea99f5ae8d9c693b295a35f143cd7713c6949975843dd3c9cf1c7a6dd1adf5c90cc4dfb9313ef3be226c34ad828122d76e98c8c4a1a7378c398b5c0c204f4e8"
+  ]
+}
+x-commit-hash: "a9c81474a1ce2221205c769f137367d259a32002"

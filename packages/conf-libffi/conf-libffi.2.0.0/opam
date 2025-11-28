@@ -3,7 +3,13 @@ maintainer: "blue-prawn"
 authors: ["Anthony Green"]
 homepage: "http://sourceware.org/libffi/"
 license: "MIT"
-build: ["pkg-config" "libffi"]
+build: [
+  "pkgconf" {os = "win32" & os-distribution != "cygwinports"}
+   "--personality=i686-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
+   "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
+   "pkg-config" {os != "win32" | os-distribution = "cygwinports"}
+   "libffi"
+]
 depexts: [
   ["libffi"] {os = "macos" & os-distribution = "homebrew"}
   ["libffi"] {os = "macos" & os-distribution = "macports"}
@@ -11,7 +17,7 @@ depexts: [
   ["libffi-dev"] {os-family = "debian"}
   ["libffi-dev"] {os-family = "ubuntu"}
   ["libffi-devel"] {os-distribution = "centos"}
-  ["libffi-devel"] {os-distribution = "fedora"}
+  ["libffi-devel"] {os-family = "fedora"}
   ["libffi-devel"] {os-distribution = "mageia"}
   ["libffi-devel"] {os-distribution = "ol"}
   ["libffi-devel"] {os-family = "suse" | os-family = "opensuse"}
@@ -21,6 +27,10 @@ depexts: [
 ]
 synopsis: "Virtual package relying on libffi system installation"
 description: "This package can only install if libffi is installed on the system."
-depends: ["conf-pkg-config" {build}]
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-libffi-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-libffi-x86_64" {os = "win32" & os-distribution != "cygwinports"})
+]
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 flags: conf

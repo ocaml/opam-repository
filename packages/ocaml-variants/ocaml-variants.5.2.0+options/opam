@@ -27,22 +27,6 @@ depends: [
   "base-domains" {post}
   "base-nnp" {post}
 
-  # Architecture (non-Windows)
-  # opam-repository at present requires that ocaml-base-compiler is installed
-  # using an architecture which matches the machine's, since arch is used in
-  # available fields. Cross-compilation at this stage is an unstable accident.
-  "host-arch-arm32" {arch = "arm32" & post}
-  "host-arch-arm64" {arch = "arm64" & post}
-  "host-arch-ppc64" {arch = "ppc64" & post}
-  "host-arch-riscv64" {arch = "riscv64" & post}
-  "host-arch-s390x" {arch = "s390x" & post}
-  # The Windows ports explicitly select the architecture (see below) this
-  # facility is not yet available for other platforms.
-  "host-arch-x86_32" {os != "win32" & arch = "x86_32" & post}
-  ("host-arch-x86_64" {os != "win32" & arch = "x86_64" & post} |
-   ("host-arch-x86_32" {os != "win32" & arch = "x86_64" & post} & "ocaml-option-32bit" {os != "win32" & arch = "x86_64"}))
-  "host-arch-unknown" {os != "win32" & arch != "arm32" & arch != "arm64" & arch != "ppc64" & arch != "riscv64" & arch != "s390x" & arch != "x86_32" & arch != "x86_64" & post}
-
   # Port selection (Windows)
   # amd64 mingw-w64 only
   (("arch-x86_64" {os = "win32" & arch = "x86_64"} &
@@ -50,8 +34,9 @@ depends: [
   # i686 mingw-w64 only
    ("arch-x86_32" {os = "win32"} & "ocaml-option-bytecode-only" {os = "win32"} &
      "system-mingw" & "mingw-w64-shims" {os-distribution = "cygwin" & build}) |
-  # Non-Windows systems
-   "host-system-other" {os != "win32" & post})
+  # Non-Windows systems need to install something to satisfy this formula, so
+  # repeat the base-unix dependency
+   "base-unix" {os != "win32" & post})
 
   # All the 32-bit architectures are bytecode-only
   "ocaml-option-bytecode-only" {arch != "arm64" & arch != "x86_64" & arch != "s390x" & arch != "riscv64" & arch != "ppc64"}
@@ -88,7 +73,8 @@ build: [
     "CC=cc" {!ocaml-option-32bit:installed & !ocaml-option-musl:installed & (os="openbsd"|os="macos")}
     "CC=clang" {ocaml-option-tsan:installed & (os="macos")}
     "CC=musl-gcc" {ocaml-option-musl:installed & os-distribution!="alpine"}
-    "CFLAGS=-Os" {ocaml-option-musl:installed}
+    "CFLAGS=-Os" {ocaml-option-musl:installed & arch!="arm64"}
+    "CFLAGS=-Os -mno-outline-atomics" {ocaml-option-musl:installed & arch="arm64"}
     "LDFLAGS=-Wl,--no-as-needed,-ldl" {ocaml-option-leak-sanitizer:installed | (ocaml-option-address-sanitizer:installed & os!="macos")}
     "CC=gcc -ldl -fsanitize=leak -fno-omit-frame-pointer -O1 -g" {ocaml-option-leak-sanitizer:installed}
     "CC=gcc -ldl -fsanitize=address -fno-omit-frame-pointer -O1 -g" {ocaml-option-address-sanitizer:installed & os!="macos"}

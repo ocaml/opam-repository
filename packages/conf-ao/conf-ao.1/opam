@@ -4,12 +4,20 @@ homepage: "https://www.xiph.org/ao/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: "libao dev team"
 license: "GPL-2.0-only"
-build: ["pkg-config" "--exists" "ao"]
+build: [
+  ["pkgconf" {os = "win32" & os-distribution != "cygwinports"}
+     "--personality=i686-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
+     "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
+   "pkg-config" {os != "win32" | os-distribution = "cygwinports"}
+   "--print-errors" "--exists" "ao"]
+]
 depends: [
   "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-ao-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-ao-x86_64" {os = "win32" & os-distribution != "cygwinports"})
 ]
 depexts: [
-  ["libao-devel"] {os-distribution = "centos" | os-distribution = "fedora" | os-family = "suse" | os-family = "opensuse"}
+  ["libao-devel"] {os-distribution = "centos" | os-family = "fedora" | os-family = "suse" | os-family = "opensuse"}
   ["libao"] {os = "freebsd" | (os = "macos" & os-distribution = "homebrew") | os-distribution = "nixos" | os-family = "arch"}
   ["libao-dev"] {os-family = "debian" | os-family = "ubuntu" | os-distribution = "alpine"}
 ]

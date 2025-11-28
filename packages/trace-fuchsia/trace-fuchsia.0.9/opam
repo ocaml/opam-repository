@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis:
+  "A high-performance backend for trace, emitting a Fuchsia trace into a file"
+maintainer: ["Simon Cruanes"]
+authors: ["Simon Cruanes"]
+license: "MIT"
+tags: ["trace" "tracing" "fuchsia"]
+homepage: "https://github.com/c-cube/ocaml-trace"
+bug-reports: "https://github.com/c-cube/ocaml-trace/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "trace" {= version}
+  "mtime" {>= "2.0"}
+  "thread-local-storage" {>= "0.2"}
+  "base-bigarray"
+  "base-unix"
+  "dune" {>= "2.9"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/c-cube/ocaml-trace.git"
+available: arch != "s390x"
+url {
+  src:
+    "https://github.com/c-cube/ocaml-trace/releases/download/v0.9/trace-0.9.tbz"
+  checksum: [
+    "sha256=1a8c75efea8a691f1e0fa3dcf59ee0bf53fad7190b9fa0babde4f9a21bc10dd6"
+    "sha512=a082b3cbf34631069855bef7b8cf5017daf08141f8794dc0ef963e7afe0812749c388553fa3d21ecb35ce75909571dfd8fc38bcc4438b7eaaa9010296f28e2fc"
+  ]
+}
+x-commit-hash: "064e6e26bb459fd814b05da03e6cd2b49f618e52"

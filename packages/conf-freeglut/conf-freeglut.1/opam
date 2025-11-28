@@ -5,18 +5,26 @@ homepage: "https://freeglut.sourceforge.net/"
 license: "X11"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 build: [
-  ["pkg-config" "--exists" "glut"] {os-distribution != "debian" & os-distribution != "ubuntu" & !(os-distribution = "ol" & os-version < "9")}
+  ["pkg-config" "--print-errors" "--exists" "freeglut"] {os = "win32" & os-distribution = "msys2"}
+  ["pkg-config" "--print-errors" "--exists" "glut"] {os != "win32" & os-distribution != "debian" & os-distribution != "ubuntu" & !(os-distribution = "ol" & os-version < "9")}
 ]
 depends: [
   "conf-pkg-config" {build & os-distribution != "debian" & os-distribution != "ubuntu" & !(os-distribution = "ol" & os-version < "9")}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-freeglut-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-freeglut-x86_64" {os = "win32" & os-distribution != "cygwinports"})
 ]
 depexts: [
   ["freeglut3-dev"] {os-family = "debian" | os-family = "ubuntu"}
   ["freeglut-dev"] {os-distribution = "alpine"}
-  ["freeglut-devel"] {os-distribution = "centos" | os-distribution = "fedora" | os-distribution = "ol"}
+  ["freeglut-devel"] {os-distribution = "centos" | os-family = "fedora" | os-distribution = "ol"}
   ["freeglut-devel"] {os-family = "suse" | os-family = "opensuse"}
   ["freeglut"] {os-family = "arch"}
+  ["freeglut"] {os = "macos" & os-distribution = "homebrew"}
+  ["freeglut"] {os = "macos" & os-distribution = "macports"}
   ["freeglut"] {os = "freebsd"}
 ]
 synopsis: "Virtual package relying on a FreeGLUT system installation"
 flags: conf
+x-maintained: true

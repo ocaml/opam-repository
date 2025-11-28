@@ -5,16 +5,30 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: "Libevent dev team"
 license: "BSD-3-clause"
 build: [
-  ["pkg-config" "--exists" "libevent"]
+  "pkgconf" {os = "win32" & os-distribution != "cygwinports"}
+  "--personality=i686-w64-mingw32"
+    {os = "win32" & os-distribution != "cygwinports" &
+     host-arch-x86_32:installed}
+  "--personality=x86_64-w64-mingw32"
+    {os = "win32" & os-distribution != "cygwinports" &
+     host-arch-x86_64:installed}
+  "pkg-config" {os != "Win32" | os-distribution = "cygwinports"}
+  "libevent"
 ]
 depends: [
   "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-libevent-i686"
+     {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-libevent-x86_64"
+     {os = "win32" & os-distribution != "cygwinports"})
 ]
 depexts: [
   ["libevent-dev"] {os-family = "debian"}
   ["libevent-dev"] {os-family = "ubuntu"}
   ["libevent-dev"] {os-family = "alpine"}
-  ["libevent-devel"] {os-distribution = "fedora"}
+  ["libevent-devel"] {os-family = "fedora"}
   ["libevent-devel"] {os-distribution = "rhel"}
   ["libevent-devel"] {os-distribution = "centos"}
   ["libevent-devel"] {os-distribution = "ol" & os-version >= "8"}

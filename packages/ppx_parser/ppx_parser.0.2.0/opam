@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis: "OCaml PPX extension for writing stream parsers"
+description: """
+
+ This library is an OCaml ppx rewriter for writing stream parsers. 
+ Its notation is close to the notation of Camlp4 stream parsers. 
+ Hence, it can be used as a replacement for projects 
+ that still rely on the stream parser notation of Camlp4. 
+ 
+ For newer projects, it is advised to use lexer and parser generators.
+ """
+maintainer: ["Niels Mommen <nielsmommen@hotmail.com>"]
+authors: ["Niels Mommen <nielsmommen@hotmail.com>"]
+license: "ISC"
+tags: ["stream parser"]
+homepage: "https://github.com/NielsMommen/ppx_parser"
+bug-reports: "https://github.com/NielsMommen/ppx_parser/issues"
+depends: [
+  "ocaml" {>= "4.8.0"}
+  "dune" {>= "2.9"}
+  "ppxlib" {>= "0.27.0" & < "0.36.0"}
+  "alcotest" {with-test & >= "1.2.0"}
+  "ppx_deriving" {with-test}
+  "camlp-streams" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/NielsMommen/ppx_parser.git"
+url {
+  src:
+    "https://github.com/NielsMommen/ppx_parser/releases/download/0.2.0/ppx_parser-0.2.0.tbz"
+  checksum: [
+    "sha256=0281356c31a5d36d04250b27ffdae24dc7d17b0ac2616461e8c95fcb71a3eded"
+    "sha512=eb0922f6d263d63fa060a93512931dae9b084025b2281e680cc3c02b34b9d05e426181b89ab74b49c346ef4ebcea8f8519addd9824036231d0fa557a9a39e9c5"
+  ]
+}
+x-commit-hash: "c1d8f379a05ddfd55306f58ed643066b07549b3f"

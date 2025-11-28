@@ -91,7 +91,7 @@ tags: [
 build: [
   ["bash" "dev/disable-plugins.sh" "e-acsl"] { os-family = "windows" }
   ["bash" "dev/disable-plugins.sh" "gui"] { os = "macos" }
-  ["dune" "build" "-j%{jobs}%" "--release" "--promote-install-files=false"
+  ["dune" "build" "-j%{jobs}%" "-p" name "--promote-install-files=false"
    "@install"
    "@doc" { with-doc }
   ]
@@ -127,12 +127,12 @@ depends: [
   "conf-graphviz" { post }
   "conf-time" { with-test }
   "menhir" { >= "20181006" & build }
-  "ocaml" { >= "4.13.1" }
+  "ocaml" { >= "4.13.1" & < "5.3" }
   "ocamlgraph" { >= "1.8.8" }
   "ocamlgraph" { with-test & >= "2.1.0" }
   "odoc" { with-doc }
   "unionFind" { >= "20220107" }
-  "why3" { >= "1.6.0" & ( < "1.7.0" | !with-test ) }
+  "why3" { >= "1.6" & < "1.8" & ( < "1.7" | !with-test ) }
   "yaml" { >= "3.0.0" }
   "yojson" {>= "1.6.0" & (>= "2.0.1" | !with-test)}
   "zarith" { >= "1.5" }

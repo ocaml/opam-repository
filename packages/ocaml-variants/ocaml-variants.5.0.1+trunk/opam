@@ -68,6 +68,7 @@ x-env-path-rewrite: [
   [CAML_LD_LIBRARY_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
 ]
 build-env: [
+  [MSYS2_ARG_CONV_EXCL = "*"]
   [LSAN_OPTIONS = "detect_leaks=0,exitcode=0"]
   [ASAN_OPTIONS = "detect_leaks=0,exitcode=0"]
 ]
@@ -112,15 +113,6 @@ install: [make "install"]
 url {
   src: "https://github.com/ocaml/ocaml/archive/5.0.tar.gz"
 }
-post-messages: [
-  "A failure in the middle of the build may be caused by build parallelism
-   (enabled by default).
-   See https://github.com/ocaml/opam-repository/pull/14257 for more info."
-  {failure & jobs > 1 & os != "cygwin"}
-  "You can try installing again including --jobs=1
-   to force a sequential build instead."
-  {failure & jobs > 1 & os != "cygwin" & opam-version >= "2.0.5"}
-]
 conflicts: [
   "ocaml-option-fp"
   "system-msvc"

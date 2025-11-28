@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "Pools of threads supported by a pool of domains"
+maintainer: ["Simon Cruanes"]
+authors: ["Simon Cruanes"]
+license: "MIT"
+tags: ["thread" "pool" "domain" "futures" "fork-join"]
+homepage: "https://github.com/c-cube/moonpool"
+bug-reports: "https://github.com/c-cube/moonpool/issues"
+depends: [
+  "ocaml" {>= "4.14"}
+  "dune" {>= "3.0"}
+  "either" {>= "1.0"}
+  "trace" {with-test}
+  "trace-tef" {with-test}
+  "qcheck-core" {with-test & >= "0.19"}
+  "thread-local-storage" {>= "0.2" & < "0.3"}
+  "odoc" {with-doc}
+  "hmap" {with-test}
+  "picos" {>= "0.5" & < "0.7"}
+  "picos_std" {>= "0.5" & < "0.7"}
+  "mdx" {>= "1.9.0" & with-test}
+]
+depopts: [
+  "hmap"
+  "trace" {>= "0.6"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/c-cube/moonpool.git"
+url {
+  src:
+    "https://github.com/c-cube/moonpool/releases/download/v0.8/moonpool-0.8.tbz"
+  checksum: [
+    "sha256=2c10792726b1c2e4987f0f2acca5c5c221ea5cc0a2b4c75ad4fd2709e32aab6f"
+    "sha512=801c399ae9b72dd5f84624cdee9bcbb56c5ed9c371001e00176e685686234b4135d69e48877412b25a5127ad59b729000d5422dad0c90e2ded2744b974dddeca"
+  ]
+}
+x-commit-hash: "ed0eda226c8be1436a79e345db0e9eea57276871"

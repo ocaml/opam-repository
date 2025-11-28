@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis:
+  "Virtual package containing optional JavaScript dependencies for Alcotest"
+description:
+  "Virtual package containing optional JavaScript dependencies for Alcotest"
+maintainer: ["thomas@gazagnaire.org"]
+authors: ["Thomas Gazagnaire"]
+license: "ISC"
+homepage: "https://github.com/mirage/alcotest"
+doc: "https://mirage.github.io/alcotest"
+bug-reports: "https://github.com/mirage/alcotest/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "alcotest" {= version}
+  "js_of_ocaml-compiler" {>= "3.11.0"}
+  "fmt" {with-test & >= "0.8.7"}
+  "cmdliner" {with-test & >= "1.2.0"}
+  "conf-npm" {with-test}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/mirage/alcotest.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@runtest-js" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+x-maintenance-intent: [ "(latest)" ]
+x-ci-accept-failures: [ "debian-11" "ubuntu-22.04"]
+url {
+  src:
+    "https://github.com/mirage/alcotest/releases/download/1.9.1/alcotest-1.9.1.tbz"
+  checksum: [
+    "sha256=1e29c3b41d4329062105b723dfda3aff86b8cef5e7c7500d0e491fc5fd78e482"
+    "sha512=c49d402fa636dcf11f81917610dd1d2eca8606c8919aede4db23710d071f6046a8f93c78de9fbfee26637a53ca67f71fad500bfa2478b7f0f059608a492dd0a5"
+  ]
+}
+x-commit-hash: "7db64e91b159ce60937d2ff647208eb25fe37610"

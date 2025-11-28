@@ -1,0 +1,45 @@
+opam-version: "2.0"
+maintainer: "allegro-developers@lists.liballeg.org"
+homepage: "https://liballeg.org"
+authors: "The Allegro authors"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "Giftware"
+build: ["pkg-config" "allegro-5"]
+depexts: [
+  [
+    "allegro5-devel"
+    "allegro5-addon-acodec-devel"
+    "allegro5-addon-audio-devel"
+    "allegro5-addon-dialog-devel"
+    "allegro5-addon-image-devel"
+    "allegro5-addon-physfs-devel"
+    "allegro5-addon-ttf-devel"
+    "allegro5-addon-video-devel"
+  ] {os-distribution = "centos" | os-family = "fedora"}
+  ["allegro"] {os-family = "suse" | os-family = "opensuse"}
+  [
+    "liballegro5-dev"
+    "liballegro-acodec5-dev"
+    "liballegro-audio5-dev"
+    "liballegro-dialog5-dev"
+    "liballegro-image5-dev"
+    "liballegro-physfs5-dev"
+    "liballegro-ttf5-dev"
+    "liballegro-video5-dev"
+  ] {os-family = "debian" | os-family = "ubuntu"}
+  ["allegro5"] {os-distribution = "nixos"}
+  ["allegro"] {os-family = "arch"}
+  ["allegro-dev"] {os-family = "alpine"}
+  ["allegro"] {os-distribution = "homebrew"}
+  ["allegro5"] {os = "freebsd"}
+  ["allegro5"] {os = "netbsd"}
+]
+synopsis: "Virtual package relying on Allegro 5 development libraries"
+description:
+  "This package can only install if Allegro 5 development libraries are accessible through pkg-config."
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os-distribution = "msys2"} & "conf-mingw-w64-sdl2-i686" {os-distribution = "msys2"} |
+   "host-arch-x86_64" {os-distribution = "msys2"} & "conf-mingw-w64-sdl2-x86_64" {os-distribution = "msys2"})
+]
+flags: conf

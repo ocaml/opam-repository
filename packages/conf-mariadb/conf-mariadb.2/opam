@@ -6,7 +6,8 @@ bug-reports: "https://jira.mariadb.org/projects/MDEV/issues"
 dev-repo: "git+https://github.com/MariaDB/server.git"
 license: "GPL-2.0-only"
 build: [
-  ["sh" "-exc" "pkg-config --exists libmariadb || pkg-config --exists mariadb"] # libmariadb is a newer library name
+  ["sh" "-exc" "pkg-config --exists libmariadb || pkg-config --exists mariadb"] { os != "win32" } # libmariadb is a newer library name
+  ["pkgconf" "--exists" "libmariadb"] { os = "win32" & os-distribution != "msys2" }
 ]
 depends: [
   "conf-pkg-config" {build}
@@ -19,7 +20,7 @@ depexts: [
   ["libmariadbclient-dev"] {os-distribution = "ubuntu" & os-version >= "18.04" & os-version < "19.04"}
   ["mariadb-connector-c-dev"] {os-family = "alpine"}
   ["mariadb-connector-c-devel"] {os-distribution = "centos" & os-version >= "8"}
-  ["mariadb-connector-c-devel"] {os-distribution = "fedora"}
+  ["mariadb-connector-c-devel"] {os-family = "fedora"}
   ["mariadb-connector-c-devel"] {os-distribution = "ol" & os-version >= "8"}
   ["libmariadb-devel"] {os-family = "suse" | os-family = "opensuse"}
   ["mariadb-libs"] {os-family = "arch"}

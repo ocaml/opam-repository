@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Frama-C plug-in based on Clang for parsing C++ files"
+description:
+  "This Frama-C plug-in parse C++ files that may contain ACSL++ annotations."
+maintainer: "Virgile.Prevosto@cea.fr"
+authors: "Virgile Prevosto"
+license: "LGPL-2.1-only"
+tags: ["formal specification" "C++" "plugins" "ACSL" "ACSL++"]
+homepage: "https://frama-c.com/frama-clang.html"
+dev-repo: "git+https://git.frama-c.com/pub/frama-clang.git"
+bug-reports: "https://git.frama-c.com/pub/frama-clang"
+depends: [
+  "dune" {>= "3.7" & != "3.13.0"}
+  "frama-c" {>= "29.0~" & < "30.0~"}
+  "zarith" {>= "1.5"}
+  "camlp5"
+  "camlp-streams"
+  "conf-llvm" {>= "11.0.0"}
+  "conf-libclang" {>= "11.0.0"}
+  "conf-clang"
+  "conf-cmake"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+url {
+  src:
+    "https://git.frama-c.com/pub/frama-clang/-/archive/0.0.16/frama-clang-0.0.16.tar.bz2"
+  checksum: [
+    "md5=c72bbd00788b24146513486633bbbf7e"
+    "sha512=748cc3202ee3cfc37cc0a11987e3324a23fe8639651ada59cda4e10367196f2b126842d8d953ed4b78753bd387c1afd4f74ef21eed45b3320a64bd24597d8dcd"
+  ]
+}
+
+x-ci-accept-failures: [ "debian-11" "ubuntu-20.04" ]

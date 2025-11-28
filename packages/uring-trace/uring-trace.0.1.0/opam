@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "IO-uring tracing tool using eBPF probes"
+description: "eBPF-based tracing tool for io-uring. Require's Linux kernel version >= 6.1.0"
+maintainer: ["koonwen@gmail.com"]
+authors: ["Lee Koon Wen"]
+license: ["ISC" "BSD-3-Clause"]
+homepage: "https://github.com/koonwen/uring-trace"
+doc: "https://github.com/koonwen/uring-trace"
+bug-reports: "https://github.com/koonwen/uring-trace/issues"
+depends: [
+  "ppx_deriving" {>= "6.0.2"}
+  "eio" {>= "1.1"}
+  "ocaml"
+  "dune" {>= "3.13"}
+  "dune-site"
+  "cmdliner" {>= "1.1.0"}
+  "eio_linux"
+  "libbpf"
+  "libbpf_maps"
+  "conf-liburing"
+  "conf-bpftool"
+  "ctypes"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/koonwen/uring-trace.git"
+post-messages: [
+  "This package requires your kernel version to be at least 6.1.0" {failure}
+]
+url {
+  src:
+    "https://github.com/koonwen/uring-trace/releases/download/v0.1.0/uring-trace-0.1.0.tbz"
+  checksum: [
+    "sha256=d1469550363df1af0fcb331ac86f6347fb021dfa844532c370317d3ad30d1e91"
+    "sha512=73a519f681d60aa83c4cba8439fc94fe207b0449ef0bff1fef0e976c4f68d6e56f543444cab936910d3e00cb9436abe2828739cc1e27c28d2e8c9d1e9218b1e8"
+  ]
+}
+x-commit-hash: "732869041422ada630d065f937ba210c20b8bf5c"

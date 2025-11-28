@@ -1,0 +1,32 @@
+opam-version: "2.0"
+synopsis: "Compiler and toolchain infrastructure library for WebAssembly"
+description: """
+ Binaryen is a compiler and toolchain infrastructure library for WebAssembly.
+ It aims to make compiling to WebAssembly easy, fast, and effective.
+"""
+maintainer: "Jérôme Vouillon <jerome@tarides.com>"
+license: "Apache-2.0"
+authors: ["Alon Zakai" "Thomas Lively"]
+homepage: "https://github.com/WebAssembly/binaryen/"
+bug-reports: "https://github.com/ocaml-wasm/wasm_of_ocaml/issues"
+dev-repo: "git+https://github.com/WebAssembly/binaryen.git"
+depends: ["conf-cmake" "conf-ninja" {os-family != "windows"} "conf-c++" ]
+build: [
+  ["cmake" "-G" "Ninja" "." "-DBUILD_STATIC_LIB=ON" "-DBUILD_TESTS=off" "-DINSTALL_LIBS=off" "-DENABLE_WERROR=off"] {os-family != "windows" & arch != "x86_32" }
+  ["ninja"] {os-family != "windows" & arch != "x86_32"}
+  ["cmake" "." "-DBUILD_STATIC_LIB=ON" "-DBUILD_TESTS=off" "-DINSTALL_LIBS=off" "-DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc"] {os-family = "windows"}
+  ["cmake" "." "-DBUILD_STATIC_LIB=ON" "-DBUILD_TESTS=off" "-DINSTALL_LIBS=off"] {os-family != "windows" & arch = "x86_32"}
+  [make "-j" jobs] {os-family = "windows" | arch = "x86_32"}
+]
+install: [
+  ["cp" "bin/wasm-opt" "bin/wasm-metadce" "bin/wasm-merge" "%{bin}%"] { os-family != "windows" }
+  ["cp" "bin/wasm-opt.exe" "bin/wasm-metadce.exe" "bin/wasm-merge.exe" "%{bin}%"] { os-family = "windows" }
+]
+url {
+  src:
+    "https://github.com/WebAssembly/binaryen/archive/refs/tags/version_119.tar.gz"
+  checksum: [
+    "md5=4dfd979d4f46aaa9ea983bd77c33c414"
+    "sha512=c49053cbdfdabd33dda1e04d2b50761b92b24245d6b8d9c9fec242f35624d57e6d346f54b764fdccfa07fb1b5617df3b6c535fc2cde56f619899394b2a4e3f1c"
+  ]
+}

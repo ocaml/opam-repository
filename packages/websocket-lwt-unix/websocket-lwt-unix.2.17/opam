@@ -1,0 +1,59 @@
+opam-version: "2.0"
+synopsis: "Websocket library (Lwt)"
+description: """
+The WebSocket Protocol enables two-way communication between a client
+running untrusted code in a controlled environment to a remote host
+that has opted-in to communications from that code.
+
+The security model used for this is the origin-based security model
+commonly used by web browsers. The protocol consists of an opening
+handshake followed by basic message framing, layered over TCP.
+
+The goal of this technology is to provide a mechanism for
+browser-based applications that need two-way communication with
+servers that does not rely on opening multiple HTTP connections (e.g.,
+using XMLHttpRequest or <iframe>s and long polling).
+"""
+maintainer: ["Vincent Bernardoff <vb@luminar.eu.org>"]
+authors: ["Vincent Bernardoff <vb@luminar.eu.org>"]
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/vbmithr/ocaml-websocket"
+doc: "https://vbmithr.github.io/ocaml-websocket/doc"
+bug-reports: "https://github.com/vbmithr/ocaml-websocket/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.06.0"}
+  "websocket" {= version}
+  "lwt_log" {>= "1.1.1"}
+  "cohttp-lwt-unix" {>= "5.0.0" & < "6.0.0~"}
+  "conduit-lwt-unix" {< "7.1.0"}
+  "sexplib"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/vbmithr/ocaml-websocket.git"
+url {
+  src:
+    "https://github.com/vbmithr/ocaml-websocket/releases/download/2.17/websocket-2.17.tbz"
+  checksum: [
+    "sha256=39af5eb5534b2df5b65ccf700b0a620438be5f09864a8e80b48ab60ee67a7a9c"
+    "sha512=a8cd168236acfa1156fac5a007fe6875a35f8fb03eee30a94eb712a2dc981a967bb8fb74fdd7aa7892d148176070333d49311ea9600f5a210e56be8da32197c8"
+  ]
+}
+x-commit-hash: "926ed9c4cc90244d0a12bc27d46076edd2eb2f56"

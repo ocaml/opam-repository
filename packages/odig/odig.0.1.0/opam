@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis: "Lookup documentation of installed OCaml packages"
+description: """\
+odig is a command line tool to lookup documentation of installed OCaml
+packages. It finds package metadata, readmes, change logs, licenses,
+cross-referenced `odoc` API documentation and manuals.
+
+odig is distributed under the ISC license. The theme fonts have their
+own [licenses](LICENSE.md).
+
+Homepage: <https://erratique.ch/software/odig>"""
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: "The odig programmers"
+license: [
+  "ISC" "LicenseRef-ParaType-Free-Font-License" "LicenseRef-DejaVu-fonts"
+]
+tags: [
+  "build" "dev" "doc" "meta" "packaging" "org:erratique" "org:b0-system"
+]
+homepage: "https://erratique.ch/software/odig"
+doc: "https://erratique.ch/software/odig/doc"
+bug-reports: "https://github.com/b0-system/odig/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "1.1.0"}
+  "cmdliner" {>= "2.0.0"}
+  "odoc" {>= "2.0.0"}
+  "b0" {>= "0.0.6"}
+]
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--dev-pkg" "%{dev}%"]
+  [
+    "cmdliner"
+    "install"
+    "tool-support"
+    "--update-opam-install=%{_:name}%.install"
+    "_build/src/odig_main.native:odig" {ocaml:native}
+    "_build/src/odig_main.byte:odig" {!ocaml:native}
+    "_build/src/gh_pages_amend.native:gh-pages-amend" {ocaml:native}
+    "_build/src/gh_pages_amend.byte:gh-pages-amend" {!ocaml:native}
+    "_build/cmdliner-install"
+  ]
+]
+dev-repo: "git+https://erratique.ch/repos/odig.git"
+url {
+  src: "https://erratique.ch/software/odig/releases/odig-0.1.0.tbz"
+  checksum:
+    "sha512=acabe752f5010900e9fe024321d6e34cc07f395ebd18f015a00b88c4c6482645b591a83a3f088f110adaf83e062551feb800a1dbca7646cce305eb3f542cfa41"
+}
+x-maintenance-intent: ["(latest)"]

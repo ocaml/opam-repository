@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Show dependency graph of a multi-component dune project"
+description: """
+Dune-deps scans a dune project and produces a dependency graph
+which can be rendered with 'dot'. It is useful for projects that define
+multiple libraries or executables. It allows the developer to visualize
+the dependencies between the various components of a project."""
+maintainer: ["Martin Jambon <martin@mjambon.com>"]
+authors: ["Martin Jambon" "OCaml community"]
+license: "BSD-3-Clause"
+homepage: "https://github.com/mjambon/dune-deps"
+bug-reports: "https://github.com/mjambon/dune-deps/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.08.0"}
+  "cmdliner" {>= "1.1.1"}
+  "sexplib"
+  "alcotest" {with-test}
+  "odoc" {with-doc}
+]
+depopts: ["conf-graphviz"]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mjambon/dune-deps.git"
+url {
+  src:
+    "https://github.com/mjambon/dune-deps/releases/download/1.4.0/dune-deps-1.4.0.tbz"
+  checksum: [
+    "sha256=4c83aca16f9eae9048d14730726699a6be08e16ce33c12777c863462dcb12acb"
+    "sha512=14eff94029bcaa469bfd295efcbb4418a8a8f20c1c1e83f5b0611d9ae37286b00b0fe07fdd9ea96bba198440e4e68cb0fcf7dfc7baf05f1d05500c6894496d2a"
+  ]
+}
+x-commit-hash: "976d4f3f0f14c01a4ecefd42cc80190200942c03"

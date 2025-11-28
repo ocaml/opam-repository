@@ -1,0 +1,39 @@
+opam-version: "2.0"
+synopsis: "Embed locations information inside executable and libraries"
+maintainer: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+license: "MIT"
+homepage: "https://github.com/ocaml/dune"
+doc: "https://dune.readthedocs.io/"
+bug-reports: "https://github.com/ocaml/dune/issues"
+depends: [
+  "dune" {>= "3.20"}
+  "dune-private-libs" {= version}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/ocaml/dune.git"
+x-maintenance-intent: ["(latest)"]
+build: [
+  ["dune" "subst"] {dev}
+  ["rm" "-rf" "vendor/csexp"]
+  ["rm" "-rf" "vendor/pp"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/ocaml/dune/releases/download/3.20.0/dune-3.20.0.tbz"
+  checksum: [
+    "sha256=767999da81e528484139ecfe927288ffe521ac2467462a40d6a760ed789ba086"
+    "sha512=18f6a293cb5d4423a3bf69ce9559b40e7075e49b13c79166f2aacfa55cbc2609e20938bad889b43df0d5a3396ea034e405631d3757da6164c51be375e5751632"
+  ]
+}
+x-commit-hash: "3bd6fcbde34880a6c120848b41b68e9d4292266d"

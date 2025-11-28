@@ -22,6 +22,8 @@ tags: [
   "interactive theorem prover"
 ]
 
+build-env: OCAMLPARAM = "_,w=-46,keywords=5.2"
+
 build: [
   ["./autogen.sh"] {dev} # when pinning, there might be no configure file
   ["touch" "configure"]
@@ -40,8 +42,8 @@ build: [
    "--enable-zip" {camlzip:installed}
    "--disable-hypothesis-selection" {!ocamlgraph:installed}
    "--enable-hypothesis-selection" {ocamlgraph:installed}
-   "--disable-stackify" {!ocamlgraph:installed}
-   "--enable-stackify" {ocamlgraph:installed}
+   "--disable-stackify" {!ocamlgraph:installed | ocaml:version < "4.12"}
+   "--enable-stackify" {ocamlgraph:installed & ocaml:version >= "4.12"}
    "--disable-ide"]
   [make "-j%{jobs}%" "all" "byte"]
   [make "doc" "stdlibdoc" "apidoc"] {with-doc}
@@ -54,7 +56,7 @@ install: [
 
 depends: [
   "conf-autoconf" {build & dev}
-  "ocaml" {>= "4.08.0"}
+  "ocaml" {>= "4.08.0" & < "5.4.0"}
   "ocamlfind" {build}
   "menhir" {>= "20170418"}
   "num"
@@ -70,11 +72,14 @@ depopts: [
   "mlmpfr"
 ]
 
+available: os != "win32" | os-distribution = "cygwinports"
+
 conflicts: [
   "why3-base"
   "ocamlgraph" {< "1.8.2"}
   "mlmpfr" {< "4.0.0"}
-  "base-effects"
+  "ocaml-variants" {= "4.12.0+domains+effects" | = "5.1.1+effect-syntax"}
+  "ocaml-compiler" {= "5.3.0~alpha1"}
 ]
 
 synopsis: "Why3 environment for deductive program verification"

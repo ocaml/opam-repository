@@ -1,0 +1,59 @@
+opam-version: "2.0"
+synopsis: "GitLab plugin for OCurrent"
+description: """\
+OCurrent provides an OCaml eDSL for writing CI/CD pipelines.
+
+This package provides primitives for interacting with GitLab.
+It can monitor and clone remote GitLab repositories, and can
+push GitLab status messages to show the results of testing
+PRs and branches."""
+maintainer: "Tim McGilchrist <timmcgil@gmail.com>"
+authors: "Tim McGilchrist <timmcgil@gmail.com>"
+license: "Apache-2.0"
+homepage: "https://github.com/ocurrent/ocurrent"
+doc: "https://ocurrent.github.io/ocurrent/"
+bug-reports: "https://github.com/ocurrent/ocurrent/issues"
+depends: [
+  "dune" {>= "3.3"}
+  "current" {= version}
+  "current_git" {= version}
+  "current_web" {= version}
+  "ocaml" {>= "4.12.0"}
+  "cmdliner" {>= "1.1.0"}
+  "cohttp-lwt-unix" {>= "6.0.0"}
+  "fmt" {>= "0.8.9"}
+  "gitlab-unix" {>= "0.1.8"}
+  "logs" {>= "0.7.0"}
+  "lwt" {>= "5.7"}
+  "ppx_deriving_yojson" {>= "3.6.1"}
+  "prometheus" {>= "0.7"}
+  "ptime"
+  "result" {>= "1.5"}
+  "rresult" {>= "0.6.0"}
+  "yojson"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocurrent/ocurrent.git"
+url {
+  src:
+    "https://github.com/ocurrent/ocurrent/releases/download/v0.7.2/ocurrent-0.7.2.tbz"
+  checksum: [
+    "md5=19c8bdf96a8c5400322f32fe5784fb6b"
+    "sha512=7da7cbc7a909365a573e62641800050e263f309209d4339dab4a124934b13afe4b892fca4d424d79af539c6747bed31cfc7cad94dfb962e2d90366e0757083c3"
+  ]
+}
+x-maintenance-intent: ["(latest)"]

@@ -1,0 +1,63 @@
+opam-version: "2.0"
+synopsis: "Proof assistant for the λΠ-calculus modulo rewriting"
+description: """
+Lambdapi is an interactive proof assistant for the λΠ-calculus modulo
+rewriting. It can call external automated theorem provers via Why3.
+The user manual is on https://lambdapi.readthedocs.io/.
+A standard library and other developments are available on
+https://github.com/Deducteam/opam-lambdapi-repository/. An extension
+for Emacs is available on MELPA. An extension for VSCode is available
+on the VSCode Marketplace. Lambdapi can read Dedukti files. It
+includes checkers for local confluence and subject reduction. It also
+provides commands to export Lambdapi files to other formats or
+systems: Dedukti, Coq, HRS, CPF.
+"""
+maintainer: ["dedukti-dev@inria.fr"]
+authors: ["Deducteam"]
+license: "CECILL-2.1"
+homepage: "https://github.com/Deducteam/lambdapi"
+bug-reports: "https://github.com/Deducteam/lambdapi/issues"
+dev-repo: "git+https://github.com/Deducteam/lambdapi.git"
+depends: [
+  "dune" {>= "3.7"}
+  (("ocaml" {>= "5.3"} & "dream-pure" {= "1.0.0~alpha2"} & "dream-httpaf" {= "1.0.0~alpha4"} & "dream" {= "1.0.0~alpha8"})
+  |("ocaml" {>= "4.13" & < "5.3"} & "dream" {>= "1.0.0~alpha3"})
+  |("ocaml" {>= "4.10" & < "4.13"} & "dream-pure" {= "1.0.0~alpha2"} & "dream-httpaf" {= "1.0.0~alpha3"} & "dream" {= "1.0.0~alpha6"}))
+  "menhir" {>= "20200624"}
+  "sedlex" {>= "3.2"}
+  "alcotest" {with-test}
+  "alt-ergo" {with-test}
+  "dedukti" {with-test & >= "2.7"}
+  "timed" {>= "1"}
+  "pratter" {>= "5" & < "6"}
+  "camlp-streams" {>= "5"}
+  "why3" {>= "1.8"}
+  "yojson" {>= "1.6"}
+  "cmdliner" {>= "1.1" & < "2.0.0"}
+  "stdlib-shims" {>= "0.1"}
+  "odoc" {with-doc}
+  "lwt_ppx" {>= "1"}
+  "uri" {>= "1.1"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+  ]
+]
+conflicts: [ "ocaml-option-bytecode-only" ]
+url {
+  src:
+    "https://github.com/Deducteam/lambdapi/releases/download/3.0.0/lambdapi-3.0.0.tbz"
+  checksum: [
+    "sha256=1066aed2618fd8e6a400c5147dbf55ea977ce8d3fe2e518ac6785c6775a1b8be"
+    "sha512=f7f499626aba92e070ae69581299a58525973fdbfd04a160ed3ac89209fb6cbe307b816d0b23e1b75bc83467ce8b4b0530c6f9816eaf58f7a07fde65a450106c"
+  ]
+}
+x-commit-hash: "f73c64dbeebf850ecc3384d64f0dbf93a1ea6acd"

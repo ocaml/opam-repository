@@ -45,7 +45,32 @@ variables {
   wsl_distro_name: "$WSL_DISTRO_NAME"
 }
 EOF
-    """]
+    """] { os-family != "windows" }
+  ["sh" "-exc" """
+    if [ -d "$CUDA_PATH" ]; then
+      CUDA_PREINSTALLED="true"
+    elif [ -d "/cygdrive/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8" ]; then
+      CUDA_PATH="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8"
+      CUDA_PREINSTALLED="true"
+    elif [ -d "/cygdrive/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.9" ]; then
+      CUDA_PATH="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.9"
+      CUDA_PREINSTALLED="true"
+    elif [ -d "/cygdrive/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0" ]; then
+      CUDA_PATH="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0"
+      CUDA_PREINSTALLED="true"
+    elif [ -d "/cygdrive/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.1" ]; then
+      CUDA_PATH="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.1"
+      CUDA_PREINSTALLED="true"
+    elif [ -d "/cygdrive/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA" ]; then
+      CUDA_PREINSTALLED="true"
+    else
+      CUDA_PREINSTALLED="false"
+    fi
+    echo 'opam-version: \"2.0\" variables { cuda_preinstalled: \"'$CUDA_PREINSTALLED'\" cuda_path: \"'$CUDA_PATH'\" }' > conf-cuda-config.config
+    """] { os-family = "windows" }
+  [ "sh" "-exc" "cat conf-cuda-config.config" ] {os-family = "windows"}
+  [ "powershell" "-Command" "(Get-Content -Raw conf-cuda-config.config) -replace '\\\\', '\\\\' | Set-Content conf-cuda-config.config" ] {os-family = "windows"}
+  [ "sh" "-exc" "cat conf-cuda-config.config" ] {os-family = "windows"}
 ]
 post-messages: [
   "NOTE: assuming CUDA will be installed under %{conf-cuda-config:cuda_path}%"

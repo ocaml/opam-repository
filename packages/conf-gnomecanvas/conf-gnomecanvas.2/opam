@@ -3,15 +3,23 @@ maintainer: "virgile.prevosto@m4x.org"
 homepage: "https://developer.gnome.org/libgnomecanvas/2.30/"
 authors: "The GNOME Project"
 license: "LGPL-2.1-or-later"
-build: [["pkg-config" "libgnomecanvas-2.0"]]
+build: [
+  ["pkgconf" {os = "win32" & os-distribution != "cygwinports"}
+   "--personality=i686-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
+   "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
+   "pkg-config" {os != "win32" | os-distribution = "cygwinports"}
+   "libgnomecanvas-2.0"]
+]
 depexts: [
   ["libgnomecanvas2-dev"] {os-family = "debian"}
   ["libgnomecanvas2-dev"] {os-family = "ubuntu"}
   ["libgnomecanvas-devel"] {os-family = "fedora" | os-family = "rhel"}
   ["libgnomecanvas"] {os = "macos" & os-distribution = "homebrew"}
+  ["libgnomecanvas"] {os = "macos" & os-distribution = "macports"}
   ["libgnomecanvas-dev@testing" "libart-lgpl-dev"] {os-family = "alpine"}
   ["libgnomecanvas2"] {os = "win32" & os-distribution = "cygwinports"}
   ["libgnomecanvas"] {os-family = "arch"}
+  ["libgnomecanvas-devel"] {os-family = "opensuse"}
   ["libgnomecanvas"] {os = "freebsd"}
   ["libgnomecanvas"] {os = "openbsd"}
   ["gnome2.libgnomecanvas"] {os-distribution = "nixos"}
@@ -26,6 +34,10 @@ synopsis: "Virtual package relying on a Gnomecanvas system installation"
 description: """
 This package can only install if libgnomecanvas2-dev is installed
 on the system."""
-depends: ["conf-pkg-config" {build}]
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gnomecanvas-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gnomecanvas-x86_64" {os = "win32" & os-distribution != "cygwinports"})
+]
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 flags: conf

@@ -90,7 +90,7 @@ tags: [
 
 build: [
   ["bash" "dev/disable-plugins.sh" "e-acsl"] { os-family = "windows" }
-  ["dune" "build" "-j%{jobs}%" "--release" "--promote-install-files=false" "@install"]
+  ["dune" "build" "-j%{jobs}%" "-p" name "--promote-install-files=false" "@install"]
   [make "-C" "doc" "download"] {with-doc}
 ]
 
@@ -119,7 +119,7 @@ depends: [
   "conf-graphviz" { post }
   "conf-time" { with-test }
   "menhir" { >= "20181006" & build }
-  "ocaml" { >= "4.11.1" }
+  "ocaml" {>= "4.11.1" & < "5.3"}
   "ocamlfind" # needed beyond build stage, used by -load-module
   "ocamlgraph" { >= "1.8.8" }
   "ocamlgraph" { with-test & < "2.1.0" }

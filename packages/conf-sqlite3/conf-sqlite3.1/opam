@@ -7,9 +7,19 @@ authors: [
 ]
 homepage: "http://www.sqlite3.org"
 dev-repo: "git+https://github.com/mmottl/sqlite3-ocaml.git"
-license: "PD"
-build: [["pkg-config" "sqlite3"]]
-depends: ["conf-pkg-config" {build}]
+license: "blessing"
+build: [
+  ["pkgconf" {os = "win32" & os-distribution != "cygwinports"}
+   "--personality=i686-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
+   "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
+   "pkg-config" {os != "win32" | os-distribution = "cygwinports"}
+  "sqlite3"]
+]
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sqlite3-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sqlite3-x86_64" {os = "win32" & os-distribution != "cygwinports"})
+]
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 
 depexts: [
@@ -19,7 +29,7 @@ depexts: [
   ["database/sqlite3"] {os = "openbsd"}
   ["sqlite-devel"] {os-distribution = "centos"}
   ["sqlite-devel"] {os-distribution = "rhel"}
-  ["sqlite-devel"] {os-distribution = "fedora"}
+  ["sqlite-devel"] {os-family = "fedora"}
   ["sqlite-devel"] {os-distribution = "ol"}
   ["sqlite-dev"] {os-distribution = "alpine"}
   ["sqlite3-devel"] {os-family = "suse" | os-family = "opensuse"}

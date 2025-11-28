@@ -18,21 +18,6 @@ depends: [
   "base-bigarray" {post}
   "base-threads" {post}
 
-  # Architecture (non-Windows)
-  # opam-repository at present requires that ocaml-base-compiler is installed
-  # using an architecture which matches the machine's, since arch is used in
-  # available fields. Cross-compilation at this stage is an unstable accident.
-  "host-arch-arm32" {arch = "arm32" & post}
-  "host-arch-arm64" {arch = "arm64" & post}
-  "host-arch-ppc64" {arch = "ppc64" & post}
-  "host-arch-riscv64" {arch = "riscv64" & post}
-  "host-arch-s390x" {arch = "s390x" & post}
-  # The Windows ports explicitly select the architecture (see below) this
-  # facility is not yet available for other platforms.
-  "host-arch-x86_32" {os != "win32" & arch = "x86_32" & post}
-  "host-arch-x86_64" {os != "win32" & arch = "x86_64" & post}
-  "host-arch-unknown" {os != "win32" & arch != "arm32" & arch != "arm64" & arch != "ppc64" & arch != "riscv64" & arch != "s390x" & arch != "x86_32" & arch != "x86_64" & post}
-
   # Port selection (Windows)
   # amd64 mingw-w64 / MSVC
   (("arch-x86_64" {os = "win32" & arch = "x86_64"} &
@@ -42,8 +27,9 @@ depends: [
    ("arch-x86_32" {os = "win32"} &
      (("system-mingw" & "mingw-w64-shims" {os-distribution = "cygwin" & post}) |
       "system-msvc")) |
-  # Non-Windows systems
-   "host-system-other" {os != "win32" & post})
+  # Non-Windows systems need to install something to satisfy this formula, so
+  # repeat the base-unix dependency
+   "base-unix" {os != "win32" & post})
 
   # OCaml with default configuration (no flambda, TSAN, etc.)
   "ocaml-options-vanilla" {post}
@@ -79,15 +65,6 @@ url {
   src: "https://github.com/ocaml/ocaml/archive/4.14.0.tar.gz"
   checksum: "sha256=39f44260382f28d1054c5f9d8bf4753cb7ad64027da792f7938344544da155e8"
 }
-post-messages: [
-  "A failure in the middle of the build may be caused by build parallelism
-   (enabled by default).
-   Please file a bug report at https://github.com/ocaml/opam-repository/issues"
-  {failure & jobs > 1}
-  "You can try installing again including --jobs=1
-   to force a sequential build instead."
-  {failure & jobs > 1 & opam-version >= "2.0.5"}
-]
 extra-source "ocaml-base-compiler.install" {
   src:
     "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/ocaml-base-compiler/ocaml-base-compiler.install"

@@ -1,0 +1,54 @@
+opam-version: "2.0"
+synopsis: "Memory limits, allocation limits, and thread cancellation"
+description: """\
+Memprof-limits provides per-thread global memory limits, per-thread
+allocation limits, and cancellation of threads, with ways to
+ensure resource-safety after interruption.
+
+Global memory limits let you bound the memory consumption of a task,
+in terms of the major heap size.
+
+Allocation limits let you bound the execution time of a task measured
+in number of allocations. Allocation limits do not count
+deallocations, and are therefore a measure of the work done, which can
+be more suitable (reliable, portable, deterministic) than wall-clock
+time.
+
+Token limits lets you cancel a (CPU-bound) task preemptively and at a
+distance.
+
+Tasks are interrupted by raising an asynchronous exception.
+Memprof-limits provides resource-management features and guidance for
+reasoning about the consistency of state in the presence of such
+interrupts.
+
+The implementation uses OCaml's Statmemprof engine with a low sampling
+rate that does not affect performance. Memprof cannot be used on the
+same domain as memprof-limits, but a compatible reimplementation of
+the Memprof interface is provided for your profiling needs."""
+maintainer:
+  "Guillaume Munch-Maccagnoni <Guillaume.Munch-Maccagnoni@inria.fr>"
+authors: "Guillaume Munch-Maccagnoni <Guillaume.Munch-Maccagnoni@inria.fr>"
+license: "LGPL-3.0-only WITH LGPL-3.0-linking-exception"
+homepage: "https://gitlab.com/gadmm/memprof-limits/"
+doc: "https://guillaume.munch.name/software/ocaml/memprof-limits/"
+bug-reports: "https://gitlab.com/gadmm/memprof-limits/issues/"
+depends: [
+  "ocaml" {(>= "4.12.0" & < "5.0") | >= "5.3"}
+  "dune" {>= "1.2"}
+  "cppo" {build}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  [make "doc"] {with-doc}
+]
+dev-repo: "git+https://gitlab.com/gadmm/memprof-limits.git"
+url {
+  src:
+    "https://gitlab.com/gadmm/memprof-limits/-/archive/v0.3.0/memprof-limits-v0.3.0.tar.gz"
+  checksum: [
+    "md5=39c73e7f96b5e5a01cf74937e2a5a1ae"
+    "sha512=a0049fec23c054eef19a924e5be810ecf9de4f697bd09b133e64c244b7ea09f416cec627ccce412ae793c265043894a878f0d822bcc47a2e622526f96d14af25"
+  ]
+}

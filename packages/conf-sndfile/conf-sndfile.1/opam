@@ -1,0 +1,27 @@
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+homepage: "https://github.com/libsndfile/libsndfile"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: "libsndfile developers"
+license: "LGPL-2.1-or-later"
+build: [
+  ["pkg-config" "--exists" "sndfile"] {os != "openbsd" & os != "win32" & !(os = "macos" & os-distribution = "homebrew")}
+  ["pkgconf" "--exists" "sndfile"] {os = "macos" & os-distribution = "homebrew"}
+  ["pkgconf" "--personality=i686-w64-mingw32" "--exists" "sndfile"] {os = "win32" & os-distribution = "msys2" & host-arch-x86_32:installed}
+  ["pkgconf" "--personality=x86_64-w64-mingw32" "--exists" "sndfile"] {os = "win32" & os-distribution = "msys2" & host-arch-x86_64:installed}
+]
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution = "msys2"} | "host-arch-x86_64" {os = "win32" & os-distribution = "msys2"})
+]
+depexts: [
+  ["libsndfile-dev"] {os-family = "debian" | os-family = "ubuntu" | os-distribution = "alpine"}
+  ["libsndfile"] {os-family = "arch" | os = "freebsd" | os-distribution = "nixos" | os = "macos" & os-distribution = "homebrew"}
+  ["libsndfile-devel"] {os = "win32" & os-distribution = "cygwin" | os-family = "suse" | os-family = "opensuse" | os-distribution = "centos" | os-family = "fedora"}
+  ["mingw-w64-x86_64-libsndfile"] {os = "win32" & os-distribution = "msys2" & arch = "x86_64"}
+  ["mingw-w64-i686-libsndfile"] {os = "win32" & os-distribution = "msys2" & arch = "x86_32"}
+]
+synopsis: "Virtual package relying on sndfile"
+description:
+  "This package can only install if the sndfile library is installed on the system."
+flags: conf

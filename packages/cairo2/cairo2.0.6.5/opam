@@ -1,0 +1,48 @@
+opam-version: "2.0"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+           "Pierre Hauweele <pierre@hauweele.net>" ]
+license: "LGPL-3.0-or-later"
+homepage: "https://github.com/Chris00/ocaml-cairo"
+dev-repo: "git+https://github.com/Chris00/ocaml-cairo.git"
+bug-reports: "https://github.com/Chris00/ocaml-cairo/issues"
+doc: "https://Chris00.github.io/ocaml-cairo/doc"
+tags: ["Cairo" "stroke" "drawing" "tutorial"]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
+]
+depends: [
+  "ocaml" {>= "4.03"}
+  "base-bigarray"
+  "dune" {>= "2.7.0"}
+  "dune-configurator" {>= "2.7.0"}
+  "conf-cairo"
+]
+depopts: [
+  "conf-freetype"
+]
+conflicts: [
+  "cairo" {= "0.4.1"}
+  "cairo" {= "0.4.2"}
+]
+post-messages: [
+  "Try to re-run the install command with PKG_CONFIG_PATH pointing a pkg-config path including libffi, e.g. if you use homebrew you can try PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig" {failure & os = "macos"}
+]
+synopsis: "Binding to Cairo, a 2D Vector Graphics Library"
+description: """
+This is a binding to Cairo, a 2D graphics library with support for
+multiple output devices. Currently supported output targets include
+the X Window System, Quartz, Win32, image buffers, PostScript, PDF,
+and SVG file output."""
+url {
+  src:
+    "https://github.com/Chris00/ocaml-cairo/releases/download/0.6.5/cairo2-0.6.5.tbz"
+  checksum: [
+    "sha256=25dc41c9436d9abcf56caad9a105944ff7346041b8cc6a2a654ab8848b657372"
+    "sha512=9c13aaf0c716ac2fdec90d6dcb90a654c051cb9aa896e9333b819e68669efbf3ee7bb147882d45dd5b86db3fd868158bce46f46c5c8960f9add523d64342f704"
+  ]
+}
+x-commit-hash: "918ef6ee0b5ccef2947fafb11bd2f4ec7730a810"

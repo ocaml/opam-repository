@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "SQLite3 bindings for OCaml"
+description: """
+sqlite3-ocaml is an OCaml library with bindings to the SQLite3 client API.
+Sqlite3 is a self-contained, serverless, zero-configuration, transactional SQL
+database engine with outstanding performance for many use cases."""
+maintainer: ["Markus Mottl <markus.mottl@gmail.com>"]
+authors: [
+  "Markus Mottl <markus.mottl@gmail.com>"
+  "Christian Szegedy <csdontspam@metamatix.com>"
+]
+license: "MIT"
+tags: ["clib:sqlite3" "clib:pthread"]
+homepage: "https://mmottl.github.io/sqlite3-ocaml"
+doc: "https://mmottl.github.io/sqlite3-ocaml/api"
+bug-reports: "https://github.com/mmottl/sqlite3-ocaml/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.12"}
+  "dune-configurator"
+  "conf-sqlite3" {build}
+  "ppx_inline_test" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mmottl/sqlite3-ocaml.git"
+url {
+  src:
+    "https://github.com/mmottl/sqlite3-ocaml/releases/download/5.3.1/sqlite3-5.3.1.tbz"
+  checksum: [
+    "sha256=3b1f1e652e2be8f6c987c9de8b9d9fb54c9fdb948ac0850c8b9504bf82feea61"
+    "sha512=ebebce2e0467e100b36c1727f3720e17ec2c5aba3fdfcffa6f224afbf0e34ef6a676b9793943ec8d8fa38c7922641cac810611efb9ffd1427c8dcfa0dd6affaf"
+  ]
+}
+x-commit-hash: "4c8892f6dd4a4ff2ba35f6e1f94a0403a4b9c010"

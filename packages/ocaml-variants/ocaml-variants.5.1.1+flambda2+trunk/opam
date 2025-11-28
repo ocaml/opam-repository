@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Jane Street compiler variant with Flambda2 backend"
+depends: [
+  "ocaml" {= "5.1.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-flambda2" {post}
+  "dune-secondary"
+  "menhir-secondary" {="20231231"}
+  "conf-autoconf" {build}
+]
+conflict-class: "ocaml-core-compiler"
+flags: [ compiler avoid-version ]
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build-env: [
+  [PATH += "%{ocaml-secondary-compiler:share}%/bin"]
+]
+build: [
+  ["autoconf"] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH autoconf"] { opam-version < "2.1.5" }
+  ["./configure" "--prefix=%{prefix}%" "--enable-flambda2" "--enable-runtime5=yes --disable-naked-pointers"] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH ./configure --prefix=%{prefix}% --enable-flambda2 --enable-runtime5=yes --disable-naked-pointers"] { opam-version < "2.1.5" }
+  [make "-j%{jobs}%"] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH make -j%{jobs}%"] { opam-version < "2.1.5" }
+]
+install: [
+  [make "install"] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH make install"] { opam-version < "2.1.5" }
+]
+maintainer: "opensource-contacts@janestreet.com"
+homepage: "https://github.com/ocaml-flambda/flambda-backend/"
+bug-reports: "https://github.com/ocaml-flambda/flambda-backend/issues"
+url {
+  src: "git+https://github.com/ocaml-flambda/flambda-backend.git#main"
+}
+authors: [ "The Jane Street compiler team"
+  "Xavier Leroy"
+  "Damien Doligez"
+  "Alain Frisch"
+  "Jacques Garrigue"
+  "Didier Rémy"
+  "Jérôme Vouillon"
+]
+available: [ (os = "linux" | os = "macos") & (arch = "x86_64" | arch = "arm64") ]

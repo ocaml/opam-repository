@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+authors: [
+  "Philip Hazel"
+  "Zoltan Herczeg"
+]
+homepage: "https://www.pcre.org/"
+dev-repo: "git+https://github.com/PCRE2Project/pcre2.git"
+license: "BSD-3-Clause"
+build: [
+  ["pkgconf" {os = "win32" & os-distribution != "cygwinports"}
+   "--personality=i686-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
+   "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
+   "pkg-config" {os != "win32" | os-distribution = "cygwinports"}
+   "--print-errors" "--exists" "libpcre2-8"
+  ]]
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")}
+   & "conf-mingw-w64-pcre2-i686" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")}
+   | "host-arch-x86_64" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")}
+   & "conf-mingw-w64-pcre2-x86_64" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")})
+  ]
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+depexts: [
+  ["libpcre2-dev"] {os-family = "debian"}
+  ["libpcre2-dev"] {os-family = "ubuntu"}
+  ["libpcre2-devel"] {os-distribution = "mageia"}
+  ["pcre2-devel"] {os-distribution = "centos"}
+  ["pcre2-devel"] {os-family = "fedora"}
+  ["pcre2-devel"] {os-distribution = "rhel"}
+  ["pcre2-devel"] {os-distribution = "ol"}
+  ["pcre2-dev"] {os-distribution = "alpine"}
+  ["pcre2-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["pcre2"] {os-family = "arch"}
+  ["pcre2"] {os = "freebsd"}
+  ["pcre2"] {os = "macos" & os-distribution = "homebrew"}
+  ["pcre2"] {os = "macos" & os-distribution = "macports"}
+  ["pcre2"] {os = "win32" & os-distribution = "cygwinports"}
+]
+synopsis: "Virtual package relying on a libpcre2 system installation"
+description:
+  "This package can only install if the libpcre2 is installed on the system."
+flags: conf

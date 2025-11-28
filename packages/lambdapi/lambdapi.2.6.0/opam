@@ -1,0 +1,63 @@
+opam-version: "2.0"
+synopsis: "Proof assistant for the λΠ-calculus modulo rewriting"
+description: """
+Lambdapi is an interactive proof assistant for the λΠ-calculus modulo
+rewriting. It can call external automated theorem provers via Why3.
+The user manual is on https://lambdapi.readthedocs.io/.
+A standard library and other developments are available on
+https://github.com/Deducteam/opam-lambdapi-repository/. An extension
+for Emacs is available on MELPA. An extension for VSCode is available
+on the VSCode Marketplace. Lambdapi can read Dedukti files. It
+includes checkers for local confluence and subject reduction. It also
+provides commands to export Lambdapi files to other formats or
+systems: Dedukti, Coq, HRS, CPF.
+"""
+maintainer: ["dedukti-dev@inria.fr"]
+authors: ["Deducteam"]
+license: "CECILL-2.1"
+homepage: "https://github.com/Deducteam/lambdapi"
+bug-reports: "https://github.com/Deducteam/lambdapi/issues"
+dev-repo: "git+https://github.com/Deducteam/lambdapi.git"
+depends: [
+  "dune" {>= "3.7"}
+  "ocaml" {>= "4.09.0"}
+  "menhir" {>= "20200624"}
+  "sedlex" {>= "3.2"}
+  "alcotest" {with-test}
+  "dedukti" {with-test & >= "2.7"}
+  "bindlib" {>= "6.0.0"}
+  "timed" {>= "1.0"}
+  "pratter" {>= "3.0.0" & < "4"}
+  "camlp-streams" {>= "5.0"}
+  "why3" {>= "1.8.0"}
+  "yojson" {>= "1.6.0"}
+  "cmdliner" {>= "1.1.0" & < "2.0.0"}
+  "stdlib-shims" {>= "0.1.0"}
+  "odoc" {with-doc}
+  "lwt_ppx" {>= "1.0.0"}
+  "dream" {>= "1.0.0~alpha3"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+conflicts: [ "ocaml-option-bytecode-only" ]
+url {
+  src:
+    "https://github.com/Deducteam/lambdapi/releases/download/2.6.0/lambdapi-2.6.0.tbz"
+  checksum: [
+    "sha256=d01e5f13db2eaba6e4fe330667149e0059d4886c651ff9d6b672db2dfc9765ed"
+    "sha512=33b68c972aca37985ed73c527076198e7d4961c7e27c89cdabfe4d1cff97cd41ccfb85ae9499eb98ad9a0aefd920bc55555df6393fc441ac2429e4d99cddafa8"
+  ]
+}
+x-commit-hash: "29be5f84a19e46fd5f1482f1b7e84eddaf9fd49c"
+

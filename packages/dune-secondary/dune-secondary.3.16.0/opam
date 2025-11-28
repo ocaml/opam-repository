@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Fast, portable, and opinionated build system"
+description: """
+
+dune is a build system that was designed to simplify the release of
+Jane Street packages. It reads metadata from "dune" files following a
+very simple s-expression syntax.
+
+dune is fast, has very low-overhead, and supports parallel builds on
+all platforms. It has no system dependencies; all you need to build
+dune or packages using dune is OCaml. You don't need make or bash
+as long as the packages themselves don't use bash explicitly.
+
+dune supports multi-package development by simply dropping multiple
+repositories into the same directory.
+
+It also supports multi-context builds, such as building against
+several opam roots/switches simultaneously. This helps maintaining
+packages across several versions of OCaml and gives cross-compilation
+for free.
+"""
+maintainer: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+license: "MIT"
+homepage: "https://github.com/ocaml/dune"
+doc: "https://dune.readthedocs.io/"
+bug-reports: "https://github.com/ocaml/dune/issues"
+dev-repo: "git+https://github.com/ocaml/dune.git"
+build-env: [PATH += "%{ocaml-secondary-compiler:share}%/bin"]
+build: [
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH ocaml boot/bootstrap.ml -j %{jobs}%"] { opam-version < "2.1.5"}
+  ["ocaml" "boot/bootstrap.ml" "-j" jobs] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH ./_boot/dune.exe build dune.install --release --profile dune-bootstrap -j %{jobs}%" ] { opam-version < "2.1.5" }
+  ["./_boot/dune.exe" "build" "dune.install" "--release" "--profile" "dune-bootstrap" "-j" jobs] { opam-version >= "2.1.5" }
+]
+install: [
+  ["./_boot/dune.exe" "install" "dune" "--prefix" "%{ocaml-secondary-compiler:share}%"] { opam-version >= "2.1.5" }
+  ["sh" "-exc" "PATH=%{ocaml-secondary-compiler:share}%/bin:$PATH ./_boot/dune.exe install dune --prefix %{ocaml-secondary-compiler:share}%"] { opam-version < "2.1.5" }
+]
+depends: [
+  "ocaml-secondary-compiler" {>="4.14.2"}
+]
+url {
+  src: "https://github.com/ocaml/dune/releases/download/3.16.0/dune-3.16.0.tbz"
+  checksum: [
+    "sha256=5481dde7918ca3121e02c34d74339f734b32d5883efb8c1b8056471e74f9bda6"
+    "sha512=529f937c61bc9ea7b135c2425f2d730478b48e6ab6b6455c354138d27b76bd43afce40d4784a6f183d6308d3cf0f5d5cea5bea070f83442949762ed818fb44bc"
+  ]
+}
