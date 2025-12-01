@@ -1,0 +1,54 @@
+opam-version: "2.0"
+maintainer: "Enrico Tassi <enrico.tassi@inria.fr>"
+authors: [ "Enrico Tassi" "Maxime Dénès" "Romain Tetley" ]
+license: "MIT"
+homepage: "https://github.com/rocq-prover/vsrocq"
+bug-reports: "https://github.com/rocq-prover/vsrocq/issues"
+dev-repo: "git+https://github.com/rocq-prover/vsrocq"
+
+build: [
+  [make "dune-files"]
+  [
+    "etc/rocq-wrap-coqc.sh" {!coq-core:installed}
+    "dune" "build" "-p" name "-j" jobs 
+  ]
+]
+depends: [
+  "ocaml" { >= "4.14" }
+  "dune" { >= "3.5" }
+  ("coq-core" { ((>= "8.18" < "8.21") | (= "dev")) }
+  | "rocq-core" { ((>= "9.0+rc1" < "9.2~") | (= "dev")) })
+  ("coq-stdlib" { ((>= "8.18" < "8.21") | (= "dev")) }
+  | "rocq-stdlib" { ((>= "9.0+rc1" < "9.2~") | (= "dev")) })
+  "yojson"
+  "jsonrpc" { >= "1.15"}
+  "ocamlfind"
+  "ppx_inline_test"
+  "ppx_assert"
+  "ppx_sexp_conv"
+  "ppx_deriving"
+  "sexplib"
+  "ppx_yojson_conv"
+  "ppx_import"
+  "ppx_optcomp"
+  "result" { >= "1.5" }
+  "lsp" { >= "1.15"}
+  "sel" {>= "0.6.0"}
+]
+conflicts: [
+    "vscoq-language-server" {< "2.2.7~"}
+]
+synopsis: "VSRocq language server"
+available: arch != "arm32" & arch != "x86_32"
+description: """
+LSP based language server for Rocq and its VSRocq user interface
+"""
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/rocq-prover/vsrocq/releases/download/v2.3.4/vsrocq-language-server-2.3.4.tar.gz"
+  checksum: [
+    "md5=622048b033c1a214ffbb6f63872fcaa0"
+    "sha512=b4140879479fbc8318130e9b258c90597b4c02dd115882ca1b590046c2204dacaf94b3e50cd9b5bb61cd59462bd4edf7927b787eeb3c113fc066a7697c08c61b"
+  ]
+}
