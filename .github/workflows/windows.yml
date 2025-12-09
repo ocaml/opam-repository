@@ -9,15 +9,46 @@ env:
   OPAMSOLVERTIMEOUT: 120
   MSYS: winsymlinks:native
 jobs:
+  analyse:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.result }}
+    steps:
+      - name: Checkout tree
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Get changed files
+        id: changed-files
+        if: github.event_name != 'push'
+        uses: tj-actions/changed-files@v47
+
+      - name: Compute build matrix
+        id: matrix
+        uses: actions/github-script@v7
+        with:
+          script: |
+            let changed_files = '${{ steps.changed-files.outputs.all_changed_files }}';
+            let packages = [];
+            for (file of changed_files.split(' ')) {
+              console.log("Changed: " + file);
+              const package = file.match(/^packages\/[^/]+\/([^/]+)/);
+              if (package)
+                packages.push(package[1]);
+            }
+            const splits =
+              Array.from({ length: Math.ceil(packages.length / 75) },
+                         (_, i) => packages.slice(i * 75, i * 75 + 75).join(' '));
+            return {build_env: ['cygwin', 'msys2'], packages: splits};
+
   build:
     name: "target/host: x86_64-w64-mingw32, build: ${{ matrix.build_env }}"
     strategy:
       fail-fast: false
-      matrix:
-        build_env:
-          - cygwin
-          - msys2
+      matrix: ${{ fromJSON(needs.analyse.outputs.matrix) }}
     runs-on: windows-latest
+    needs: analyse
     steps:
       - name: Checkout tree
         uses: actions/checkout@v6
@@ -80,38 +111,12 @@ jobs:
           opam exec -- ocamlopt -config
           opam var
 
-      - name: Get changed files
-        id: changed-files
-        if: github.event_name != 'push'
-        uses: tj-actions/changed-files@v47
-
-      - name: List all changed packages
-        id: changed-packages
-        if: github.event_name != 'push'
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        run: |
-          $output = @()
-          Foreach ($file in ($env:ALL_CHANGED_FILES).Split(" ")) {
-            switch -Regex ($file) {
-              '^packages\\[^\\]*\\([^\\]*)\\.*' { $output += "$($matches[1])"; Break }
-              default { Write-Host "$file skipped"; Break }
-            }
-          }
-          $outputJson = $output | ConvertTo-Json
-          "data<<@@@" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-          $outputJson | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-          "@@@" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-
       - name: Install packages
-        env:
-          ALL_CHANGED_PACKAGES: ${{ steps.changed-packages.outputs.data }}
         if: github.event_name != 'push'
         run: |
-          $pkgs = $env:ALL_CHANGED_PACKAGES | ConvertFrom-Json
           $failed = $false
           opam update
-          Foreach ($pkg in $pkgs) {
+          Foreach ($pkg in '${{ matrix.packages }}' -split ' ') {
             Write-Host "::group::Testing `e[1;34m$pkg`e[0m"
             opam install --color=always --confirm-level=unsafe-yes "$pkg"
             Write-Host "::endgroup::"
