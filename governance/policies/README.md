@@ -139,15 +139,15 @@ enumerated in the [archiving policy](./archiving.md).
 * As it currently stands adding a binary package would require the facilities to ensure compatibilities with subarchitectures (e.g. x86_64 v1, …) which we do not have.
 * opam-repository currently strives to provide the same experience regardless of your platform. Binary package would go against that as each platform would have to be packaged separately, or downloaded all together and sort which one to use on site. Either of these solutions would make the user's experience worse and the maintainers life worse as well.
 
-## 11. Changes to a package's source archive are prohibited
+## 11. Changes to a package's source archive are prohibited (including patches and other ways to modify the source)
 
 #### Exceptions:
 
-* Case by case basis
+* No exceptions
 
 #### Reasoning:
 
-* opam-repository packages are expected to be able to install at any time. Packages have a checksum to verify there hasn't been any malicious or unexpected changes to the archive after downloading it. If the source archive were to be changed, everyone who tries to install it would only receive failures, and even if it was fixed in a subsequent PR, it would still break users who have not used `opam update`.
+* opam-repository packages are expected to be able to install at any time. Packages have a checksum to verify there hasn't been any malicious or unexpected changes to the archive after downloading it. If the source archive were to be changed, everyone who tries to install it would only receive failures, and even if it was fixed in a subsequent PR, it would still break users who have not used `opam update`. Adding, modifying, or removing patches of an opam file is prohibited. If you need to patch a released version, please submit a new opam files (where the version is the old with -1 (or -2, etc.) appended: patching foo.0.1.3 will become foo.0.1.3-1). Additionally, changing the build instructions to modify sources (e.g. a `sed` or `awk` script) is as well prohibited. The reasoning for this is security: we aim to record in an immutable way the exact sources that were used for a build with a given package version.
 
 ## 12. Extra-files are prohibited (patches in the `files/` subdirectory)
 
