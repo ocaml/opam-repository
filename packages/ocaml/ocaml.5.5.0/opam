@@ -5,6 +5,17 @@ description: """
 This package requires a matching implementation of OCaml,
 and polls it to initialise specific variables like `ocaml:native-dynlink`"""
 maintainer: "David Allsopp <david@tarides.com>"
+authors: [
+  "Xavier Leroy"
+  "Damien Doligez"
+  "Alain Frisch"
+  "Jacques Garrigue"
+  "Didier Rémy"
+  "KC Sivaramakrishnan"
+  "Jérôme Vouillon"
+]
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
 depends: [
   "ocaml-config" {>= "3"}
   "ocaml-base-compiler" {= "5.5.0"} |
@@ -12,28 +23,21 @@ depends: [
   "ocaml-system" {>= "5.5.0~" & < "5.5.1~"} |
   "dkml-base-compiler" {>= "5.5.0~" & < "5.5.1~"}
 ]
+flags: [conf avoid-version]
 setenv: [
+  [OCAMLTOP_INCLUDE_PATH += "%{toplevel}%"]
   [CAML_LD_LIBRARY_PATH = "%{_:stubsdir}%"]
   [CAML_LD_LIBRARY_PATH += "%{lib}%/stublibs"]
+  # Legacy opam variable
   [OCAML_TOPLEVEL_PATH = "%{toplevel}%"]
 ]
 x-env-path-rewrite: [
   [CAML_LD_LIBRARY_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
+  [OCAMLTOP_INCLUDE_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
 ]
-build: ["ocaml" "%{ocaml-config:share}%/gen_ocaml_config.ml" _:version _:name]
 build-env: [
   [CAML_LD_LIBRARY_PATH = ""]
   [LSAN_OPTIONS = "detect_leaks=0,exitcode=0"]
   [ASAN_OPTIONS = "detect_leaks=0,exitcode=0"]
 ]
-homepage: "https://ocaml.org"
-bug-reports: "https://github.com/ocaml/opam-repository/issues"
-authors: [
-  "Xavier Leroy"
-  "Damien Doligez"
-  "Alain Frisch"
-  "Jacques Garrigue"
-  "Didier Rémy"
-  "Jérôme Vouillon"
-]
-flags: [conf avoid-version]
+build: ["ocaml" "%{ocaml-config:share}%/gen_ocaml_config.ml" _:version _:name]
