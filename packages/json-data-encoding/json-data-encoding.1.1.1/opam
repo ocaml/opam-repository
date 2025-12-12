@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "Type-safe encoding to and decoding from JSON"
+maintainer: "Pierre Boutillier <pierre.boutillier@laposte.net>"
+authors: ["Nomadic Labs" "Ocamlpro"]
+license: "MIT"
+homepage: "https://github.com/pirbo/json-data-encoding"
+bug-reports: "https://github.com/pirbo/json-data-encoding/issues"
+depends: [
+  "dune" {>= "3.17"}
+  "ocaml" {>= "4.10"}
+  "uri" {>= "1.9.0"}
+  "hex" {>= "1.3.0"}
+  "crowbar" {with-test & >= "0.2.2"}
+  "alcotest" {with-test & >= "1.9.1"}
+  "js_of_ocaml-compiler" {with-test}
+  "conf-npm" {with-test}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "yojson" {< "3"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/pirbo/json-data-encoding.git"
+url {
+  src:
+    "https://github.com/pirbo/json-data-encoding/archive/refs/tags/1.1.1.tar.gz"
+  checksum: [
+    "md5=3267ccdc67847cedeeb95f0bd6fe3845"
+    "sha512=27c3972f279e45db58d56beb10d28fdc2ed230373d338c2cdd2abe22e73deb9641db101c44384845255a0bd05156612def12ea6ea98d162aee5f5f5bff907022"
+  ]
+}
+x-maintenance-intent: ["(latest)"]
+x-ci-accept-failures: ["debian-11" "ubuntu-22.04"] # node-js is too old
