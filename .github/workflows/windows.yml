@@ -1,8 +1,5 @@
 name: Windows CI
 on:
-  push:
-    branches:
-      - master
   pull_request:
 env:
   OPAMROOT: D:\opamroot
@@ -21,7 +18,6 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        if: github.event_name != 'push'
         uses: tj-actions/changed-files@v47
 
       - name: Compute build matrix
@@ -47,6 +43,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.analyse.outputs.matrix) }}
+    if: ${{ fromJSON(needs.analyse.outputs.matrix).packages.length > 0 }}
     runs-on: windows-latest
     needs: analyse
     steps:
@@ -112,7 +109,6 @@ jobs:
           opam var
 
       - name: Install packages
-        if: github.event_name != 'push'
         run: |
           $failed = $false
           opam update
