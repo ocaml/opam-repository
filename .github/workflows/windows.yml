@@ -113,6 +113,12 @@ jobs:
           $failed = $false
           opam update
           Foreach ($pkg in '${{ matrix.packages }}' -split ' ') {
+            Write-Host "::group::Installing dependencies for `e[1;34m$pkg`e[0m"
+            opam install --color=always --confirm-level=unsafe-yes "$pkg" --deps-only
+            Write-Host "::endgroup::"
+            Write-Host
+          }
+          Foreach ($pkg in '${{ matrix.packages }}' -split ' ') {
             Write-Host "::group::Testing `e[1;34m$pkg`e[0m"
             opam install --color=always --confirm-level=unsafe-yes "$pkg"
             Write-Host "::endgroup::"
