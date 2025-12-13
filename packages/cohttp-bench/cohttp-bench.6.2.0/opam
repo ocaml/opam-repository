@@ -1,0 +1,62 @@
+opam-version: "2.0"
+synopsis: "Benchmarks binaries for Cohttp"
+description: """
+This package contains some benchmarks for http and cohttp.
+The benchmarks for the server latency will require wrk2
+(https://github.com/giltene/wrk2) to run. The latency graphs
+can then be generated with HdrHistogram plotter, also available
+online at https://hdrhistogram.github.io/HdrHistogram/plotFiles.html."""
+maintainer: ["Anil Madhavapeddy <anil@recoil.org>"]
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+  "Anurag Soni"
+]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "dune" {>= "3.8"}
+  "core" {>= "v0.13.0"}
+  "core_bench"
+  "eio" {>= "0.12"}
+  "eio_main"
+  "http" {= version}
+  "cohttp" {= version}
+  "cohttp-eio" {= version}
+  "cohttp-lwt-unix" {= version}
+  "cohttp-server-lwt-unix" {= version}
+  "cohttp-async" {= version}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@cohttp-bench/runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v6.2.0/cohttp-6.2.0.tbz"
+  checksum: [
+    "sha256=6f05754caf33d6b75e8a2e1a2120ca7b5020e1388bc20248442d1339936ddf3b"
+    "sha512=5935f1cf952aa7814734f019be9427be6722fe524e21ffd7de969fbe731d20e960fb6bf15c1e3c14804a236f7bdbdcb7938eee1a0e9a124a6331f3c5585b5624"
+  ]
+}
+x-commit-hash: "40518fdbba3a77d8eb25129c6f834b1a26e569c2"
