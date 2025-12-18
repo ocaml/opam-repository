@@ -1,16 +1,6 @@
 opam-version: "2.0"
-synopsis:
-  "Generates efficient JSON serializers, deserializers and validators"
-description: """
-Atdgen is a command-line program that takes as input type definitions in the ATD
-syntax and produces OCaml code suitable for data serialization and
-deserialization.
-Two data formats are currently supported, these are biniou and JSON.
-Atdgen-biniou and Atdgen-json will refer to Atdgen used in one context or the
-other.
-Atdgen was designed with efficiency and durability in mind. Software authors are
-encouraged to use Atdgen directly and to write tools that may reuse part of
-Atdgen’s source code."""
+synopsis: "Python/mypy code generation for ATD APIs"
+description: "Python/mypy code generation for ATD APIs"
 maintainer: [
   "Louis Roché <louis@louisroche.net>"
   "Martin Jambon <martin@mjambon.com>"
@@ -18,52 +8,77 @@ maintainer: [
 ]
 authors: [
   "Martin Jambon <martin@mjambon.com>"
-  "Rudi Grinberg <rudi.grinberg@gmail.com>"
   "Martin Jambon <martin@r2c.dev>"
+  "Rudi Grinberg <rudi.grinberg@gmail.com>"
   "Martin Jambon <github@mjambon.com>"
-  "Ivan Jager <aij+git@mrph.org>"
+  "Alexandre Bourquelot <alexandre.bourquelot@ahrefs.com>"
   "oleksiy <oleksiy.golovko@ahrefs.com>"
+  "Ivan Jager <aij+git@mrph.org>"
+  "Martin Jambon <martin@semgrep.com>"
+  "Gregoire Lionnet <gregoire.lionnet@ahrefs.com>"
+  "Sebastien Mondet <sebastien.mondet@ahrefs.com>"
   "David Sheets <sheets@alum.mit.edu>"
   "Rudi Grinberg <me@rgrinberg.com>"
   "Martin Jambon <martin@esper.com>"
+  "Rytis Jonynas <rytis.jonynas@ahrefs.com>"
   "Jeff Meister <nanaki@gmail.com>"
-  "Caio Wakamatsu <caio.wakamatsu@ahrefs.com>"
+  "Raman Varabets <roman.vorobets@gmail.com>"
   "Carmelo Piccione <carmelo.piccione@gmail.com>"
+  "Louis <louis.roche@ahrefs.com>"
+  "Caio Wakamatsu <caio.wakamatsu@ahrefs.com>"
+  "Marek Kubica <marek@tarides.com>"
   "Daniel Weil <danweil68@gmail.com>"
   "Egor Chemokhonenko <egor.chemohonenko@ahrefs.com>"
   "Gabriel Scherer <gabriel.scherer@gmail.com>"
-  "Raman Varabets <roman.vorobets@gmail.com>"
+  "Javier Chavarri <javier.chavarri@gmail.com>"
+  "Louis Roché (Ahrefs) <louis.roche@ahrefs.com>"
+  "Matthew McQuaid <matthew@returntocorp.com>"
+  "Raman Varabets <raman+git@ahrefs.com>"
+  "koonwen <koonwen@gmail.com>"
   "tzm <frank@boldsolutions.de>"
   "Mathieu Baudet <mathieubaudet@fb.com>"
   "Oleksiy Golovko <alexei.golovko@gmail.com>"
   "Rauan Mayemir <rauan@mayemir.io>"
+  "Seb Mondet <seb@mondet.org>"
+  "Alexandre Bourquelot <alexandre.bourquelot@gmail.com>"
   "Carmelo Piccione <cep1@solvuu.com>"
+  "Hyeseong Kim <hey@hyeseong.kim>"
   "John Billings <john@monkeynut.org>"
   "Louis Roché <louis@louisroche.net>"
+  "Mathieu Barbin <mathieu.barbin@gmail.com>"
+  "Zach Yannes <zach@returntocorp.com>"
+  "Antonin Décimo <antonin@tarides.com>"
   "Brendan Long <self@brendanlong.com>"
   "Chris Yocum <cyocum@gmail.com>"
-  "Louis Roché (Ahrefs) <louis.roche@ahrefs.com>"
+  "Kate <kit.ty.kate@disroot.org>"
   "Louis Roché <louis.roche@ahrefs.com>"
   "Pavel Antoshkin <pavel.antoshkin@ahrefs.com>"
   "Pierre Boutillier <pierre.boutillier@laposte.net>"
   "Shon Feder <shon.feder@key.me>"
+  "metanivek <metanivek@gmail.com>"
+  "sebastiantoh <sebas.tsj.98@gmail.com>"
   "Anurag Soni <anuragsoni.13@gmail.com>"
   "Arjun Ravi Narayan <arjunravinarayan@gmail.com>"
   "Asya-kawai <kawai-toshiki@aintek.xyz>"
   "Christophe Troestler <christophe.Troestler@umons.ac.be>"
+  "Corentin Leruth <corentin.leruth@gmail.com>"
   "Damien Doligez <ddoligez@janestreet.com>"
   "Daniel M <dan.mntg@gmail.com>"
   "Ding Xiang Fei <dingxiangfei2009@protonmail.ch>"
+  "Enrico Tassi <Enrico.Tassi@Inria.fr>"
   "François Pottier <francois.pottier@inria.fr>"
-  "Javier Chavarri <javier.chavarri@gmail.com>"
-  "Kate <kit.ty.kate@disroot.org>"
-  "Louis <louis.roche@ahrefs.com>"
+  "Javier Chávarri <javier.chavarri@gmail.com>"
+  "Jonas Bergler <jonas@bergler.name>"
+  "Kate <kit-ty-kate@exn.st>"
+  "Koon Wen Lee <koonwen@gmail.com>"
+  "Louis <mail+github@louisroche.net>"
   "Louis Roché <louis@cryptosense.com>"
-  "Raman Varabets <raman+git@ahrefs.com>"
   "Stephane Legrand <slegrand45@gmail.com>"
   "Vincent Bernardoff <vb@luminar.eu.org>"
+  "Zach <zachyannes@gmail.com>"
   "haoyang <haoyang@esper.co>"
   "pmundkur <prashanth.mundkur@gmail.com>"
+  "rr0gi <igor@ahrefs.com>"
   "ygrek <ygrek@autistici.org>"
 ]
 license: "MIT"
@@ -72,14 +87,12 @@ bug-reports: "https://github.com/ahrefs/atd/issues"
 depends: [
   "dune" {>= "2.8"}
   "ocaml" {>= "4.08"}
-  "alcotest" {with-test}
-  "atd" {< "3.0.0" & >= "2.14.0"}
-  "atdgen-runtime" {>= "2.1.0"}
-  "atdgen-codec-runtime" {with-test}
-  "biniou" {>= "1.0.6"}
-  "yojson" {>= "2.0.1" & < "3"}
-  "odoc" {with-doc}
+  "atd" {>= "3.0.0"}
+  "cmdliner" {>= "1.1.0"}
   "re"
+  "alcotest" {with-test}
+  "conf-python-3" {with-test}
+  "odoc" {with-doc}
 ]
 dev-repo: "git+https://github.com/ahrefs/atd.git"
 build: [
@@ -96,11 +109,11 @@ build: [
   ]
 ]
 url {
-  src:
-    "https://github.com/ahrefs/atd/releases/download/2.16.0/atd-2.16.0.tbz"
+  src: "https://github.com/ahrefs/atd/releases/download/3.0.1/atd-3.0.1.tbz"
   checksum: [
-    "sha256=59e6b445620241cbd6901a842b336683afb0eb125b3adbfee28bd94cd54e0def"
-    "sha512=7fbd12a1a482cecb7e0ccbfd5918a33637ec8af46212ce88bfa2410d2b927dc48e8ceb78fc5eabd80d99bc59cddd5d72fc236e990b4031ccda6fadb1ecdfe00a"
+    "sha256=03aeae4565a32d8bb68ac8514af5efc7800b1619c2973941ca7138b12b344884"
+    "sha512=412ce655772ddde30a9e22b4d00b263b3edd7241357f3f8a6d13ec6835c5a147a3033740634f8abbc5e32a830f56939cb24c5d3c4b531e55b76d4d20fefe2a64"
   ]
 }
-x-commit-hash: "695b060b60c1eb6f8d68d3b7eec68495e54d655a"
+x-commit-hash: "5cd986811d80c90b708fe905e493062c59da0cb7"
+x-maintenance-intent: ["(latest)"]
