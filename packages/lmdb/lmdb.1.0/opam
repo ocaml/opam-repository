@@ -14,16 +14,17 @@ tags: [ "clib:lmdb" "database" ]
 build: [
   ["dune" "subst"] {dev}
   ["dune" "build" "-p" name "-j" jobs]
-  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & arch != "arm32" & arch != "ppc64" & arch != "x86_32"}
 ]
 depends: [
   "ocaml" {>= "4.03"}
-  "bigstringaf"
+  "bigstringaf" {>= "0.10.0"}
   "dune" {>= "1.2"}
   "dune-configurator" {build}
   "alcotest" {with-test}
   "benchmark" {with-test}
   "odoc" {with-doc}
+  "conf-pkg-config" {build}
 ]
 
 depexts: [
@@ -34,9 +35,11 @@ depexts: [
   ["lmdb"] {os-family = "archlinux"}
   ["lmdb"] {os-family = "gentoo"}
   ["lmdb-dev"] {os-family = "alpine"}
+  ["lmdb-devel"] {os-family = "centos"}
   ["lmdb-devel"] {os-family = "fedora"}
   ["lmdb-devel"] {os-family = "suse" | os-family = "opensuse"}
   ["liblmdb-devel"] {os-family = "mageia"}
+  ["lmdb"] {os-distribution = "nixos"}
 ]
 url {
   src: "https://github.com/Drup/ocaml-lmdb/archive/1.0.tar.gz"
