@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "Elliptic curve library secp256k1 wrapper for Ocaml"
+description: """\
+This library wrap the secp256k1 EC(DSA) library into an OCaml library. At the moment only a subset of functionalities are available:
+- Context: create, clone, destroy, randomize
+- Elliptic curve: public key creation
+- ECDSA: verify, sign, recover
+
+All exchanged data (pubkey, signature, seckey) are represented as hex strings."""
+maintainer: "Davide Gessa <gessadavide@gmail.com>"
+authors: [
+  "Davide Gessa <gessadavide@gmail.com>"
+  "Vincent Bernardoff <vb@luminar.eu.org>"
+  "Yoichi Hirai <i@yoichihirai.com>"
+  "Anton Trunov"
+  "ygrek"
+]
+license: "MIT"
+homepage: "https://github.com/dakk/secp256k1-ml"
+bug-reports: "https://github.com/dakk/secp256k1-ml/issues"
+depends: [
+  "ocaml" {>= "4.12.0"}
+  "dune" {>= "1.0"}
+  "base" {build & >= "v0.12.0"}
+  "stdio" {build & >= "v0.9.0"}
+  "dune-configurator" {build & >= "1.0"}
+  "hex" {with-test & >= "1.1.1"}
+  "alcotest" {with-test & >= "0.8.1"}
+  "odoc" {with-test & >= "1.3.0"}
+  "base-bigarray"
+  "conf-secp256k1"
+]
+build: ["dune" "build" "-p" name "-j" jobs]
+dev-repo: "git+https://github.com/dakk/secp256k1-ml"
+url {
+  src: "https://github.com/dakk/secp256k1-ml/archive/refs/tags/v0.5.0.tar.gz"
+  checksum: [
+    "md5=4e178cc15d4a913382595190c24697a9"
+    "sha512=01196acbec5be1d11f12ab3afe3636071501b95b5c8b10eba95f2dddb97ad1938577dfa556df798ec5dda4c063157290110bae2999fa4bcd9ce8bca1d967f7c2"
+  ]
+}
+x-ci-accept-failures: [ "debian-11" ] # too old libsecp256k1-dev on debian-11
