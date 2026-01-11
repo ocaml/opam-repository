@@ -1,0 +1,94 @@
+opam-version: "2.0"
+synopsis: "Pipeline language for keeping things up-to-date"
+description: """\
+OCurrent provides an OCaml eDSL for writing CI/CD pipelines.
+
+It is used in ocaml-ci (which provides CI for OCaml projects on GitHub),
+and in docker-base-images (a pipeline that builds Docker images for various
+Linux distributions, OCaml compiler versions and CPU types, and pushes them
+to Docker Hub).
+
+A pipeline is written much like you would write a one-shot sequential script,
+but OCurrent will automatically re-run steps when the inputs change, and will
+run steps in parallel where possible."""
+maintainer: "Mark Elvers <mark.elvers@tunbury.org>"
+authors: [
+  "Thomas Leonard <talex5@gmail.com>"
+  "Antonin Décimo <antonin@tarides.com>"
+  "Tim McGilchrist <timmcgil@gmail.com>"
+  "Craig Ferguson <me@craigfe.io>"
+  "Etienne MARAIS <etienne@maiste.fr>"
+  "Anil Madhavapeddy <anil@recoil.org>"
+  "David Allsopp <david.allsopp@metastack.com>"
+  "Ewan Mellor <ewan@tarides.com>"
+  "Kate <kit.ty.kate@disroot.org>"
+  "Mark Elvers <mark.elvers@tunbury.org>"
+  "Puneeth Chaganti <punchagan@muse-amuse.in>"
+  "Lucas Pluvinage <lucas@tarides.com>"
+  "Navin Keswani <navin@novemberkilo.com>"
+  "Thomas Gazagnaire <thomas@gazagnaire.org>"
+  "Patrick Ferris <patrick@sirref.org>"
+  "Arthur Wendling <art.wendling@gmail.com>"
+  "Anurag Soni <anurag@sonianurag.com>"
+  "Ambre Austen Suhamy <ambre@tarides.com>"
+  "Ben Andrew <benmandrew@gmail.com>"
+  "Gargi Sharma <gs051095@gmail.com>"
+  "Jonathan Coates <git@squiddev.cc>"
+  "Jules Aguillon <juloo.dsi@gmail.com>"
+  "Magnus Skjegstad <magnus@skjegstad.com>"
+  "Shon Feder <shon.feder@gmail.com>"
+  "smolck <46855713+smolck@users.noreply.github.com>"
+  "tatchi <corentin.leruth@gmail.com>"
+]
+license: "Apache-2.0"
+homepage: "https://github.com/ocurrent/ocurrent"
+doc: "https://ocurrent.github.io/ocurrent/"
+bug-reports: "https://github.com/ocurrent/ocurrent/issues"
+depends: [
+  "dune" {>= "3.3"}
+  "ocaml" {>= "4.12.0"}
+  "astring" {>= "0.8.5"}
+  "bos"
+  "cmdliner" {>= "1.1.0"}
+  "conf-libev" {os != "win32"}
+  "current_incr" {>= "0.6.1"}
+  "duration"
+  "fmt" {>= "0.8.9"}
+  "fpath" {>= "0.7.3"}
+  "logs" {>= "0.7.0"}
+  "lwt" {>= "5.7"}
+  "lwt-dllist"
+  "ppx_deriving"
+  "prometheus"
+  "re" {>= "1.9.0"}
+  "result" {>= "1.5"}
+  "sqlite3"
+  "alcotest" {with-test & >= "1.2.0"}
+  "alcotest-lwt" {with-test & >= "1.2.0"}
+  "prometheus-app" {with-test & >= "1.2"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocurrent/ocurrent.git"
+url {
+  src:
+    "https://github.com/ocurrent/ocurrent/releases/download/v0.7.3/ocurrent-0.7.3.tbz"
+  checksum: [
+    "md5=7cc6b5cb4158e01444c92082fc7fc88d"
+    "sha512=5576b26377d470bdd4cbdb58d4cc4bcc3b62258ed9768b589bcae09f16919d7748d93cac34f35b6da20972dde356f57eadc00ef832f7cb939a42ce0689fc4104"
+  ]
+}
+x-maintenance-intent: ["(latest)"]
