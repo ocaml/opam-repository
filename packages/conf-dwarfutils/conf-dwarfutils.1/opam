@@ -10,15 +10,17 @@ build: [
 ]
 depends: ["conf-pkg-config" {build}]
 depexts: [
-  ["dwarf-tools"] {os-distribution = "alpine"}
-  ["dwarfutils"] {os-family = "debian"}
-  ["dwarfutils"] {os-family = "ubuntu"}
-  ["libdwarf-tools" "libdwarf-devel"] {os-distribution = "centos"}
+  ["libdwarf-dev" "dwarf-tools"] {os-family = "alpine"}
+  ["libdwarf-dev" "dwarfutils"] {os-family = "debian"}
+  ["libdwarf-dev" "dwarfutils"] {os-family = "ubuntu"}
   ["libdwarf-tools" "libdwarf-devel"] {os-family = "fedora" & os-version > "40" }
   ["libdwarf" "dwarfdump"] {os-distribution = "nixos"}
   ["dwarfutils"] {os-distribution = "homebrew" & os = "macos"}
   ["libdwarf" "dwarfdump"] {os-family = "arch"}
 ]
+
+available: os != "win32" & os-family != "centos" & os != "freebsd" & os-distribution != "ol" & os-family != "opensuse" & os-family != "suse"
+  
 synopsis: "Virtual package relying on dwarfutils"
 description:
   "This package can only install if the dwarfutils software suite is installed on the system."
