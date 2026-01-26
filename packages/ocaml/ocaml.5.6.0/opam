@@ -1,0 +1,63 @@
+opam-version: "2.0"
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+synopsis: "The OCaml compiler (virtual package)"
+description: """
+This package requires a matching implementation of OCaml,
+and polls it to initialise specific variables like `ocaml:native-dynlink`"""
+maintainer: "David Allsopp <david@tarides.com>"
+authors: [
+  "Xavier Leroy"
+  "Damien Doligez"
+  "Alain Frisch"
+  "Jacques Garrigue"
+  "Didier Rémy"
+  "KC Sivaramakrishnan"
+  "Jérôme Vouillon"
+]
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+depends: [
+  "ocaml-base-compiler" {= "5.6.0"} |
+  "ocaml-variants" {>= "5.6.0~" & < "5.6.1~"} |
+  "ocaml-system" {>= "5.6.0~" & < "5.6.1~"} |
+  "dkml-base-compiler" {>= "5.6.0~" & < "5.6.1~"}
+]
+flags: avoid-version
+setenv: [
+  [OCAMLTOP_INCLUDE_PATH += "%{toplevel}%"]
+  # Legacy opam variable
+  [OCAML_TOPLEVEL_PATH = "%{toplevel}%"]
+]
+x-env-path-rewrite: [
+  [OCAMLTOP_INCLUDE_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
+]
+build: [
+  ["ocaml" "gen_ocaml_config.ml" version name
+     # The packages referred to in this string must be in the disjunction above
+     # and also all be in the ocaml-core-compiler conflict-class
+     "%{ocaml-system:installed?system:}%%{ocaml-base-compiler:version}%%{dkml-base-compiler:version}%%{ocaml-variants:version}%"
+     ocaml-system:installed
+     # The order of these parameters matches the "convention" for the
+     # ocaml-options-only packages
+     "%{ocaml-option-32bit:installed?+32bit:}%"
+     "%{ocaml-option-afl:installed?+afl:}%"
+     "%{ocaml-option-bytecode-only:installed?+bytecode-only:}%"
+     "%{ocaml-option-fp:installed?+fp:}%"
+     "%{ocaml-option-flambda:installed?+flambda:}%"
+     "%{ocaml-option-musl:installed?+musl:}%"
+     "%{ocaml-option-no-flat-float-array:installed?+no-flat-float-array:}%"
+     "%{ocaml-option-static:installed?+static:}%"]
+]
+build-env: [
+  [CAML_LD_LIBRARY_PATH = ""]
+  [LSAN_OPTIONS = "detect_leaks=0,exitcode=0"]
+  [ASAN_OPTIONS = "detect_leaks=0,exitcode=0"]
+]
+extra-source "gen_ocaml_config.ml" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/5799ec070df18cec96e5d828bc8e10b86cb0ed2c/tools/opam/gen_ocaml_config.ml"
+  checksum: [
+    "sha512=e679b89e87cda2f012fd13685807b7f1e1037fc0fc8f525aebec5a299d5634960f532a3dbf2fe519d9a5e19759f8dd99170999c252c35dd5762d4d0509f4179a"
+    "sha256=664da1ec2b19a7cfb55338ee10d9c8634cdca255d6cc46df66cd4d3e7e759969"
+  ]
+}
