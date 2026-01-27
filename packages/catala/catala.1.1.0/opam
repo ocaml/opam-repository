@@ -1,0 +1,86 @@
+opam-version: "2.0"
+synopsis:
+  "Compiler and library for the literate programming language for tax code specification"
+description: """
+Catala is a domain-specific language for deriving faithful-by-construction algorithms from legislative texts. See https://catala-lang.org for more information
+"""
+maintainer: "contact@catala-lang.org"
+authors: [
+  "Vincent Botbol"
+  "Nicolas Chataing"
+  "Alain Delaët-Tixeuil"
+  "Louis Gesbert"
+  "Aymeric Fromherz"
+  "Denis Merigoux"
+  "Raphaël Monat"
+  "Romain Primet"
+  "Emile Rolley"
+]
+license: "Apache-2.0"
+tags: [ "catala" ]
+homepage: "https://github.com/CatalaLang/catala"
+bug-reports: "https://github.com/CatalaLang/catala/issues"
+depends: [
+  "ocaml" {>= "4.14.0" }
+  "ocamlfind" {!= "1.9.5"}
+  "dune" {>= "3.13"}
+  "cppo" {>= "1"}
+  "menhir" {>= "20200211"}
+  "menhirLib" {>= "20200211"}
+  "ocolor" {>= "1.3.0"}
+  "bindlib" {>= "6.0"}
+  "cmdliner" {>= "1.1.0"}
+  "ocamlgraph" {>= "1.8.8"}
+  "re" {>= "1.11"}
+  "sedlex" {>= "3.2"}
+  "uucp" {>= "10"}
+  "ubase" {>= "0.05"}
+  "zarith" {>= "1.12"}
+  "yojson" {>= "2.1.0"}
+  "hex" { >= "1.5.0"}
+  "json-data-encoding" { >= "1.0.1" }
+  "crunch" {>= "3.0.0"}
+  "alcotest" {>= "1.5.0"}
+  "ninja_utils" {= "0.9.0"}
+  "otoml" {>= "1.0"}
+  "odoc" {with-doc}
+  "ocamlformat" {with-dev-setup & = "0.28.1"}
+  "obelisk" {with-dev-setup}
+  "conf-ninja" {post}
+  # --- the following are "optional runtime dependencies" ---
+  # they're listed here mostly for documentation ; one can export
+  # OPAMVAR_cataladevmode=1 before installation to automatically get them
+  "conf-npm" {post & ?cataladevmode & cataladevmode}
+  "conf-python-3-dev" {post & ?cataladevmode & cataladevmode}
+  "conf-openjdk" {post & ?cataladevmode & cataladevmode}
+  "conf-pandoc" {post & ?cataladevmode & cataladevmode}
+  "z3" {post & ?cataladevmode & cataladevmode}
+]
+depopts: ["z3"]
+conflicts: [
+  "z3" {< "4.8.11"}
+]
+build: [
+  "dune" "build" "-p" name "-j" jobs "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+]
+build-env: [ CATALA_VERSION = "%{version}%" ]
+depexts: [
+  ["groff"] {with-doc}
+  # --- the following are "optional runtime dependencies" ---
+  # See above
+  ["python3-pip"] {?cataladevmode & cataladevmode & os-family = "debian"}
+  ["py3-pip" "py3-pygments"] {?cataladevmode & cataladevmode & os-distribution = "alpine"}
+  ["python-pygments"] {?cataladevmode & cataladevmode & os-family = "arch"}
+]
+dev-repo: "git+https://github.com/CatalaLang/catala"
+url {
+  src:
+    "https://github.com/CatalaLang/catala/archive/refs/tags/1.1.0.tar.gz"
+  checksum: [
+    "md5=ec7dda88c5f7f371d2a35874cdae2a10"
+    "sha512=7cedccfbe5330992d5730441d6ba7b97446237ff5bb4579498a167f2319ec03e8fae50b7f80e3abe96833744b61ffd10719ce0c3e4c144893a4b7adc77e91b56"
+  ]
+}
+x-maintenance-intent: ["(any).(any)"]

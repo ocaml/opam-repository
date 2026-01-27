@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis: "A formatter for Catala based on the Topiary universal formatting engine"
+description: """
+Topiary repository: https://github.com/tweag/topiary
+"""
+maintainer: "vincent.botbol@inria.fr"
+authors: [ "Vincent Botbol" ]
+license: "Apache-2.0"
+tags: [ "catala" "formatter" ]
+homepage: "https://github.com/CatalaLang/catala-format"
+bug-reports: "https://github.com/CatalaLang/catala-format"
+depends: [
+  "ocaml"
+  "dune"
+  "cmdliner"
+  "lwt" {with-test}
+  "topiary" {= "0.5.1"}
+  "conf-c++"
+  "catala" { = "1.1.0" }
+]
+build:[
+  "dune" "build" "-p" name "-j" jobs "@catala-format"
+]
+install: [
+  [ "install" "_build/default/src/main.exe" "%{bin}%/catala-format" ]
+  [ "mkdir" "-p" "%{topiary:share}%/queries" ]
+  [ "install" "catala.scm" "%{topiary:share}%/queries/catala.scm" ]
+  [ "mkdir" "-p" "%{topiary:share}%/configs/catala.ncl" ]
+  [ "install" "catala.ncl" "%{topiary:share}%/configs/catala.ncl" ]
+]
+dev-repo: "git+https://github.com/CatalaLang/catala-format.git"
+url {
+  src:
+    "https://github.com/CatalaLang/catala-format/archive/refs/tags/1.1.0.tar.gz"
+  checksum: [
+    "md5=4076364148795977276451b4dcc9df13"
+    "sha512=cb759f83dfd0b7a777b6400ee4a35ba059322f7c6c812822321314aeb11eecbacb647757819e98e472003d340ee7a2aafb0f6ac4df42f5662c794f2da5a272d6"
+  ]
+}
+x-maintenance-intent: ["(latest)"]
