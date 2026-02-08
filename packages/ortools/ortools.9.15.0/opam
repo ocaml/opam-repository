@@ -1,0 +1,54 @@
+opam-version: "2.0"
+
+synopsis:
+"Build and export Google OR-Tools models"
+
+description: """
+Google OR-Tools is an open source software suite for optimization, tuned
+for tackling the world's toughest problems in vehicle routing, flows,
+integer and linear programming, and constraint programming. This package
+provides OCaml functions for working with the Protocol Buffer formats that
+are read and written by the different solvers. It does not actually depend
+on the OR-Tools software, which need not even be installed. The interface
+currently only supports a subset of the features provided by the CP-SAT solver.
+Pull requests for more features and solvers are welcome."""
+
+maintainer:  ["Timothy Bourke <tim@tbrk.org>"]
+authors:     ["Timothy Bourke <tim@tbrk.org>"]
+license:     "Apache-2.0"
+homepage:    "https://github.com/inria/ocaml-ortools"
+bug-reports: "https://github.com/inria/ocaml-ortools/issues"
+dev-repo:    "git+https://github.com/inria/ocaml-ortools.git"
+x-maintenance-intent: ["(latest)"]
+
+depends: [
+  "ocaml" {>= "4.14.2"}
+  "dune"  {>= "3.21"}
+  "pbrt"  {>= "4.0"}
+  "odoc"  {with-doc}
+]
+
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/INRIA/ocaml-ortools/releases/download/9.15.0/ortools-9.15.0.tbz"
+  checksum: [
+    "sha256=65b7f55f80e49f3199e340e88fee3daf14dab51534ffeb7cf4cfe2b54ef79a27"
+    "sha512=4e216d0f597336b9f3fcaa59d0f2fdc3677c71de2b509cdf326b0f536703f13884465c33c131e65f40dec212ac9e530ad79a5226cc50729a23e66441da1c07f3"
+  ]
+}
+x-commit-hash: "dea0aa1db40ad8926788a2d1baa24a53b9ad690b"
+
