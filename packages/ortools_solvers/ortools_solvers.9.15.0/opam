@@ -19,13 +19,16 @@ dev-repo:    "git+https://github.com/inria/ocaml-ortools.git"
 x-maintenance-intent: ["(latest)"]
 
 depends: [
-  "ocaml"      {>= "4.14.2"}
-  "dune"       {>= "3.21"}
-  "ortools"    {>= "9.15"}
-  "conf-cmake" {build}
-  "sexplib0"   {build}
-  "csexp"      {build}
-  "odoc"       {with-doc}
+  "ocaml"	{>= "4.14.2"}
+  "dune"	{>= "3.21"}
+  "ortools"	{>= "9.15"}
+  "conf-cmake"	{build}
+  "conf-zlib"   {build}
+  "conf-bzip2"  {build}
+  "conf-eigen3" {build}
+  "sexplib0"	{build}
+  "csexp"	{build}
+  "odoc"	{with-doc}
 ]
 
 build: [
@@ -44,64 +47,14 @@ build: [
 ]
 
 depexts: [
-## solid
-
-  #zlib 1.3.1
-  ["zlib"]		    {os = "macos" & os-distribution = "homebrew"}
-  ["libz-dev"]		    {os-distribution = "debian"}
-  ["zlib-dev"]		    {os-distribution = "alpine"}
-  ["zlib"]		    {os-distribution = "arch"}
-  ["zlib-devel" "zlib-static"]
-			    {os-distribution = "centos" & os-version = "9"}
-  ["zlib-ng-compat-devel" "zlib-ng-compat-static"]
-			    {os-distribution = "centos" & os-version = "10"}
-  ["zlib-ng-compat-devel" "zlib-ng-compat-static"]
-			    {os-distribution = "fedora"}
-  ["libzip"]		    {os-distribution = "freebsd"}
-  ["zlib-ng-compat-devel"]  {os-family = "suse"}
-  ["zlib-ng-compat-devel"]  {os-family = "opensuse"}
-  ["zlib1g-dev"]	    {os-distribution = "ubuntu"}
-  ["zlib-devel"]	    {os = "win32" & os-distribution = "cygwin"}
-  ["zlib"]		    {os = "win32" & os-distribution = "msys2" }
-
-  # 1.0.8
-  ["bzip2"]		    {os = "macos" & os-distribution = "homebrew"}
-  ["libbz2-dev"]	    {os-distribution = "debian"}
-  ["bzip2-dev"]		    {os-distribution = "alpine"}
-  ["bzip2"]		    {os-distribution = "arch"}
-  ["bzip2-devel"]	    {os-distribution = "centos"}
-  ["bzip2-devel"]	    {os-distribution = "fedora"}
-  ["bzip2"]		    {os-distribution = "freebsd"}
-  ["bzip2"]		    {os-distribution = "openbsd"}
-  ["libbz2-devel"]	    {os-family = "suse"}
-  ["libbz2-devel"]	    {os-family = "opensuse"}
-  ["libbz2-dev"]	    {os-distribution = "ubuntu"}
-  ["bzip2"]		    {os = "win32" & os-distribution = "cygwin"}
-  ["bzip2"]		    {os = "win32" & os-distribution = "msys2" }
-
-  # 3.4.1
-  ["eigen@3"]		    {os = "macos" & os-distribution = "homebrew"}
-  ["libeigen3-dev"]	    {os-distribution = "debian"}
-  ["eigen-dev"]		    {os-distribution = "alpine"}
-  ["eigen3"]		    {os-distribution = "arch"}
-  ["eigen3"]		    {os-distribution = "centos"}
-  ["eigen3-devel"]	    {os-distribution = "fedora"}
-  ["eigen"]		    {os-distribution = "freebsd"}
-  ["eigen3"]		    {os-distribution = "openbsd"}
-  ["eigen3-devel"]	    {os-family = "suse"}
-  ["eigen3-devel"]	    {os-family = "opensuse"}
-  ["libeigen3-dev"]	    {os-distribution = "ubuntu"}
-  ["eigen3"]		    {os = "win32" & os-distribution = "cygwin"}
-  ["eigen3"]		    {os = "win32" & os-distribution = "msys2" }
+  # debian, alpine, arch: build with OCaml ortools_solvers package
 
   # needed to compile abseil (linux/futex.h)
   ["linux-headers"]	    {os-distribution = "alpine"}
 
-## brittle
-## debian, alpine, arch: build with OCaml ortools_solvers package
-
   # abseil 20260107.0
   ["abseil"]		    {os = "macos" & os-distribution = "homebrew"}
+
 
   # protobuf 33.4
   ["protobuf"]		    {os = "macos" & os-distribution = "homebrew"}
@@ -111,7 +64,6 @@ depexts: [
 
   # re2 2025-11-05
   ["re2"]		    {os = "macos" & os-distribution = "homebrew"}
-
 ]
 
 x-ci-accept-failures: [
