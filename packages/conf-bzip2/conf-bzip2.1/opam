@@ -1,0 +1,46 @@
+opam-version: "1.0.8"
+maintainer:   "tim@tbrk.org"
+homepage:     "https://sourceware.org/bzip2/"
+bug-reports:  "https://github.com/ocaml/opam-repository/issues"
+authors:      ["Julian Seward"]
+license:      "bzip2"
+
+build: [
+    "pkgconf"	    {os = "win32" & os-distribution != "cygwinports"}
+    "pkg-config"    {os != "win32" | os-distribution = "cygwinports"}
+    "--personality=i686-w64-mingw32"
+		    {os = "win32" & os-distribution != "cygwinports"
+				  & host-arch-x86_32:installed}
+    "--personality=x86_64-w64-mingw32"
+		    {os = "win32" & os-distribution != "cygwinports"
+				  & host-arch-x86_64:installed}
+    "bzip2 --help"
+]
+
+depends: [
+  "conf-pkg-config" {build}
+  (  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"}
+      & "conf-mingw-w64-zlib-i686" {os = "win32" & os-distribution != "cygwinports"})
+   | ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"}
+      & "conf-mingw-w64-zlib-x86_64" {os = "win32" & os-distribution != "cygwinports"}))
+]
+
+depexts: [
+  ["bzip2"]		    {os = "macos" & os-distribution = "homebrew"}
+  ["libbz2-dev"]	    {os-distribution = "debian"}
+  ["bzip2-dev"]		    {os-distribution = "alpine"}
+  ["bzip2"]		    {os-distribution = "arch"}
+  ["bzip2-devel"]	    {os-distribution = "centos"}
+  ["bzip2-devel"]	    {os-distribution = "fedora"}
+  ["bzip2"]		    {os-distribution = "freebsd"}
+  ["bzip2"]		    {os-distribution = "openbsd"}
+  ["libbz2-devel"]	    {os-family = "suse"}
+  ["libbz2-devel"]	    {os-family = "opensuse"}
+  ["libbz2-dev"]	    {os-distribution = "ubuntu"}
+  ["bzip2"]		    {os = "win32" & os-distribution = "cygwin"}
+  ["bzip2"]		    {os = "win32" & os-distribution = "msys2" }
+]
+synopsis: "Virtual package for bzip2"
+description:
+  "This package can only install if the bzip2 library is installed on the system."
+flags: conf
