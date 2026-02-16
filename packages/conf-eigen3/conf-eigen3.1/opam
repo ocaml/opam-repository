@@ -7,14 +7,17 @@ license:      "MPL-2.0"
 
 build: [
     "pkgconf"	    {os = "win32" & os-distribution != "cygwinports"}
-    "pkg-config"    {os != "win32" | os-distribution = "cygwinports"}
+    "pkg-config"    {(os != "win32" & os != "macos") | os-distribution = "cygwinports"}
     "--personality=i686-w64-mingw32"
 		    {os = "win32" & os-distribution != "cygwinports"
 				  & host-arch-x86_32:installed}
     "--personality=x86_64-w64-mingw32"
 		    {os = "win32" & os-distribution != "cygwinports"
 				  & host-arch-x86_64:installed}
-    "eigen3"
+    "eigen3"	    {os != "macos"}
+    "brew"	    {os = "macos" & os-distribution = "homebrew"}
+    "--prefix"	    {os = "macos" & os-distribution = "homebrew"}
+    "eigen@3"	    {os = "macos" & os-distribution = "homebrew"}
 ]
 
 depends: [
