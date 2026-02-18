@@ -1,0 +1,75 @@
+opam-version: "2.0"
+synopsis: "Official release 4.14.3"
+maintainer: [
+  "David Allsopp <david@tarides.com>"
+  "Florian Angeletti <florian.angeletti@inria.fr>"
+]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+authors: "Xavier Leroy and many contributors"
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git+https://github.com/ocaml/ocaml#4.14"
+depends: [
+  # This is OCaml 4.14.3
+  "ocaml" {= "4.14.3" & post}
+
+  # General base- packages
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+
+  # Port selection (Windows)
+  # amd64 mingw-w64 / MSVC
+  (("arch-x86_64" {os = "win32" & arch = "x86_64"} &
+     (("system-mingw" & "mingw-w64-shims" {os-distribution = "cygwin" & post}) |
+      "system-msvc")) |
+  # i686 mingw-w64 / MSVC
+   ("arch-x86_32" {os = "win32"} &
+     (("system-mingw" & "mingw-w64-shims" {os-distribution = "cygwin" & post}) |
+      "system-msvc")) |
+  # Non-Windows systems need to install something to satisfy this formula, so
+  # repeat the base-unix dependency
+   "base-unix" {os != "win32" & post})
+
+  # OCaml with default configuration (no flambda, TSAN, etc.)
+  "ocaml-options-vanilla" {post}
+
+  # Support Packages
+  "flexdll" {>= "0.36" & os = "win32"}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+build-env: MSYS2_ARG_CONV_EXCL = "*"
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+x-env-path-rewrite: [
+  [CAML_LD_LIBRARY_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
+]
+build: [
+  [
+    "./configure"
+    "--host=x86_64-pc-windows"  {system-msvc:installed & arch-x86_64:installed}
+    "--host=x86_64-w64-mingw32" {os-distribution = "cygwin" & system-mingw:installed & arch-x86_64:installed}
+    "--host=i686-pc-windows"    {system-msvc:installed & arch-x86_32:installed}
+    "--host=i686-w64-mingw32"   {os-distribution = "cygwin" & system-mingw:installed & arch-x86_32:installed}
+    "--prefix=%{prefix}%"
+    "--docdir=%{doc}%/ocaml"
+    "--with-flexdll=%{flexdll:share}%" {os = "win32" & flexdll:installed}
+    "-C"
+    "CC=cc" {os = "openbsd" | os = "macos"}
+    "ASPP=cc -c" {os = "openbsd" | os = "macos"}
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.14.3.tar.gz"
+  checksum: "sha256=e510689183b2d62b0a7513ea7e47be80ddb9173377a2df436dbc1ca927a64689"
+}
+extra-source "ocaml-base-compiler.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/8c17fd444391392c5f9801241374d749c080c1a8/ocaml-variants.install"
+  checksum: [
+    "sha256=79f2a1a5044a91350a0eb6ce12e261a72a2855c094c425cddf3860e58c486678"
+    "md5=3e969b841df1f51ca448e6e6295cb451"
+  ]
+}
