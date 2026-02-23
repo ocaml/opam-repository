@@ -20,6 +20,7 @@ dev-repo: "git+https://github.com/ocaml/ocaml.git#5.5"
 depends: [
   # This is OCaml 5.5.0
   "ocaml" {= "5.5.0" & post}
+  "compiler-cloning" {build}
 
   # General base- packages
   "base-unix" {post}
@@ -58,7 +59,7 @@ build-env: [
 ]
 build: [
   [
-    "./configure"
+    "sh" "tools/opam/process.sh" make "-j%{jobs}%" _:build-id _:name compiler-cloning:version
     "--host=x86_64-pc-windows"  {system-msvc:installed & arch-x86_64:installed}
     "--host=x86_64-w64-mingw32" {os-distribution = "cygwin" & system-mingw:installed & arch-x86_64:installed}
     "--host=i686-pc-windows"    {system-msvc:installed & arch-x86_32:installed}
@@ -70,7 +71,6 @@ build: [
     "--enable-runtime-search"
     "--enable-runtime-search-target=fallback"
     "--with-flexdll=%{flexdll:share}%" {os = "win32" & flexdll:installed}
-    "-C"
     "--with-afl" {ocaml-option-afl:installed}
     "--disable-native-compiler" {ocaml-option-bytecode-only:installed}
     "--disable-flat-float-array" {ocaml-option-no-flat-float-array:installed}
@@ -95,9 +95,8 @@ build: [
     "LIBS=-static" {ocaml-option-static:installed}
     "--disable-warn-error"
   ]
-  [make "-j%{jobs}%"]
 ]
-install: [make "install"]
+install: ["sh" "tools/opam/process.sh" make "install" _:build-id _:name prefix]
 url {
   src: "https://github.com/ocaml/ocaml/archive/5.5.0-alpha1.tar.gz"
   checksum: "sha256=9b78c8734c4e1c2efa852326e0dce8b24f8c8d0fbd01645b6165c9a9b15898df"
@@ -116,11 +115,9 @@ depopts: [
   "ocaml-option-static"
   "ocaml-option-tsan"
 ]
-extra-source "ocaml-compiler.install" {
-  src:
-    "https://raw.githubusercontent.com/ocaml/ocaml/5.5.0-alpha1/ocaml-variants.install"
-  checksum: [
-    "sha256=7af3dc34e6f9f3be2ffd8d32cd64fa650d6a036c86c4821a7033d24a90fba11c"
-    "md5=781ea69255fd0cb643a9617ff56fd6ba"
-  ]
-}
+post-messages: [
+"This switch had to be compiled from sources, but future switches with the 🐌
+same compiler version and configuration should assemble instantly." {!failure & !_:cloned & compiler-cloning:version != "disabled"}
+"As requested, this switch was compiled from sources 😴" {!failure & compiler-cloning:version = "disabled"}
+"Switch cloned by %{_:clone-mechanism}% from %{_:clone-source}% 💨" {!failure & _:cloned}
+]
