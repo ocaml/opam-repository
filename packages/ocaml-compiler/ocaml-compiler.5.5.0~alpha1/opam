@@ -1,0 +1,126 @@
+opam-version: "2.0"
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+synopsis: "First alpha release of OCaml 5.5.0"
+maintainer: [
+  "David Allsopp <dra27@dra27.uk>"
+  "Florian Angeletti <florian.angeletti@inria.fr>"
+]
+authors: [
+  "Xavier Leroy"
+  "Damien Doligez"
+  "Alain Frisch"
+  "Jacques Garrigue"
+  "Didier Rémy"
+  "KC Sivaramakrishnan"
+  "Jérôme Vouillon"
+]
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git+https://github.com/ocaml/ocaml.git#5.5"
+depends: [
+  # This is OCaml 5.5.0
+  "ocaml" {= "5.5.0" & post}
+
+  # General base- packages
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-domains" {post}
+  "base-nnp" {post}
+  "base-effects" {post}
+
+  "ocaml-beta" {opam-version < "2.1.0"}
+
+  # Port selection (Windows)
+  # amd64 mingw-w64 / MSVC
+  (("arch-x86_64" {os = "win32" & arch = "x86_64"} &
+     (("system-mingw" & "mingw-w64-shims" {os-distribution = "cygwin" & build}) |
+      ("system-msvc" & "ocaml-option-no-compression" {os = "win32"}))) |
+  # i686 mingw-w64 / MSVC
+   ("arch-x86_32" {os = "win32"} & "ocaml-option-bytecode-only" {os = "win32"} &
+     (("system-mingw" & "mingw-w64-shims" {os-distribution = "cygwin" & build}) |
+      ("system-msvc" & "ocaml-option-no-compression" {os = "win32"}))) |
+  # Non-Windows systems need to install something to satisfy this formula, so
+  # repeat the base-unix dependency
+   "base-unix" {os != "win32" & post})
+
+  # All the 32-bit architectures are bytecode-only
+  "ocaml-option-bytecode-only" {arch != "arm64" & arch != "x86_64" & arch != "s390x" & arch != "riscv64" & arch != "ppc64"}
+
+  # Support Packages
+  "flexdll" {>= "0.44" & os = "win32"}
+]
+flags: [ avoid-version ]
+build-env: [
+  [MSYS2_ARG_CONV_EXCL = "*"]
+  [LSAN_OPTIONS = "detect_leaks=0,exitcode=0"]
+  [ASAN_OPTIONS = "detect_leaks=0,exitcode=0"]
+]
+build: [
+  [
+    "./configure"
+    "--host=x86_64-pc-windows"  {system-msvc:installed & arch-x86_64:installed}
+    "--host=x86_64-w64-mingw32" {os-distribution = "cygwin" & system-mingw:installed & arch-x86_64:installed}
+    "--host=i686-pc-windows"    {system-msvc:installed & arch-x86_32:installed}
+    "--host=i686-w64-mingw32"   {os-distribution = "cygwin" & system-mingw:installed & arch-x86_32:installed}
+    "--prefix=%{prefix}%"
+    "--docdir=%{doc}%/ocaml"
+    "--with-additional-stublibsdir"
+    "--with-relative-libdir"
+    "--enable-runtime-search"
+    "--enable-runtime-search-target=fallback"
+    "--with-flexdll=%{flexdll:share}%" {os = "win32" & flexdll:installed}
+    "-C"
+    "--with-afl" {ocaml-option-afl:installed}
+    "--disable-native-compiler" {ocaml-option-bytecode-only:installed}
+    "--disable-flat-float-array" {ocaml-option-no-flat-float-array:installed}
+    "--enable-flambda" {ocaml-option-flambda:installed}
+    "--enable-frame-pointers" {ocaml-option-fp:installed}
+    "--without-zstd" {ocaml-option-no-compression:installed}
+    "--enable-tsan" {ocaml-option-tsan:installed}
+    "CC=cc" {!ocaml-option-32bit:installed & !ocaml-option-musl:installed & (os = "openbsd" | os = "macos")}
+    "CC=clang" {ocaml-option-tsan:installed & (os="macos")}
+    "CC=musl-gcc" {ocaml-option-musl:installed & os-distribution!="alpine"}
+    "CFLAGS=-Os" {ocaml-option-musl:installed & arch != "arm64"}
+    "CFLAGS=-Os -mno-outline-atomics" {ocaml-option-musl:installed & arch = "arm64"}
+    "LDFLAGS=-Wl,--no-as-needed,-ldl" {ocaml-option-leak-sanitizer:installed | (ocaml-option-address-sanitizer:installed & os!="macos")}
+    "CC=gcc -ldl -fsanitize=leak -fno-omit-frame-pointer -O1 -g" {ocaml-option-leak-sanitizer:installed}
+    "CC=gcc -ldl -fsanitize=address -fno-omit-frame-pointer -O1 -g" {ocaml-option-address-sanitizer:installed & os!="macos"}
+    "CC=clang -fsanitize=address -fno-omit-frame-pointer -O1 -g" {ocaml-option-address-sanitizer:installed & os="macos"}
+    "CC=gcc -m32" {ocaml-option-32bit:installed & os="linux"}
+    "CC=gcc -Wl,-read_only_relocs,suppress -arch i386 -m32" {ocaml-option-32bit:installed & os="macos"}
+    "ASPP=musl-gcc -c" {ocaml-option-musl:installed & os-distribution!="alpine"}
+    "--host=i386-linux" {ocaml-option-32bit:installed & os="linux"}
+    "--host=i386-apple-darwin13.2.0" {ocaml-option-32bit:installed & os="macos"}
+    "LIBS=-static" {ocaml-option-static:installed}
+    "--disable-warn-error"
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/5.5.0-alpha1.tar.gz"
+  checksum: "sha256=9b78c8734c4e1c2efa852326e0dce8b24f8c8d0fbd01645b6165c9a9b15898df"
+}
+depopts: [
+  "ocaml-option-32bit"
+  "ocaml-option-afl"
+  "ocaml-option-bytecode-only"
+  "ocaml-option-no-flat-float-array"
+  "ocaml-option-flambda"
+  "ocaml-option-fp"
+  "ocaml-option-no-compression"
+  "ocaml-option-musl"
+  "ocaml-option-leak-sanitizer"
+  "ocaml-option-address-sanitizer"
+  "ocaml-option-static"
+  "ocaml-option-tsan"
+]
+extra-source "ocaml-compiler.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/5.5.0-alpha1/ocaml-variants.install"
+  checksum: [
+    "sha256=7af3dc34e6f9f3be2ffd8d32cd64fa650d6a036c86c4821a7033d24a90fba11c"
+    "md5=781ea69255fd0cb643a9617ff56fd6ba"
+  ]
+}
