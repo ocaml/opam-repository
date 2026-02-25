@@ -6,18 +6,30 @@ authors:      ["Benoît Jacob" "Gaël Guennebaud"]
 license:      "MPL-2.0"
 
 build: [
-    "pkgconf"	    {os = "win32" & os-distribution != "cygwinports"}
-    "pkg-config"    {(os != "win32" & os != "macos") | os-distribution = "cygwinports"}
-    "--personality=i686-w64-mingw32"
-		    {os = "win32" & os-distribution != "cygwinports"
-				  & host-arch-x86_32:installed}
-    "--personality=x86_64-w64-mingw32"
-		    {os = "win32" & os-distribution != "cygwinports"
-				  & host-arch-x86_64:installed}
-    "eigen3"	    {os != "macos"}
-    "brew"	    {os = "macos" & os-distribution = "homebrew"}
-    "--prefix"	    {os = "macos" & os-distribution = "homebrew"}
-    "eigen@3"	    {os = "macos" & os-distribution = "homebrew"}
+    [
+	"pkgconf"
+	"--personality=i686-w64-mingw32"
+    			{os = "win32" & host-arch-x86_32:installed}
+	"--personality=x86_64-w64-mingw32"
+			{os = "win32" & host-arch-x86_64:installed}
+	"eigen3"
+    ] { ((os = "win32" & os-distribution != "cygwinports")
+	 | os-distribution = "freebsd"
+	 | os-distribution = "netbsd")}
+
+    [
+	"pkg-config"
+	"eigen3"
+    ] { !((os = "win32" & os-distribution != "cygwinports")
+	   | os-distribution = "freebsd"
+	   | os-distribution = "netbsd"
+	   | os = "macos") }
+
+    [
+	"brew"
+	"--prefix"
+	"eigen@3"
+    ] {os = "macos" & os-distribution = "homebrew"}
 ]
 
 depends: [
@@ -39,6 +51,9 @@ depexts: [
   ["eigen3"]		    {os = "win32" & os-distribution = "cygwin"}
   ["eigen3"]		    {os = "win32" & os-distribution = "msys2" }
 ]
+
+available: [ ! (os = "win32") ]
+
 synopsis: "Virtual package for eigen3"
 description:
   "This package can only install if the eigen3 library is installed on the system."
