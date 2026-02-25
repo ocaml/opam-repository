@@ -6,8 +6,14 @@ authors:      ["Julian Seward"]
 license:      "bzip2-1.0.6"
 
 build: [
-    "pkgconf"	    {os = "win32" & os-distribution != "cygwinports"}
-    "pkg-config"    {os != "win32" | os-distribution = "cygwinports"}
+    "pkgconf"	    { (os = "win32" & os-distribution != "cygwinports")
+		      | os-distribution = "freebsd"
+		      | os-distribution = "netbsd" }
+
+    }
+    "pkg-config"    { !((os = "win32" & os-distribution != "cygwinports")
+			 | os-distribution = "freebsd"
+			 | os-distribution = "netbsd") }
     "--personality=i686-w64-mingw32"
 		    {os = "win32" & os-distribution != "cygwinports"
 				  & host-arch-x86_32:installed}
