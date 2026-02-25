@@ -1,0 +1,58 @@
+opam-version: "2.0"
+synopsis: "A command-line tool for manipulating qcow2-formatted data"
+maintainer: [
+  "Dave Scott <dave@recoil.org>" "Pau Ruiz Safont" "Edwin Török "
+]
+authors: ["David Scott"]
+license: "ISC"
+tags: ["org:mirage"]
+homepage: "https://github.com/mirage/ocaml-qcow"
+bug-reports: "https://github.com/mirage/ocaml-qcow/issues"
+depends: [
+  "dune" {>= "3.18"}
+  "ocaml" {>= "4.12.0"}
+  "qcow" {= version}
+  "qcow-stream" {= version}
+  "conf-qemu-img" {with-test}
+  "cmdliner" {>= "1.1.0" & < "2.0.0"}
+  "cstruct"
+  "result"
+  "unix-type-representations"
+  "lwt"
+  "mirage-block" {>= "3.0.0"}
+  "sha" {>= "1.15.4"}
+  "sexplib"
+  "logs"
+  "fmt" {>= "0.8.2"}
+  "astring"
+  "io-page" {>= "2.4.0"}
+  "alcotest" {with-test}
+  "ounit" {with-test}
+  "mirage-block-ramdisk" {with-test}
+  "ezjsonm" {with-test}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-qcow.git"
+x-maintenance-intent: ["latest"]
+build: [
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & arch != "arm32" & arch != "x86_32"}
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/mirage/ocaml-qcow/releases/download/0.13.0/qcow-0.13.0.tbz"
+  checksum: [
+    "sha256=73375f94d9d4427ec82ee21ac3b2458ed143f616767f535be25e0a77afe1f577"
+    "sha512=7af72eb3a1185879a71731443ad3756a8ca6732ae3ddf8d4dce710890af7be19e1d883048c87d71d962de12e3719b0a38baea3be2aa9533e3d58d355ad2faf14"
+  ]
+}
+x-commit-hash: "8db9e1af04cc2b797d7b7ba8b45bfb20ad6731b4"
