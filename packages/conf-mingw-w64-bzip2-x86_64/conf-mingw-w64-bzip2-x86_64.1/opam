@@ -1,0 +1,20 @@
+opam-version: "2.0"
+synopsis: "Virtual package for bzip2 on x86_64 mingw-w64 (64-bit x86_64)"
+description: "Ensures the x86_64 version of bzip2 for the mingw-w64 project is available"
+maintainer: "Timothy Bourke <tim@tbrk.org>"
+authors: ["Julian Seward"]
+license: "bzip2-1.0.6"
+homepage: "https://sourceware.org/bzip2/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+flags: conf
+available: os = "win32"
+build: ["pkgconf" "--personality=x86_64-w64-mingw32" {os-distribution = "cygwin"} "bzip2"]
+depends: [
+  "msys2" {build & os = "win32" & os-distribution = "msys2"}
+  "msys2-mingw64" {os = "win32" & os-distribution = "msys2"}
+  "conf-pkg-config" {build}
+]
+depexts: [
+  ["mingw64-x86_64-bzip2"] {os = "win32" & os-distribution = "cygwin"}
+  ["mingw-w64-x86_64-bzip2"] {os = "win32" & os-distribution = "msys2"}
+]
