@@ -4,7 +4,10 @@ authors: "K.Kosako"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 homepage: "https://github.com/kkos/oniguruma"
 license: "BSD-2-Clause"
-build: [["pkg-config" "oniguruma"]]
+build: [
+  ["pkg-config" "--exists" "oniguruma"] {os != "win32" | os-distribution != "cygwin"}
+  ["pkgconf" "--exists" "oniguruma"] {os = "win32" & os-distribution = "cygwin"}
+]
 depends: ["conf-pkg-config" {build}]
 depexts: [
   ["libonig-dev"] {os-family = "debian"}
@@ -19,6 +22,9 @@ depexts: [
   ["oniguruma"] {os = "freebsd"}
   ["oniguruma"] {os = "netbsd"}
   ["oniguruma"] {os-distribution = "nixos"}
+  ["libonig-devel"] {os = "win32" & os-distribution = "cygwin"}
+  ["mingw-w64-x86_64-oniguruma"] {os = "win32" & os-distribution = "msys2" & arch = "x86_64"}
+  ["mingw-w64-i686-oniguruma"] {os = "win32" & os-distribution = "msys2" & arch = "x86_32"}
 ]
 x-ci-accept-failures: [
   "centos-7"
