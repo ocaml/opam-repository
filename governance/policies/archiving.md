@@ -61,7 +61,8 @@ Note that this property is transitive along a package's dependency tree: if a pa
 
 At regular intervals, no less than every six months, the opam repo maintainers will reevaluate all packages to determine if they satisfy the [primary repo criteria](#criteria-for-inclusion-to-the-primary-repo-the-default-opam-repository). Packages that do not will be subject to archiving, according to the following process:
 
-- If the package version falls outside the package's maintenance intent, it will be archived.
+- If the package version falls outside the package's maintenance intent, it will be archived unless the next newer version that is left has been added to the repository in the past year (this check is to be done incrementally from latest to oldest version of each packages).
+  - This exception do not apply to package versions that are pre-releases, flagged with `avoid-version` or that have `available: false`.
 - The package version's maintainers will be notified of the intent to archive.
   - Maintainers will have two weeks to fix the version so that it satisfies the criteria or approve of the archiving.
   - If two weeks pass without hearing from the maintainers, the package will be marked as unmaintained and a call for a new maintainer will be submitted to the community via [discuss.ocaml.org under the opam-repository topic](https://discuss.ocaml.org/tag/opam-repository).
