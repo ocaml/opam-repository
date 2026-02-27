@@ -1,0 +1,27 @@
+opam-version: "2.0"
+maintainer: "github@cutedogs.org"
+homepage: "https://www.prevanders.net/dwarf.html"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: ["David Anderson" "Carlos Alberto Enciso" "Vincent Torri"]
+license: "LGPL-2.1-only"
+build: [
+  ["pkg-config" "--print-errors" "--exists" "libdwarf"]
+  ["dwarfdump" "--version"]
+]
+depends: ["conf-pkg-config" {build}]
+depexts: [
+  ["libdwarf-dev" "dwarf-tools"] {os-family = "alpine"}
+  ["libdwarf-dev" "dwarfdump" "libdwarf1"] {os-family = "debian"}
+  ["libdwarf-dev" "dwarfdump" "libdwarf1"] {os-family = "ubuntu"}
+  ["libdwarf-tools" "libdwarf-devel"] {os-family = "fedora" & os-version > "40" }
+  ["libdwarf" "dwarfdump"] {os-distribution = "nixos"}
+  ["dwarfutils"] {os-distribution = "homebrew" & os = "macos"}
+  ["libdwarf"] {os-family = "arch"}
+]
+
+available: os != "win32" & os-distribution != "centos" & os != "freebsd" & os-distribution != "ol" & os-family != "opensuse" & os-family != "suse"
+  
+synopsis: "Virtual package relying on dwarfutils"
+description:
+  "This package can only install if the dwarfutils software suite is installed on the system."
+flags: conf
