@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis:
+  "Abstraction over thread-local / continuation-local storage mechanisms for communication with transitive dependencies"
+maintainer: ["ELLIOTTCABLE <opam@ell.io>" "c-cube"]
+authors: ["ELLIOTTCABLE" "c-cube"]
+license: "MIT"
+homepage: "https://github.com/ocaml-tracing/ambient-context"
+bug-reports: "https://github.com/ocaml-tracing/ambient-context/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.08"}
+  "hmap"
+  "alcotest" {with-test}
+  "bisect_ppx" {with-test}
+  "odig" {with-doc}
+  "ocaml-lsp-server" {with-dev-setup}
+  "benchmark" {with-dev-setup}
+  "ocamlformat" {with-dev-setup & >= "0.27" & < "0.28"}
+  "odoc" {with-doc}
+]
+depopts: ["thread-local-storage"]
+conflicts: [
+  "thread-local-storage" {< "0.2"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-tracing/ambient-context.git"
+url {
+  src:
+    "https://github.com/ocaml-tracing/ambient-context/releases/download/v0.2/ambient-context-0.2.tbz"
+  checksum: [
+    "sha256=f451f4ed467ef0c15f472cda1021a89e96afdf3a32970ea047faf057a01c72d3"
+    "sha512=3115fd7b45ac171f7a971013dd6f32ec317fc274d800a86870a0dd43574e27b404090fbc51dae5e4c8af4961d706f84abf3843a6cf8dc57f711211cd2b547780"
+  ]
+}
+x-commit-hash: "b12dcd59e11bf5317ef0bf078b468b0090b37459"
