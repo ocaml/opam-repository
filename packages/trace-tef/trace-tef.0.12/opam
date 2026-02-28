@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis:
+  "A simple backend for trace, emitting Catapult/TEF JSON into a file"
+maintainer: ["Simon Cruanes"]
+authors: ["Simon Cruanes"]
+license: "MIT"
+tags: [
+  "trace" "tracing" "catapult" "TEF" "chrome-format" "chrome-trace" "json"
+]
+homepage: "https://github.com/ocaml-tracing/ocaml-trace"
+bug-reports: "https://github.com/ocaml-tracing/ocaml-trace/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "trace" {= version}
+  "mtime" {>= "2.0"}
+  "base-unix"
+  "dune" {>= "2.9"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/ocaml-tracing/ocaml-trace.git"
+url {
+  src:
+    "https://github.com/ocaml-tracing/ocaml-trace/releases/download/v0.12/trace-0.12.tbz"
+  checksum: [
+    "sha256=c173d6bf9433e9eeb41bbddda116a296373d45865841dcbb78bff3be8abd9fd8"
+    "sha512=1105c52112095fdc8d4961d7346b02e416627bde6ac79ddd137bff63ac0ff5cd23fa53192be642614efadb9cb0cbb83b7d571bb5a0d100ad0ae6d10bc61d3bba"
+  ]
+}
+x-commit-hash: "dd30ae0858831f9e66ffaec49ecfe484998680b5"
