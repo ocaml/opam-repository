@@ -1,0 +1,59 @@
+opam-version: "2.0"
+synopsis: "Auto-formatter for OCaml code"
+description: """
+**ocamlformat** is a code formatter for OCaml. It comes with opinionated default settings but is also fully customizable to suit your coding style.
+
+- **Profiles:** ocamlformat offers profiles we predefined formatting configurations. Profiles include `default`, `ocamlformat`, `janestreet`.
+- **Configurable:** Users can change the formatting profile and configure every option in their `.ocamlformat` configuration file.
+- **Format Comments:** ocamlformat can format comments, docstrings, and even code blocks in your comments.
+- **RPC:** ocamlformat provides an RPC server that can be used by other tools to easily format OCaml Code."""
+maintainer: [
+  "Guillaume Petiot <guillaume@tarides.com>"
+  "Jules Aguillon <jules@j3s.fr>"
+  "Emile Trotignon <emile@tarides.com>"
+]
+authors: [
+  "Josh Berdine <jjb@fb.com>"
+  "Hugo Heuzard <hugo.heuzard@gmail.com>"
+  "Etienne Millon <etienne@tarides.com>"
+  "Guillaume Petiot <guillaume@tarides.com>"
+  "Jules Aguillon <jules@j3s.fr>"
+]
+homepage: "https://github.com/ocaml-ppx/ocamlformat"
+bug-reports: "https://github.com/ocaml-ppx/ocamlformat/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "cmdliner" {with-test = "false" & >= "1.1.0" | with-test & >= "1.2.0"}
+  "csexp" {>= "1.4.0"}
+  "dune" {>= "2.8"}
+  "ocamlformat-lib" {= version}
+  "ocamlformat-rpc-lib" {with-test & = version}
+  "re" {>= "1.10.3"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-ppx/ocamlformat.git"
+# OCamlFormat is distributed under the MIT license. Parts of the OCaml library are vendored for OCamlFormat and distributed under their original LGPL 2.1 license
+license: ["MIT" "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"]
+url {
+  src:
+    "https://github.com/ocaml-ppx/ocamlformat/releases/download/0.29.0/ocamlformat-0.29.0.tbz"
+  checksum: [
+    "sha256=dac77f0a957ae782bb4b869b07b9803a872a34f8c1eae8901b42d21b623c9db5"
+    "sha512=b4ae6fda3c28e91dc12411b577df7b216e9b1afe5887bcb9e89c158e1313dc92183c29ffb256f47f5c9384af3ac8c505ec76849b26ae950b82c9b4c21a460819"
+  ]
+}
+x-commit-hash: "195e470387ecdcfb0f9ce309b0d8d17807bde25d"
