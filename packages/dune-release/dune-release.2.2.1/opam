@@ -1,0 +1,67 @@
+opam-version: "2.0"
+synopsis: "Release dune packages in opam"
+description: """
+`dune-release` is a tool to streamline the release of Dune packages in
+[opam](https://opam.ocaml.org). It supports projects built
+with [Dune](https://github.com/ocaml/dune) and hosted on
+[GitHub](https://github.com)."""
+maintainer: ["Nathan Rebours <nathan.p.rebours@gmail.com>"]
+authors: [
+  "Daniel Bünzli"
+  "Thomas Gazagnaire"
+  "Nathan Rebours"
+  "Guillaume Petiot"
+  "Sonja Heinze"
+]
+license: "ISC"
+homepage: "https://github.com/tarides/dune-release"
+bug-reports: "https://github.com/tarides/dune-release/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.7"}
+  "dune" {>= "3.14" & with-test}
+  "curly" {>= "0.3.0"}
+  "fmt" {>= "0.8.7"}
+  "fpath" {>= "0.7.3"}
+  "bos" {>= "0.1.3"}
+  "cmdliner" {>= "2.0.0"}
+  "re" {>= "1.7.2"}
+  "astring"
+  "opam-file-format" {>= "2.1.2"}
+  "opam-format" {>= "2.1.0"}
+  "opam-state" {>= "2.1.0"}
+  "opam-core" {>= "2.1.0"}
+  "rresult" {>= "0.6.0"}
+  "logs"
+  "odoc"
+  "alcotest" {with-test}
+  "yojson" {>= "1.6"}
+  "ocamlformat" {= "0.27.0" & with-dev-setup}
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/tarides/dune-release.git"
+url {
+  src:
+    "https://github.com/tarides/dune-release/releases/download/2.2.1/dune-release-2.2.1.tbz"
+  checksum: [
+    "sha256=0347acd2693a68431d2afc1e55f7df91a7b37e0222d43580af774b98dc06393a"
+    "sha512=511f3898d56587c9a6e764a83cee97967679f77e7ec82a469298f01921eb39124c90de11665bc233a2533d92a03527220c030632351e67cc46d0c15caa933d9d"
+  ]
+}
+x-commit-hash: "e32f6bb507cb91e9d4db1de4d49c746a04cd0831"
