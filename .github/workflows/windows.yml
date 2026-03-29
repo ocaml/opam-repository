@@ -1,10 +1,9 @@
 name: Windows CI
 on:
   pull_request:
-env:
-  OPAMROOT: D:\opamroot
-  OPAMSOLVERTIMEOUT: 120
-  MSYS: winsymlinks:native
+
+permissions: read-all
+
 jobs:
   analyse:
     runs-on: ubuntu-latest
@@ -36,10 +35,10 @@ jobs:
             const splits =
               Array.from({ length: Math.ceil(packages.length / 75) },
                          (_, i) => packages.slice(i * 75, i * 75 + 75).join(' '));
-            return {build_env: ['cygwin', 'msys2'], packages: splits};
+            return {windows_environment: ['cygwin', 'msys2'], packages: splits};
 
   build:
-    name: "target/host: x86_64-w64-mingw32, build: ${{ matrix.build_env }}"
+    name: "target/host: x86_64-w64-mingw32, build: ${{ matrix.windows_environment }}"
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.analyse.outputs.matrix) }}
@@ -49,69 +48,19 @@ jobs:
     steps:
       - name: Checkout tree
         uses: actions/checkout@v6
+
+      - name: Set-up OCaml
+        uses: ocaml/setup-ocaml@v3
         with:
-          fetch-depth: 2
-
-      - name: Download install.ps1
-        run: |
-          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-          (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/ocaml/opam/master/shell/install.ps1", ".\install.ps1")
-
-      - name: Restore opam cache
-        id: cache-opam
-        uses: actions/cache/restore@v5
-        with:
-          path: |
-            D:\opam\bin
-            D:\opamroot
-          key: ${{ runner.os }}-${{ matrix.build_env }}-opam-${{ hashFiles('install.ps1') }}
-
-      - name: Add MSYS2 to PATH and install prerequisites
-        if: matrix.build_env == 'msys2'
-        run: |
-          "C:\msys64" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          C:\msys64\usr\bin\pacman.exe --noconfirm -Syuu  # Core update (in case any core packages are outdated)
-          C:\msys64\usr\bin\pacman.exe --noconfirm -Syuu m4 make mingw-w64-i686-gcc mingw-w64-x86_64-gcc rsync unzip
-
-      - name: Install opam
-        if: steps.cache-opam.outputs.cache-hit != 'true'
-        run: |
-          Invoke-Expression "& ./install.ps1 -OpamBinDir 'D:\opam\bin'"
-
-      - name: Add opam to PATH
-        run: |
-          D:\opam\bin\opam --version
-          "D:\opam\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-
-      - name: Init opam
-        if: steps.cache-opam.outputs.cache-hit != 'true'
-        run: opam init --yes --no-setup ${{ matrix.build_env == 'msys2' && '--cygwin-local-install' || '' }} .
-
-      - name: Restrict testing to available compilers
-        if: steps.cache-opam.outputs.cache-hit != 'true'
-        # TODO Amend this lowerbound as older compiler packages are updated
-        run: opam switch set-invariant --formula "`"ocaml`" {>= `"4.13`"}"
-
-      - name: Save opam cache
-        if: steps.cache-opam.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
-        with:
-          path: |
-            D:\opam\bin
-            D:\opamroot
-          key: ${{ steps.cache-opam.outputs.cache-primary-key }}
-
-      - name: Print version and configuration information
-        run: |
-          opam --version
-          opam exec -- ocaml -version
-          opam exec -- ocamlopt -config
-          opam var
+          ocaml-compiler: "5"
+          opam-repositories: |
+            default: git+file://${{ github.workspace }}
+          opam-pin: false
+          windows-environment: ${{ matrix.windows_environment }}
 
       - name: Install packages
         run: |
           $failed = $false
-          opam update
           Foreach ($pkg in '${{ matrix.packages }}' -split ' ') {
             Write-Host "::group::Testing `e[1;34m$pkg`e[0m"
             opam install --color=always --confirm-level=unsafe-yes "$pkg"
