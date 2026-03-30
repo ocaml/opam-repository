@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis:
+  "Limit which system operations and which parts of the filesystem your program can access"
+description: """
+Call it as early as possible in your program so that the rest of the code runs with reduced privileges. Currently, actual enforced restrictions are implemented for these operating systems:
+
+- OpenBSD
+- Linux (only filesystem view)
+
+Even on other operating systems, you can still use `restricted` to document which privileges your program needs. Users can then test if your program respects these promises with tools such as [pledge on Linux](https://justine.lol/pledge/). Enjoy :)"""
+maintainer: ["Remove Wingman <ocaml@rw8.addy.io>"]
+authors: ["Remove Wingman <ocaml@rw8.addy.io>"]
+license: "AGPL-3.0-or-later"
+tags: ["openbsd" "restricted"]
+homepage: "https://codeberg.org/removewingman/restricted"
+doc:
+  "https://codeberg.org/removewingman/restricted/src/branch/main/lib/types.mli"
+bug-reports: "https://codeberg.org/removewingman/restricted/issues"
+depends: [
+  "dune" {>= "3.17"}
+  "ocaml" {>= "5.1.0"}
+  "ppx_inline_test"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://codeberg.org/removewingman/restricted.git"
+depexts: ["linux-headers"] {os-family = "alpine"}
+post-messages: [
+  "Please ensure landlock is enabled, it is required for restricted to work." {failure & os-family = "debian"}
+]
+x-maintenance-intent: [ "(any)" ]url {
+  src: "https://codeberg.org/removewingman/restricted/releases/download/v2.0.0/ocaml-restricted-2.0.0.tar.gz"
+  checksum: [
+    "md5=6547cefcfc520d4fe31e1f254e53459b"
+    "sha512=3b48e8a135dd1b72549245e986ee7b03330a7eb97ca42e6acbb23dc8ef2319287e41953ee84954aa431530a8e8508a45596838e7dfa676c1859b5a131932dbdc"
+  ]
+}
