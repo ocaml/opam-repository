@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Redirect and capture output written to out_channels"
+description: """
+An OCaml library for redirecting and capturing output written to out_channels, with support
+for native, JavaScript (js_of_ocaml), and WebAssembly (wasm_of_ocaml) targets."""
+maintainer: ["hugo.heuzard@gmail.com"]
+authors: ["Hugo Heuzard"]
+license: "MIT"
+homepage: "https://github.com/hhugo/out-channel-redirect"
+doc: "https://hhugo.github.io/capture-output/"
+bug-reports: "https://github.com/hhugo/out-channel-redirect/issues"
+depends: [
+  "dune" {>= "3.17"}
+  "ocaml" {>= "4.08"}
+  "ocamlformat" {= "0.28.1" & with-dev-setup}
+  "js_of_ocaml" {with-test}
+  "odoc" {with-doc}
+]
+depopts: [
+  "wasm_of_ocaml-compiler" {with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/hhugo/out-channel-redirect.git"
+url {
+  src:
+    "https://github.com/hhugo/out-channel-redirect/releases/download/0.1/out-channel-redirect-0.1.tbz"
+  checksum: [
+    "sha256=ca64d3071f06bea2ca958646eb4f34b48bb1a65b525f2eb8d83f42316015cf17"
+    "sha512=82a53a9530c5739b8d372e991ab9af31c759d00404fe7dbc4791bc97d6c825550e534b478fc15921947b28c767832f7508eb7b7354ac79a2e3d88ea31c9f911a"
+  ]
+}
+x-commit-hash: "645752599cf04af32593c00df4b4746fa7765bf9"
