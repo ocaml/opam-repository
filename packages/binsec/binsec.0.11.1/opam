@@ -1,0 +1,111 @@
+opam-version: "2.0"
+synopsis: "Semantic analysis of binary executables"
+description: """
+
+BINSEC aims at developing an open-source platform filling the gap between formal
+methods over executable code and binary-level security analyses currently used
+in the security industry.
+
+The project targets the following applicative domains:
+
+    vulnerability analyses
+    malware comprehension
+    code protection
+    binary-level verification
+
+BINSEC is developed at CEA List in scientfic collaboration with Verimag and LORIA.
+
+An overview of some BINSEC features can be found in our SSPREW'17 tutorial."""
+maintainer: ["BINSEC <binsec@saxifrage.saclay.cea.fr>"]
+authors: [
+  "Adel Djoudi"
+  "Benoit Boero"
+  "Benjamin Farinier"
+  "Chakib Foulani"
+  "Dorian Lesbre"
+  "Frédéric Recoules"
+  "Guillaume Girol"
+  "Josselin Feist"
+  "Lesly-Ann Daniel"
+  "Mahmudul Faisal Al Ameen"
+  "Manh-Dung Nguyen"
+  "Mathéo Vergnolle"
+  "Matthieu Lemerre"
+  "Nicolas Bellec"
+  "Olivier Nicole"
+  "Richard Bonichon"
+  "Robin David"
+  "Sébastien Bardin"
+  "Soline Ducousso"
+  "Ta Thanh Dinh"
+  "Yaëlle Vinçont"
+  "Yanis Sellami"
+]
+license: "LGPL-2.1-or-later"
+tags: [
+  "binary code analysis"
+  "symbolic execution"
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "plugins"
+  "abstract interpretation"
+  "dataflow analysis"
+  "linking"
+  "disassembly"
+]
+homepage: "https://binsec.github.io"
+bug-reports: "mailto:binsec@saxifrage.saclay.cea.fr"
+depends: [
+  "dune" {>= "3.18"}
+  "ocaml" {>= "4.14"}
+  "menhir" {build & >= "20181113"}
+  "ocamlgraph" {>= "1.8.5"}
+  "zarith" {>= "1.13"}
+  "dune-site"
+  "dypgen"
+  "toml" {>= "6"}
+  "ounit2" {with-test & >= "2"}
+  "qcheck" {with-test & >= "0.90"}
+  "ppx_inline_test" {with-test}
+  "unionFind" {with-test}
+  "ocamlformat" {with-dev-setup & = "0.26.2"}
+  "odoc" {with-doc}
+]
+depopts: ["curses" "llvm" "unisim_archisec" "bitwuzla" "bitwuzla-cxx" "z3"]
+conflicts: [
+  "llvm" {< "6.0.0" | >= "16.0.0"}
+  "bitwuzla" {< "1.0.6"}
+  "bitwuzla-cxx" {< "0.4"}
+  "z3" {< "4.8.13"}
+  "unisim_archisec" {< "0.0.6"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/binsec/binsec.git"
+x-maintenance-intent: ["(latest)"]
+available: [ os-family != "windows" ]
+url {
+  src:
+    "https://github.com/binsec/binsec/releases/download/0.11.1/binsec-0.11.1.tbz"
+  checksum: [
+    "sha256=08b887c0657053ea25541e4fef8742fdb5efd4ceb193c390f06c563167426edf"
+    "sha512=2eb787fc801b91560afe5b4e58cf96e24ccf5c58cec46e2c4262bb9eca00cd8b74bec67208a1c03d73eea55681c27d5ce32bcb06bce9bb21969161784c52cda8"
+  ]
+}
+x-commit-hash: "a831d26cc0351fb440e0798eced8b9d39ab64c21"
