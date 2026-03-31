@@ -7,7 +7,11 @@ authors: ["Chris Armstrong"]
 license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
 homepage: "https://github.com/chris-armstrong/ocgtk"
 bug-reports: "https://github.com/chris-armstrong/ocgtk/issues"
-
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtk4-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtk4-x86_64" {os = "win32" & os-distribution != "cygwinports"})
+]
 # System package dependencies for GTK4
 depexts: [
   # Debian/Ubuntu
@@ -31,12 +35,14 @@ depexts: [
   ["gtk4"] {os = "macos" & os-distribution = "macports"}
 
   # Windows via mingw
-  ["mingw-w64-x86_64-gtk4"] {os = "win32" & os-distribution = "cygwinports"}
+  ["gtk4"] {os = "win32" & os-distribution = "cygwinports"}
+  ["gtk4"] {os = "freebsd"}
 ]
 
 # Check that pkg-config can find gtk4
 build: [
-  ["pkg-config" "--print-errors" "--exists" "gtk4"]
+  ["pkgconf" "--personality=x86_64-w64-mingw32" "--print-errors" "--exists" "gtk4"] {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
+  ["pkg-config" "--short-errors" "--print-errors" "--atleast-version" "4.10" "gtk4"] {os != "win32" | os-distribution = "cygwinports"}
 ]
 
 flags: conf
