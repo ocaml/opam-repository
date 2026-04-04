@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Collector client for opentelemetry, using cohttp + lwt"
+maintainer: ["ocaml-tracing"]
+authors: ["ocaml-tracing" "ELLIOTTCABLE <opam@ell.io>" "the imandra team"]
+license: "MIT"
+homepage: "https://github.com/ocaml-tracing/ocaml-opentelemetry"
+bug-reports: "https://github.com/ocaml-tracing/ocaml-opentelemetry/issues"
+depends: [
+  "dune" {>= "3.11"}
+  "ocaml" {>= "4.08"}
+  "mtime" {>= "1.4"}
+  "opentelemetry" {= version}
+  "opentelemetry-client" {= version}
+  "opentelemetry-lwt" {= version}
+  "ambient-context-lwt"
+  "odoc" {with-doc}
+  "lwt" {>= "5.3"}
+  "lwt_ppx" {>= "2.0"}
+  "cohttp-lwt"
+  "cohttp-lwt-unix"
+  "alcotest" {with-test}
+  "containers" {with-test}
+  "opentelemetry-lwt" {with-test & = version}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & os != "macos"}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-tracing/ocaml-opentelemetry.git"
+url {
+  src:
+    "https://github.com/ocaml-tracing/ocaml-opentelemetry/releases/download/v0.90/opentelemetry-0.90.tbz"
+  checksum: [
+    "sha256=c3989bb678f57e5276209d3c60afb29cdca33122288de55e591fbbe2e50a662c"
+    "sha512=ba8339256c9b2d8c99c8304991a3047f280a01e492add4cf82bf1d43dfa51e790366c09c6901c0501b8b8e1f810c6e128e33dd33542d785013407f642ade4eea"
+  ]
+}
+x-commit-hash: "6a468594e0fdf7b285990c27783ed66a8fb83804"
