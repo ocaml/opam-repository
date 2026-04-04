@@ -10,10 +10,10 @@ flags: conf
 available: os = "win32"
 depends: [
   "msys2" {build & os = "win32" & os-distribution = "msys2"}
-  "msys2-mingw64" {os = "win32" & os-distribution = "msys2"}
+  ("msys2-mingw64" {os = "win32" & os-distribution = "msys2"} | "msys2-ucrt64" {os = "win32" & os-distribution = "msys2"})
 ]
 build: ["x86_64-w64-mingw32-gcc" "--version"]
 depexts: [
   ["mingw64-x86_64-gcc-core"] {os = "win32" & os-distribution = "cygwin"}
-  ["mingw-w64-x86_64-gcc"] {os = "win32" & os-distribution = "msys2"}
+  ["%{msys2:package-prefix}%-gcc"] {os = "win32" & os-distribution = "msys2"}
 ]
