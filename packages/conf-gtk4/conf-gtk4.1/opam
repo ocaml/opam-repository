@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Virtual package relying on GTK4 system installation"
+description:
+  "This package can only be installed if GTK 4 is installed on the system."
+maintainer: "hello@chrisarmstrong.dev"
+authors: ["Chris Armstrong"]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/chris-armstrong/ocgtk"
+bug-reports: "https://github.com/chris-armstrong/ocgtk/issues"
+depends: [
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtk4-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtk4-x86_64" {os = "win32" & os-distribution != "cygwinports"})
+]
+# System package dependencies for GTK4
+depexts: [
+  # Debian/Ubuntu
+  ["libgtk-4-dev"] {os-family = "debian"}
+
+  # Fedora/RHEL/CentOS/OpenSUSE
+  ["gtk4-devel"] {os-distribution = "fedora"}
+  ["gtk4-devel"] {os-distribution = "rhel"}
+  ["gtk4-devel"] {os-distribution = "centos"}
+  ["gtk4-devel"] {os-family = "opensuse" | os-family = "suse"}
+
+  # Arch Linux
+  ["gtk4"] {os-distribution = "arch"}
+
+  # Alpine Linux
+  ["gtk4.0-dev"] {os-distribution = "alpine"}
+
+  # macOS via Homebrew
+  ["gtk4"] {os = "macos" & os-distribution = "homebrew"}
+
+  # macOS via MacPorts
+  ["gtk4"] {os = "macos" & os-distribution = "macports"}
+
+  # Windows via mingw
+  ["gtk4"] {os = "win32" & os-distribution = "cygwinports"}
+  ["gtk4"] {os = "freebsd"}
+]
+
+# Check that pkg-config can find gtk4
+build: [
+  ["pkgconf" "--personality=x86_64-w64-mingw32" "--print-errors" "--exists" "gtk4"] {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
+  ["pkg-config" "--short-errors" "--print-errors" "gtk4"] {os != "win32" | os-distribution = "cygwinports"}
+]
+
+flags: conf
