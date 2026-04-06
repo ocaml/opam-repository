@@ -1,13 +1,13 @@
 name: Windows CI
 on:
   pull_request:
-env:
-  OPAMROOT: D:\opamroot
-  OPAMSOLVERTIMEOUT: 120
-  MSYS: winsymlinks:native
 jobs:
   analyse:
     runs-on: ubuntu-latest
+    env:
+      OPAMROOT: D:\opamroot
+      OPAMSOLVERTIMEOUT: 120
+      MSYS: winsymlinks:native
     outputs:
       matrix: ${{ steps.matrix.outputs.result }}
     steps:
@@ -46,6 +46,10 @@ jobs:
     if: ${{ join(fromJSON(needs.analyse.outputs.matrix).packages) != '' }}
     runs-on: windows-latest
     needs: analyse
+    env:
+      OPAMROOT: D:\opamroot
+      OPAMSOLVERTIMEOUT: 120
+      MSYS: winsymlinks:native
     steps:
       - name: Checkout tree
         uses: actions/checkout@v6
