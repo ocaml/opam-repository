@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: ["Xavier Leroy <xavier.leroy@college-de-france.fr>"]
+authors: ["Xavier Leroy"]
+homepage: "https://github.com/xavierleroy/camlidl"
+dev-repo: "git+https://github.com/xavierleroy/camlidl.git"
+bug-reports: "https://github.com/xavierleroy/camlidl/issues"
+license: [
+  "LGPL-2.0-or-later WITH OCaml-LGPL-linking-exception"
+]
+x-maintenance-intent: ["(latest)"]
+patches: ["camlidl-mingw-fix.patch" {os = "win32"}]
+build: [
+  ["mv" "config/Makefile.unix" "config/Makefile"] {!host-system-msvc:installed}
+  ["mv" "config/Makefile.win32" "config/Makefile"] {host-system-msvc:installed}
+  [make "all"]
+]
+synopsis: "Stub code generator for OCaml"
+description: """
+CamlIDL is a stub code generator for OCaml. It automates the
+generation of C stub code required for the Caml/C interface, based on
+an MIDL specification. Also provides some support for Microsoft's COM
+software components."""
+depends: [
+  "ocaml" {>= "4.05"}
+]
+depopts: [
+  "host-system-msvc"
+]
+conflicts: [
+  "ocaml-option-bytecode-only"
+]
+extra-source "camlidl-mingw-fix.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/camlidl/camlidl-mingw-fix.patch"
+  checksum: [
+    "sha256=673780d4ff7713c0e4e519658be485692fcd166563f8fc3d3247f9e17acc0251"
+    "sha512=62c0846e62200dc4ab17564286b9482f0008625de44c354ba044296411ec7d212e33e14629d0b7c5109b2422a485255368a79a4591452fcd8b3f4fd8ddfb7852"
+  ]
+}
+url {
+  src: "https://github.com/xavierleroy/camlidl/archive/camlidl113.tar.gz"
+  checksum: [
+    "sha256=c82bfd106208ebedd8c264300e939010f87eed83e6f6339e3a6cf8f66caeed54"
+    "sha512=c9a33d6b49bf51f1957941bac591090e568ffc2d56b75ed777141ef4fd599c87ae968cdc473d8cee325083aa1a0bbc31215540f19fcfc8bb94f8db2ce9deb35c"
+  ]
+}
