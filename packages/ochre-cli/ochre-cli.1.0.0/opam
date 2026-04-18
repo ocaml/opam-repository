@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Command-line interface for ochre syntax highlighter"
+description:
+  "CLI tool for highlighting source code using TextMate grammars and themes."
+maintainer: ["David Sancho"]
+authors: ["David Sancho"]
+license: "MIT"
+homepage: "https://github.com/davesnx/ochre"
+bug-reports: "https://github.com/davesnx/ochre/issues"
+depends: [
+  "dune" {>= "3.22"}
+  "ocaml" {>= "4.14.0"}
+  "ochre"
+  "tm-grammars" {>= "2.0.0"}
+  "cmdliner" {>= "1.1.0"}
+  "ezjsonm" {with-test}
+  "alcotest" {with-test}
+  "odoc" {>= "3.1.0" & with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & ocaml:native}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/davesnx/ochre.git"
+x-maintenance-intent: ["(latest)"]
+x-ci-accept-failures: ["centos-9" "opensuse-15.6"]  # too old oniguruma version
+url {
+  src:
+    "https://github.com/davesnx/ochre/releases/download/1.0.0/ochre-1.0.0.tbz"
+  checksum: [
+    "sha256=820412863edca3173c7365cf16b4b4bad41c8fffbb4bfba8f0d87a40d4ad525b"
+    "sha512=f8a16876281504e714fe465df8a1a9894a90f06fc6cead07534722c0aa83abf955d9951e66549ac78a016e27fe8cdc5596f415e26f1c5309ee893722078f56ae"
+  ]
+}
+x-commit-hash: "f4620d4b38ba380325879f2df1ab9cab79e29c18"
