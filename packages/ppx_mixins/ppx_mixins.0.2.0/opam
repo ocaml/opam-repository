@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "A PPX for mixing module type signatures into a type declaration"
+description:
+  "Expands `type my_type [@@mixins Mappable (key = string) + Eq] into `type t include Mappable with type t := my_type and type key = string; include Eq with type t := my_type`"
+maintainer: ["Sacha-Élie Ayoun <sachaayoun@gmail.com>"]
+authors: ["Sacha-Élie Ayoun <sachaayoun@gmail.com>"]
+license: "Apache-2.0"
+tags: ["ppx" "metaprogramming"]
+homepage: "https://github.com/soteria-tools/ppx_mixins"
+doc: "https://github.com/soteria-tools/ppx_mixins"
+bug-reports: "https://github.com/soteria-tools/ppx_mixins/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "ocaml" {>= "4.14.0"}
+  "ppxlib" {>= "0.28.0"}
+  "ocamlformat" {with-test & = "0.29.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/soteria-tools/ppx_mixins.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/soteria-tools/ppx_mixins/releases/download/v0.2.0/ppx_mixins-0.2.0.tbz"
+  checksum: [
+    "sha256=ed411d59c016e8429dfd375eb80629412092f43cb05ed3469ff79a9a89001988"
+    "sha512=d5b853c7372c5979e029293549247ec441e1bd4f59b339f4bf173a24f673d2584f88ad63d69eca638fd4581183a0d8af58707b748ea54df9bcdc2270b20fae7a"
+  ]
+}
+x-commit-hash: "edaa0e16184c48f3cb35634acb9fa8aeca210070"
