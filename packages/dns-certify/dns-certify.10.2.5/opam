@@ -1,0 +1,49 @@
+opam-version: "2.0"
+maintainer: "team AT robur dot coop"
+authors: ["Hannes Mehnert <hannes@mehnert.org>"]
+homepage: "https://github.com/mirage/ocaml-dns"
+doc: "https://mirage.github.io/ocaml-dns/"
+dev-repo: "git+https://github.com/mirage/ocaml-dns.git"
+bug-reports: "https://github.com/mirage/ocaml-dns/issues"
+license: "BSD-2-Clause"
+
+depends: [
+  "dune" {>= "2.8.0"}
+  "ocaml" {>= "4.13.0"}
+  "dns" {= version}
+  "dns-tsig" {= version}
+  "dns-mirage" {= version}
+  "randomconv" {>= "0.2.0"}
+  "duration" {>= "0.1.2"}
+  "x509" {>= "1.0.0"}
+  "lwt" {>= "4.2.1"}
+  "mirage-sleep" {>= "4.0.0"}
+  "mirage-ptime" {>= "5.0.0"}
+  "tcpip" {>= "8.2.0"}
+  "logs"
+  "mirage-crypto-ec"
+  "mirage-crypto-pk" {>= "1.0.0"}
+  "mirage-crypto-rng" {>= "1.0.0"}
+]
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+synopsis: "MirageOS let's encrypt certificate retrieval"
+description: """
+A function to retrieve a certificate when providing a hostname, TSIG key, server
+IP, and an optional key seed. Best used with an letsencrypt unikernel.
+"""
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mirage/ocaml-dns/releases/download/v10.2.5/dns-10.2.5.tbz"
+  checksum: [
+    "sha256=23af091a6e4c13322b7f9094577e6d72dfcd5e23c4ec00fa3520edb4ff9f5fef"
+    "sha512=36b2e4eef2fd9f27bdafba10a86b078cb37e4cd461b363a57b71ca9bd7493ec2388cd9e44c374f1c2a65b73e0dd16c959aed7bd0f91151b3027737b44d4c9332"
+  ]
+}
+x-commit-hash: "f5b5b99636cd19f243444079a461bf6a6823d079"
