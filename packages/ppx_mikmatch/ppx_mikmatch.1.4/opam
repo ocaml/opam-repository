@@ -1,0 +1,55 @@
+opam-version: "2.0"
+maintainer: "Leonardo Santos <leomendesantos@gmail.com>"
+authors: [
+  "Petter A. Urkedal <paurkedal@gmail.com>"
+  "Gabriel Radanne <drupyog@zoho.com>"
+  "Leonardo Santos <leomendesantos@gmail.com>"
+]
+license: "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
+homepage: "https://github.com/ahrefs/ppx_mikmatch"
+bug-reports: "https://github.com/ahrefs/ppx_mikmatch/issues"
+depends: [
+  "ocaml" {>= "4.10.0"}
+  "dune" {>= "1.11"}
+  "ppxlib" {>= "0.36.0"}
+  "re" {>= "1.7.2"}
+  "menhir" {>= "20240715"}
+  "ounit2" {with-test}
+]
+build: ["dune" "build" "-p" name "-j" jobs]
+dev-repo: "git+https://github.com/ahrefs/ppx_mikmatch.git"
+synopsis: "Matching Regular Expressions with OCaml Patterns using Mikmatch's syntax"
+description: """
+This syntax extension turns
+```
+match%mikmatch x with
+| {| re1 |} -> e1
+...
+| {| reN |} -> eN
+| _ -> e0
+```
+
+into suitable invocations to the ocaml-re library. The patterns are plain
+strings of the form accepted by Re_pcre, except groups can be bound to
+variables using the syntax (... as var). The type of var will be
+string if a match is of the groups is guaranteed given a match of the
+whole pattern, and string option if the variable is bound to or nested
+below an optionally matched group.
+
+Additional extensions:
+
+- `let%mikmatch name = {|re|}` defines reusable patterns for use within other patterns
+- `type name = {%mikmatch| re |}` generates record types with parse/pp functions from patterns
+- let destructuring via `let%pcre/mikmatch {| regex |} = s`, where `regex` binds values and `s` is the input string
+- `/regex/flags` for providing compiler flags. `i` for caseless, `u` (%mikmatch) unanchored
+- Caseless groups via the `~` operator
+- Mixed matching (raw strings supported) via `function | {%mikmatch| ... |} -> ... | "raw string" -> ...`
+- Matching guards are supported across all match extensions
+"""
+url {
+  src: "https://github.com/ahrefs/ppx_mikmatch/archive/refs/tags/1.4.tar.gz"
+  checksum: [
+    "md5=3428892cb040a21968e25c451d45e47a"
+    "sha512=58ff6f86d962719aa5a34aa5eef2b027c2ba7c0c17cc46ea5eb08b56e9e1e8bc32150722383cce52d74ffc2c231cdaa5f8c9220a595f281e29221c2d308c0178"
+  ]
+}
