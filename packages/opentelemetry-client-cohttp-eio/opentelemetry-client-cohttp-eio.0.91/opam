@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "Collector client for opentelemetry, using cohttp + eio"
+maintainer: ["ocaml-tracing"]
+authors: ["ocaml-tracing" "ELLIOTTCABLE <opam@ell.io>" "the imandra team"]
+license: "MIT"
+homepage: "https://github.com/ocaml-tracing/ocaml-opentelemetry"
+bug-reports: "https://github.com/ocaml-tracing/ocaml-opentelemetry/issues"
+depends: [
+  "dune" {>= "3.11"}
+  "ocaml" {>= "5.00"}
+  "mtime" {>= "1.4"}
+  "ca-certs"
+  "mirage-crypto-rng"
+  "ambient-context-eio"
+  "opentelemetry" {= version}
+  "opentelemetry-client" {= version}
+  "odoc" {with-doc}
+  "cohttp-eio" {>= "6.1.0"}
+  "eio_main" {with-test}
+  "tls-eio" {>= "2.0.1"}
+  "alcotest" {with-test}
+  "containers" {with-test}
+  "cohttp-lwt-unix" {with-test}
+  "logs" {with-test}
+  "opentelemetry-lwt" {with-test & = version}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-tracing/ocaml-opentelemetry.git"
+url {
+  src:
+    "https://github.com/ocaml-tracing/ocaml-opentelemetry/releases/download/v0.91/opentelemetry-0.91.tbz"
+  checksum: [
+    "sha256=4aaee2025957acf71434a027bd57ee699a9ae927e6b49804fb1e999e16a03694"
+    "sha512=f3ec030fc4ca0483c3fc143eaa802e2aa02b4c25e1a03ec967bd017fad8a4ef6287e9f9688486434d1ac2fc403217658b61d2c7f3709c092c939b93f412ee5c5"
+  ]
+}
+x-commit-hash: "5065cdd98560706f635b89645e8567d3abb54331"
