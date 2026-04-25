@@ -5,18 +5,20 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "MIT"
 flags: conf
 available: os = "win32"
-build: ["pkgconf" "--personality=i686-w64-mingw32"
+build: ["pkgconf" "--personality=i686-w64-mingw32" {os-distribution = "cygwin"}
         "ncurses"  {os-distribution = "cygwin"}
         "ncursesw" {os-distribution = "msys2"}
 ]
 depends: [
+  "msys2" {build & os = "win32" & os-distribution = "msys2"}
+  "msys2-mingw32" {os = "win32" & os-distribution = "msys2"}
   "conf-pkg-config" {build}
   "conf-mingw-w64-gcc-i686" {build}
 ]
-synopsis: "ncurses for i686 mingw-w64"
+synopsis: "Virtual package for ncurses on i686 mingw-w64 (32-bit x86)"
 description:
-  "Ensure the i686 version of ncurses for the mingw-w64 project is available"
-maintainer: "David Allsopp <david@tarides.com>"
+  "Ensures the i686 version of ncurses for the mingw-w64 project is available"
+maintainer: "David Allsopp <dra27@dra27.uk>"
 depexts: [
   ["mingw64-i686-ncurses"] {os = "win32" & os-distribution = "cygwin"}
   ["mingw-w64-i686-ncurses"] {os = "win32" & os-distribution = "msys2"}

@@ -1,7 +1,7 @@
 opam-version: "2.0"
-synopsis: "gnomecanvas for x86_64 mingw-w64 (64-bit x86_64)"
+synopsis: "Virtual package for gnomecanvas on x86_64 mingw-w64 (64-bit x86_64)"
 description: "Ensures the x86_64 version of gnomecanvas for the mingw-w64 project is available"
-maintainer: "David Allsopp <david@tarides.com>"
+maintainer: "David Allsopp <dra27@dra27.uk>"
 authors: "The GNOME Project"
 license: "LGPL-2.1-or-later"
 homepage: "https://developer.gnome.org/libgnomecanvas/2.30/"
@@ -9,10 +9,11 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 flags: conf
 available: os = "win32"
 build: [
-  ["pkgconf" "--personality=x86_64-w64-mingw32" "libgnomecanvas-2.0"] {os = "win32" & os-distribution = "cygwin"}
-  ["pkg-config" "libgnomecanvas-2.0"] {os = "win32" & os-distribution = "msys2"}
+  ["pkgconf" "--personality=x86_64-w64-mingw32" {os-distribution = "cygwin"} "libgnomecanvas-2.0"]
 ]
 depends: [
+  "msys2" {build & os = "win32" & os-distribution = "msys2"}
+  "msys2-mingw64" {os = "win32" & os-distribution = "msys2"}
   "conf-pkg-config" {build}
   "conf-mingw-w64-gcc-x86_64" {build}
 ]
