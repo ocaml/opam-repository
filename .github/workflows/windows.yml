@@ -58,14 +58,7 @@ jobs:
           opam-pin: false
           windows-environment: ${{ matrix.windows_environment }}
 
-      - name: Remove the compiler
-        run: |
-          opam switch set-invariant -n ${{ matrix.windows_environment == 'msys2' && 'msys2-mingw64' || 'host-system-mingw' }}
-          opam remove ocaml-compiler ocaml -y
-          opam switch set-invariant -n host-system-mingw
-
       - name: Install packages
-        if: always()
         run: |
           $failed = $false
           Foreach ($pkg in '${{ matrix.packages }}' -split ' ') {
