@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "Lean OCaml Async NATS client"
+description: "Async-based OCaml NATS client"
+maintainer: ["Hebilicious"]
+authors: ["Hebilicious"]
+license: "MIT"
+homepage: "https://github.com/hebilicious/nats-ml"
+bug-reports: "https://github.com/hebilicious/nats-ml/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "dune" {>= "3.19"}
+  "core"
+  "async"
+  "async_unix"
+  "uri"
+  "yojson" {>= "1.7.0"}
+  "nats-client"
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/hebilicious/nats-ml.git"
+x-maintenance-intent: ["(latest)"]
+available: [ os-distribution != "alpine" & arch != "riscv64" ]
+
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & opam-version >= "2.1" & arch != "x86_32" & arch != "arm32" & arch != "ppc64" & arch != "s390x"}
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/hebilicious/nats-ml/releases/download/v0.0.9/nats-client-0.0.9.tbz"
+  checksum: [
+    "sha256=2be9adf91c2e503aabb8b5cb67b1e8c472c9ed2426fae72b39fd6dfc39c50e0c"
+    "sha512=16cbb710c24467d6abebf3bc3a5f8f75ef8cbebc8a48fc1623140cf49b79c13d7dc3e3d6281e8d46dd6a2c190d4c7605b7b2262a050661701a7dd8b17950e67f"
+  ]
+}
+x-commit-hash: "2633d527e82ffac88b3f41122b40d015f9e6b3d7"
