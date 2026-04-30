@@ -4,7 +4,9 @@ homepage: "https://liballeg.org"
 authors: "The Allegro authors"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "Giftware"
-build: ["pkg-config" "allegro-5"]
+build: [
+  [conf-pkg-config:command "allegro-5"]
+]
 depexts: [
   [
     "allegro5-devel"
@@ -34,13 +36,12 @@ depexts: [
   ["allegro5"] {os = "freebsd"}
   ["allegro5"] {os = "netbsd"}
 ]
-available: os != "win32"
 synopsis: "Virtual package relying on Allegro 5 development libraries"
 description:
   "This package can only install if Allegro 5 development libraries are accessible through pkg-config."
 depends: [
-  "conf-pkg-config" {build}
-  ("host-arch-x86_32" {os-distribution = "msys2"} & "conf-mingw-w64-sdl2-i686" {os-distribution = "msys2"} |
-   "host-arch-x86_64" {os-distribution = "msys2"} & "conf-mingw-w64-sdl2-x86_64" {os-distribution = "msys2"})
+  "conf-pkg-config" {>= "5"}
+  ("host-arch-x86_64" {os-distribution = "msys2"} & "conf-mingw-w64-allegro5-x86_64" {os-distribution = "msys2"} |
+   "host-arch-x86_32" {os-distribution = "msys2"} & "conf-mingw-w64-allegro5-i686" {os-distribution = "msys2"})
 ]
 flags: conf
