@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "github@cutedogs.org"
+homepage: "https://www.prevanders.net/dwarf.html"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: ["David Anderson" "Carlos Alberto Enciso" "Vincent Torri"]
+license: "LGPL-2.1-only"
+build: [
+  ["pkg-config" "--print-errors" "--exists" "libdwarf"]
+  ["dwarfdump" "--version"]
+]
+depends: ["conf-pkg-config" {build}]
+depexts: [
+  ["libdwarf-dev" "dwarf-tools"] {os-family = "alpine"}
+  ["libdwarf-dev" "dwarfdump" "libdwarf1" "zlib1g-dev" "libzstd-dev"]
+    {os-distribution = "debian"}
+  ["libdwarf-dev" "dwarfdump" "libdwarf1" "zlib1g-dev" "libzstd-dev"]
+    {os-distribution = "ubuntu"}
+  ["libdwarf-tools" "libdwarf-devel"] {os-family = "fedora" & os-version > "40" }
+  ["libdwarf" "dwarfdump"] {os-distribution = "nixos"}
+  ["dwarfutils"] {os-distribution = "homebrew" & os = "macos"}
+  ["libdwarf"] {os-family = "arch"}
+  ["epel-release" "libdwarf-devel" "libdwarf-tools"] {os-distribution = "centos" & os-version >= "9"}
+  ["libdwarf-devel" "libdwarf-tools"] {os-family = "opensuse"}
+  ["libdwarf-devel" "libdwarf-tools"] {os-family = "suse" & os-version >= "16"}
+]
+
+available: os != "win32"
+  & !(os-distribution = "centos" & os-version < "9")
+  & os != "freebsd"
+  & os-distribution != "ol"
+  & !(os-family = "suse" & os-version < "16")
+  & !(os-distribution = "debian" & os-version <= "12")
+  & !(os-distribution = "ubuntu" & os-version < "25.10")
+
+synopsis: "Virtual package relying on dwarfutils"
+description:
+  "This package can only install if the dwarfutils software suite is installed on the system."
+flags: conf
