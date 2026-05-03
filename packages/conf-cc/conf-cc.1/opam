@@ -1,0 +1,37 @@
+opam-version: "2.0"
+synopsis: "Virtual package for the system's C compiler"
+description: """
+This package can only install if a C compiler is available on the system and
+defines a package variable conf-cc:cc containing the command to run
+"""
+maintainer: "David Allsopp <dra27@dra27.uk>"
+authors: "David Allsopp"
+license: "CC0-1.0+"
+homepage: "https://github.com/ocaml/opam-repository"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+depends: [
+  ("host-arch-x86_32" {os = "win32"} | "host-arch-x86_64" {os = "win32"})
+  ("host-system-mingw" {os = "win32"} | "host-system-msvc" {os = "win32"})
+  ("ocaml-env-mingw32" {os = "win32"} | "ocaml-env-mingw64" {os = "win32"} |
+   "ocaml-env-msvc32" {os = "win32"} | "ocaml-env-msvc64" {os = "win32"})
+]
+build: [
+  ["touch" "dummy.c"]
+  ["i686-w64-mingw32-gcc" {os = "win32" & host-arch-x86_32:installed & host-system-mingw:installed}
+   "x86_64-w64-mingw32-gcc" {os = "win32" & host-arch-x86_64:installed & host-system-mingw:installed}
+   "cl" {os = "win32" & host-system-msvc:installed}
+   "cc" {os != "win32" | (!host-arch-x86_32:installed & !host-arch-x86_64:installed)}
+     "-c" {!host-system-msvc:installed} "/c" {host-system-msvc:installed} "dummy.c"]
+  ["sh" "./write-config.sh" name "-v" "cc"
+     "cc" {os != "win32" | (os-distribution != "cygwin" & os-distribution != "msys2")}
+     "cl" {os = "win32" & host-system-msvc:installed}
+     "i686-w64-mingw32-gcc" {os = "win32" & host-arch-x86_32:installed & host-system-mingw:installed}
+     "x86_64-w64-mingw32-gcc" {os = "win32" & host-arch-x86_64:installed & host-system-mingw:installed}]
+]
+extra-source "write-config.sh" {
+  src: "https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.0/write-config.sh"
+  checksum: [
+    "sha256=f41786c15f57b24aea03ba383437075d2535ef405d913d787dabf38f9dd663d5"
+    "sha512=411a28c5d7d1c34ff0b5127160fada5dc4b5020239d85cc7d0784e0b1dc510f035299123811ce8562c7964a44f1d8bb1fe25c15fdc3688448ea7d3c52068055c"
+  ]
+}

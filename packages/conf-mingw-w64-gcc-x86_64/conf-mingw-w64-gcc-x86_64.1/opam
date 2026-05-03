@@ -4,16 +4,29 @@ description: "Ensures the x86_64 version of GCC for the mingw-w64 project is ava
 maintainer: "David Allsopp <dra27@dra27.uk>"
 authors: "David Allsopp"
 license: "GPL-3.0-or-later"
+dev-repo: "git+https://github.com/dra27/mingw-w64-shims.git"
 homepage: "https://www.mingw-w64.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-flags: conf
 available: os = "win32"
 depends: [
-  "msys2" {build & os = "win32" & os-distribution = "msys2"}
-  "msys2-mingw64" {os = "win32" & os-distribution = "msys2"}
+  "msys2" {os-distribution = "msys2"}
+  "msys2-mingw64" {os-distribution = "msys2"}
+  ("host-arch-x86_32" | "host-arch-x86_64")
 ]
-build: ["x86_64-w64-mingw32-gcc" "--version"]
+conflicts: "mingw-w64-shims"
+build: [
+  ["x86_64-w64-mingw32-gcc" "--version"]
+  ["sh" "./install-shim.sh" name "mingw64-x86_64-binutils mingw64-x86_64-gcc-core" bin "x86_64-w64-mingw32-gcc" "shim" "cygpath" {host-arch-x86_64:installed}] {os-distribution = "cygwin"}
+]
+setenv: PATH += "%{_:runtime}%"
 depexts: [
   ["mingw64-x86_64-gcc-core"] {os = "win32" & os-distribution = "cygwin"}
   ["mingw-w64-x86_64-gcc"] {os = "win32" & os-distribution = "msys2"}
 ]
+url {
+  src: "https://github.com/dra27/mingw-w64-shims/archive/refs/tags/1.0.0.tar.gz"
+  checksum: [
+    "sha256=b7443030e9d316063e566a4dd46c24903f1e26e8f2ebabfab696430fef61bb10"
+    "sha512=a860a1fc77e2bb516e74bac0ecc41f82f878eade974a0a66916d8d95f71af45dd6d64b403d9f2519370ad09b174a117894467f525a316be801baf7556066816c"
+  ]
+}
