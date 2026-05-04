@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "shon.feder@gmail.com"
+homepage: "https://git-scm.com"
+authors: "Linus Torvalds"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "GPL-2.0-or-later"
+# git-daemon doesn't provide a simple way to check that the executable is available
+# (e.g., no '--version' flag and '--help' requires the man pager), so we instead check
+# that the executable is in the expected location.
+build: [
+  ["sh" "-c" "test -x \"$(git --exec-path)/git-daemon\""]     {os != "win32"}
+  ["sh" "-c" "test -x \"$(git --exec-path)/git-daemon.exe\""] {os = "win32"}
+]
+depexts: [
+  # These distros support an explicit installation of git-daemon
+  ["git-daemon"] {os-distribution = "centos"}
+  ["git-daemon"] {os-family = "fedora"}
+  ["git-daemon"] {os-distribution = "ol"}
+  ["git-daemon"] {os-family = "suse" | os-family = "opensuse"}
+  ["git-daemon"] {os-family = "alpine"}
+  # On the remaining distros, git-daemon is only (and always) available thru the git package
+  ["git"] {os-family = "debian"}
+  ["git"] {os-family = "ubuntu"}
+  ["git"] {os-distribution = "nixos"}
+  ["git"] {os-family = "arch"}
+  ["git"] {os = "freebsd"}
+  ["system:git"] {os = "win32" & os-distribution = "cygwinports"}
+  # This is intentionally os = "cygwin" and *not* os-distribution = "cygwin"
+  # For native Windows, opam 2.2 recommends Git for Windows, so for native
+  # Windows there's no need for depext support.
+  ["git"] {os = "cygwin"}
+]
+synopsis: "Virtual package ensuring the git-daemon is installed"
+description:
+  "This package can only install if the git-daemon program is installed on the system."
+flags: conf
