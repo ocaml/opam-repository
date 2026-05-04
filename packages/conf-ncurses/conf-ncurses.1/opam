@@ -5,19 +5,12 @@ authors: "GNU Project"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "MIT"
 build: [
-  "pkgconf" {os = "win32" & os-distribution != "cygwinports"}
-  "--personality=i686-w64-mingw32"
-    {os = "win32" & os-distribution != "cygwinports" &
-     host-arch-x86_32:installed}
-  "--personality=x86_64-w64-mingw32"
-    {os = "win32" & os-distribution != "cygwinports" &
-     host-arch-x86_64:installed}
-  "pkg-config" {os-distribution != "cygwin" & os-distribution != "msys2" & os-distribution != "opensuse" & os != "macos" & os != "freebsd" & os != "netbsd" & os != "openbsd"}
-  "ncurses" {os-distribution != "opensuse" & os != "macos" & os != "freebsd" & os != "netbsd" & os != "openbsd" & os-distribution != "msys2"}
-  "ncursesw" {os-distribution = "msys2"} # MSys2 packages compatible ncursesw https://packages.msys2.org/packages/mingw-w64-x86_64-ncurses
+  # MSys2 packages compatible ncursesw https://packages.msys2.org/packages/mingw-w64-x86_64-ncurses
+  [conf-pkg-config:command "ncurses" {os-distribution != "msys2"} "ncursesw" {os-distribution = "msys2"}]
+    {os-distribution != "opensuse" & os != "macos" & os != "freebsd" & os != "netbsd" & os != "openbsd"}
 ]
 depends: [
-  "conf-pkg-config" {build & os-distribution != "opensuse" & os != "macos" & os != "freebsd" & os != "netbsd" & os != "openbsd"}
+  "conf-pkg-config" {>= "5" & os-distribution != "opensuse" & os != "macos" & os != "freebsd" & os != "netbsd" & os != "openbsd"}
   ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
    "conf-mingw-w64-ncurses-i686"
      {os = "win32" & os-distribution != "cygwinports"} |

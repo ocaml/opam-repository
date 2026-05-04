@@ -5,15 +5,7 @@ homepage: "https://glade.gnome.org/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "LGPL-2.1-or-later"
 build: [
-  "pkgconf" {os = "win32" & os-distribution != "cygwinports"}
-  "--personality=i686-w64-mingw32"
-    {os = "win32" & os-distribution != "cygwinports" &
-     host-arch-x86_32:installed}
-  "--personality=x86_64-w64-mingw32"
-    {os = "win32" & os-distribution != "cygwinports" &
-     host-arch-x86_64:installed}
-  "pkg-config" {os != "win32" | os-distribution = "cygwinports"}
-  "libglade-2.0"
+  [conf-pkg-config:command "libglade-2.0"]
 ]
 depexts: [
   ["libglade2-dev"] {os-family = "debian" | os-family = "ubuntu"}
@@ -35,7 +27,7 @@ synopsis: "Virtual package relying on a libglade system installation"
 description:
   "This package can only install if libglade2-dev is installed on the system."
 depends: [
-  "conf-pkg-config" {build}
+  "conf-pkg-config" {>= "5"}
   ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
    "conf-mingw-w64-glade-i686"
      {os = "win32" & os-distribution != "cygwinports"} |

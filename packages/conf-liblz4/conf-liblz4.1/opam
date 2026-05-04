@@ -5,12 +5,10 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: ["Yann Collet"]
 license: ["GPL-2.0-only" "BSD-2-Clause"]
 build: [
-  ["pkgconf" "--personality=i686-w64-mingw32" "liblz4"] {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
-  ["pkgconf" "--personality=x86_64-w64-mingw32" "liblz4"] {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
-  ["pkg-config" "liblz4"] {os != "win32" | os-distribution = "cygwinports"}
+  [conf-pkg-config:command "liblz4"]
 ]
 depends: [
-  "conf-pkg-config" {build}
+  "conf-pkg-config" {>= "5"}
   ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-liblz4-i686" {os = "win32" & os-distribution != "cygwinports"} |
    "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-liblz4-x86_64" {os = "win32" & os-distribution != "cygwinports"})
 ]

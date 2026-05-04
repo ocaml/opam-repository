@@ -5,12 +5,14 @@ license: "LGPL-2.1-or-later"
 homepage: "https://www.gtk.org/"
 bug-reports: "https://github.com/garrigue/lablgtk/issues"
 build: [
-  ["pkgconf" "--personality=i686-w64-mingw32" "--print-errors" "--exists" "gtk+-3.0"] {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
-  ["pkgconf" "--personality=x86_64-w64-mingw32" "--print-errors" "--exists" "gtk+-3.0"] {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
-  ["pkg-config" "--short-errors" "--print-errors" "--atleast-version" "3.18" "gtk+-3.0"] {os != "win32" | os-distribution = "cygwinports"}
+  [conf-pkg-config:command
+     "--short-errors" {os != "win32" | os-distribution = "cygwinports"} "--atleast-version" {os != "win32" | os-distribution = "cygwinports"} "3.18" {os != "win32" | os-distribution = "cygwinports"}
+     "--print-errors" "--exists" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
+     "gtk+-3.0"
+  ]
 ]
 depends: [
-  "conf-pkg-config" {build}
+  "conf-pkg-config" {>= "5"}
   ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtk3-i686" {os = "win32" & os-distribution != "cygwinports"} |
    "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtk3-x86_64" {os = "win32" & os-distribution != "cygwinports"})
 ]

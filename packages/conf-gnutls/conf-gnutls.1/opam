@@ -4,18 +4,10 @@ homepage: "https://www.gnutls.org"
 authors: ["Nikos Mavrogiannopoulos" "Simon Josefsson"]
 license: "LGPL-2.1-or-later"
 build: [
-  "pkgconf" {os = "win32" & os-distribution != "cygwinports"}
-  "--personality=i686-w64-mingw32"
-    {os = "win32" & os-distribution != "cygwinports" &
-     host-arch-x86_32:installed}
-  "--personality=x86_64-w64-mingw32"
-    {os = "win32" & os-distribution != "cygwinports" &
-     host-arch-x86_64:installed}
-  "pkg-config" {os != "win32" | os-distribution = "cygwinports"}
-  "gnutls" "nettle"
+  [conf-pkg-config:command "gnutls" "nettle"]
 ]
 depends: [
-  "conf-pkg-config" {build}
+  "conf-pkg-config" {>= "5"}
   ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
    "conf-mingw-w64-gnutls-i686"
      {os = "win32" & os-distribution != "cygwinports"} &
