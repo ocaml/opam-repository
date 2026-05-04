@@ -5,14 +5,10 @@ homepage: "https://www.postgresql.org"
 dev-repo: "git+https://github.com/mmottl/postgresql-ocaml.git"
 license: "blessing"
 build: [
-  ["pkgconf" {os = "win32" & os-distribution != "cygwinports"}
-   "--personality=i686-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
-   "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
-   "pkg-config" {os != "win32" | os-distribution = "cygwinports"}
-  "libpq"]
+  [conf-pkg-config:command "libpq"]
 ]
 depends: [
-  "conf-pkg-config" {build}
+  "conf-pkg-config" {>= "5"}
   ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-postgresql-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
    "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-postgresql-i686" {os = "win32" & os-distribution != "cygwinports"})
 ]

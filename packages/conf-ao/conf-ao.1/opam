@@ -5,14 +5,10 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: "libao dev team"
 license: "GPL-2.0-only"
 build: [
-  ["pkgconf" {os = "win32" & os-distribution != "cygwinports"}
-     "--personality=i686-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
-     "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
-   "pkg-config" {os != "win32" | os-distribution = "cygwinports"}
-   "--print-errors" "--exists" "ao"]
+  [conf-pkg-config:command "--print-errors" "--exists" "ao"]
 ]
 depends: [
-  "conf-pkg-config" {build}
+  "conf-pkg-config" {>= "5"}
   ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-ao-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
    "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-ao-i686" {os = "win32" & os-distribution != "cygwinports"})
 ]

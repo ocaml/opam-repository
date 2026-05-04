@@ -4,15 +4,13 @@ homepage: "http://cairographics.org/"
 authors: ["Keith Packard" "Carl Worth" "Behdad Esfahbod"]
 license: ["LGPL-2.1-only" "MPL-1.1"]
 build: [
-  ["pkgconf" "--personality=i686-w64-mingw32" "cairo"] {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
-  ["pkgconf" "--personality=x86_64-w64-mingw32" "cairo"] {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
-  ["pkg-config" "cairo"] {os != "macos" & os != "win32"}
+  [conf-pkg-config:command "cairo"] {os != "macos"}
   ["sh" "-exc"
    "export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/; pkg-config --libs cairo"]
    {os = "macos" & os-distribution = "homebrew"}
 ]
 depends: [
-  "conf-pkg-config" {>= "3" & build}
+  "conf-pkg-config" {>= "5"}
   ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-cairo-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
    "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-cairo-i686" {os = "win32" & os-distribution != "cygwinports"})
 ]

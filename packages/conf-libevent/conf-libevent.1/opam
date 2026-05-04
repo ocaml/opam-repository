@@ -5,18 +5,10 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: "Libevent dev team"
 license: "BSD-3-clause"
 build: [
-  "pkgconf" {os = "win32" & os-distribution != "cygwinports"}
-  "--personality=i686-w64-mingw32"
-    {os = "win32" & os-distribution != "cygwinports" &
-     host-arch-x86_32:installed}
-  "--personality=x86_64-w64-mingw32"
-    {os = "win32" & os-distribution != "cygwinports" &
-     host-arch-x86_64:installed}
-  "pkg-config" {os != "Win32" | os-distribution = "cygwinports"}
-  "libevent"
+  [conf-pkg-config:command "libevent"]
 ]
 depends: [
-  "conf-pkg-config" {build}
+  "conf-pkg-config" {>= "5"}
   ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
    "conf-mingw-w64-libevent-x86_64"
      {os = "win32" & os-distribution != "cygwinports"} |
