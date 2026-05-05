@@ -36,7 +36,7 @@ package versions may be marked maintained, is detailed below.
 
 ### Compiler cutoff threshold
 
-The current (2025-02-01) compiler cutoff threshold is `4.08`.
+The current (2026-05-05) compiler cutoff threshold is `4.11`.
 
 This threshold is subject to change by the opam repo maintainers.
 The threshold is based on the oldest ocaml compiler version available
