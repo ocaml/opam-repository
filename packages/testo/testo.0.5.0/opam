@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "Test framework for OCaml"
+description: """
+Testo is a test framework for OCaml providing new subcommands for capturing,
+checking, and approving the output of tests."""
+maintainer: ["Martin Jambon <martin@mjambon.com>"]
+authors: ["Martin Jambon" "Gabriel Jaldon"]
+license: "ISC"
+homepage: "https://github.com/mjambon/testo"
+bug-reports: "https://github.com/mjambon/testo/issues"
+depends: [
+  "dune" {>= "3.18"}
+  "ocaml" {>= "4.08.0"}
+  "alcotest" {with-test}
+  "cmdliner" {>= "1.1.0"}
+  "fpath"
+  "odoc" {>= "3.1.0" & with-doc}
+  "re" {>= "1.10.0"}
+  "testo-util" {= version}
+  "ocamlformat" {>= "0.28.0" & < "0.29.0" & with-dev-setup}
+  "utop" {with-dev-setup}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mjambon/testo.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/mjambon/testo/releases/download/0.5.0/testo-0.5.0.tbz"
+  checksum: [
+    "sha256=f7919d9f9fa4571c5b1ad627dfa8c05e4d79f8654745a6beb333b95b459611b1"
+    "sha512=83c7531e5c190e105b67579475d0b24f2a397feee71961d0acfa93c6ddb06b902f9156ba7e08acb24be6ee317d822b44d0cf825ea0f3374c9405ae65bcea8e79"
+  ]
+}
+x-commit-hash: "b21728a5bf55466c60d049dbca7a89faaa74a735"
