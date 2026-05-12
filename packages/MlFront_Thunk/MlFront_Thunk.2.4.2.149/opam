@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Describes and runs reproducible units of work called thunks"
+maintainer: "Diskuv, Inc. <opensource+dkml@support.diskuv.com>"
+authors: "Diskuv, Inc. <opensource+dkml@support.diskuv.com>"
+license: "Apache-2.0"
+homepage:
+  "https://github.com/diskuv/dk?tab=readme-ov-file#dk---a-terribly-uninteresting-build-and-scripting-system"
+bug-reports: "https://gitlab.com/dkml/build-tools/MlFront/-/issues"
+depends: [
+  "dune" {>= "3.18"}
+  "ocaml" {>= "4.14"}
+  "MlFront_Core" {= version}
+  "MlFront_Lua" {= version}
+  "MlFront_Progress" {= version}
+  "MlFront_ZipFile" {= version}
+  "UnifiedScript_Std" {= version}
+  "digestif" {>= "1.1.4"}
+  "fmlib_parse" {>= "0.6.2"}
+  "fmlib_pretty" {>= "0.6.2"}
+  "fmlib_std" {>= "0.6.2"}
+  "ppx_deriving" {>= "6.0.2"}
+  "tezt" {with-test & >= "4.1.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://gitlab.com/dkml/build-tools/MlFront.git"
+url {
+  src:
+    "https://gitlab.com/dkml/build-tools/MlFront/-/releases/2.4.2.149/downloads/MlFront.tar.gz"
+  checksum: [
+    "md5=779ab72fb30d345602cfe8e168ec5cdb"
+    "sha512=43771558e895ba233d06c54c9edc648abb267c49cdcfe8b98595983f82d9a402e0a4a2936a10c680ba1ba30ee9ec5be00cdafe1af355b9d28910a8887fe00913"
+  ]
+}
+x-maintenance-intent: ["(latest)"]
