@@ -1,0 +1,71 @@
+opam-version: "2.0"
+synopsis: "Dockerfile eDSL -- opam support"
+description: """\
+This library provides a typed OCaml interface to generating Dockerfiles
+programmatically without having to resort to lots of shell scripting and
+awk/sed-style assembly.
+
+The opam subpackage provides opam and Linux-specific distribution support
+for generating dockerfiles."""
+maintainer: [
+  "Anil Madhavapeddy <anil@recoil.org>"
+  "Antonin Décimo <antonin@tarides.com>"
+  "David Allsopp <david.allsopp@metastack.com>"
+  "Kate <kit.ty.kate@disroot.org>"
+  "Thomas Leonard <talex5@gmail.com>"
+  "Tim McGilchrist <timmcgil@gmail.com>"
+]
+authors: [
+  "Anil Madhavapeddy"
+  "Anton Kochkov"
+  "Antonin Décimo"
+  "David Allsopp"
+  "Ewan Mellor"
+  "Kate Deplaix"
+  "Louis Gesbert"
+  "Mark Elvers"
+  "Thomas Leonard"
+  "Tim McGilchrist"
+]
+license: "ISC"
+tags: ["org:mirage" "org:ocamllabs"]
+homepage: "https://github.com/ocurrent/ocaml-dockerfile"
+bug-reports: "https://github.com/ocurrent/ocaml-dockerfile/issues"
+depends: [
+  "dune" {>= "3.20"}
+  "dockerfile" {= version}
+  "fmt" {>= "0.8.7"}
+  "ocaml-version" {>= "3.6.4"}
+  "ppx_sexp_conv" {>= "v0.9.0"}
+  "sexplib0"
+  "alcotest" {>= "1.9.1" & with-test}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "result" {< "1.5"}
+  "rresult" {< "0.7.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocurrent/ocaml-dockerfile.git"
+url {
+  src:
+    "https://github.com/ocurrent/ocaml-dockerfile/releases/download/8.3.9/ocaml-dockerfile-8.3.9.tbz"
+  checksum: [
+    "md5=57b9cd5627b77d8ad2480c797dd59635"
+    "sha512=a92448db5cc0be1ffb3e70578f7909b7ddcf21898f4d71ef6c25c85573b633ec31fdcd9f9b35998b443a85a2d4cc2905353bd5bb970aa7564285bc6fcb89df40"
+  ]
+}
+x-maintenance-intent: ["(latest)"]
