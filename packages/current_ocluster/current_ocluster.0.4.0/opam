@@ -1,0 +1,62 @@
+opam-version: "2.0"
+synopsis: "OCurrent plugin for OCluster builds"
+description:
+  "Creates a stage in an OCurrent pipeline for submitting jobs to OCluster."
+maintainer: "Mark Elvers <mark.elvers@tunbury.org>"
+authors: [
+  "Antonin Décimo <antonin@tarides.com>"
+  "David Allsopp <david.allsopp@metastack.com>"
+  "Kate <kit.ty.kate@disroot.org>"
+  "Lucas Pluvinage <lucas@tarides.com>"
+  "Mark Elvers <mark.elvers@tunbury.org>"
+  "Patrick Ferris <patrick@sirref.org>"
+  "Thomas Leonard <talex5@gmail.com>"
+  "Tim McGilchrist <timmcgil@gmail.com>"
+]
+license: "Apache-2.0"
+homepage: "https://github.com/ocurrent/ocluster"
+doc: "https://ocurrent.github.io/ocluster/"
+bug-reports: "https://github.com/ocurrent/ocluster/issues"
+depends: [
+  "dune" {>= "3.7"}
+  "ocluster-api" {= version}
+  "ocaml" {>= "4.14.1"}
+  "capnp-rpc-unix" {>= "1.2.3" & < "2.0"}
+  "current" {>= "0.6.4"}
+  "current_git" {>= "0.6.4"}
+  "duration"
+  "fmt"
+  "logs"
+  "lwt" {>= "5.6.1"}
+  "ppx_deriving"
+  "ppx_deriving_yojson"
+  "prometheus" {>= "1.2"}
+  "current_github" {>= "0.6.4" & with-test}
+  "current_web" {>= "0.6.4" & with-test}
+  "odoc" {with-doc}
+]
+available: arch != "x86_32"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocurrent/ocluster.git"
+url {
+  src:
+    "https://github.com/ocurrent/ocluster/releases/download/v0.4.0/ocluster-0.4.0.tbz"
+  checksum: [
+    "md5=b024d87f08bed7a6fb40fd3a1e1d94f5"
+    "sha512=ab58b4279a5763b03c2d158d6261ca6edf800baf89c996f5a849e01ad8f332d6fdf7bb4947b36d8671b5b80a8ccc7faae252763d985464fdfb23287e057e793f"
+  ]
+}
+x-maintenance-intent: ["(latest)"]
