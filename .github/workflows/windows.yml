@@ -58,14 +58,34 @@ jobs:
           opam-pin: false
           windows-environment: ${{ matrix.windows_environment }}
 
+      - name: Initial state
+        run: |
+          # commands
+          Write-Host "# Switch invariant: `e[34m$(opam switch invariant)`e[0m"
+          opam list
+
       - name: Install packages
         run: |
+          # package installations
           $failed = $false
+          function Skip-Until {
+            param(
+              [Parameter(Mandatory, Position=0)][string]$Pattern,
+              [Parameter(ValueFromPipeline)]$Line
+            )
+            begin { $found = $false }
+            process {
+              if ($found) { $Line }
+              elseif ($Line -match $Pattern) { $found = $true }
+            }
+          }
           Foreach ($pkg in '${{ matrix.packages }}' -split ' ') {
             Write-Host "::group::Testing `e[1;34m$pkg`e[0m"
-            opam install --color=always --confirm-level=unsafe-yes "$pkg"
+            opam install -v --color=always --confirm-level=unsafe-yes "$pkg"
+            $install_exit_code = $LASTEXITCODE
+            opam config list $pkg.Split('.')[0] | Skip-Until ':opamfile'
             Write-Host "::endgroup::"
-            switch ($LASTEXITCODE) {
+            switch ($install_exit_code) {
               0 { Write-Host "`e[1;32m$pkg installed successfully`e[0m."; Break }
               5 { Write-Host "$pkg is not installable. `e[1;33mSkip`e[0m."; Break } # TODO: Remove when https://github.com/ocaml/opam/issues/6017 is fixed
               20 { Write-Host "$pkg is not installable. `e[1;33mSkip`e[0m."; Break }
@@ -77,4 +97,3 @@ jobs:
           if ($failed) {
             throw "One or more packages failed to build"
           }
-          Exit
