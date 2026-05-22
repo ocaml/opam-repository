@@ -1,16 +1,25 @@
 opam-version: "2.0"
+# These packages are part of the infrastructure for maintaining the OCaml
+# compiler dependencies in opam. It's not possible to version the metadata
+# itself, because opam's versioning provides no mechanism to ignore the
+# revision (i.e. we don't have a way to have two revisions of ocaml.5.4.1 but
+# where "ocaml" {= "5.4.1"} would always mean to use the latest revision).
+# It is however useful to know which version of the metadata is installed.
+# This number should be bumped whenever a pertinent change is made.
+x-revision: "5"
 license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
 synopsis: "The OCaml compiler (virtual package)"
 description: """
 This package requires a matching implementation of OCaml,
 and polls it to initialise specific variables like `ocaml:native-dynlink`"""
-maintainer: "David Allsopp <david@tarides.com>"
+maintainer: "David Allsopp <dra27@dra27.uk>"
 depends: [
   "ocaml-config" {>= "3"}
   "ocaml-base-compiler" {>= "5.2.2~" & < "5.2.3~" } |
   "ocaml-variants" {>= "5.2.2~" & < "5.2.3~"} |
   "ocaml-system" {>= "5.2.2~" & < "5.2.3~"} |
   "dkml-base-compiler" {>= "5.2.2~" & < "5.2.3~"}
+  ("ocaml-env-mingw64" {os = "win32"} | "ocaml-env-mingw32" {os = "win32"})
 ]
 setenv: [
   [OCAMLTOP_INCLUDE_PATH += "%{toplevel}%"]
