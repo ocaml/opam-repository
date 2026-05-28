@@ -49,14 +49,25 @@ jobs:
       - name: Checkout tree
         uses: actions/checkout@v6
 
+      - name: Fetch base
+        run: |
+          git remote add upstream https://github.com/ocaml/opam-repository.git
+          git fetch --depth=1 upstream ${{ github.event.pull_request.base.sha }}
+          git branch repo-${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.base.sha }}
+
       - name: Set-up OCaml
         uses: ocaml/setup-ocaml@v3
         with:
           ocaml-compiler: "5"
           opam-repositories: |
-            default: git+file://${{ github.workspace }}
+            default: git+file://${{ github.workspace }}#repo-${{ github.event.pull_request.base.sha }}
           opam-pin: false
           windows-environment: ${{ matrix.windows_environment }}
+
+      - name: Apply the PR
+        run: |
+          git branch -f repo-${{ github.event.pull_request.base.sha }} ${{ github.sha }}
+          opam update -uy
 
       - name: Initial state
         run: |
