@@ -81,9 +81,14 @@ jobs:
           }
           Foreach ($pkg in '${{ matrix.packages }}' -split ' ') {
             Write-Host "::group::Testing `e[1;34m$pkg`e[0m"
+            $pkg_dir = $pkg.Split('.')[0]
+            opam lint -v "packages/$pkg_dir/$pkg"
+            if ($LASTEXITCODE -ne 0) {
+              Write-Host "$pkg failed linting."; $failed = $true
+            }
             opam install -v --color=always --confirm-level=unsafe-yes "$pkg"
             $install_exit_code = $LASTEXITCODE
-            opam config list $pkg.Split('.')[0] | Skip-Until ':opamfile'
+            opam config list $pkg_dir | Skip-Until ':opamfile'
             Write-Host "::endgroup::"
             switch ($install_exit_code) {
               0 { Write-Host "`e[1;32m$pkg installed successfully`e[0m."; Break }
@@ -95,5 +100,5 @@ jobs:
             Write-Host
           }
           if ($failed) {
-            throw "One or more packages failed to build"
+            throw "One or more packages failed to lint or build"
           }
