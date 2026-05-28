@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis:
+  "AWS client for Async (400+ services, auto-generated from botocore)"
+description:
+  "AWS service bindings backed by Jane Street's Async I/O library. Generated from botocore for ~400 services. Use this if your codebase is already Async-flavored."
+maintainer: ["Michael Bacarella <m@bacarella.com>"]
+authors: [
+  "Ashish Agarwal <ashish@solvuu.com>"
+  "Solvuu Inc."
+  "Michael Bacarella <m@bacarella.com>"
+]
+license: "MIT"
+homepage: "https://github.com/mbacarella/ocaml-awso"
+doc: "https://mbacarella.github.io/ocaml-awso/"
+bug-reports: "https://github.com/mbacarella/ocaml-awso/issues"
+depends: [
+  "dune" {>= "3.6"}
+  "ocaml" {>= "5.3.0"}
+  "awso"
+  "cohttp-async"
+  "core_unix" {>= "v0.16.0"}
+  "ppx_jane" {>= "v0.16.0"}
+  "ppx_yojson_conv"
+  "async" {>= "v0.16.0"}
+  "async_ssl" {>= "v0.16.1-2" & (< "v0.17.0" | >= "v0.17.0-2")}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mbacarella/ocaml-awso.git"
+available: [ os != "win32" ]
+url {
+  src:
+    "https://github.com/mbacarella/ocaml-awso/releases/download/0.9.1/awso-0.9.1.tbz"
+  checksum: [
+    "sha256=e0e7510192b7e45871cff5c60e5162a77a9fa103b6924136fb1fea5db2092b26"
+    "sha512=51a18cf74c122b021bd84ef5728b7c5b2d5e767f03d5cd2387d886edc34a68cf54a3183e2d6c4939b4c8d3e0c0e406c869d019f2ee9a0903ae4cf7ca725572f0"
+  ]
+}
+x-commit-hash: "c636fb198135987794cdbc57d766845f0fd5c9f2"
