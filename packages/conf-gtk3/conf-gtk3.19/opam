@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "garrigue@math.nagoya-u.ac.jp"
+authors: "The GTK Toolkit"
+license: "LGPL-2.1-or-later"
+homepage: "https://www.gtk.org/"
+bug-reports: "https://github.com/garrigue/lablgtk/issues"
+build: [
+  [conf-pkg-config:command
+     "--short-errors" {os != "win32" | os-distribution = "cygwinports"} "--atleast-version" {os != "win32" | os-distribution = "cygwinports"} "3.18" {os != "win32" | os-distribution = "cygwinports"}
+     "--print-errors" "--exists" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
+     "gtk+-3.0"
+  ]
+]
+depends: [
+  "conf-pkg-config" {>= "5"}
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtk3-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtk3-i686" {os = "win32" & os-distribution != "cygwinports"})
+]
+depexts: [
+  ["libgtk-3-dev" "libexpat1-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["gtk+3" "expat"] {os-distribution = "homebrew" & os = "macos"}
+  ["gtk3 +quartz" "expat"] {os-distribution = "macports" & os = "macos"}
+  ["gtk3-devel"] {os-distribution = "centos"}
+  ["gtk3-devel"] {os-family = "fedora"}
+  ["gtk3-devel"] {os-distribution = "ol"}
+  ["gtk+3.0-dev"] {os-distribution = "alpine"}
+  ["gtk3-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["gtk3"] {os-family = "arch"}
+  ["gtk3"] {os = "win32" & os-distribution = "cygwinports"}
+  ["libgtk3-devel"] {os = "cygwin"}
+  ["gtk3"] {os = "freebsd"}
+]
+post-messages: [
+  "This package requires gtk+ 3.0 development packages installed on your system"
+    {failure}
+  """
+To solve pkg-config issues, you may need to do
+'export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig' and retry"""
+    {failure & os = "macos"}
+]
+synopsis: "Virtual package relying on GTK+ 3"
+description:
+  "This package can only install if GTK+ 3 is installed on the system."
+flags: conf

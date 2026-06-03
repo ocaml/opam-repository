@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer:   "tim@tbrk.org"
+homepage:     "https://sourceware.org/bzip2/"
+bug-reports:  "https://github.com/ocaml/opam-repository/issues"
+authors:      ["Julian Seward"]
+license:      "bzip2-1.0.6"
+
+build: [
+  "pkgconf" {os-distribution = "netbsd"} conf-pkg-config:command {os-distribution != "netbsd"} "bzip2"
+] {os-distribution != "freebsd"
+     # https://cgit.freebsd.org/ports/tree/archivers/bzip2/pkg-plist
+     # missing libdata/pkgconfig/bzip2.pc
+   & !(os-distribution = "ubuntu" & os-version < 25)
+     # https://packages.ubuntu.com/noble/libbz2-dev
+     # missing /usr/share/pkgconfig/bzip2.pc
+   & !(os-distribution = "debian" & os-version < 13)
+     # https://packages.debian.org/bookworm/amd64/libbz2-dev/filelist
+     # missing /usr/share/pkgconfig/bzip2.pc
+   & !(os = "win32" & os-distribution = "cygwin")}
+     # https://cygwin.com/cgi-bin2/package-cat.cgi?file=noarch%2Fmingw64-x86_64-bzip2%2Fmingw64-x86_64-bzip2-1.0.6-4
+     # no bzip2.pc file in cygwin package
+
+depends: [
+  "conf-pkg-config" {>= "5"}
+  (("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-bzip2-x86_64" {os = "win32" & os-distribution != "cygwinports"}) |
+   ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-bzip2-i686" {os = "win32" & os-distribution != "cygwinports"}))
+]
+
+depexts: [
+  ["bzip2"]		    {os = "macos" & os-distribution = "homebrew"}
+  ["libbz2-dev"]	    {os-distribution = "debian"}
+  ["bzip2-dev"]		    {os-distribution = "alpine"}
+  ["bzip2"]		    {os-distribution = "arch"}
+  ["bzip2-devel"]	    {os-distribution = "centos"}
+  ["bzip2-devel"]	    {os-distribution = "fedora"}
+  ["bzip2"]		    {os-distribution = "freebsd"}
+  ["bzip2"]		    {os-distribution = "openbsd"}
+  ["libbz2-devel"]	    {os-family = "suse"}
+  ["libbz2-devel"]	    {os-family = "opensuse"}
+  ["libbz2-dev"]	    {os-distribution = "ubuntu"}
+  ["bzip2"]		    {os = "win32" & os-distribution = "cygwinports"}
+  ["libbz2-devel"]	    {os = "cygwin"}
+]
+synopsis: "Virtual package for bzip2"
+description:
+  "This package can only install if the bzip2 library is installed on the system."
+flags: conf

@@ -1,0 +1,37 @@
+opam-version: "2.0"
+maintainer: "blue-prawn"
+homepage: "http://cairographics.org/"
+authors: ["Keith Packard" "Carl Worth" "Behdad Esfahbod"]
+license: ["LGPL-2.1-only" "MPL-1.1"]
+build: [
+  [conf-pkg-config:command "cairo"] {os != "macos"}
+  ["sh" "-exc"
+   "export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/; pkg-config --libs cairo"]
+   {os = "macos" & os-distribution = "homebrew"}
+]
+depends: [
+  "conf-pkg-config" {>= "5"}
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-cairo-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-cairo-i686" {os = "win32" & os-distribution != "cygwinports"})
+]
+depexts: [
+  ["libcairo2-dev"] {os-family = "debian"}
+  ["libcairo2-dev"] {os-family = "ubuntu"}
+  ["libcairo-devel"] {os-distribution = "mageia"}
+  ["cairo" "cairo-devel"] {os-distribution = "centos"}
+  ["cairo-devel"] {os-family = "fedora"}
+  ["cairo-devel"] {os-distribution = "ol"}
+  ["cairo-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["cairo-dev"] {os-family = "alpine"}
+  ["graphics/cairo"] {os = "freebsd"}
+  ["graphics/cairo"] {os = "openbsd"}
+  ["cairo"] {os-family = "arch"}
+  ["cairo"] {os = "macos" & os-distribution = "homebrew"}
+  ["cairo"] {os = "win32" & os-distribution = "cygwinports"}
+  ["libcairo-devel"] {os = "cygwin"}
+]
+synopsis: "Virtual package relying on a Cairo system installation"
+description:
+  "This package can only install if the cairo lib is installed on the system."
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+flags: conf

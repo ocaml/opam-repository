@@ -1,0 +1,33 @@
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+homepage: "https://gtk.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: ["The GNOME Project"]
+license: "LGPL-2.1-or-later"
+build: [
+  [conf-pkg-config:command "--exists" "gtk+-2.0"]
+]
+depends: [
+  "conf-pkg-config" {>= "5"}
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtk2-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gtk2-i686" {os = "win32" & os-distribution != "cygwinports"})
+]
+depexts: [
+  ["libgtk2.0-dev" "libexpat1-dev"] {os-family = "debian"}
+  ["libgtk2.0-dev" "libexpat1-dev"] {os-family = "ubuntu"}
+  ["gtk+2.0-dev"] {os-family = "alpine"}
+  ["gtk2-devel"] {os-distribution = "centos"}
+  ["gtk2-devel"] {os-family = "fedora"}
+  ["gtk2-devel"] {os-distribution = "ol"}
+  ["gtk2-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["gtk2"] {os-family = "arch"}
+  ["gtk2"] {os-distribution = "nixos"}
+  ["gtk2.0"] {os = "win32" & os-distribution = "cygwinports"}
+  ["libgtk2.0-devel"] {os = "cygwin"}
+  ["gtk+" "expat"] {os-distribution = "homebrew" & os = "macos"}
+  ["gtk2"] {os = "freebsd"}
+]
+synopsis: "Virtual package relying on gtk2"
+description:
+  "This package can only install if the gtk+-2.0 library is installed on the system."
+flags: conf

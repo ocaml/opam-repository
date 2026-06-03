@@ -1,0 +1,33 @@
+opam-version: "2.0"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: ["Christophe Troestler <Christophe.Troestler@umons.ac.be>"]
+homepage: "http://www.freetype.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "GPL-1.0-or-later"
+build: [
+  [conf-pkg-config:command "freetype2"]
+]
+depends: [
+  "conf-pkg-config" {>= "5"}
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-freetype-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-freetype-i686" {os = "win32" & os-distribution != "cygwinports"})
+]
+depexts: [
+  ["libfreetype6-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["freetype-dev"] {os-family = "alpine"}
+  ["freetype-devel"] {os-family = "fedora" | os-family = "rhel" | os-family = "centos"}
+  ["freetype2-devel"] {os-family = "mandriva" | os-family = "openmandriva" | os-family = "mageia"}
+  ["freetype2-devel"] {os-family = "suse" | os-family = "opensuse" | os-family = "sles"}
+  ["freetype2"] {os-family = "arch" | os-family = "archlinux"}
+  ["media-libs/freetype"] {os-family = "gentoo"}
+  ["freetype2"] {os = "netbsd"}
+  ["freetype2"] {os = "freebsd"}
+  ["freetype2"] {os = "dragonfly"}
+  ["freetype"] {os = "macos" & os-distribution = "homebrew"}
+  ["freetype"] {os = "macos" & os-distribution = "macports"}
+  ["libfreetype-devel"] {os = "cygwin" | os-distribution = "cygwinports"}
+]
+synopsis: "Virtual package relying on a freetype lib system installation"
+description:
+  "This package can only install if the freetype lib is installed on the system."
+flags: conf

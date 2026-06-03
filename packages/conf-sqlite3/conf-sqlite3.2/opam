@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "Markus Mottl <markus.mottl@gmail.com>"
+authors: [
+  "D. Richard Hipp"
+  "Dan Kennedy"
+  "Joe Mistachkin"
+]
+homepage: "http://www.sqlite3.org"
+dev-repo: "git+https://github.com/mmottl/sqlite3-ocaml.git"
+license: "blessing"
+build: [
+  [conf-pkg-config:command "sqlite3"]
+]
+depends: [
+  "conf-pkg-config" {>= "5"}
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sqlite3-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sqlite3-i686" {os = "win32" & os-distribution != "cygwinports"})
+]
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+
+depexts: [
+  ["libsqlite3-dev"] {os-family = "debian"}
+  ["libsqlite3-dev"] {os-family = "ubuntu"}
+  ["sqlite3"] {os = "freebsd"}
+  ["database/sqlite3"] {os = "openbsd"}
+  ["sqlite-devel"] {os-distribution = "centos"}
+  ["sqlite-devel"] {os-distribution = "rhel"}
+  ["sqlite-devel"] {os-family = "fedora"}
+  ["sqlite-devel"] {os-distribution = "ol"}
+  ["sqlite-dev"] {os-distribution = "alpine"}
+  ["sqlite3-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["sqlite"] {os-distribution = "nixos"}
+  ["sqlite"] {os = "macos" & os-distribution = "homebrew"}
+  ["sqlite3"] {os = "macos" & os-distribution = "macports"}
+  ["sqlite3"] {os = "win32" & os-distribution = "cygwinports"}
+]
+synopsis: "Virtual package relying on an SQLite3 system installation"
+description:
+  "This package can only install if SQLite3 is installed on the system."
+flags: conf

@@ -1,0 +1,34 @@
+opam-version: "2.0"
+maintainer: "Jane Street developers"
+homepage: "http://zstd.net/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: ["Facebook"]
+license: "BSD-3-Clause"
+build: [
+  [conf-pkg-config:command "--atleast-version=1.3.8" "libzstd"]
+]
+depends: [
+  "conf-pkg-config" {>= "5"}
+  (("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-zstd-x86_64" {os = "win32" & os-distribution != "cygwinports"}) |
+   ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-zstd-i686" {os = "win32" & os-distribution != "cygwinports"}))
+]
+depexts: [
+  ["libzstd-dev"] {os-family = "debian"}
+  ["libzstd-dev"] {os-family = "ubuntu"}
+  ["libzstd-devel"] {os-distribution = "centos"}
+  ["libzstd-devel"] {os-distribution = "rhel"}
+  ["libzstd-devel"] {os-family = "fedora"}
+  ["libzstd-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["zstd-dev"] {os-distribution = "alpine"}
+  ["zstd"] {os-distribution = "homebrew" & os = "macos"}
+  ["zstd"] {os = "win32" & os-distribution = "cygwinports"}
+  ["zstd"] {os = "freebsd"}
+]
+synopsis: "Virtual package relying on zstd"
+description:"
+This package can only install if the zstd library is installed on the system,
+and its version is at least 1.3.8
+"
+flags: conf
+x-maintenance-intent: ["(latest)"]
+

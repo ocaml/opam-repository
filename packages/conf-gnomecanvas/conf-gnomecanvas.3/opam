@@ -1,0 +1,39 @@
+opam-version: "2.0"
+maintainer: "virgile.prevosto@m4x.org"
+homepage: "https://developer.gnome.org/libgnomecanvas/2.30/"
+authors: "The GNOME Project"
+license: "LGPL-2.1-or-later"
+build: [
+  [conf-pkg-config:command "libgnomecanvas-2.0"]
+]
+depexts: [
+  ["libgnomecanvas2-dev"] {os-family = "debian"}
+  ["libgnomecanvas2-dev"] {os-family = "ubuntu"}
+  ["libgnomecanvas-devel"] {os-family = "fedora" | os-family = "rhel"}
+  ["libgnomecanvas"] {os = "macos" & os-distribution = "homebrew"}
+  ["libgnomecanvas"] {os = "macos" & os-distribution = "macports"}
+  ["libgnomecanvas-dev@testing" "libart-lgpl-dev"] {os-family = "alpine"}
+  ["libgnomecanvas2"] {os = "win32" & os-distribution = "cygwinports"}
+  ["libgnomecanvas"] {os-family = "arch"}
+  ["libgnomecanvas-devel"] {os-family = "opensuse"}
+  ["libgnomecanvas"] {os = "freebsd"}
+  ["libgnomecanvas"] {os = "openbsd"}
+  ["gnome2.libgnomecanvas"] {os-distribution = "nixos"}
+]
+x-ci-accept-failures: [
+  "centos-8" # libgnomecanvas-devel not available in the official repositories
+             # in CentOS 8 (it was in CentOS 7)
+  "oraclelinux-7"
+  "oraclelinux-8"
+]
+synopsis: "Virtual package relying on a Gnomecanvas system installation"
+description: """
+This package can only install if libgnomecanvas2-dev is installed
+on the system."""
+depends: [
+  "conf-pkg-config" {>= "5"}
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gnomecanvas-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gnomecanvas-i686" {os = "win32" & os-distribution != "cygwinports"})
+]
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+flags: conf

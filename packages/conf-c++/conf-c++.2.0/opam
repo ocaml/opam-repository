@@ -1,0 +1,45 @@
+opam-version: "2.0"
+maintainer: "David Allsopp <dra27@dra27.uk>"
+authors: "David Allsopp"
+homepage: "https://github.com/ocaml/opam-repository"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "CC0-1.0+"
+build: [
+  ["touch" "dummy.cpp"]
+  ["i686-w64-mingw32-c++" {os = "win32" & host-arch-x86_32:installed & host-system-mingw:installed}
+   "x86_64-w64-mingw32-c++" {os = "win32" & host-arch-x86_64:installed & host-system-mingw:installed}
+   "cl" {os = "win32" & host-system-msvc:installed}
+   "c++" {os != "win32" | (!host-arch-x86_32:installed & !host-arch-x86_64:installed)}
+     "-c" {!host-system-msvc:installed} "/c" {host-system-msvc:installed} "dummy.cpp"]
+  ["sh" "./write-config.sh" name "-v" "cxx"
+     "c++" {os != "win32" | (os-distribution != "cygwin" & os-distribution != "msys2")}
+     "i686-w64-mingw32-c++" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2") & host-arch-x86_32:installed}
+     "x86_64-w64-mingw32-c++" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2") & host-arch-x86_64:installed}]
+]
+depexts: [
+  ["gcc-c++"] {os-distribution = "centos"}
+  ["gcc-c++"] {os-family = "fedora"}
+  ["gcc-c++"] {os-family = "suse" | os-family = "opensuse"}
+  ["g++"] {os-family = "debian"}
+  ["g++"] {os-family = "ubuntu"}
+  ["g++"] {os-distribution = "alpine"}
+  ["gcc"] {os-distribution = "nixos"}
+  ["gcc"] {os-distribution = "arch"}
+  ["gcc-g++"] {os = "win32" & os-distribution = "cygwinports"}
+]
+depends: [
+  (("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & ("host-system-mingw" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")} & "conf-mingw-w64-g++-x86_64" {os = "win32" & os-distribution != "cygwinports"} | "host-system-msvc" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")})) |
+   ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & ("host-system-mingw" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")} & "conf-mingw-w64-g++-i686" {os = "win32" & os-distribution != "cygwinports"} | "host-system-msvc" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")})))
+  ("ocaml-env-mingw64" {os = "win32"} | "ocaml-env-mingw32" {os = "win32"} |
+   "ocaml-env-msvc64" {os = "win32"} | "ocaml-env-msvc32" {os = "win32"})
+]
+synopsis: "Virtual package relying on the c++ compiler"
+description:
+  "This package can only install if the c++ compiler is installed on the system."
+extra-source "write-config.sh" {
+  src: "https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/write-config.sh"
+  checksum: [
+    "sha256=b6cc5f98c2cfc23a7bc7774038621a2e7e7b94ed3d3080db40bc455a2575fc7a"
+    "sha512=00c4e7c605e46c8fb4d24c40da0a9317e31e3ec723a7aac59546b1cfb180024cc76dbd27c2aca8d223047ad4b0a4bcd047443fc64a6e218a21931aaa672c3e71"
+  ]
+}

@@ -1,0 +1,27 @@
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+homepage: "https://www.xiph.org/ao/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: "libao dev team"
+license: "GPL-2.0-only"
+build: [
+  [conf-pkg-config:command "--print-errors" "--exists" "ao"]
+]
+depends: [
+  "conf-pkg-config" {>= "5"}
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-ao-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-ao-i686" {os = "win32" & os-distribution != "cygwinports"})
+]
+depexts: [
+  ["libao-devel"] {os-distribution = "centos" | os-family = "fedora" | os-family = "suse" | os-family = "opensuse"}
+  ["libao"] {os = "freebsd" | (os = "macos" & os-distribution = "homebrew") | os-distribution = "nixos" | os-family = "arch"}
+  ["libao-dev"] {os-family = "debian" | os-family = "ubuntu" | os-distribution = "alpine"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7"
+  "oraclelinux-8"
+]
+synopsis: "Virtual package relying on libao"
+description:
+  "This package can only install if the ao library is installed on the system."
+flags: conf

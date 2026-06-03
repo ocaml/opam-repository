@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "vb@luminar.eu.org"
+homepage: "https://www.gnutls.org"
+authors: ["Nikos Mavrogiannopoulos" "Simon Josefsson"]
+license: "LGPL-2.1-or-later"
+build: [
+  [conf-pkg-config:command "gnutls" "nettle"]
+]
+depends: [
+  "conf-pkg-config" {>= "5"}
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-nettle-x86_64"
+     {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-gnutls-x86_64"
+     {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-gnutls-i686"
+     {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-nettle-i686"
+     {os = "win32" & os-distribution != "cygwinports"})
+]
+depexts: [
+  ["libgnutls28-dev" "nettle-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["gnutls-dev"] {os-distribution = "alpine"}
+  ["gnutls"] {os-distribution = "arch"}
+  ["libgnutls-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["gnutls-devel" "nettle-devel"] {os-family = "fedora"}
+  ["gnutls"] {os = "macos" & os-distribution = "homebrew"}
+  ["gnutls"] {os = "win32" & os-distribution = "cygwinports"}
+  ["gnutls-devel"] {os-distribution = "ol"}
+  ["gnutls"] {os-distribution = "homebrew" & os = "macos"}
+  ["gnutls"] {os = "freebsd"}
+]
+synopsis: "Virtual package relying on a gnutls system installation"
+description:
+  "This package can only install if the gnutls lib is installed on the system."
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+flags: conf
