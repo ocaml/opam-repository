@@ -4,11 +4,7 @@ authors: ["Anthony Green"]
 homepage: "http://sourceware.org/libffi/"
 license: "MIT"
 build: [
-  "pkgconf" {os = "win32" & os-distribution != "cygwinports"}
-   "--personality=i686-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
-   "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
-   "pkg-config" {os != "win32" | os-distribution = "cygwinports"}
-   "libffi"
+  [conf-pkg-config:command "libffi"]
 ]
 depexts: [
   ["libffi"] {os = "macos" & os-distribution = "homebrew"}
@@ -28,10 +24,9 @@ depexts: [
 synopsis: "Virtual package relying on libffi system installation"
 description: "This package can only install if libffi is installed on the system."
 depends: [
-  "conf-pkg-config" {build}
-  "mingw-w64-shims" {os-distribution = "cygwin" & build}
-  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-libffi-i686" {os = "win32" & os-distribution != "cygwinports"} |
-   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-libffi-x86_64" {os = "win32" & os-distribution != "cygwinports"})
+  "conf-pkg-config" {>= "5"}
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-libffi-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-libffi-i686" {os = "win32" & os-distribution != "cygwinports"})
 ]
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 flags: conf

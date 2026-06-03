@@ -3,9 +3,7 @@ maintainer: "https://github.com/ocaml/opam-repository/issues"
 homepage: "http://www.libsdl.org/projects/SDL_mixer/"
 license: "Zlib"
 build: [
-  ["pkgconf" "--personality=i686-w64-mingw32" "SDL2_mixer"] {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
-  ["pkgconf" "--personality=x86_64-w64-mingw32" "SDL2_mixer"] {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
-  ["pkg-config" "SDL2_mixer"] {os != "win32" | os-distribution = "cygwinports"}
+  [conf-pkg-config:command "SDL2_mixer"]
 ]
 depexts: [
   ["sdl2_mixer-dev"] {os-family = "alpine"}
@@ -26,9 +24,9 @@ synopsis: "Virtual package relying on a sdl2-mixer system installation"
 description:
   "This package can only install if libsdl2-mixer is installed on the system."
 depends: [
-  "conf-pkg-config" {build}
-  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sdl2-mixer-i686" {os = "win32" & os-distribution != "cygwinports"} |
-   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sdl2-mixer-x86_64" {os = "win32" & os-distribution != "cygwinports"})
+  "conf-pkg-config" {>= "5"}
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sdl2-mixer-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sdl2-mixer-i686" {os = "win32" & os-distribution != "cygwinports"})
 ]
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: "Sam Lantinga"
