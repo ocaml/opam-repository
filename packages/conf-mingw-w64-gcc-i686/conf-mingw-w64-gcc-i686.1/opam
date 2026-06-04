@@ -2,31 +2,18 @@ opam-version: "2.0"
 synopsis: "Virtual package for GCC on i686 mingw-w64 (32-bit x86)"
 description: "Ensures the i686 version of GCC for the mingw-w64 project is available"
 maintainer: "David Allsopp <dra27@dra27.uk>"
-authors: "The GCC Developers"
+authors: "David Allsopp"
 license: "GPL-3.0-or-later"
-dev-repo: "git+https://github.com/dra27/mingw-w64-shims.git"
 homepage: "https://www.mingw-w64.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
+flags: conf
 available: os = "win32"
 depends: [
-  "msys2" {os-distribution = "msys2"}
-  "msys2-mingw32" {os-distribution = "msys2"}
-  ("host-arch-x86_64" | "host-arch-x86_32")
+  "msys2" {build & os = "win32" & os-distribution = "msys2"}
+  "msys2-mingw32" {os = "win32" & os-distribution = "msys2"}
 ]
-conflicts: "mingw-w64-shims"
-build: [
-  ["i686-w64-mingw32-gcc" "--version"]
-  ["sh" "./install-shim.sh" name "mingw64-i686-binutils mingw64-i686-gcc-core" bin "i686-w64-mingw32-gcc" "_shim" "cygpath" {host-arch-x86_32:installed}] {os-distribution = "cygwin"}
-]
-setenv: PATH += "%{_:runtime}%"
+build: ["i686-w64-mingw32-gcc" "--version"]
 depexts: [
   ["mingw64-i686-gcc-core"] {os = "win32" & os-distribution = "cygwin"}
   ["mingw-w64-i686-gcc"] {os = "win32" & os-distribution = "msys2"}
 ]
-url {
-  src: "https://github.com/dra27/mingw-w64-shims/archive/refs/tags/1.0.1.tar.gz"
-  checksum: [
-    "sha256=d29e6141f02500f13534b6a0d77c290f2987c534c660a4f90cdb01618be32507"
-    "sha512=892c4b5d7eaab6ce846fe8fe2756f23c61c654605b6c3bf8698db392725b3be81d015536230dc8305e7d17eb451beae5c21f705237523c79cc11e99c17cbed95"
-  ]
-}

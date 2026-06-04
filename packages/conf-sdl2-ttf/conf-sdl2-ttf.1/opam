@@ -3,12 +3,14 @@ maintainer: "https://github.com/ocaml/opam-repository/issues"
 homepage: "http://www.libsdl.org/projects/SDL_ttf/"
 license: "Zlib"
 build: [
-  [conf-pkg-config:command "SDL2_ttf"]
+  ["pkgconf" "--personality=i686-w64-mingw32" "SDL2_ttf"] {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
+  ["pkgconf" "--personality=x86_64-w64-mingw32" "SDL2_ttf"] {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
+  ["pkg-config" "SDL2_ttf"] {os != "win32" | os-distribution = "cygwinports"}
 ]
 depends: [
-  "conf-pkg-config" {>= "5"}
-  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sdl2-ttf-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
-   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sdl2-ttf-i686" {os = "win32" & os-distribution != "cygwinports"})
+  "conf-pkg-config" {build}
+  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sdl2-ttf-i686" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-sdl2-ttf-x86_64" {os = "win32" & os-distribution != "cygwinports"})
 ]
 depexts: [
   ["sdl2_ttf-dev"] {os-family = "alpine"}
