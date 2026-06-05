@@ -161,7 +161,7 @@ jobs:
               Write-Host "$pkg failed linting."; $failed = $true
             }
             Write-Host "::group::Testing edited package `e[1;34m$pkg`e[0m"
-            opam install -v --color=always --confirm-level=unsafe-yes "$pkg"
+            opam install --color=always --confirm-level=unsafe-yes "$pkg"
             $base = Get-Status $LASTEXITCODE
             if ($base -eq 'ok') {
               # Lock the switch to exactly the installed packages and versions
@@ -171,7 +171,7 @@ jobs:
               $invariant = opam list --color=never --installed --short --columns=package
               opam switch set-invariant -n @($invariant)
               Set-Repo $prRef
-              opam upgrade -v --color=always --confirm-level=unsafe-yes
+              opam upgrade --color=always --confirm-level=unsafe-yes
               $upgrade_exit_code = $LASTEXITCODE
               $still = opam list --installed --short "$pkg"
               # 31 implies build failure; any other failure implies no solution.
@@ -182,7 +182,7 @@ jobs:
             } else {
               # Not installed on the base: apply the PR and retry the install.
               Set-Repo $prRef
-              opam install -v --color=always --confirm-level=unsafe-yes "$pkg"
+              opam install --color=always --confirm-level=unsafe-yes "$pkg"
               $pr = Get-Status $LASTEXITCODE
             }
             opam config list $pkg_dir | Skip-Until ':opamfile'
@@ -210,7 +210,7 @@ jobs:
               Write-Host "$pkg failed linting."; $failed = $true
             }
             Write-Host "::group::Testing `e[1;34m$pkg`e[0m"
-            opam install -v --color=always --confirm-level=unsafe-yes "$pkg"
+            opam install --color=always --confirm-level=unsafe-yes "$pkg"
             $install_exit_code = $LASTEXITCODE
             opam config list $pkg_dir | Skip-Until ':opamfile'
             Write-Host "::endgroup::"
