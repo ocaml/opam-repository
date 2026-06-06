@@ -86,6 +86,76 @@ jobs:
           git fetch --depth=1 upstream ${{ github.event.pull_request.base.sha }}
           git branch repo-${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.base.sha }}
 
+      - name: Prune PATH
+        # The runner ships a lot of optional software whose bin directories would
+        # otherwise shadow the conf-* packages under test - most importantly
+        # Strawberry Perl (a complete gcc/mingw toolchain) and chocolatey's
+        # pkgconfiglite. Drop those directories before setup-ocaml runs, so opam
+        # only ever sees the toolchain it installs itself.
+        run: |
+          # New optional software in the runner image should be added here
+          # explicitly, rather than relying on a whitelist - that way a newly
+          # added directory shows up as Kept and is noticed, rather than being
+          # silently dropped.
+          $exclude = @(
+            # Toolchains and tools that would shadow the packages under test
+            'Strawberry'           # bundles gcc/mingw, perl and pkg-config
+            'chocolatey'           # pkgconfiglite, openssl, ...
+            'OpenSSL'
+            'vcpkg'
+            'mingw64'              # standalone gcc/mingw, plus Git's bundled copy
+            'LLVM'                 # clang
+            'Git\bin'              # Git's MSYS bash/sh (git itself stays via Git\cmd)
+            'Git\usr'              # Git's MSYS unix tools (perl, sed, awk, ...)
+            'CMake'
+            'NSIS'
+            'WiX'
+            # Optional development software, unused by opam
+            'MongoDB'
+            'mongosh'
+            'PostgreSQL'
+            'mysql'
+            'Microsoft SQL Server'
+            '\R\R-'
+            'SeleniumWebDrivers'
+            'Microsoft SDKs\Azure'
+            'Amazon'
+            'Cloud SDK'
+            'Mercurial'
+            'ghcup'
+            'cabal'
+            '\stack\'
+            'sbt'
+            'pipx'
+            'php'
+            'aliyun'
+            'kind'
+            'dotnet'
+            'GitHub CLI'
+            'npm'
+            'nodejs'
+            'windows\go\'
+            'Ruby'
+            'Python'
+            'Java'
+            'kotlinc'
+            'cargo'
+            'ImageMagick'
+            'Web Platform Installer'
+            'Performance Toolkit'
+            'Service Fabric'
+          )
+          $kept = @()
+          foreach ($dir in $env:PATH -split ';' | Where-Object { $_ }) {
+            if ($exclude | Where-Object { $dir -like "*$_*" }) {
+              Write-Host "Dropping  $dir"
+            } else {
+              Write-Host "Keeping   $dir"
+              $kept += $dir
+            }
+          }
+          "PATH=$($kept -join ';')" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
       - name: Set-up OCaml
         uses: ocaml/setup-ocaml@v3
         with:
