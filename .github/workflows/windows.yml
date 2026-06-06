@@ -211,8 +211,10 @@ jobs:
             git branch -f $repoBranch $Ref
             opam update -q > $null
           }
-          $edited = '${{ matrix.packages.edited }}' -split ' ' | Where-Object { $_ }
-          $added = '${{ matrix.packages.added }}' -split ' ' | Where-Object { $_ }
+          $edited = @('${{ matrix.packages.edited }}' -split ' ' | Where-Object { $_ })
+          # Edited packages are tested both ways: as an upgrade (the loop below)
+          # and, like added packages, as a fresh install under the PR.
+          $install = @('${{ matrix.packages.added }}' -split ' ' | Where-Object { $_ }) + $edited
           if ($edited) {
             # If packages have been edited, take a backup copy of the switch, as
             # each installation needs a fresh copy of the switch.
@@ -271,11 +273,11 @@ jobs:
             Set-Repo $baseRef
             Write-Host
           }
-          # Added packages: install as normal, using the PR.
-          if ($added) {
+          # Install each added (and edited) package as normal, using the PR.
+          if ($install) {
             Set-Repo $prRef
           }
-          Foreach ($pkg in $added) {
+          Foreach ($pkg in $install) {
             $pkg_dir = $pkg.Split('.')[0]
             opam lint -v "packages/$pkg_dir/$pkg" > $null
             if ($LASTEXITCODE -ne 0) {
