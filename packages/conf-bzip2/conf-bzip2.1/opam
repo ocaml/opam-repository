@@ -6,7 +6,12 @@ authors:      ["Julian Seward"]
 license:      "bzip2-1.0.6"
 
 build: [
-  "pkgconf" {os-distribution = "netbsd"} conf-pkg-config:command {os-distribution != "netbsd"} "bzip2"
+  # When the version is next bumped, this package can depend on
+  # conf-pkg-config.5 and instead use:
+  # "pkgconf" {os-distribution = "netbsd"} conf-pkg-config:command {os-distribution != "netbsd"} "bzip2"
+  "pkgconf" { (os = "win32" & os-distribution != "cygwinports") | os-distribution = "netbsd" }
+  "pkg-config" { !((os = "win32" & os-distribution != "cygwinports") | os-distribution = "netbsd") }
+    "bzip2"
 ] {os-distribution != "freebsd"
      # https://cgit.freebsd.org/ports/tree/archivers/bzip2/pkg-plist
      # missing libdata/pkgconfig/bzip2.pc
@@ -21,7 +26,7 @@ build: [
      # no bzip2.pc file in cygwin package
 
 depends: [
-  "conf-pkg-config" {>= "5"}
+  "conf-pkg-config"	    {build}
   (("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-bzip2-x86_64" {os = "win32" & os-distribution != "cygwinports"}) |
    ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-bzip2-i686" {os = "win32" & os-distribution != "cygwinports"}))
 ]

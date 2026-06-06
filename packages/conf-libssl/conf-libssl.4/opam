@@ -8,7 +8,14 @@ build-env: [
   [HOMEBREW_NO_AUTO_UPDATE = "1"]
 ]
 build: [
-  [conf-pkg-config:command "--print-errors" "--exists" "openssl"]
+  # When the version is next bumped, this package can depend on
+  # conf-pkg-config.5 and instead use:
+  # [conf-pkg-config:command "--print-errors" "--exists" "openssl"]
+  ["pkgconf" {os = "win32" & os-distribution != "cygwinports"}
+   "--personality=i686-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
+   "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
+   "pkg-config" {os != "win32" | os-distribution = "cygwinports"}
+   "--print-errors" "--exists" "openssl"]
     {os != "freebsd" & os != "openbsd" & os != "netbsd" & # libssl is provided by base system on BSDs
      os-distribution != "homebrew"}
   ["sh" "-ex" "./homebrew.sh" "check"] {os-distribution = "homebrew"}
@@ -17,7 +24,7 @@ install: [
   ["sh" "-ex" "./homebrew.sh" "install" lib] {os-distribution = "homebrew"}
 ]
 depends: [
-  "conf-pkg-config" {>= "5"}
+  "conf-pkg-config" {build}
   ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-openssl-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
    "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-openssl-i686" {os = "win32" & os-distribution != "cygwinports"})
 ]

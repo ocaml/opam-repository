@@ -5,11 +5,14 @@ homepage: "https://freeglut.sourceforge.net/"
 license: "X11"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 build: [
-  [conf-pkg-config:command "--print-errors" "--exists" "freeglut" {os = "win32"} "glut" {os != "win32"}]
-    {(os != "win32" | os-distribution = "msys2") & os-distribution != "debian" & os-distribution != "ubuntu" & !(os-distribution = "ol" & os-version < "9")}
+  # When the version is next bumped, this package can depend on
+  # conf-pkg-config.5 and instead use:
+  # [conf-pkg-config:command "--print-errors" "--exists" "freeglut" {os = "win32"} "glut" {os != "win32"}]
+  ["pkg-config" "--print-errors" "--exists" "freeglut"] {os = "win32" & os-distribution = "msys2"}
+  ["pkg-config" "--print-errors" "--exists" "glut"] {os != "win32" & os-distribution != "debian" & os-distribution != "ubuntu" & !(os-distribution = "ol" & os-version < "9")}
 ]
 depends: [
-  "conf-pkg-config" {>= "5" & os-distribution != "debian" & os-distribution != "ubuntu" & !(os-distribution = "ol" & os-version < "9")}
+  "conf-pkg-config" {build & os-distribution != "debian" & os-distribution != "ubuntu" & !(os-distribution = "ol" & os-version < "9")}
   ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
    "conf-mingw-w64-freeglut-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
    "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
