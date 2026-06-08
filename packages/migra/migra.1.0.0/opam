@@ -1,0 +1,55 @@
+opam-version: "2.0"
+synopsis:
+  "A database migration tool for OCaml supporting PostgreSQL, MariaDB, and SQLite"
+description:
+  "A database migration tool and library for OCaml. Migrations are plain SQL with up and down sections, and the database (PostgreSQL, MariaDB/MySQL, or SQLite) is selected from the connection URL. Applied migrations are tracked with checksums, and drift (a modified, missing, or out-of-order migration) is detected before anything runs. It can be used from the command line or embedded as a library to migrate on application startup."
+maintainer: ["David Sinclair <dsincl12@gmail.com>"]
+authors: ["David Sinclair"]
+license: "MIT"
+tags: ["database" "migrations" "postgresql" "mariadb" "mysql" "sqlite"]
+homepage: "https://github.com/dsincl12/migra"
+doc: "https://github.com/dsincl12/migra"
+bug-reports: "https://github.com/dsincl12/migra/issues"
+depends: [
+  "dune" {>= "3.12"}
+  "ocaml" {>= "4.14.0"}
+  "lwt" {>= "5.6.0"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "alcotest-lwt" {with-test & >= "1.7.0"}
+  "caqti" {>= "2.0.0"}
+  "caqti-lwt" {>= "2.0.0"}
+  "caqti-dynload" {>= "2.0.0"}
+  "uri" {>= "4.4.0"}
+  "cmdliner" {>= "2.0.0"}
+  "logs" {>= "0.7.0"}
+  "logs-ppx" {>= "0.2.0"}
+  "fmt" {>= "0.9.0"}
+  "odoc" {with-doc}
+]
+depopts: [
+  "caqti-driver-postgresql" "caqti-driver-mariadb" "caqti-driver-sqlite3"
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/dsincl12/migra.git"
+url {
+  src:
+    "https://github.com/dsincl12/migra/releases/download/1.0.0/migra-1.0.0.tbz"
+  checksum: [
+    "sha256=08ceb8f21f00227f21209484ef1eb8cc326ed26a280747798ec5b0b7c5fdd678"
+    "sha512=70050833623ba7801a0a31b1700f5473903335c8db2cdf4de5bbd1876180ec0a93907444b42f7a39b6af454303e0ee5f4c3543ca51378d6324583a26b93f535c"
+  ]
+}
+x-commit-hash: "07f5bd11ad505e1dde95c5ba422bbcfde25fcc5d"
