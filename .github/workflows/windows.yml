@@ -25,16 +25,47 @@ jobs:
         with:
           script: |
             let changed_files = '${{ steps.changed-files.outputs.all_changed_files }}';
-            let packages = [];
+            let modified_files = '${{ steps.changed-files.outputs.modified_files }}';
+            const pkg_re = /^packages\/[^/]+\/([^/]+)/;
+            // Versioned packages whose opam file has been edited (rather than added).
+            const edited_set = new Set();
+            for (file of modified_files.split(' ')) {
+              const package = file.match(pkg_re);
+              if (package)
+                edited_set.add(package[1]);
+            }
+            // All changed packages, edited ones first so that the switch is restored
+            // between each before any new package accumulates in it.
+            const edited = [];
+            const added = [];
+            const seen = new Set();
             for (file of changed_files.split(' ')) {
               console.log("Changed: " + file);
-              const package = file.match(/^packages\/[^/]+\/([^/]+)/);
-              if (package)
-                packages.push(package[1]);
+              const package = file.match(pkg_re);
+              if (package && !seen.has(package[1])) {
+                seen.add(package[1]);
+                if (edited_set.has(package[1])) {
+                  console.log("  => upgrade " + package[1]);
+                  edited.push(package[1]);
+                } else {
+                  console.log("  => install " + package[1]);
+                  added.push(package[1]);
+                }
+              }
             }
+            // Edited packages come first, so each 75-package chunk is split back into
+            // its edited and added halves; the build job tests the edited ones first
+            // (restoring the switch between each) then installs the added ones.
+            const ordered = edited.concat(added);
             const splits =
-              Array.from({ length: Math.ceil(packages.length / 75) },
-                         (_, i) => packages.slice(i * 75, i * 75 + 75).join(' '));
+              Array.from({ length: Math.ceil(ordered.length / 75) },
+                         (_, i) => {
+                           const slice = ordered.slice(i * 75, i * 75 + 75);
+                           return {
+                             edited: slice.filter(p => edited_set.has(p)).join(' '),
+                             added: slice.filter(p => !edited_set.has(p)).join(' '),
+                           };
+                         });
             return {windows_environment: ['cygwin', 'msys2'], packages: splits};
 
   build:
@@ -42,19 +73,95 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.analyse.outputs.matrix) }}
-    if: ${{ join(fromJSON(needs.analyse.outputs.matrix).packages) != '' }}
+    if: ${{ fromJSON(needs.analyse.outputs.matrix).packages[0] != null }}
     runs-on: windows-latest
     needs: analyse
     steps:
       - name: Checkout tree
         uses: actions/checkout@v6
 
+      - name: Fetch base
+        run: |
+          git remote add upstream https://github.com/ocaml/opam-repository.git
+          git fetch --depth=1 upstream ${{ github.event.pull_request.base.sha }}
+          git branch repo-${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.base.sha }}
+
+      - name: Prune PATH
+        # The runner ships a lot of optional software whose bin directories would
+        # otherwise shadow the conf-* packages under test - most importantly
+        # Strawberry Perl (a complete gcc/mingw toolchain) and chocolatey's
+        # pkgconfiglite. Drop those directories before setup-ocaml runs, so opam
+        # only ever sees the toolchain it installs itself.
+        run: |
+          # New optional software in the runner image should be added here
+          # explicitly, rather than relying on a whitelist - that way a newly
+          # added directory shows up as Kept and is noticed, rather than being
+          # silently dropped.
+          $exclude = @(
+            # Toolchains and tools that would shadow the packages under test
+            'Strawberry'           # bundles gcc/mingw, perl and pkg-config
+            'chocolatey'           # pkgconfiglite, openssl, ...
+            'OpenSSL'
+            'vcpkg'
+            'mingw64'              # standalone gcc/mingw, plus Git's bundled copy
+            'LLVM'                 # clang
+            'Git\bin'              # Git's MSYS bash/sh (git itself stays via Git\cmd)
+            'Git\usr'              # Git's MSYS unix tools (perl, sed, awk, ...)
+            'CMake'
+            'NSIS'
+            'WiX'
+            # Optional development software, unused by opam
+            'MongoDB'
+            'mongosh'
+            'PostgreSQL'
+            'mysql'
+            'Microsoft SQL Server'
+            '\R\R-'
+            'SeleniumWebDrivers'
+            'Microsoft SDKs\Azure'
+            'Amazon'
+            'Cloud SDK'
+            'Mercurial'
+            'ghcup'
+            'cabal'
+            '\stack\'
+            'sbt'
+            'pipx'
+            'php'
+            'aliyun'
+            'kind'
+            'dotnet'
+            'GitHub CLI'
+            'npm'
+            'nodejs'
+            'windows\go\'
+            'Ruby'
+            'Python'
+            'Java'
+            'kotlinc'
+            'cargo'
+            'ImageMagick'
+            'Web Platform Installer'
+            'Performance Toolkit'
+            'Service Fabric'
+          )
+          $kept = @()
+          foreach ($dir in $env:PATH -split ';' | Where-Object { $_ }) {
+            if ($exclude | Where-Object { $dir -like "*$_*" }) {
+              Write-Host "Dropping  $dir"
+            } else {
+              Write-Host "Keeping   $dir"
+              $kept += $dir
+            }
+          }
+          "PATH=$($kept -join ';')" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
       - name: Set-up OCaml
         uses: ocaml/setup-ocaml@v3
         with:
-          ocaml-compiler: "5"
+          ocaml-compiler: "ocaml-base-compiler,conf-pkg-config"
           opam-repositories: |
-            default: git+file://${{ github.workspace }}
+            default: git+file://${{ github.workspace }}#repo-${{ github.event.pull_request.base.sha }}
           opam-pin: false
           windows-environment: ${{ matrix.windows_environment }}
 
@@ -63,6 +170,9 @@ jobs:
           # commands
           Write-Host "# Switch invariant: `e[34m$(opam switch invariant)`e[0m"
           opam list
+          opam repo
+        env:
+          OPAMEXTERNALSOLVER: builtin-mccs+glpk
 
       - name: Install packages
         run: |
@@ -79,15 +189,105 @@ jobs:
               elseif ($Line -match $Pattern) { $found = $true }
             }
           }
-          Foreach ($pkg in '${{ matrix.packages }}' -split ' ') {
+          function Get-Status {
+            param([int]$Code)
+            switch ($Code) {
+              0 { 'ok' }
+              5 { 'skip' } # TODO: Remove when https://github.com/ocaml/opam/issues/6017 is fixed
+              20 { 'skip' }
+              31 { 'fail' }
+              default { throw "Unexpected error $Code" }
+            }
+          }
+          $switch = "${{ github.workspace }}\_opam"
+          $backup = "${{ github.workspace }}\_opam.bak"
+          $repoBranch = "repo-${{ github.event.pull_request.base.sha }}"
+          $baseRef = "${{ github.event.pull_request.base.sha }}"
+          $prRef = "${{ github.sha }}"
+          # Re-point the repository's git branch at $Ref and update (opam repo
+          # set-url re-initialises the repository, which is much slower)
+          function Set-Repo {
+            param([Parameter(Mandatory, Position=0)][string]$Ref)
+            git branch -f $repoBranch $Ref
+            opam update -q > $null
+          }
+          $edited = @('${{ matrix.packages.edited }}' -split ' ' | Where-Object { $_ })
+          # Edited packages are tested both ways: as an upgrade (the loop below)
+          # and, like added packages, as a fresh install under the PR.
+          $install = @('${{ matrix.packages.added }}' -split ' ' | Where-Object { $_ }) + $edited
+          if ($edited) {
+            # If packages have been edited, take a backup copy of the switch, as
+            # each installation needs a fresh copy of the switch.
+            robocopy $switch $backup /MIR /NFL /NDL /NJH /NJS /NP > $null
+            # robocopy's exit status is a bit mask: bits 0-2 are informational.
+            if ($LASTEXITCODE -ge 8) { throw "robocopy backup failed ($LASTEXITCODE)" }
+          }
+          # Edited packages: the switch begins at the base commit on master. For
+          # each edited package, first install the existing package using the
+          # package description from master. If this succeeds, lock the versions
+          # of all packages in the switch using opam switch set-invariant. Then
+          # update the repository to the PR and run opam upgrade (or repeat
+          # opam install, if it failed the first time).
+          Foreach ($pkg in $edited) {
             $pkg_dir = $pkg.Split('.')[0]
-            opam lint -v "packages/$pkg_dir/$pkg" > $null
+            # opam doesn't support reducing Error 46 to a Warning
+            opam lint --warnings=-46 -v "packages/$pkg_dir/$pkg" > $null
+            if ($LASTEXITCODE -ne 0) {
+              # Allow Error 46 to display here, though
+              opam lint -v "packages/$pkg_dir/$pkg"
+              Write-Host "$pkg failed linting."; $failed = $true
+            }
+            Write-Host "::group::Testing edited package `e[1;34m$pkg`e[0m"
+            opam install --color=always --confirm-level=unsafe-yes "$pkg"
+            $base = Get-Status $LASTEXITCODE
+            if ($base -eq 'ok') {
+              # Lock the switch to exactly the installed packages and versions
+              # via the invariant (the invariant requires the package to be
+              # installed, where pinning only requires that if it's installed,
+              # then it's installed using the pin).
+              $invariant = opam list --color=never --installed --short --columns=package
+              opam switch set-invariant -n @($invariant)
+              Set-Repo $prRef
+              opam upgrade --color=always --confirm-level=unsafe-yes
+              $upgrade_exit_code = $LASTEXITCODE
+              $still = opam list --installed --short "$pkg"
+              # 31 implies build failure; any other failure implies no solution.
+              $pr = if ($upgrade_exit_code -eq 31) { 'fail' }
+                    elseif ($upgrade_exit_code -ne 0) { 'skip' }
+                    elseif (-not $still) { 'skip' }
+                    else { 'ok' }
+            } else {
+              # Not installed on the base: apply the PR and retry the install.
+              Set-Repo $prRef
+              opam install --color=always --confirm-level=unsafe-yes "$pkg"
+              $pr = Get-Status $LASTEXITCODE
+            }
+            opam config list $pkg_dir | Skip-Until ':opamfile'
+            Write-Host "::endgroup::"
+            $regress = ($pr -eq 'fail') -or ($base -eq 'ok' -and $pr -eq 'skip')
+            $color = if ($regress) { '31' } elseif ($pr -eq 'ok') { '32' } else { '33' }
+            Write-Host "`e[1;${color}m${pkg}: base = $base -> PR = $pr`e[0m"
+            if ($regress) { $failed = $true }
+            # Restore the base switch (including its invariant) and repo for the
+            # next package.
+            robocopy $backup $switch /MIR /NFL /NDL /NJH /NJS /NP > $null
+            if ($LASTEXITCODE -ge 8) { throw "robocopy restore failed ($LASTEXITCODE)" }
+            Set-Repo $baseRef
+            Write-Host
+          }
+          # Install each added (and edited) package as normal, using the PR.
+          if ($install) {
+            Set-Repo $prRef
+          }
+          Foreach ($pkg in $install) {
+            $pkg_dir = $pkg.Split('.')[0]
+            opam lint --warnings=-46 -v "packages/$pkg_dir/$pkg" > $null
             if ($LASTEXITCODE -ne 0) {
               opam lint -v "packages/$pkg_dir/$pkg"
               Write-Host "$pkg failed linting."; $failed = $true
             }
             Write-Host "::group::Testing `e[1;34m$pkg`e[0m"
-            opam install -v --color=always --confirm-level=unsafe-yes "$pkg"
+            opam install --color=always --confirm-level=unsafe-yes "$pkg"
             $install_exit_code = $LASTEXITCODE
             opam config list $pkg_dir | Skip-Until ':opamfile'
             Write-Host "::endgroup::"
@@ -103,3 +303,5 @@ jobs:
           if ($failed) {
             throw "One or more packages failed to lint or build"
           }
+        env:
+          OPAMEXTERNALSOLVER: builtin-mccs+glpk
