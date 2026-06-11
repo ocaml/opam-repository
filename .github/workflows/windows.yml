@@ -230,8 +230,10 @@ jobs:
           # opam install, if it failed the first time).
           Foreach ($pkg in $edited) {
             $pkg_dir = $pkg.Split('.')[0]
-            opam lint -v "packages/$pkg_dir/$pkg" > $null
+            # opam doesn't support reducing Error 46 to a Warning
+            opam lint --warnings=-46 -v "packages/$pkg_dir/$pkg" > $null
             if ($LASTEXITCODE -ne 0) {
+              # Allow Error 46 to display here, though
               opam lint -v "packages/$pkg_dir/$pkg"
               Write-Host "$pkg failed linting."; $failed = $true
             }
@@ -279,7 +281,7 @@ jobs:
           }
           Foreach ($pkg in $install) {
             $pkg_dir = $pkg.Split('.')[0]
-            opam lint -v "packages/$pkg_dir/$pkg" > $null
+            opam lint --warnings=-46 -v "packages/$pkg_dir/$pkg" > $null
             if ($LASTEXITCODE -ne 0) {
               opam lint -v "packages/$pkg_dir/$pkg"
               Write-Host "$pkg failed linting."; $failed = $true
