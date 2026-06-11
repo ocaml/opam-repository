@@ -5,6 +5,9 @@ homepage: "http://libsdl.org/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "Zlib"
 build: [
+  # When the version is next bumped, this package can depend on
+  # conf-pkg-config.5 and instead use:
+  # [conf-pkg-config:command "sdl2"]
   "pkgconf" {os = "win32" & os-distribution != "cygwinports"}
   "--personality=i686-w64-mingw32"
     {os = "win32" & os-distribution != "cygwinports" &
@@ -38,11 +41,11 @@ description:
   "This package can only install if libSDL2 is installed on the system."
 depends: [
   "conf-pkg-config" {build}
-  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
-   "conf-mingw-w64-sdl2-i686"
-     {os = "win32" & os-distribution != "cygwinports"} |
-   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
    "conf-mingw-w64-sdl2-x86_64"
+     {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-sdl2-i686"
      {os = "win32" & os-distribution != "cygwinports"})
 ]
 flags: conf

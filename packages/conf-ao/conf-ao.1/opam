@@ -5,6 +5,9 @@ bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: "libao dev team"
 license: "GPL-2.0-only"
 build: [
+  # When the version is next bumped, this package can depend on
+  # conf-pkg-config.5 and instead use:
+  # [conf-pkg-config:command "--print-errors" "--exists" "ao"]
   ["pkgconf" {os = "win32" & os-distribution != "cygwinports"}
      "--personality=i686-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
      "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
@@ -13,8 +16,8 @@ build: [
 ]
 depends: [
   "conf-pkg-config" {build}
-  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-ao-i686" {os = "win32" & os-distribution != "cygwinports"} |
-   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-ao-x86_64" {os = "win32" & os-distribution != "cygwinports"})
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-ao-x86_64" {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-ao-i686" {os = "win32" & os-distribution != "cygwinports"})
 ]
 depexts: [
   ["libao-devel"] {os-distribution = "centos" | os-family = "fedora" | os-family = "suse" | os-family = "opensuse"}

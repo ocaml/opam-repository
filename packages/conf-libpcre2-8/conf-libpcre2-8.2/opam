@@ -8,6 +8,9 @@ homepage: "https://www.pcre.org/"
 dev-repo: "git+https://github.com/PCRE2Project/pcre2.git"
 license: "BSD-3-Clause"
 build: [
+  # When the version is next bumped, this package can depend on
+  # conf-pkg-config.5 and instead use:
+  # [conf-pkg-config:command "--print-errors" "--exists" "libpcre2-8"]
   ["pkgconf" {os = "win32" & os-distribution != "cygwinports"}
    "--personality=i686-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
    "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
@@ -16,10 +19,10 @@ build: [
   ]]
 depends: [
   "conf-pkg-config" {build}
-  ("host-arch-x86_32" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")}
-   & "conf-mingw-w64-pcre2-i686" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")}
-   | "host-arch-x86_64" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")}
-   & "conf-mingw-w64-pcre2-x86_64" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")})
+  ("host-arch-x86_64" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")}
+   & "conf-mingw-w64-pcre2-x86_64" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")}
+   | "host-arch-x86_32" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")}
+   & "conf-mingw-w64-pcre2-i686" {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")})
   ]
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 depexts: [

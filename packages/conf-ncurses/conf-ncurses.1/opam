@@ -5,6 +5,11 @@ authors: "GNU Project"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "MIT"
 build: [
+  # When the version is next bumped, this package can depend on
+  # conf-pkg-config.5 and instead use:
+  # # MSys2 packages compatible ncursesw https://packages.msys2.org/packages/mingw-w64-x86_64-ncurses
+  # [conf-pkg-config:command "ncurses" {os-distribution != "msys2"} "ncursesw" {os-distribution = "msys2"}]
+  #   {os-distribution != "opensuse" & os != "macos" & os != "freebsd" & os != "netbsd" & os != "openbsd"}
   "pkgconf" {os = "win32" & os-distribution != "cygwinports"}
   "--personality=i686-w64-mingw32"
     {os = "win32" & os-distribution != "cygwinports" &
@@ -18,11 +23,11 @@ build: [
 ]
 depends: [
   "conf-pkg-config" {build & os-distribution != "opensuse" & os != "macos" & os != "freebsd" & os != "netbsd" & os != "openbsd"}
-  ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
-   "conf-mingw-w64-ncurses-i686"
-     {os = "win32" & os-distribution != "cygwinports"} |
-   "host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
+  ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
    "conf-mingw-w64-ncurses-x86_64"
+     {os = "win32" & os-distribution != "cygwinports"} |
+   "host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
+   "conf-mingw-w64-ncurses-i686"
      {os = "win32" & os-distribution != "cygwinports"})
 ]
 depexts: [
