@@ -1,0 +1,82 @@
+opam-version: "2.0"
+# These packages are part of the infrastructure for maintaining the OCaml
+# compiler dependencies in opam. It's not possible to version the metadata
+# itself, because opam's versioning provides no mechanism to ignore the
+# revision (i.e. we don't have a way to have two revisions of ocaml.5.4.1 but
+# where "ocaml" {= "5.4.1"} would always mean to use the latest revision).
+# It is however useful to know which version of the metadata is installed.
+# This number should be bumped whenever a pertinent change is made.
+x-revision: "3"
+synopsis: "Official release 4.14.4"
+maintainer: [
+  "David Allsopp <dra27@dra27.uk>"
+  "Florian Angeletti <florian.angeletti@inria.fr>"
+]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+authors: "Xavier Leroy and many contributors"
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+dev-repo: "git+https://github.com/ocaml/ocaml#4.14"
+depends: [
+  # This is OCaml 4.14.4
+  "ocaml" {= "4.14.4" & post}
+
+  # General base- packages
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+
+  # Port selection (Windows)
+  # amd64 mingw-w64 / MSVC
+  (("arch-x86_64" {os = "win32" & arch = "x86_64"} &
+     ("system-mingw" | "system-msvc")) |
+  # i686 mingw-w64 / MSVC
+   ("arch-x86_32" {os = "win32"} &
+     ("system-mingw" | "system-msvc")) |
+  # Non-Windows systems need to install something to satisfy this formula, so
+  # repeat the base-unix dependency
+   "base-unix" {os != "win32" & post})
+
+  # OCaml with default configuration (no flambda, TSAN, etc.)
+  "ocaml-options-vanilla" {post}
+
+  # Support Packages
+  "flexdll" {>= "0.36" & os = "win32"}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+build-env: MSYS2_ARG_CONV_EXCL = "*"
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+x-env-path-rewrite: [
+  [CAML_LD_LIBRARY_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
+]
+conflicts: "relocatable"
+build: [
+  [
+    "./configure"
+    "--host=x86_64-pc-windows"  {system-msvc:installed & arch-x86_64:installed}
+    "--host=x86_64-w64-mingw32" {os-distribution = "cygwin" & system-mingw:installed & arch-x86_64:installed}
+    "--host=i686-pc-windows"    {system-msvc:installed & arch-x86_32:installed}
+    "--host=i686-w64-mingw32"   {os-distribution = "cygwin" & system-mingw:installed & arch-x86_32:installed}
+    "--prefix=%{prefix}%"
+    "--docdir=%{doc}%/ocaml"
+    "--with-flexdll=%{flexdll:share}%" {os = "win32" & flexdll:installed}
+    "-C"
+    "CC=cc" {os = "openbsd" | os = "macos"}
+    "ASPP=cc -c" {os = "openbsd" | os = "macos"}
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/releases/download/4.14.4/ocaml_4.14.4.tar.gz"
+  checksum: "sha256=71415c000ebfce604defafaa584ab5ed10ad81ff180897db4e6fea8dac6e4b0d"
+}
+extra-source "ocaml-base-compiler.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/8c17fd444391392c5f9801241374d749c080c1a8/ocaml-variants.install"
+  checksum: [
+    "sha256=79f2a1a5044a91350a0eb6ce12e261a72a2855c094c425cddf3860e58c486678"
+    "md5=3e969b841df1f51ca448e6e6295cb451"
+  ]
+}
