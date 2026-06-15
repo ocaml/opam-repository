@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "Deepseek v4 LLM"
+description:
+  "Library and binary (`humpty`) to run Deepseek v4 locally, with a selectable inference backend (Apple Metal or CPU)."
+maintainer: "Anil Madhavapeddy <anil@recoil.org>"
+authors: "Anil Madhavapeddy"
+license: "ISC"
+tags: ["org:blacksun" "deepseek" "llm"]
+homepage: "https://tangled.org/anil.recoil.org/ocaml-deepseek"
+bug-reports: "https://tangled.org/anil.recoil.org/ocaml-deepseek/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "ocaml" {>= "5.2.0"}
+  "dune-configurator" {build}
+  "jsont" {>= "0.2.0"}
+  "xdge" {>= "1.0.0"}
+  "eio" {>= "1.0"}
+  "logs" {>= "0.7.0"}
+  "fmt" {>= "0.8.7"}
+  "cmdliner" {>= "1.1.0"}
+  "odoc" {with-doc}
+]
+available: os = "linux" | os = "macos"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://tangled.org/anil.recoil.org/ocaml-deepseek"
+url {
+  src:
+    "https://tangled.org/anil.recoil.org/ocaml-deepseek/tags/066de38c04a70b85871e2fd4a6809d2aba9f0d2b/download/deepseek-0.1.0.tbz"
+  checksum: [
+    "md5=816187f01c004f7b1b554512a45ce9df"
+    "sha512=4dd13eea0977d1064bd580c366673e819f8f06874fd6e3b83bf9a585c283ffa9ff9fee0ff671127a5f60320a22bf1c84f526855916564da6de72e1c335c86e63"
+  ]
+}
+x-maintenance-intent: ["(latest)"]
