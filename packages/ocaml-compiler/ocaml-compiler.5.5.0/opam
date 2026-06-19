@@ -2,13 +2,13 @@ opam-version: "2.0"
 # These packages are part of the infrastructure for maintaining the OCaml
 # compiler dependencies in opam. It's not possible to version the metadata
 # itself, because opam's versioning provides no mechanism to ignore the
-# revision (i.e. we don't have a way to have two revisions of ocaml.5.4.1 but
-# where "ocaml" {= "5.4.1"} would always mean to use the latest revision).
+# revision (i.e. we don't have a way to have two revisions of ocaml.5.5.1 but
+# where "ocaml" {= "5.5.1"} would always mean to use the latest revision).
 # It is however useful to know which version of the metadata is installed.
 # This number should be bumped whenever a pertinent change is made.
-x-revision: "6"
+x-revision: "3"
 license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
-synopsis: "Latest 5.5 development"
+synopsis: "Official release of OCaml 5.5.0"
 maintainer: [
   "David Allsopp <dra27@dra27.uk>"
   "Florian Angeletti <florian.angeletti@inria.fr>"
@@ -26,9 +26,8 @@ homepage: "https://ocaml.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "git+https://github.com/ocaml/ocaml.git#5.5"
 depends: [
-  # This is OCaml 5.5.1
-  "ocaml" {= "5.5.1" & post}
-  "compiler-cloning" {= "disabled"}
+  # This is OCaml 5.5.0
+  "ocaml" {= "5.5.0" & post}
 
   # General base- packages
   "base-unix" {post}
@@ -37,24 +36,6 @@ depends: [
   "base-domains" {post}
   "base-nnp" {post}
   "base-effects" {post}
-
-  "ocaml-beta" {opam-version < "2.1.0"}
-
-  # Architecture (non-Windows)
-  # opam-repository at present requires that ocaml-base-compiler is installed
-  # using an architecture which matches the machine's, since arch is used in
-  # available fields. Cross-compilation at this stage is an unstable accident.
-  "host-arch-arm32" {arch = "arm32" & post}
-  "host-arch-arm64" {arch = "arm64" & post}
-  "host-arch-ppc64" {arch = "ppc64" & post}
-  "host-arch-riscv64" {arch = "riscv64" & post}
-  "host-arch-s390x" {arch = "s390x" & post}
-  # The Windows ports explicitly select the architecture (see below) this
-  # facility is not yet available for other platforms.
-  "host-arch-x86_32" {os != "win32" & arch = "x86_32" & post}
-  ("host-arch-x86_64" {os != "win32" & arch = "x86_64" & post} |
-   ("host-arch-x86_32" {os != "win32" & arch = "x86_64" & post} & "ocaml-option-32bit" {os != "win32" & arch = "x86_64"}))
-  "host-arch-unknown" {os != "win32" & arch != "arm32" & arch != "arm64" & arch != "ppc64" & arch != "riscv64" & arch != "s390x" & arch != "x86_32" & arch != "x86_64" & post}
 
   # Port selection (Windows)
   # amd64 mingw-w64 / MSVC
@@ -65,21 +46,26 @@ depends: [
    ("arch-x86_32" {os = "win32"} & "ocaml-option-bytecode-only" {os = "win32"} &
      ("system-mingw" |
       ("system-msvc" & "winpthreads" & "ocaml-option-no-compression" {os = "win32"}))) |
-  # Non-Windows systems
-   "host-system-other" {os != "win32" & post})
+  # Non-Windows systems need to install something to satisfy this formula, so
+  # repeat the base-unix dependency
+   "base-unix" {os != "win32" & post})
 
   # All the 32-bit architectures are bytecode-only
   "ocaml-option-bytecode-only" {arch != "arm64" & arch != "x86_64" & arch != "s390x" & arch != "riscv64" & arch != "ppc64"}
 
   # Support Packages
-  "flexdll" {>= "0.44" & os = "win32"}
+  "flexdll" {>= "0.42" & os = "win32"}
 ]
-flags: [ avoid-version ]
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+x-env-path-rewrite: [
+  [CAML_LD_LIBRARY_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
+]
 build-env: [
   [MSYS2_ARG_CONV_EXCL = "*"]
   [LSAN_OPTIONS = "detect_leaks=0,exitcode=0"]
   [ASAN_OPTIONS = "detect_leaks=0,exitcode=0"]
 ]
+conflicts: "relocatable"
 build: [
   [
     "./configure"
@@ -89,10 +75,6 @@ build: [
     "--host=i686-w64-mingw32"   {os-distribution = "cygwin" & system-mingw:installed & arch-x86_32:installed}
     "--prefix=%{prefix}%"
     "--docdir=%{doc}%/ocaml"
-    "--with-additional-stublibsdir"
-    "--with-relative-libdir"
-    "--enable-runtime-search"
-    "--enable-runtime-search-target=fallback"
     "--with-flexdll=%{flexdll:share}%" {os = "win32" & flexdll:installed}
     "--with-winpthreads-msvc=%{winpthreads:share}%" {system-msvc:installed}
     "-C"
@@ -124,7 +106,8 @@ build: [
 ]
 install: [make "install"]
 url {
-  src: "https://github.com/ocaml/ocaml/archive/5.5.tar.gz"
+  src: "https://github.com/ocaml/ocaml/releases/download/5.5.0/ocaml-5.5.0.tar.gz"
+  checksum: "sha256=c018052c8264a3791a8f54f84179e6bcc78ed82eb889bacc2773df445259aed3"
 }
 depopts: [
   "ocaml-option-32bit"
@@ -140,3 +123,11 @@ depopts: [
   "ocaml-option-static"
   "ocaml-option-tsan"
 ]
+extra-source "ocaml-compiler.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/899b8f3bece45f55161dad72eaa223c2bb7202e8/ocaml-variants.install"
+  checksum: [
+    "sha256=7af3dc34e6f9f3be2ffd8d32cd64fa650d6a036c86c4821a7033d24a90fba11c"
+    "md5=781ea69255fd0cb643a9617ff56fd6ba"
+  ]
+}
