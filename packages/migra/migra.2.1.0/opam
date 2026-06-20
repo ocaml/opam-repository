@@ -1,0 +1,56 @@
+opam-version: "2.0"
+synopsis:
+  "A database migration tool and library for OCaml supporting PostgreSQL, MariaDB/MySQL, and SQLite"
+description:
+  "A database migration tool and library for OCaml. Migrations are plain SQL with up and down sections, and the database (PostgreSQL, MariaDB/MySQL, or SQLite) is selected from the connection URL. Applied migrations are tracked with checksums, and drift (a modified, missing, or out-of-order migration) is detected before anything runs. It can be used from the command line or embedded as a library to migrate on application startup."
+maintainer: ["David Sinclair <dsincl12@gmail.com>"]
+authors: ["David Sinclair"]
+license: "MIT"
+tags: ["database" "migrations" "postgresql" "mariadb" "mysql" "sqlite"]
+homepage: "https://github.com/dsincl12/migra"
+doc: "https://github.com/dsincl12/migra"
+bug-reports: "https://github.com/dsincl12/migra/issues"
+depends: [
+  "dune" {>= "3.12"}
+  "ocaml" {>= "4.14.0"}
+  "dune-build-info" {>= "3.12"}
+  "lwt" {>= "5.6.0"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "alcotest-lwt" {with-test & >= "1.7.0"}
+  "caqti" {>= "2.0.0"}
+  "caqti-lwt" {>= "2.0.0"}
+  "caqti-dynload" {>= "2.0.0"}
+  "uri" {>= "4.4.0"}
+  "cmdliner" {>= "2.0.0"}
+  "logs" {>= "0.7.0"}
+  "logs-ppx" {>= "0.2.0"}
+  "fmt" {>= "0.9.0"}
+  "odoc" {with-doc}
+]
+depopts: [
+  "caqti-driver-postgresql" "caqti-driver-mariadb" "caqti-driver-sqlite3"
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/dsincl12/migra.git"
+url {
+  src:
+    "https://github.com/dsincl12/migra/releases/download/2.1.0/migra-2.1.0.tbz"
+  checksum: [
+    "sha256=6d27c8f27cbb99b6a0b6a457adf87508be187793c9d9a7bc5214a6cb6b0e2e65"
+    "sha512=c65e7bde436979e5fb5760b9623f03df086b774b54080fb708a691c919abe5a5e606e421667a98b985cfdb339e30cf3b38a2d6c7e1852404d58b9d58b57604c4"
+  ]
+}
+x-commit-hash: "cfc07d9a8bfd1f8a7ec4899cc8e9d71d1fc3dd15"
