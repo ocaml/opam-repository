@@ -28,6 +28,7 @@ dev-repo: "git+https://github.com/ocaml/ocaml.git#5.5"
 depends: [
   # This is OCaml 5.5.0
   "ocaml" {= "5.5.0" & post}
+  "compiler-cloning" {build}
 
   # General base- packages
   "base-unix" {post}
@@ -41,11 +42,11 @@ depends: [
   # amd64 mingw-w64 / MSVC
   (("arch-x86_64" {os = "win32" & arch = "x86_64"} &
      ("system-mingw" |
-      ("system-msvc" & "winpthreads" & "ocaml-option-no-compression" {os = "win32"}))) |
+      ("system-msvc" & "ocaml-option-no-compression" {os = "win32"}))) |
   # i686 mingw-w64 / MSVC
    ("arch-x86_32" {os = "win32"} & "ocaml-option-bytecode-only" {os = "win32"} &
      ("system-mingw" |
-      ("system-msvc" & "winpthreads" & "ocaml-option-no-compression" {os = "win32"}))) |
+      ("system-msvc" & "ocaml-option-no-compression" {os = "win32"}))) |
   # Non-Windows systems need to install something to satisfy this formula, so
   # repeat the base-unix dependency
    "base-unix" {os != "win32" & post})
@@ -54,30 +55,27 @@ depends: [
   "ocaml-option-bytecode-only" {arch != "arm64" & arch != "x86_64" & arch != "s390x" & arch != "riscv64" & arch != "ppc64"}
 
   # Support Packages
-  "flexdll" {>= "0.42" & os = "win32"}
-]
-setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
-x-env-path-rewrite: [
-  [CAML_LD_LIBRARY_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
+  "flexdll" {>= "0.44" & os = "win32"}
 ]
 build-env: [
   [MSYS2_ARG_CONV_EXCL = "*"]
   [LSAN_OPTIONS = "detect_leaks=0,exitcode=0"]
   [ASAN_OPTIONS = "detect_leaks=0,exitcode=0"]
 ]
-conflicts: "relocatable"
 build: [
   [
-    "./configure"
+    "sh" "tools/opam/process.sh" make "-j%{jobs}%" _:build-id _:name compiler-cloning:version
     "--host=x86_64-pc-windows"  {system-msvc:installed & arch-x86_64:installed}
     "--host=x86_64-w64-mingw32" {os-distribution = "cygwin" & system-mingw:installed & arch-x86_64:installed}
     "--host=i686-pc-windows"    {system-msvc:installed & arch-x86_32:installed}
     "--host=i686-w64-mingw32"   {os-distribution = "cygwin" & system-mingw:installed & arch-x86_32:installed}
     "--prefix=%{prefix}%"
     "--docdir=%{doc}%/ocaml"
+    "--with-additional-stublibsdir"
+    "--with-relative-libdir"
+    "--enable-runtime-search"
+    "--enable-runtime-search-target=fallback"
     "--with-flexdll=%{flexdll:share}%" {os = "win32" & flexdll:installed}
-    "--with-winpthreads-msvc=%{winpthreads:share}%" {system-msvc:installed}
-    "-C"
     "--with-afl" {ocaml-option-afl:installed}
     "--disable-native-compiler" {ocaml-option-bytecode-only:installed}
     "--disable-flat-float-array" {ocaml-option-no-flat-float-array:installed}
@@ -102,9 +100,8 @@ build: [
     "LIBS=-static" {ocaml-option-static:installed}
     "--disable-warn-error"
   ]
-  [make "-j%{jobs}%"]
 ]
-install: [make "install"]
+install: ["sh" "tools/opam/process.sh" make "install" _:build-id _:name prefix]
 url {
   src: "https://github.com/ocaml/ocaml/releases/download/5.5.0/ocaml-5.5.0.tar.gz"
   checksum: "sha256=c018052c8264a3791a8f54f84179e6bcc78ed82eb889bacc2773df445259aed3"
@@ -123,11 +120,9 @@ depopts: [
   "ocaml-option-static"
   "ocaml-option-tsan"
 ]
-extra-source "ocaml-compiler.install" {
-  src:
-    "https://raw.githubusercontent.com/ocaml/ocaml/899b8f3bece45f55161dad72eaa223c2bb7202e8/ocaml-variants.install"
-  checksum: [
-    "sha256=7af3dc34e6f9f3be2ffd8d32cd64fa650d6a036c86c4821a7033d24a90fba11c"
-    "md5=781ea69255fd0cb643a9617ff56fd6ba"
-  ]
-}
+post-messages: [
+"This switch had to be compiled from sources, but future switches with the 🐌
+same compiler version and configuration should assemble instantly." {!failure & !_:cloned & compiler-cloning:version != "disabled"}
+"As requested, this switch was compiled from sources 😴" {!failure & compiler-cloning:version = "disabled"}
+"Switch cloned by %{_:clone-mechanism}% from %{_:clone-source}% 💨" {!failure & _:cloned}
+]
