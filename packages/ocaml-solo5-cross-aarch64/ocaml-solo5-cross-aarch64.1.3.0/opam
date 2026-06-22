@@ -1,0 +1,60 @@
+opam-version: "2.0"
+maintainer: "Martin Lucina <martin@lucina.net>"
+authors: "Martin Lucina <martin@lucina.net>"
+homepage: "https://github.com/mirage/ocaml-solo5"
+bug-reports: "https://github.com/mirage/ocaml-solo5/issues/"
+license: "MIT"
+tags: "org:mirage"
+dev-repo: "git+https://github.com/mirage/ocaml-solo5.git"
+build: [
+  ["./configure.sh"
+   "--prefix=%{prefix}%"
+   "--sysroot=%{_:lib}%"
+   "--target=aarch64-solo5-none-static"
+   "--ocaml-configure-option=--disable-flat-float-array" {ocaml-option-no-flat-float-array:installed}
+   "--ocaml-configure-option=--enable-flambda" {ocaml-option-flambda:installed}
+  ]
+  [make "-j%{jobs}%"]
+  [make "%{name}%.install"]
+]
+install: [
+  [make "install-ocaml"]
+]
+depopts: [
+  "ocaml-option-no-flat-float-array"
+  "ocaml-option-flambda"
+]
+run-test: [
+  [make "test"]
+]
+depends: [
+  "opatch" {build} # to patch the compiler sources
+  "ocamlfind" {build}
+  "ocaml-src" {build}
+  "ocaml" {= "5.4.1" | = "5.5.0"}
+  "solo5" {>= "0.9.1"}
+  "solo5-cross-aarch64" {>= "0.9.1" }
+]
+conflicts: [
+  "ocaml-solo5"
+  "sexplib" {= "v0.9.0"}
+  "solo5-kernel-ukvm"
+  "solo5-kernel-virtio"
+  "solo5-kernel-muen"
+]
+available: [
+  ((os = "linux" & (arch = "x86_64" | arch = "arm64"))
+  | (os = "freebsd" & arch = "x86_64")
+  | (os = "openbsd" & arch = "x86_64"))
+]
+x-maintenance-intent: [ "(latest)" ]
+synopsis: "OCaml cross-compiler to the freestanding 64-bit ARM Solo5 backend"
+description:
+  "This package provides a OCaml cross-compiler for ARM64, suitable for linking with a Solo5 unikernel."
+url {
+  src:
+    "https://github.com/mirage/ocaml-solo5/archive/refs/tags/v1.3.0.tar.gz"
+  checksum: [
+    "sha512=6230bb12125cab7e1cd09601413fbd5cf37103bb38abc5fa1668f866b136fc29d84aef6c7dca7378374ffbba9ae8f162e9337d3d99b9cba919fc52bff36c1ddb"
+  ]
+}
