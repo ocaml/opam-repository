@@ -11,11 +11,11 @@ depends: [
 ]
 conflicts: "mingw-w64-shims" {< "1.0.0"}
 build: [
-  ["pkg-config" "--help"] {os != "openbsd" & os != "win32" & !(os = "macos" & os-distribution = "homebrew")}
-  ["pkgconf" "--version"] {os = "openbsd" | (os = "win32" & os-distribution != "msys2") | (os = "macos" & os-distribution = "homebrew")}
+  ["pkg-config" "--help"] {os != "win32" & !(os = "macos" & os-distribution = "homebrew")}
+  ["pkgconf" "--version"] {(os = "win32" & os-distribution != "msys2") | (os = "macos" & os-distribution = "homebrew")}
   ["sh" "./write-config.sh" name "-v" "command:list" "EOL"
-     "pkg-config" {os != "openbsd" & os != "win32" & !(os = "macos" & os-distribution = "homebrew")}
-     "pkgconf" {os = "openbsd" | (os = "win32" & os-distribution != "msys2") | (os = "macos" & os-distribution = "homebrew")}
+     "pkg-config" {os != "win32" & !(os = "macos" & os-distribution = "homebrew")}
+     "pkgconf" {(os = "win32" & os-distribution != "msys2") | (os = "macos" & os-distribution = "homebrew")}
      "i686-w64-mingw32-pkgconf" {os = "win32" & os-distribution = "msys2" & host-arch-x86_32:installed}
      "--personality=i686-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_32:installed}
      "x86_64-w64-mingw32-pkgconf" {os = "win32" & os-distribution = "msys2" & host-arch-x86_64:installed}
