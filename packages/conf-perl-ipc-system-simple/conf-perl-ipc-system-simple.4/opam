@@ -1,0 +1,39 @@
+opam-version: "2.0"
+maintainer: "chetsky@gmail.com"
+homepage: "https://www.perl.org/"
+bug-reports: "chesky@gmail.com"
+license: "GPL-1.0-or-later"
+authors: "Larry Wall et. al."
+depends: [
+  "conf-perl" {>= "3"}
+]
+build: [
+  ["perl" "--version"]
+  # Cygwin and MSYS2 have no system packages for this module, so install it
+  # directly via the CPAN client bundled with perl. The -I flag loads the
+  # switch-local MyConfig.pm created by conf-perl (>= 3), which sets the
+  # correct make path and skips CPAN auto-configuration. PERL5LIB is
+  # propagated from conf-perl via setenv.
+  ["perl" "-I" "%{conf-perl:cpan_config_dir}%" "-MCPAN" "-e" "CPAN::Shell->notest('install', 'IPC::System::Simple')"]
+    { os-distribution = "cygwin" | os-distribution = "msys2" }
+  ["perl" "-MIPC::System::Simple" "-e" "1"] { os-distribution != "homebrew" }
+]
+depexts: [
+  ["libipc-system-simple-perl"] {os-family = "debian"}
+  ["libipc-system-simple-perl"] {os-family = "ubuntu"}
+  ["perl-ipc-system-simple"] {os-distribution = "alpine"}
+  ["epel-release" "perl-IPC-System-Simple"] {os-distribution = "centos"}
+  ["perl-IPC-System-Simple"] {os-distribution = "ol" & os-version >= "8"}
+  ["perl-IPC-System-Simple"] {os-family = "suse" | os-family = "opensuse"}
+  ["perl-IPC-System-Simple"] {os-family = "fedora"}
+  ["perl-ipc-system-simple"] {os-family = "arch"}
+  ["p5-ipc-system-simple"] {os-distribution = "macports" & os = "macos"}
+  ["p5-IPC-System-Simple"] {os = "freebsd"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7"
+]
+synopsis: "Virtual package relying on perl's IPC::System::Simple"
+description:
+  "This package can only install if the specified perl packages are on the system."
+flags: conf

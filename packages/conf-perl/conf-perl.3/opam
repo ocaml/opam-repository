@@ -1,0 +1,91 @@
+opam-version: "2.0"
+maintainer: "tim@gfxmonk.net"
+homepage: "https://www.perl.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "GPL-1.0-or-later"
+authors: "Larry Wall"
+build-env: [
+  [SHELL = "/bin/sh"]
+  [PERL_MM_USE_DEFAULT = "1"]
+]
+build: [
+  ["perl" "--version"]
+  # On Cygwin/MSYS2, create a self-contained CPAN configuration inside
+  # the opam switch and export paths via .config so that dependent
+  # conf-perl-* packages can install and find modules.
+  #
+  # The MyConfig.pm includes all mandatory CPAN keys to skip
+  # auto-configuration, sets make to /usr/bin/make (avoiding the mingw
+  # make on MSYS2 which cannot handle POSIX paths), and sets shell to
+  # /bin/sh to work around a fileparse() crash in CPAN::FirstTime
+  # (RT #131313).
+  ["perl" "-e" "
+    use File::Path qw(make_path);
+    my $switch = '%{prefix}%';
+    $switch =~ s{\\\\\\\\}{/}g;
+    my $cpan_dir = qq{$switch/cpan-config};
+    make_path(qq{$cpan_dir/CPAN});
+    open my $fh, '>', qq{$cpan_dir/CPAN/MyConfig.pm} or die $!;
+    print $fh qq{\\$CPAN::Config = {
+      'auto_commit' => '0',
+      'build_cache' => '10',
+      'build_dir' => \"\\$ENV{HOME}/.cpan/build\",
+      'cache_metadata' => '1',
+      'cpan_home' => \"\\$ENV{HOME}/.cpan\",
+      'ftp_proxy' => '',
+      'http_proxy' => '',
+      'index_expire' => '1',
+      'keep_source_where' => \"\\$ENV{HOME}/.cpan/sources\",
+      'make' => '/usr/bin/make',
+      'make_arg' => '',
+      'make_install_arg' => '',
+      'make_install_make_command' => '/usr/bin/make',
+      'makepl_arg' => '',
+      'mbuild_arg' => '',
+      'mbuild_install_arg' => '',
+      'mbuild_install_build_command' => './Build',
+      'mbuildpl_arg' => '',
+      'no_proxy' => '',
+      'prerequisites_policy' => 'follow',
+      'pushy_https' => '1',
+      'scan_cache' => 'atstart',
+      'shell' => '/bin/sh',
+      'urllist' => ['https://www.cpan.org/'],
+    };
+    1;
+    };
+    close $fh;
+    my $perl5lib = qq{$ENV{HOME}/perl5/lib/perl5};
+    open my $cfg, '>', 'conf-perl.config' or die $!;
+    print $cfg qq{opam-version: \"2.0\"
+    variables {
+      perl5lib: \"$perl5lib\"
+      cpan_config_dir: \"$cpan_dir\"
+    }
+    };
+    close $cfg;
+  "] { os-distribution = "cygwin" | os-distribution = "msys2" }
+]
+setenv: [
+  [SHELL = "/bin/sh"]
+  [PERL_MM_USE_DEFAULT = "1"]
+  [PERL5LIB += "%{_:perl5lib}%"]
+]
+depexts: [
+  ["perl"] {os-family = "debian"}
+  ["perl"] {os-family = "ubuntu"}
+  ["perl"] {os-distribution = "alpine"}
+  ["perl"] {os-distribution = "nixos"}
+  ["perl"] {os-distribution = "arch"}
+  ["perl-Pod-Html"] {os-family = "fedora"}
+  ["perl-Pod-Html"] {os-distribution = "centos" & os-version >= "8"}
+  ["perl5"] {os-distribution = "macports" & os = "macos"}
+  ["perl5"] {os = "freebsd"}
+  ["perl"] {os-distribution = "cygwin"}
+  # MSYS2 needs perl-devel for Config.pm (required by ExtUtils::MakeMaker).
+  ["perl" "perl-devel"] {os-distribution = "msys2"}
+]
+synopsis: "Virtual package relying on perl"
+description:
+  "This package can only install if the perl program is installed on the system."
+flags: conf
