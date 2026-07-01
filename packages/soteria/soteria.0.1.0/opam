@@ -1,0 +1,71 @@
+opam-version: "2.0"
+synopsis: "Soteria is a toolkit for writing symbolic bug-finding tools"
+description: "Soteria is a toolkit for writing symbolic bug-finding tools"
+maintainer: [
+  "Sacha-Élie Ayoun <s.ayoun17@imperial.ac.uk>"
+  "Opale Sjöstedt <opale.sjostedt23@imperial.ac.uk>"
+]
+authors: [
+  "Sacha-Élie Ayoun <s.ayoun17@imperial.ac.uk>"
+  "Opale Sjöstedt <opale.sjostedt23@imperial.ac.uk>"
+]
+license: "Apache-2.0"
+homepage: "https://github.com/soteria-tools/soteria"
+bug-reports: "https://github.com/soteria-tools/soteria/issues"
+depends: [
+  "ocaml" {>= "5.5.0"}
+  "tsort" {>= "2.1.0"}
+  "iter"
+  "patricia-tree"
+  "cmdliner" {>= "2.0.0"}
+  "ppx_expect" {>= "0.17.0"}
+  "ppx_blob" {>= "0.9.0"}
+  "ppx_subliner" {>= "0.2.1"}
+  "ppx_deriving"
+  "ppx_deriving_hash"
+  "fmt"
+  "printbox-text"
+  "htmlit"
+  "progress" {>= "0.5.0"}
+  "grace" {>= "0.3.0"}
+  "zarith"
+  "odoc" {with-doc}
+  "mdx" {with-test}
+  "alcotest" {with-test}
+  "qcheck-core" {with-test}
+  "qcheck-alcotest" {with-test}
+  "dune" {>= "3.23"}
+  "ppxlib" {>= "0.38.0"}
+  "ppx_mixins" {>= "0.2.0"}
+  "hc" {>= "0.5"}
+  "yojson" {< "3.0"}
+  "unionFind" {>= "20220109"}
+  "ppx_deriving_yojson"
+  "ocamlformat" {with-dev-setup & = "0.29.0"}
+  "ocaml-lsp-server" {with-dev-setup}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/soteria-tools/soteria.git"
+url {
+  src:
+    "https://github.com/soteria-tools/soteria/archive/refs/tags/v0.1.0.tar.gz"
+  checksum: [
+    "md5=8f15271b81e34caa12a39e3b7a63313a"
+    "sha512=5f6987cf362bc06402d9bed324c7b060384d7ef02479e2a614ca4b4122cc65082f6afc892c398c6562b0eb42fc13d6cc77e76c2518221590576215aaa00ee5bd"
+  ]
+}
+x-maintenance-intent: ["(latest)"]
