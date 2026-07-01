@@ -1,0 +1,32 @@
+opam-version: "2.0"
+synopsis: "Tiny feature-flag library used by AXM companion package examples"
+description: """
+A minimal feature flag library demonstrating how an opam package can ship
+companion AXM extensions for its users. Supports boolean flags with optional
+percentage rollouts, variant flags with allowed values and rollout
+allocations, and deterministic context bucketing so a given context id
+receives stable rollout decisions.
+"""
+maintainer: "AgentXM <noreply@agentxm.ai>"
+authors: ["AgentXM"]
+license: "MIT"
+homepage: "https://github.com/agentxm/agentxm-example-tinyflags-ocaml"
+bug-reports: "https://github.com/agentxm/agentxm-example-tinyflags-ocaml/issues"
+dev-repo: "git+https://github.com/agentxm/agentxm-example-tinyflags-ocaml.git"
+tags: ["feature-flags" "tinyflags" "axm"]
+depends: [
+  "ocaml" {>= "4.14"}
+  "dune" {>= "3.0"}
+  "alcotest" {with-test & >= "1.7.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+url {
+  src:
+    "https://github.com/agentxm/agentxm-example-tinyflags-ocaml/releases/download/v0.1.0/agentxm-example-tinyflags-0.1.0.tar.gz"
+  checksum: "sha256=ba4c634cfda54813feab549848b1f52744b00736caf50aa32888f808cce933e6"
+}
+x-axm-recommendedExtensions: ["@examples/packs/ocaml-opam-tinyflags@^0.1.0"]
