@@ -1,0 +1,56 @@
+opam-version: "2.0"
+synopsis:
+  "A database migration tool and library for OCaml supporting PostgreSQL, MariaDB/MySQL, and SQLite"
+description:
+  "A database migration tool and library for OCaml. Migrations are plain SQL with up and down sections, and the database (PostgreSQL, MariaDB/MySQL, or SQLite) is selected from the connection URL. Applied migrations are tracked with checksums, and drift (a modified, missing, or out-of-order migration) is detected before anything runs. It can be used from the command line or embedded as a library to migrate on application startup."
+maintainer: ["David Sinclair <dsincl12@gmail.com>"]
+authors: ["David Sinclair"]
+license: "MIT"
+tags: ["database" "migrations" "postgresql" "mariadb" "mysql" "sqlite"]
+homepage: "https://github.com/dsincl12/migra"
+doc: "https://github.com/dsincl12/migra"
+bug-reports: "https://github.com/dsincl12/migra/issues"
+depends: [
+  "dune" {>= "3.12"}
+  "ocaml" {>= "4.14.0"}
+  "dune-build-info" {>= "3.12"}
+  "lwt" {>= "5.6.0"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "alcotest-lwt" {with-test & >= "1.7.0"}
+  "caqti" {>= "2.0.0"}
+  "caqti-lwt" {>= "2.0.0"}
+  "caqti-dynload" {>= "2.0.0"}
+  "uri" {>= "4.4.0"}
+  "cmdliner" {>= "2.0.0"}
+  "logs" {>= "0.7.0"}
+  "logs-ppx" {>= "0.2.0"}
+  "fmt" {>= "0.9.0"}
+  "odoc" {with-doc}
+]
+depopts: [
+  "caqti-driver-postgresql" "caqti-driver-mariadb" "caqti-driver-sqlite3"
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/dsincl12/migra.git"
+url {
+  src:
+    "https://github.com/dsincl12/migra/releases/download/2.2.0/migra-2.2.0.tbz"
+  checksum: [
+    "sha256=56bd695a46f04bf835401ffed2e271da07145779eade84fb3aa7385eb66fd824"
+    "sha512=911f455829ce8c9a781ef7efb709a88775e4f0d9e827f7cb4c7c07dbca867b510e24744b5029a6ec35c412851e0c30dcd3f8eeed5bb02e23e21d406ecb850410"
+  ]
+}
+x-commit-hash: "d76c5ebd72f401b94de28c008a9078336569e2e9"
