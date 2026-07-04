@@ -1,0 +1,64 @@
+opam-version: "2.0"
+maintainer:   ["anil@recoil.org" "thomas@gazagnaire.org"]
+authors:      ["Thomas Gazagnaire" "Anil Madhavapeddy" "Gabriel Radanne"
+               "Mindy Preston" "Thomas Leonard" "Nicolas Ojeda Bar"
+               "Dave Scott" "David Kaloper" "Hannes Mehnert" "Richard Mortier"]
+homepage:     "https://github.com/mirage/mirage"
+bug-reports:  "https://github.com/mirage/mirage/issues/"
+dev-repo:     "git+https://github.com/mirage/mirage.git"
+license:      "ISC"
+tags:         ["org:mirage" "org:xapi-project"]
+doc:          "https://mirage.github.io/mirage/"
+available: opam-version >= "2.1.0"
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.13.0"}
+  "dune" {>= "2.9.0"}
+  "astring"
+  "cmdliner" {>= "2.0.0"}
+  "emile" {>= "1.1"}
+  "fmt" {>= "0.8.7"}
+  "ipaddr" {>= "5.0.0"}
+  "bos"
+  "fpath"
+  "rresult" {>= "0.7.0"}
+  "uri" {>= "4.2.0"}
+  "logs" {>= "0.7.0"}
+  "opam-monorepo" {>= "0.4.0"}
+  "alcotest" {with-test}
+  "mirage-runtime" {with-test & = version}
+  "dune" {with-test & != "3.20.0" & != "3.20.1"}
+]
+
+conflicts: [ "jbuilder" {with-test} ]
+
+synopsis: "The MirageOS library operating system"
+description: """
+MirageOS is a library operating system that constructs unikernels for
+secure, high-performance network applications across a variety of
+cloud computing and mobile platforms. Code can be developed on a
+normal OS such as Linux or MacOS X, and then compiled into a
+fully-standalone, specialised unikernel that runs under the Xen
+or KVM (or FreeBSD BHyve or OpenBSD VMM) hypervisor. It also runs
+on the Muen separation kernel.
+
+Since Xen powers most public cloud computing infrastructure such as
+Amazon EC2 or Rackspace, this lets your servers run more cheaply,
+securely and with finer control than with a full software stack.
+"""
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mirage/mirage/releases/download/v4.11.1/mirage-4.11.1.tbz"
+  checksum: [
+    "sha256=58488022e67513a370f1de91297b6c0de15dd15584381276028c08d4ab4ae158"
+    "sha512=0ddc27adfdaa88a5ff492261de57d40df89a968db18501b16ac83393446f994f50674b40345625382728a731c22aa82e70675c400310d015829bf0ec1980ecb2"
+  ]
+}
+x-commit-hash: "6d86cc902f7891590db2040bc33f3cf53f2fb143"
