@@ -1,0 +1,49 @@
+opam-version: "2.0"
+maintainer: "samuel@tarides.com"
+homepage: "https://github.com/mirage/ocaml-unikraft/"
+dev-repo: "git+https://github.com/mirage/ocaml-unikraft.git"
+bug-reports: "https://github.com/mirage/ocaml-unikraft/issues"
+tags: "org:mirage"
+synopsis: "Firecracker/x86_64 Unikraft backend for OCaml"
+authors: ["Samuel Hym" "Unikraft contributors"]
+license: ["MIT" "BSD-3-Clause" "GPL-2.0-only"]
+depends: [
+  "unikraft" {= "0.20.0"}
+  "unikraft-musl" {= "0.20.0"}
+  "conf-x86_64-linux-gnu-gcc" {arch != "x86_64"}
+]
+depopts: [
+  "ocaml-unikraft-option-debug"
+  "ocaml-unikraft-option-9pfs"
+  "ocaml-unikraft-custom-configs"
+]
+build: [
+  [
+    make
+    "-j%{jobs}%"
+    "UNIKRAFT=%{unikraft:lib}%"
+    "UNIKRAFTMUSL=%{unikraft-musl:lib}%"
+    "OCUKPLAT=firecracker"
+    "OCUKARCH=x86_64"
+    "OCUKEXTLIBS=musl"
+    "OCUKCONFIGOPTS+=debug" {ocaml-unikraft-option-debug:installed}
+    "OCUKCONFIGOPTS+=9pfs" {ocaml-unikraft-option-9pfs:installed}
+    "OCUKCUSTOMCFGDIR=%{ocaml-unikraft-custom-configs:share}%"
+      {ocaml-unikraft-custom-configs:installed}
+    "UK_CFLAGS=-std=gnu11"
+    "%{name}%.install"
+  ]
+]
+x-ci-accept-failures: [
+  "debian-11" "opensuse-15.6"
+  # Unikraft 0.20.0 is incompatible with the version of GCC in those
+  # distributions
+]
+url {
+  src:
+    "https://github.com/mirage/ocaml-unikraft/archive/refs/tags/v1.2.0.tar.gz"
+  checksum:
+    "sha256=ca18a45ef86791d5ffa18436945fbec850b6f3dd68a6a62753b4cb1b6999b19a"
+}
+available: os = "linux"
+x-maintenance-intent: ["(latest)"]
