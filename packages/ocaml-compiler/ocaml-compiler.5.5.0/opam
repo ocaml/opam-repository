@@ -58,11 +58,13 @@ depends: [
   "flexdll" {>= "0.44" & os = "win32"}
 ]
 build-env: [
+  [OCAMLTOP_INCLUDE_PATH = ""]
   [MSYS2_ARG_CONV_EXCL = "*"]
   [LSAN_OPTIONS = "detect_leaks=0,exitcode=0"]
   [ASAN_OPTIONS = "detect_leaks=0,exitcode=0"]
 ]
 build: [
+  [ "mv" "-f" "process.sh" "generate.ml" "tools/opam/" ] {os = "macos"}
   [
     "sh" "tools/opam/process.sh" make "-j%{jobs}%" _:build-id _:name compiler-cloning:version
     "--host=x86_64-pc-windows"  {system-msvc:installed & arch-x86_64:installed}
@@ -105,6 +107,22 @@ install: ["sh" "tools/opam/process.sh" make "install" _:build-id _:name prefix]
 url {
   src: "https://github.com/ocaml/ocaml/releases/download/5.5.0/ocaml-5.5.0.tar.gz"
   checksum: "sha256=c018052c8264a3791a8f54f84179e6bcc78ed82eb889bacc2773df445259aed3"
+}
+extra-source "generate.ml" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/7d0416cce03eaab10918bb10401a617e9321c582/tools/opam/generate.ml"
+  checksum: [
+    "sha512=d05f51b1f419353f22855f934cdbc9fe92c8a1ea4fcb214d34a06f9b03c14befc5018c34d8f87dfc528e0fe280c6678ab15e3228670ae1a688f7f44ab43c7601"
+    "sha256=092668b0180282fc5ae3de184048845b04ad38254acb100576e162a4513a31ab"
+  ]
+}
+extra-source "process.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/7d0416cce03eaab10918bb10401a617e9321c582/tools/opam/process.sh"
+  checksum: [
+    "sha512=dd6ef9616825042381058d737383f867d29010b38e1a9f84ec8b473c067e539272f60f17dd268b06c6b00a4bd352fbbe89954c69e2cc2f49b941f87b322dd76d"
+    "sha256=7a5c434733b2bc5aa3516c1a425f38ccf655839f3073b21cd21ac2607b223d60"
+  ]
 }
 depopts: [
   "ocaml-option-32bit"
