@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "Toolchain to produce JS from Reason/OCaml"
+maintainer: ["Antonio Nuno Monteiro <anmonteiro@gmail.com>"]
+authors: ["Antonio Nuno Monteiro <anmonteiro@gmail.com>"]
+license: "LGPL-2.1-or-later"
+homepage: "https://github.com/melange-re/melange"
+bug-reports: "https://github.com/melange-re/melange/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "ocaml" {>= "5.4" & < "5.5"}
+  "cmdliner" {>= "1.1.0"}
+  "dune-build-info"
+  "cppo" {build}
+  "alcotest" {with-test}
+  "reason" {with-test}
+  "ppxlib" { >= "0.36.0" }
+  "menhir" {>= "20201214"}
+  "reason-react-ppx" {with-test & post}
+  "merlin" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+available: arch != "x86_32" & arch != "arm32"
+dev-repo: "git+https://github.com/melange-re/melange.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/melange-re/melange/releases/download/7.0.1-54/melange-7.0.1-54.tbz"
+  checksum: [
+    "sha256=49bf9d3dd10d0d7f58abe6755a40c246d36b5fbf6b5e189f2c634c47a9de7f33"
+    "sha512=13061ec3a9e314185175d90f684c725ca3aa7de3f6a64465868112ee79daf08017c616b1410bb582e2e657b84d1281b965ef2af70b7c01ec47dab1d384bb9eef"
+  ]
+}
+x-commit-hash: "dfa8f1f7597f667b9d57e37142c1f52ce613b509"
