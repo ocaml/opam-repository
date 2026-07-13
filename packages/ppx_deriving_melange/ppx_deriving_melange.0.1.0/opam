@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis: "Melange-compatible deriving plugins for OCaml"
+description:
+  "A Melange-compatible subset of ppx_deriving: eq, iter, map, ord, and show."
+maintainer: [
+  "Vitalii Shapoval <vytalych@gmail.com>" "Ahrefs <github@ahrefs.com>"
+]
+authors: [
+  "Vitalii Shapoval <vytalych@gmail.com>" "Ahrefs <github@ahrefs.com>"
+]
+license: "MIT"
+tags: ["org:ahrefs" "syntax" "melange" "ppx"]
+homepage: "https://github.com/ahrefs/ppx_deriving_melange"
+bug-reports: "https://github.com/ahrefs/ppx_deriving_melange/issues"
+depends: [
+  "dune" {>= "3.16"}
+  "ocaml" {>= "5.0.0"}
+  "ppxlib" {> "0.36.0"}
+  "melange" {>= "5.0.0"}
+  "ounit2" {with-test}
+  "melange-fest" {with-test}
+  "conf-npm" {with-test}
+  "ocamlformat" {= "0.29.0" & with-test}
+  "ocaml-lsp-server" {with-dev-setup}
+  "odoc-driver" {with-doc}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ahrefs/ppx_deriving_melange.git"
+url {
+  src:
+    "https://github.com/ahrefs/ppx_deriving_melange/releases/download/0.1.0/ppx_deriving_melange-0.1.0.tbz"
+  checksum: [
+    "sha256=2f1ce7252387cade8fa60c591ddcdc96834745b496ccbd7004652bf8db72c0dd"
+    "sha512=02522414cb0286fe14953a642f40446a2493a6dd15dcd8f6d9d89ea7c89375e28df0c29522dca4c2abed62dea4c79305d84d5b40331b315429a0575cb373940c"
+  ]
+}
+x-commit-hash: "779aa4e0890f31f8ca3693a759cb6b4551dab814"
+x-ci-accept-failures: [ "ubuntu-22.04" ]
