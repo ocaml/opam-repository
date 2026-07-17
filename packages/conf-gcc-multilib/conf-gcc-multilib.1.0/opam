@@ -1,0 +1,23 @@
+opam-version: "2.0"
+maintainer: "Simmo Saan <simmo.saan@gmail.com>"
+authors: ["Simmo Saan"]
+homepage: "https://github.com/ocaml/opam-repository"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "GPL-2.0-or-later"
+build: [
+  ["sh" "-exc" "echo '#include <limits.h>' | cpp -m32 -"]
+  ["sh" "-exc" "echo '#include <limits.h>' | cpp -m64 -"]
+]
+depexts: [
+  ["glibc-devel.i686"] {os-distribution = "centos"}
+  ["glibc-devel.i686"] {os-distribution = "fedora"}
+  ["gcc-32bit"] {os-family = "suse" | os-family = "opensuse"}
+  ["gcc-multilib"] {os-distribution = "debian"}
+  ["gcc-multilib"] {os-distribution = "ubuntu"}
+  ["lib32-glibc"] {os-family = "arch"}
+]
+available: arch != "s390x"
+synopsis: "Virtual package relying on the gcc compiler multilib support"
+description:
+  "This package can only install if the gcc compiler multilib support is installed on the system."
+flags: conf
