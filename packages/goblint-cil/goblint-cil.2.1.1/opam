@@ -1,0 +1,78 @@
+opam-version: "2.0"
+synopsis:
+  "A front-end for the C programming language that facilitates program analysis and transformation"
+description: """
+This is a fork of the 'cil' package used for 'goblint'. Major changes include:
+* Support for C99 and C11.
+* Compatibility with modern OCaml versions.
+* Use Zarith instead of Num and use that for integer constants.
+* Improved locations with columns and spans.
+* Removal of unmaintained extensions and MSVC support.
+* Use dune instead of make and ocamlbuild.
+* Many bug fixes."""
+maintainer: [
+  "Michael Schwarz <michael.schwarz93@gmail.com>"
+  "Simmo Saan <simmo.saan@gmail.com>"
+]
+authors: [
+  "George Necula"
+  "Scott McPeak"
+  "Westley Weimer"
+  "Gabriel Kerneis"
+  "Ralf Vogler"
+  "Michael Schwarz"
+  "Simmo Saan"
+]
+license: "BSD-3-Clause"
+homepage: "https://github.com/goblint/cil"
+bug-reports: "https://github.com/goblint/cil/issues"
+depends: [
+  "ocaml" {>= "4.12.0"}
+  "ocamlfind" {with-test}
+  "zarith"
+  "hevea" {with-doc}
+  "dune" {>= "2.7"}
+  "dune-configurator"
+  "odoc" {with-doc}
+  "stdlib-shims"
+  "ppx_deriving_yojson" {>= "3.2"}
+  "yojson"
+  "conf-perl"
+  "cppo"
+  "conf-gcc"
+]
+conflicts: ["cil"]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & (arch = "x86_64" | os != "linux")} # fails on arm64 debian-13
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/goblint/cil.git"
+x-maintenance-intent: ["(latest)"]
+depexts: [
+  ["perl-ExtUtils-MakeMaker"] {os-distribution = "centos" | os-family = "fedora" | os-distribution = "ol"}
+  ["perl-FindBin"] {os-distribution = "centos" | os-family = "fedora"}
+  ["build-base"] {os-distribution = "alpine"}
+]
+available: arch = "x86_64" | arch = "arm64"
+x-ci-accept-failures: [
+  "freebsd-15.0" # installed cilly binary is not found for some reason (https://github.com/ocaml/opam-repository/pull/24812#issuecomment-1819231335)
+]
+url {
+  src:
+    "https://github.com/goblint/cil/releases/download/2.1.1/goblint-cil-2.1.1.tbz"
+  checksum: [
+    "sha256=015ceed9dd8bf073a643672037c2cf63c03f90a76b8c2e87ae8a27dd5d8ba2f0"
+    "sha512=079d379715f5bf5c6f31dc8660c5329470643f6325d4a6e32afc15d27844cb573dfd33c768100440d734670bb59b9abb6fb68d19389609c35d072f1b30302dd6"
+  ]
+}
+x-commit-hash: "7b12102618c5465f5db83e93ce5ffab306f929a3"
