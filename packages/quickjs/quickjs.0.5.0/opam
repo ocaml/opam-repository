@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis:
+  "Bindings for QuickJS (a Javascript Engine to be embedded https://bellard.org/quickjs)"
+maintainer: ["David Sancho <dsnxmoreno@gmail.com>"]
+authors: ["David Sancho <dsnxmoreno@gmail.com>"]
+license: "MIT"
+homepage: "https://github.com/ml-in-barcelona/quickjs.ml"
+bug-reports: "https://github.com/ml-in-barcelona/quickjs.ml/issues"
+depends: [
+  "dune" {>= "3.8"}
+  "ocaml" {>= "4.14.0"}
+  "integers" {>= "0.7.0"}
+  "ctypes" {>= "0.24.0"}
+  "alcotest" {with-test}
+  "odoc" {with-doc}
+  "ocaml-lsp-server" {with-dev-setup}
+  "ocamlformat" {= "0.28.1" & with-dev-setup}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ml-in-barcelona/quickjs.ml.git"
+conflicts: [ "ocaml-option-bytecode-only" ]
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/ml-in-barcelona/quickjs.ml/releases/download/0.5.0/quickjs-0.5.0.tbz"
+  checksum: [
+    "sha256=4aeb2c5dd5ac80f9bcc2b8a005cf655891e107bfb7e33bc43200772e49c49028"
+    "sha512=54730404786219b47aef7e558a6826108024ab80ed9e7dbcf3c8eb5e1f2b275dd3d034f3038276b15c4839fbc3aa5a8ad9c9244e4f79d6075ca106a09001cc23"
+  ]
+}
+x-commit-hash: "7aec94a8d3b697881b61c361fe990582ec932bcb"
