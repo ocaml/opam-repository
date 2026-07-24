@@ -1,0 +1,194 @@
+opam-version: "2.0"
+synopsis: "Platform dedicated to the analysis of source code written in C"
+description:"""
+Frama-C gathers several analysis techniques in a single collaborative
+framework, based on analyzers (called "plug-ins") that can build upon the
+results computed by other analyzers in the framework.
+Thanks to this approach, Frama-C provides sophisticated tools, including:
+- an analyzer based on abstract interpretation (Eva plug-in);
+- a program proof framework based on weakest precondition calculus (WP plug-in);
+- a program slicer (Slicing plug-in);
+- a tool for verification of automata-based properties (Aoraï plug-in);
+- a runtime verification tool (E-ACSL plug-in);
+- several tools for code base exploration and dependency analysis
+  (plug-ins From, Impact, Metrics, Occurrence, Scope, etc.).
+These plug-ins communicate between each other via the Frama-C API
+and via ACSL (ANSI/ISO C Specification Language) properties.
+"""
+maintainer: "frama-ci-bot@frama-c.com"
+authors: [
+  "Michele Alberti"
+  "Thibaud Antignac"
+  "Gergö Barany"
+  "Patrick Baudin"
+  "Nicolas Bellec"
+  "Thibaut Benjamin"
+  "Allan Blanchard"
+  "Lionel Blatter"
+  "François Bobot"
+  "Richard Bonichon"
+  "Vincent Botbol"
+  "Quentin Bouillaguet"
+  "David Bühler"
+  "Zakaria Chihani"
+  "Sylvain Chiron"
+  "Loïc Correnson"
+  "Julien Crétin"
+  "Pascal Cuoq"
+  "Zaynah Dargaye"
+  "Basile Desloges"
+  "Jean-Christophe Filliâtre"
+  "Philippe Herrmann"
+  "Jordan Ischard"
+  "Maxime Jacquemin"
+  "Benjamin Jorge"
+  "Florent Kirchner"
+  "Alexander Kogtenkov"
+  "Remi Lazarini"
+  "Tristan Le Gall"
+  "Kilyan Le Gallic"
+  "Jean-Christophe Léchenet"
+  "Matthieu Lemerre"
+  "Dara Ly"
+  "David Maison"
+  "Claude Marché"
+  "André Maroneze"
+  "Thibault Martin"
+  "Fonenantsoa Maurica"
+  "Melody Méaulle"
+  "Benjamin Monate"
+  "Nicky Mouha"
+  "Yannick Moy"
+  "Pierre Nigron"
+  "Anne Pacalet"
+  "Valentin Perrelle"
+  "Guillaume Petiot"
+  "Dario Pinto"
+  "Virgile Prevosto"
+  "Armand Puccetti"
+  "Félix Ridoux"
+  "Virgile Robles"
+  "Jan Rochel"
+  "Muriel Roger"
+  "Cécile Ruet-Cros"
+  "Julien Signoles"
+  "Fabien Siron"
+  "Nicolas Stouls"
+  "Hugo Thievenaz"
+  "Kostyantyn Vorobyov"
+  "Boris Yakobowski"
+]
+homepage: "https://frama-c.com/"
+license: "LGPL-2.1-only"
+dev-repo: "git+https://git.frama-c.com/pub/frama-c.git"
+doc: "https://www.frama-c.com/html/documentation.html"
+bug-reports: "https://git.frama-c.com/pub/frama-c/issues"
+tags: [
+  "ACSL"
+  "C"
+  "abstract interpretation"
+  "code transformation"
+  "dataflow analysis"
+  "deductive verification"
+  "formal specification"
+  "program verification"
+  "runtime annotation checking"
+  "static analysis"
+]
+
+build: [
+  ["bash" "dev/disable-plugins.sh" "e-acsl"] { os-family = "windows" }
+  ["dune" "build" "-j%{jobs}%" "--release" "--promote-install-files=false"
+   "@install"
+   "@doc" { with-doc }
+  ]
+]
+
+install: [
+  [make
+   "RELEASE=yes" "PREFIX=%{prefix}%" "MANDIR=%{man}%"
+   "DOCDIR=%{doc}%" { with-doc }
+   "install"
+  ]
+]
+
+remove: [
+  [make "PREFIX=%{prefix}%" "-f" "ivette/Makefile.installation" "uninstall"]
+]
+
+run-test: [
+  ["dune" "exec" "--release" "--" "frama-c-ptests" "tests" "src/plugins/*/tests"
+  ] { arch != "ppc64" & arch != "x86_32" & arch != "arm32" & os-distribution != "freebsd" & os-family != "windows"}
+  ["dune" "build" "--release" "-j%{jobs}%" "@ptests_config"
+  ] { arch != "ppc64" & arch != "x86_32" & arch != "arm32" & os-distribution != "freebsd" & os-family != "windows"}
+]
+
+depends: [
+  "dune" { > "3.13.0" }
+  "dune-configurator"
+  "dune-site" { > "3.13.0" }
+  ( "alt-ergo-free" | "alt-ergo" )
+  "camlzip"
+  "conf-graphviz" { post }
+  "conf-time" { with-test }
+  "menhir" { >= "20181006" & build }
+  "ocaml" { >= "4.14.0" }
+  "ocamlgraph" { >= "2.0.0" }
+  "ocamlgraph" { with-test & >= "2.2.0" }
+  "ocp-indent" { with-dev-setup & >= "1.9.0" }
+  "odoc" { with-doc }
+  "unionFind" { >= "20220109" }
+  "why3" { >= "1.8.2" & < "1.9.0" }
+  "yaml" { >= "3.0.0" }
+  "yojson" {>= "1.6.0" & (>= "2.0.1" | !with-test)}
+  "zarith" { >= "1.13" }
+
+  # PPXs
+  "ppxlib" { >= "0.33.0" }
+  "ppx_deriving" { >= "6.0.2" }
+  "ppx_deriving_yojson"
+  "ppx_deriving_yaml" { >= "0.2.0" }
+  "ppx_inline_test"
+]
+
+# Note: do not put particular versions here, if some version is *incompatible*,
+# use the field 'conflicts'.
+depopts: [
+  "apron"
+  "zmq"
+]
+
+conflicts: [
+  "cairo2" { < "0.6.2" }
+  "pilat"  { <= "1.6" }
+  "result" { < "1.5" }
+]
+
+post-messages: [
+"The Frama-C/WP plug-in requires one or more external prover(s).
+Recommended provers are:
+- Alt-Ergo (https://alt-ergo.ocamlpro.com)
+- CVC5     (https://cvc5.github.io)
+- Z3       (https://github.com/Z3Prover/z3)
+" { success }
+"Run 'frama-c-gui' once to finalize installation of the GUI (requires an internet connection).
+Once finalized, 'frama-c-gui' will work offline.
+Finalization also requires Node 24 and Yarn:
+- install NVM (https://github.com/nvm-sh/nvm)
+- run 'nvm install 24'
+- run 'nvm use 24'
+- run 'npm install --global yarn'" { success }
+]
+
+x-maintenance-intent: [
+  "(latest).(any)"
+  "(latest-1).(latest)"
+  "(latest-2).(latest)"
+  "(latest-3).(latest)"
+  "(latest-4).(latest)"
+]
+
+url {
+  src: "https://www.frama-c.com/download/frama-c-33.0-Arsenic.tar.gz"
+  checksum: "sha256=9c1cbffd28bb33c17a668107e39c96e4ae7378a3d8249f69b47afc7ee964e9b8"
+}
