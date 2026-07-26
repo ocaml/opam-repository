@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "Lucas Pluvinage <lucas@tarides.com>"
+license: ["LGPL-3.0-only" "LGPL-2.0-only"]
+authors: "Torbjörn Granlund and contributors"
+homepage: "https://github.com/mirage/ocaml-gmp"
+bug-reports: "https://github.com/mirage/ocaml-gmp/issues"
+dev-repo: "git+https://github.com/mirage/ocaml-gmp.git"
+substs: [ "src/build.sh" ]
+build: [
+ [ "dune" "build" "-p" name "-j" jobs ]
+ [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "dune" {>= "2.6"}
+  "conf-m4"
+]
+depexts: [
+  [ "xz" ] {os = "macos" & os-distribution = "homebrew"}
+]
+conflicts: [
+  "ocaml-solo5" {< "0.8.3"}
+]
+available: arch != "arm32" & arch != "x86_32" & arch != "ppc64" & arch != "riscv64" & os-family != "opensuse" & !(os = "macos" & arch = "x86_64")
+synopsis: "The GNU Multiple Precision Arithmetic Library"
+description: """Dune packaging of the GMP library, suitable for 
+cross-compilation."""
+url {
+  src:
+    "https://github.com/mirage/ocaml-gmp/releases/download/6.3.0-1/gmp-6.3.0-1.tbz"
+  checksum: [
+    "sha256=cafe5beff5f35cb4451e341e1c07a019ac7047dd280ff55410e42ccc133bb757"
+    "sha512=22e00bae49ce436b7fc9ca458bf1b9c6eece73bbe05829d76c61c22d4e215160c12c39a511253a643eda205bb41ddee83f241e72439c0058a8cf767104683d21"
+  ]
+}
+x-commit-hash: "970a3e0b0aab8a84ccd52697e52eab7e8fc4f5e7"

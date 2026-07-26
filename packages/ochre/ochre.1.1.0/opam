@@ -1,0 +1,56 @@
+opam-version: "2.0"
+synopsis: "Syntax highlighter using TextMate grammars and themes"
+description:
+  "ochre is a syntax highlighter inspired by Shiki, using TextMate grammars and themes. It supports HTML output (inline styles or CSS classes), ANSI terminal colors, LaTeX, SVG, and raw token output."
+maintainer: ["David Sancho"]
+authors: ["David Sancho"]
+license: "MIT"
+homepage: "https://github.com/davesnx/ochre"
+doc: "https://davesnx.github.io/ochre/odoc/"
+bug-reports: "https://github.com/davesnx/ochre/issues"
+depends: [
+  "dune" {>= "3.22"}
+  "ocaml" {>= "4.14.0"}
+  "yojson" {>= "2.0.0"}
+  "melange-json-native" {>= "2.0.0"}
+  "conf-oniguruma"
+  "dune-configurator" {>= "2.9" & build}
+  "plist-xml" {>= "0.5.0"}
+  "ezjsonm" {with-test}
+  "html_of_jsx" {>= "0.0.9" & with-test}
+  "tiny_httpd" {with-test}
+  "odoc" {>= "3.1.0" & with-doc}
+  "tm-grammars" {>= "2.0.0" & with-test}
+  "alcotest" {with-test}
+  "mlx" {with-test}
+  "ocaml-lsp-server" {with-dev-setup}
+  "ocamlmerlin-mlx" {with-dev-setup}
+  "ocamlformat-mlx" {with-dev-setup}
+  "ocamlformat" {= "0.29.0" & with-dev-setup}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/davesnx/ochre.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/davesnx/ochre/releases/download/1.1.0/ochre-1.1.0.tbz"
+  checksum: [
+    "sha256=a8e38fbcd22fbb68b0f7d93b36a2ba1670e8bd061b43a0177226738307183a32"
+    "sha512=7b344c3812be283b0101078564e564732f878ad226c7ce0212c9e9139fb41a291e4d31ad52c949f2978c48e04240d4d22b5b4ae63808e15a21c44a2fbeed8a22"
+  ]
+}
+x-commit-hash: "d9140721475044da694630b1dc17a84e428a3df2"
+x-ci-accept-failures: ["centos-9"]
