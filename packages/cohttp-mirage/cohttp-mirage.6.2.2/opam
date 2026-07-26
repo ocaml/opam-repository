@@ -1,0 +1,70 @@
+opam-version: "2.0"
+synopsis: "CoHTTP implementation for the MirageOS unikernel"
+description: """
+This HTTP implementation uses the Cohttp portable implementation
+along with the Lwt threading library in order to provide a
+`Cohttp_mirage` functor that can be used in MirageOS unikernels
+to build very small and efficient HTTP clients and servers
+without having a hard dependency on an underlying operating
+system.
+
+Please see <https://mirage.io> for a self-hosted explanation
+and instructions on how to use this library."""
+maintainer: ["Anil Madhavapeddy <anil@recoil.org>"]
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+  "Anurag Soni"
+]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "dune" {>= "3.8"}
+  "ocaml" {>= "4.08"}
+  "mirage-flow" {>= "2.0.0"}
+  "mirage-channel" {>= "4.0.0"}
+  "conduit" {>= "8.0.0"}
+  "conduit-mirage" {>= "8.0.0"}
+  "mirage-kv" {>= "3.0.0"}
+  "lwt" {>= "2.4.3"}
+  "cohttp-lwt" {= version}
+  "cstruct" {>= "6.0.0"}
+  "fmt" {>= "0.8.7"}
+  "astring"
+  "magic-mime"
+  "ppx_sexp_conv" {>= "v0.13.0"}
+  "cohttp" {= version}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@cohttp-mirage/runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v6.2.2/cohttp-6.2.2.tbz"
+  checksum: [
+    "sha256=499cd8b094cee4b00fe6b9f6322680f81fe87161e963a196b109c1882610af62"
+    "sha512=701b946af0a84c9f5d1f5131fc4cea9b35fa2fd18d67460eb0caf4f916acc4ae8695d65594d0e0074f2729dc9ca54cfd984b1863a6f7dc345e171be4e3c3b258"
+  ]
+}
+x-commit-hash: "0178a219286ed3b59c16cc37557c2c5f93503b6a"
