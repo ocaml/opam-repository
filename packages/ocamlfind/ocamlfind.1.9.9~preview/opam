@@ -1,27 +1,27 @@
 opam-version: "2.0"
 synopsis: "A library manager for OCaml"
-description: """
+description: """\
 Findlib is a library manager for OCaml. It provides a convention how
 to store libraries, and a file format ("META") to describe the
 properties of libraries. There is also a tool (ocamlfind) for
 interpreting the META files, so that it is very easy to use libraries
-in programs and scripts.
-"""
-license: "MIT"
+in programs and scripts."""
 maintainer: "Thomas Gazagnaire <thomas@gazagnaire.org>"
 authors: "Gerd Stolpmann <gerd@gerd-stolpmann.de>"
-homepage: "http://projects.camlcity.org/projects/findlib.html"
+license: "MIT"
+homepage: "https://projects.camlcity.org/projects/findlib.html"
 bug-reports: "https://github.com/ocaml/ocamlfind/issues"
 depends: [
-  "ocaml" {>= "3.08.0" & < "5.5.0~"}
+  "ocaml" {>= "3.08.0"}
 ]
 depopts: ["graphics"]
-conflicts: ["relocatable"]
+flags: avoid-version
 build: [
+  ["sed" "-ib" "-e" "s/1.9.8/1.9.9~preview/" "opam"]
   [
     "./configure"
     "-bindir" bin
-    "-sitelib" lib
+    "-sitelib" "."
     "-mandir" man
     "-config" "%{lib}%/findlib.conf"
     "-no-custom"
@@ -35,23 +35,12 @@ install: [
   [make "install"]
   ["install" "-m" "0755" "ocaml-stub" "%{bin}%/ocaml"] {ocaml:preinstalled}
 ]
-# See https://github.com/ocaml/ocamlfind/pull/61
-patches: ["0001-Harden-test-for-OCaml-5.patch"]
 dev-repo: "git+https://github.com/ocaml/ocamlfind.git"
 url {
-  src: "http://download.camlcity.org/download/findlib-1.9.6.tar.gz"
-  checksum: [
-    "md5=96c6ee50a32cca9ca277321262dbec57"
-    "sha512=cfaf1872d6ccda548f07d32cc6b90c3aafe136d2aa6539e03143702171ee0199add55269bba894c77115535dc46a5835901a5d7c75768999e72db503bfd83027"
-  ]
-  mirrors: "http://download2.camlcity.org/download/findlib-1.9.6.tar.gz"
-}
-available: os != "win32"
-extra-source "0001-Harden-test-for-OCaml-5.patch" {
   src:
-    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/ocamlfind/0001-Harden-test-for-OCaml-5.patch"
+    "https://github.com/ocaml/ocamlfind/archive/1faecd4016c615e1d8806643c8e4eb3d08dcdf97.tar.gz"
   checksum: [
-    "sha256=6fcca5f2f7abf8d6304da6c385348584013ffb8602722a87fb0bacbab5867fe8"
-    "md5=3cddbf72164c29d4e50e077a92a37c6c"
+    "sha256=7ffd8b8003bc0596cae2d9da65b859303f80336df1e1f5e9ae5eef86359e8d88"
+    "sha512=1995b65c58b1df217d0e439dc8f8d54537abc17ffc514d3d0d289c3a70c6f66ae73cb6470b6577b508f30973cd6c80de279e475a6f0c177299f27be0e641b377"
   ]
 }
