@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis: "Write tests, let a fuzzer find failing cases"
+description: """
+Alcobar is a library for testing code, combining QuickCheck-style
+property-based testing and the magical bug-finding powers of
+[afl-fuzz](http://lcamtuf.coredump.cx/afl/).
+"""
+maintainer: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+authors: ["Stephen Dolan <stephen.dolan@cl.cam.ac.uk>"]
+license: "MIT"
+homepage: "https://github.com/samoht/alcobar"
+bug-reports: "https://github.com/samoht/alcobar/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "ocaml" {>= "4.08"}
+  "alcotest"
+  "cmdliner" {>= "1.1.0"}
+  "afl-persistent" {>= "1.1"}
+  "calendar" {>= "2.00" & with-test}
+  "fpath" {with-test}
+  "pprint" {with-test}
+  "uucp" {with-test}
+  "uunf" {with-test}
+  "uutf" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/samoht/alcobar.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/samoht/alcobar/releases/download/v0.3.2/alcobar-0.3.2.tbz"
+  checksum: [
+    "sha256=25b483d32baea1ff9e887e7d89e01de541b1f9dba7cba41e88233d9f3c13b111"
+    "sha512=3f22860af1ab275db58e6e90ce35c3cd22c6d70497f253ddd4f2e3258e353a9b25369df19f10b84b587528f1b2edfb7ccda25b1032d85c58f66c1c4388a0e074"
+  ]
+}
+x-commit-hash: "bfada734e23860c06cb98ded1ac734764fc55abc"
