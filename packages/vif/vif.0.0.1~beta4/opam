@@ -1,0 +1,57 @@
+opam-version: "2.0"
+maintainer: "Robur <team@robur.coop>"
+authors: ["Robur <team@robur.coop>"]
+homepage: "https://github.com/robur-coop/vif"
+dev-repo: "git+https://github.com/robur-coop/vif.git"
+bug-reports: "https://github.com/robur-coop/vif/issues"
+license: "MIT"
+
+depends: [
+  "ocaml" {>= "5.3.0"}
+  "dune" {>= "3.0.0"}
+  "uri" {>= "4.4.0"}
+  "fmt" {>= "0.11.0"}
+  "bos" {>= "0.2.1"}
+  "logs" {>= "0.9.0"}
+  "fpath" {>= "0.7.3"}
+  "bytesrw"
+  "flux" {>= "0.0.1~beta5"}
+  "fluxt" {>= "0.0.1~beta2"}
+  "jsont" {>= "0.2.0"}
+  "cmdliner" {>= "1.3.0"}
+  "httpcats" {>= "0.3.0"}
+  "tyre" {>= "1.0"}
+  "mirage-crypto-rng" {>= "1.2.0"}
+  "decompress" {>= "1.6.0"}
+  "conan-unix" {>= "0.0.6"}
+  "conan-database"
+  "multipart_form-miou"
+  "hmap"
+  "tyxml" {>= "4.6.0"}
+  "hurl" {>= "0.0.1~beta2" & with-test}
+  "jws" {with-test}
+  "caqti" {with-test & >= "3.0.0"}
+  "caqti-miou" {with-test}
+  "caqti-driver-sqlite3" {with-test}
+  "brr" {with-test}
+]
+conflicts: [ "result" {< "1.5"} ]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+run-test: [
+  [ "dune" "runtest" "-p" name "-j1" ] {arch != "s390x"}
+]
+synopsis: "A simple web framework for OCaml 5"
+x-ci-accept-failures: ["debian-11"]
+url {
+  src:
+    "https://github.com/robur-coop/vif/releases/download/v0.0.1_beta4/vif-0.0.1.beta4.tbz"
+  checksum: [
+    "sha256=0327abf4e7434e5de402661cc8c29c0539501269401670fed773b0dfc14e26aa"
+    "sha512=1ff5dddecf25b41986ea629bda336a990800db8410498682bf96af2b1afab74ae57172ee8d41087f131c9ceeb3255c96351668664e36c6815a249157afd05a5d"
+  ]
+}
+x-commit-hash: "22d1197b42734107833ac7a183cf390487c1407c"
+x-ci-accept-failures: ["macos-homebrew"]
