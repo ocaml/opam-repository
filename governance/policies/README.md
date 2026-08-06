@@ -178,9 +178,9 @@ To prepare opam-repository for signing, adding only weak hash algorithms as chec
 
 See the [announcement](https://discuss.ocaml.org/t/ann-opam-repository-policy-change-checksums-no-md5-and-no-extra-files/14720) and [discussion](https://github.com/ocaml/opam-repository/issues/25876) for further details.
 
-## 14. Discussions between release managers and maintainers must not involve the use of LLMs
+## 14. Package contributors accounts should have a human behind them
 
-The review work (sometimes carried out on a voluntary basis) by the maintainers of `opam-repository` has always been carried out by humans.
+The review work by the maintainers of `opam-repository` is carried out by humans, and we need to have a contact to respond to our feedback.
 
 #### Reasoning:
 
