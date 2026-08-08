@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "A CP solver proved in Why3"
+description: "The core of Colibrics is formally proved using Why3."
+maintainer: ["François Bobot"]
+authors: ["François Bobot"]
+license: "LGPL-2.1-only"
+homepage: "https://colibri.frama-c.com"
+bug-reports: "https://git.frama-c.com/pub/colibrics/issues"
+depends: [
+  "ocaml" {>= "4.12"}
+  "cmdliner" {>= "2.0.0"}
+  "dolmen" {= "0.10"}
+  "dolmen_loop" {= "0.10"}
+  "dolmen_type" {= "0.10"}
+  "dune" {>= "3.7" & >= "3.7"}
+  "jingoo" {>= "1.4.4"}
+  "logs" {>= "0.7.0"}
+  "ppx_deriving_yojson" {>= "3.6.1"}
+  "why3" {>= "1.4.0"}
+  "yojson"
+  "zarith" {>= "1.12"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://git.frama-c.com/pub/colibrics.git"
+url {
+  src:
+    "https://git.frama-c.com/api/v4/projects/879/packages/generic/colibri2/0.6/colibri2-0.6.tbz"
+  checksum: [
+    "sha256=6974bb0397202647ede57771e3294b89d89971c3e0740e4adc8a8bd8264ab4a3"
+    "sha512=870532a98f2c0e8e732277d66baa6fd75c6d42344ed2ec54e1b489456641c13af4d70bae61b4b8b2da1f54781425eca514bac03f72526302e38c1c53fdd667bd"
+  ]
+}
+x-commit-hash: "0380c5965ac3a0596293301bf25e853c45762c46"
