@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "Floats (f16, f32, f64, f128) for OCaml"
+description:
+  "Deterministic, IEEE-754-compliant interface for floating point operators over f16, f32, f64 and f128, backed by Rust's rustc_apfloat. Requires a Rust toolchain (cargo, 1.77 or newer) to build."
+maintainer: "opale.sjostedt@gmail.com"
+authors: "Opale Sjöstedt"
+license: "MIT"
+homepage: "https://github.com/N1ark/floatml"
+bug-reports: "https://github.com/N1ark/floatml/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "dune" {>= "3.0"}
+  "zarith" {>= "1.13"}
+  "conf-rust-2024" {build}
+  "odoc" {with-doc}
+]
+available:
+  arch != "arm32" & arch != "ppc64" & arch != "s390x" & arch != "x86_32" &
+  os != "win32"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/N1ark/floatml.git"
+url {
+  src: "https://github.com/N1ark/floatml/archive/refs/tags/v0.1.0.tar.gz"
+  checksum: [
+    "md5=ba325262f905dbef198f9578dcd0e405"
+    "sha512=eb3425af485031c7fb17a747e5ee35364acb9dbe027016d1b862c5e7199dcb14dde8f9184d06a04db138d5ab2c5f1d49bf2bbc5ae3e25c7de866a94d128335c6"
+  ]
+}
