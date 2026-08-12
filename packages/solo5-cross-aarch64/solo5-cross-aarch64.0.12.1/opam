@@ -10,32 +10,25 @@ bug-reports: "https://github.com/solo5/solo5/issues"
 license: "ISC"
 dev-repo: "git+https://github.com/solo5/solo5.git"
 build: [
-  ["./configure.sh" "--prefix=%{prefix}%"]
+  ["env" "TARGET_CC=aarch64-linux-gnu-gcc" "TARGET_LD=aarch64-linux-gnu-ld" "TARGET_OBJCOPY=aarch64-linux-gnu-objcopy" "./configure.sh" "--prefix=%{prefix}%"]
   [make "V=1"]
 ]
-install: [make "V=1" "install"]
+install: [make "V=1" "install-toolchain"]
 depends: [
   "conf-pkg-config" {build & os = "linux"}
   "conf-libseccomp" {build & os = "linux"}
+  "solo5" {= version}
 ]
 depexts: [
   ["linux-headers"] {os-distribution = "alpine"}
   ["kernel-headers"] {os-distribution = "fedora"}
   ["kernel-headers"] {os-distribution = "rhel"}
   ["linux-libc-dev"] {os-family = "debian"}
-]
-conflicts: [
-  "ocaml-freestanding" {< "0.7.0"}
-  "solo5-bindings-hvt"
-  "solo5-bindings-spt"
-  "solo5-bindings-virtio"
-  "solo5-bindings-muen"
-  "solo5-bindings-genode"
-  "solo5-bindings-xen"
+  ["gcc-aarch64-linux-gnu"] {os-family = "debian"}
 ]
 available: [
-  (arch = "x86_64" | arch = "arm64" | arch = "ppc64") &
-  (os = "linux" | os = "freebsd" | os = "openbsd" | os = "dragonfly")
+  (arch != "arm64") &
+  (os = "linux" & os-family = "debian")
 ]
 synopsis: "Solo5 sandboxed execution environment"
 description: """
@@ -43,12 +36,11 @@ Solo5 is a sandboxed execution environment primarily intended
 for, but not limited to, running applications built using various
 unikernels (a.k.a.  library operating systems).
 
-This package provides the Solo5 components needed to build and
-run MirageOS unikernels on the host system.
+This package provides the Solo5 components needed to cross-build
+MirageOS unikernels for the aarch64 architecture.
 """
 x-maintenance-intent: [ "(latest)" ]
-x-ci-accept-failures: [ "centos-7" "opensuse-15.6" ] # too old GCC compiler (OpenSUSE uses GCC 7 and we require GCC 10)
 url {
-  src: "https://github.com/Solo5/solo5/releases/download/v0.12.0/solo5-v0.12.0.tar.gz"
-  checksum: "sha512=923e41369f51da1997f321b3fab8fcafbf1e0c8637a185a904399c7f55121ffbe40091c117a1ca80a49f9e36e2b88c36ba84296f29c733fbbf80a07108584dd6"
+  src: "https://github.com/Solo5/solo5/releases/download/v0.12.1/solo5-v0.12.1.tar.gz"
+  checksum: "sha512=168026cce7ffceabe5f90a6c85f915f33ab30332ee81338bc4e08560917036910fdb386484579d4ae29f5bf90744a39d025c729e88098d495f0409626be94914"
 }
