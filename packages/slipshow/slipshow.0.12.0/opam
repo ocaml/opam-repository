@@ -1,0 +1,70 @@
+opam-version: "2.0"
+synopsis: "A compiler from Markdown to slipshow"
+description:
+  "Slipshow is an engine to write slips, a concept evolved from slides."
+maintainer: ["Paul-Elliot"]
+authors: ["Paul-Elliot"]
+license: ["GPL-3.0-or-later" "ISC" "BSD-3-Clause" "Apache-2.0" "OFL-1.1"]
+tags: ["slipshow" "presentation" "slideshow" "beamer"]
+homepage: "https://github.com/panglesd/slipshow"
+doc: "https://slipshow.readthedocs.io"
+bug-reports: "https://github.com/panglesd/slipshow/issues"
+depends: [
+  "ocaml" {>= "4.14"}
+  "dune" {>= "3.6"}
+  "grace" {>= "0.3.0"}
+  "crunch" {with-dev-setup}
+  "lambdasoup" {with-test}
+  "cmdliner" {>= "1.3.0"}
+  "base64"
+  "bos"
+  "lwt"
+  "inotify" {os = "linux"}
+  "cf-lwt" {>= "0.4"}
+  "astring"
+  "fmt"
+  "logs"
+  "fsevents-lwt"
+  "js_of_ocaml-compiler" {>= "6.0.1"}
+  "js_of_ocaml-lwt"
+  "magic-mime"
+  "dream" {>= "1.0.0~alpha5"}
+  "fpath"
+  "ppx_blob" {>= "0.8.0"}
+  "sexplib"
+  "ppx_sexp_conv"
+  "ppx_deriving_yojson"
+  "ansi" {>= "0.7.0"}
+  "linol"
+  "linol-lwt"
+  "odoc" {with-doc}
+  "ocamlformat" {with-dev-setup & = "0.28.1"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/panglesd/slipshow.git"
+# We avoid 32 bits arcitecture because our usage of ppx_blob generates strings
+# whose size exceed the maximum size in 32 bits OCaml...
+available: arch != "arm32" & arch != "x86_32"
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/panglesd/slipshow/releases/download/v0.12.0/slipshow-0.12.0.tbz"
+  checksum: [
+    "sha256=6618fea7f66f2fd579a0e0e12f3cab380a44a6815a577b15210d7cc365cbd7f4"
+    "sha512=6e396d21a24ce647f51c8310033e35b88d3da84779942e73114aa6241d29c3a4119364c7b5c4e46496f7c74a8dfb83435193c312f3a432cfdaad3bf7c7227e87"
+  ]
+}
+x-commit-hash: "131507bddca141e58caf660cb197d6d35d72a483"
