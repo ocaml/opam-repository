@@ -1,0 +1,63 @@
+opam-version: "2.0"
+synopsis: "Declarative JSON data manipulation for OCaml"
+description: """\
+Jsont is an OCaml library for declarative JSON data manipulation. It
+provides:
+
+- Combinators for describing JSON data using the OCaml values of your
+  choice. The descriptions can be used by generic functions to
+  decode, encode, query and update JSON data without having to
+  construct a generic JSON representation.
+- A JSON codec with optional text location tracking and layout
+  preservation. The codec is compatible with effect-based concurrency.
+
+The descriptions are independent from the codec and can be used by
+third-party processors or codecs.
+
+Jsont is distributed under the ISC license. It has no dependencies.
+The codec is optional and depends on the [`bytesrw`] library. The JavaScript
+support is optional and depends on the [`brr`] library.
+
+Homepage: <https://erratique.ch/software/jsont/>
+
+[`bytesrw`]: https://erratique.ch/software/bytesrw
+[`brr`]: https://erratique.ch/software/brr"""
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: "The jsont programmers"
+license: "ISC"
+tags: ["json" "codec" "org:erratique"]
+homepage: "https://erratique.ch/software/jsont"
+doc: "https://erratique.ch/software/jsont/doc"
+bug-reports: "https://github.com/dbuenzli/jsont/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "1.1.0"}
+  "b0" {dev & with-test}
+]
+depopts: ["cmdliner" "brr" "bytesrw"]
+conflicts: [
+  "cmdliner" {< "1.3.0"}
+  "brr" {< "0.0.6"}
+]
+build: [
+  "ocaml"
+  "pkg/pkg.ml"
+  "build"
+  "--dev-pkg"
+  "%{dev}%"
+  "--with-cmdliner"
+  "%{cmdliner:installed}%"
+  "--with-bytesrw"
+  "%{bytesrw:installed}%"
+  "--with-brr"
+  "%{brr:installed}%"
+]
+dev-repo: "git+https://erratique.ch/repos/jsont.git"
+url {
+  src: "https://erratique.ch/software/jsont/releases/jsont-0.3.0.tbz"
+  checksum:
+    "sha512=507ab6b3d8718f322fb74999b3b82dbc1d36037042cb9067e5b8b63df80524a0602cc26e487b6e4ce061d65767162d6ffa00e173d9f51ce66cdd2a63482a350e"
+}
+x-maintenance-intent: ["(latest)"]
