@@ -3,17 +3,17 @@ maintainer: "vb@luminar.eu.org"
 authors: ["Vincent Bernardoff"]
 homepage: "https://github.com/vbmithr/qrencode-ocaml"
 build: ["dune" "build" "-p" name "-j" jobs]
+license: "LGPL-2.1-or-later"
 
 depends: [
   "conf-pkg-config"
+  "conf-qrencode"
+  "conf-libpng"
   "dune" {>= "1.10"}
   "dune-configurator"
   "ocaml"
 ]
-depexts: [
-  ["libqrencode-dev" "libpng-dev"] {os-family = "debian"}
-  ["qrencode" "libpng"] {os-distribution = "arch"}
-]
+
 dev-repo: "git+https://github.com/vbmithr/qrencode-ocaml"
 bug-reports: "https://github.com/vbmithr/qrencode-ocaml/issues"
 synopsis: "Binding to libqrencode (QR-code encoding library)"
@@ -24,11 +24,30 @@ Code symbol, a 2D symbology that can be scanned by handy terminals
 such as a mobile phone with CCD. The capacity of QR Code is up to 7000
 digits or 4000 characters and has high robustness."
 """
+
 url {
   src:
     "https://github.com/vbmithr/qrencode-ocaml/releases/download/0.2/qrencode-0.2.tbz"
   checksum: [
     "sha256=2058669f169bace743f09ce03ce0227e49548e6e77a1d3852aebab287bab721b"
     "sha512=7fabfe4c9e03af13a0d296014416c740c66f6a57498f984294b83348e4d0e98e00261711d862a568c7b5e6803d5ed40ff02e4c57ea08ee66075c02686c004b29"
+  ]
+}
+patches: [
+  "ubuntu.patch" { os-distribution = "ubuntu" }
+  "alloc_custom.patch"
+]
+extra-source "ubuntu.patch" {
+  src:
+    "https://gist.githubusercontent.com/Kakadu/e8309bcbffc50c66a96ad742aaa92b80/raw/41e0b1dc8e66927b526a33c13a112c932a357e5f/ubuntu.patch"
+  checksum: [
+    "sha256=f829d7818e381f8e35a2f25990f0406f3ceeb31269eaedb4caa6d12b6b31aab4"
+  ]
+}
+extra-source "alloc_custom.patch" {
+  src:
+    "https://gist.githubusercontent.com/Kakadu/e8309bcbffc50c66a96ad742aaa92b80/raw/41e0b1dc8e66927b526a33c13a112c932a357e5f/alloc_custom.patch"
+  checksum: [
+    "sha256=4663ef867858d10e2f022a5ab0e16fff15ca2c7ebe6405b51b573b4221dcb5bf"
   ]
 }
