@@ -2,6 +2,7 @@ opam-version: "2.0"
 maintainer: "Romain Beauxis <toots@rastageeks.org>"
 authors: "The Savonet Team <savonet-users@lists.sourceforge.net>"
 homepage: "https://github.com/savonet/ocaml-aacplus"
+license: "LGPL-2.1-only"
 build: [
   ["./configure" "--prefix" prefix]
   [make]
@@ -11,12 +12,40 @@ install: [
 ]
 remove: ["ocamlfind" "remove" "aacplus"]
 depends: ["ocaml" "ocamlfind" "conf-pkg-config" {build}]
+# Ideally, we want to make conf-* package from this but for unmaintained package it is a waste of time
 depexts: [
   ["libaacplus"] {os-distribution = "arch"}
   ["libaacplus"] {os-distribution = "gentoo"}
-  ["libaacplus"] {os = "freebsd"}
+  #["libaacplus"] {os = "freebsd"} # removed from ports https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=262185
 ]
-x-ci-accept-failures: ["debian-11" "debian-unstable"]
+x-ci-accept-failures: [
+  "freebsd-15.1"
+  "debian-unstable"
+  "debian-testing"
+  "debian-11"
+  "debian-12"
+  "debian-13"
+  "ubuntu-26.04"
+  "ubuntu-24.04"  # Ubuntu and most Linuxes doesn't have this package
+  "ubuntu-25.04"
+  "ubuntu-25.10"
+  "ubuntu-22.04"
+  "fedora-42"
+  "fedora-43"
+  "fedora-44"
+  "opensuse-16.0"
+  "opensuse-tumbleweed"
+  "centos-9"
+  "centos-10"
+  "alpine-3.23"
+  "macos-homebrew"
+  "archlinux"
+]
+messages: [
+  # https://aur.archlinux.org/packages/libaacplus
+  "On Arch Linux, this package requires 'libaacplus' from the AUR:  yay -S libaacplus" {os-family = "arch" & failure}
+]
+
 bug-reports: "https://github.com/savonet/ocaml-aacplus/issues"
 dev-repo: "git+https://github.com/savonet/ocaml-aacplus.git"
 synopsis:
