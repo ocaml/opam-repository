@@ -11,9 +11,37 @@ depends: ["conf-pkg-config" {build}]
 depexts: [
   ["blake3-devel"] {os-family = "fedora"}
   ["blake3"] {os-distribution = "homebrew" & os = "macos"}
+  ["libblake3-dev"] {
+    (os-distribution = "debian" & os-version >= "14") |
+    (os-distribution = "ubuntu" & os-version >= "26.04")
+  }
+  ["blake3-devel"] {
+    os-family = "fedora"
+  }
+  ["libblake3"] {
+    os-family = "arch" |
+    os-distribution = "freebsd"
+  }
+  ["blake3-dev"] {os-family = "alpine"}
+  ["libblake3-devel"] {os-distribution = "void"}
 ]
 synopsis: "Virtual package relying on libblake3"
 description:"
 This package can only install if the libblake3 library is installed on the system,
 and its version is at least 1.5.1
 "
+
+x-ci-accept-failures: [
+  "debian-11"
+  "debian-12"
+  "debian-13"
+  "ubuntu-24.04"
+  "ubuntu-25.04"
+  "ubuntu-25.10"
+  "ubuntu-22.04"
+
+  "opensuse-16.0"
+  "opensuse-tumbleweed"
+  "centos-9"
+  "centos-10"   # EPEL is needed
+]
