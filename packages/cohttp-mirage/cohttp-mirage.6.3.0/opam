@@ -1,0 +1,70 @@
+opam-version: "2.0"
+synopsis: "CoHTTP implementation for the MirageOS unikernel"
+description: """
+This HTTP implementation uses the Cohttp portable implementation
+along with the Lwt threading library in order to provide a
+`Cohttp_mirage` functor that can be used in MirageOS unikernels
+to build very small and efficient HTTP clients and servers
+without having a hard dependency on an underlying operating
+system.
+
+Please see <https://mirage.io> for a self-hosted explanation
+and instructions on how to use this library."""
+maintainer: ["Anil Madhavapeddy <anil@recoil.org>"]
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+  "Anurag Soni"
+]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "dune" {>= "3.8"}
+  "ocaml" {>= "4.08"}
+  "mirage-flow" {>= "2.0.0"}
+  "mirage-channel" {>= "4.0.0"}
+  "conduit" {>= "8.0.0"}
+  "conduit-mirage" {>= "8.0.0"}
+  "mirage-kv" {>= "6.0.1"}
+  "lwt" {>= "2.4.3"}
+  "cohttp-lwt" {= version}
+  "cstruct" {>= "6.0.0"}
+  "fmt" {>= "0.8.7"}
+  "magic-mime"
+  "ppx_sexp_conv" {>= "v0.13.0"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "cohttp" {= version}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@cohttp-mirage/runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v6.3.0/cohttp-6.3.0.tbz"
+  checksum: [
+    "sha256=31130f68a9f0a5cd8d71b55f042456e6d35bf8b7ab6a71ab6d7bd7dbdb607b24"
+    "sha512=1b14571b8aef12ae51f94eb7e94a8fc6e26b64dffedd86f8f9c237479b980395a2424ca7a9ce3dc285608bce770170688e86b4ba6da82370ca5fe7a9649cd19f"
+  ]
+}
+x-commit-hash: "7b77cc7f18778967cbe3f64742290f268782fb7d"
