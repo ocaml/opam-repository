@@ -1,0 +1,58 @@
+opam-version: "2.0"
+synopsis: "Client library for Prometheus monitoring"
+description: """\
+Applications can enable metric reporting using the `prometheus-app` opam package.
+This depends on cohttp and can serve the metrics collected above over HTTP.
+
+The `prometheus-app.unix` ocamlfind library provides the `Prometheus_unix` module,
+which includes a cmdliner option and pre-configured web-server.
+See the `examples/example.ml` program for an example, which can be run as:
+
+```shell
+$ dune exec -- examples/example.exe --listen-prometheus=9090
+If run with the option --listen-prometheus=9090, this program serves metrics at
+http://localhost:9090/metrics
+Tick!
+Tick!
+...
+```
+
+`--listen-prometheus` takes a bare port number or an address such as
+`tcp:127.0.0.1:9090`, `tcp:[::1]:9090`, `tcp:localhost` or 
+`unix:/run/metrics.sock`. The port defaults to 9090.
+
+Unikernels can use `prometheus-reporter` instead to avoid the `Unix` and cohttp dependencies."""
+maintainer: "talex5@gmail.com"
+authors: ["Thomas Leonard" "David Scott"]
+license: "Apache-2.0"
+homepage: "https://github.com/mirage/prometheus"
+doc: "https://mirage.github.io/prometheus/"
+bug-reports: "https://github.com/mirage/prometheus/issues"
+depends: [
+  "ocaml" {>= "4.11.0"}
+  "dune" {>= "2.3"}
+  "prometheus" {= version}
+  "prometheus-lwt" {= version}
+  "prometheus-reporter" {= version}
+  "fmt" {>= "0.8.7"}
+  "cohttp-lwt" {>= "6.0.0"}
+  "cohttp-lwt-unix" {>= "6.0.0"}
+  "lwt" {>= "2.5.0"}
+  "cmdliner"
+  "uri" {>= "4.4.0"}
+  "alcotest" {with-test}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/prometheus.git"
+url {
+  src:
+    "https://github.com/mirage/prometheus/releases/download/v2.0/prometheus-2.0.tbz"
+  checksum: [
+    "sha256=94cb5e95606d5ff17b4d11801ead1ea1981c06b17b084950d7a032933d991a83"
+    "sha512=236cc53cc50e24e18e31bf58dd29e9b98b50da0a92f7077d37ff13088c2b31eee49ed4eced8322f67406b0e4216c4751685002d357d9056335f7fc3e618c7f13"
+  ]
+}
+x-commit-hash: "e860978159cf6741c6d2d5b9c2704d3ddb02b676"
