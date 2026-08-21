@@ -177,3 +177,14 @@ To prepare opam-repository for signing, adding only weak hash algorithms as chec
 * Weak hash algorithms would induce that cryptographic signatures would be weak, or would need another set of checksums. This is costly and convolutes the repository.
 
 See the [announcement](https://discuss.ocaml.org/t/ann-opam-repository-policy-change-checksums-no-md5-and-no-extra-files/14720) and [discussion](https://github.com/ocaml/opam-repository/issues/25876) for further details.
+
+## 14. Package contributors accounts should have a human behind them
+
+The review work by the maintainers of `opam-repository` is carried out by humans, and we need to have a contact to respond to our feedback.
+
+#### Reasoning:
+
+* A proposal for a new package can be submitted from bot accounts, but the PR should be tagged with a human contact so the opam-repo maintainers know who to talk to.
+* Subsequent discussions regarding the PR should avoid excessive noise, such as large LLM-generated responses or automated triage logs, to avoid overloading the maintainers.
+* Any machine generated comments on a package publication PR must be explicitly identified as such.
+* When human reviewers ask questions or provide guidance, they must be met with human replies.
