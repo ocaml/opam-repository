@@ -6,6 +6,14 @@ license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
 dev-repo: "git+https://github.com/axiles/ocaml-efl.git"
 bug-reports: "https://github.com/axiles/ocaml-efl/issues"
 build: [
+  ["./autogen.sh"] { os-distribution = "debian" & os-version >= "12"
+                   | os-distribution = "ubuntu"
+                   | os-distribution = "arch"
+                   | os-family = "suse" | os-family = "opensuse"
+				   | os = "opensuse-tumbleweed"
+                   | os-family = "fedora"
+                   | os = "macos" & os-distribution = "homebrew"
+                   }
   ["./configure" "--prefix=%{prefix}%" "OCAMLFIND_DESTDIR=%{lib}%"]
   [make]
 ]
@@ -16,9 +24,10 @@ depends: [
   "ocamlbuild" {build}
   "conf-efl" {build}
   "conf-pkg-config" {build}
+  "conf-autoconf" { build }
 ]
 synopsis:
-  "An OCaml interface to the Enlightenment Foundation Libraries (EFL) and Elementary."
+  "An OCaml interface to the Enlightenment Foundation Libraries (EFL) and Elementary"
 description: """
 The Enlightenment Fondation Libraires provide both a semi-traditional toolkit
 set in Elementary as well as the object canvas (Evas) and powerful abstracted
@@ -31,7 +40,9 @@ This project is still in alpha stage.
 Ocamlforge page and github page:
 https://forge.ocamlcore.org/projects/ocaml-efl/
 https://github.com/axiles/ocaml-efl"""
+
 flags: light-uninstall
+
 url {
   src:
     "https://github.com/axiles/ocaml-efl/releases/download/v1.24.0/ocaml-efl-1.24.0.tar.gz"
@@ -40,3 +51,17 @@ url {
     "md5=298a1eb5d241e58e0d42231d8035038e"
   ]
 }
+
+x-ci-accept-failures: [
+    # errors because of new GCC
+	# error: implicit declaration of function 'copy_string'; did you mean 'copy_string_opt'? [-Wimplicit-function-declaration]
+	"debian-13"
+	"debian-unstable"
+	"debian-testing"
+    #+ /usr/bin/sudo "apk" "add" "efl-dev"
+    # ERROR: unable to select packages:
+    #   efl-dev-1.28.1-r2:
+    #     masked in: @testing
+    #     satisfies: world[efl-dev]
+	"alpine-3.23"
+]
