@@ -1,0 +1,34 @@
+opam-version: "2.0"
+synopsis: "Check opam package reproducibility"
+maintainer: "Robur Team <team@robur.coop>"
+authors: [ "Raja Boujbel <rjbou@ocamlpro.com>" "Reynir Björnsson <reynir@reynir.dk" "Hannes Mehnert <hannes@mehnert.org>" ]
+homepage: "https://github.com/robur-coop/orb"
+bug-reports: "https://github.com/robur-coop/orb/issues"
+license: "ISC"
+depends: [
+  "ocaml" {>= "4.10.0"}
+  "dune" {>= "2.0"}
+  "cmdliner" {>= "1.1.0"}
+  "opam-client" {>= "2.5.0"}
+  "opam-repository" {>= "2.5.0"}
+  "opam-core" {>= "2.5.0"}
+  "opam-format" {>= "2.5.0"}
+  "opam-solver" {>= "2.5.0"}
+  "opam-state" {>= "2.5.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["sh" "-ex" "packaging/FreeBSD/create_package.sh"] {os = "freebsd"}
+  ["sh" "-ex" "packaging/debian/create_package.sh"] {os-family = "debian"}
+]
+dev-repo: "git+https://github.com/robur-coop/orb.git"
+url {
+  src:
+    "https://github.com/robur-coop/orb/releases/download/v1.1.0/orb-1.1.0.tbz"
+  checksum: [
+    "sha256=27bea9fd777ef70fd5d873a60b29e2a8712da896a0447ee03801ec0a9c6ac329"
+    "sha512=bae9d559e1e610fa9a52da78a23c7f56ee40c60141bb230bf35145d8f9c6e404379995d2ea02ab1f2f4032b71663bb0b074b231437c650a4ed70c0931362e459"
+  ]
+}
+x-commit-hash: "93fbd79566bffdad8caa3d149abee7ef88f6d8ca"
