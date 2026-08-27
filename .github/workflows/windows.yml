@@ -173,6 +173,8 @@ jobs:
           opam repo
 
       - name: Install packages
+        env:
+          CI_CASE: ${{ matrix.windows_environment }}-mingw
         run: |
           # package installations
           $failed = $false
@@ -293,7 +295,21 @@ jobs:
               0 { Write-Host "`e[1;32m$pkg installed successfully`e[0m."; Break }
               5 { Write-Host "$pkg is not installable. `e[1;33mSkip`e[0m."; Break } # TODO: Remove when https://github.com/ocaml/opam/issues/6017 is fixed
               20 { Write-Host "$pkg is not installable. `e[1;33mSkip`e[0m."; Break }
-              31 { Write-Host "`e[1;31m$pkg failed to build`e[0m."; $failed = $true; Break }
+              31 {
+                $this_failed = $true
+                Foreach ($failpkg in Get-ChildItem -Path "${{ github.workspace }}\_opam\.opam-switch\build" -Name) {
+                  if (opam show -f x-ci-accept-failures: "$failpkg" | Select-String -Pattern """$env:CI_CASE""" -SimpleMatch) {
+                    $this_failed = $false
+                    Write-Host "$failpkg failed to build but that was expected:"
+                    Write-Host "its 'x-ci-accept-failures' field contains ""$env:CI_CASE"". `e[1;33mSkip`e[0m."
+                  } else {
+                    Write-Host "`e[1;31m$failpkg failed to build`e[0m."
+                  }
+                }
+                $failed = $failed -or $this_failed
+                Remove-Item -Path "${{ github.workspace }}\_opam\.opam-switch\build" -Recurse -Force
+                Break
+              }
               default { throw "Unexpected error $_" }
             }
             Write-Host
