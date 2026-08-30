@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "An OCaml linter that works from the typed AST"
+description:
+  "lintml reads the typed AST produced by an OCaml build and reports correctness issues, partial API use, and avoidable traversals. Style and idiom rules are available through opt-in profiles."
+maintainer: ["at649"]
+authors: ["at649"]
+license: "MIT"
+homepage: "https://github.com/at649/lintml"
+bug-reports: "https://github.com/at649/lintml/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "5.2" & < "5.6"}
+  "cppo" {>= "1.8.0"}
+  "dune-build-info" {>= "3.0"}
+  "cmdliner" {>= "1.2.0"}
+  "fmt" {>= "0.9.0"}
+  "yojson" {>= "2.0.0"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "ocamlformat" {with-dev-setup & = "0.29.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/at649/lintml.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src: "https://github.com/at649/lintml/archive/refs/tags/v0.1.5.tar.gz"
+  checksum: [
+    "sha256=634f06db6f738aafe83ee5b0446e291fd11b83755b23e06a743d4a3e57496281"
+    "sha512=587bd32271fd816910f82ac057ce1ea974c77cfc56cc5243bd4388418c7eda887db98cf4d24b173f9c2fa8624425c48f1d9b8a58c2cb61bfcd53a3144cc6d662"
+  ]
+}
