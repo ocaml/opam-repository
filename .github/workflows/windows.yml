@@ -264,7 +264,7 @@ jobs:
             }
             opam config list $pkg_dir | Skip-Until ':opamfile'
             Write-Host "::endgroup::"
-            $regress = ($pr -eq 'fail') -or ($base -eq 'ok' -and $pr -eq 'skip')
+            $regress = ($base -ne 'fail' -and $pr -eq 'fail') -or ($base -eq 'ok' -and $pr -eq 'skip')
             $color = if ($regress) { '31' } elseif ($pr -eq 'ok') { '32' } else { '33' }
             Write-Host "`e[1;${color}m${pkg}: base = $base -> PR = $pr`e[0m"
             if ($regress) { $failed = $true }
