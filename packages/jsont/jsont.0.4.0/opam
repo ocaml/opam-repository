@@ -1,0 +1,67 @@
+opam-version: "2.0"
+synopsis: "Declarative JSON data manipulation for OCaml"
+description: """\
+Jsont is an OCaml library for declarative JSON data manipulation. It
+provides:
+
+- Combinators for describing JSON data using the OCaml values of your
+  choice. The descriptions can be used by generic functions to
+  decode, encode, query and update JSON data without having to
+  construct a generic JSON representation.
+- A JSON codec with optional text location tracking and layout
+  preservation. The codec is compatible with effect-based concurrency.
+
+The descriptions are independent from the codec and can be used by
+third-party processors or codecs.
+
+Jsont is distributed under the ISC license. It has no dependencies.
+The codec is optional and depends on the [`bytesrw`] library. The JavaScript
+support is optional and depends on the [`brr`] library. The type gist
+support is optional and depends on the [`typegist`] library.
+
+Homepage: <https://erratique.ch/software/jsont/>
+
+[`bytesrw`]: https://erratique.ch/software/bytesrw
+[`brr`]: https://erratique.ch/software/brr
+[`typegist`]: https://erratique.ch/software/typegist"""
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: "The jsont programmers"
+license: "ISC"
+tags: ["json" "codec" "org:erratique"]
+homepage: "https://erratique.ch/software/jsont"
+doc: "https://erratique.ch/software/jsont/doc"
+bug-reports: "https://github.com/dbuenzli/jsont/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "1.1.0"}
+  "b0" {dev & with-test}
+]
+depopts: ["cmdliner" "brr" "bytesrw" "typegist"]
+conflicts: [
+  "cmdliner" {< "1.3.0"}
+  "brr" {< "0.0.6"}
+]
+build: [
+  "ocaml"
+  "pkg/pkg.ml"
+  "build"
+  "--dev-pkg"
+  "%{dev}%"
+  "--with-cmdliner"
+  "%{cmdliner:installed}%"
+  "--with-bytesrw"
+  "%{bytesrw:installed}%"
+  "--with-brr"
+  "%{brr:installed}%"
+  "--with-typegist"
+  "%{typegist:installed}%"
+]
+dev-repo: "git+https://erratique.ch/repos/jsont.git"
+url {
+  src: "https://erratique.ch/software/jsont/releases/jsont-0.4.0.tbz"
+  checksum:
+    "sha512=5fa106aa3f610888b9c4034fe72aedd2dff37f53850bdcf155e7cd135fb3e46b08d6df3e57cd254a5142989d8bf9c6b15f34166a34841d0f5c7a2587bbbca302"
+}
+x-maintenance-intent: ["(latest)"]
