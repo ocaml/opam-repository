@@ -2,13 +2,13 @@ opam-version: "2.0"
 # These packages are part of the infrastructure for maintaining the OCaml
 # compiler dependencies in opam. It's not possible to version the metadata
 # itself, because opam's versioning provides no mechanism to ignore the
-# revision (i.e. we don't have a way to have two revisions of ocaml.5.4.1 but
-# where "ocaml" {= "5.4.1"} would always mean to use the latest revision).
+# revision (i.e. we don't have a way to have two revisions of ocaml.5.5.2 but
+# where "ocaml" {= "5.5.2"} would always mean to use the latest revision).
 # It is however useful to know which version of the metadata is installed.
 # This number should be bumped whenever a pertinent change is made.
-x-revision: "6"
+x-revision: "3"
 license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
-synopsis: "Latest 5.5 development"
+synopsis: "Official release of OCaml 5.5.1"
 maintainer: [
   "David Allsopp <dra27@dra27.uk>"
   "Florian Angeletti <florian.angeletti@inria.fr>"
@@ -26,9 +26,9 @@ homepage: "https://ocaml.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "git+https://github.com/ocaml/ocaml.git#5.5"
 depends: [
-  # This is OCaml 5.5.2
-  "ocaml" {= "5.5.2" & post}
-  "compiler-cloning" {= "disabled"}
+  # This is OCaml 5.5.1
+  "ocaml" {= "5.5.1" & post}
+  "compiler-cloning" {build}
 
   # General base- packages
   "base-unix" {post}
@@ -38,35 +38,18 @@ depends: [
   "base-nnp" {post}
   "base-effects" {post}
 
-  "ocaml-beta" {opam-version < "2.1.0"}
-
-  # Architecture (non-Windows)
-  # opam-repository at present requires that ocaml-base-compiler is installed
-  # using an architecture which matches the machine's, since arch is used in
-  # available fields. Cross-compilation at this stage is an unstable accident.
-  "host-arch-arm32" {arch = "arm32" & post}
-  "host-arch-arm64" {arch = "arm64" & post}
-  "host-arch-ppc64" {arch = "ppc64" & post}
-  "host-arch-riscv64" {arch = "riscv64" & post}
-  "host-arch-s390x" {arch = "s390x" & post}
-  # The Windows ports explicitly select the architecture (see below) this
-  # facility is not yet available for other platforms.
-  "host-arch-x86_32" {os != "win32" & arch = "x86_32" & post}
-  ("host-arch-x86_64" {os != "win32" & arch = "x86_64" & post} |
-   ("host-arch-x86_32" {os != "win32" & arch = "x86_64" & post} & "ocaml-option-32bit" {os != "win32" & arch = "x86_64"}))
-  "host-arch-unknown" {os != "win32" & arch != "arm32" & arch != "arm64" & arch != "ppc64" & arch != "riscv64" & arch != "s390x" & arch != "x86_32" & arch != "x86_64" & post}
-
   # Port selection (Windows)
   # amd64 mingw-w64 / MSVC
   (("arch-x86_64" {os = "win32" & arch = "x86_64"} &
      ("system-mingw" |
-      ("system-msvc" & "winpthreads" & "ocaml-option-no-compression" {os = "win32"}))) |
+      ("system-msvc" & "ocaml-option-no-compression" {os = "win32"}))) |
   # i686 mingw-w64 / MSVC
    ("arch-x86_32" {os = "win32"} & "ocaml-option-bytecode-only" {os = "win32"} &
      ("system-mingw" |
-      ("system-msvc" & "winpthreads" & "ocaml-option-no-compression" {os = "win32"}))) |
-  # Non-Windows systems
-   "host-system-other" {os != "win32" & post})
+      ("system-msvc" & "ocaml-option-no-compression" {os = "win32"}))) |
+  # Non-Windows systems need to install something to satisfy this formula, so
+  # repeat the base-unix dependency
+   "base-unix" {os != "win32" & post})
 
   # All the 32-bit architectures are bytecode-only
   "ocaml-option-bytecode-only" {arch != "arm64" & arch != "x86_64" & arch != "s390x" & arch != "riscv64" & arch != "ppc64"}
@@ -74,7 +57,6 @@ depends: [
   # Support Packages
   "flexdll" {>= "0.44" & os = "win32"}
 ]
-flags: [ avoid-version ]
 build-env: [
   [MSYS2_ARG_CONV_EXCL = "*"]
   [LSAN_OPTIONS = "detect_leaks=0,exitcode=0"]
@@ -82,7 +64,7 @@ build-env: [
 ]
 build: [
   [
-    "./configure"
+    "sh" "tools/opam/process.sh" make "-j%{jobs}%" _:build-id _:name compiler-cloning:version
     "--host=x86_64-pc-windows"  {system-msvc:installed & arch-x86_64:installed}
     "--host=x86_64-w64-mingw32" {os-distribution = "cygwin" & system-mingw:installed & arch-x86_64:installed}
     "--host=i686-pc-windows"    {system-msvc:installed & arch-x86_32:installed}
@@ -94,8 +76,6 @@ build: [
     "--enable-runtime-search"
     "--enable-runtime-search-target=fallback"
     "--with-flexdll=%{flexdll:share}%" {os = "win32" & flexdll:installed}
-    "--with-winpthreads-msvc=%{winpthreads:share}%" {system-msvc:installed}
-    "-C"
     "--with-afl" {ocaml-option-afl:installed}
     "--disable-native-compiler" {ocaml-option-bytecode-only:installed}
     "--disable-flat-float-array" {ocaml-option-no-flat-float-array:installed}
@@ -120,11 +100,11 @@ build: [
     "LIBS=-static" {ocaml-option-static:installed}
     "--disable-warn-error"
   ]
-  [make "-j%{jobs}%"]
 ]
-install: [make "install"]
+install: ["sh" "tools/opam/process.sh" make "install" _:build-id _:name prefix]
 url {
-  src: "https://github.com/ocaml/ocaml/archive/5.5.tar.gz"
+  src: "https://github.com/ocaml/ocaml/releases/download/5.5.1/ocaml-5.5.1.tar.gz"
+  checksum: "sha256=ae47728d0a876665ccc7b745e3a8d8c9ca5ba63c4f7a11d4db6cdbd1dbeef4bb"
 }
 depopts: [
   "ocaml-option-32bit"
@@ -139,4 +119,10 @@ depopts: [
   "ocaml-option-address-sanitizer"
   "ocaml-option-static"
   "ocaml-option-tsan"
+]
+post-messages: [
+"This switch had to be compiled from sources, but future switches with the 🐌
+same compiler version and configuration should assemble instantly." {!failure & !_:cloned & compiler-cloning:version != "disabled"}
+"As requested, this switch was compiled from sources 😴" {!failure & compiler-cloning:version = "disabled"}
+"Switch cloned by %{_:clone-mechanism}% from %{_:clone-source}% 💨" {!failure & _:cloned}
 ]
