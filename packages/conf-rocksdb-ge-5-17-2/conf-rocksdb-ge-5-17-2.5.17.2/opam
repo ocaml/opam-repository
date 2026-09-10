@@ -1,0 +1,37 @@
+opam-version: "2.0"
+homepage: "http://rocksdb.org/"
+maintainer: "Chet Murthy <chetsky@gmail.com>"
+x-maintenance-intent: [ "(latest)" ]
+authors: "Chet Murthy (copied from Anton Bachin)"
+bug-reports: "https://github.com/chetmurthy/ocaml-rocksdb/issues"
+license: "Apache-2.0"
+
+depends: [
+  "conf-rocksdb"
+  "conf-pkg-config" {build}
+  (("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-zstd-i686" {os = "win32" & os-distribution != "cygwinports"}) |
+   ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-zstd-x86_64" {os = "win32" & os-distribution != "cygwinports"}))
+]
+build: [
+
+  ["pkgconf" {os = "win32" & os-distribution = "cygwin"}
+   "--personality=i686-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_32:installed}
+   "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_64:installed}
+   "pkg-config" {os != "win32" | os-distribution != "cygwin"}
+   "--atleast-version=7.8.3" "rocksdb"] {
+    !(os-distribution = "debian" & (os-version = 11 | os-version = 12)) &
+    !(os-distribution = "ubuntu" & (os-version = "20.04" | os-version = "22.04"))
+   }
+]
+synopsis: "Virtual package relying on a system installation of RocksDB (version >= 5.17.2)"
+description: """
+The build section merits an explanation.
+
+(1) for debian 11/12, conf-rocksdb ensures that rocksdb gets installed.  But it'll be backlevel,
+and specifically either 5.17.2 or 6.11.4 -- versions that do not come with pkg-config files.
+So we just skip the test.
+
+(2) For all other OS versions, we check what pkg-config says.
+"""
+
+flags: conf
