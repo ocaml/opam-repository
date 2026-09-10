@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "Language server for Applied Meta Language (AppliedML)"
+description: "Compiler-backed diagnostics and editor assistance for Octra's AppliedML."
+maintainer: "Christopher Choi <christopher@arkenstone-labs.com>"
+authors: ["AMLC LSP Contributors"]
+license: "BSD-3-Clause"
+homepage: "https://github.com/arkenstone-lab/amlc-lsp"
+bug-reports: "https://github.com/arkenstone-lab/amlc-lsp/issues"
+dev-repo: "git+https://github.com/arkenstone-lab/amlc-lsp.git"
+depends: [
+  "ocaml" {>= "4.14.2"}
+  "dune" {>= "3.16"}
+  "yojson" {>= "1.6.0"}
+  "zarith"
+  "base64"
+  "digestif"
+  "conf-gmp"
+  "conf-pkg-config" {build}
+]
+available: [os = "linux" | os = "macos"]
+extra-source "amlc-source.tar.gz" {
+  src: "https://codeload.github.com/octra-labs/amlc/tar.gz/db1080cae60e4ffbbfa31b3f94dfbd0a974573e9"
+  checksum: "sha256=107316380a82da10ffa7807cd3519b1f47250edfa67970637579dd4cddbdb3cd"
+}
+extra-source "lite-node-source.tar.gz" {
+  src: "https://codeload.github.com/octra-labs/lite_node/tar.gz/9e7ee19af38ba020497566ac73c268f42b20b9a4"
+  checksum: "sha256=79aa108459bfd930ead640d6e3996229a5d5c4f2d2cfe23a19b29d8cc6433096"
+}
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["sh" "scripts/build-package-checkers" "amlc-source.tar.gz" "lite-node-source.tar.gz" jobs]
+]
+post-messages: [
+  "amlc-lsp is installed with its compatible AMLC and rehovot-check tools. Configure your editor to launch amlc-lsp from this switch." {success}
+]
+x-maintenance-intent: ["(latest)"]
+url {
+  src: "https://github.com/arkenstone-lab/amlc-lsp/releases/download/v0.3.0/amlc-lsp-0.3.0.tar.gz"
+  checksum: [
+    "sha256=3ee66092be59bbf0af18ea1e30426ba891d6660782e42e671da0c7369f191cc8"
+    "sha512=af9671861d6e1f14ef7f2ba2966683756abe177f70472117a61ce2e9c35702dbc03c47c24b4686a2eead48c711f66b493b9ba28aa29c71bac54e357846e9013d"
+  ]
+}
