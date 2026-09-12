@@ -18,9 +18,35 @@ depends: [
   "conf-mpfr"
   "odoc" {with-doc}
 ]
-x-ci-accept-failures: ["debian-unstable"]
+x-ci-accept-failures: [
+  "debian-unstable"
+	"debian-13"
+	"debian-testing"
+	"debian-unstable"
+	"debian-12"
+	"ubuntu-22.04"
+	"ubuntu-25.04"
+	"ubuntu-25.10"
+	"ubuntu-26.04"
+  "alpine-3.23"
+  "archlinux"
+  "fedora-42"
+  "fedora-43"
+  "fedora-44"
+  "opensuse-16.0"
+  "centos-10"
+  "opensuse-tumbleweed"
+  "centos-9"
+]
 post-messages: [
   "This version of mlmpfr requires MPFR >= 4.2.1 installed on your system." {failure}
+  "Debian 12 has libmpfr-dev = 4.2.0." {failure &
+    ( os-distribution = "debian" & os-version = "12" )
+  }
+  "Ubuntu 22.04 and Centos 9 has libmpfr-dev = 4.1.0." {failure &
+    ( os-distribution = "ubuntu" & os-version = "22.04"
+    | os-distribution = "centos" & os-version = "9" )
+  }
 ]
 synopsis: "OCaml C bindings for MPFR >= 4.2.1"
 url {
