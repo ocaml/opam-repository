@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "Client for the KeyNub USB license dongle"
+description:
+  "Verify that a KeyNub USB license dongle is genuine, read and write the license records it stores, use its hardware counters and encrypt data so that only a dongle can decrypt it. Pure OCaml over the SDK's flat C API through ctypes-foreign: the native library is loaded at run time, nothing is linked."
+maintainer: ["KeyNub <info@keynub.com>"]
+authors: ["KeyNub"]
+license: "Apache-2.0"
+tags: ["licensing" "copy protection" "dongle" "usb" "hardware"]
+homepage: "https://www.keynub.com/developers/ocaml/"
+doc:
+  "https://github.com/AB-KeyNub/KeyNub-SDK/blob/master/bindings/ocaml/README.md"
+bug-reports: "https://github.com/AB-KeyNub/KeyNub-SDK/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.08"}
+  "ctypes" {>= "0.20"}
+  "ctypes-foreign" {>= "0.20"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/AB-KeyNub/KeyNub-SDK.git"
+url {
+  src: "https://github.com/AB-KeyNub/KeyNub-SDK/archive/refs/tags/bindings/ocaml/v1.1.1.tar.gz"
+  checksum: [
+    "sha256=eab650fe6e869db61e90a6d41a17001ae2eb29957f187842a7f03204d9901634"
+    "sha512=b1ff26fe65c6060474fadeef46b92aa39aa707646d30221db323cb25f16eb34a81a6584d045da4bee0f36695e6c67056146632c726fe3fe00cd5356a20a5a560"
+  ]
+}
