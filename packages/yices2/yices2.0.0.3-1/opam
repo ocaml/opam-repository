@@ -31,6 +31,7 @@ Yices is a Satisfiability Modulo Theories (SMT) solver from SRI.
 It is available freely for non-commercial purposes.
 License terms: http://yices.csl.sri.com/yices-newnewlicense.html"""
 flags: light-uninstall
+
 url {
   src: "https://github.com/maelvalais/ocamlyices2/archive/v0.0.3.tar.gz"
   checksum: [
@@ -38,9 +39,25 @@ url {
     "md5=520065f7d81db571aacbc0e8ea3a63c7"
   ]
 }
-x-accept-failures: [
-  # Because of new GCC. See the patch in version 0.0.3-1
-  "debian-13"
-  "debian-testing"
-  "debian-unstable"
+
+# This architectures are not recognized by autotools script.
+available: arch != "riscv64" & arch != "ppc64" & arch != "arm64"
+
+patches: ["yices-gcc14.patch"]
+extra-source "yices-gcc14.patch" {
+  src:
+    "https://gist.githubusercontent.com/Kakadu/15fca084a0e678df7721b984eea71cdd/raw/c2fc235751971d499667402c7466357e85a720c3/yices.diff"
+  checksum: [
+    "sha256=b01e5524d6518a153b2d0bde38d7f01a7de1837b2567def808b933541d41168b"
+    "md5=17a1ce5dbbd5a8899aa11478f519e6b4"
+  ]
+}
+x-ci-accept-failures: [
+  # Because of no libgmp.a
+  "archlinux"
+  "centos-9"
+  "centos-10"
+  "opensuse-16.0"
+  "opensuse-tumbleweed"
 ]
+x-maintenance-intent: ["(latest)"]
