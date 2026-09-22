@@ -8,7 +8,7 @@ maintainer: "Kakadu"
 flags: conf
 
 build: [
-  [ "sh" "-c" "cc test2.c -static $(pkg-config --libs gmp)" ] { os != "win32" }
+  [ "sh" "-c" "cc test2.c -Wl,-Bstatic $(pkg-config --libs gmp) -Wl,-Bdynamic -o test.exe" ] { os != "win32" }
   [
     "sh"
     "-exc"
@@ -27,9 +27,19 @@ depends: [
    ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gmp-x86_64" {os = "win32" & os-distribution != "cygwinports"}))
 ]
 depexts: [
-  ["gmp" "gmp-devel" "gmp-static"] { os-family = "fedora" }
+  [  "gmp" "gmp-devel" "gmp-static"] { os-family = "fedora" }
+  ["gmp-static"]  {os-distribution = "alpine"}
+
 ]
 
+x-ci-accept-failures: [
+  # Because of no libgmp.a
+  "archlinux"
+  "centos-9"
+  "centos-10"
+  "opensuse-16.0"
+  "opensuse-tumbleweed"
+]
 x-maintenance-intent: ["(latest)"]
 
 extra-source "test2.c" {
