@@ -1,0 +1,23 @@
+opam-version: "2.0"
+maintainer: "nbraud"
+homepage: "http://gmplib.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "GPL-1.0-or-later"
+synopsis: "Virtual package relying on a GMP static lib system installation"
+
+flags: conf
+
+build: [
+  [ "pkg-config" "--static" "--libs" "gmp"]
+]
+depends: [
+  "conf-gmp" {os-family != "fedora"  }
+  "conf-pkg-config" #{os = "macos"}
+  #(("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gmp-i686" {os = "win32" & os-distribution != "cygwinports"}) |
+  # ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gmp-x86_64" {os = "win32" & os-distribution != "cygwinports"}))
+]
+depexts: [
+  ["gmp" "gmp-devel" "gmp-static"] {os-family = "fedora"  }
+]
+authors: "Kakadu"
+x-maintenance-intent: ["(latest)"]
