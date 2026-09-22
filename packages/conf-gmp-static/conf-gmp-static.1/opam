@@ -1,23 +1,42 @@
 opam-version: "2.0"
-maintainer: "nbraud"
 homepage: "http://gmplib.org/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "GPL-1.0-or-later"
 synopsis: "Virtual package relying on a GMP static lib system installation"
-
+authors: "Kakadu"
+maintainer: "Kakadu"
 flags: conf
 
 build: [
-  [ "pkg-config" "--static" "--libs" "gmp"]
+  [ sh "-c" "cc test2.c -static $(pkg-config --libs gmp)" ] { os != "win32" }
+  [
+    "sh"
+    "-exc"
+    "$(ocamlc -config-var c_compiler) -c $CFLAGS -I/usr/local/include test.c -static"
+  ] {os = "win32" & os-distribution = "cygwinports"}
+  [
+    "sh"
+    "-exc"
+    "%{host-arch-x86_64:installed?x86_64:}%%{host-arch-x86_32:installed?i686:}%-w64-mingw32-gcc -c $CFLAGS test.c -static"
+  ] {os = "win32" & os-distribution != "cygwinports"}
 ]
 depends: [
-  "conf-gmp" {os-family != "fedora"  }
+  "conf-gmp" { os-family != "fedora" }
   "conf-pkg-config" #{os = "macos"}
-  #(("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gmp-i686" {os = "win32" & os-distribution != "cygwinports"}) |
-  # ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gmp-x86_64" {os = "win32" & os-distribution != "cygwinports"}))
+  (("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gmp-i686" {os = "win32" & os-distribution != "cygwinports"}) |
+   ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gmp-x86_64" {os = "win32" & os-distribution != "cygwinports"}))
 ]
 depexts: [
-  ["gmp" "gmp-devel" "gmp-static"] {os-family = "fedora"  }
+  ["gmp" "gmp-devel" "gmp-static"] { os-family = "fedora" }
 ]
-authors: "Kakadu"
+
 x-maintenance-intent: ["(latest)"]
+
+extra-source "test2.c" {
+  src:
+    "https://gist.githubusercontent.com/Kakadu/bb211a313bad05b1d2403b48aa8ece81/raw/0c0efbeb6df424408fb027edb61cdd8fc0810d5a/test2.c"
+  checksum: [
+    "sha256=9449d34b7f194766da4faa500fda6ffca98d93bba875fd3905ea3c5ce680d92e"
+    "md5=7a7bae4b2ed77da6e7762ebc7b62dcf6"
+  ]
+}
