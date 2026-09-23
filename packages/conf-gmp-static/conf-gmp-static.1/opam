@@ -8,7 +8,8 @@ maintainer: "Kakadu"
 flags: conf
 
 build: [
-  [ "sh" "-c" "cc test2.c -Wl,-Bstatic $(pkg-config --libs gmp) -Wl,-Bdynamic -o test.exe" ] { os != "win32" }
+  [ "sh" "-c" "cc test2.c -Wl,-Bstatic $(pkg-config --libs gmp) -Wl,-Bdynamic -o test.exe" ] { os != "win32" & os-family != "homebrew" }
+  [ "sh" "-c" "clang test2.c $(brew --prefix)/lib/libgmp.a -o test.exe"] { os-family = "homebrew" }
   [
     "sh"
     "-exc"
@@ -21,21 +22,21 @@ build: [
   ] {os = "win32" & os-distribution != "cygwinports"}
 ]
 depends: [
-  "conf-gmp" { os-family != "fedora" }
-  "conf-pkg-config" #{os = "macos"}
+  "conf-gmp" { os-family != "fedora" & os-distribution != "centos" }
+  "conf-pkg-config"
   (("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gmp-i686" {os = "win32" & os-distribution != "cygwinports"}) |
    ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gmp-x86_64" {os = "win32" & os-distribution != "cygwinports"}))
 ]
 depexts: [
-  [  "gmp" "gmp-devel" "gmp-static"] { os-family = "fedora" }
-  ["gmp-static"]  {os-distribution = "alpine"}
+  [ "gmp" "gmp-devel" "gmp-static"] { os-family = "fedora" }
+  [ "gmp-static" ]  {os-distribution = "alpine"}
 
 ]
 
 x-ci-accept-failures: [
   # Because of no libgmp.a
   "archlinux"
-  "centos-9"
+  "centos-9"    # LLM says that CodeReady Builder repo needed
   "centos-10"
   "opensuse-16.0"
   "opensuse-tumbleweed"
