@@ -4,11 +4,14 @@ maintainer: "Chris Nevers <christophernevers96@gmail.com>"
 authors: "Chris Nevers <christophernevers96@gmail.com>"
 homepage: "https://github.com/chrisnevers/mysql8"
 bug-reports: "https://github.com/chrisnevers/mysql8/issues"
+license: "LGPL-2.1-only"
+
 depends: [
   "dune" {>= "1.11.0"}
   "dune-configurator"
   "ppx_inline_test"
   "conf-mysql" {build}
+  "conf-pkg-config" {build}
 ]
 build: [
   ["dune" "subst"] {dev}
@@ -22,3 +25,24 @@ url {
     "sha512=dc7d2d7527fdcf81759b23918ca79d5dd4736b90db064a95a1d89f125faff8fcdaa78c5ae80beae9cf49240903191337414351b7447af757d99d7905b4fcef3e"
   ]
 }
+post-messages: [
+  "Since Debian 9 Mysql is removed infavor of MariaDB. Expect issues like 'mysql.h not found'."
+    { failure & os-distribution = "debian" }
+  "Errors like 'MYSQL_OPT_SSL_MODE undeclared, did you mean MYSQL_OPT_SSL_CRL?' Highly likely means OCaml source is not in sync with current version of C code."
+    { failure & (os-family = "suse" | os-family = "opensuse") }
+]
+
+x-ci-accept-failures: [
+  "debian-testing"
+  "debian-unstable"
+  "debian-13"
+  "alpine-3.24"
+  # Errors about missing stdbool.h and
+  # 'MYSQL_OPT_SSL_MODE' undeclared (first use in this function); did you mean 'MYSQL_OPT_SSL_CRL'?
+  "debian-12"
+  "opensuse-16.0"
+  "opensuse-tumbleweed"
+  # MySQL is not in the main repo, and conf-mysql can't install it.
+  "centos-9"
+  "centos-10"
+]
