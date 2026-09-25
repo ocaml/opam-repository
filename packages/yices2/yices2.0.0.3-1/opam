@@ -14,7 +14,7 @@ remove: ["ocamlfind" "remove" "yices2"]
 depends: [
   "ocaml" {< "5.2"}
   "ocamlfind" {build}
-  "conf-gmp" {build}
+  "conf-gmp-static" {build}
   "zarith"
 ]
 post-messages: [
@@ -24,6 +24,10 @@ OCamlYices2 is free (BSD-like) but Yices is not!
 License terms: http://yices.csl.sri.com/yices-newnewlicense.html
   "
     {success}
+  "Compile can fail on some OS: static GMP is missing."
+    { failure &  (os-family = "fedora" | os-distribution = "centos" | os-family = "arch" | os-family = "suse" | os-family = "opensuse" ) }
+  "On FreeBSD yices2 can't find gmp.h. Upstream patch is needed."
+    { failure & os-distribution = "freebsd" }
 ]
 synopsis: "Yices2 SMT solver binding"
 description: """
@@ -31,6 +35,7 @@ Yices is a Satisfiability Modulo Theories (SMT) solver from SRI.
 It is available freely for non-commercial purposes.
 License terms: http://yices.csl.sri.com/yices-newnewlicense.html"""
 flags: light-uninstall
+
 url {
   src: "https://github.com/maelvalais/ocamlyices2/archive/v0.0.3.tar.gz"
   checksum: [
@@ -38,9 +43,29 @@ url {
     "md5=520065f7d81db571aacbc0e8ea3a63c7"
   ]
 }
-x-accept-failures: [
-  # Because of new GCC. See the patch in version 0.0.3-1
-  "debian-13"
-  "debian-testing"
-  "debian-unstable"
+
+# This architectures are not recognized by autotools script.
+available: arch != "riscv64" & arch != "ppc64" & arch != "arm64"
+
+patches: ["yices-gcc14.patch"]
+extra-source "yices-gcc14.patch" {
+  src:
+    "https://github.com/ocaml/opam-source-archives/raw/refs/heads/main/patches/yices2/01binop.patch"
+  checksum: [
+    "sha256=23203a9f0c8dcbdaf9fc8ea510e7d5fe5e96d2b95035c3798e9000797ce2d41d"
+    "md5=c98e5c84f36213391041cb1c9a025fbc"
+  ]
+}
+
+
+x-ci-accept-failures: [
+  # Because of no libgmp.a
+  "archlinux"
+  "centos-9"
+  "centos-10"
+  "opensuse-16.0"
+  "opensuse-tumbleweed"
+  # can't find gmp.h
+  "freebsd-15.1"
 ]
+x-maintenance-intent: ["(latest)"]
