@@ -28,6 +28,8 @@ url {
 post-messages: [
   "Since Debian 9 Mysql is removed infavor of MariaDB. Expect issues like 'mysql.h not found'."
     { failure & os-distribution = "debian" }
+  "Errors like 'MYSQL_OPT_SSL_MODE undeclared, did you mean MYSQL_OPT_SSL_CRL?' Highly likely means OCaml source is not in sync with current version of C code."
+    { failure & (os-family = "suse" | os-family = "opensuse") }
 ]
 
 x-ci-accept-failures: [
@@ -35,4 +37,12 @@ x-ci-accept-failures: [
   "debian-unstable"
   "debian-13"
   "alpine-3.24"
+  # Errors about missing stdbool.h and
+  # 'MYSQL_OPT_SSL_MODE' undeclared (first use in this function); did you mean 'MYSQL_OPT_SSL_CRL'?
+  "debian-12"
+  "opensuse-16.0"
+  "opensuse-tumbleweed"
+  # MySQL is not in the main repo, and conf-mysql can't install it.
+  "centos-9"
+  "centos-10"
 ]

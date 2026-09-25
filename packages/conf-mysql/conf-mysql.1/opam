@@ -10,19 +10,25 @@ depexts: [
   ["libmysqlclient-dev"] {os-distribution = "ubuntu" | (os-distribution = "debian" & os-version < "9")}
   ["default-libmysqlclient-dev"] {os-family = "debian" & ! (os-distribution = "ubuntu" | (os-distribution = "debian" & os-version < "9"))}
   ["default-libmysqlclient-dev"] {os-family = "ubuntu"}
-  ["community-mysql-devel"] {os-family = "fedora"}
+  ["mysql-devel"] {os-family = "fedora"}
   ["libmysqld-devel"] {os-family = "suse" | os-family = "opensuse"}
-  ["mysql-devel"] {os-distribution = "centos"}
+  #["mysql-devel"] {os-distribution = "centos"}
   ["mysql"] {os = "macos" & os-distribution = "homebrew"}
   ["mariadb-dev"] {os-distribution = "alpine"}
   ["mysql80-client"] {os = "freebsd" & os-version >= "13"}
   ["mysql57-client"] {os = "freebsd" & os-version < "13"}
 ]
+post-messages: [
+  "On CentOS mysql-devel is avialble from CRB repository. https://centos.pkgs.org/9-stream/centos-crb-x86_64/mysql-devel-8.0.46-1.el9.x86_64.rpm.html"
+    {os-distribution = "centos"}
+]
+
 x-ci-accept-failures: [
   "archlinux"
   "oraclelinux-8"
   "oraclelinux-9"
 ]
+
 synopsis: "Virtual package relying on a libmysqlclient system installation"
 description:
   "This package can only install if the libmysqlclient is installed on the system."
