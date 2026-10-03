@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Idiomatic RFC 9180 Hybrid Public Key Encryption for OCaml"
+description: """
+An idiomatic, misuse-resistant implementation of the RFC 9180 HPKE Base, PSK,
+Auth, and AuthPSK modes, with Diffie-Hellman, post-quantum ML-KEM, and
+post-quantum/traditional hybrid KEMs such as X-Wing.
+Cryptographic primitives are delegated to Mirage Crypto, curve448, mlkem,
+Digestif, and kdf.
+"""
+maintainer: ["Ville Vesilehto <ville@vesilehto.fi>"]
+authors: ["Ville Vesilehto <ville@vesilehto.fi>"]
+license: "ISC"
+tags: ["cryptography" "hpke" "rfc9180" "hybrid encryption" "post-quantum"]
+homepage: "https://github.com/thevilledev/ocaml-hpke"
+bug-reports: "https://github.com/thevilledev/ocaml-hpke/issues"
+dev-repo: "git+https://github.com/thevilledev/ocaml-hpke.git"
+depends: [
+  "ocaml" {>= "4.14"}
+  "dune" {>= "3.12"}
+  "mirage-crypto" {>= "2.4.0"}
+  "mirage-crypto-ec" {>= "2.4.0"}
+  "mirage-crypto-rng" {>= "2.4.0"}
+  "curve448" {>= "0.1.0"}
+  "mlkem" {>= "0.1.1"}
+  "kdf" {>= "1.1.0"}
+  "digestif" {>= "1.3.1"}
+  "eqaf" {>= "0.10"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "qcheck-alcotest" {with-test & >= "0.25"}
+  "crowbar" {with-test & >= "0.2.1"}
+  "yojson" {with-test & >= "2.0.0"}
+  "odoc" {with-doc}
+  "ocamlformat" {with-dev-setup & = "0.29.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
+]
+url {
+  src:
+    "https://github.com/thevilledev/ocaml-hpke/archive/refs/tags/v0.4.0.tar.gz"
+  checksum: [
+    "md5=af35c94697402d005548f08f797328f2"
+    "sha512=5caedd58fcd45e81fc089a4970697af1b8e282ab2c01b5a2b28d567d034b266b47786203a319f2f0efb3f5a97f55e73de2c0ad880739a3d2d3fce1f6a6245ae7"
+  ]
+}
