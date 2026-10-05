@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis: "Character classes for Unicode-aware lexers and regex engines"
+description: """
+A faster, smaller Set.Make(Uchar). Cost follows the run count, not the
+cardinal: the Alphabetic property is 147,421 codepoints in 761 runs, held in
+12KB against 5.6MB, and the whole codespace is 40 bytes against 42.4MB.
+Alongside the usual set algebra there is a builder for accumulating a class
+from many fragments, a compiled two-level bitmap trie for membership in an
+inner loop, partition refinement for derivative classes during DFA
+construction, and a stable packed encoding for embedding generated tables in
+source. Surrogates are excluded by construction."""
+maintainer: ["Michael Thomas <mthomas180@gmail.com>"]
+authors: ["Michael Thomas <mthomas180@gmail.com>"]
+license: "MIT"
+tags: ["unicode" "charset" "codepoint" "interval set" "regex" "lexer" "dfa"]
+homepage: "https://github.com/enetsee/ucharset"
+doc: "https://enetsee.github.io/ucharset/"
+bug-reports: "https://github.com/enetsee/ucharset/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.14"}
+  "alcotest" {with-test}
+  "qcheck-core" {with-test}
+  "qcheck-alcotest" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/enetsee/ucharset.git"
+available: arch != "x86_32" & arch != "arm32"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/enetsee/ucharset/releases/download/v0.2.1/ucharset-0.2.1.tbz"
+  checksum: [
+    "sha256=d63ee03f167eb6f6e3b3198f4691ec7668836de0316d6e46ba078a42b75ca342"
+    "sha512=1d0bd0ceda50c94f9df140f29f6aa7c433e7baa41ce43573d5e31c48479c4af29c9683c5c4a9a9a2df3f840887cd11141304b1b5a6343c6e24d62878588ee506"
+  ]
+}
+x-commit-hash: "86f0e86b65c7de564ad15fda7459d9d67406d4c0"
