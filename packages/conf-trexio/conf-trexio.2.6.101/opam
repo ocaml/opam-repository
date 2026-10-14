@@ -2,8 +2,10 @@
 opam-version: "2.0"
 synopsis: "TREXIO C library is installed and detectable by pkg-config"
 description:
-  "Virtual package: checks that the TREXIO C library (2.x, headers + libtrexio,
-  discoverable by pkg-config as \"trexio\") is installed on the system."
+  "Virtual package: checks that the TREXIO C library (headers + libtrexio,
+  discoverable by pkg-config as \"trexio\") is installed on the system.
+  The current trexio OCaml binding (>= 2.6.100) additionally requires the
+  TREXIO 2.6.1 C API (see the trexio package)."
 maintainer: ["Anthony Scemama <scemama@irsamc.ups-tlse.fr>"]
 authors: [
   "Anthony Scemama <scemama@irsamc.ups-tlse.fr>"
@@ -20,13 +22,15 @@ build: [
 ]
 flags: conf
 post-messages: [
-  "The TREXIO C library (2.x) is required. On Debian/Ubuntu install
-   'libtrexio-dev'; otherwise build/install a release from
-   https://github.com/TREX-CoE/trexio/releases and make sure
-   'pkg-config trexio' works." {failure}
+  "The TREXIO C library is required (pkg-config module 'trexio'), and the
+   trexio OCaml binding requires the 2.6.1 C API. On Debian/Ubuntu,
+   libtrexio-dev + libhdf5-dev provide a 2.x library (check that
+   'pkg-config --atleast-version=2.6.1 trexio' succeeds); otherwise
+   build/install a release from https://github.com/TREX-CoE/trexio/releases
+   (2.6.1 or newer) or use conda-forge / nix." {failure}
 ]
 depexts: [
-  ["libtrexio-dev"] {os-distribution = "debian" | os-distribution = "ubuntu"}
+  ["libtrexio-dev" "libhdf5-dev"] {os-distribution = "debian" | os-distribution = "ubuntu"}
 ]
 x-ci-accept-failures: [
   "alpine-3.24"
