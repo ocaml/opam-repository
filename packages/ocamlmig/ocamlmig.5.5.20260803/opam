@@ -1,0 +1,70 @@
+opam-version: "2.0"
+synopsis: "OCaml source code rewriting tool"
+description:
+  "Ocamlmig is a command line tool to rewrite ocaml source code, especially to make updating to newer interfaces easier."
+maintainer: ["Valentin Gatien-Baron <valentin.gatienbaron@gmail.com>"]
+authors: ["Valentin Gatien-Baron <valentin.gatienbaron@gmail.com>"]
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/v-gb/ocamlmig"
+doc: "https://github.com/v-gb/ocamlmig/blob/main/README.md"
+bug-reports: "https://github.com/v-gb/ocamlmig/issues"
+depends: [
+  "ocaml" {>= "5.5" & < "5.6"}
+  "dune" {>= "3.22"}
+  "base"
+  "core"
+  "core_unix"
+  "csexp"
+  "ppx_partial"
+  "ocaml" {>= "4.14"}
+  "alcotest" {"1" = "0" & >= "1.3.0"}
+  "base" {>= "v0.12.0"}
+  "cmdliner" {>= "1.1.0"}
+  "dune"
+  "dune-build-info"
+  "either"
+  "fix"
+  "fpath" {>= "0.7.3"}
+  "menhir" {>= "20201216"}
+  "menhirLib" {>= "20201216"}
+  "menhirSdk" {>= "20201216"}
+  "ocaml-version" {>= "3.5.0"}
+  "ocamlformat-rpc-lib" {"1" = "0" & = version}
+  "ocp-indent" {>= "1.8.0" | "1" = "0" & >= "1.8.1"}
+  "stdio"
+  "uuseg" {>= "10.0.0"}
+  "uutf" {>= "1.0.1"}
+  "csexp" {>= "1.4.0"}
+  "astring"
+  "camlp-streams"
+  "re" {>= "1.10.3"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/v-gb/ocamlmig.git"
+x-maintenance-intent: ["(any).(any).(latest)"]
+# due to core_unix, but why do we need to restate it? Maybe they added windows to
+# the opam CI without ensuring that existing packages work on it.
+available: os != "win32"
+url {
+  src:
+    "https://github.com/v-gb/ocamlmig/releases/download/5.5.20260803/ocamlmig-5.5.20260803.tbz"
+  checksum: [
+    "sha256=c82b8574cd84ab842d818bc544eb97bf2abe51374ad418a40f650c9d8a2865ea"
+    "sha512=2bb5524ca83e70c5abc5887be3bad22fea6e7a1a5aff4d346f4a07a1a581e55ad6d61ff75328d0f85177ba82394d076f25063b8102b24ffb76f7247ca88ca7fd"
+  ]
+}
+x-commit-hash: "269004d7c06ce5162d566fd194b1dbbdfd5bc556"

@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "UNISIM-VP DBA decoder"
+description: """
+
+UNISIM ARCHISEC is a companion project of the binary analysis platform
+BINSEC. It exposes disassembly metadata and DBA (Dynamic Bitvector Automata)
+semantics of several instruction set architectures, including ARM and x86."""
+maintainer: ["BINSEC <binsec@saxifrage.saclay.cea.fr>"]
+authors: ["Yves Lhuillier" "Frédéric Recoules"]
+license: "BSD-3-Clause"
+homepage: "https://binsec.github.io"
+bug-reports: "mailto:binsec@saxifrage.saclay.cea.fr"
+depends: [
+  "dune" {>= "3.0"}
+  "conf-gcc" {build}
+  "conf-g++" {build}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "binsec" {< "0.5.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/binsec/unisim_archisec.git"
+available: [ os = "linux" & (os-distribution != "ol" & os-distribution != "centos" | os-version >= 8) | os = "macos" & os-distribution = "homebrew" ]
+url {
+  src:
+    "https://github.com/binsec/unisim_archisec/releases/download/0.0.8/unisim_archisec-0.0.8.tbz"
+  checksum: [
+    "sha256=0fc0ee9876909cbb0c6951e850bef0f0a80645387d464fb6d8d3526b46bfa882"
+    "sha512=e37a3c3fd9a465b4800ffc2bfe3245893ee31a3f766cfdb8998aee15aee461046e8fe44435e3c95783151cd3c24febb163a00eb66df85693a25747a51a2d7ff6"
+  ]
+}
+x-commit-hash: "17fcf550f352313b798a12459afe95c02f707d59"

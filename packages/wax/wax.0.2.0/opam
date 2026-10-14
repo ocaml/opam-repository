@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "A compiler toolchain for Wax, a Rust-like syntax for WebAssembly"
+description:
+  "A compiler toolchain for Wax, a Rust-like syntax for WebAssembly. Capabilities: Formatting, Type Checking, Syntax Conversion (Wax <-> Wasm Text <-> Wasm Binary)."
+maintainer: ["Jérôme Vouillon"]
+authors: ["Jérôme Vouillon"]
+license: "Apache-2.0"
+homepage: "https://github.com/ocsigen/wax"
+doc: "https://ocsigen.org/wax/"
+bug-reports: "https://github.com/ocsigen/wax/issues"
+depends: [
+  "dune" {>= "3.20"}
+  "ocaml" {>= "4.14"}
+  "wax-lib" {= version}
+  "yojson" {>= "2.0.0"}
+  "cmdliner" {>= "2.0.0"}
+  "lsp" {>= "1.26.0" & < "1.28.0"}
+  "jsonrpc" {>= "1.26.0"}
+  "dune-build-info" {>= "3.0.0"}
+  "conf-python-3" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocsigen/wax.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/ocsigen/wax/releases/download/v0.2.0/wax-v0.2.0.tbz"
+  checksum: [
+    "sha256=4361e1324b7754a4c08ab5b505df32061f3ce0cea60443fd0d3699e0fa796b32"
+    "sha512=fcc756d2f160ba90a9aa1131f2ab22ed7f45466ccd658c21cf9df6868a6aab0cee7f404719d698a379958802f9820398f2fe0685ecc4dda018ca4f653294e39b"
+  ]
+}
+x-commit-hash: "0aa5ede7b48e0efbcf406fd767d7364c6ca5afc8"

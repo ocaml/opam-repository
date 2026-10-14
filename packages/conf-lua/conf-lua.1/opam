@@ -7,10 +7,23 @@ authors: [
 ]
 homepage: "http://www.lua.org/"
 license: "MIT"
-build: [["pkg-config" "lua"]]
+build: [
+  # Ubuntu have separate packages liblua5.2-dev, liblua5.3-dev, liblua5.4-dev and no single .pc file
+  ["pkg-config" "lua5.2"] { os-family = "debian" | os-family = "ubuntu" }
+  ["pkg-config" "lua-5.2"] { os = "freebsd" }
+  ["pkg-config" "lua"] { os-family != "debian" & os-family != "ubuntu" & os != "freebsd" }
+]
 depexts: [
-  ["liblua5.2-dev"] {os-family = "debian"}
+  ["liblua5.2-dev"] {os-family = "debian" | os-family = "ubuntu" }
   ["liblua-devel"] {os-distribution = "mageia"}
+  ["lua-devel"] {os-family = "fedora" |  os-family = "rhel" | os-distribution = "centos" |
+    os-family = "suse" |
+    os-distribution = "opensuse-tumbleweed" |
+    os-distribution = "opensuse"
+  }
+  ["lua"] {os-family = "arch" | os-distribution = "homebrew" }
+  ["lua-dev"] {os-family = "alpine"}
+  ["lua52"] {os = "freebsd"}
 ]
 x-ci-accept-failures: ["debian-unstable"]
 synopsis: "Virtual package relying on a Lua system installation"

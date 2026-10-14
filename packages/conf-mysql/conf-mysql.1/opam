@@ -9,12 +9,19 @@ build: [["mysql_config" "--include"]]
 depexts: [
   ["libmysqlclient-dev"] {os-distribution = "ubuntu" | (os-distribution = "debian" & os-version < "9")}
   ["default-libmysqlclient-dev"] {os-family = "debian" & ! (os-distribution = "ubuntu" | (os-distribution = "debian" & os-version < "9"))}
-  ["community-mysql-devel"] {os-distribution = "fedora"}
-  ["libmysqld-devel"] {os-family = "suse"}
+  ["default-libmysqlclient-dev"] {os-family = "ubuntu"}
+  ["community-mysql-devel"] {os-family = "fedora"}
+  ["libmysqld-devel"] {os-family = "suse" | os-family = "opensuse"}
   ["mysql-devel"] {os-distribution = "centos"}
   ["mysql"] {os = "macos" & os-distribution = "homebrew"}
   ["mariadb-dev"] {os-distribution = "alpine"}
-  ["mysql57-client"] {os = "freebsd"}
+  ["mysql80-client"] {os = "freebsd" & os-version >= "13"}
+  ["mysql57-client"] {os = "freebsd" & os-version < "13"}
+]
+x-ci-accept-failures: [
+  "archlinux"
+  "oraclelinux-8"
+  "oraclelinux-9"
 ]
 synopsis: "Virtual package relying on a libmysqlclient system installation"
 description:

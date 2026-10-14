@@ -1,0 +1,63 @@
+opam-version: "2.0"
+synopsis: "CoHTTP implementation using the Lwt concurrency library"
+description: """
+This is a portable implementation of HTTP that uses the Lwt concurrency library
+to multiplex IO.  It implements as much of the logic in an OS-independent way
+as possible, so that more specialised modules can be tailored for different
+targets.  For example, you can install `cohttp-lwt-unix` or `cohttp-lwt-jsoo`
+for a Unix or JavaScript backend, or `cohttp-mirage` for the MirageOS unikernel
+version of the library. All of these implementations share the same IO logic
+from this module."""
+maintainer: ["Anil Madhavapeddy <anil@recoil.org>"]
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+  "Anurag Soni"
+]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "dune" {>= "3.8"}
+  "ocaml" {>= "4.08"}
+  "http" {= version}
+  "cohttp" {= version}
+  "lwt" {>= "5.7.0"}
+  "sexplib0"
+  "ipaddr" {>= "5.6.0"}
+  "ppx_sexp_conv" {>= "v0.13.0"}
+  "logs"
+  "uri" {>= "2.0.0"}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@cohttp-lwt/runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v6.2.2/cohttp-6.2.2.tbz"
+  checksum: [
+    "sha256=499cd8b094cee4b00fe6b9f6322680f81fe87161e963a196b109c1882610af62"
+    "sha512=701b946af0a84c9f5d1f5131fc4cea9b35fa2fd18d67460eb0caf4f916acc4ae8695d65594d0e0074f2729dc9ca54cfd984b1863a6f7dc345e171be4e3c3b258"
+  ]
+}
+x-commit-hash: "0178a219286ed3b59c16cc37557c2c5f93503b6a"

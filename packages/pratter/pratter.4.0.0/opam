@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "Parse strings of tokens and mixfix operators"
+description: """
+Pratter allows to transform strings of symbols and mixfix operators to full
+binary trees.
+Pratter is convenient for parsing languages made of terms with many mixfix
+operators with different associativities and precedences such as
+arithmetic or λ-calculi.
+In contrast to parser generators, parsing rules can be edited dynamically.
+"""
+maintainer: ["Gabriel Hondet <koizel#pratter@aleeas.com>"]
+authors: ["Gabriel Hondet <koizel#pratter@aleeas.com>"]
+license: "BSD-3-Clause"
+homepage: "https://forge.tedomum.net/koizel/pratter"
+bug-reports: "https://github.com/gabrielhdt/pratter/issues"
+depends: [
+  "ocaml" {>= "4.14"}
+  "dune" {>= "2.7"}
+  # Release 1.5.0 of alcotest fixes interactions with the result library
+  "alcotest" {with-test & >= "1.5.0" & < "2"}
+  "qcheck" {with-test & >= "0.12" }
+  "qcheck-alcotest" {with-test & >= "0.12"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://forge.tedomum.net/koizel/pratter"
+url {
+  src:
+    "https://forge.tedomum.net/koizel/pratter/-/archive/4.0.0/pratter-4.0.0.tar.gz"
+  checksum: ["sha512=c3294e16486f64cde691edfe0601edd66aed249482c7264ed82510b0b8b2adaad36337464721ac1a39ca4ac1330e8083ca955b65d463fc3ef523ca3ae2c468c3"]
+}

@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: [ "Reynir Björnsson <reynir@reynir.dk>" ]
+authors: [ "Reynir Björnsson <reynir@reynir.dk>" ]
+homepage: "https://git.robur.coop/reynir/oneffs"
+bug-reports: "https://git.robur.coop/reynir/oneffs/issues"
+dev-repo: "git+https://git.robur.coop/reynir/oneffs.git"
+license: "ISC"
+synopsis: "One-file filesystem is a filesystem for storing a single unnamed file"
+description: """
+One-file filesystem is a filesystem for storing a single unnamed file. It is
+suitable for storing data that may be lost on updates. For example a cache of
+pre-computed cryptographic checksums that are slow to compute, but that we
+would rather recompute than have stale checksums.
+CRC32 checksums are used to ensure integrity.
+"""
+
+build: [
+  [ "dune" "subst" ] { dev }
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "dune" "runtest" "-p" name "-j" jobs ] { with-test }
+]
+depends: [
+  "dune" {>= "3.4"}
+  "ocaml" {>= "4.08.0"}
+  "mirage-block" {>= "3.0.0"}
+  "lwt" {>= "5.3.0"}
+  "cstruct" {>= "6.0.0"}
+  "checkseum"
+  "optint" {>= "0.0.5"}
+]
+url {
+  src: "https://github.com/reynir/oneffs/releases/download/v0.1.0/oneffs-0.1.0.tbz"
+  checksum: [
+    "sha256=cfee53b51af1d16ef1d4016a81d2012dc90b92817d2dc7e77503a6879100b3c1"
+    "sha512=a7260e90c501257f38fc7d39bee0495bc06f4af1d6f4437f1f3566d379215c8f870dddbd94a37d355aea02aeb7ab3d27cc2fe502d97b292ed4f00c411a8165a2"
+  ]
+}
+x-commit-hash: "fe04fdb4f578aab8fb7bd436dcf21faeee0c9d19"

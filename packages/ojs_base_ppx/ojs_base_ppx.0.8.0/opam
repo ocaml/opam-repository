@@ -1,0 +1,39 @@
+opam-version: "2.0"
+synopsis: "PPx extension for the Ojs_base library"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "GPL-3.0-only"
+homepage: "http://zoggy.frama.io/ojs-base/"
+doc: "http://zoggy.frama.io/ojs-base/refdoc/"
+bug-reports: "https://framagit.org/zoggy/ojs-base/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.12.0"}
+  "ojs_base" {= version}
+  "ppxlib"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/ojs-base.git"
+url {
+  src: "https://zoggy.frama.io/ojs-base/releases/ojs-base-0.8.0.tar.bz2"
+  checksum: [
+    "md5=e706f1f9ec2f935d29c6b6e4832c8bdf"
+    "sha512=2596f6c59bea9c6b89923099c604a0e095a96880e7e91b06357e1de50867ae7e0261c87c35f608b7e426bddd6dd025a9868c07499287116ed458de4a0b9e9f30"
+  ]
+}

@@ -1,0 +1,73 @@
+opam-version: "2.0"
+maintainer: "Robur <team@robur.coop>"
+authors: ["Robur <team@robur.coop>"]
+homepage: "https://github.com/robur-coop/utcp"
+dev-repo: "git+https://github.com/robur-coop/utcp.git"
+bug-reports: "https://github.com/robur-coop/utcp/issues"
+available: [ arch != "arm32" & arch != "x86_32" ] # see #35
+license: "ISC"
+depends: [
+  "ocaml" {>= "4.13.0"}
+  "dune" {>= "2.7.0"}
+  "cstruct" {>= "6.0.1"}
+  "duration" {>= "0.2.0"}
+  "fmt" {>= "0.8.7"}
+  "ipaddr" {>= "5.2.0"}
+  "ipaddr-cstruct" {>= "5.2.0"}
+  "logs" {>= "0.7.0"}
+  "randomconv" {>= "0.2.0"}
+  "mtime" {>= "1.4.0"}
+  "metrics" {>= "0.4.1"}
+  "mirage-crypto-rng" {>= "1.2.0"}
+  "base64" {>= "3.5.1"} #only used for tracing
+  #for mirage sublibrary
+  "lwt" {>= "5.4.2"}
+  "mirage-sleep" {>= "4.0.0"}
+  "mirage-mtime" {>= "5.0.0"}
+  "tcpip" {>= "9.0.0"}
+  #for testing
+  "alcotest" {>= "1.5.0" & with-test}
+  "crowbar" {>= "0.2.1" & with-test}
+  "ohex" {with-test}
+  "bechamel" {with-test}
+  "bechamel-js" {with-test}
+  #for apps
+  "cmdliner" {>= "1.1.0" & dev}
+  "mirage-net-unix" {>= "2.8.0" & dev}
+  "ethernet" {>= "2.2.1" & dev}
+  "arp" {>= "4.0.0" & dev}
+  "mirage-unix" {>= "5.0.0" & dev}
+  "pcap-format" {>= "0.6.0" & dev}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+synopsis: "An implementation of TCP (Transmission Control Protocol) in OCaml"
+description: """
+µTCP is an implementation of the Transmission Control
+Protocol (RFC 793) in OCaml. TCP is widely used on the Internet today.
+
+This implementation is based on the research project Network Semantics
+(https://www.cl.cam.ac.uk/~pes20/Netsem/) which developed a rigorous test
+oracle specification and validation for TCP/IP and the Sockets API (also see
+the JACM paper http://www.cl.cam.ac.uk/~pes20/Netsem/paper3.pdf) in HOL4. The
+implementation does not adhere to the specification, since some features of TCP
+that are rarely used are not implemented (such as the urgent flag and urgent
+pointers).
+
+The target of this opam package is the MirageOS (https://mirageos.org) unikernel
+operating system.
+"""
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/robur-coop/utcp/releases/download/0.0.2/utcp-0.0.2.tbz"
+  checksum: [
+    "sha256=5e847eec3f210e0ece9fbbd1bab672a305d60f8d84d94cf08058430ce294353e"
+    "sha512=d59a8465a4624f7336acc0274909f826b0a0660e43f416956384a3aebefd343256cf432084b252ee2859961ad3e1c8bda961b1463bd720855d025d38a1f83882"
+  ]
+}
+x-commit-hash: "5a146264e29cda4f30742339fc6d61f8a69a0553"

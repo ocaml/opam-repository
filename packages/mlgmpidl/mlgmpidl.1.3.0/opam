@@ -1,0 +1,40 @@
+opam-version: "2.0"
+authors: ["Bertrand Jeannet" "Nicolas Berthier"]
+maintainer: "Nicolas Berthier <m@nberth.space>"
+dev-repo: "git+https://github.com/nberth/mlgmpidl.git"
+bug-reports: "https://github.com/nberth/mlgmpidl/issues"
+homepage: "https://www.inrialpes.fr/pop-art/people/bjeannet/mlxxxidl-forge/mlgmpidl/"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+build: [
+  ["sh" "./configure" "--absolute-dylibs" {os = "macos"}
+        "CPPFLAGS+=-I%{conf-gmp-paths:incdir}%"  { conf-gmp-paths:incdir != "" }
+        "CPPFLAGS+=-I%{conf-mpfr-paths:incdir}%" { conf-mpfr-paths:incdir != "" }
+        "LDFLAGS+=-L%{conf-gmp-paths:libdir}%"   { conf-gmp-paths:libdir != "" }
+        "LDFLAGS+=-L%{conf-mpfr-paths:libdir}%"  { conf-mpfr-paths:libdir != "" } ]
+  [make]
+]
+install: [
+  [make "install"]
+]
+depends: [
+  "ocaml" {>= "3.12.1"}
+  "ocamlfind" {build & >= "1.5.6"}
+  "camlidl" {!= "1.10"}
+  "conf-gmp-paths"
+  "conf-mpfr-paths"
+  "conf-perl" {build}
+  "bigarray-compat"
+]
+conflicts: [
+  "mlgmp"
+  "apron" {= "20140725"}
+  "apron" {= "20150518"}
+]
+synopsis: "OCaml interface to the GMP library"
+url {
+  src: "https://github.com/nberth/mlgmpidl/archive/1.3.0.tar.gz"
+  checksum: [
+    "sha256=51a25f51068b1439ae71469ae506b1637d4e6f782a00955317bdff0f41ec49f8"
+    "md5=527995e4bc37a57297d7f30495ea0cc2"
+  ]
+}

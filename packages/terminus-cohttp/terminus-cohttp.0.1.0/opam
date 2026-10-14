@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "Terminus with the cohttp-lwt-unix request handler"
+description:
+  "Terminus-cohttp is an implementation of the Terminus specification using cohttp-lwt-unix."
+maintainer: ["Étienne Marais <etienne@maiste.fr>"]
+authors: ["Étienne Marais <etienne@maiste.fr>"]
+license: "MIT"
+homepage: "https://github.com/maiste/terminus"
+doc: "maiste.github.io/terminus"
+bug-reports: "https://github.com/maiste/terminus/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "terminus"
+  "cohttp-lwt-unix"
+  "httpaf-lwt-unix" {with-test}
+  "alcotest" {with-test}
+  "alcotest-lwt" {with-test}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & os != "macos"}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/maiste/terminus.git"
+url {
+  src:
+    "https://github.com/maiste/terminus/releases/download/0.1.0/terminus-0.1.0.tbz"
+  checksum: [
+    "sha256=6a31c14c76eefa30189206d670797356bfee4cbb869a06b7017cbb19f601505b"
+    "sha512=1ef7f6f25681a84bac90dc8c0c673bc22ec8651139c3672b32857ab9c4c61cfe4fbc8d37c195f31e480df23867ff5c2dcfb8135b8a7f70a55c10fe0825837b04"
+  ]
+}
+x-commit-hash: "3786ea1e6402921bcf31ec01984ccd2ac4de9d77"

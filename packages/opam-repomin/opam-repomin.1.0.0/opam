@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "Minimize opam repository overlays into one unified repo"
+description:
+  "opam-repomin takes an opam repository overlay directory and a full opam-repository, uses the opam-0install solver to determine the minimum set of packages required to make the overlay standalone, and copies the relevant packages to an output directory."
+maintainer: ["Anil Madhavapeddy <anil@recoil.org>"]
+authors: ["Anil Madhavapeddy <anil@recoil.org>"]
+license: "ISC"
+homepage: "https://github.com/avsm/opam-repomin"
+doc: "https://avsm.github.io/opam-repomin"
+bug-reports: "https://github.com/avsm/opam-repomin/issues"
+depends: [
+  "dune" {>= "3.18"}
+  "ocaml" {>= "5.2.0"}
+  "opam-0install" {>= "0.5"}
+  "opam-format" {>= "2.2"}
+  "opam-state" {>= "2.2"}
+  "cmdliner" {>= "1.2.0"}
+  "fmt" {>= "0.9.0"}
+  "logs" {>= "0.7.0"}
+  "bos" {>= "0.2.1"}
+  "fpath" {>= "0.7.3"}
+  "alcotest" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/avsm/opam-repomin.git"
+x-maintenance-intent: ["(latest)"]
+flags: plugin
+url {
+  src:
+    "https://github.com/avsm/opam-repomin/releases/download/v1.0.0/opam-repomin-1.0.0.tbz"
+  checksum: [
+    "sha256=d386aa90c5465b295d9d87de446b65da93bb0fa576fe925a4df48d60abc446b1"
+    "sha512=207d89cb7b9fc429ef172529f94d8a8f85a42f0107985f5e3fb23d2944f6b67722fb4dfc41e660e7db14b3135ab908ac1b29421de4b8917a939cbedc98b02489"
+  ]
+}
+x-commit-hash: "7a45bca6943a869e45fb41d9b66e060c208cc25f"

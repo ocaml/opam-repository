@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "Communicate with dune using rpc"
+description: "Library to connect and control a running dune instance"
+maintainer: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+license: "MIT"
+homepage: "https://github.com/ocaml/dune"
+doc: "https://dune.readthedocs.io/"
+bug-reports: "https://github.com/ocaml/dune/issues"
+depends: [
+  "dune" {>= "3.20"}
+  "ocamlc-loc"
+  "csexp"
+  "ordering"
+  "dyn"
+  "xdg"
+  "stdune" {= version}
+  "pp" {>= "1.1.0"}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/ocaml/dune.git"
+x-maintenance-intent: ["(latest)"]
+build: [
+  ["dune" "subst"] {dev}
+  ["rm" "-rf" "vendor/csexp"]
+  ["rm" "-rf" "vendor/pp"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/ocaml/dune/releases/download/3.20.1/dune-3.20.1.tbz"
+  checksum: [
+    "sha256=f08e95de2828e891d68906e4430b5117032285207b5bc684fc5d45652eb30e0a"
+    "sha512=a45eb69c773396285f3785a1c2edb4644e376c02053ff23cbc39dd2244c9e99527bdaed34b10ad8a0f50a143ce22777a76a0cd19f3a2d313cea9560986fa6bb9"
+  ]
+}
+x-commit-hash: "84b524ad0b337a95e44a7c307b1c237d20075272"

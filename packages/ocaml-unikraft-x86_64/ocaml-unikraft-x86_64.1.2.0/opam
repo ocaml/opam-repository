@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "samuel@tarides.com"
+homepage: "https://github.com/mirage/ocaml-unikraft/"
+dev-repo: "git+https://github.com/mirage/ocaml-unikraft.git"
+bug-reports: "https://github.com/mirage/ocaml-unikraft/issues"
+tags: "org:mirage"
+synopsis: "OCaml cross compiler to the freestanding Unikraft x86_64 backends"
+description:
+  "This package provides an OCaml cross compiler, suitable for linking with a Unikraft x86_64 unikernel."
+authors: "Samuel Hym"
+license: ["MIT" "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"]
+depends: [
+  "ocaml" {>= "5.3.0" & <= "5.5.0"}
+  "ocaml-unikraft-toolchain-x86_64" {>= "1.2.0" & < "1.2.1"}
+  "ocamlfind"
+  "ocaml-src" {build}
+  "opatch" {build}
+]
+build: [
+  [
+    make
+    "-j%{jobs}%"
+    "prefix=%{prefix}%"
+    "BIN=%{bin}%"
+    "LIB=%{lib}%"
+    "SHARE=%{share}%"
+    "OCUKARCH=x86_64"
+    "%{name}%.install"
+  ]
+]
+install: [
+  [make "install-ocaml"]
+]
+conflicts: ["ocaml-option-bytecode-only" "relocatable"]
+# The package is not completely relocatable yet as the ocamlfind toolchain
+# description contains absolute paths
+url {
+  src:
+    "https://github.com/mirage/ocaml-unikraft/archive/refs/tags/v1.2.0.tar.gz"
+  checksum:
+    "sha256=ca18a45ef86791d5ffa18436945fbec850b6f3dd68a6a62753b4cb1b6999b19a"
+}
+available: os = "linux"
+x-maintenance-intent: ["(latest)"]

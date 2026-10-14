@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "Configuration for MlFront"
+maintainer: "Diskuv, Inc. <opensource+dkml@support.diskuv.com>"
+authors: "Diskuv, Inc. <opensource+dkml@support.diskuv.com>"
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/dk?tab=readme-ov-file"
+bug-reports: "https://gitlab.com/dkml/build-tools/MlFront/-/issues"
+depends: [
+  "dune" {>= "3.18"}
+  "ocaml" {>= "4.14"}
+  "cppo" {>= "1.6.8"}
+  "MlFront_Core" {= version}
+  "ppxlib" {with-test & >= "0.30.0"}
+  "tezt" {with-test & >= "4.1.0"}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "lwt" {= "5.9.2"}
+  "lwt" {= "5.10.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://gitlab.com/dkml/build-tools/MlFront.git"
+url {
+  src:
+    "https://gitlab.com/dkml/build-tools/MlFront/-/releases/2.4.2.169/downloads/MlFront.tar.gz"
+  checksum: [
+    "md5=561d9b7dfc392fcd7413737ac1f6071a"
+    "sha512=ec9b2fe9ac45b8429dda4f155f56f73410d1eb12b879e8f826756f2fc3d8fa00d439a75fbd48be9f6dca6cbf3ca691e2b367cd55d227d9a81f77e95cff6d9346"
+  ]
+}
+x-maintenance-intent: ["(latest)"]

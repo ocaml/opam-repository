@@ -1,0 +1,101 @@
+opam-version: "2.0"
+synopsis: "Semantic analysis of binary executables"
+description: """
+
+BINSEC aims at developing an open-source platform filling the gap between formal
+methods over executable code and binary-level security analyses currently used
+in the security industry.
+
+The project targets the following applicative domains:
+
+    vulnerability analyses
+    malware comprehension
+    code protection
+    binary-level verification
+
+BINSEC is developed at CEA List in scientfic collaboration with Verimag and LORIA.
+
+An overview of some BINSEC features can be found in our SSPREW'17 tutorial."""
+maintainer: ["BINSEC <binsec@saxifrage.saclay.cea.fr>"]
+authors: [
+  "Adel Djoudi"
+  "Benjamin Farinier"
+  "Chakib Foulani"
+  "Dorian Lesbre"
+  "Frédéric Recoules"
+  "Guillaume Girol"
+  "Josselin Feist"
+  "Lesly-Ann Daniel"
+  "Manh-Dung Nguyen"
+  "Mathéo Vergnolle"
+  "Mathilde Ollivier"
+  "Matthieu Lemerre"
+  "Olivier Nicole"
+  "Richard Bonichon"
+  "Robin David"
+  "Sébastien Bardin"
+  "Soline Ducousso"
+  "Ta Thanh Dinh"
+  "Yaëlle Vinçont"
+]
+license: "LGPL-2.1-or-later"
+tags: [
+  "binary code analysis"
+  "symbolic execution"
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "plugins"
+  "abstract interpretation"
+  "dataflow analysis"
+  "linking"
+  "disassembly"
+]
+homepage: "https://binsec.github.io"
+bug-reports: "mailto:binsec@saxifrage.saclay.cea.fr"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.09" & < "5"}
+  "menhir" {build & >= "20181113"}
+  "ocamlgraph" {>= "1.8.5"}
+  "zarith" {>= "1.4"}
+  "dune-site"
+  "toml" {>= "6"}
+  "ounit2" {with-test & >= "2"}
+  "qcheck" {with-test & >= "0.7"}
+  "odoc" {with-doc}
+]
+depopts: ["curses" "llvm" "unisim_archisec" "bitwuzla"]
+conflicts: [
+  "llvm" {< "6.0.0"}
+  "llvm" {>= "13.0.0"}
+  "bitwuzla" {< "1.0.1"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/binsec/binsec.git"
+available: [ arch = "x86_64" | arch = "ppc64" | arch = "arm64" | arch = "sparc64" ]
+url {
+  src:
+    "https://github.com/binsec/binsec/releases/download/0.6.2/binsec-0.6.2.tbz"
+  checksum: [
+    "sha256=11c5335f413cca0773ec8fd7804adeb2ae960fff834c35f7eb510c43dad51092"
+    "sha512=7d706de9c98a97017ef07d317552917f76ff771b95d1cf76ad6986558244a822ea72bdc89981689fb9b63837468ef378f30ff659a7e2578d0285ce5f037b6022"
+  ]
+}
+x-commit-hash: "1d390afad21cc999b459bde1530439a93f6cdedf"

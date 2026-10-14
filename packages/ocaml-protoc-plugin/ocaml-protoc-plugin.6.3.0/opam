@@ -1,0 +1,65 @@
+opam-version: "2.0"
+maintainer: "Anders Fugmann"
+authors: "Anders Fugmann <anders@fugmann.net>"
+license: "APACHE-2.0"
+homepage: "https://github.com/andersfugmann/ocaml-protoc-plugin"
+dev-repo: "git+https://github.com/andersfugmann/ocaml-protoc-plugin"
+bug-reports: "https://github.com/andersfugmann/ocaml-protoc-plugin/issues"
+doc: "https://andersfugmann.github.io/ocaml-protoc-plugin/"
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & arch != "arm32" & arch != "x86_32" & os != "win32"}
+]
+
+depends: [
+  "conf-protoc" {>= "1.0.0"}
+  "conf-protoc-dev" {with-test}
+  "conf-c++" {with-test}
+  "dune" {>= "3.12"}
+  "ocaml" {>= "4.08.0"}
+  "ppx_expect"
+  "ppx_inline_test"
+  "ppx_deriving" {with-test}
+  "odoc" {with-doc}
+  "omd" {>= "2.0"}
+  "conf-pkg-config" {build}
+  "dune-configurator" {with-test}
+  "yojson" {with-test}
+  "base64" {>= "3.1.0"}
+  "ptime"
+]
+
+x-ci-accept-failures: [
+  "opensuse-15.5" #  Error during linking (exit code 1)
+  "macos-homebrew" # C++ versions less than C++14 are not supported.
+]
+
+x-maintenance-intent: ["(latest)"]
+
+synopsis: "Plugin for protoc protobuf compiler to generate ocaml definitions from a .proto file"
+
+description: """ The plugin generates ocaml type definitions,
+serialization and deserialization functions from a protobuf file.
+The types generated aims to create ocaml idiomatic types;
+- messages are mapped into modules
+- oneof constructs are mapped to polymorphic variants
+- enums are mapped to adt's
+- map types are mapped to assoc lists
+- all integer types are mapped to int by default (exact mapping is also possible)
+- all floating point types are mapped to float.
+- packages are mapped to nested modules
+
+The package aims to be a 100% compliant protobuf implementation.
+It also includes serializing to and from json based on
+protobuf json specification
+"""
+url {
+  src:
+    "https://github.com/andersfugmann/ocaml-protoc-plugin/releases/download/6.3.0/ocaml-protoc-plugin-6.3.0.tbz"
+  checksum: [
+    "sha256=0c3fdc2b6d46981f9f32477e3e1227dbee1bdb2c6a172f85d30e855c927e6334"
+    "sha512=91cf321757377b7f743a6f86aa3e039643558fa46a78d4fc25fc32f829cb33fe43d0766ec8f9606c6e8f1c18886c04bb7d489e6e3f2807e5a6e4136c2053ecdb"
+  ]
+}
+x-commit-hash: "1b163cf3d499d3949afc48f8d8e65cbb0564d690"

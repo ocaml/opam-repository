@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis: "Host Twirp services using Tiny_httpd"
+maintainer: ["Simon Cruanes"]
+authors: ["Simon Cruanes"]
+license: "MIT"
+tags: ["twirp" "protobuf" "services" "rpc"]
+homepage: "https://github.com/c-cube/ocaml-twirp"
+bug-reports: "https://github.com/c-cube/ocaml-twirp/issues"
+depends: [
+  "twirp_core" {= version}
+  "dune" {>= "2.9"}
+  "tiny_httpd" {>= "0.16"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/c-cube/ocaml-twirp.git"
+url {
+  src:
+    "https://github.com/c-cube/ocaml-twirp/releases/download/v0.2/twirp-0.2.tbz"
+  checksum: [
+    "sha256=b23f2c2f22ba977eb35b5eb1fdc78803df544dca83ace420fdff9a0420ffcd79"
+    "sha512=7c098138bf87513f2299ca2b3869d800effc86a82aed6ef4e223736c1f083611782e74767b7fde581d3dafe814b2be539adfc92aa93f08f9151ff32d67faa741"
+  ]
+}
+x-commit-hash: "b6eed8c28731a5093d0604ae892da8dea668dbd3"

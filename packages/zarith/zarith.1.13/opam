@@ -1,0 +1,59 @@
+opam-version: "2.0"
+name: "zarith"
+maintainer: "Xavier Leroy <xavier.leroy@inria.fr>"
+authors: [
+  "Antoine Miné"
+  "Xavier Leroy"
+  "Pascal Cuoq"
+]
+homepage: "https://github.com/ocaml/Zarith"
+bug-reports: "https://github.com/ocaml/Zarith/issues"
+dev-repo: "git+https://github.com/ocaml/Zarith.git"
+license: "LGPL-2.0-only WITH OCaml-LGPL-linking-exception"
+build: [
+  ["./configure"] {os != "openbsd" & os != "freebsd" & os != "macos"}
+  [
+    "sh"
+    "-exc"
+    "LDFLAGS=\"$LDFLAGS -L/usr/local/lib\" CFLAGS=\"$CFLAGS -I/usr/local/include\" ./configure"
+  ] {os = "openbsd" | os = "freebsd"}
+  [
+    "sh"
+    "-exc"
+    "LDFLAGS=\"$LDFLAGS -L/opt/local/lib -L/usr/local/lib\" CFLAGS=\"$CFLAGS -I/opt/local/include -I/usr/local/include\" ./configure"
+  ] {os = "macos" & os-distribution != "homebrew"}
+  [
+    "sh"
+    "-exc"
+    "LDFLAGS=\"$LDFLAGS -L/opt/local/lib -L/usr/local/lib\" CFLAGS=\"$CFLAGS -I/opt/local/include -I/usr/local/include\" ./configure"
+  ] {os = "macos" & os-distribution = "homebrew" & arch = "x86_64" }
+  [
+    "sh"
+    "-exc"
+    "LDFLAGS=\"$LDFLAGS -L/opt/homebrew/lib\" CFLAGS=\"$CFLAGS -I/opt/homebrew/include\" ./configure"
+  ] {os = "macos" & os-distribution = "homebrew" & arch = "arm64" }
+  [make]
+]
+install: [
+  [make "install"]
+]
+depends: [
+  "ocaml"     {>= "4.04.0"}
+  "ocamlfind"
+  "conf-gmp"
+]
+synopsis:
+  "Implements arithmetic and logical operations over arbitrary-precision integers"
+description: """
+The Zarith library implements arithmetic and logical operations over
+arbitrary-precision integers. It uses GMP to efficiently implement
+arithmetic over big integers. Small integers are represented as Caml
+unboxed integers, for speed and space economy."""
+
+url {
+  src: "https://github.com/ocaml/Zarith/archive/release-1.13.tar.gz"
+  checksum: [
+    "md5=b3529c5de89ab8c026943f73f6195ad9"
+    "sha512=a562fa8bf4f5ef44f2af6b9a8f028182fd184c89f8c41455acdc02851cc0fc3124d3776c0de930e8d09cd5d6d88cc689f80f4b597068a0611131f45d057b101f"
+  ]
+}

@@ -1,0 +1,32 @@
+opam-version: "2.0"
+synopsis: "Virtual package relying on WebKitGTK 4.1"
+description: """
+This package can only install if the WebKitGTK development files
+(webkit2gtk-4.1) are installed on the system. WebKitGTK is the GTK port of the
+WebKit rendering engine; it builds on GTK 3, hence the dependency on
+conf-gtk3."""
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+authors: "The WebKitGTK team"
+license: "LGPL-2.1-or-later"
+homepage: "https://webkitgtk.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+build: [
+  ["pkg-config" "--short-errors" "--print-errors" "webkit2gtk-4.1"]
+]
+depends: [
+  "conf-pkg-config" {build}
+  "conf-gtk3"
+]
+depexts: [
+  ["libwebkit2gtk-4.1-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["webkit2gtk4.1-devel"] {os-family = "fedora"}
+  ["webkit2gtk-4.1"] {os-family = "arch"}
+  ["webkit2gtk-4.1-dev"] {os-distribution = "alpine"}
+]
+available: os != "win32" & os != "macos"
+post-messages: [
+  "This package requires the WebKitGTK 4.1 development files (webkit2gtk-4.1) installed on your system"
+    {failure}
+]
+flags: conf
+x-maintenance-intent: ["(latest)"]

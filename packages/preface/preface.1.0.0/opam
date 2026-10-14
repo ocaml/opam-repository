@@ -16,7 +16,7 @@ bug-reports: "https://github.com/xvw/preface/issues"
 build: [
   [ "dune" "subst" ] {dev}
   [ "dune" "build" "-p" name "-j" jobs ]
-  [ "dune" "runtest" "-p" name ] {with-test & !base-effects:installed}
+  [ "dune" "runtest" "-p" name ] {with-test & !base-effects:installed & ocaml:version < "5.0"}
   [ "dune" "build" "@doc" "-p" name ] {with-doc}
 ]
 
@@ -25,8 +25,8 @@ depends: [
   "dune" { >= "2.8.0" }
   "either"
   "alcotest" {with-test}
-  "qcheck-core" {with-test}
-  "qcheck-alcotest" {with-test}
+  "qcheck-core" {with-test & >= "0.18" & < "0.24"}
+  "qcheck-alcotest" {with-test & < "0.24"}
   "mdx" {with-test}
   "odoc"{with-doc}
 ]

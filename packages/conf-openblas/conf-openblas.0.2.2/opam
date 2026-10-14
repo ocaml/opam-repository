@@ -1,0 +1,55 @@
+opam-version: "2.0"
+maintainer: "Liang Wang <ryanrhymes@gmail.com>"
+authors: [ "Liang Wang" ]
+homepage: "https://github.com/xianyi/OpenBLAS"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "BSD-3-Clause"
+build: [
+  ["sh" "-exc" "cc $CFLAGS -I/usr/include/openblas test.c -lopenblas"]
+    {os-family = "fedora" | os-distribution = "centos" | os-family = "suse" | os-family = "opensuse"}
+  [
+    "sh"
+    "-exc"
+    "cc $CFLAGS $(PKG_CONFIG_PATH=\"$(brew --prefix openblas)/lib/pkgconfig:$PKG_CONFIG_PATH\" pkg-config --cflags openblas) test.c $(PKG_CONFIG_PATH=\"$(brew --prefix openblas)/lib/pkgconfig:$PKG_CONFIG_PATH\" pkg-config --libs openblas)"
+  ] {os = "macos" & os-distribution = "homebrew"}
+  ["sh" "-exc" "cc $CFLAGS test.c -lcblas"]
+    {os-family = "arch"}
+  ["sh" "-exc" "cc $CFLAGS -I/usr/local/include -L/usr/local/lib test.c -lopenblas"]
+    {os = "freebsd"}
+  ["sh" "-exc" "x86_64-w64-mingw32-gcc $CFLAGS test.c -lopenblas"]
+    {os = "win32" & os-distribution = "cygwinports"}
+  ["sh" "-exc" "cc $CFLAGS test.c -lopenblas"]
+    {os-distribution != "fedora" & os-distribution != "centos" & os-family != "suse" & os-family != "opensuse" & os != "macos" & os-family != "arch" & os != "freebsd" & os != "win32"}
+]
+depends: [
+  "conf-pkg-config" {os = "macos" & os-distribution = "homebrew"}
+  "conf-openblas-macOS-env" {post & os = "macos" & os-distribution = "homebrew"}
+]
+depexts: [
+  ["libc-dev" "openblas-dev" "lapack-dev"] {os-distribution = "alpine"}
+  ["epel-release" "openblas-devel"] {os-distribution = "centos"}
+  ["libopenblas-dev" "liblapacke-dev"] {os-family = "debian"}
+  ["libopenblas-dev" "liblapacke-dev"] {os-family = "ubuntu"}
+  ["openblas-devel"] {os-family = "fedora"}
+  ["libopenblas_openmp-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["openblas" "lapacke" "cblas"] {os-distribution = "arch"}
+  ["openblas"] {os = "macos" & os-distribution = "homebrew"}
+  ["openblas" "lapacke"] {os = "freebsd"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7"
+  "oraclelinux-8"
+  "oraclelinux-9"
+]
+synopsis: "Virtual package to install OpenBLAS and LAPACKE"
+description:
+  "The package prepares OpenBLAS (CBLAS) and LAPACKE backend for Owl (OCaml numerical library). It can only be installed if OpenBLAS and LAPACKE are installed on the system."
+flags: conf
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-openblas/test.c.0.2.2"
+  checksum: [
+    "sha256=a3d92ea8a0b82fb107cae6c197a332b17c5741847664e1a40073b3b8f599bfc9"
+    "md5=8eb3463bce56366f0506721ca5c4e29c"
+  ]
+}

@@ -1,0 +1,48 @@
+opam-version: "2.0"
+maintainer: "Robur <team@robur.coop>"
+authors: ["Robur <team@robur.coop>"]
+homepage: "https://github.com/robur-coop/mnet"
+dev-repo: "git+https://github.com/robur-coop/mnet.git"
+bug-reports: "https://github.com/robur-coop/mnet/issues"
+license: "MIT"
+
+depends: [
+  "ocaml" {>= "5.0.0"}
+  "dune" {>= "2.7.0"}
+  "mnet" {= version}
+  "mkernel"
+  "miou"
+  "utcp"
+  "charrua" {>= "3.2.0"}
+  "charrua-client" {>= "3.2.0"}
+  "cstruct" {>= "6.0.0"}
+  "mirage-crypto-rng"
+  "slice"
+  "bstr" {>= "0.0.4"}
+  "ipaddr"
+  "macaddr"
+  "fmt"
+  "logs"
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+synopsis: "A DHCP client integration for the mnet TCP/IP stack"
+description: """
+mnet-dhcp provides a DHCP-enabled TCP/IP stack on top of mnet, using the charrua
+DHCP implementation. The core mnet library stays free of any DHCP dependency:
+the stack can be configured (and reconfigured) at runtime from DHCP leases, and
+the user is notified of and may confirm or reject configuration changes.
+"""
+url {
+  src:
+    "https://github.com/robur-coop/mnet/releases/download/v0.0.7/mnet-0.0.7.tbz"
+  checksum: [
+    "sha256=efcef0d0452c6b6b5d5a618bff47250fd873d4cd317d0a51ee349c4a5cb84d9a"
+    "sha512=5c0d2b5a1967c592138525f6f706457b45833f4f86a98c7cede0128edce4104e227361025bacc4c888bf73499c8438df95d51f990f93515cd4a2ce5f89e01caa"
+  ]
+}
+x-commit-hash: "3434bf252a7ed9fc713bd470699195dc237bdea7"

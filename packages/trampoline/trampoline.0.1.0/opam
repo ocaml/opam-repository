@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis:
+  "A trampoline library enabling deep recursions that don't fit into stack memory"
+description:
+  "Using this library you can perform deep recursion that is not limitied by the stack but only by the size of the available random access memory (RAM). In OCaml the number of nested recursive calls that are not tail-calls is limited by the stack. The stack usually consists of a fraction of the RAM available to the OCaml program. The difference between stack and RAM can be important for compilation targets where the default stack size is rather small, e. g. OCaml bytecode or JavaScript. The trampoline library provides a trampoline monad and a few convenience functions."
+maintainer: ["Armin Heller <support@arminheller.de>"]
+authors: ["Armin Heller <support@arminheller.de>"]
+license: "Apache-2.0"
+tags: ["topics" "trampoline"]
+homepage: "https://github.com/QAhell/trampoline_ocaml"
+bug-reports: "https://github.com/QAhell/trampoline_ocaml/issues"
+depends: [
+  "ocaml"
+  "dune" {>= "3.4"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/QAhell/trampoline_ocaml.git"
+url {
+  src:
+    "https://github.com/QAhell/trampoline_ocaml/releases/download/0.1.0/trampoline-0.1.0.tbz"
+  checksum: [
+    "sha256=858f0d995a6901cfebdc9937ad695093c0f5fbf56f289c52b9fa15453e839b21"
+    "sha512=a9071f22d1f9c13a9e2f6868bb4ebba2b0947b0514f643fd72c095273eccd83eb460858d38814d0121098ef5dc0676b09a6bd6cbd52bfffc03c1224b8cd27754"
+  ]
+}
+x-commit-hash: "0e5446d84945c14c7144aec294f3e0a8f81e32c3"

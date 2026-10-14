@@ -1,0 +1,50 @@
+opam-version: "2.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git+https://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure" "--prefix=%{prefix}%" "--enable-primus-symbolic-executor"]
+  [make]
+]
+
+install: [[make "install"]]
+
+remove: [["ocamlfind" "remove" "bap-plugin-primus_symbolic_executor"]
+         ["bapbundle" "remove" "primus_symbolic_executor.plugin"]]
+
+depends: [
+  "ocaml" {>= "4.08.0" }
+  "core_kernel" {>= "v0.14" & < "v0.16"}
+  "ppx_bap"
+  "bap-main" {= "2.5.0"}
+  "bap-std" {= "2.5.0"}
+  "bap-primus" {= "2.5.0"}
+  "bap-primus-track-visited" {= "2.5.0"}
+  "bitvec" {= "2.5.0"}
+  "monads" {= "2.5.0"}
+  "ppx_bap"
+  "regular" {= "2.5.0"}
+  "zarith"
+  "z3" {>= "4.8.8-1" & < "4.8.13"}
+]
+synopsis: "Primus Symbolic Executor"
+description: """
+Provides the bap:symbolic-executor Primus system that uses an SMT solver (z3) to compute
+inputs for as many paths as possible. It also includes the symbolic-computer
+component that computes symbolic formulas for each value that depends on input
+and provides Primus Lisp primitives to create symbolic values and symbolic memories,
+as well as to specify additional constraints and post asserts that are dispatched to
+the SMT solver.
+"""
+
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v2.5.0.tar.gz"
+  checksum: [
+    "sha256=9c126781385d2fa9b8edab22e62b25c70bf2f99f6ec78abb7e5e36d63cfa4174"
+    "md5=5abd9b3628b43f797326034f31ca574f"
+  ]
+  mirrors: "https://mirrors.aegis.cylab.cmu.edu/bap/2.5.0/v2.5.0.tar.gz"
+}

@@ -1,0 +1,80 @@
+opam-version: "2.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git+https://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure"
+                 "--prefix=%{prefix}%"
+                 "--with-cxx=`which clang++`"
+                 "--mandir=%{man}%"
+                 "--enable-bap-std"]
+  [make]
+]
+
+install: [
+  [make "reinstall"]
+]
+
+remove: [
+  ["ocamlfind" "remove" "bap"]
+  ["rm" "-f" "%{bin}%/baptop"]
+  ["rm" "-f" "%{bin}%/ppx-bap"]
+]
+
+depends: [
+  "ocaml" {>= "4.08.0" }
+  "base-unix"
+  "bap-future" {= "2.5.0"}
+  "bap-knowledge" {= "2.5.0"}
+  "bitvec" {= "2.5.0"}
+  "bitvec-order" {= "2.5.0"}
+  "bap-core-theory" {= "2.5.0"}
+  "bap-bundle" {= "2.5.0"}
+  "bap-main" {= "2.5.0"}
+  "bap-plugins" {= "2.5.0"}
+  "bap-relation" {= "2.5.0"}
+  "camlzip" {>= "1.07"}
+  "core_kernel" {>= "v0.14" & < "v0.16"}
+  "bin_prot" {>= "v0.14" & < "v0.16"}
+  "fileutils"
+  "graphlib" {= "2.5.0"}
+  "oasis" {build & >= "0.4.7"}
+  "ocamlfind" {>= "1.5.6" & < "2.0"}
+  "ppx_bap"
+  "regular" {= "2.5.0"}
+  "uri"
+  "utop" {build & >= "2.0.0"}
+  "uuidm"
+  "zarith"
+  "cmdliner" {>= "0.9.8"}
+  "ogre" {= "2.5.0"}
+  "monads" {= "2.5.0"}
+  "result"
+  "mmap"
+  "conf-which" {build}
+  "conf-gmp"
+  "conf-zlib"
+  "conf-clang"
+  "conf-m4"
+  "conf-perl"
+  "conf-binutils"
+]
+conflicts: [
+  "fileutils" {= "0.5.0"}
+  "jbuilder" {= "1.0+beta18"}
+]
+synopsis: "The Binary Analysis Platform Standard Library"
+description: "Provides the main BAP library."
+flags: light-uninstall
+
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v2.5.0.tar.gz"
+  checksum: [
+    "sha256=9c126781385d2fa9b8edab22e62b25c70bf2f99f6ec78abb7e5e36d63cfa4174"
+    "md5=5abd9b3628b43f797326034f31ca574f"
+  ]
+  mirrors: "https://mirrors.aegis.cylab.cmu.edu/bap/2.5.0/v2.5.0.tar.gz"
+}

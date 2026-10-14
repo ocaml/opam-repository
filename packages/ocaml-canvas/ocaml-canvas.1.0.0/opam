@@ -1,0 +1,67 @@
+opam-version: "2.0"
+synopsis: "The OCaml-Canvas library"
+description: """
+The OCaml-Canvas library provides a portable Canvas for OCaml.
+"""
+authors: ["David Declerck <david.declerck@ocamlpro.com>"]
+maintainer: ["David Declerck <david.declerck@ocamlpro.com>"]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+dev-repo: "git+https://github.com/OCamlPro/ocaml-canvas.git"
+bug-reports: "https://github.com/OCamlPro/ocaml-canvas/issues"
+homepage: "https://ocamlpro.github.io/ocaml-canvas/"
+doc: "https://ocamlpro.github.io/ocaml-canvas/sphinx"
+depends: [
+  "ocaml"                  { >= "4.03" }
+  "dune"                   { >= "2.2" }
+  "dune-configurator"      { >= "1.11" }
+  "react"                  { >= "1.0" }
+  "odoc"                   { >= "1.4" & with-doc }
+
+  "conf-freetype"          { os != "macos" & os != "win32" }
+  "conf-libfontconfig"     { os != "macos" & os != "win32" }
+  "conf-xkbcommon"         { os != "macos" & os != "win32" }
+
+  "conf-libxcb"            { os != "macos" & os != "win32" }
+  "conf-libxcb-shm"        { os != "macos" & os != "win32" }
+  "conf-libxcb-image"      { os != "macos" & os != "win32" }
+  "conf-libxcb-xkb"        { os != "macos" & os != "win32" }
+  "conf-libxcb-keysyms"    { os != "macos" & os != "win32" }
+]
+depopts: [
+  "js_of_ocaml"            { >= "3.6" }
+ "conf-wayland-protocols" {os != "macos" & os != "win32"}
+ "conf-libwayland" {os != "macos" & os != "win32"}
+]
+post-messages: [
+  "Javascript support: YES"
+    { js_of_ocaml:installed & js_of_ocaml:version >= "3.6" }
+  "Javascript support: NO (requires js_of_ocaml >= 3.6)"
+    { !js_of_ocaml:installed | js_of_ocaml:version < "3.6" }
+  "Wayland support: YES"
+    { conf-libwayland:installed & conf-wayland-protocols:installed }
+  "Wayland support: NO (requires conf-libwayland, conf-wayland-protocols)"
+    { os != "macos" & os != "win32" &
+      !(conf-libwayland:installed & conf-wayland-protocols:installed) }
+  "X11 support: YES"
+    { conf-libxcb:installed & conf-libxcb-shm:installed &
+      conf-libxcb-image:installed & conf-libxcb-xkb:installed &
+      conf-libxcb-keysyms:installed }
+  "X11 support: NO (requires conf-libxcb, conf-libxcb-shm, conf-libxcb-image, conf-libxcb-xkb, conf-libxcb-keysyms)"
+    { os != "macos" & os != "win32" &
+      !(conf-libxcb:installed & conf-libxcb-shm:installed &
+        conf-libxcb-image:installed & conf-libxcb-xkb:installed &
+        conf-libxcb-keysyms:installed) }
+]
+build: [
+  ["dune" "subst"] { dev }
+  ["sh" "-c" "dune build -p %{name}% @configure --auto-promote || true" ]
+  ["dune" "build" "-p" name "-j" jobs
+   "@install" "@runtest" { with-test } "@doc" { with-doc }]
+]
+url {
+  src: "https://github.com/OCamlPro/ocaml-canvas/archive/1.0.0.tar.gz"
+  checksum: [
+    "md5=d7eb9b1d586a8d0286a902fd8ef29d2e"
+    "sha512=268b0340b3e396173006bf77d9bc4d29608f3ad8fa5ef87855ca23e4ae2bbc2a7ea8e71d125881b6bb8b8af925805b4ee62865f1e7a8bad3d84c72d0c57a5e0a"
+  ]
+}

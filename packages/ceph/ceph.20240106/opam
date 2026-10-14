@@ -1,0 +1,39 @@
+opam-version: "2.0"
+maintainer: "Ahrefs Pte Ltd <github@ahrefs.com>"
+authors: [ "Ahrefs Pte Ltd <github@ahrefs.com>" ]
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/ahrefs/ocaml-ceph"
+dev-repo: "git+https://github.com/ahrefs/ocaml-ceph.git"
+bug-reports: "https://github.com/ahrefs/ocaml-ceph/issues"
+tags: [ "org:ahrefs" "clib:stdc" "clib:cephfs"  ]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs "@install" "@doc" {with-doc}]
+]
+depends: [
+  "ocaml"
+  "dune" {>= "2.0"}
+  "odoc" {with-doc}
+  "ctypes" {>= "0.8.0"}
+]
+conflicts: [
+  "ocaml-option-bytecode-only"
+]
+depexts: [
+  ["libcephfs"] {os-family = "arch"}
+  ["libcephfs-dev"] {os-family = "debian"}
+  ["libcephfs-dev"] {os-family = "ubuntu"}
+  ["libcephfs-devel"] {os-family = "fedora"}
+]
+available: os != "macos" & os != "win32"
+synopsis: "Bindings to libcephfs"
+description: "Bindings to Ceph distributed file system client library"
+url {
+  src:
+    "https://github.com/ahrefs/ocaml-ceph/releases/download/20240106/ceph-20240106.tbz"
+  checksum: [
+    "sha256=b6ca906022f832c5ca72dbdc5b7ff03b131a2f3c65c6e7e2914d4bb557dbe2d2"
+    "sha512=243f58f9156608c50d8e42ec87d2362c38bcc2d80e0bdee44514fc1f7a46defc066e1dab16048555175d8e1ab975841bea5eeeaa4b2e270959f9e97778d033e9"
+  ]
+}
+x-commit-hash: "b5cae2bec8b7c1aa7aa8118d5e0ba4eeb066426c"

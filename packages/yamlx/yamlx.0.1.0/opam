@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis:
+  "Pure-OCaml YAML 1.2 parser with a lossless, comment-preserving AST"
+description: """
+YAMLx is a pure-OCaml YAML 1.2 library. It passes all 371 tests from the yaml-test-suite and has no C bindings or external runtime dependencies. The parsed node tree preserves scalar styles, flow vs. block collection style, tags, anchors, source positions, and comments. A pretty-printer can round-trip the AST back to YAML. A typed-value resolver applies the YAML 1.2 JSON schema and returns Null / Bool / Int / Float / String / Seq / Map values. Structured errors carry line, column, and byte-offset information.
+
+YAMLx is currently released under the AGPL. A commercial license and a path to a fully permissive ISC license are available — see FUNDING.md."""
+maintainer: ["Martin Jambon <martin@mjambon.com>"]
+authors: ["Martin Jambon <martin@mjambon.com>"]
+license: "AGPL-3.0-only"
+tags: ["yaml" "parser" "serialization"]
+homepage: "https://github.com/mjambon/yamlx"
+doc: "https://mjambon.github.io/yamlx"
+bug-reports: "https://github.com/mjambon/yamlx/issues"
+depends: [
+  "dune" {>= "3.20"}
+  "ocaml" {>= "4.14.0"}
+  "ppx_deriving"
+  "testo" {with-test}
+  "afl-persistent" {dev}
+  "yaml" {dev}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mjambon/yamlx.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/mjambon/yamlx/releases/download/0.1.0/yamlx-0.1.0.tbz"
+  checksum: [
+    "sha256=2216abdfb47575414c5d280d18426ee73eb2b0531cae0d4777be2134b95eb701"
+    "sha512=2b6ec7b88c54ab1686a5f875e2a38769b5be01a616152fab9d9f9aa9d2ce38f175b7693d0ed8826b7e0cd1f0027f0fb28c16b89fdbf938bb82461e917f22b860"
+  ]
+}
+x-commit-hash: "dccd2a610518bfb7bdd7682301e113a90a62b9e4"

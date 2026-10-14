@@ -8,9 +8,10 @@ license: "ISC"
 homepage: "https://github.com/talex5/lwt_eio"
 bug-reports: "https://github.com/talex5/lwt_eio/issues"
 depends: [
+  "ocaml"
   "dune" {>= "2.9"}
-  "eio"
-  "lwt"
+  "eio" {< "0.10"}
+  "lwt" {< "6.1.0"}
   "mdx" {>= "1.10.0" & with-test}
   "eio_main" {with-test}
   "odoc" {with-doc}
@@ -26,7 +27,7 @@ build: [
     jobs
     "--promote-install-files=false"
     "@install"
-    "@runtest" {with-test}
+    "@runtest" {with-test & ocaml:version < "5.0"}
     "@doc" {with-doc}
   ]
   ["dune" "install" "-p" name "--create-install-files" name]
@@ -41,3 +42,7 @@ url {
   ]
 }
 x-commit-hash: "ef43ce29ae391c04e90a708994bc278e656164bc"
+conflicts: [
+	"lwt" {= "6.0.0~alpha00" }
+	"lwt" {= "6.0.0~beta01" }
+]

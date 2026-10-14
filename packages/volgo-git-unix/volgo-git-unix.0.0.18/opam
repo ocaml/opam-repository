@@ -1,0 +1,65 @@
+opam-version: "2.0"
+synopsis:
+  "A Git backend for Vcs based on Volgo_git_backend and the Unix library"
+maintainer: ["Mathieu Barbin <opensource@mbarbin.org>"]
+authors: ["Mathieu Barbin"]
+license: "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
+homepage: "https://github.com/mbarbin/vcs"
+doc: "https://mbarbin.github.io/vcs/"
+bug-reports: "https://github.com/mbarbin/vcs/issues"
+depends: [
+  "dune" {>= "3.17"}
+  "ocaml" {>= "4.14"}
+  "conf-git" {with-test}
+  "fpath" {>= "0.7.3"}
+  "fpath-sexp0" {>= "0.3.1"}
+  "pp" {>= "2.0.0"}
+  "pplumbing" {>= "0.0.14"}
+  "ppx_sexp_conv" {>= "v0.16"}
+  "ppx_sexp_value" {>= "v0.16"}
+  "ppxlib" {>= "0.33"}
+  "sexplib0" {>= "v0.16"}
+  "spawn" {>= "v0.16"}
+  "volgo" {= version}
+  "volgo-git-backend" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mbarbin/vcs.git"
+description: """\
+
+[volgo] is a set of OCaml libraries for interacting with Git
+repositories. It provides a type-safe and direct-style API to
+programmatically perform Git operations, ranging from creating
+commits and branches to loading and navigating commit graphs in
+memory, computing diffs between revisions, and more.
+
+[Volgo_git_unix] implements a Git backend for [volgo] based on the
+OCaml standard library. It runs the [git] CLI as a subprocess in a
+blocking fashion, similar to the Stdlib's [Unix] module.
+
+"""
+tags: [ "git" "vcs" "blocking-io" ]
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mbarbin/vcs/releases/download/0.0.18/volgo-0.0.18.tbz"
+  checksum: [
+    "sha256=b387e24af5d12de7fd50194b9ccd73d271c92161110e860a4481b92e4d0c04a1"
+    "sha512=a8afaf6fe9b9ab4b638af4fc064afda937bfbdcf4d92ecc6ac287a4e57bcba27e24742b33a4f7f2e71cb511e3510789c5f57ba10270f8ee37aaaa4e55db6078e"
+  ]
+}
+x-commit-hash: "705c2d04c7fcb8f8b1356b8bf7f15a32b1c57580"

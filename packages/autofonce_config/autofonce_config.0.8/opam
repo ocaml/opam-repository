@@ -1,0 +1,52 @@
+opam-version: "2.0"
+license: "GPL-3.0-only"
+synopsis: "A modern runner for GNU Autoconf Testsuites"
+description: """\
+autofonce is a modern runner for GNU Autoconf Testsuites:
+autofonce has a limited understanding of m4 macros that appear in testsuites
+written for the GNU Autoconf testsuites, and can run such tests in a modern
+way.
+"""
+authors: ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+maintainer: ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+homepage: "https://ocamlpro.github.io/autofonce"
+doc: "https://ocamlpro.github.io/autofonce/sphinx"
+bug-reports: "https://github.com/ocamlpro/autofonce/issues"
+dev-repo: "git+https://github.com/ocamlpro/autofonce.git"
+tags: "org:ocamlpro"
+build: [
+  ["dune" "subst"] {dev}
+  ["sh" "-c" "./scripts/before.sh build '%{name}%'"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["sh" "-c" "./scripts/after.sh build '%{name}%'"]
+]
+install: [
+  ["sh" "-c" "./scripts/before.sh install '%{name}%'"]
+]
+depends: [
+  "ocaml" {>= "4.10.0"}
+  "dune" {>= "2.7.0"}
+  "toml" {>= "7.0"}
+  "ocplib_stuff" {>= "0.1"}
+  "ez_file" {>= "0.3"}
+  "autofonce_misc" {= version}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
+]
+
+url {
+    src: "https://github.com/ocamlpro/autofonce/archive/v0.8.tar.gz"
+    checksum: [ "sha256=4838b340c1e99708d6690fdd8658fc8b6ac74e3c38c0c3f1bbf2a50e92e48c4a" ]
+}

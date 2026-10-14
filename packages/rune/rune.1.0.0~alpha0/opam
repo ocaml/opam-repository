@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Automatic differentiation and JIT compilation for OCaml"
+description:
+  "Rune provides automatic differentiation capabilities and experimental JIT compilation for the Raven ecosystem. It enables gradient-based optimization and supports functional transformations like grad, value_and_grad, and vmap, making it the foundation for deep learning in OCaml."
+maintainer: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+authors: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+license: "ISC"
+homepage: "https://github.com/raven-ml/raven"
+bug-reports: "https://github.com/raven-ml/raven/issues"
+depends: [
+  "ocaml" {>= "5.2.0"}
+  "dune" {>= "3.19"}
+  "nx" {= version}
+  "ctypes" {>= "0.21.0"}
+  "ctypes-foreign" {>= "0.21.0" & os = "macos"}
+  "alcotest" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/raven-ml/raven.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/raven-ml/raven/releases/download/1.0.0_alpha0/raven-1.0.0.alpha0.tbz"
+  checksum: [
+    "sha256=a9a8a9787f8250337187bb7b21cb317c41bfd2ecf08bcfe0ab407c7b6660764d"
+    "sha512=fe13cf257c487e41efe2967be147d80fa94bac8996d3aab2b8fd16f0bbbd108c15e0e58c025ec9bf294d4a0d220ca2ba00c3b1b42fa2143f758c5f0ee4c15782"
+  ]
+}
+x-commit-hash: "2bac64a5026c68d79371eef918a5242b1ad75bd5"

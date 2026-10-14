@@ -1,0 +1,51 @@
+opam-version: "2.0"
+maintainer: "Guillaume Munch-Maccagnoni <Guillaume.Munch-Maccagnoni@inria.fr>"
+authors: [
+  "Guillaume Munch-Maccagnoni <Guillaume.Munch-Maccagnoni@inria.fr>"
+]
+license: "LGPL-3.0-only WITH LGPL-3.0-linking-exception"
+homepage: "https://gitlab.com/gadmm/memprof-limits/"
+doc: "https://guillaume.munch.name/software/ocaml/memprof-limits/"
+bug-reports: "https://gitlab.com/gadmm/memprof-limits/issues/"
+depends: [
+  "ocaml" {>="4.12.0" & < "5.0"}
+  "dune" {>= "1.2"}
+]
+build: ["dune" "build" "-p" name "-j" jobs]
+dev-repo: "git+https://gitlab.com/gadmm/memprof-limits.git"
+synopsis: "Memory limits, allocation limits, and thread cancellation"
+description: """
+Memprof-limits provides per-thread global memory limits, per-thread
+allocation limits, and cancellation of threads, with ways to
+ensure resource-safety after interruption.
+
+Global memory limits let you bound the memory consumption of a task,
+in terms of the major heap size.
+
+Allocation limits let you bound the execution time of a task measured
+in number of allocations. Allocation limits do not count
+deallocations, and are therefore a measure of the work done, which can
+be more suitable (reliable, portable, deterministic) than wall-clock
+time.
+
+Token limits lets you cancel a (CPU-bound) task preemptively and at a
+distance.
+
+Tasks are interrupted by raising an asynchronous exception.
+Memprof-limits provides resource-management features and guidance for
+reasoning about the consistency of state in the presence of such
+interrupts.
+
+The implementation uses OCaml's Statmemprof engine with a low sampling
+rate that does not affect performance. A reimplementation of the
+Memprof interface compatible with Memprof-limits running at the same
+time is provided for profiling needs.
+"""
+url {
+  src:
+    "https://gitlab.com/gadmm/memprof-limits/-/archive/v0.2.1/memprof-limits-v0.2.1.tar.gz"
+  checksum: [
+    "md5=15026b85944ee405fe6784cc9f1575bb"
+    "sha512=6ae138bc582911ab221f8c8a4a461b58bfcb837933b989ea9f10ef8cdd54a445c300f41fa4a0ec70746a27c24ccae5598666c98195a8400bc7c5c37e9327480b"
+  ]
+}

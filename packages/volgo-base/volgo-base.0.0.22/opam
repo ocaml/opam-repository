@@ -1,0 +1,68 @@
+opam-version: "2.0"
+synopsis: "An Extension of volgo.Vcs to use with Base"
+maintainer: ["Mathieu Barbin <opensource@mbarbin.org>"]
+authors: ["Mathieu Barbin"]
+license: "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
+homepage: "https://github.com/mbarbin/vcs"
+doc: "https://mbarbin.github.io/vcs/"
+bug-reports: "https://github.com/mbarbin/vcs/issues"
+depends: [
+  "dune" {>= "3.17"}
+  "ocaml" {>= "5.2"}
+  "base" {>= "v0.17"}
+  "fpath" {>= "0.7.3"}
+  "fpath-sexp0" {>= "0.4.0"}
+  "pp" {>= "2.0.0"}
+  "pplumbing-err" {>= "0.0.16"}
+  "pplumbing-pp-tty" {>= "0.0.16"}
+  "ppx_hash" {>= "v0.17"}
+  "ppxlib" {>= "0.33"}
+  "volgo" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mbarbin/vcs.git"
+description: """\
+
+[Volgo_base] is a library that extends the [Vcs] library with
+additional modules and functionalities to improve compatibility with
+programs using [base].
+
+For example, it adds [Comparable.S] to all container key modules so
+that they can be used with [base]-style containers such as [Map] and
+[Hashtbl].
+
+It also exports a module [Vcs.Or_error] to make it easy to use [Vcs]
+with the [Or_error] monad.
+
+The library is designed to be used as a drop-in replacement for [Vcs].
+To achieve this, it includes a single module named [Vcs] which must be
+set up to shadow the regular [Vcs] module.
+
+[base]: https://github.com/janestreet/base
+
+"""
+tags: [ "git" "vcs" "base" ]
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mbarbin/vcs/releases/download/0.0.22/volgo-0.0.22.tbz"
+  checksum: [
+    "sha256=2714935a34417be2151736a4765431746c9348db5a3b4f0eaacaf74dfaefeabb"
+    "sha512=0eba27395125ae928fd53561029d9653094d822b2907cb9afc18f412b46ef47cf880ba80d1bf17212add4e68e6a55e2792176303e2b0bcee08940e25731b4738"
+  ]
+}
+x-commit-hash: "08c01cf51f7fdf47935184c1eed405675f9c7201"

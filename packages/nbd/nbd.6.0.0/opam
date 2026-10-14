@@ -1,0 +1,49 @@
+opam-version: "2.0"
+maintainer: "Xapi project maintainers"
+authors: [ "Jonathan Ludlam" "David Scott" "Thomas Sanders" ]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/xapi-project/nbd"
+doc: "https://xapi-project.github.io/nbd/nbd/index.html"
+dev-repo: "git+https://github.com/xapi-project/nbd.git"
+bug-reports: "https://github.com/xapi-project/nbd/issues"
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "-p" name "-j" jobs "@doc"] {with-doc}
+  ["dune" "build" "-p" name "-j" jobs "@runtest"] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "bisect_ppx" {dev & >= "2.5.0"}
+  "dune" {>= "2.7.0"}
+  "alcotest" {with-test}
+  "alcotest-lwt" {with-test}
+  "cstruct" {>= "6.0.0"}
+  "io-page"
+  "io-page-unix" {with-test}
+  "mirage-block" {>= "2.0.0"}
+  "mirage-block-unix"
+  "lwt" {>= "2.7.0"}
+  "lwt_log"
+  "odoc" {with-doc}
+  "ppx_cstruct" {>= "3.1.0"}
+  "ppx_sexp_conv" {>= "v0.9.0"}
+  "rresult"
+  "sexplib"
+  "uri"
+]
+conflicts: ["result" {< "1.5"}]
+tags: [ "org:mirage" "org:xapi-project" ]
+synopsis: "Network Block Device (NBD) protocol implementation"
+description: """
+This library allows applications to export and consume block
+devices using the NBD protocol (as used by Linux, qemu etc)"""
+url {
+  src:
+    "https://github.com/xapi-project/nbd/releases/download/6.0.0/nbd-6.0.0.tbz"
+  checksum: [
+    "sha256=8a0fb5f6f8a37422e09afbb28bb3158e714b43b23b6845225217ea619b72c4de"
+    "sha512=d3517bcda9261715c5d92d3966e694844f89ea93a7e9b622ed8e6e71046ae0fd7383926c17fb73af5de53b83474d7b2ade21baf662a3cb2d49b324ad122aec83"
+  ]
+}
+x-commit-hash: "41f9e670e0e1beb8714215b813b5b4d184fdcdc5"

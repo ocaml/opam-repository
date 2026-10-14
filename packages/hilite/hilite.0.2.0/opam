@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "Build time syntax highlighting"
+description:
+  "A library for adding syntax highlighting to OCaml-related code and outputing to HTML"
+maintainer: ["patrick@sirref.org"]
+authors: ["Patrick Ferris"]
+license: "ISC"
+homepage: "https://github.com/patricoferris/hilite"
+bug-reports: "https://github.com/patricoferris/hilite/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "mdx" {with-test}
+  "yojson"
+  "omd" {>= "2.0.0~alpha2"}
+  "textmate-language" {>= "0.3.3"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/patricoferris/hilite.git"
+url {
+  src:
+    "https://github.com/patricoferris/hilite/releases/download/v0.2.0/hilite-0.2.0.tbz"
+  checksum: [
+    "sha256=3b7c35e1e7219e1651b43ed7cfbad7cf43f83ceca88ceecf1aec7689ba985521"
+    "sha512=55ac47061331bf6b1e9db471ae2b95f1fe92916640f78cfbb89b5d6dfa907c23aa8a8f134ffd86dded64ecb85ddac62c0ebe4ad4fc34c79d326ee2fd4c5e1c3b"
+  ]
+}
+x-commit-hash: "10e435e0061dde6e4d51ff68c600a521e87f1943"

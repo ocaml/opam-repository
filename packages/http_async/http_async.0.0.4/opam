@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "Async library for HTTP/1.1 servers"
+maintainer: ["Anurag Soni <anurag@sonianurag.com>"]
+authors: ["Anurag Soni <anurag@sonianurag.com>"]
+license: "MIT"
+tags: ["http-server" "http" "http1.1" "async"]
+homepage: "https://github.com/anuragsoni/http_async"
+doc: "https://anuragsoni.github.io/http_async/"
+bug-reports: "https://github.com/anuragsoni/http_async/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.11.0"}
+  "shuttle" {>= "0.5.0" & < "0.9.0"}
+  "ppxlib" {>= "0.23.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/anuragsoni/http_async.git"
+available: [ arch = "x86_64" | arch = "arm64" ]
+url {
+  src:
+    "https://github.com/anuragsoni/http_async/releases/download/0.0.4/http_async-0.0.4.tbz"
+  checksum: [
+    "sha256=aae21a65c6b194accc0bb5c5c6191b1fec2ac4d5311e0038901f3f994315a982"
+    "sha512=21fe682c97fdc4ac318e75b310d471af29d6a09f7523191cec435aed514a0b69375dcf5100ef10c4ee3d38c3d19a87fe01cd4cfc443a209717b9e0246d09a01c"
+  ]
+}
+x-commit-hash: "3a6827c811552bf5ec4e1eb5aed8e9e32c52141f"

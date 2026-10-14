@@ -7,13 +7,12 @@ doc: "http://whitequark.github.io/ocaml-inotify"
 bug-reports: "https://github.com/whitequark/ocaml-inotify/issues"
 dev-repo: "git+https://github.com/whitequark/ocaml-inotify.git"
 build: [
-  ["ocaml" "setup.ml" "-configure" "--%{lwt:enable}%-lwt" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
   [
     "ocaml"
     "setup.ml"
     "-configure"
-    "--%{lwt:enable}%-lwt"
     "--prefix"
     prefix
     "--enable-tests"
@@ -28,7 +27,7 @@ remove: [
   ["ocamlfind" "remove" "inotify"]
 ]
 depends: [
-  "ocaml"
+  "ocaml" {< "5.0"}
   "base-unix"
   "base-bytes"
   "ocamlfind" {build}
@@ -36,14 +35,16 @@ depends: [
   "fileutils" {with-test}
   "ounit" {with-test & >= "2.0.0"}
 ]
-depopts: ["lwt"]
 conflicts: [
-  "lwt" {with-test & >= "5.0.0"}
+  "lwt"
 ]
 available: os = "linux" | os = "macos"
 synopsis: "Inotify bindings for ocaml."
 flags: light-uninstall
 url {
   src: "https://github.com/whitequark/ocaml-inotify/archive/v2.1.tar.gz"
-  checksum: "md5=60b3070dec5c008b3fe69a562ea4e905"
+  checksum: [
+    "sha256=f874bb467542e3ae101bf0fc1fc829a04f938d9106cbc8a18cb89d7ece37e25f"
+    "md5=60b3070dec5c008b3fe69a562ea4e905"
+  ]
 }

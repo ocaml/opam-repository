@@ -22,10 +22,10 @@ depends: [
   "ocluster-api" {= version}
   "lwt"
   "capnp-rpc-lwt"
-  "capnp-rpc-net"
-  "capnp-rpc-unix" {>= "0.9.0"}
+  "capnp-rpc-net" {< "2.0"}
+  "capnp-rpc-unix" {>= "0.9.0" & < "2.0"}
   "logs"
-  "fmt"
+  "fmt" {< "0.10.0"}
   "conf-libev" {os != "win32"}
   "digestif" {>= "0.8"}
   "fpath"
@@ -35,11 +35,16 @@ depends: [
   "sqlite3"
   "obuilder" {< "0.4"}
   "psq"
-  "mirage-crypto" {>= "0.8.5"}
+  "mirage-crypto" {>= "0.8.5" & < "1.0.0"}
   "ocaml" {>= "4.10.0"}
   "current_ocluster" {= version & with-test}
   "alcotest" {>= "1.0.0" & with-test}
   "alcotest-lwt" {>= "1.0.1" & with-test}
+]
+conflicts: [
+	"lwt" {= "6.0.0~alpha00" }
+	"lwt" {= "6.0.0~beta01" }
+  "conduit" {>= "6.2.0"} # conduit-lwt-unix doesn't implicitly pull tls.lwt anymore if lwt is installed
 ]
 build: [
   ["dune" "subst"] {dev}

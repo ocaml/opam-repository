@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "Inotify bindings for OCaml"
+description: "Inotify bindings for OCaml"
+maintainer: ["whitequark <whitequark@whitequark.org>"]
+authors: ["whitequark <whitequark@whitequark.org>"]
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/whitequark/ocaml-inotify"
+doc: "https://whitequark.github.io/ocaml-inotify"
+bug-reports: "https://github.com/whitequark/ocaml-inotify/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "base-unix"
+  "base-bytes"
+  "fileutils" {with-test & >= "0.4.4"}
+  "ounit2" {with-test & >= "2.0"}
+  "lwt" {with-test}
+  "ocaml" {>= "4.03"}
+  "odoc" {with-doc}
+]
+depopts: ["lwt"]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/whitequark/ocaml-inotify.git"
+available: os="linux"
+url {
+  src:
+    "https://github.com/whitequark/ocaml-inotify/releases/download/v2.5/inotify-2.5.tbz"
+  checksum: [
+    "sha256=829aec332ccb46f61876b23c38059afcf7802516d3697c1aa15e1916be72114b"
+    "sha512=3dea21ae119cb9c524e9b4a2d3b324d8d46df41bda57c32b11563802646ac2be37b76f629f0c5fd8fc3635684feea8f1abaf7d4efd8b2b5c3618a5d935aa94b1"
+  ]
+}
+x-commit-hash: "5e5853680c2b2e41091c1ed030eef9ab008203bb"

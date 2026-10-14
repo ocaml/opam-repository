@@ -1,25 +1,79 @@
 opam-version: "2.0"
+# These packages are part of the infrastructure for maintaining the OCaml
+# compiler dependencies in opam. It's not possible to version the metadata
+# itself, because opam's versioning provides no mechanism to ignore the
+# revision (i.e. we don't have a way to have two revisions of ocaml.5.4.1 but
+# where "ocaml" {= "5.4.1"} would always mean to use the latest revision).
+# It is however useful to know which version of the metadata is installed.
+# This number should be bumped whenever a pertinent change is made.
+x-revision: "11"
 license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
-synopsis: "Latest 4.13 developmet"
-maintainer: "platform@lists.ocaml.org"
+synopsis: "Latest 4.13 development"
+maintainer: [
+  "David Allsopp <dra27@dra27.uk>"
+  "Florian Angeletti <florian.angeletti@inria.fr>"
+]
 authors: ["Xavier Leroy" "Damien Doligez" "Alain Frisch" "Jacques Garrigue" "Didier Rémy" "Jérôme Vouillon"]
 homepage: "https://ocaml.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-dev-repo: "git+https://github.com/ocaml/ocaml.git#trunk"
+dev-repo: "git+https://github.com/ocaml/ocaml.git#4.13"
 depends: [
+  # This is OCaml 4.13.2
   "ocaml" {= "4.13.2" & post}
+
+  # General base- packages
   "base-unix" {post}
   "base-bigarray" {post}
   "base-threads" {post}
+
   "ocaml-beta" {opam-version < "2.1.0"}
+
+  # Architecture (non-Windows)
+  # opam-repository at present requires that ocaml-base-compiler is installed
+  # using an architecture which matches the machine's, since arch is used in
+  # available fields. Cross-compilation at this stage is an unstable accident.
+  "host-arch-arm32" {arch = "arm32" & post}
+  "host-arch-arm64" {arch = "arm64" & post}
+  "host-arch-ppc64" {arch = "ppc64" & post}
+  "host-arch-riscv64" {arch = "riscv64" & post}
+  "host-arch-s390x" {arch = "s390x" & post}
+  # The Windows ports explicitly select the architecture (see below) this
+  # facility is not yet available for other platforms.
+  "host-arch-x86_32" {os != "win32" & arch = "x86_32" & post}
+  ("host-arch-x86_64" {os != "win32" & arch = "x86_64" & post} |
+   ("host-arch-x86_32" {os != "win32" & arch = "x86_64" & post} & "ocaml-option-32bit" {os != "win32" & arch = "x86_64"}))
+  "host-arch-unknown" {os != "win32" & arch != "arm32" & arch != "arm64" & arch != "ppc64" & arch != "riscv64" & arch != "s390x" & arch != "x86_32" & arch != "x86_64" & post}
+
+  # Port selection (Windows)
+  # amd64 mingw-w64 / MSVC
+  (("arch-x86_64" {os = "win32" & arch = "x86_64"} &
+     ("system-mingw" | "system-msvc")) |
+  # i686 mingw-w64 / MSVC
+   ("arch-x86_32" {os = "win32"} &
+     ("system-mingw" | "system-msvc")) |
+  # Non-Windows systems
+   "host-system-other" {os != "win32" & post})
+
+  # Support Packages
+  "flexdll" {>= "0.36" & os = "win32"}
 ]
 conflict-class: "ocaml-core-compiler"
 flags: [ compiler avoid-version ]
+build-env: MSYS2_ARG_CONV_EXCL = "*"
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+x-env-path-rewrite: [
+  [CAML_LD_LIBRARY_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
+]
+conflicts: "relocatable"
 build: [
   [
     "./configure"
+    "--host=x86_64-pc-windows"  {system-msvc:installed & arch-x86_64:installed}
+    "--host=x86_64-w64-mingw32" {os-distribution = "cygwin" & system-mingw:installed & arch-x86_64:installed}
+    "--host=i686-pc-windows"    {system-msvc:installed & arch-x86_32:installed}
+    "--host=i686-w64-mingw32"   {os-distribution = "cygwin" & system-mingw:installed & arch-x86_32:installed}
     "--prefix=%{prefix}%"
+    "--with-flexdll=%{flexdll:share}%" {os = "win32" & flexdll:installed}
     "-C"
     "--with-afl" {ocaml-option-afl:installed}
     "--disable-native-compiler" {ocaml-option-bytecode-only:installed}
@@ -53,15 +107,6 @@ install: [make "install"]
 url {
   src: "https://github.com/ocaml/ocaml/archive/4.13.tar.gz"
 }
-post-messages: [
-  "A failure in the middle of the build may be caused by build parallelism
-   (enabled by default).
-   See https://github.com/ocaml/opam-repository/pull/14257 for more info."
-  {failure & jobs > 1 & os != "cygwin"}
-  "You can try installing again including --jobs=1
-   to force a sequential build instead."
-  {failure & jobs > 1 & os != "cygwin" & opam-version >= "2.0.5"}
-]
 depopts: [
   "ocaml-option-32bit"
   "ocaml-option-afl"

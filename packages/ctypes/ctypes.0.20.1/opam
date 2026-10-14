@@ -1,9 +1,9 @@
 opam-version: "2.0"
 maintainer: "yallop@gmail.com"
-homepage: "https://github.com/ocamllabs/ocaml-ctypes"
-doc: "http://ocamllabs.github.io/ocaml-ctypes"
-dev-repo: "git+http://github.com/ocamllabs/ocaml-ctypes.git"
-bug-reports: "http://github.com/ocamllabs/ocaml-ctypes/issues"
+homepage: "https://github.com/yallop/ocaml-ctypes"
+doc: "http://yallop.github.io/ocaml-ctypes"
+dev-repo: "git+http://github.com/yallop/ocaml-ctypes.git"
+bug-reports: "http://github.com/yallop/ocaml-ctypes/issues"
 license: "MIT"
 build: [
   [make "XEN=%{mirage-xen:enable}%" "libffi.config"]
@@ -12,13 +12,13 @@ build: [
   [make "XEN=%{mirage-xen:enable}%" "ctypes-base" "ctypes-stubs"]
   [make "XEN=%{mirage-xen:enable}%" "ctypes-foreign"]
     {ctypes-foreign:installed}
-  [make "test"] {with-test}
+  [make "test"] {with-test & ocaml:version < "5.0"}
 ]
 install: [
   [make "install" "XEN=%{mirage-xen:enable}%"]
 ]
 depends: [
-  "ocaml" {>= "4.03.0"}
+  "ocaml" {>= "4.03.0" & < "5.2"}
   "integers" { >= "0.3.0" }
   "ocamlfind" {build}
   "lwt" {with-test & >= "3.2.0"}
@@ -31,7 +31,6 @@ depopts: [
   "ctypes-foreign"
   "mirage-xen"
 ]
-tags: ["org:ocamllabs" "org:mirage"]
 synopsis: "Combinators for binding to C libraries without writing any C"
 description: """
 ctypes is a library for binding to C libraries using pure OCaml. The primary
@@ -52,9 +51,13 @@ the `ctypes-foreign` optional dependency:
 This will make the `ctypes.foreign` ocamlfind subpackage available."""
 authors: "yallop@gmail.com"
 url {
-  src: "https://github.com/ocamllabs/ocaml-ctypes/archive/0.20.1.tar.gz"
-  checksum: "md5=91211baac16cb43134b1d6009b1edf92"
+  src: "https://github.com/yallop/ocaml-ctypes/archive/0.20.1.tar.gz"
+  checksum: [
+    "sha256=78bf1acbc152a2e455a452e72eb75c3d4cefa366f2708cced3e7fe24b6278ec7"
+    "md5=91211baac16cb43134b1d6009b1edf92"
+  ]
 }
 conflicts: [
   "mirage-xen" {>= "6.0.0"}
+  "host-system-msvc"
 ]

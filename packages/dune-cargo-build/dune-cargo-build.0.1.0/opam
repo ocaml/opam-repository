@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis:
+  "Tool to invoke Cargo for building Rust crates within the dune sandbox"
+description:
+  "dune-cargo-build is a tool that runs cargo build in offline mode for a specified crate, ensuring compatibility with dune's/opam's sandboxing. It parses Cargo's JSON output to determine the produced artifacts and copies them to the current directory, renaming them to match what OCaml expects for foreign stubs. This tool is useful for integrating Rust build processes into OCaml projects managed by dune."
+maintainer: ["Konstantin Olkhovskiy <lupus@oxnull.net>"]
+authors: ["Konstantin Olkhovskiy <lupus@oxnull.net>"]
+license: "Apache-2.0"
+homepage: "https://github.com/Lupus/rust-staticlib-gen"
+bug-reports: "https://github.com/Lupus/rust-staticlib-gen/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "yojson" {>= "2.2.2"}
+  "ocamlformat" {with-test & >= "0.26.2" & < "0.27.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/Lupus/rust-staticlib-gen.git"
+url {
+  src:
+    "https://github.com/Lupus/rust-staticlib-gen/releases/download/0.1.0/rust-staticlib-gen-0.1.0.tbz"
+  checksum: [
+    "sha256=b50bbb1de95492febe98f4f552339442816b3fb0728f8f129851584af452d13e"
+    "sha512=c02e417506b7f42c22a772d2528fe7aecc7c1165eae66376b5dc01f67eaf63cbb9c8bae62d4eb40a1d542af705ea0fa488b6f9b4aff1b8f8b4fafad0b698688e"
+  ]
+}
+x-commit-hash: "2c8c369655721b304b251ecdd47fee9406caa455"

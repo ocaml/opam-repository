@@ -1,0 +1,67 @@
+opam-version: "2.0"
+maintainer: "Petter A. Urkedal <paurkedal@gmail.com>"
+authors: [
+  "Petter A. Urkedal <paurkedal@gmail.com>"
+  "Nathan Rebours <nathan@cryptosense.com>"
+  "Basile Clément"
+]
+license: "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
+homepage: "https://github.com/paurkedal/ocaml-caqti/"
+doc: "https://paurkedal.github.io/ocaml-caqti/index.html"
+bug-reports: "https://github.com/paurkedal/ocaml-caqti/issues"
+depends: [
+  "alcotest" {with-test & >= "1.5.0"}
+  "angstrom" {>= "0.14.0"}
+  "bigstringaf"
+  "cmdliner" {with-test & >= "1.1.0"}
+  "domain-name" {>= "0.2.0"}
+  "dune" {>= "3.9"}
+  "dune-site"
+  "ipaddr" {>= "3.0.0"}
+  "logs"
+  "lwt-dllist"
+  "mtime" {>= "2.0.0"}
+  "ocaml" {>= "4.08.0"}
+  "odoc" {with-doc}
+  "ptime"
+  "re" {with-test}
+  "tls"
+  "uri" {>= "2.2.0"}
+  "x509"
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs "@install"]
+  ["dune" "install" "-p" name "--create-install-file" name]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
+]
+dev-repo: "git+https://github.com/paurkedal/ocaml-caqti.git"
+synopsis: "Unified interface to relational database libraries"
+description: """
+Caqti provides a monadic cooperative-threaded OCaml connector API for
+relational databases.
+
+The purpose of Caqti is further to help make applications independent of a
+particular database system. This is achieved by defining a common signature,
+which is implemented by the database drivers. Connection parameters are
+specified as an URI, which is typically provided at run-time. Caqti then
+loads a driver which can handle the URI, and provides a first-class module
+which implements the driver API and additional convenience functionality.
+
+Caqti does not make assumptions about the structure of the query language,
+and only provides the type information needed at the edges of communication
+between the OCaml code and the database; i.e. for encoding parameters and
+decoding returned tuples. It is hoped that this agnostic choice makes it a
+suitable target for higher level interfaces and code generators."""
+url {
+  src:
+    "https://github.com/paurkedal/ocaml-caqti/releases/download/v2.1.2/caqti-v2.1.2.tbz"
+  checksum: [
+    "sha256=ba4dfd5ff94376b5e003f682410b7b3b392c0bbaa0253679fe7671c2e07e895b"
+    "sha512=0416807fba620429ee4d64f3a6991238112e0e10dfba9703dced46cf332fd22135a9873007d025441228ce66fb192bf730d4bc776dd2c1a973d7604ab6e789e0"
+  ]
+}
+x-commit-hash: "d68f1e8e366c0d81fe02d6bd8835f5653fea4ad3"

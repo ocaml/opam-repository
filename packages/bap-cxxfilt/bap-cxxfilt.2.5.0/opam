@@ -1,0 +1,35 @@
+opam-version: "2.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git+https://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure" "--prefix=%{prefix}%"
+                 "--enable-cxxfilt"
+                 "--cxxfilt-paths=%{conf-binutils:cxxfilts}%"
+                 ]
+  [make]
+]
+install: [[make "install"]]
+remove: [
+        ["ocamlfind" "remove" "bap-plugin-cxxfilt"]
+        ["bapbundle" "remove" "cxxfilt.plugin"]
+]
+depends: [
+  "ocaml" {>= "4.08.0" }
+  "bap-std" {= "2.5.0"}
+  "bap-demangle" {= "2.5.0"}
+  "conf-binutils" {= "0.3"}
+]
+synopsis: "A demangler that relies on a c++filt utility"
+
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v2.5.0.tar.gz"
+  checksum: [
+    "sha256=9c126781385d2fa9b8edab22e62b25c70bf2f99f6ec78abb7e5e36d63cfa4174"
+    "md5=5abd9b3628b43f797326034f31ca574f"
+  ]
+  mirrors: "https://mirrors.aegis.cylab.cmu.edu/bap/2.5.0/v2.5.0.tar.gz"
+}

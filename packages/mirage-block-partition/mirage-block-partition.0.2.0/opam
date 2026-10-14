@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: [ "Reynir Björnsson <reynir@reynir.dk>" ]
+authors: [ "Reynir Björnsson <reynir@reynir.dk>" ]
+homepage: "https://github.com/reynir/mirage-block-partition"
+bug-reports: "https://github.com/reynir/mirage-block-partition/issues"
+dev-repo: "git+https://github.com/reynir/mirage-block-partition.git"
+license: "ISC"
+synopsis: "Mirage block device partitioning"
+description: """
+Mirage-block-partition lets you view a mirage block device as smaller partitions.
+"""
+
+build: [
+  [ "dune" "subst" ] { dev }
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "dune" "runtest" "-p" name "-j" jobs ] { with-test }
+]
+depends: [
+  "dune" {>= "3.4"}
+  "ocaml" {>= "4.08.0"}
+  "mirage-block" {>= "3.0.0"}
+  "lwt" {>= "5.6.0"}
+  "mbr-format" {>= "1.0.0"}
+
+  "mirage-block-combinators" { with-test }
+  "alcotest" { with-test & >= "1.0.0" }
+  "alcotest-lwt" { with-test & >= "1.0.0" }
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+url {
+  src:
+    "https://github.com/reynir/mirage-block-partition/releases/download/v0.2.0/mirage-block-partition-0.2.0.tbz"
+  checksum: [
+    "sha256=7173ad10ff70864846423ebd4f868a7b16e67ba85f54056a0c56bd91fe960171"
+    "sha512=665726cfe861c3de311a61591a03574e512f36ba81193451bece340b022e0a1b9a1a492132a1ae722c3439c44689a22763a83b5a9bb0dd8079c2ca5c4cdc249a"
+  ]
+}
+x-commit-hash: "1ef79f272232044e977d522e857a53fbd66b2a4c"

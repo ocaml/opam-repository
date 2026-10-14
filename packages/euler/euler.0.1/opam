@@ -1,0 +1,62 @@
+opam-version: "2.0"
+synopsis: "An arithmetic library for OCaml's standard integers "
+description: """
+euler is a library for doing integer arithmetic with OCaml’s standard integers (31 or 63 bits). It provides:
+
+* Drop-in, overflow-detecting base arithmetic:
+if you are paranoid about vicious bugs sneaking in silently, this library detects overflows and signal them by throwing an exception; the module can be used as a drop-in replacement for the standard library (beware that Euler.Arith.min_int differs from Stdlib.min_int, the latter being a forbidden value). There are also a few additional functions such as integer logarithms and square roots.
+* More advanced arithmetic:
+  for the weird folks (like myself) who are interested in advanced arithmetic but do not care about integers larger than 262, and thus do not want the burden of using an arbitrary-precision library (zarith of GMP), there you are. The library provides some classic functions such as
+      the GCD,
+      the Jacobi symbol,
+      primality testing (fast and deterministic for all 63-bit integers!),
+      integer factorization (implementing Lenstra’s elliptic curve factorization, which was apparently one of the best known algorithms back when I wrote that code, but obviously it is still very slow! — and I must say I understand very little about it…),
+      a prime sieve (heavily optimized) and a factorization sieve,
+      Euler’s totient function (slow too, of course),
+      and so on.
+* Solvers for some forms of integer equations (so-called “Diophantine equations”):
+      linear congruence systems (the Chinese remainder theorem),
+      Pell-Fermat’s equations (the Chakravala method) — preliminary code that just needs some packaging effort).
+* Modular arithmetic:
+  including finding modular inverses (and pseudo-inverses). A nice functorial interface provides convenient notations and uses a private type to enforce that values are always normalized in the range 0…m−1 where m is the modulus. Example use:
+
+    module M = Euler.Modular.Make (struct let modulo = 42 end)
+    let () = assert (M.( !:1 /: (!:33 +: !:4) = !:5 **:(-4) ))
+    (* said otherwise, modulo 42, the inverse of (33 + 4) is equal to 5^(−4) *)
+"""
+maintainer: ["Glen Mével <glen.mevel@crans.org>"]
+authors: ["Glen Mével <glen.mevel@crans.org>"]
+license: "WTFPL"
+homepage: "https://github.com/gmevel/euler-lib"
+doc: "https://perso.crans.org/mevel/odoc/euler/index.html"
+bug-reports: "https://github.com/gmevel/euler-lib/issues"
+depends: [
+  "dune" {>= "2.0"}
+  "ocaml" {>= "4.14"}
+  "containers"
+  "seq"
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/gmevel/euler-lib.git"
+available: arch != "x86_32" & arch != "arm32"
+url {
+  src:
+    "https://github.com/gmevel/euler-lib/releases/download/0.1/euler-0.1.tbz"
+  checksum: [
+    "sha256=46786c629673fc8f36c6ee57764778188983f6de8e24d3003a8de21e4752919c"
+    "sha512=5273d89967cba8397139a179c243ecb7a80c008961a06bc5396316cc32651fc902a9eb0152b98f5075db4331349d6c8dc23f249ca3fc67be5b984daac9debd6c"
+  ]
+}
+x-commit-hash: "2652a4997b97430a5d8676cad99ecb1049e168b3"

@@ -1,0 +1,60 @@
+opam-version: "2.0"
+maintainer:   "e@x80.org"
+homepage:     "https://github.com/ejgallego/coq-serapi"
+bug-reports:  "https://github.com/ejgallego/coq-serapi/issues"
+dev-repo:     "git+https://github.com/ejgallego/coq-serapi.git"
+license:      "LGPL-2.1-or-later"
+doc:          "https://ejgallego.github.io/coq-serapi/"
+
+synopsis:     "Serialization library and protocol for machine interaction with the Coq proof assistant"
+description:  """
+SerAPI is a library for machine-to-machine interaction with the
+Coq proof assistant, with particular emphasis on applications in IDEs,
+code analysis tools, and machine learning. SerAPI provides automatic
+serialization of Coq's internal OCaml datatypes from/to JSON or
+S-expressions (sexps).
+"""
+
+authors: [
+  "Emilio Jesús Gallego Arias"
+  "Karl Palmskog"
+  "Clément Pit-Claudel"
+  "Kaiyu Yang"
+]
+
+depends: [
+  "ocaml"               {           >= "4.09.0"              }
+  "coq"                 {           >= "8.19" & < "8.20"     }
+  "cmdliner"            {           >= "1.1.0"               }
+  "ocamlfind" {>= "1.8.0" & < "1.9.8"}
+  "sexplib"             {           >= "v0.13.0"             }
+  "dune"                {           >= "2.0.1"               }
+  "ppx_import"          { build   & >= "1.5-3" & < "2.0"     }
+  "ppx_deriving" {>= "4.2.1" & < "6"}
+  "ppx_sexp_conv"       {           >= "v0.13.0"             }
+  "ppx_compare"         {           >= "v0.13.0"             }
+  "ppx_hash"            {           >= "v0.13.0"             }
+  "yojson"              {           >= "1.7.0"               }
+  "ppx_deriving_yojson" {           >= "3.4"                 }
+
+  # math-comp ssreflect is needed to run the tests.
+  #
+  # We can't enable this due to coq-mathcomp-ssreflect not being in
+  # the main opam repos, that would make opam's CI fail.
+  # "coq-mathcomp-ssreflect" { with-test & >= "1.15" }
+]
+
+conflicts: [
+  "result" {< "1.5"}
+]
+
+build: [ "dune" "build" "-p" name "-j" jobs ]
+url {
+  src:
+    "https://github.com/ejgallego/coq-serapi/releases/download/8.19.0%2B0.19.1/coq-serapi-8.19.0.0.19.1.tbz"
+  checksum: [
+    "sha256=10d90417815073507a53dbc5cca1cf504afa58104da8557e2afa2e7daf6ec852"
+    "sha512=95006e1e2798c531a01656972990662b07db815534bc789a5f3351c7d5bc8e75156c5a3c3b3a18d37f3eab0b11ceabd17d1609ed4d8afb461698b4098106e028"
+  ]
+}
+x-commit-hash: "7d68d13e0f742b4cd60595c9ad1ffe7be5a26e07"

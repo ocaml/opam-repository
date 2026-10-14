@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis: "Binary Representation of HTTP Messages (RFC 9292) for OCaml"
+description: """
+A codec for Binary HTTP (RFC 9292): known-length and indeterminate-length
+requests and responses, informational responses, trailers, padding, and
+truncation. It has no dependencies and performs no I/O, so its messages convert
+to and from the types of any HTTP library.
+"""
+maintainer: ["Ville Vesilehto <ville@vesilehto.fi>"]
+authors: ["Ville Vesilehto <ville@vesilehto.fi>"]
+license: "ISC"
+tags: ["http" "bhttp" "rfc9292" "binary http" "codec"]
+homepage: "https://github.com/thevilledev/ocaml-ohttp"
+bug-reports: "https://github.com/thevilledev/ocaml-ohttp/issues"
+dev-repo: "git+https://github.com/thevilledev/ocaml-ohttp.git"
+x-maintenance-intent: ["(latest)"]
+depends: [
+  "ocaml" {>= "4.14"}
+  "dune" {>= "3.12"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "qcheck-alcotest" {with-test & >= "0.25"}
+  "crowbar" {with-test & >= "0.2.1"}
+  "yojson" {with-test & >= "2.0.0"}
+  "odoc" {with-doc}
+  "ocamlformat" {with-dev-setup & = "0.29.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
+]
+url {
+  src:
+    "https://github.com/thevilledev/ocaml-ohttp/archive/refs/tags/v0.1.2.tar.gz"
+  checksum: [
+    "md5=6a31dba01d9ee06d1b0115516439d8b0"
+    "sha512=c2739c32cf8d44b36ca565052f6b14feaf99a029115e8d94dcd469bd363f7dacd8e401a4ca07c0a3555f0fe5572a37516b489ddd945ee9acae4ceafc29e7dadb"
+  ]
+}

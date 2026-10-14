@@ -1,0 +1,28 @@
+opam-version: "2.0"
+synopsis: "Configuration for the mingw-w64 Cygwin packages in opam"
+description: """
+The mingw-w64 ports of OCaml require access to GCC, the assembler and binutils.
+This set of packages performs two tasks. Firstly, it ensures that the directory
+containing the runtime DLLS are added to PATH. A typical Cygwin installation
+requires C:\\cygwin64\\usr\\x86_64-w64-mingw32\\sys-root\\mingw\\bin to be added
+to PATH, for example.
+
+Secondly, for opam's internally managed Cygwin installation, they install shim
+executables to provide the cygpath utility along with all tool-prefixed
+programs from the -gcc-core, -gcc-g++ and -binutils packages from the
+mingw64-i686 and mingw64-x86_64 package sets.
+
+In earlier versions of mingw-w64-shims, the mingw-w64-shims package formed part
+of this set. Installing mingw-w64-shims is no longer necessary."""
+maintainer: "David Allsopp <dra27@dra27.uk>"
+x-maintenance-intent: ["(latest)"]
+authors: "David Allsopp"
+license: "CC0-1.0+"
+homepage: "https://opam.ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+available: os = "win32" & os-distribution = "cygwin"
+dev-repo: "git+https://github.com/dra27/mingw-w64-shims.git"
+depends:
+  "host-arch-x86_32" & "conf-mingw-w64-gcc-i686" {post} |
+  "host-arch-x86_64" & "conf-mingw-w64-gcc-x86_64" {post}
+flags: conf

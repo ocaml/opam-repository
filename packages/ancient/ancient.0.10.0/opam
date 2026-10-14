@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis: "Use data structures larger than available memory"
+description: """
+This module allows you to use in-memory data structures which are
+larger than available memory and so are kept in swap.  If you try this
+in normal OCaml code, you'll find that the machine quickly descends
+into thrashing as the garbage collector repeatedly iterates over
+swapped memory structures.  This module lets you break that
+limitation.  Of course the module doesn't work by magic :-) If your
+program tries to access these large structures, they still need to be
+swapped back in, but it is suitable for large, sparsely accessed
+structures.
+
+Secondly, this module allows you to share those structures between
+processes.  In this mode, the structures are backed by a disk file,
+and any process that has read/write access that disk file can map that
+file in and see the structures."""
+maintainer: ["Pierre Villemot <pierre.villemot@ocamlpro.com>"]
+authors: ["Richard Jones et.al."]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/OCamlPro/ocaml-ancient"
+bug-reports: "https://github.com/OCamlPro/ocaml-ancient/issues"
+depends: [
+  "dune" {>= "3.0"}
+  (("ocaml" {< "5"} & "ocaml-option-nnp") | "ocaml" {>= "5"})
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & arch != "arm32" & arch != "x86_32"}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/OCamlPro/ocaml-ancient.git"
+available: os != "win32"
+url {
+  src:
+    "https://github.com/OCamlPro/ocaml-ancient/releases/download/0.10.0/ancient-0.10.0.tbz"
+  checksum: [
+    "sha256=5de5543eb760ed0495ed5d13cfc3248f98efccab580fd0ce37eb6df6492e0873"
+    "sha512=afb5349a9f242d7bc2f438b075f633305624768cb963fd277ff2b6866fa9f63be53350c1f897f87a53ccaea105b495eea6ce510b5b0ce0ae68ad863d865677ea"
+  ]
+}
+x-commit-hash: "1698abbc80b3cc5cba765f3cca24ce3443d34d0a"

@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "Petter A. Urkedal <paurkedal@gmail.com>"
+authors: [
+  "Petter A. Urkedal <paurkedal@gmail.com>"
+  "Gabriel Radanne <drupyog@zoho.com>"
+]
+license: "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
+homepage: "https://github.com/paurkedal/ppx_regexp"
+bug-reports: "https://github.com/paurkedal/ppx_regexp/issues"
+depends: [
+  "ocaml" {>= "4.11.0"}
+  "dune" {>= "3.13.0"}
+  "ppxlib" {>= "0.36.0"}
+  "re" {>= "1.7.2"}
+  "qcheck" {with-test & >= "0.90"}
+]
+build: ["dune" "build" "-p" name "-j" jobs "@install" "@runtest" {with-test}]
+dev-repo: "git+https://github.com/paurkedal/ppx_regexp.git"
+synopsis: "Matching Regular Expressions with OCaml Patterns"
+description: """
+This syntax extension turns
+
+    match%pcre x with
+    | {|re1|} -> e1
+    ...
+    | {|reN|} -> eN
+    | _ -> e0
+
+into suitable invocations to the ocaml-re library.  The patterns are plain
+strings of the form accepted by `Re_pcre`, except groups can be bound to
+variables using the syntax `(?<var>...)`.  The type of `var` will be
+`string` if a match is of the groups is guaranteed given a match of the
+whole pattern, and `string option` if the variable is bound to or nested
+below an optionally matched group.
+"""
+url {
+  src:
+    "https://github.com/paurkedal/ppx_regexp/releases/download/v0.5.2/ppx_regexp-v0.5.2.tbz"
+  checksum: [
+    "sha256=19c4401c43e7c4d3e5cac21c8c19cfe36d1314777703f3bdbe90d3bd1762a69f"
+    "sha512=9a1de0be0b4f0d9a214f3be285ecdea954c30d0003ef4dbec76a0c8c8b6e61bc3be415252ed924386d0b65b7c7e28132689045e00d98c4147d21d29c6dbbd679"
+  ]
+}
+x-commit-hash: "b53f009c12320c131d310fe205a259d8cb1e2179"

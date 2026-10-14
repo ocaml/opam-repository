@@ -1,0 +1,52 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: ["David Sheets" "Anil Madhavapeddy" "Hugo Heuzard"]
+synopsis: "A library for manipulation of IP (and MAC) address representations"
+description: """
+Features:
+ * Depends only on sexplib (conditionalization under consideration)
+ * ounit2-based tests
+ * IPv4 and IPv6 support
+ * IPv4 and IPv6 CIDR prefix support
+ * IPv4 and IPv6 [CIDR-scoped address](http://tools.ietf.org/html/rfc4291#section-2.3) support
+ * `Ipaddr.V4` and `Ipaddr.V4.Prefix` modules are `Map.OrderedType`
+ * `Ipaddr.V6` and `Ipaddr.V6.Prefix` modules are `Map.OrderedType`
+ * `Ipaddr` and `Ipaddr.Prefix` modules are `Map.OrderedType`
+ * `Ipaddr_unix` in findlib subpackage `ipaddr.unix` provides compatibility with the standard library `Unix` module
+ * `Ipaddr_top` in findlib subpackage `ipaddr.top` provides top-level pretty printers (requires compiler-libs default since OCaml 4.0)
+ * IP address scope classification
+ * IPv4-mapped addresses in IPv6 (::ffff:0:0/96) are an embedding of IPv4
+ * MAC-48 (Ethernet) address support
+ * `Macaddr` is a `Map.OrderedType`
+ * All types have sexplib serializers/deserializers
+"""
+
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/ocaml-ipaddr"
+doc: "https://mirage.github.io/ocaml-ipaddr/"
+bug-reports: "https://github.com/mirage/ocaml-ipaddr/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "1.9.0"}
+  "macaddr" {= version}
+  "domain-name" {>= "0.3.0"}
+  "ounit2" {with-test}
+  "ppx_sexp_conv" {with-test & >= "v0.9.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-ipaddr.git"
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mirage/ocaml-ipaddr/releases/download/v5.6.1/ipaddr-5.6.1.tbz"
+  checksum: [
+    "sha256=1e617df8abd45843c823e9be75267d27426cb578661cf25622d50b25ae14a319"
+    "sha512=09c37f963d27f697ee17b83f26364002cc2e60516c2199f78cd20663aaf293a1ce4380d728641b4c9b79066dc814c8f9293722a567ce6898261c4e98b34d80c2"
+  ]
+}
+x-commit-hash: "70f5308ee002104d45542c7fa9a6afdf3d9f3a0b"

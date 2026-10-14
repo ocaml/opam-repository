@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "Redirect and capture output written to out_channels"
+description: """
+An OCaml library for redirecting and capturing output written to out_channels, with support
+for native, JavaScript (js_of_ocaml), and WebAssembly (wasm_of_ocaml) targets."""
+maintainer: ["hugo.heuzard@gmail.com"]
+authors: ["Hugo Heuzard"]
+license: "MIT"
+homepage: "https://github.com/hhugo/out-channel-redirect"
+doc: "https://ocaml.org/p/out-channel-redirect"
+bug-reports: "https://github.com/hhugo/out-channel-redirect/issues"
+depends: [
+  "dune" {>= "3.17"}
+  "ocaml" {>= "4.08"}
+  "ocamlformat" {= "0.28.1" & with-dev-setup}
+  "js_of_ocaml" {with-test}
+  "conf-npm" {with-test}
+  "odoc" {with-doc}
+]
+depopts: [
+  "wasm_of_ocaml-compiler" {with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & arch != "arm32" & arch != "x86_32"}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/hhugo/out-channel-redirect.git"
+x-ci-accept-failures: ["ubuntu-22.04"] # too old node version
+url {
+  src:
+    "https://github.com/hhugo/out-channel-redirect/releases/download/0.1/out-channel-redirect-0.1.tbz"
+  checksum: [
+    "sha256=504eedf6c249c544651bf2b7d0487c0302bc7ed4eaaceafcb99266edbc4e6a6a"
+    "sha512=c3b6ff264df486f95ec8f53dd9792be136379349d5b10d2322c2cf4320c1c84c04b94a51afe08aa3e6973501897131d1c80359ca6b86685f2e1cd46038f09b54"
+  ]
+}
+x-commit-hash: "59f534422fedfa3af00a5cd8d20d675cfc99e1dd"

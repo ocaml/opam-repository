@@ -1,0 +1,69 @@
+opam-version: "2.0"
+maintainer: "Petter A. Urkedal <paurkedal@gmail.com>"
+x-maintenance-intent: ["(latest)"]
+authors: [
+  "Petter A. Urkedal <paurkedal@gmail.com>"
+  "Nathan Rebours <nathan@cryptosense.com>"
+  "Basile Clément"
+]
+license: "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
+homepage: "https://github.com/paurkedal/ocaml-caqti/"
+doc: "https://paurkedal.github.io/ocaml-caqti/index.html"
+bug-reports: "https://github.com/paurkedal/ocaml-caqti/issues"
+depends: [
+  "alcotest" {with-test & >= "1.5.0"}
+  "angstrom" {>= "0.14.0"}
+  "bigstringaf"
+  "cmdliner" {with-test & >= "1.1.0"}
+  "domain-name" {>= "0.2.0"}
+  "dune" {>= "3.9"}
+  "dune-site"
+  "ipaddr" {>= "3.0.0"}
+  "logs"
+  "lru" {>= "0.3.1"}
+  "lwt-dllist"
+  "mdx" {with-test & >= "2.3.0"}
+  "mtime" {>= "2.0.0"}
+  "ocaml" {>= "4.08.0"}
+  "odoc" {with-doc}
+  "ptime"
+  "re" {with-test}
+  "uri" {>= "2.2.0"}
+  "x509"
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs "@install"]
+  ["dune" "install" "-p" name "--create-install-file" name]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
+]
+dev-repo: "git+https://github.com/paurkedal/ocaml-caqti.git"
+synopsis: "Unified interface to relational database libraries"
+description: """
+Caqti provides a monadic cooperative-threaded OCaml connector API for
+relational databases.
+
+The purpose of Caqti is further to help make applications independent of a
+particular database system. This is achieved by defining a common signature,
+which is implemented by the database drivers. Connection parameters are
+specified as an URI, which is typically provided at run-time. Caqti then
+loads a driver which can handle the URI, and provides a first-class module
+which implements the driver API and additional convenience functionality.
+
+Caqti does not make assumptions about the structure of the query language,
+and only provides the type information needed at the edges of communication
+between the OCaml code and the database; i.e. for encoding parameters and
+decoding returned tuples. It is hoped that this agnostic choice makes it a
+suitable target for higher level interfaces and code generators."""
+url {
+  src:
+    "https://github.com/paurkedal/ocaml-caqti/releases/download/v2.3.2/caqti-v2.3.2.tbz"
+  checksum: [
+    "sha256=8f6c1724b59ac22a5c657c9e53b9a1706e39ecd462e82958b0cea88e43f0aba7"
+    "sha512=75b968ab37ae94cadcaabbcce0f91b1ffa4334ed69e441bdeb823077eb7675264282efb0fab3baaaad446582cfb427769e19f22c8c194a316ac2248c3fba5cf8"
+  ]
+}
+x-commit-hash: "cc1fddc358eecc4346fd0910f9ee639676146a4c"

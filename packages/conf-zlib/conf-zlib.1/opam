@@ -4,19 +4,38 @@ homepage: "http://www.zlib.net/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: ["Jean-loup Gailly" "Mark Adler"]
 license: "zlib"
-build: ["pkg-config" "zlib"] {os != "macos"}
-depends: ["conf-pkg-config" {build}]
+build:
+  # When the version is next bumped, this package can depend on
+  # conf-pkg-config.5 and instead use:
+  # [conf-pkg-config:command "zlib"]
+  ["pkgconf" {os = "win32" & os-distribution != "cygwinports"}
+   "pkg-config" {os != "win32" | os-distribution = "cygwinports"}
+   "--personality=i686-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_32:installed}
+   "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution != "cygwinports" & host-arch-x86_64:installed}
+   "zlib"]
+depends: [
+  "conf-pkg-config" {build}
+  (("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-zlib-x86_64" {os = "win32" & os-distribution != "cygwinports"}) |
+   ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-zlib-i686" {os = "win32" & os-distribution != "cygwinports"}))
+]
 depexts: [
   ["zlib-dev"] {os-distribution = "alpine"}
   ["zlib1g-dev"] {os-family = "debian"}
   ["zlib1g-dev"] {os-family = "ubuntu"}
-  ["zlib-devel"] {os-distribution = "centos"}
-  ["zlib-devel"] {os-distribution = "fedora"}
+  ["zlib-devel" "zlib-static"] {os-distribution = "centos" & os-version < "10" }
+  ["zlib-ng-compat-devel" "zlib-ng-compat-static"] {os-distribution = "centos" & os-version >= "10" }
+  ["zlib-devel"] {os-family = "fedora" & os-version < "40" }
+  ["zlib-ng-compat-devel" "zlib-ng-compat-static"] {os-family = "fedora" & os-version >= "40" }
   ["zlib-devel"] {os-distribution = "ol"}
   ["zlib"] {os-distribution = "nixos"}
   ["zlib"] {os-distribution = "homebrew" & os = "macos"}
   ["zlib"] {os-family = "arch"}
   ["zlib"] {os = "win32" & os-distribution = "cygwinports"}
+  ["zlib-devel"] {os = "cygwin"}
+  ["zlib-ng-compat-devel"]  {os-family = "opensuse"}
+  ["zlib-devel"]	    {os-family = "suse" & os-version < "16"}
+  ["zlib-ng-compat-devel"]  {os-family = "suse" & os-version >= "16"}
+  # FreeBSD includes zlib in sysroot
 ]
 synopsis: "Virtual package relying on zlib"
 description:

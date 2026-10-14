@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Vector-first language for predictable SIMD"
+description: """
+Rake makes predicated SIMD execution a first-class language construct.
+Data rakes through tine declarations (mask patterns), enabling divergent parallel
+computations on physical vector targets and the WebAssembly SIMD virtual machine."""
+maintainer: ["Kieran Hannigan"]
+authors: ["Kieran Hannigan"]
+license: "MIT"
+homepage: "https://rake-lang.org"
+bug-reports: "https://github.com/rakelang/rake/issues"
+depends: [
+  "dune" {>= "3.20"}
+  "ocaml" {>= "5.1.0"}
+  "base-unix"
+  "menhir" {>= "20231231"}
+  "ppx_deriving" {>= "6.0.0"}
+  "js_of_ocaml" {>= "6.0.0"}
+  "js_of_ocaml-ppx" {>= "6.0.0"}
+  "cmdliner" {>= "1.2.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/rakelang/rake.git"
+url {
+  src: "https://github.com/rakelang/rake/releases/download/v0.7.0/rake-0.7.0.tar.gz"
+  checksum: [
+    "sha256=d3fd9d46d5c2352fe220831de1ccee832ef8a80255a95ba5e6d4aed9f183a601"
+    "sha512=afc912788fd47ed1c8a605f3094357ae361f314d4bde5824b18d86020d9b4bfd8ad7fb358952fe7ae29ca1593d18bfeccd20c65da3a95397e19251aac6f13be4"
+  ]
+}
+x-maintenance-intent: ["(latest)"]

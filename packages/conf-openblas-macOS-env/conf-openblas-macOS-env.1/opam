@@ -1,0 +1,25 @@
+opam-version: "2.0"
+maintainer: "David Allsopp"
+authors: [ "David Allsopp" ]
+homepage: "https://opam.ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "ISC"
+build: [
+  "sh"
+  "-exc"
+  "printf 'opam-version: \"2.0\"\\nvariables {\\n  pkg-config-homebrew: \"%s/lib/pkgconfig\"\\n}' \"$(brew --prefix openblas)\" > %{_:name}%.config"
+]
+depends: [
+  "conf-openblas" {>= "0.2.2"}
+]
+setenv: [
+  PKG_CONFIG_PATH += "%{_:pkg-config-homebrew}%"
+]
+synopsis: "Virtual package to set the environment correctly for OpenBLAS in Homebrew"
+description: """
+Homebrew requires an update to PKG_CONFIG_PATH in order to detect the openblas
+package. opam 2.0.10 and earlier and 2.1.4 and earlier cannot handle a setenv
+update of "", and setenv updates cannot be filtered. This package exists to
+workaround these two limitations."""
+flags: conf
+available: os = "macos" & os-distribution = "homebrew"

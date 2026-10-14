@@ -1,0 +1,47 @@
+opam-version: "2.0"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+synopsis:
+  "The opam-bin tool is a simple framework to use `opam` with binary packages"
+description: """\
+opam-binary is a simple framework to use `opam` with binary packages.
+"""
+authors: ["Fabrice Le Fessant <fabrice.le_fessant@origin-labs.com>"]
+maintainer: ["Fabrice Le Fessant <fabrice.le_fessant@origin-labs.com>"]
+homepage: "https://ocamlpro.github.io/opam-bin"
+doc: "https://ocamlpro.github.io/opam-bin/."
+bug-reports: "https://github.com/ocamlpro/opam-bin/issues"
+dev-repo: "git+https://github.com/ocamlpro/opam-bin.git"
+tags: "org:ocamlpro"
+build: [
+  ["dune" "subst"] {dev}
+  ["sh" "-c" "./scripts/before.sh build '%{name}%'"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["sh" "-c" "./scripts/after.sh build '%{name}%'"]
+]
+install: [
+  ["sh" "-c" "./scripts/before.sh install '%{name}%'"]
+]
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "dune" {>= "2.7.0"}
+  "opam_bin_lib" {= version}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
+]
+
+url {
+    src: "https://github.com/ocamlpro/opam-bin/archive/v1.2.0.tar.gz"
+    checksum: [ "sha256=1d061f53870a3212133c6713207e040fca9c76a1b81696049599f1a84b44e76c" ]
+}

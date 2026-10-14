@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Sail to Coq translation"
+maintainer: ["Sail Devs <cl-sail-dev@lists.cam.ac.uk>"]
+authors: [
+  "Alasdair Armstrong"
+  "Thomas Bauereiss"
+  "Brian Campbell"
+  "Shaked Flur"
+  "Jonathan French"
+  "Kathy Gray"
+  "Robert Norton"
+  "Christopher Pulte"
+  "Peter Sewell"
+  "Mark Wassell"
+]
+license: "BSD-2-Clause"
+homepage: "https://github.com/rems-project/sail"
+bug-reports: "https://github.com/rems-project/sail/issues"
+depends: [
+  "dune" {>= "3.11"}
+  "libsail" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/rems-project/sail.git"
+url {
+  src:
+    "https://github.com/rems-project/sail/releases/download/0.20/sail-0.20.tbz"
+  checksum: [
+    "sha256=59399896d0ab364b7f39e493efd675c4c0b660380dd87c4b2773eb13b93e47d3"
+    "sha512=87f73f2863eb2d8b7733024becb301dd4375ba0fbf2599024758c6a333fcd71db0ed497fb43905cfa75f80b54aab5acf5dbeffd37313a9df23213a50d346b69e"
+  ]
+}
+x-commit-hash: "edddfd7c210a6a46092de28337c6e2e50af1d0da"

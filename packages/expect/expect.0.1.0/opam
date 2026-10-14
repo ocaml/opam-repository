@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis:
+  "Simple implementation of 'expect' to help building unitary testing of interactive program"
+description: """
+You can match the question using a regular expression or a timeout.
+
+See the Expect manual for more information:
+http://expect.nist.gov/
+"""
+maintainer: ["Sylvain Le Gall <sylvain+ocaml@le-gall.net>"]
+authors: ["Sylvain Le Gall"]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/gildor478/ocaml-expect"
+doc: "https://gildor478.github.io/ocaml-expect/"
+bug-reports: "https://github.com/gildor478/ocaml-expect/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "base-unix"
+  "re" {>= "1.12.0"}
+  "batteries" {>= "3.8.0"}
+  "ounit2" {>= "2.0.0" & with-test}
+  "ocaml" {>= "4.14"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/gildor478/ocaml-expect.git"
+url {
+  src:
+    "https://github.com/gildor478/ocaml-expect/releases/download/v0.1.0/expect-0.1.0.tbz"
+  checksum: [
+    "sha256=25465f78cff8ba44e85cafdff053b9a30320269c2bbb851d2b34d855d6464cc1"
+    "sha512=4f4567812afb9ef611749b5256550c05b1ec03c3910e9a3336ec4dec54156b4596acb27143c758e1ebd035398412cd21a0b90c7c4559c0ad57e91355d24a273a"
+  ]
+}
+x-commit-hash: "53b42ca539737872add71a7213d543b904e35f6d"
