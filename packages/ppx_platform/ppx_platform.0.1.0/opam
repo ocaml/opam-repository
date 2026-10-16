@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "Platform-specific code for native and Melange builds"
+description:
+  "A ppx rewriter that keeps one OCaml codebase for native and Melange builds: let%browser_only, [@platform js], [@platform native] and switch%platform pick the code that each target compiles."
+maintainer: ["David Sancho <dsnxmoreno@gmail.com>"]
+authors: ["David Sancho <dsnxmoreno@gmail.com>"]
+license: "MIT"
+homepage: "https://github.com/ml-in-barcelona/ppx_platform"
+bug-reports: "https://github.com/ml-in-barcelona/ppx_platform/issues"
+depends: [
+  "dune" {>= "3.9"}
+  "ocaml" {>= "4.14.1"}
+  "ppxlib" {>= "0.36.0"}
+  "melange" {>= "3.0.0"}
+  "reason" {with-test}
+  "ocamlformat" {= "0.28.1" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ml-in-barcelona/ppx_platform.git"
+x-ci-accept-failures: ["cygwin-mingw"]
+url {
+  src:
+    "https://github.com/ml-in-barcelona/ppx_platform/releases/download/0.1.0/ppx_platform-0.1.0.tbz"
+  checksum: [
+    "sha256=bb9987a34d52ffbc501b6c86a759dfe0078a92791bf6424f7c5fca4520289906"
+    "sha512=41ad7ffb121061580f50cbcd225c7493468b7ba37008dcdc2917d9ba3299069311c68a32022d311af808c24451335c6ab85be06ddeccdc68011de4e9277c4d8f"
+  ]
+}
+x-commit-hash: "8e3e4238f05a708b3ee4aedc397cd56d10c1267a"
