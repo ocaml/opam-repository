@@ -1,0 +1,34 @@
+opam-version: "2.0"
+maintainer: [
+  "Xavier Leroy <xavier.leroy@college-de-france.fr"
+  "David Allsopp <david.allsopp@metastack.com>"
+]
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: ["X.Org Foundation"]
+homepage: "https://www.x.org"
+license: "MIT"
+build: [
+  ["pkg-config" "xft"] {os != "macos"}
+  [
+    "sh" "-exc"
+    """PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/X11/share/pkgconfig" pkg-config --libs xft"""
+  ] {os = "macos"}
+]
+depends: [
+  "conf-pkg-config" {build}
+  "conf-libX11"
+]
+depexts: [
+  ["libxft-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["libXft-devel"] {os-distribution = "centos" | os-distribution = "ol" | os-family = "fedora" | os-family = "suse" | os-family = "opensuse"}
+  ["libxft-dev"] {os-distribution = "alpine"}
+  ["libxft"] {os-distribution = "arch"}
+  ["libXft-devel"] {os = "cygwin"}
+  ["xquartz"] {os = "macos" & os-distribution = "homebrew"}
+  ["Xft2"] {os = "macos" & os-distribution = "macports"}
+  ["libXft"] {os = "freebsd"}
+]
+synopsis: "Virtual package relying on an Xft system installation"
+description:
+  "This package can only install if Xft (libXft) is installed on the system."
+flags: conf

@@ -1,0 +1,60 @@
+opam-version: "2.0"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: [ "Christophe Troestler" ]
+license: "GPL-3 with OCaml linking exception"
+homepage: "https://github.com/ocaml/oasis2opam"
+dev-repo: "git+https://github.com/ocaml/oasis2opam.git"
+bug-reports: "https://github.com/ocaml/oasis2opam/issues"
+tags: [ "build" "install"  ]
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/oasis2opam/_oasis_remove_.ml" "%{etc}%/oasis2opam"]
+]
+depends: [
+  "ocaml"
+  "base-bytes" {build}
+  "base-unix" {build}
+  "oasis" {build & >= "0.4.4"}
+  "ocamlfind" {build & >= "1.5"}
+  "ounit" {with-test & >= "2.0.0"}
+  "qcheck" {with-test & >= "0.4" & < "0.5"}
+  "ocamlbuild" {build}
+]
+synopsis: "Tool to convert OASIS metadata to OPAM package descriptions"
+description: """
+Generate OPAM files from _oasis. Most of the metadata supported by
+oasis is translated to OPAM. A simple .install file is written to
+preserve Oasis setup.{ml,data,log} in order to be able to use oasis
+for removal."""
+url {
+  src: "https://github.com/ocaml/oasis2opam/archive/0.6.1.tar.gz"
+  checksum: [
+    "sha256=4b94b203a5cc01776b187270ccde334fbea4c563aae7cbf8e2ba718e4c2d98c1"
+    "md5=5e2ee417afac7e0138afb2c955001019"
+  ]
+}
+extra-source "oasis2opam.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/oasis2opam/oasis2opam.install.0.6.1"
+  checksum: [
+    "sha256=5b010bcd931b45da20d8004cb55ee72cc8193b8b0fe12070896fbdb73a00517b"
+    "md5=0d1b822c897681cf54b3e1aed52dda99"
+  ]
+}
+extra-source "_oasis_remove_.ml" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/oasis2opam/_oasis_remove_.ml"
+  checksum: [
+    "sha256=30bd6759edf0096e5353751a0603eaf693cb60ea7485aa9418e257dfdb97d916"
+    "md5=6100ca146fa97d2196eb49a2631d0796"
+  ]
+}

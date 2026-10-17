@@ -1,0 +1,37 @@
+opam-version: "2.0"
+maintainer: "michipili@gmail.com"
+homepage: "http://www.crufty.net/help/sjg/bmake.htm"
+authors: "sjg@crufty.net"
+bug-reports: "mailto:sjg@crufty.net"
+license: "BSD-3-Clause"
+build: [
+  ["sh" "./detect_program.sh" "./conf-bmake.config" "bmake"] {!(os = "freebsd" | os = "openbsd" | os = "netbsd")}
+  ["sh" "./detect_program.sh" "./conf-bmake.config" "make"] {(os = "freebsd" | os = "openbsd" | os = "netbsd")}
+]
+depexts: [
+  ["bmake"] {os-family = "debian"}
+  ["bmake"] {os-family = "ubuntu"}
+  ["bmake"] {os-distribution = "centos"}
+  ["bmake"] {os-family = "fedora"}
+  ["bmake"] {os-distribution = "arch"}
+  ["sys-devel/bmake"] {os-distribution = "gentoo"}
+  ["bmake"] {os-distribution = "nixos"}
+  ["bmake"] {os = "macos" & os-distribution = "homebrew"}
+  ["bmake"] {os = "macos" & os-distribution = "macports"}
+  ["bmake"] {os-distribution = "alpine"}
+  ["bmake"] {os-distribution = "ol"}
+  ["bmake"] {os-distribution = "rhel"}
+]
+synopsis: "Virtual package relying on a BSD Make compatible program"
+description: """
+This package can only install if a BSD Make compatible program is
+available on the system."""
+flags: conf
+extra-source "detect_program.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-bmake/detect_program.sh"
+  checksum: [
+    "sha256=0c8abd8b1c2631b983946fd087c939b4bba492df9728c9c4adc1a7f87157ca6b"
+    "md5=3f0146fa5b2daf78c62908b0a587f094"
+  ]
+}

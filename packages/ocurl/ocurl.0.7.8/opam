@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "ygrek@autistici.org"
+homepage: "http://ocurl.forge.ocamlcore.org"
+license: "MIT"
+authors: [ "Lars Nilsson" "ygrek" ]
+doc: ["http://ocurl.forge.ocamlcore.org/api/index.html"]
+dev-repo: "git+https://github.com/ygrek/ocurl.git"
+bug-reports: "https://github.com/ygrek/ocurl/issues"
+build: [
+  ["./configure"]
+  [make]
+  [make "test"] {with-test & ocaml:version < "4.06"}
+  [make "doc"] {with-doc}
+]
+install: [
+  [make "install"]
+]
+remove: [["ocamlfind" "remove" "curl"]]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "base-unix"
+  "conf-libcurl"
+]
+depopts: ["lwt"]
+conflicts: [
+  "ocaml-option-bytecode-only"
+  "lwt" {>= "6~"}
+]
+synopsis: "Bindings to libcurl"
+description: """
+Client-side URL transfer library, supporting HTTP and a multitude of
+other network protocols (FTP/SMTP/RTSP/etc)."""
+flags: light-uninstall
+url {
+  src: "https://ygrek.org/p/release/ocurl/ocurl-0.7.8.tar.gz"
+  checksum: [
+    "sha256=bce56372d98d92fb88bd63d28a0fd020613587a4d6f4b35c19f8744a39b7cb97"
+    "md5=6a0a062f55edd6c5df09d4e506645d6c"
+  ]
+}

@@ -1,0 +1,59 @@
+opam-version: "2.0"
+synopsis: "Add findlib toolchains for all installed DKML cross-compilers"
+authors: ["Diskuv, Inc. <opensource+diskuv-ocaml@support.diskuv.com>"]
+license: "Apache-2.0"
+homepage: "https://github.com/diskuv/conf-dkml-cross-toolchain"
+bug-reports: "https://github.com/diskuv/conf-dkml-cross-toolchain/issues"
+dev-repo: "git+https://github.com/diskuv/conf-dkml-cross-toolchain"
+depends: [
+  "ocaml"               {= "4.12.1"}
+  "ocaml-system"        {>= "4.12.1~" & < "4.12.2~"} |
+  "dkml-base-compiler"  {>= "4.12.1~" & < "4.12.2~"}
+]
+build: [
+  [
+    "bash"
+    "toolchain/findlib-configure.sh"
+    "%{_:build}%/dl/findlib-1.9.1.tar.gz"
+    "1.9.1"
+    "%{_:build}%/extra-findlib"
+    "%{ocaml:preinstalled}%"
+    "%{prefix}%"
+    "%{ocaml-system:path}%/../opt/mlcross"  { ocaml-system:installed }
+    "%{dkml-base-compiler:share}%/mlcross"  { dkml-base-compiler:installed }
+  ]
+]
+install: [
+  [ "install" "-d" "%{lib}%/findlib.conf.d" ]
+  [
+    "bash"
+    "toolchain/findlib-install.sh"
+    "%{_:build}%/extra-findlib"
+    "%{ocaml:native}%"
+    "%{ocaml-system:path}%/../opt/mlcross"  { ocaml-system:installed }
+    "%{dkml-base-compiler:share}%/mlcross"  { dkml-base-compiler:installed }
+  ]
+  [
+    "bash"
+    "toolchain/add-findlib-conf.sh"
+    "%{prefix}%"
+    "%{ocaml-system:path}%/../opt/mlcross"  { ocaml-system:installed }
+    "%{dkml-base-compiler:share}%/mlcross"  { dkml-base-compiler:installed }
+  ]
+]
+maintainer: ["opensource+diskuv-ocaml@support.diskuv.com"]
+extra-source "dl/findlib-1.9.1.tar.gz" {
+  src: "http://download.camlcity.org/download/findlib-1.9.1.tar.gz"
+  checksum: [
+    "md5=65e6dc9b305ccbed1267275fe180f538"
+    "sha512=83a05f3e310fa7cabb0475c5525f7a87c1b6bc2dc5e39f094cabfb5d944a826a5581844ba00ec1a48dd96184eb9de3c4d1055cdddee2b83c700a2de5a6dc6f84"
+  ]
+}
+url {
+  src:
+    "https://github.com/diskuv/conf-dkml-cross-toolchain/archive/v4.12.1.tar.gz"
+  checksum: [
+    "md5=7e8410fc134319fbdf8b9fd9a45dfa2d"
+    "sha512=10b6eb2489a231d0b59ae9852b0939566262ff55affb7c9b299f03937fee9b7fd5d69dca76e8771c5fb117d3492e8f8df52d6462fdc7526df965b69182b2e76e"
+  ]
+}

@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings to Hdr Histogram"
+description: "OCaml bindings to Hdr Histogram"
+maintainer: ["KC Sivaramakrishnan" "Christiano Haesbaert"]
+authors: ["KC Sivaramakrishnan"]
+license: "MIT"
+tags: ["histogram" "tail latency"]
+homepage: "https://github.com/ocaml-multicore/hdr_histogram_ocaml"
+doc: "https://ocaml-multicore.github.io/hdr_histogram_ocaml"
+bug-reports: "https://github.com/ocaml-multicore/hdr_histogram_ocaml/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "dune" {>= "3.7"}
+  "ctypes" {>= "0.20.1"}
+  "ctypes-foreign" {>= "0.18.0"}
+  "bechamel" {with-test}
+  "conf-pkg-config" {build}
+  "conf-cmake" {build}
+  "conf-zlib"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+available: arch != "x86_32" & arch != "arm32"
+dev-repo: "git+https://github.com/ocaml-multicore/hdr_histogram_ocaml.git"
+url {
+  src:
+    "https://github.com/ocaml-multicore/hdr_histogram_ocaml/releases/download/0.0.6/hdr_histogram-0.0.6.tbz"
+  checksum: [
+    "sha256=86fd5addbe13bb5b489eebbc9908a2209af9f6dd518737507c15dc1e1ada054e"
+    "sha512=9ee7bc9877f8cb0547ae4b3f989c7a924213a3e2549399245321ad7d7e47a8f447025e0b123d31ef4061d1b15ed7e641ea865486e3268b0956833a4c8fa2f63e"
+  ]
+}
+x-commit-hash: "7c4afc40d6beb8394478211277e0d8f66d1d5fb5"

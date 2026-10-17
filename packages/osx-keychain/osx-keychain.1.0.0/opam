@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "Typed OCaml bindings to the macOS Keychain"
+description: """
+A native binding to the macOS Keychain Services SecItem* API for storing and
+retrieving generic and internet passwords — a typed alternative to shelling
+out to the security CLI: structured OSStatus errors, exact binary round-trip, no
+subprocess, and attribute enumeration.
+
+v1 targets the file-based keychain (works on unsigned binaries, no entitlements).
+The data-protection keychain, biometrics, and iCloud sync require Apple Developer
+provisioning and are out of scope / experimental."""
+maintainer: ["Alex Leighton <axlelonghorn@gmail.com>"]
+authors: ["Alex Leighton <axlelonghorn@gmail.com>"]
+license: "MIT"
+tags: ["macos" "keychain" "security" "password" "bindings"]
+homepage: "https://github.com/alexleighton/osx-keychain"
+bug-reports: "https://github.com/alexleighton/osx-keychain/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.14.0"}
+  "alcotest" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/alexleighton/osx-keychain.git"
+available: [ os = "macos" ]
+
+# Voluntary AI disclosure — https://github.com/avsm/ocaml-ai-disclosure
+x-ai-disclosure: "ai-generated"
+x-ai-model: "claude-opus-4-8"
+x-ai-provider: "Anthropic"
+url {
+  src:
+    "https://github.com/alexleighton/osx-keychain/releases/download/1.0.0/osx-keychain-1.0.0.tbz"
+  checksum: [
+    "sha256=89a23bfa65764b8bdcad6d56271f5ca6278e441ed5fa3af22069716d71051a06"
+    "sha512=715eb7579d35717231c821746a2737e08424aeabc1d1c02e028caa59765e41bb61a430ed456f4c1c3c10d242ad69d0136690d8329f6f8ec5d368c7b9d59817dc"
+  ]
+}
+x-commit-hash: "de1f2f5619acb34a4fc99df6a0965e4765138c32"

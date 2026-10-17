@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "zandoye@gmail.com"
+authors: [ "ZAN DoYe" ]
+homepage: "https://github.com/kandu/ocaml-opencc0/"
+bug-reports: "https://github.com/kandu/ocaml-opencc0/issues"
+license: "MIT"
+tags: [
+  "opencc"
+  "Chinese conversion"
+]
+
+build: [
+  ["sh" "-exec" "cc $CFLAGS test.c -l:libopencc.so.1"]
+]
+
+depexts: [
+  ["libopencc1"] {os-family = "debian"}
+  ["libopencc1"] {os-family = "suse" | os-family = "opensuse"}
+]
+post-messages: [
+  "If the libopencc0 library is not installed by the system package manager, make sure that the path of the directory containing libopencc.so.1 is included in env-var LD_LIBRARY_PATH(for ld) and LIBRARY_PATH(for cc)" {failure}
+]
+
+synopsis: "Virtual package relying on opencc v0 (libopencc.so.1) installation"
+description: "This package can install only if the libopencc v0 is available on the system"
+
+flags: [conf]
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-opencc0/test.c"
+  checksum: [
+    "sha256=57b9a643ad8840d8b26e9deccd86faba017ebd91037aa4e4124d6005e2e90cf8"
+    "md5=9690f46dfbcfc47a300c8cac95f3ded2"
+  ]
+}
+

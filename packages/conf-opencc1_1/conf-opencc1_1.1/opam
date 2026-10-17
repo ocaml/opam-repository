@@ -1,0 +1,50 @@
+opam-version: "2.0"
+maintainer: "zandoye@gmail.com"
+authors: [ "ZAN DoYe" ]
+homepage: "https://github.com/kandu/ocaml-opencc1.1/"
+bug-reports: "https://github.com/kandu/ocaml-opencc1.1/issues"
+license: "MIT"
+tags: [
+  "opencc"
+  "Chinese conversion"
+]
+
+build: [
+  ["sh" "-exec" "cc $CFLAGS test.c -l:libopencc.so.1.1"] {os != "macos" & os != "freebsd"}
+  ["sh" "-exec" "cc $CFLAGS test.c -L/usr/local/lib -l:libopencc.so.1.1"] {os = "freebsd"}
+  ["sh" "-exec" "cc $CFLAGS test.c -L/usr/local/lib -lopencc.1.1"] {os = "macos" & arch = "x86_64"}
+  ["sh" "-exec" "cc $CFLAGS test.c -L/opt/homebrew/lib -lopencc.1.1"] {os = "macos" & arch = "arm64"}
+]
+
+depexts: [
+  ["libopencc1.1"] {os-family = "debian" | os-family = "ubuntu"}
+  ["opencc"] {os-family = "suse" | os-family = "opensuse"}
+  ["opencc"] {os-distribution = "arch"}
+  ["app-i18n/opencc"] {os-distribution = "gentoo"}
+  ["opencc"] {os-family = "fedora"}
+  ["opencc"] {os-distribution = "centos"}
+  ["opencc"] {os = "macos" & os-distribution = "homebrew"}
+  ["chinese/opencc"] {os = "freebsd"}
+]
+x-ci-accept-failures: [ # RDKit does not exist by default on these distributions
+  "alpine-3.18"
+  "alpine-3.19"
+  "alpine-3.20"
+  "oraclelinux-7"
+  "oraclelinux-8"
+  "oraclelinux-9"
+]
+
+synopsis: "Virtual package relying on opencc v1.1 (libopencc.so.1.1) installation"
+description: "This package can install only if the libopencc v1.1 is available on the system"
+
+flags: [conf]
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-opencc1_1/test.c"
+  checksum: [
+    "sha256=57b9a643ad8840d8b26e9deccd86faba017ebd91037aa4e4124d6005e2e90cf8"
+    "md5=9690f46dfbcfc47a300c8cac95f3ded2"
+  ]
+}
+

@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "Token service implementations for Sihl"
+description:
+  "Modules for token handling with support for JWT blacklisting and server-side stored tokens using PostgreSQL and MariaDB."
+maintainer: ["josef@oxidizing.io"]
+authors: ["Josef Erben" "Aron Erben" "Miko Nieminen"]
+license: "MIT"
+homepage: "https://github.com/oxidizing/sihl"
+doc: "https://oxidizing.github.io/sihl/"
+bug-reports: "https://github.com/oxidizing/sihl/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.08.0"}
+  "sihl" {= version}
+  "alcotest-lwt" {>= "1.4.0" & with-test}
+  "caqti-driver-postgresql" {>= "1.5.1" & < "2.0.0~" & with-test}
+  "caqti-driver-mariadb" {>= "1.5.1" & < "2.0.0~" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/oxidizing/sihl.git"
+url {
+  src: "https://github.com/oxidizing/sihl/archive/1.0.0-rc2.tar.gz"
+  checksum: [
+    "md5=ca63753c880ab1d043bc3653909f049f"
+    "sha512=55579ced17dc7a80e1e12e45c0ecfc673d194dbbaefc4eb77f525e9d3f6eae4e34773334014a413d7ca8f883a9e56fdd6ef47d80b4fd066230f31021738153fb"
+  ]
+}

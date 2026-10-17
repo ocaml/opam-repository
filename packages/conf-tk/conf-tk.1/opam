@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "tim@gfxmonk.net"
+authors: "Tcl Core Team"
+homepage: "http://www.tcl.tk"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+build: [["sh" "check.sh"]]
+depends: [
+  "conf-pkg-config" {build}
+  "conf-libX11" {os = "macos"}
+]
+depexts: [
+  ["tk-dev"] {os-family = "debian"}
+  ["tk-dev"] {os-family = "ubuntu"}
+  ["tk"] {os-distribution = "nixos"}
+  ["tk"] {os = "win32" & os-distribution = "cygwinports"}
+  ["tk"] {os-family = "arch"}
+  ["tk-dev"] {os-family = "alpine"}
+  ["tk-devel"] {os-family = "rhel"}
+  ["tk-devel"] {os-family = "fedora"}
+  ["tk-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["x11-toolkits/tk86"] {os = "freebsd"}
+  # NOTE: On macOS tk is included in the base OS in /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
+  # but requries X11 headers for the tk headers to work
+]
+synopsis: "Virtual package relying on tk"
+description:
+  "This package can only install if tk is installed on the system."
+flags: conf
+extra-source "compiletest.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-tk/compiletest.c"
+  checksum: [
+    "sha256=69d09fac432df677f0c21f66d741e43b4e5ef6e6fa0f36ea86511019c9496b1a"
+    "md5=9495fa2a30a3dad2180634786f6bef2b"
+  ]
+}
+extra-source "check.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-tk/check.sh"
+  checksum: [
+    "sha256=4d92a4b8e33c58c8040038e756ead974979c36dc5cb5cce92a40227a94e7ce5c"
+    "md5=cabeef6eb2a1b283b5a7a34b66e0e19b"
+  ]
+}

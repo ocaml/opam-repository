@@ -1,0 +1,68 @@
+opam-version: "2.0"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "https://github.com/fxfactorial/ocaml-linenoise"
+bug-reports: "https://github.com/fxfactorial/ocaml-linenoise/issues"
+license: "BSD-3-Clause"
+dev-repo: "git+https://github.com/fxfactorial/ocaml-linenoise.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocamlfind" "remove" "linenoise"]
+depends: [
+  "ocaml"
+  "oasis" {build & >= "0.4"}
+  "ocamlfind" {build}
+]
+post-messages: [
+  "Here is the simplest program:"
+  "
+let rec user_input prompt cb =
+  match LNoise.linenoise prompt with
+  | None -> ()
+  | Some v -> cb v;
+    user_input prompt cb
+
+let () =
+  (fun from_user -> Printf.sprintf \"Got: %s\" from_user |> print_endline)
+  |> user_input \"test_program> \"
+  "
+  "
+and compile with:
+$ ocamlfind ocamlopt ex.ml -package linenoise -linkpkg -o T
+  "
+]
+synopsis: "Simple readline like functionality"
+description: """
+These are self contained OCaml bindings to linenoise,
+no system libraries needed at all.
+
+Here's the simplest program:
+
+let rec user_input prompt cb =
+  match LNoise.linenoise prompt with
+  | None -> ()
+  | Some v -> cb v;
+    user_input prompt cb
+
+let () =
+  (fun from_user -> Printf.sprintf "Got: %s" from_user |> print_endline)
+  |> user_input "test_program> "
+
+and compile with:
+$ ocamlfind ocamlopt ex.ml -package linenoise -linkpkg -o T"""
+flags: light-uninstall
+url {
+  src: "https://github.com/fxfactorial/ocaml-linenoise/archive/v0.9.0.tar.gz"
+  checksum: [
+    "sha256=dacc2f1be2ad819c3737d4ca4f06e5258770bbddfb1277848ea4780b40506b79"
+    "md5=90fd86ede3d31cee3f6380f5b35c9199"
+  ]
+}

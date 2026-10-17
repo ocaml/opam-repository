@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Compositional JSON encode/decode library and PPX for Melange"
+description:
+  "Provides tools for converting JSON to typed OCaml values in Melange. It includes custom encoders, decoders, and a PPX for automating these conversions."
+maintainer: [
+  "Antonio Nuno Monteiro <anmonteiro@gmail.com>"
+  "Javier Chávarri <javier.chavarri@gmail.com>"
+  "Pedro Lisboa <pedrobslisboa@gmail.com>"
+]
+authors: ["glennsl" "Andrey Popp" "Pedro Lisboa"]
+license: ["LGPL-3.0-only" "MPL-2.0"]
+homepage: "https://github.com/melange-community/jsonkit/"
+bug-reports: "https://github.com/melange-community/jsonkit/issues"
+depends: [
+  "dune" {>= "3.16"}
+  "ocaml"
+  "melange" {>= "4.0.0"}
+  "melange-jest" {with-test}
+  "reason" {>= "3.10.0" & with-test}
+  "ppxlib" {>= "0.38.0"}
+  "opam-check-npm-deps" {>= "4.1.0" & with-dev-setup}
+  "ocaml-lsp-server" {with-dev-setup}
+  "ocamlformat" {= "0.28.1" & with-dev-setup}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/melange-community/jsonkit.git"
+url {
+  src:
+    "https://github.com/melange-community/jsonkit/archive/refs/tags/jsonkit.1.1.0.tar.gz"
+  checksum: [
+    "md5=a7dc1afdf494633cd25dae542367e114"
+    "sha512=ed61e57bdb75b3c56a8207491eb18ec49a6184a71bba40030c986a8d6912f455ec5acd684d5ee3e376af3625deeb5177ce65171bb9c256a4e0ec53f76e92de44"
+  ]
+}

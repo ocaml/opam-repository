@@ -1,0 +1,49 @@
+opam-version: "2.0"
+
+synopsis: "OCaml interface to GTK+3"
+description: """
+OCaml interface to GTK+3
+
+See https://garrigue.github.io/lablgtk/ for more information.
+"""
+
+maintainer: "garrigue@math.nagoya-u.ac.jp"
+authors: ["Jacques Garrigue et al., Nagoya University"]
+homepage: "https://github.com/garrigue/lablgtk"
+bug-reports: "https://github.com/garrigue/lablgtk/issues"
+dev-repo: "git+https://github.com/garrigue/lablgtk.git"
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+doc: "https://garrigue.github.io/lablgtk/lablgtk3"
+
+depends: [
+  "ocaml"     {         >= "4.09.0" }
+  "dune"      {         >= "1.8.0" & < "3.24.0"  }
+  "cairo2"    {         >= "0.6"    }
+  "conf-gtk3" { build & >= "18"     }
+]
+conflicts: [
+  "base-domains"
+]
+
+build: [
+  [ "dune" "build" "-p" name "-j"  jobs ]
+]
+run-test: [
+  ["dune" "build" "-p" name "-j" jobs "examples/buttons.exe"]
+]
+patches: ["dune-project.patch"]
+url {
+  src: "https://github.com/garrigue/lablgtk/archive/3.1.2.tar.gz"
+  checksum: [
+    "sha256=ad7417875f79716597cc06ccd8cae1efccb326263db1010d9f83555c185f1669"
+    "md5=e991d9419a722fc513f4b4878e8c2cbe"
+  ]
+}
+extra-source "dune-project.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/lablgtk3/dune-project.patch"
+  checksum: [
+    "sha256=d4810af69a7a548dc779f5390aaf6954d6b9636cfc67babdaf3ce5bf6e757ed4"
+    "md5=6caf83a63a129f5376c4c85bdf0edd56"
+  ]
+}

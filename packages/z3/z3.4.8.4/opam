@@ -1,0 +1,61 @@
+opam-version: "2.0"
+maintainer: "simon@aestheticintegration.com"
+authors: "MSR"
+homepage: "https://github.com/Z3prover/z3"
+bug-reports: "https://github.com/Z3prover/z3/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Z3prover/z3.git"
+patches: [
+  "fix-parallel-build.patch"
+  "0001-OCaml-static-fix-linking-options.patch"
+  "0002-OCaml-API-build-provide-static-linking-options-by-de.patch"
+]
+build: [
+  [ "python2.7" "scripts/mk_make.py" "--ml" "--staticlib" ]
+  [ make "-C" "build" "-j" jobs ]
+]
+install: [
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/META -nodll build/libz3* build/api/ml/*" ]
+]
+remove: ["ocamlfind" "remove" "z3"]
+depends: [
+  "ocaml" {< "5.0"}
+  "ocamlfind" {build}
+  "num"
+  "conf-gmp"
+  "conf-python-2-7" {build}
+  "conf-c++" {build}
+]
+synopsis: "Z3 solver"
+flags: light-uninstall
+url {
+  src: "https://github.com/Z3Prover/z3/archive/z3-4.8.4.tar.gz"
+  checksum: [
+    "sha256=5a18fe616c2a30b56e5b2f5b9f03f405cdf2435711517ff70b076a01396ef601"
+    "md5=b74bbb04e90c034125fe9e01988add95"
+  ]
+}
+extra-source "fix-parallel-build.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/z3/fix-parallel-build.patch"
+  checksum: [
+    "sha256=a0ceadd603d55a4c1a4584bcbc44eaf8bae2529a74c3343395f507c0ac2baea0"
+    "md5=54516d6bf1f1005508f5cbfe9c53dad2"
+  ]
+}
+extra-source "0002-OCaml-API-build-provide-static-linking-options-by-de.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/z3/0002-OCaml-API-build-provide-static-linking-options-by-de.patch"
+  checksum: [
+    "sha256=e592f70d56254ec59df1ec003e299d3b9334384bd5ea4fa3e2356ce20e8e15c9"
+    "md5=9d7b2c02d2b98ca36798841bf227a7e7"
+  ]
+}
+extra-source "0001-OCaml-static-fix-linking-options.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/z3/0001-OCaml-static-fix-linking-options.patch"
+  checksum: [
+    "sha256=17e6f25d14e1c34da1c780ee68c959428abc932cdc4096dcb80626d141435c7e"
+    "md5=47ec4c4b43677f314bd06ec0c7b345e5"
+  ]
+}

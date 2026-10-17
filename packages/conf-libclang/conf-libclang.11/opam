@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "Thierry Martinez <martinez@nsup.org>"
+authors: "The LLVM team"
+homepage: "http://llvm.org"
+bug-reports: "https://llvm.org/bugs/"
+license: "MIT"
+build-env: [
+  [HOMEBREW_NO_AUTO_UPDATE = "1"]
+]
+build: [
+  ["bash" "-ex" "configure.sh" version]
+]
+depends: [
+  "conf-bash" {build}
+]
+depexts: [
+  ["llvm"] {os-distribution = "homebrew" & os = "macos"}
+  ["llvm"] {os-distribution = "macports" & os = "macos"}
+  ["libclang-dev" "llvm-dev"] {os-family = "debian"}
+  ["clang-dev" "llvm-dev" "clang-static"] {os-distribution = "alpine"}
+  ["clang-devel" "llvm-devel" "llvm-static" "zlib-devel"]
+    {os-distribution = "centos"}
+  ["clang-devel" "llvm-devel" "zlib-devel" "redhat-rpm-config"]
+    {os-family = "fedora"}
+  ["llvm-clang-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["devel/llvm11"] {os = "freebsd"}
+  ["sys-devel/clang"] {os-distribution = "gentoo"}
+]
+synopsis: "Virtual package relying on the installation of llvm and clang libraries (any version)"
+flags: conf
+extra-source "configure.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-libclang/configure.sh.11"
+  checksum:
+    "sha512=f935e0447465cce82dd90c01925400b724fe1e6760768eb4eb3b7b9a27109d214d0b040855f963292c79116cd4939840f0e321e32622cac4afdfec8b6a7d40ec"
+}

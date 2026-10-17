@@ -1,0 +1,68 @@
+opam-version: "2.0"
+maintainer: "yallop@gmail.com"
+homepage: "https://github.com/yallop/ocaml-ctypes"
+doc: "http://yallop.github.io/ocaml-ctypes"
+dev-repo: "git+http://github.com/yallop/ocaml-ctypes.git"
+bug-reports: "http://github.com/yallop/ocaml-ctypes/issues"
+license: "MIT"
+build: [
+  [make "XEN=%{mirage-xen:enable}%" "libffi.config"]
+    {ctypes-foreign:installed}
+  ["touch" "libffi.config"] {!ctypes-foreign:installed}
+  [make "XEN=%{mirage-xen:enable}%" "ctypes-base" "ctypes-stubs"]
+  [make "XEN=%{mirage-xen:enable}%" "ctypes-foreign"]
+    {ctypes-foreign:installed}
+  [make "test"] {with-test & ocaml:version < "4.06.0"}
+]
+install: [
+  [make "install" "XEN=%{mirage-xen:enable}%"]
+]
+remove: [
+  ["ocamlfind" "remove" "ctypes"]
+]
+depends: [
+  "ocaml" {>= "4.01.0" & < "5.2"}
+  "base-bytes"
+  "ocamlfind" {build}
+  "conf-pkg-config" {build}
+  "lwt" {with-test & >= "2.4.7" & < "4.0.0"}
+  "ounit" {with-test}
+  "ctypes-foreign" {with-test}
+]
+depopts: [
+   "ctypes-foreign"
+   "mirage-xen"
+]
+synopsis: "Combinators for binding to C libraries without writing any C"
+description: """
+ctypes is a library for binding to C libraries using pure OCaml. The primary
+aim is to make writing C extensions as straightforward as possible.
+
+The core of ctypes is a set of combinators for describing the structure of C
+types -- numeric types, arrays, pointers, structs, unions and functions. You
+can use these combinators to describe the types of the functions that you want
+to call, then bind directly to those functions -- all without writing or
+generating any C!
+
+To install the optional `ctypes.foreign` interface (which uses `libffi` to
+provide dynamic access to foreign libraries), you will need to also install
+the `ctypes-foreign` optional dependency:
+
+    opam install ctypes ctypes-foreign
+
+This will make the `ctypes.foreign` ocamlfind subpackage available."""
+authors: "yallop@gmail.com"
+flags: light-uninstall
+url {
+  src: "https://github.com/yallop/ocaml-ctypes/archive/0.8.0.tar.gz"
+  checksum: [
+    "sha256=db465ec1bc5c0222b2fe167065d35d588cdfaf8910bcf51e0a444d528c24b32a"
+    "md5=9ca73b1b663b753fa9a77b65822bd119"
+  ]
+}
+conflicts: [
+  "mirage-xen" {>= "6.0.0"}
+  "base-nnp"
+  "ocaml-option-nnpchecker"
+  "host-system-msvc"
+]

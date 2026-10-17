@@ -1,0 +1,72 @@
+opam-version: "2.0"
+maintainer: [
+  "Stefanie Schirmer @linse"
+  "Hannes Mehnert"
+]
+authors: [
+  "Stefanie Schirmer @linse"
+  "Hannes Mehnert"
+]
+homepage: "https://github.com/robur-coop/caldav"
+bug-reports: "https://github.com/robur-coop/caldav/issues"
+dev-repo: "git+https://github.com/robur-coop/caldav.git"
+tags: ["org:mirage" "org:robur"]
+doc: "https://robur-coop.github.io/caldav/"
+license: "ISC"
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test & os != "macos"} # Local network access is forbidden in the macos sandbox
+]
+
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "3.12"}
+  "alcotest" {with-test & >= "0.8.5"}
+  "ounit" {with-test & >= "2.0.0"}
+  "tcpip" {with-test & >= "3.7.0"}
+  "mirage-clock-unix" {with-test & >= "2.0.0"}
+  "mirage-kv-mem" {with-test & >= "2.0.0" & < "4.0.0"}
+  "fmt" {>= "0.8.7"}
+  "mirage-kv" {>= "6.0.0"}
+  "mirage-clock" {>= "2.0.0"}
+  "mirage-random" {>= "2.0.0" & < "4.0.0"}
+  "ppx_deriving" {>= "4.3"}
+  "lwt" {>= "4.0"}
+  "ptime" {>= "0.8.5"}
+  "cohttp" {>= "2.0.0"}
+  "cohttp-lwt" {>= "2.0.0"}
+  "cohttp-lwt-unix" {with-test & >= "2.0.0" & < "6.0.0~~"}
+  "mirage-crypto" {< "1.0.0"}
+  "mirage-crypto-rng" {< "1.0.0"}
+  "mirage-crypto-rng-lwt" {with-test & >= "0.11.0" & < "1.0.0"}
+  "base64" {>= "3.0.0"}
+  "xmlm" {>= "1.3.0"}
+  "tyxml" {>= "4.3.0"}
+  "icalendar" {>= "0.1.2"}
+  "sexplib" {>= "v0.12.0"}
+  "ppx_sexp_conv" {>= "v0.12.0"}
+  "logs" {>= "0.6.3"}
+  "ohex" {>= "0.2.0"}
+  "metrics"
+  "re" {>= "1.7.2"}
+  #from webmachine
+  "dispatch" {>= "0.5.0"}
+  "uri" {>= "4.0.0"}
+]
+conflicts: [ "result" {< "1.5"} ]
+synopsis: "A CalDAV server"
+description: """
+A CalDAV server (RFC 4791). Supports everything from the robur-coop/icalendar
+library. Also includes a partial WebDAV implementation.
+"""
+url {
+  src:
+    "https://github.com/robur-coop/caldav/releases/download/v0.2.2/caldav-0.2.2.tbz"
+  checksum: [
+    "sha256=63a8818a537c443118e5ff710cc79059ce79c310744854c25ef77f25040f2724"
+    "sha512=52e28b504538b6acb7da8f41610f92cbc32716b951d9daa120025c1f2900fc56be21601c7b3b19c519171d2ee1cc4db316e1e0fdddad6a28e84999de35f6ac54"
+  ]
+}
+x-commit-hash: "14b47808ef8f684d7a26d366b7874aac2f1e89e2"

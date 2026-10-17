@@ -1,0 +1,72 @@
+opam-version: "2.0"
+authors:      "Kakadu@pm.me kakadu.hafanana@gmail.com"
+maintainer:   "Kakadu"
+license:      "LGPL-2.1-or-later"
+homepage:     "http://kakadu.github.io/lablqml/"
+bug-reports:  "https://github.com/kakadu/lablqml/issues"
+dev-repo: "git+https://github.com/Kakadu/lablqml.git"
+build-env: [
+  [HOMEBREW_NO_AUTO_UPDATE = "1"]
+]
+build: [
+  ["sh" "-ex" "./configure.sh" "%{version}%" ]
+    { os="macos" | os-family="debian" | os-distribution = "arch"  }
+  ["sh" "-ex" "./configure.sh" "%{version}%" "-qt5" ]
+    { os!="macos" & os-family != "debian" & os-distribution != "arch"  }
+]
+
+# It currently doesn't compile on MacOS because I don't know how to get mac-specific build command
+# (the syntax similar to depexts seems to be not supported).
+# In general, we need to add extra PATH (Mac only) variable in manner like
+#       "$(brew --cellar qt)/$(brew list --versions qt | tr ' ' '\n' | tail -1)/bin"
+# to make `qmake` available. But currently I don't know how to express it in opam recipe
+
+post-messages:
+  "It's recommended to set PKG_CONFIG_PATH to /usr/local/opt/qt/lib/pkgconfig to enable pkg-config. Also you may need to execute `brew link --force` to symlink everything properly. https://github.com/Kakadu/lablqml/issues/21#issuecomment-319489574 "
+    {os = "macos"}
+depexts: [
+  ["qt5"] {os = "macos" & os-distribution = "homebrew"}
+  ["qtdeclarative5-dev" "qt5-qmake"]
+    { os-family = "debian" & os-distribution != "ubuntu" }
+  ["qt5-default"]
+    { os-distribution = "debian" & os-version <= "10" }
+  ["qt5-default" "qtdeclarative5-dev" "qt5-qmake"]
+    { os-distribution = "ubuntu" & os-version < "21.04" }
+  ["qtbase5-dev" "qtdeclarative5-dev" "qt5-qmake"]
+    { os-distribution = "ubuntu" & os-version >= "21.04" }
+  ["qt5-qmake"]
+    { os-distribution = "oracle" }
+  ["qt5-base" "qt5-declarative"]
+    { os-distribution = "arch" }
+
+  # to set right paths for qt5 automatically we should
+  #   1) add `@edge http://nl.alpinelinux.org/alpine/edge/testing` to `/etc/apk/repositories`
+  #   2) perform installation via `apk add qtchooser@edge`
+  # but this repo is not shipped by default on CI
+  ["qt5-qtbase-dev" "qt5-qtdeclarative-dev"]
+    { os-distribution = "alpine" }
+
+  # TODO: this packages provide `qmake-qt5` executable and I have no idea how to make
+  # `qmake` be a symlink to there
+  [ "qt5-qtbase-devel" "qt5-qtdeclarative-devel"]
+    { os-distribution = "centos" }
+  [ "qt-devel" ]
+    { os-distribution = "centos" & os-version <= "7" }
+  [ "qt5-qtbase-devel" "qt5-qtdeclarative-devel" #"qmake-qt5"
+  ]
+    { os-family = "fedora" }
+  ["libqt5-qtbase-common-devel" "libqt5-qtbase-devel" "libqt5-qtdeclarative-devel" ]
+    { os-family = "suse" | os-family = "opensuse" }
+]
+synopsis: "Installation of Qt5 using APT packages or from source"
+flags: conf
+extra-source "configure.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-qt/configure.sh"
+  checksum: [
+    "sha256=ec07b7ce43a2a17ef77ef322eba303f6fdc80bc907ca46791cabf73fb0cf81c3"
+    "md5=78ed05ba24ce4c1f929276bdefef8818"
+  ]
+}
+
+x-maintenance-intent: [ "(latest)" ]

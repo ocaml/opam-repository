@@ -1,0 +1,35 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings for userspace eBPF VM"
+license: "LGPL-3.0-only WITH OCaml-LGPL-linking-exception"
+maintainer: "Raman Varabets <roman.vorobets@gmail.com>"
+authors: [
+  "Raman Varabets <roman.vorobets@gmail.com>"
+  "ygrek <ygrek@autistici.org>"
+]
+tags: ["org:ahrefs"]
+homepage: "https://github.com/ahrefs/ocaml-ubpf"
+bug-reports: "https://github.com/ahrefs/ocaml-ubpf/issues"
+dev-repo: "git+https://github.com/ahrefs/ocaml-ubpf.git"
+# JIT only builds on x64
+# https://opam.ci.ocaml.org/github/ocaml/opam-repository/commit/5a5b643d1ac7348b78e0e731fc9e237475f19a6c/variant/opam-2.1,extras,ppc64,ubpf.0.2
+# https://opam.ci.ocaml.org/github/ocaml/opam-repository/commit/5a5b643d1ac7348b78e0e731fc9e237475f19a6c/variant/opam-2.1,extras,arm32,ubpf.0.2
+# https://opam.ci.ocaml.org/github/ocaml/opam-repository/commit/5a5b643d1ac7348b78e0e731fc9e237475f19a6c/variant/opam-2.1,extras,arm64,ubpf.0.2
+# https://opam.ci.ocaml.org/github/ocaml/opam-repository/commit/5a5b643d1ac7348b78e0e731fc9e237475f19a6c/variant/opam-2.1,extras,s390x,ubpf.0.2
+# x86_32
+# error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast] (score = 10)
+# https://opam.ci.ocaml.org/github/ocaml/opam-repository/commit/5a5b643d1ac7348b78e0e731fc9e237475f19a6c/variant/opam-2.1,extras,x86_32,ubpf.0.2
+available: os != "win32" & arch = "x86_64"
+depends: [
+  "ocaml" {>= "4.02"}
+  "dune" {>= "2.9.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+url {
+  src: "https://github.com/ahrefs/ocaml-ubpf/archive/0.2.tar.gz"
+  checksum: [
+    "sha256=f3b57df025397eebeb3eaf19664a00d7360a0e6b77b6d437921c9fbf354f103c"
+  ]
+}

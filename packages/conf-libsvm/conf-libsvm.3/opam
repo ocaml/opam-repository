@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "Akinori ABE <aabe.65535@gmail.com>"
+authors: [ "Akinori ABE <aabe.65535@gmail.com>" ]
+license: "MIT"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+homepage: "https://www.csie.ntu.edu.tw/~cjlin/libsvm/"
+build: [
+  ["sh" "-exc" "cc $CFLAGS test.c -lsvm"] {os = "linux"}
+  ["sh" "-exc" "cc $CFLAGS test.c -I/usr/local/include -L/usr/local/lib -lsvm"] {os = "freebsd"}
+  ["sh" "-exc" "cc $CFLAGS -DDARWIN test.c -I$(brew --prefix libsvm)/include -L$(brew --prefix libsvm)/lib -lsvm"] {os = "macos" & os-distribution = "homebrew"}
+]
+depexts: [
+  ["libsvm-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["libsvm"] {os-distribution = "arch"}
+  ["sci-libs/libsvm"] {os-distribution = "gentoo"}
+  ["libsvm-devel"] {os-family = "fedora"}
+  ["libsvm-devel"] {os-distribution = "centos"}
+  ["libsvm-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["libsvm"] {os = "macos" & os-distribution = "homebrew"}
+  ["libsvm"] {os = "freebsd"}
+]
+x-ci-accept-failures: [
+  "alpine-3.19"
+  "oraclelinux-8"
+  "oraclelinux-9"
+]
+synopsis: "Virtual package relying on libsvm library installation"
+description: """
+This package can only install if the libsvm library is available on the system:
+
+- `libsvm/svm.h` is at an include path.
+- `libsvm.so` is at a library path."""
+flags: conf
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-libsvm/test.c"
+  checksum: [
+    "sha256=6c96466cf1c4891e07dbdb33363ed6f0d5925766c7c74420572f5a78048af29a"
+    "md5=844c6b6750e6b8adf0fb34bc6d922dba"
+  ]
+}

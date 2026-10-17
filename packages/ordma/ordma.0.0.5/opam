@@ -1,0 +1,53 @@
+opam-version: "2.0"
+maintainer: "Romain Slootmaekers <romain.slootmaekers@openvstorage.com>"
+authors: "Romain Slootmaekers <romain.slootmaekers@openvstorage.com>"
+homepage: "https://github.com/toolslive/ordma"
+bug-reports: "https://github.com/toolslive/ordma/issues"
+license: "TBD"
+dev-repo:
+  "git+https://github.com/toolslive/ordma.git"
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "@test" "-j" jobs] {with-test & ocaml:version < "4.10"}
+]
+depends: [
+  "ocaml" {>= "4.02.0" & < "4.14~"}
+  "dune"
+  "lwt" {>= "2.5.1"}
+  "lwt_log"
+  "cmdliner" {with-test}
+]
+depexts: [
+  ["libibverbs-dev" "librdmacm-dev"] {os-family = "debian"}
+  ["libibverbs-devel" "librdmacm-devel"] {os-distribution = "centos"}
+]
+patches: [
+  "version.patch"
+  "unsafe_string.patch"
+]
+available: os = "linux"
+synopsis: "Ordma provides OCaml bindings to librdmacm (rsocket)"
+url {
+  src: "https://github.com/toolslive/ordma/archive/0.0.5.tar.gz"
+  checksum: [
+    "sha256=6702ab88bc2566b8e0aef62f05d409dd4f63a2c5cc8ac09f24bca6a922b31829"
+    "md5=5e0f4fb12ba9dfe3af9ffa5690234543"
+  ]
+}
+extra-source "version.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/ordma/version.patch"
+  checksum: [
+    "sha256=ed8bcc6c0f9e6b38faa520effd0c9d3ea7ac74b7a42185dd662241ef2e52e16c"
+    "md5=0f23791a7e3e27a36defd11433a75271"
+  ]
+}
+extra-source "unsafe_string.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/ordma/unsafe_string.patch"
+  checksum: [
+    "sha256=7d652e8f08dc3c3788526614287fc3fb0a359ffafe0b6f1101c2af5f5c9abe84"
+    "md5=12c517d0348e27540944b56a9251256f"
+  ]
+}

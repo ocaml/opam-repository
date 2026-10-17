@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+homepage: "http://www.mpfr.org/"
+authors: "http://www.mpfr.org/credit.html"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "LGPL-2.0-or-later"
+build: [
+  "sh" "-exc" "pkg-config --print-errors --exists mpfr || cc test.c -lgmp -lmpfr"
+]
+depends: [
+  "conf-pkg-config" {build}
+  "conf-gmp" {build}
+]
+depexts: [
+  ["libmpfr-dev"] {os-family = "debian"}
+  ["libmpfr-dev"] {os-family = "ubuntu"}
+  ["mpfr-devel"] {os-family = "fedora"}
+  ["mpfr-devel"] {os-distribution = "ol"}
+  ["mpfr-devel"] {os-distribution = "centos"}
+  ["mpfr"] {os = "macos" & os-distribution = "homebrew"}
+  ["mpfr"] {os = "macos" & os-distribution = "macports"}
+  ["mpfr"] {os = "freebsd"}
+  ["mpfr"] {os = "openbsd"}
+  ["mpfr"] {os-family = "arch"}
+  ["mpfr-dev"] {os-family = "alpine"}
+  ["mpfr-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["mpfr"] {os = "win32" & os-distribution = "cygwinports"}
+  ["libmpfr-devel"] {os = "win32" & os-distribution = "cygwin"}
+]
+synopsis: "Virtual package relying on library MPFR installation"
+description:
+  "This package can only install if the MPFR library is installed on the system."
+flags: conf
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-mpfr/test.c"
+  checksum: [
+    "sha256=4050deea821aa4f5e9e7a20d7ce9bf7dd612b9628f2ee0cdf1b1b6b5b3de8b68"
+    "md5=ac7e04b5e22a41cb3c028180d1b811d6"
+  ]
+}

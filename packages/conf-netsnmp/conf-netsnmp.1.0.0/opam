@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "Steve Bleazard <stevebleazard@googlemail.com>"
+authors: "Steve Bleazard <stevebleazard@googlemail.com>"
+homepage: "https://www.github.com/stevebleazard/ocaml-conf-netsnmp"
+bug-reports: "https://www.github.com/stevebleazard/ocaml-conf-netsnmp/issues"
+license: "MIT"
+dev-repo: "git+https://www.github.com/stevebleazard/ocaml-conf-netsnmp.git"
+depexts: [
+  ["libsnmp-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["net-snmp-libs" "net-snmp-devel"] {os-distribution = "centos"}
+  ["net-snmp-libs" "net-snmp-devel"] {os-family = "fedora"}
+  ["libsnmp30" "net-snmp-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["net-snmp-libs" "net-snmp-dev"] {os-distribution = "alpine"}
+  ["net-snmp"] {os-family = "arch"}
+  ["net-snmp-libs" "net-snmp-devel"] {os-distribution = "ol"}
+  [] {os = "freebsd"}
+  [] {os = "openbsd"}
+]
+build: [
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"]
+]
+available: os != "macos"
+synopsis: "Package relying on net-snmp libs"
+description: """
+Virtual package relying on net-snmp system libraries installation.
+This package can only install if the net-snmp lib and development packages
+are installed on the system."""
+flags: conf
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-netsnmp/test.c"
+  checksum: [
+    "sha256=989c35e16ee5f6b289ee2219c78a6e251de7198116509daab3e00f649ae38317"
+    "md5=c037769771318ddce20d9471b6b8750e"
+  ]
+}

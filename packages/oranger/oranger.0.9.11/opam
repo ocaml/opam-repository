@@ -1,0 +1,55 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+authors: ["Francois Berenger"]
+homepage: "https://github.com/UnixJunkie/oranger"
+bug-reports: "https://github.com/UnixJunkie/oranger/issues"
+dev-repo: "git+https://github.com/UnixJunkie/oranger.git"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+install: [
+  ["sh" "compile_ranger.sh"]
+]
+remove: [
+  ["rm" "-f" "%{prefix}%/bin/ml_rf_ranger"]
+]
+depends: [
+  "jbuilder" {>= "1.0+beta7"}
+  "conf-cmake" {build}
+  "conf-wget" {build}
+# "conf-c++" {build}
+  "re"
+  "dolog" {< "4.0.0"}
+  "batteries"
+  "minicli" {with-test}
+  "cpm" {with-test}
+  "conf-gnuplot" {with-test}
+]
+flags: light-uninstall
+synopsis: "OCaml wrapper for the ranger (C++) random forests implementation"
+description: """
+Ranger is run from the command line and data are exchanged via text files.
+This is quick and dirty, not a proper OCaml interface to ranger."""
+url {
+  src: "https://github.com/UnixJunkie/oranger/archive/v0.9.11.tar.gz"
+  checksum: [
+    "sha256=99fcf458ccf3e99926cc1dbf05a6d697b243493340ee28871e062d856423aca9"
+    "md5=0b77d5114a4dd23ed7e5ddb391413411"
+  ]
+}
+extra-source "0.9.11.tar.gz" {
+  src: "https://github.com/imbs-hl/ranger/archive/0.9.11.tar.gz"
+  checksum: [
+    "sha256=8f37ece3ced9eeb86373199028a201b5d3bc2e27ebaffaf4f0075bc4b10a93ff"
+    "md5=cf770dfdde5ef250bfd561ef2b0758ee"
+  ]
+}
+extra-source "compile_ranger.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/oranger/compile_ranger.sh.0.9.11"
+  checksum: [
+    "sha256=45eb50fef0721b262a5d25c8ebd2fdfc7ea9e7ac030c03fb0810cc3f51d08171"
+    "md5=fe559d4e91198ea1dfc5acbe0aa76558"
+  ]
+}

@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "Async support for gluten"
+maintainer: ["Antonio Nuno Monteiro <anmonteiro@gmail.com>"]
+authors: ["Antonio Nuno Monteiro <anmonteiro@gmail.com>"]
+license: "BSD-3-clause"
+homepage: "https://github.com/anmonteiro/gluten"
+bug-reports: "https://github.com/anmonteiro/gluten/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.08.0"}
+  "gluten" {= version}
+  "faraday-async" {>= "0.7.3"}
+  "async" {>= "v0.15.0"}
+  "core" {>= "v0.15.0"}
+  "odoc" {with-doc}
+]
+depopts: ["async_ssl" "tls-async"]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/anmonteiro/gluten.git"
+url {
+  src:
+    "https://github.com/anmonteiro/gluten/releases/download/0.5.1/gluten-0.5.1.tbz"
+  checksum: [
+    "sha256=55971b3050d1bfe4d54971b4e70518c5a59b4e70526b8dd1895c7d39eb0f9d96"
+    "sha512=5a27e7a39f375b07910575839be75c62459ee55f35dd2b511db624b48f6ba86a6b1f8e749e6b3eeb4743e0890ba1952914e4df74a76dacb3062fadd9667e29cd"
+  ]
+}
+x-commit-hash: "a2439efe4f187b8c43dee577299470660503a73d"
+conflicts: [
+  "tls-async" {>= "1.0.0"}
+]

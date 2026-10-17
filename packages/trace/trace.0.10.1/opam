@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis:
+  "A stub for tracing/observability, agnostic in how data is collected"
+maintainer: ["Simon Cruanes"]
+authors: ["Simon Cruanes"]
+license: "MIT"
+tags: ["trace" "tracing" "observability" "profiling"]
+homepage: "https://github.com/c-cube/ocaml-trace"
+bug-reports: "https://github.com/c-cube/ocaml-trace/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "dune" {>= "2.9"}
+  "odoc" {with-doc}
+]
+depopts: [
+  "hmap"
+  "unix"
+  "picos_aux" {>= "0.6"}
+  "mtime" {>= "2.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/c-cube/ocaml-trace.git"
+url {
+  src:
+    "https://github.com/c-cube/ocaml-trace/releases/download/v0.10.1/trace-0.10.1.tbz"
+  checksum: [
+    "sha256=0b5121a2b3ca0f0d850017865333259f313ce83f77bba54da956f9cafbba6e34"
+    "sha512=06476b3b450d3f382ba7e5287591e2bb0f928d38b698af0bd6083d1518fcac93bf498815710d26ecbe9c80c71888638919c0166a79e447ee64ed625afd56dc4b"
+  ]
+}
+x-commit-hash: "b7bd89b75cc142c48288dc0911e7c9c7a3c56fb7"

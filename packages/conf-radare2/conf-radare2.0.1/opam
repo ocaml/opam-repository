@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git+https://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["ocaml" "unix.cma" "find-radare2.ml"]
+]
+depends: [
+   "ocaml" {>= "4.02"}
+   "base-unix"
+   "conf-which" {build}
+]
+substs: [ "find-radare2.ml" ]
+flags: [ conf ]
+
+depexts: [
+  ["radare2"] {os-family = "debian"}
+  ["radare2"] {os-family = "fedora"}
+  ["radare2"] {os-distribution = "arch"}
+  ["radare2"] {os-distribution = "alpine"}
+  ["radare2"] {os-distribution = "gentoo"}
+  ["radare2"] {os-family = "suse" | os-family = "opensuse"}
+  ["radare2"] {os-distribution = "homebrew" & os = "macos"}
+  ["radare2"] {os-distribution = "freebsd"}
+]
+
+synopsis: "Checks that radare2 is installed"
+extra-source "find-radare2.ml.in" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-radare2/find-radare2.ml.in"
+  checksum: [
+    "sha256=729155faf47b7f915b155036e83a773e70ec49beb0708b05fbc4036268da7b6d"
+    "md5=9fcf435b083f005df088882c361f45cf"
+  ]
+}

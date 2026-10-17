@@ -1,0 +1,43 @@
+opam-version: "2.0"
+maintainer: "xen-api@list.xensource.com"
+authors: ["Edwin Török"]
+homepage: "https://github.com/xapi-project/ocaml-dlm/"
+bug-reports: "https://github.com/xapi-project/ocaml-dlm/issues"
+dev-repo: "git+https://github.com/xapi-project/ocaml-dlm.git"
+doc: "https://xapi-project.github.io/ocaml-dlm/doc"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "-p" name "-j" jobs "@runtest"] {with-test}
+  ["dune" "build" "-p" name "-j" jobs "@doc"] {with-doc}
+]
+depends: [
+  "ocaml"
+  "conf-pkg-config" {build}
+  "dune" {>= "1.4"}
+  "ctypes" {>= "0.11.1"}
+  "lwt" {>= "4.2.0"}
+  "odoc" {with-doc}
+  "ounit" {>= "2.2.0"}
+  "unix-errno"
+  "uuidm" {>= "0.9.6"}
+]
+depexts: [
+  ["libdlm-dev"] {os-family = "debian"}
+  ["dlm-devel"] {os-family = "rhel"}
+  ["dlm-devel"] {os-family = "fedora"}
+  ["dlm-devel"] {os-distribution = "ol"}
+  ["libdlm-devel"] {os-family = "suse" | os-family = "opensuse"}
+]
+available: os = "linux" & arch != "arm32" & os-distribution != "alpine" & os-distribution != "arch"
+synopsis: "Libdlm bindings"
+description: "Bindings to the Linux Distributed Lock Manager `libdlm(3)`."
+url {
+  src:
+    "https://github.com/xapi-project/ocaml-dlm/releases/download/v0.3.3/dlm-0.3.3.tbz"
+  checksum: [
+    "sha256=54d12d454fed75a7af4989744f43958d2cf3a7b416e3de5006c96eed3ddfdcb3"
+    "sha512=d6a2fe1d35cd449f41aa2dbafc8018d1565968cc30e545a0501f19b9d8a4de2d05a7537bbf9ffc17257b79e421940eb01a45e885972d60c20fa32d38e1a54d9a"
+  ]
+}
+x-commit-hash: "8fcd39ac39f4bed1c8d6456a14b1bffbadf05614"

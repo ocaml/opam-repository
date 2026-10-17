@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "dave@recoil.org"
+authors: [ "David Scott" ]
+license: "ISC"
+homepage: "https://github.com/djs55/ocaml-named-pipe"
+dev-repo: "git+https://github.com/djs55/ocaml-named-pipe.git"
+bug-reports: "https://github.com/djs55/ocaml-named-pipe/issues"
+
+build: [
+  ["ocaml" "setup.ml" "-configure" "--%{alcotest:enable}%-tests"]
+  [make]
+  [make "test"] {with-test}
+]
+install: [make "install"]
+
+depends: [
+  "ocaml" {>= "3.12.1"}
+  "base-bytes"
+  "lwt" {>= "2.4.7" & < "5.0.0"}
+  "base-unix"
+  "cmdliner"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "alcotest" {with-test & >= "0.4.0"}
+]
+synopsis: "Named pipe bindings"
+description: """
+Named pipe bindings for Windows systems. Note this code will compile on
+non-Windows platforms but will raise a dynamic `Not_available` error
+if you try to use the functions."""
+flags: deprecated
+url {
+  src: "https://github.com/djs55/ocaml-named-pipe/archive/v0.3.tar.gz"
+  checksum: [
+    "sha256=c096db1305e734322382510f5d1bc24c5ace2ca02e8b507c8b2eda7678658cf5"
+    "md5=33a003c2041225f5de6fdde94cb84cbd"
+  ]
+}

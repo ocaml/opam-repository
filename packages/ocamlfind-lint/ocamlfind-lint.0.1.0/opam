@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "zoggy@bat8.org"
+authors: ["Maxence Guesdon"]
+homepage: "https://github.com/zoggy/findlib-lint"
+license: "New BSD License"
+doc: ["https://github.com/zoggy/findlib-lint"]
+tags: ["findlib" "ocamlfind" "check" "META"]
+
+build: [make "all"]
+remove: [["ocamlfind" "remove" "findlib-lint"]]
+depends: [
+  "ocaml" {< "5.0.0"}
+  "ocamlfind"
+]
+dev-repo: "git+https://github.com/zoggy/findlib-lint"
+install: [make "install-lib"]
+synopsis: "Simple tool performing checks on installed findlib META files"
+description: """
+By now, only checks that META files declare a ``archive`` variable
+with a ``plugin`` predicate for each ``archive`` variable declared
+with a ``native`` predicate.
+
+### Usage
+````
+ocamlfind-lint     # check all installed packages
+ocamlfind-lint pkg # check only the installed package pkg and its subpackages
+````"""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/ocaml/opam-source-archives/raw/main/ocamlfind-lint-0.1.0.tar.gz"
+  checksum: [
+    "sha256=b050e7f79fb4badc8d90902ea8444a95c79019103bf3d3730508551cd1f8376a"
+    "md5=74b3f70eac0cabcd51b317fc73dbfc69"
+  ]
+}
+extra-source "ocamlfind-lint.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/ocamlfind-lint/ocamlfind-lint.install"
+  checksum: [
+    "sha256=f7ca667caad11668a456e5361ce0c3b274b780a6b279696ecff50471bcad795c"
+    "md5=b0a7863158805e2f08baa791fa4e61ef"
+  ]
+}

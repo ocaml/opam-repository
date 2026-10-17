@@ -1,0 +1,72 @@
+opam-version: "2.0"
+maintainer: "dev@ocsigen.org"
+synopsis: "A full-featured and extensible Web server"
+description: "Ocsigen Server implements most features of the HTTP protocol, and has a very powerful extension mechanism that makes it very easy to plug your own OCaml modules for generating pages. Many extensions are already implemented, like a reverse proxy, content compression, access control, authentication, etc."
+authors: "dev@ocsigen.org"
+homepage: "http://ocsigen.org/ocsigenserver/"
+bug-reports: "https://github.com/ocsigen/ocsigenserver/issues/"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+dev-repo: "git+https://github.com/ocsigen/ocsigenserver.git"
+build: [
+  [
+    "sh"
+    "configure"
+    "--prefix"
+    "%{prefix}%"
+    "--ocsigen-user"
+    "%{user}%"
+    "--ocsigen-group"
+    "%{group}%"
+    "--commandpipe"
+    "%{lib}%/ocsigenserver/var/run/ocsigenserver_command"
+    "--logdir"
+    "%{lib}%/ocsigenserver/var/log/ocsigenserver"
+    "--mandir"
+    "%{man}%/man1"
+    "--docdir"
+    "%{lib}%/ocsigenserver/share/doc/ocsigenserver"
+    "--commandpipe"
+    "%{lib}%/ocsigenserver/var/run/ocsigenserver_command"
+    "--staticpagesdir"
+    "%{lib}%/ocsigenserver/var/www"
+    "--datadir"
+    "%{lib}%/ocsigenserver/var/lib/ocsigenserver"
+    "--sysconfdir"
+    "%{lib}%/ocsigenserver/etc/ocsigenserver"
+  ]
+  [make]
+]
+install: [make "install"]
+depends: [
+  "ocaml" {>= "4.08.1" & < "5.0.0"}
+  "ocamlfind"
+  "base-unix"
+  "base-threads"
+  "react"
+  "ssl" {>= "0.5.8"}
+  "lwt" {>= "3.0.0"}
+  "lwt_ssl"
+  "lwt_react"
+  "lwt_log"
+  "pcre"
+  "cryptokit"
+  "dbm" | "sqlite3" | "pgocaml"
+  "ipaddr" {>= "2.1"}
+  "cohttp-lwt-unix" {< "5.0.0"}
+  "conduit-lwt-unix" {>= "2.0.0" & < "7.1.0"}
+  "hmap"
+  "xml-light"
+  "conf-which"
+]
+depopts: "camlzip"
+conflicts: [
+  "camlzip" {< "1.04"}
+  "pgocaml" {< "2.2"}
+]
+url {
+  src: "https://github.com/ocsigen/ocsigenserver/archive/3.0.0.tar.gz"
+  checksum: [
+    "md5=ffb5745d04abd4e2628dc5fe3ccbb89e"
+    "sha512=c1b8861d0ec276c6a427c95a0ed373572957d6db4e91d14616c3deb74686593d7c83f21e5b7f2ccf3311456115d4daf68c6fbdb8e09bc03eef7fc9f1ae1eed5d"
+  ]
+}

@@ -1,0 +1,59 @@
+opam-version: "2.0"
+synopsis:
+  "A tool to manipulate and validate Scribble-style multiparty protocols"
+description:
+  "A toolkit to manipulate Scribble-style multiparty protocols, based on classical multiparty session type theory. The toolkit provides means to define global protocols, project to local protocols, convert local protocols to a CFSM representation, and generate OCaml code for protocol implementations."
+maintainer: ["Francisco Ferreira"]
+authors: [
+  "Francisco Ferreira" "Fangyi Zhou" "Simon Castellan" "Benito Echarren"
+]
+license: "GPL-3.0-or-later"
+homepage: "https://nuscr.dev/"
+doc: "https://nuscr.dev/nuscr/docs/"
+bug-reports: "https://github.com/nuscr/nuscr/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "menhir" {>= "20190924"}
+  "ppx_deriving" {>= "5.2"}
+  "dune" {>= "2.8"}
+  "base" {>= "v0.12.0" & < "v0.17"}
+  "stdio" {>= "v0.12.0"}
+  "ppx_sexp_conv" {>= "v0.12.0"}
+  "ppx_here" {>= "v0.12.0"}
+  "z3" {with-test}
+  "odoc" {with-doc}
+  "ocamlgraph" {>= "1.8.8"}
+  "ppxlib" {>= "0.22.0"}
+  "cmdliner" {>= "1.1.0"}
+  "process" {>= "0.2.1"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/nuscr/nuscr.git"
+patches: ["fix-cram-tests.patch"]
+url {
+  src: "https://github.com/nuscr/nuscr/releases/download/2.1.0/nuscr-2.1.0.tbz"
+  checksum: [
+    "sha256=4798916862412a0ac4721f63b77c243d7d7327c8ff2d18d379eb2f4202d43e4d"
+    "sha512=8475f03a5e81fbde01fb6ddd90f2c07d8a327d5d71301a8da6e169c5c1c8a8f94f528296b2c2d2be7abfbe10fceee048834926abbf5e739a62274f904a8f0869"
+  ]
+}
+x-commit-hash: "1c46fddf7c2703fe9f792f81fd899c03fca2c9db"
+extra-source "fix-cram-tests.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/nuscr/fix-cram-tests.patch"
+  checksum:
+    "sha256=5978c44e5e66b601db71722bf591bad780fcfc02c7cae59db54690726cc1f8a3"
+}

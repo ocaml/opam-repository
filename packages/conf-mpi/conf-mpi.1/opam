@@ -1,0 +1,32 @@
+opam-version: "2.0"
+maintainer: "tim@tbrk.org"
+authors: "The Open MPI Development Team"
+homepage: "https://www.open-mpi.org"
+bug-reports: "mailto:tim@tbrk.org"
+build: [["sh" "configure" os]]
+depends: ["conf-pkg-config" {build}]
+depexts: [
+  ["mpi-default-dev"] {os-family = "debian"}
+  ["mpi-default-dev"] {os-family = "ubuntu"}
+  ["openmpi-devel"] {os-distribution = "centos"}
+  ["openmpi-devel"] {os-family = "fedora"}
+  ["openmpi"] {os-family = "suse" | os-family = "opensuse"}
+  ["openmpi"] {os-distribution = "arch"}
+  ["openmpi-dev"] {os-distribution = "alpine"}
+  ["openmpi"] {os = "freebsd"}
+  ["devel/openmpi"] {os = "openbsd"}
+  ["openmpi-devel-default"] {os = "macos" & os-distribution = "macports"}
+  ["open-mpi"] {os = "macos" & os-distribution = "homebrew"}
+]
+synopsis: "Virtual package relying on a mpi system installation"
+description:
+  "This package can only install if the (open)mpi development files are installed on the system."
+flags: conf
+extra-source "configure" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-mpi/configure"
+  checksum: [
+    "sha256=49b4aa9354b3f417ec949bd6f7662222c9a1021b1912fad128a88b8dc69e1160"
+    "md5=cb39084281574e972fed895953734a78"
+  ]
+}

@@ -1,0 +1,45 @@
+opam-version: "2.0"
+authors: ["Xavier Clerc" "Codinuum"]
+homepage: "https://codinuum.com/en/software/oss/volt.html"
+maintainer: "Codinuum <codinuum@me.com>"
+bug-reports: "https://github.com/codinuum/volt/issues"
+dev-repo: "git+https://github.com/codinuum/volt.git"
+license: "LGPL-3.0-only"
+build: [
+  ["sh" "./configure" "-ocamlfind" "%{bin}%/ocamlfind"] {ocaml:preinstalled}
+  [
+    "sh"
+    "./configure"
+    "-ocaml-prefix"
+    "%{prefix}%"
+    "-ocamlfind"
+    "%{bin}%/ocamlfind"
+  ] {!ocaml:preinstalled}
+  [make "all"]
+]
+depends: [
+  "ocaml" {>= "4.03" & < "5.0"}
+  "camlp4"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "conf-which" {build}
+]
+conflicts: ["bolt"]
+patches: ["opam.patch"]
+install: [make "install"]
+synopsis: "Volt is a variant of Bolt OCaml Logging Tool"
+url {
+  src: "https://github.com/codinuum/volt/archive/v1.4.tar.gz"
+  checksum: [
+    "sha256=578cc4d205d4f596121cb5dc6cd05cfbaabcba42a09639eb8da1814f57582596"
+    "md5=7798e1559302bb84ab247d5b09d20476"
+  ]
+}
+extra-source "opam.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/volt/opam.patch"
+  checksum: [
+    "sha256=b1188bb7266836ea9c6df9ec6e6f789a86cbcda2d2fb90ef6c56220f3bbc68ff"
+    "md5=0b71adad67d3b786e37bde80caf17e61"
+  ]
+}

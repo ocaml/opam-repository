@@ -1,0 +1,32 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+homepage: "https://www.r-project.org/"
+authors: "https://www.r-project.org/contributors.html"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "GPL-2.0-or-later"
+build: ["R" "CMD" "BATCH" "check.r"]
+depexts: [
+  ["r"] {os = "macos" & os-distribution = "homebrew"}
+  ["r"] {os-distribution = "arch"}
+  ["r-base-core"] {os-family = "debian"}
+  ["r-base-core"] {os-family = "ubuntu"}
+  ["R-core"] {os-family = "suse" | os-family = "opensuse"}
+  ["R"] {os-distribution = "alpine"}
+  ["epel-release" "R"] {os-distribution = "centos"}
+  ["R"] {os-family = "fedora"}
+  ["R"] {os-distribution = "nixos"}
+  ["math/R"] {os = "freebsd"}
+]
+synopsis: "Virtual package relying on the R interpreter"
+description: """
+This package can only install if the R interpreter (for statistics)
+is installed on the system."""
+flags: conf
+extra-source "check.r" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-r/check.r"
+  checksum: [
+    "sha256=42bc7d1a79359289b793b1df3c3aa57ecb16fad38ef27a18476688e95eb2cff4"
+    "md5=4157c5cc4c887be63e9dbc88aa47a603"
+  ]
+}

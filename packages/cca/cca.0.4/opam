@@ -1,0 +1,50 @@
+opam-version: "2.0"
+authors: ["Codinuum"]
+homepage:"https://github.com/codinuum/cca/"
+maintainer: "Codinuum <codinuum@me.com>"
+bug-reports: "https://github.com/codinuum/cca/issues"
+dev-repo: "git+https://github.com/codinuum/cca.git"
+license: "Apache-2.0"
+build: [
+  [ make "-C" "src/mldiff" ]
+  [ make "-C" "src/util" ]
+  [ make "-C" "src/otreediff" ]
+  [ make "-C" "src/ast/analyzing" "production" ]
+]
+depends: [
+  "ocaml" {>= "4.11.0"}
+  "camlzip"
+  "cryptokit"
+  "csv"
+  "num"
+  "git-unix" {>= "3.3.0" & < "3.7.0"}
+  "menhir" {>= "20170418"}
+  "ocamlnet"
+  "pxp"
+  "uuidm"
+  "volt"
+  "mtime" {< "2.0"}
+]
+available: arch != "x86_32" & arch != "arm32" & arch != "ppc64"
+synopsis: "A framework for code continuity analysis"
+description: """
+CCA is currently composed of the following:
+* parsers for Python, Java, Verilog, Fortran, and C/C++,
+* an AST differencing tool, Diff/AST, based on the parsers,
+* helper scripts for factbase manipulation, and
+* ontologies for the related entities."""
+url {
+  src: "https://github.com/codinuum/cca/archive/v0.4.tar.gz"
+  checksum: [
+    "sha256=36f8630a2ebbe92ba25618b22cb331a4c5dda4c89ddf28f8b6b45dca9268b5c8"
+    "md5=ee2ae6f5f02ab5636f7d30e2e21b3c64"
+  ]
+}
+extra-source "cca.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/cca/cca.install.0.4"
+  checksum: [
+    "sha256=fe8f6e0cd926a022e17d9b5bce8c1484b715986b7548fd48b5ac4e2e59e55315"
+    "md5=1f2d6921099fb0367b6316d7257a0b77"
+  ]
+}

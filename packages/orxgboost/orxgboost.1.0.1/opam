@@ -1,0 +1,60 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+authors: ["Francois BERENGER"]
+homepage: "https://github.com/UnixJunkie/orxgboost"
+bug-reports: "https://github.com/UnixJunkie/orxgboost/issues"
+dev-repo: "git+https://github.com/UnixJunkie/orxgboost.git"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+build: [
+  ["R" "CMD" "BATCH" "install_matrix.r"]
+  ["R" "CMD" "BATCH" "install_xgboost.r"]
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml"
+  "jbuilder" {>= "1.0+beta7"}
+  "conf-r"
+  "dolog" {< "4.0.0" & with-test}
+  "batteries" {with-test}
+  "cpm" {with-test}
+]
+x-ci-accept-failures: ["debian-unstable"]
+post-messages: [
+"Please interact with R to install needed things in user-space:
+R
+install.packages('Marix', repos='http://cran.r-project.org')
+install.packages('xgboost', repos='http://cran.r-project.org')" {failure}
+]
+synopsis: "Gradient boosting for OCaml using the R xgboost package"
+description: """
+This package really fires up and talks to an R interpreter.
+Data are exchanged via text files.
+It can handle dense or sparse (in CSR format) data matrices.
+For details, cf. Chen, Tianqi, and Carlos Guestrin.
+"Xgboost: A scalable tree boosting system."
+Proceedings of KDD'16. ACM, 2016.
+DOI: 10.1145/2939672.2939785.
+https://xgboost.readthedocs.io/en/latest/"""
+url {
+  src: "https://github.com/UnixJunkie/orxgboost/archive/v1.0.1.tar.gz"
+  checksum: [
+    "sha256=0528b3b6de2d988ab2b26bdc9bfb6cc96fc29cf5296bebd2ab557faa214ac9d0"
+    "md5=37389aa495cba09b8c4b79f30e6891f1"
+  ]
+}
+extra-source "install_xgboost.r" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/orxgboost/install_xgboost.r"
+  checksum: [
+    "sha256=4be84eca6e8dfb8c7268517ae963e0b21b6021813333d285fe9b67c036536511"
+    "md5=0cc15f242946933f2d335a18b833fff1"
+  ]
+}
+extra-source "install_matrix.r" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/orxgboost/install_matrix.r"
+  checksum: [
+    "sha256=f9d596d2caae65cdb8440f85f3e903e802643e4d6a639ad5a148727b4fe84d23"
+    "md5=ab1c0ae726388159b1315bc9fe61a013"
+  ]
+}

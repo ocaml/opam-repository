@@ -1,0 +1,55 @@
+opam-version: "2.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git+https://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["ocaml" "unix.cma" "find-ida.ml"]
+]
+depends: [
+   "ocaml" {>= "4.03"}
+   "base-unix"
+   "conf-which" {build}
+]
+substs: [ "find-ida.ml" ]
+flags: [ conf ]
+x-ci-accept-failures: ["debian-unstable"]
+
+synopsis: "Checks that IDA Pro is installed"
+description: """
+We search for IDA via 'which` utility and in the following locations:
+on Linux: in $HOME
+on macOS: in /Applications, $HOME/Applications/, $HOME.
+up to depth 4, and no more than 1024 entries in total.
+The first found entry is used.
+
+A path to ida can be hinted by setting opam config variable:
+opam config set ida-path <path-to-ida>
+
+Also can be hinted with IDA_PATH environment variable, e.g.,
+IDA_PATH=<path-to-ida> opam install conf-ida
+"""
+
+post-messages: [
+  "We search in the following locations:" { failure}
+
+  "
+/Applications
+$HOME/Applications
+$HOME" {os = "macos" & failure}
+
+  "$HOME"  {os = "linux" & failure}
+
+  "up to depth 4, and no more than 1024 entries in total. The first found entry is used. To control the search use the 'ida-path' opam variable or the 'IDA_PATH' environment variable."  {failure}
+
+]
+extra-source "find-ida.ml.in" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-ida/find-ida.ml.in.0.3"
+  checksum: [
+    "sha256=9ad91ecf8ef8c5f7acd52357913161e18648831e0959a9daeebb743fc63eebc3"
+    "md5=47df9656dccbff0054ee8628fbbf1864"
+  ]
+}

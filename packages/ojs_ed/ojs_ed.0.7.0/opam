@@ -1,0 +1,38 @@
+opam-version: "2.0"
+synopsis: "Using file editor in ojs_base applications, common part"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "GPL-3.0-only"
+homepage: "http://zoggy.frama.io/ojs-base/"
+doc: "http://zoggy.frama.io/ojs-base/refdoc/"
+bug-reports: "https://framagit.org/zoggy/ojs-base/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ojs_base" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/ojs-base.git"
+url {
+  src:
+    "https://framagit.org/zoggy/ojs-base/-/archive/0.7.0/ojs-base-0.7.0.tar.bz2"
+  checksum: [
+    "md5=85b8a0746e9be8c20cf082f2573b5895"
+    "sha512=ec707820ff69ddbf9c631cf6a1c8748e82346daded1a4f73c5702128d07858f915e62d529e5fec01e99263f33eefb1586067341c058535806e0092b9d040644a"
+  ]
+}

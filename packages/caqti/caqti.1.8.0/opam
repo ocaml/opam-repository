@@ -1,0 +1,56 @@
+opam-version: "2.0"
+maintainer: "Petter A. Urkedal <paurkedal@gmail.com>"
+authors: [
+  "Petter A. Urkedal <paurkedal@gmail.com>"
+  "Nathan Rebours <nathan@cryptosense.com>"
+]
+license: "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
+homepage: "https://github.com/paurkedal/ocaml-caqti/"
+doc: "https://paurkedal.github.io/ocaml-caqti/index.html"
+bug-reports: "https://github.com/paurkedal/ocaml-caqti/issues"
+depends: [
+  "alcotest" {with-test & >= "1.5.0"}
+  "angstrom" {>= "0.14.0"}
+  "bigstringaf"
+  "cmdliner" {with-test & >= "1.1.0"}
+  "cppo" {build & >= "1.1.0"}
+  "dune" {>= "2.0"}
+  "logs"
+  "ocaml" {>= "4.04.0"}
+  "odoc" {with-doc}
+  "ptime"
+  "re" {with-test}
+  "uri" {>= "1.9.0"}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
+]
+dev-repo: "git+https://github.com/paurkedal/ocaml-caqti.git"
+synopsis: "Unified interface to relational database libraries"
+description: """
+Caqti provides a monadic cooperative-threaded OCaml connector API for
+relational databases.
+
+The purpose of Caqti is further to help make applications independent of a
+particular database system. This is achieved by defining a common signature,
+which is implemented by the database drivers. Connection parameters are
+specified as an URI, which is typically provided at run-time. Caqti then
+loads a driver which can handle the URI, and provides a first-class module
+which implements the driver API and additional convenience functionality.
+
+Caqti does not make assumptions about the structure of the query language,
+and only provides the type information needed at the edges of communication
+between the OCaml code and the database; i.e. for encoding parameters and
+decoding returned tuples. It is hoped that this agnostic choice makes it a
+suitable target for higher level interfaces and code generators."""
+url {
+  src:
+    "https://github.com/paurkedal/ocaml-caqti/releases/download/v1.8.0/caqti-v1.8.0.tbz"
+  checksum: [
+    "sha256=2630233f335f910290e24b318ac7f6e712b3109fb55581b2b8c324127a9a4b12"
+    "sha512=9ce23cbc02b9d6c856a8db0713dbb1aa393aa43bc1d565121420636f7f6fa1ed64c7269e98cfeb92b5e9c8e23e42e2e8e1705b5fe978abd3c3f0cc3259d32b98"
+  ]
+}
+x-commit-hash: "ee2c6fc4d5b44f5c8b60073ff09a76d5d7e0147a"

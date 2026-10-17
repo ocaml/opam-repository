@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "simon@aestheticintegration.com"
+authors: "MSR"
+homepage: "https://github.com/Z3prover/z3"
+bug-reports: "https://github.com/Z3prover/z3/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Z3prover/z3.git"
+patches: ["fix-parallel-build.patch"]
+build: [
+  [ "python2.7" "scripts/mk_make.py" "--ml" ]
+  [ make "-C" "build" "-j" jobs ]
+  [ "sh" "-c" "cp build/libz3* build/api/ml/" ]
+]
+install: [
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/META -nodll build/api/ml/*" ]
+]
+remove: ["ocamlfind" "remove" "z3"]
+depends: [
+  "ocaml" {< "5.0"}
+  "ocamlfind" {build}
+  "num"
+  "conf-gmp"
+  "conf-python-2-7" {build}
+  "conf-c++" {build}
+]
+synopsis: "Z3 solver"
+flags: light-uninstall
+url {
+  src: "https://github.com/Z3Prover/z3/archive/z3-4.8.1.tar.gz"
+  checksum: [
+    "sha256=cc17e23327793defac78071acb9c68969f50e8a8ce3485f06448b65a589bcb71"
+    "md5=aa2a5f2c029114db52ddc91027ab446b"
+  ]
+}
+extra-source "fix-parallel-build.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/z3/fix-parallel-build.patch"
+  checksum: [
+    "sha256=a0ceadd603d55a4c1a4584bcbc44eaf8bae2529a74c3343395f507c0ac2baea0"
+    "md5=54516d6bf1f1005508f5cbfe9c53dad2"
+  ]
+}

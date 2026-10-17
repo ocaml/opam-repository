@@ -1,0 +1,48 @@
+opam-version: "2.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+homepage: "http://llvm.org"
+authors: "The LLVM Team"
+bug-reports: "https://llvm.org/bugs/"
+license: "BSD-3-Clause"
+build: [
+  ["ocaml" "find-llvm.ml"]
+]
+depends: [
+  "ocaml"
+  "base-unix"
+  "conf-which" {build}
+]
+depexts: [
+
+  # debian
+  ["llvm-4.0-dev"] {os-family = "debian" & os-distribution != "ubuntu"}
+
+  # ubuntu
+  ["llvm-3.8-dev"] {os-distribution = "ubuntu" & os-version = "14.04"} #trusty
+  ["llvm-4.0-dev"] {os-distribution = "ubuntu" & os-version = "16.04"} #xenial
+  ["llvm-4.0-dev"] {os-distribution = "ubuntu" & os-version = "18.04"} #bionic
+
+  # macos
+  ["llvm-4.0"] {os = "macos" & os-distribution = "macports"}
+  ["llvm@4"]   {os = "macos" & os-distribution = "homebrew"}
+]
+
+substs: [ "find-llvm.ml" ]
+flags: [ conf ]
+
+synopsis: "Checks that supported version of LLVM is installed"
+description: """
+Supported LLVM versions are: 3.4 3.8 4.0
+
+A preferred llvm-config can be choosen by setting opam config variable:
+$: opam config set llvm-config your-llvm-config
+OR by setting LLVM_CONFIG environment variable.
+"""
+extra-source "find-llvm.ml.in" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-bap-llvm/find-llvm.ml.in.1.1"
+  checksum: [
+    "sha256=d7ff14e24fee0958a5d0d9148180547e19b3dda3503f1db83a46a6634ba16010"
+    "md5=ca3bdee7ae81ccc551160dbba0593d0c"
+  ]
+}

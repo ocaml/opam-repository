@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "Compatibility binaries for Coq after the Rocq renaming"
+description: """
+The Rocq Prover is an interactive theorem prover, or proof assistant. It provides
+a formal language to write mathematical definitions, executable
+algorithms and theorems together with an environment for
+semi-interactive development of machine-checked proofs.
+
+Typical applications include the certification of properties of
+programming languages (e.g. the CompCert compiler certification
+project, or the Bedrock verified low-level programming library), the
+formalization of mathematics (e.g. the full formalization of the
+Feit-Thompson theorem or homotopy type theory) and teaching.
+
+This package includes compatibility binaries to call Rocq
+through previous Coq commands like coqc coqtop,..."""
+maintainer: ["The Rocq development team <rocq+rocq-development@discoursemail.com>"]
+authors: ["The Rocq development team, INRIA, CNRS, and contributors"]
+license: "LGPL-2.1-only"
+homepage: "https://rocq-prover.org/"
+doc: "https://rocq-prover.org/docs/"
+bug-reports: "https://github.com/rocq-prover/rocq/issues"
+depends: [
+  "dune" {>= "3.8"}
+  "rocq-runtime" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/rocq-prover/rocq.git"
+post-messages: [
+  "Coq has been renamed to The Rocq Prover, see https://rocq-prover.org/refman/changes.html#porting-to-the-rocq-prover for details.
+   This package provides compatibility binaries to ease the transition to the new rocq binary."
+]
+url {
+  src: "https://github.com/rocq-prover/rocq/releases/download/V9.1.1/rocq-9.1.1.tar.gz"
+  checksum: "sha256=35cd03fc4193969b1cce01190340e5c129c1ba8f02242a9e6dff4b83be118759"
+}

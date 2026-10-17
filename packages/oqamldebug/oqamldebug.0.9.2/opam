@@ -1,0 +1,50 @@
+opam-version: "2.0"
+maintainer: "sebastien.fricker@gmail.com"
+build: [
+  [
+    "qmake"
+    "CONFIG-=app_bundle"
+    "CONFIG+=release"
+    "PREFIX_BIN=%{bin}%/"
+    "CONFIG-=debug"
+    "oqamldebug.pro"
+  ]
+  [make]
+]
+remove: [
+  ["qmake" "CONFIG-=app_bundle" "CONFIG+=release" "PREFIX_BIN=%{bin}%/" "CONFIG-=debug" "oqamldebug.pro"]
+  [make "uninstall"]
+]
+install: [make "install"]
+depexts: [
+  ["qt4-qmake" "libqt4-dev"] {os-family = "debian"}
+]
+synopsis: "Graphical front-end to ocamldebug"
+description: """
+Features:
+    * Emulates only the emacs mode from OCamlDebug, does not need any hooks into ocaml core.
+    * Full Qt application: can be compiled on Windows, MacOS and Linux
+    * Save/Restore of window position, and debug parameter.
+    * Detection of the modification of the debugged application or sources. (automatically reloaded when modified)
+    * Syntax highlighting of ocamldebug command and ocaml sources.
+    * Persistent command line history
+    * Mouse support: middle click on a symbol in the code to print it, and mouse wheel to step/backstep through the code.
+    * Setting breakpoints directly into the source code.
+    * Watch window
+    * Call stack window
+    * Separated application output window
+
+OQamlDebug needs Qt4 to be generated. Qt4 can be downloaded from http://qt-project.org.
+On debian install simply qt4-dev package..
+
+On MacOS it is necessary to set QMAKESPEC as follow to install the package
+export QMAKESPEC=macx-g++"""
+depends: ["ocaml"]
+url {
+  src:
+    "https://github.com/ocaml/opam-source-archives/raw/main/oqamldebug-0.9.2.tar.gz"
+  checksum: [
+    "sha256=48eec86b831345db0d97866a2771f8914b063035ac2a4b6e5527dfb0f0e9f500"
+    "md5=1037eefe46132300dd872ba6b0c25e58"
+  ]
+}

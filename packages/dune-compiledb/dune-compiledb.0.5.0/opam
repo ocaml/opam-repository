@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "Generate compile_commands.json from dune rules"
+description:
+  "Generates a compile_commands.json from dune rules that can be used by language server like 'clangd', or static analyzers like 'goblint'. Works with generated headers."
+maintainer: ["Edwin Török <edwin.torok@cloud.com>"]
+authors: ["Edwin Török <edwin.torok@cloud.com>"]
+license: "LGPL-2.1-or-later"
+homepage: "https://github.com/edwintorok/dune-compiledb"
+bug-reports: "https://github.com/edwintorok/dune-compiledb/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.08"}
+  "ezjsonm" {>= "1.0.0"}
+  "sexplib"
+  "sexplib0"
+  "fpath" {>= "0.7.1"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/edwintorok/dune-compiledb.git"
+url {
+  src:
+    "https://github.com/edwintorok/dune-compiledb/releases/download/0.5.0/dune-compiledb-0.5.0.tbz"
+  checksum: [
+    "sha256=fb91db789db4c25e6339d955158fa227cb9547279f4e35acd132e715889686ca"
+    "sha512=59c8b94fb1270b7fe5c315eedb26da8d9b6041f64e6863571eb550420c17dd6b5a8b042dff9c934c2f0e4e43dff8912f4cbda007bce5de1a22c27b931ffa6509"
+  ]
+}
+x-commit-hash: "423141325a1806419fdfd0846d2f0ca0af4f3735"

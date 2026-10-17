@@ -1,0 +1,94 @@
+opam-version: "2.0"
+maintainer: "Kate <kit.ty.kate@disroot.org>"
+authors: [
+  "whitequark <whitequark@whitequark.org>"
+  "The LLVM team"
+]
+license: "MIT"
+doc: "http://llvm.moe/ocaml"
+bug-reports: "http://llvm.org/bugs/"
+dev-repo: "git+http://llvm.org/git/llvm.git"
+homepage: "http://llvm.moe"
+build: ["bash" "-ex" "install.sh" "%{conf-llvm:config}%" lib "%{conf-cmake:cmd}%" make "build"]
+install: ["bash" "-ex" "install.sh" "%{conf-llvm:config}%" lib "%{conf-cmake:cmd}%" make "install"]
+depends: [
+  "ocaml" {>= "4.00.0"}
+  "ctypes" {>= "0.4"}
+  "ounit" {with-test}
+  "ocamlfind" {build}
+  "conf-llvm" {build & = version}
+  "conf-python-3" {build}
+  "conf-cmake" {build}
+]
+conflicts: [
+  "base-nnp"
+  "ocaml-option-nnpchecker"
+]
+patches: [
+  "fix-shared.patch"
+  "add-cmt-for-llvm-13.patch"
+  "fix-macos.patch"
+  "fix-rhel.patch"
+]
+synopsis: "The OCaml bindings distributed with LLVM"
+description: "Note: LLVM should be installed first."
+url {
+  src: "https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/llvm-13.0.0.src.tar.xz"
+  checksum: "sha256=408d11708643ea826f519ff79761fcdfc12d641a2510229eec459e72f8163020"
+}
+extra-source "link-META.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/link-META.patch.13.0.0"
+  checksum: [
+    "sha256=b35087391e010583128b60004775e9cd31e76cb3b4d3c70c227261c52f5cfcba"
+    "md5=53dc8e72917585d235b9bbb3e06eed2b"
+  ]
+}
+extra-source "install.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/install.sh.13.0.0"
+  checksum: [
+    "sha256=146236f085f89a2ad8347a968eb31458864911d9deab688453244ff438a139a0"
+    "md5=f318260916581cbf0a8e7aa2903ac6d2"
+  ]
+}
+extra-source "fix-shared.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/fix-shared.patch.13.0.0"
+  checksum: [
+    "sha256=0a0e29414bbb4f94ecb545ed6c6176760df8a26eaf6a022cc8ec276043790216"
+    "md5=818e192b6b54c0e392f2cdb2106b2e6f"
+  ]
+}
+extra-source "fix-rhel.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/fix-rhel.patch.13.0.0"
+  checksum: [
+    "sha256=545c5f53af7fc843ba3db20127dae36e01c6a2235640a66aba1e5f394620c275"
+    "md5=ba4142dbfc65a4b1a09ee7233048c0bf"
+  ]
+}
+extra-source "fix-macos.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/fix-macos.patch.13.0.0"
+  checksum: [
+    "sha256=42ff8062b529bfcc1d3ddad0d85f73236b8aa09e82fc2fb7a4c15a50397681c1"
+    "md5=ff33b723048e1f1a2d26505f272c8ae9"
+  ]
+}
+extra-source "add-cmt-for-llvm-13.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/add-cmt-for-llvm-13.patch"
+  checksum: [
+    "sha256=160f09e4c997f512745b96244d8a6031a1f794951f1516589338e45927b876fd"
+    "md5=248ec7d17ebd1592fc99848016d9452b"
+  ]
+}
+extra-source "META.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/META.patch.13.0.0"
+  checksum: [
+    "sha256=7563138ac4e4f75e48d844f1e185dca114157ec04d019065c381c6a8366b69d0"
+    "md5=4c3cf99d06d2044e2ce5a853e5a16d5e"
+  ]
+}

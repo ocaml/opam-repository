@@ -1,0 +1,28 @@
+opam-version: "2.0"
+maintainer: "David Allsopp <david.allsopp@metastack.com>"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: ["X.Org Foundation"]
+homepage: "https://www.x.org"
+license: "MIT"
+build: [
+  ["pkg-config" "x11"] {os != "macos"}
+  [
+    "sh" "-exc"
+    """PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/X11/share/pkgconfig" pkg-config --libs x11"""
+  ] {os = "macos"}
+]
+depends: ["conf-pkg-config" {build}]
+depexts: [
+  ["libx11-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["libX11-devel"] {os-distribution = "centos" | os-distribution = "ol" | os-family = "fedora" | os-family = "suse" | os-family = "opensuse"}
+  ["libx11-dev"] {os-distribution = "alpine"}
+  ["libx11"] {os-distribution = "arch"}
+  ["libX11-dev"] {os = "cygwin"}
+  ["xquartz"] {os = "macos" & os-distribution = "homebrew"}
+  ["xorg-libX11"] {os = "macos" & os-distribution = "macports"}
+  ["libX11"] {os = "freebsd"}
+]
+synopsis: "Virtual package relying on an Xlib system installation"
+description:
+  "This package can only install if Xlib (libX11) is installed on the system."
+flags: conf

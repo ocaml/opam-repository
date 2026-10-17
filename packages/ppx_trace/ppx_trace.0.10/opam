@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "A ppx-based preprocessor for trace"
+maintainer: ["Simon Cruanes"]
+authors: ["Simon Cruanes"]
+license: "MIT"
+tags: ["trace" "ppx"]
+homepage: "https://github.com/c-cube/ocaml-trace"
+bug-reports: "https://github.com/c-cube/ocaml-trace/issues"
+depends: [
+  "ocaml" {>= "4.12"}
+  "ppxlib" {>= "0.28" & < "0.36"}
+  "trace" {= version}
+  "trace-tef" {= version & with-test}
+  "dune" {>= "2.9"}
+  "odoc" {with-doc}
+]
+depopts: [
+  "mtime" {>= "2.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/c-cube/ocaml-trace.git"
+url {
+  src:
+    "https://github.com/c-cube/ocaml-trace/releases/download/v0.10/trace-0.10.tbz"
+  checksum: [
+    "sha256=c5a43827bbd5521e779c8856e44f4c718dccda902d00a242b598516110ada04d"
+    "sha512=f19cb25a767ed428cb1d4a497312267524bfaaf9550caa5fc1e84809494f0b7eaf26030d95563c75dea66606fcbec1be7e34baa4cba86fc57d64bc5d5b98efd5"
+  ]
+}
+x-commit-hash: "d9cd7621f54325d80114fc3d5be9ff59c98f7331"

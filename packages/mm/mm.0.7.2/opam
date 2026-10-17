@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis:
+  "The mm library contains high-level to create and manipulate multimedia streams (audio, video, MIDI)"
+maintainer: ["The Savonet Team <savonet-users@lists.sourceforge.net>"]
+authors: ["Romain Beauxis <toots@rastageeks.org>"]
+license: "GPL-2.0"
+homepage: "https://github.com/savonet/ocaml-mm"
+bug-reports: "https://github.com/savonet/ocaml-mm/issues"
+depends: [
+  "ocaml" {< "5.0.0"}
+  "dune" {>= "2.8"}
+  "dune-configurator"
+  "odoc" {with-doc}
+]
+depopts: ["alsa" "ao" "mad" "pulseaudio" "ocamlsdl" "theora"]
+conflicts: [
+  "mad" {< "0.5.0"}
+  "alsa" {< "0.3.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/savonet/ocaml-mm.git"
+depexts: [
+  ["linux-headers"] {os-family = "alpine"}
+]
+url {
+  src: "https://github.com/savonet/ocaml-mm/archive/v0.7.2.tar.gz"
+  checksum: [
+    "md5=c402e924951cc299541bae67fb413440"
+    "sha512=a8bffa9cd9b1b42c05c6d6af11648162d4189afe2a36a93883e08d7260f6cbe7fa6f3ca6582434eb9a20746a7004684474516990127bad017e12f2c7e4abeb53"
+  ]
+}

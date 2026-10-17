@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "LSP server library (with Eio for concurrency)"
+maintainer: ["Simon Cruanes"]
+authors: ["Nick Hu"]
+license: "MIT"
+homepage: "https://github.com/c-cube/linol"
+bug-reports: "https://github.com/c-cube/linol/issues"
+depends: [
+  "dune" {>= "2.0"}
+  "yojson" {>= "1.6"}
+  "linol" {= version}
+  "base-unix"
+  "eio" {>= "1.0" & < "2.0"}
+  "eio_main" {with-test}
+  "lsp" {>= "1.19" & < "1.21"}
+  "jsonrpc" {>= "1.19" & < "1.21"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/c-cube/linol.git"
+url {
+  src: "https://github.com/c-cube/linol/releases/download/v0.8/linol-0.8.tbz"
+  checksum: [
+    "sha256=c3ceb4a5f167d5dbde781245c085809d690659e1afa04b681760b3c6013b37de"
+    "sha512=326817394ec6c7d327eadb27f850c56bfc5ea08f7cdaee53dd797f281fadfa4f25abde189bd72985862a1f1e7e140b1925b3908daf52ecefaa351aa132d76c65"
+  ]
+}
+x-commit-hash: "de03ece8ccc0c4200fdd1d9f978eaf449807aca2"

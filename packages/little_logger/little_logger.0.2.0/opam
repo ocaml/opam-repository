@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "A tiny, little logger <3"
+maintainer: "Ryan Moore"
+authors: "Ryan Moore"
+license: "MIT"
+homepage: "https://github.com/mooreryan/little_logger"
+doc: "https://mooreryan.github.io/little_logger/"
+bug-reports: "https://github.com/mooreryan/little_logger/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "ocaml" {>= "4.08.0"}
+  "ptime"
+  "async" {with-test}
+  "bisect_ppx" {with-test}
+  "core" {>= "v0.12" & with-test}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "ppx_sexp_conv" {with-test}
+  "ppx_jane" {with-test}
+  "re2" {with-test}
+  "core_bench" {>= "v0.12" & dev}
+  "easy_logging" {dev}
+  "dolog" {dev}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & ocaml:version < "5.0.0"}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mooreryan/little_logger.git"
+url {
+  src: "https://github.com/mooreryan/little_logger/archive/0.2.0.tar.gz"
+  checksum: [
+    "md5=012b7caead6fb818419d224465ed50a3"
+    "sha512=4ac1496959f5899e91cd96bb4d540be586937e99c7876dceb789bb0399f9d5a8ceef548b86d8ba3552b48aa798af2e6daf50710bbd404cea18d22cc14572bc0a"
+  ]
+}

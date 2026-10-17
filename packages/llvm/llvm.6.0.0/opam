@@ -1,0 +1,76 @@
+opam-version: "2.0"
+maintainer: "Kate <kit.ty.kate@disroot.org>"
+authors: [
+  "whitequark <whitequark@whitequark.org>"
+  "The LLVM team"
+]
+license: "MIT"
+doc: "http://llvm.moe/ocaml-6.0"
+bug-reports: "http://llvm.org/bugs/"
+dev-repo: "git+http://llvm.org/git/llvm.git"
+homepage: "http://llvm.moe"
+install: [
+  ["bash" "-ex" "install.sh" "%{conf-llvm:config}%" lib "%{conf-cmake:cmd}%" make]
+]
+remove: [
+  ["rm" "-rf" "%{lib}%/llvm"]
+  ["sh" "-c" "rm -f %{lib}%/META.llvm*"]
+  ["sh" "-c" "rm -f %{stublibs}%/dllllvm*.so"]
+]
+depends: [
+  "ocaml" {>= "4.00.0"}
+  "ctypes" {>= "0.4"}
+  "ounit" {with-test}
+  "ocamlfind" {build}
+  "conf-llvm" {build & = "6.0.0"}
+  "conf-python-2-7" {build}
+  "conf-cmake" {build}
+]
+conflicts: [
+  "base-nnp"
+  "ocaml-option-nnpchecker"
+]
+patches: [
+  "fix-shared.patch"
+]
+synopsis: "The OCaml bindings distributed with LLVM"
+description: "Note: LLVM should be installed first."
+url {
+  src: "http://releases.llvm.org/6.0.0/llvm-6.0.0.src.tar.xz"
+  checksum: [
+    "sha256=1ff53c915b4e761ef400b803f07261ade637b0c269d99569f18040f3dcee4408"
+    "md5=788a11a35fa62eb008019b37187d09d2"
+  ]
+}
+extra-source "link-META.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/link-META.patch.6.0.0"
+  checksum: [
+    "sha256=4de73441a0451af01339f97157334f0a1de8f376c6b01088c3178729b1980b21"
+    "md5=ef4ebb8706be2ed402f31fc351d7dc75"
+  ]
+}
+extra-source "install.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/install.sh.6.0.0"
+  checksum: [
+    "sha256=a275a3f4d843f29ac2cf315f0861d8accceb70916453ecd6d9056896fb4f324b"
+    "md5=c8122f1f3c974594ba6c8767b187cdab"
+  ]
+}
+extra-source "fix-shared.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/fix-shared.patch.6.0.0"
+  checksum: [
+    "sha256=d6d28fb8560d2c7b0f73c18c0b4e9a022ed7b1a6ee60ad6c048734ef6cc27baa"
+    "md5=fcaa336f76d54cfcb987d5b44c3895bf"
+  ]
+}
+extra-source "META.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/META.patch.6.0.0"
+  checksum: [
+    "sha256=adc2b3eb124aaeec42bd85a9cbfc93183c2d9e208938b9ab308de638e668d08f"
+    "md5=1d0af08bab7a0f831f68849b6556e414"
+  ]
+}

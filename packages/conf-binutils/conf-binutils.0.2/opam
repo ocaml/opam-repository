@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git+https://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["ocaml" "find-binutils.ml"]
+]
+
+depexts: [
+  ["binutils-multiarch"] {os-family = "debian"}
+  ["binutils"] {os = "macos" & os-distribution = "homebrew"}
+  [
+    "arm-aout-binutils"
+    "arm-elf-binutils"
+    "arm-none-eabi-binutils"
+    "i386-elf-binutils"
+    "i386-mingw32-binutils"
+    "x86_64-elf-binutils"
+  ] {os = "macos" & os-distribution = "macports"}
+]
+synopsis: "Checks that binutils are installed"
+
+depends: [
+  "ocaml"
+  "base-unix"
+  "conf-which" {build}
+]
+
+substs: [ "find-binutils.ml" ]
+flags: [ conf ]
+extra-source "find-binutils.ml.in" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-binutils/find-binutils.ml.in.0.2"
+  checksum: [
+    "sha256=9c44b4cf3e10b0f3fea4e9b550da578a28bd9013371a37aa5186736bfc27b223"
+    "md5=f17f21afa0267cd743c2cd728fee0e01"
+  ]
+}

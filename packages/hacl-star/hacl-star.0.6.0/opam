@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "OCaml API for EverCrypt/HACL*"
+description: """\
+Documentation for this library can be found
+[here](https://tech.cryspen.com/hacl-packages/ocaml/main/index.html)."""
+maintainer: "Victor Dumitrescu <victor.dumitrescu@nomadic-labs.com>"
+authors: "Project Everest"
+license: "Apache-2.0"
+homepage: "https://tech.cryspen.com/hacl-packages/"
+doc: "https://tech.cryspen.com/hacl-packages/ocaml/main/index.html"
+bug-reports: "https://github.com/cryspen/hacl-packages/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "1.2"}
+  "hacl-star-raw" {= version}
+  "zarith"
+  "cppo" {build}
+  "alcotest" {with-test & >= "1.1.0"}
+  "odoc" {with-doc}
+]
+available: os = "freebsd" | os-family != "bsd"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/cryspen/hacl-packages.git"
+url {
+  src:
+    "https://github.com/cryspen/hacl-packages/releases/download/ocaml-v0.6.0/hacl-star.0.6.0.tar.gz"
+  checksum: [
+    "md5=1ab1ada1189c4e61ddda06275cc3093f"
+    "sha512=710645d22a22f5d276a26019bda8f137861e3f0dc1f9e170eb9d25c88dc84293af01fd40923181a28a063a9b8d281cb51e28c7016144f7c8bb1d63b18797fbe1"
+  ]
+}

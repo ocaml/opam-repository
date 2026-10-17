@@ -1,0 +1,66 @@
+opam-version: "2.0"
+maintainer: "zoggy@bat8.org"
+authors: "Maxence Guesdon"
+homepage: "https://www.good-eris.net/stog/"
+bug-reports: "https://framagit.org/zoggy/stog/issues"
+license: "GPL-3.0-only"
+doc: "https://www.good-eris.net/stog/doc.html"
+tags: ["publication" "xml" "documentation" "blog" "web" "website"]
+dev-repo: "git+https://framagit.org/zoggy/stog.git"
+build: [
+  ["./configure" "--prefix" prefix]
+  [make "all"]
+]
+install: [make "install-lib" "install-share"]
+remove: ["ocamlfind" "remove" "stog"]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "ocamlfind"
+  "xtmpl" {>= "0.16.0" & < "0.19.0"}
+  "ocf" {>= "0.5.0"}
+  "higlo" {>= "0.6"}
+  "ppx_blob" {>= "0.1"}
+  "ptime" {>= "0.8.2"}
+  "uri" {>= "1.9.2"}
+  "omd" {>= "1.3.0"}
+  "lwt" {>= "2.5"}
+  "uutf" {>= "1.0.0"}
+]
+depopts: ["js_of_ocaml" "xmldiff" "websocket" "ojs-base" "cryptokit"]
+conflicts: [
+  "js_of_ocaml" {>= "3.4.0"} ]
+synopsis:
+  "A static web site compiler, handling blog posts, or XML document in general."
+description: """
+Main features:
+- generate static XML/HTML documents: easy to deploy, less security problems,
+- handling of blog posts, with dates, topics, keywords and associated RSS feeds,
+- no new syntax,
+- based on a XML rewrite engine allowing to apply substitutions (rewrite rules)
+  on some tags. Some substitutions are pre-defined, and others can be defined
+  in your documents or added by plugins. Content can then be written with
+  semantic tags,
+- support multi-language sites,
+- a lot of predefined functions can be used to handle sectionning, table of
+  contents, verified cross-references, ...,
+- OCaml code can be interpreted at compilation time and the result included in
+  the generated documents, which is nice to write tutorials on OCaml libraries,
+- some plugins ease the inclusion of graphviz graphs, and pictures generated
+  by Aysmptote or LaTeX,
+- ..."""
+flags: light-uninstall
+url {
+  src: "https://framagit.org/zoggy/stog/-/archive/0.17.0/stog-0.17.0.tar.gz"
+  checksum: [
+    "sha256=ebcd99825dc23cad4a2db7ba4654ec9008e07541a87eee6469f2fc80f09d3650"
+    "md5=c094899fafc06fb55e507c06ee83c002"
+  ]
+}
+extra-source "stog.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/stog/stog.install.0.17.0"
+  checksum: [
+    "sha256=3c16b29180c3aaeb3469987770b8298a728d9becf321f19cf4fecf042314159b"
+    "md5=dd45a8769ea4d237c8a5945c67192856"
+  ]
+}

@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Bindings for Toggl API in OCaml"
+description: "Bindings for Toggl API in OCaml"
+maintainer: ["Christophe Riolo Uusivaara"]
+authors: ["Christophe Riolo Uusivaara"]
+license: "MIT"
+homepage: "https://github.com/unitrack-time-tracking/OToggl"
+bug-reports: "https://github.com/unitrack-time-tracking/OToggl/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.08.0"}
+  "atdgen" {build & >= "2"}
+  "atdgen-runtime" {>= "2"}
+  "base64" {>= "3"}
+  "containers" {>= "3.6"}
+  "piaf" {>= "0.1.0" & < "0.2.0"}
+  "ppx_deriving" {build}
+  "ptime" {>= "1.0.0"}
+  "alcotest" {with-test}
+  "alcotest-lwt" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/unitrack-time-tracking/OToggl.git"
+url {
+  src:
+    "https://github.com/unitrack-time-tracking/OToggl/releases/download/0.3.2/dev-0.3.2.tbz"
+  checksum: [
+    "sha256=22ee2dc184836891b833d6791bea35f583e24bb2ce87ae4f6e5dcbdb272dc4c9"
+    "sha512=89508c18662001029e6d3707dae82edd67a17a7fecc200d7c0da3c4ac8f45b6676e0dec69483234f2170b31451f36735903c89e85cb2a713fe8a4df327964f74"
+  ]
+}
+x-commit-hash: "7b81a933758b27687f009d041eb34bdbd5ad49e6"

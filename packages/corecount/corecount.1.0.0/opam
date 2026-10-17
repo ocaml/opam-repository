@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+authors: "Edgar Aroutiounian <edgar.factorial@gmail.com>"
+homepage: "https://github.com/fxfactorial/ocaml-corecount"
+bug-reports: "https://github.com/fxfactorial/ocaml-corecount/issues"
+license: "BSD-3-Clause"
+tags: "clib:stdc"
+dev-repo: "git+https://github.com/fxfactorial/ocaml-corecount.git"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocamlfind" "remove" "corecount"]
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "oasis" {build & >= "0.4"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+]
+synopsis: "Get count of cores on machine"
+description: "Get a count of cores on machine via C++11s stdlib"
+flags: light-uninstall
+url {
+  src: "https://github.com/fxfactorial/ocaml-corecount/archive/v1.0.0.tar.gz"
+  checksum: [
+    "sha256=f35df6a084fefd3ea8667bb0754d7b0e5814981b2cba5a5c44b9c2102c5d34ac"
+    "md5=e73e83bfaa0fc9f2434ebbd8cad590b6"
+  ]
+}

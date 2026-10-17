@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "A scheduler independent blocking mechanism"
+description:
+  "A low level mechanism intended for writing higher level libraries that need to block in a scheduler friendly manner."
+maintainer: ["Vesa Karvonen <vesa.a.j.k@gmail.com>"]
+authors: ["Vesa Karvonen <vesa.a.j.k@gmail.com>"]
+license: "ISC"
+homepage: "https://github.com/ocaml-multicore/domain-local-await"
+bug-reports: "https://github.com/ocaml-multicore/domain-local-await/issues"
+depends: [
+  "dune" {>= "3.8"}
+  "ocaml" {>= "4.12.0"}
+  "thread-table" {>= "1.0.0"}
+  "alcotest" {>= "1.7.0" & with-test}
+  "mdx" {>= "2.3.0" & with-test}
+  "ocaml-version" {>= "3.6.1" & with-test}
+  "domain_shims" {>= "0.1.0" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & os != "macos"}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-multicore/domain-local-await.git"
+url {
+  src:
+    "https://github.com/ocaml-multicore/domain-local-await/releases/download/1.0.1/domain-local-await-1.0.1.tbz"
+  checksum: [
+    "sha256=2952113c53cb07e2b054b2dc86ce72939131dab8207c8f3139adb23e64cdfa6f"
+    "sha512=6f9805fc032f8afcfba2b0df11b48482c6af14d63f825b09e49e31f9cfc1b196c74981a5b4682ca862e300f9a931b16c6396bd7921513add586df98ba9958ec5"
+  ]
+}
+x-commit-hash: "2028ac338517b91fa93072486d03769d56b3f4df"

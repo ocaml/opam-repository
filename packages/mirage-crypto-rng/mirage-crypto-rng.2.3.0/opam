@@ -1,0 +1,42 @@
+opam-version: "2.0"
+homepage:     "https://github.com/mirage/mirage-crypto"
+dev-repo:     "git+https://github.com/mirage/mirage-crypto.git"
+bug-reports:  "https://github.com/mirage/mirage-crypto/issues"
+doc:          "https://mirage.github.io/mirage-crypto/doc"
+authors:      ["David Kaloper <dk505@cam.ac.uk>" "Hannes Mehnert <hannes@mehnert.org>" ]
+maintainer:   "Hannes Mehnert <hannes@mehnert.org>"
+license:      "BSD-2-Clause"
+synopsis:     "A cryptographically secure PRNG"
+
+build: [ ["dune" "subst"] {dev}
+         ["dune" "build" "-p" name "-j" jobs ]
+         ["dune" "runtest" "-p" name "-j" jobs] {with-test} ]
+
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "dune" {>= "2.7"}
+  "dune-configurator" {>= "2.0.0"}
+  "duration"
+  "logs"
+  "mirage-crypto" {=version}
+  "digestif" {>= "1.1.4"}
+  "ounit2" {with-test}
+  "randomconv" {with-test & >= "0.2.0"}
+  "ohex" {with-test & >= "0.2.0"}
+]
+conflicts: [ "mirage-runtime" {< "3.8.0"} ]
+description: """
+Mirage-crypto-rng provides a random number generator interface, and
+implementations: Fortuna, HMAC-DRBG, getrandom/getentropy based (in the unix
+sublibrary)
+"""
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mirage/mirage-crypto/releases/download/v2.3.0/mirage-crypto-2.3.0.tbz"
+  checksum: [
+    "sha256=840fbf4136605b4a1f1dd5c0611932a274fe3bf97464c82a6b3a9731a68e208e"
+    "sha512=8b983bf9e7fc03f3442b9e00f8ec562d6f0ae18702d10a9ca79182e135f85d1c264393d4033c78e51b945dbe4eb7f436a25ccfedeb0c1f9cdb4c46927cd94fbf"
+  ]
+}
+x-commit-hash: "00ed1238df988c6c109c753cedb87388d352a60c"

@@ -1,0 +1,117 @@
+opam-version: "2.0"
+homepage:     "https://github.com/mirleft/ocaml-nocrypto"
+dev-repo: "git+https://github.com/mirleft/ocaml-nocrypto.git"
+bug-reports:  "https://github.com/mirleft/ocaml-nocrypto/issues"
+doc:          "https://mirleft.github.io/ocaml-nocrypto/doc"
+authors:      ["David Kaloper <david@numm.org>"]
+maintainer:   "David Kaloper <david@numm.org>"
+license:      "ISC"
+tags:          [ "org:mirage" ]
+build-env: [
+ TOPKG_CONF_DEBUGGER_SUPPORT = "false" # Install with topkg >= 1.1.0 too
+]
+build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+                "--jobs" "1"
+                "--with-lwt" "%{lwt:installed}%"
+                "--xen" "%{mirage-xen:installed}%"
+                "--freestanding" "%{mirage-solo5:installed}%"]
+
+depends: [
+  "ocaml" {>= "4.02.0" & != "4.08.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "0.9.1"}
+  "cpuid" {build & >= "0.1.2"}
+  "ocb-stubblr" {build & >= "0.1.0"}
+  "ppx_deriving" {>= "4.2"}
+  "ppx_sexp_conv" {>= "113.33.01" & != "v0.11.0"}
+  "ounit" {with-test}
+  "cstruct" {>= "3.0.0" & < "6.1.0"}
+  "cstruct-lwt"
+  "zarith"
+  "lwt" {< "6.0.0"}
+  "sexplib" {!= "v0.9.0"}
+  ("mirage-no-xen" |
+    ("mirage-xen" {>="2.2.0" & < "6.0.0"}
+    & "mirage-entropy"
+    & "zarith-xen"))
+  ("mirage-no-solo5" |
+    ("mirage-solo5" & "mirage-entropy" & "zarith-freestanding"))
+]
+
+patches: [
+    "0001-add-missing-runtime-dependencies-in-_tags.patch"
+    "0002-add-ppx_sexp_conv-as-a-runtime-dependency-in-the-pac.patch"
+    "0003-Auto-detect-ppx_sexp_conv-runtime-library.patch"
+    "0004-pack-package-workaround-ocamlbuild-272.patch"
+    "0005-use-modern-cstruct-findlib.patch"
+    "0006-explicit-dependency-on-sexplib.patch"
+]
+synopsis: "Simpler crypto"
+description: """
+nocrypto is a small cryptographic library that puts emphasis on the applicative
+style and ease of use. It includes basic ciphers (AES, 3DES, RC4), hashes (MD5,
+SHA1, SHA2), public-key primitives (RSA, DSA, DH) and a strong RNG (Fortuna).
+
+RSA timing attacks are countered by blinding. AES timing attacks are avoided by
+delegating to AES-NI."""
+url {
+  src:
+    "https://github.com/mirleft/ocaml-nocrypto/releases/download/v0.5.4/nocrypto-0.5.4.tbz"
+  checksum: [
+    "sha256=8f720c8753136706ae14d46ba85e27f482a8b3e9ceccf08b0de63348618a507f"
+    "md5=c331a7a4d2a563d1d5ed581aeb849011"
+  ]
+}
+extra-source "0006-explicit-dependency-on-sexplib.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/nocrypto/0006-explicit-dependency-on-sexplib.patch"
+  checksum: [
+    "sha256=9822bdb072fc6c2e6e86f42098d24723ea0500a5213fa2635e2fbe68cd0541fe"
+    "md5=7f552e18ba304eb4e1e19d66d19b7888"
+  ]
+}
+extra-source "0005-use-modern-cstruct-findlib.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/nocrypto/0005-use-modern-cstruct-findlib.patch"
+  checksum: [
+    "sha256=2957ae6999c8fbfe717ec01c4014c02bf63de46a61fe02047df7b0b4cbd094cc"
+    "md5=4d4aab890f0ca9327d83548c32d64efc"
+  ]
+}
+extra-source "0004-pack-package-workaround-ocamlbuild-272.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/nocrypto/0004-pack-package-workaround-ocamlbuild-272.patch"
+  checksum: [
+    "sha256=7c6391be9369acaf60bc0fa00fd30ac5dd5d460ec4874f24027b875734a8286f"
+    "md5=94615e4a8d5976e9e75c3b031d3484f1"
+  ]
+}
+extra-source "0003-Auto-detect-ppx_sexp_conv-runtime-library.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/nocrypto/0003-Auto-detect-ppx_sexp_conv-runtime-library.patch"
+  checksum: [
+    "sha256=4d1da59e80075658472fbfa3e0042090b5c9081c0e879c913ec15b2a6a2b690e"
+    "md5=871b3f904cf87527b7390993d5598884"
+  ]
+}
+extra-source "0002-add-ppx_sexp_conv-as-a-runtime-dependency-in-the-pac.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/nocrypto/0002-add-ppx_sexp_conv-as-a-runtime-dependency-in-the-pac.patch"
+  checksum: [
+    "sha256=c3a09577c9a892d0f9e77ac3e63b4ba546bc9d9692607ecc4958910a2137c946"
+    "md5=06962f4f2f5b4c3f1e39293b3d3528f2"
+  ]
+}
+extra-source "0001-add-missing-runtime-dependencies-in-_tags.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/nocrypto/0001-add-missing-runtime-dependencies-in-_tags.patch"
+  checksum: [
+    "sha256=c1ffcc3dbbc806b2bbfed07141e79ea1b7479c6838cefff3ca648fe58f4f0f20"
+    "md5=ae679a096e14c0a0ecb881bc7432cc2a"
+  ]
+}
+conflicts: [
+	"lwt" {= "6.0.0~alpha00" }
+	"lwt" {= "6.0.0~beta01" }
+]

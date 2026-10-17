@@ -1,0 +1,38 @@
+opam-version: "2.0"
+synopsis: """\
+UNIX version of BLS12-381 primitives implementing the virtual package
+bls12-381 with blst backend"""
+maintainer: "Danny Willems <be.danny.willems@gmail.com>"
+authors: "Danny Willems <be.danny.willems@gmail.com>"
+license: "MIT"
+homepage: "https://gitlab.com/dannywillems/ocaml-bls12-381"
+bug-reports: "https://gitlab.com/dannywillems/ocaml-bls12-381/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "dune" {>= "2.8.4"}
+  "dune-configurator" {build}
+  "zarith" {>= "1.10" & < "2.0"}
+  "ctypes" {>= "0.18.0" & < "0.19.0"}
+  "ctypes-foreign"
+  "bls12-381" {= version}
+  "hex"
+  "alcotest" {with-test}
+  "bisect_ppx" {with-test & >= "2.5"}
+  "ff-pbt" {>= "0.6.0" & < "0.7.0" & with-test}
+]
+x-ci-accept-failures: [
+  "centos-7" # default C compiler too old?
+  "oraclelinux-7" # default C compiler too old?
+]
+available: arch = "x86_64" | arch = "x86_32" | arch = "arm64" | arch = "arm32" 
+build: ["dune" "build" "-j" jobs "-p" name "@install"]
+run-test: ["dune" "runtest" "-p" name "-j" jobs]
+dev-repo: "git+https://gitlab.com/dannywillems/ocaml-bls12-381.git"
+url {
+  src:
+    "https://gitlab.com/dannywillems/ocaml-bls12-381/-/archive/1.0.0/ocaml-bls12-381-1.0.0.tar.bz2"
+  checksum: [
+    "md5=64b1732d64a546b3ab7c557c11c88637"
+    "sha512=4526cf4824ee39486b393461bbbdf6f4c3f2c0c2d75c111c3e4fe862ef63f5fd75d34ce042870f83d3a7183e899ec4a3671c1576a9317f39d9787781beeab5e1"
+  ]
+}

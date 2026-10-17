@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "GPGPU kernel DSL for OCaml"
+maintainer: ["mathias.bourgoin@gmail.com"]
+authors: ["Mathias Bourgoin"]
+license: "Cecill-B"
+homepage: "https://github.com/mathiasbourgoin/SPOC"
+bug-reports: "https://github.com/mathiasbourgoin/SPOC/issues"
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "spoc" {= version}
+  "re"
+  "dune" {>= "2.9"}
+  "cppo"
+  "camlp4"
+  "ctypes"
+  "ctypes-foreign"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files"
+    "false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+
+available: [ os = "linux" ]
+
+dev-repo: "git+https://github.com/mathiasbourgoin/SPOC.git"
+url {
+  src:
+    "https://github.com/mathiasbourgoin/SPOC/releases/download/20210823/spoc_ppx-20210823.tbz"
+  checksum: [
+    "sha256=bdb247f51bce29609c0a6d7155a2f180b26cb7388489cf21961b4d6754a0eb03"
+    "sha512=1cdb37b214e06a32436d23308c4555f6ddefcd4674d73964faa4bb184f843c477c95ef719b8794ead32d12b1ee6a5b5541683ec76ab9e6b1c2e3f3d7371ba41c"
+  ]
+}
+x-commit-hash: "d36797bd51648593d4bd79c0e9a4249b81eff4a8"

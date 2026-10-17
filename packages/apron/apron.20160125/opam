@@ -1,0 +1,59 @@
+opam-version: "2.0"
+authors: ["Bertrand Jeannet" "Antoine Miné"]
+homepage: "http://apron.cri.ensmp.fr/library/"
+maintainer: "Nicolas Berthier <m@nberth.space>"
+# dev-repo: "svn+ssh://scm.gforge.inria.fr/svnroot/apron/apron/trunk"
+bug-reports: "https://gforge.inria.fr/tracker/?atid=8946&group_id=2625&func=browse"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+build: [
+  [
+    "sh"
+    "./configure"
+    "--prefix"
+    "%{share}%/apron"
+    "--no-ppl" {!conf-ppl:installed}
+    "--no-java"
+    "--no-ocaml-plugins" {os = "freebsd"}
+    "--absolute-dylibs" {os = "macos"}
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [
+  [make "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "apron"]
+  ["rm" "-r" "-f" "%{share}%/apron"]
+]
+depends: [
+  "ocaml" {< "5"}
+  "ocamlfind"
+  "camlidl" {< "1.10"}
+  "mlgmpidl"
+  "ocamlbuild" {build}
+  "conf-perl"
+]
+depopts: [
+  "conf-ppl"
+]
+patches: [
+  "docker-workaround.diff" { os = "linux" }
+]
+synopsis: "APRON numerical abstract domain library"
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/ocaml/opam-source-archives/raw/main/apron-20160125.tar.gz"
+  checksum: [
+    "sha256=d5a9c4b9488c4e41c0c195f69e22f856773ebf137e88174aed7cf4147eb45b6d"
+    "md5=6bd20a4b4f42c2c467b26dc2b4024e55"
+  ]
+}
+extra-source "docker-workaround.diff" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/apron/docker-workaround.diff"
+  checksum: [
+    "sha256=39eed501e1b8391dd45b0707358fa6fd2aaf59489aea26d7dea0db7c7573be33"
+    "md5=949015a9862a3d8ced04b04d42a4a144"
+  ]
+}

@@ -1,0 +1,62 @@
+opam-version: "2.0"
+
+authors: ["wasmer"]
+maintainer: ["engineering@wasmer.io"]
+license: "MIT"
+homepage: "https://wasmer.io/"
+
+doc: "https://docs.wasmer.io/"
+bug-reports: "https://github.com/wasmerio/wasmer-ocaml/issues"
+dev-repo: "git+https://github.com/wasmerio/wasmer-ocaml.git"
+tags: ["org:wasmer"]
+
+synopsis: "The official Wasmer library"
+description: """
+This package is used by the wasmer package to trigger the installation
+of the Wasmer library.
+
+If the build fails because of a Rust version problem, install the Rust
+toolchain manually (libwasmer requires Rust version 1.59+, see
+https://rustup.rs/ )."""
+
+depends: [
+	"conf-rust-2021"
+]
+
+url {
+	src: "https://github.com/wasmerio/wasmer/archive/refs/tags/3.0.0-beta.tar.gz"
+	checksum: [
+		"md5=0741bb953e47349954b731c4da1386d4"
+		"sha512=38ec15c601c67468bca255a5a757afaedd6e1924662e3d108e63380a06f26e9f73f1aa0ef0700547885b52205a7d3f84c25bf266704b292b84585103c8369212"
+	]
+}
+extra-source "vendor.tar.gz" {
+  src:
+    "https://github.com/wasmerio/wasmer-ocaml/releases/download/v1.2.1%2Bdunefix/libwasmer-vendor.tar.gz"
+  checksum:
+    "sha256=35e634a15754e20cfe8884b52e617a633438f255e75afe43f1d6179a3666a742"
+}
+build: [
+	["mkdir" ".cargo"]
+	["mv" "config.toml" ".cargo"]
+	["sh" "-c" "gunzip vendor.tar.gz && tar xf vendor.tar"]
+	[make "build-capi"]
+	[make "package-capi"]
+	["cp" "package/lib/libwasmer.dylib" "package/lib/libwasmer.so"] {os = "macos"}
+]
+extra-source "libwasmer.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/libwasmer/libwasmer.install"
+  checksum: [
+    "sha256=2b3a0e3ea2e13ca121e57a785925195cf54a122ac4a2f6f651f414dbdf4f90aa"
+    "md5=13bb8b8ce7e8d2af1daa7f4ea1e4924b"
+  ]
+}
+extra-source "config.toml" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/libwasmer/config.toml"
+  checksum: [
+    "sha256=77e9219c27274120197571fd165cbe4121963b5ad3bc0b20b383c86ef0ce6c2b"
+    "md5=d4c7febd30951f7fbd584476dbb2dd70"
+  ]
+}

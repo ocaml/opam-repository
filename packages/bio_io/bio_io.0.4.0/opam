@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis:
+  "A library for reading and writing common file formats used in bioinformatics like FASTA files"
+maintainer: "Ryan Moore"
+authors: "Ryan Moore"
+license: "MIT"
+homepage: "https://github.com/mooreryan/bio_io"
+doc: "https://mooreryan.github.io/bio_io/"
+bug-reports: "https://github.com/mooreryan/bio_io/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "base" {>= "v0.12"}
+  "ocaml" {>= "4.08.0"}
+  "ppx_compare" {>= "v0.12" & < "v0.15"}
+  "ppx_fields_conv" {>= "v0.12" & < "v0.15"}
+  "ppx_sexp_conv" {>= "v0.12" & < "v0.15"}
+  "stdio" {>= "v0.12" & < "v0.15"}
+  "ppx_assert" {>= "v0.12" & with-test}
+  "core_kernel" {>= "v0.12" & with-test}
+  "ppx_expect" {>= "v0.12" & with-test}
+  "ppx_inline_test" {>= "v0.12" & with-test}
+  "re2" {>= "v0.12" & with-test}
+  "bisect_ppx" {dev}
+  "core" {>= "v0.12" & dev}
+  "core_bench" {>= "v0.12" & dev}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & arch != "x86_32"}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mooreryan/bio_io.git"
+url {
+  src: "https://github.com/mooreryan/bio_io/archive/0.4.0.tar.gz"
+  checksum: [
+    "md5=1ad5b1585a190ea0973e52526c3f60a6"
+    "sha512=9190ba4a5bf128a035adf71b7e4269314415946056b34cb799cdca26c0272d087bf109fdaf19b6962c78d5410a0361e046a9c28b5614502f3ff8f0764d89862d"
+  ]
+}

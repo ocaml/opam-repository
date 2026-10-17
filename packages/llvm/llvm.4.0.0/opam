@@ -1,0 +1,72 @@
+opam-version: "2.0"
+maintainer: "Kate <kit.ty.kate@disroot.org>"
+authors: [
+  "whitequark <whitequark@whitequark.org>"
+  "The LLVM team"
+]
+license: "MIT"
+doc: "http://llvm.moe/ocaml-4.0"
+bug-reports: "http://llvm.org/bugs/"
+dev-repo: "git+http://llvm.org/git/llvm.git"
+homepage: "http://llvm.moe"
+install: [
+  ["bash" "-ex" "install.sh" "%{conf-llvm:config}%" lib "%{conf-cmake:cmd}%"]
+]
+remove: [
+  ["rm" "-rf" "%{lib}%/llvm"]
+  ["sh" "-c" "rm -f %{lib}%/META.llvm*"]
+]
+depends: [
+  "ocaml" {>= "4.00.0"}
+  "ctypes" {>= "0.4"}
+  "ounit" {with-test}
+  "ocamlfind" {build}
+  "conf-llvm" {build & = "4.0.0"}
+  "conf-python-2-7" {build}
+  "conf-cmake" {build}
+]
+conflicts: [
+  "base-nnp"
+  "ocaml-option-nnpchecker"
+]
+synopsis: "The OCaml bindings distributed with LLVM"
+description: "Note: LLVM should be installed first."
+url {
+  src: "http://releases.llvm.org/4.0.0/llvm-4.0.0.src.tar.xz"
+  checksum: [
+    "sha256=8d10511df96e73b8ff9e7abbfb4d4d432edbdbe965f1f4f07afaf370b8a533be"
+    "md5=ea9139a604be702454f6acf160b4f3a2"
+  ]
+}
+extra-source "link.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/link.patch.4.0.0"
+  checksum: [
+    "sha256=4873de79aa265133c34ed04eeb16dc69bc0cfc291647b53a25bbda47de7c5b8d"
+    "md5=d08ef49e8f21956b99cc51f201474166"
+  ]
+}
+extra-source "link-META.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/link-META.patch.4.0.0"
+  checksum: [
+    "sha256=6550770196a3650bb64f167a9be9a92fe7380ed42687e56d062ddba9b9a62551"
+    "md5=5feaafe357cd1860d68fbf248770aa4d"
+  ]
+}
+extra-source "install.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/install.sh.4.0.0"
+  checksum: [
+    "sha256=0a865ee7a235249779e8f00cb196c5a547b4bff4f962500f992a5100b27b75d1"
+    "md5=153fcfff39630850cd4afaa42d6972c9"
+  ]
+}
+extra-source "META.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/META.patch.4.0.0"
+  checksum: [
+    "sha256=1d7b0cf32a8f0cfb2c1dbf4c067cf8abff30ed98af68489f319a0801555a5c5a"
+    "md5=0aebed21c829c305f84a81288e655d50"
+  ]
+}

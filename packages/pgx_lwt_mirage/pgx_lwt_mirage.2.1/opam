@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "Pgx using Lwt on Mirage for IO"
+description: "Pgx using Lwt on Mirage for IO"
+maintainer: ["Arena Developers <silver-snakes@arena.io>"]
+authors: ["Arena Developers <silver-snakes@arena.io>"]
+license: "LGPL-2.0-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/arenadotio/pgx"
+doc: "https://arenadotio.github.io/pgx"
+bug-reports: "https://github.com/arenadotio/pgx/issues"
+depends: [
+  "dune" {>= "1.11"}
+  "lwt"
+  "ocaml" {>= "4.08"}
+  "logs"
+  "mirage-channel"
+  "conduit-mirage" {>= "2.3.0"}
+  "dns-client" {>= "6.0.0" & < "8.0.0"}
+  "mirage-random" {< "4.0.0"}
+  "mirage-time"
+  "mirage-clock"
+  "tcpip" {>= "7.0.0"}
+  "pgx" {= version}
+  "pgx_lwt" {= version}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/arenadotio/pgx.git"
+url {
+  src: "https://github.com/arenadotio/pgx/releases/download/2.1/pgx-2.1.tbz"
+  checksum: [
+    "sha256=3c53140b3b7082835927604f2511c77329406edcea5f378fed60f9fe9cb7da5d"
+    "sha512=cc95e07625c195675f01700e31906488bbe40f3db887b2564c9d19f250900b165174ba595acdb35adb5f7db6bcaf5f9fb1d784efd1c5f7d5202d61641ac55a12"
+  ]
+}
+x-commit-hash: "78fde75fb70735c1514e3716db59ab839a50d5eb"

@@ -1,0 +1,57 @@
+opam-version: "2.0"
+maintainer: [ "yomimono <maintenance@identity-function.com>" ]
+authors: [ "yomimono <maintenance@identity-function.com>" ]
+homepage: "https://github.com/yomimono/chamelon"
+bug-reports: "https://github.com/yomimono/chamelon/issues"
+dev-repo: "git+https://github.com/yomimono/chamelon.git"
+license: "ISC"
+synopsis: "Subset of littlefs filesystem fulfilling MirageOS KV"
+description: """
+Chamelon implements a subset of the littlefs filesystem,
+which was originally designed for microcontroller use.  It exposes
+an interface matching the Mirage_kv.RW module type and operates
+on top of a block device matching Mirage_block.S .
+
+It is extremely not POSIX."""
+
+build: [
+ [ "dune" "build" "-p" name "-j" jobs ]
+ [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.10.0"}
+  "dune" {>= "2.9.0" & < "3.7.0"}
+  "crowbar" {>= "0.2.1" & with-test}
+  "fpath" {>= "0.7.3" & with-test}
+  "alcotest" {>= "1.5.0" & with-test}
+  "alcotest-lwt" {>= "1.5.0" & with-test}
+  "mirage-block-combinators" {>= "3.0.0" & with-test}
+  "mirage-block-unix" {>= "2.13.0" & with-test}
+  "mirage-clock-unix" {>= "4.0.0" & with-test}
+  "mirage-crypto-rng" {with-test & >= "0.10.6" & < "0.11.0"}
+  "bechamel" {>= "0.2.0" & with-test}
+  "bechamel-js" {>= "0.2.0" & with-test}
+  "checkseum" {>= "0.3.2"}
+  "cstruct" {>= "6.0.0"}
+  "digestif" {>= "1.0.0"}
+  "fmt" {>= "0.8.7"}
+  "logs" {>= "0.6.0"}
+  "lwt" {>= "5.3.0"}
+  "ptime" {>= "0.8.6"}
+  "mirage-block" {>= "3.0.0"}
+  "mirage-clock" {>= "2.0.0"}
+  "mirage-kv" {>= "4.0.1" & < "5.0.0"}
+  "mirage-logs" {>= "1.2.0"}
+  "ppx_cstruct"
+  "optint" {>= "0.0.4"}
+]
+url {
+  src:
+    "https://github.com/yomimono/chamelon/releases/download/v0.1.2/chamelon-v0.1.2.tbz"
+  checksum: [
+    "sha256=49111958c6ec0d6b16a15b304e81e4ffeb45e3d3a4fcd9798fbc978a0c49beea"
+    "sha512=30ca4f5c4014d2e7218a1796a221d8d79633c5c844c6254d5b975a818588343c7d43c7af3a486f3c3bbb92e15211ce3c5947bdf93bb7819fe4a1ee48796a19ae"
+  ]
+}
+x-commit-hash: "fa02967a34305e9fa9615d6fa827d1f5daa12da9"

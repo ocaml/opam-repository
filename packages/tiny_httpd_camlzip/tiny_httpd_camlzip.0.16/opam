@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis: "Interface to camlzip for tiny_httpd"
+maintainer: ["c-cube"]
+authors: ["c-cube"]
+license: "MIT"
+homepage: "https://github.com/c-cube/tiny_httpd/"
+bug-reports: "https://github.com/c-cube/tiny_httpd/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "tiny_httpd" {= version}
+  "camlzip" {>= "1.06"}
+  "logs" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/c-cube/tiny_httpd.git"
+url {
+  src:
+    "https://github.com/c-cube/tiny_httpd/releases/download/v0.16/tiny_httpd-0.16.tbz"
+  checksum: [
+    "sha256=eac8a3ca6e8cd463817e0c62c2cc8181b8ef705a97a7ac6afbbdceae30b42b54"
+    "sha512=e0ae94038b7d8f470133005437a1d2a620274fe13f15ce5521817751ae2603c1ed6f635a32a4b3a4ce4d9718f6d53cad6dfafa467a7b7554c86735a82fa1db25"
+  ]
+}
+x-commit-hash: "ce00f7a0277c4852fab107c3c9ed65738bdc45a1"

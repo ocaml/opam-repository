@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "Find minimum dependency versions for an opam project"
+description: """
+opam-minver reads a project's .opam file to enumerate its dependencies,
+then performs a binary search over each dependency's available versions
+(including the OCaml compiler version) to find the oldest version set
+at which the project successfully builds and passes its tests.
+Once found, it can optionally write the discovered lower bounds back into
+the .opam file.
+"""
+maintainer: ["Chris A <onetimerobot@protonmail.com>"]
+authors: ["Chris A <onetimerobot@protonmail.com>"]
+license: "MIT"
+homepage: "https://github.com/luminous-moose/opam-minver"
+dev-repo: "git+https://github.com/luminous-moose/opam-minver.git"
+bug-reports: "https://github.com/luminous-moose/opam-minver/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "dune" {>= "2.9.3"}
+  "opam-format" {>= "2.2.0"}
+  "opam-core" {>= "2.2.0"}
+  "cmdliner" {>= "1.3.0"}
+  "logs" {>= "0.7.0"}
+  "fmt" {>= "0.8.0"}
+  "parsexp" {>= "v0.14.1"}
+  "sexplib0" {>= "v0.14.0"}
+  "base" {with-test & >= "v0.14.2"}
+  "ppx_inline_test" {with-test & >= "v0.14.1"}
+  "ppx_expect" {with-test & >= "v0.14.1"}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs "@install" "@runtest" {with-test}]
+]
+url {
+  src:
+    "https://github.com/luminous-moose/opam-minver/archive/refs/tags/0.2.1.tar.gz"
+  checksum: [
+    "md5=da71647413622636c272a741eb6c2587"
+    "sha512=accff5f86b878260a4453107ef2610c7b5c98302e4e6755826a29a1cf23f6832b00d00d10078e83a3d53935606e265d2c437fefd2438cf37c53c002068aa963b"
+  ]
+}
+

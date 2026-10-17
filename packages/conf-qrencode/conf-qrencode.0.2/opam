@@ -1,0 +1,33 @@
+opam-version: "2.0"
+maintainer: "vb@luminar.eu.org"
+authors: ["Vincent Bernardoff"]
+homepage: "https://github.com/vbmithr/qrencode-ocaml"
+
+license: "LGPL-2.1-or-later"
+bug-reports: "https://github.com/vbmithr/qrencode-ocaml/issues"
+
+build: [
+  ["sh" "-exc" "echo \"#include  \\\"qrencode.h\\\"\" > test.c"]
+  ["sh" "-exc" "cc -c $CFLAGS test.c"] {os != "macos" & os != "freebsd" }
+  [
+    "sh"
+    "-exc"
+    "cc -c $CFLAGS -I/opt/homebrew/include -I/opt/local/include -I/usr/local/include test.c"
+  ] { os = "macos" | os = "freebsd" }
+]
+
+depexts: [
+  [ "libqrencode-dev"  ] {os-family = "debian"}
+  [ "qrencode"  ] { os-distribution = "arch" | os-distribution = "msys2" }
+  [ "qrencode" "qrencode-devel" ] { os-family = "fedora" }
+  [ "qrencode-devel" ] { os-family = "suse" | os-family = "opensuse"}
+  [ "epel-release" "qrencode-devel" ] { os-distribution = "centos" }
+  [ "qrencode" ] { os-distribution = "homebrew" }
+  [ "libqrencode" ] { os = "freebsd" }
+  [ "libqrencode-dev" ] { os-distribution = "alpine" }
+  [ "libqrencode-devel" ] { os-distribution = "cygwin" }
+]
+
+synopsis: "Virtual package relying on a libqrencode system installation"
+
+flags: conf

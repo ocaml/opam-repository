@@ -1,0 +1,54 @@
+opam-version: "2.0"
+synopsis:
+  "Syntax for a partial application of functions that omits any argument"
+description: """
+
+This provides a syntax `f e1 __ e3` that's means `(fun x -> f e1 x e3)`,
+except that `e1` and `e3` are evaluated just once.
+
+This can be convenient in pipelines or to build arguments for `List.map`
+or any places that need single-argument functions.
+
+As a slight generalization, `__.record_field` and `Sum_constructor __`
+allow shortening `(fun x -> x.record_field)` and `(fun x -> Sum_constructor x)`.
+"""
+maintainer: ["Valentin Gatien-Baron"]
+authors: ["Valentin Gatien-Baron"]
+license: "ISC"
+tags: ["syntax" "ppx"]
+homepage: "https://github.com/v-gb/ppx_partial"
+bug-reports: "https://github.com/v-gb/ppx_partial/issues"
+depends: [
+  "ppxlib" {>= "0.32.1"}
+  "ocaml" {>= "4.14.0"}
+  "dune" {>= "3.15"}
+  "base" {with-test}
+  "ppx_pipebang" {with-test}
+  "ppx_inline_test" {with-test}
+  "ppx_assert" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/v-gb/ppx_partial.git"
+url {
+  src:
+    "https://github.com/v-gb/ppx_partial/releases/download/1.0/ppx_partial-1.0.tbz"
+  checksum: [
+    "sha256=98f5540ea530fc4aebb555e2063848bd6aca84eb72f7fb8cd8bfdc45c4650416"
+    "sha512=f5fc43aed73a92da585548aca41c2207989e4d2515a74a0a12698ae0e6dbdfa8d3f832b3b9f2e747c90531bce8a34b5c68d994ed3bfd38827d67c0c890091093"
+  ]
+}
+x-commit-hash: "e675dc9bf48d1ebd6e77b30dea7b392b424d0e7c"

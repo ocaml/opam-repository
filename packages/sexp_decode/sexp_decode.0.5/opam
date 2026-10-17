@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "A library to decode S-expression into structured data"
+description:
+  "A library of monadic combinators that help translating S-expressions (as provided by the Csexp library) into structured data"
+maintainer: "Benoît Montagu <benoit.montagu@inria.fr>"
+authors: "Benoît Montagu <benoit.montagu@inria.fr>"
+license: "LGPL-3.0-or-later"
+homepage: "https://gitlab.inria.fr/bmontagu/sexp_decode"
+bug-reports: "Benoît Montagu <benoit.montagu@inria.fr>"
+depends: [
+  "dune" {>= "2.9"}
+  "csexp" {>= "1.5.1"}
+  "ppx_inline_test" {>= "v0.14.1"}
+  "ocaml" {>= "4.08"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://gitlab.inria.fr/bmontagu/sexp_decode"
+url {
+  src:
+    "https://gitlab.inria.fr/bmontagu/sexp_decode/-/archive/0.5/sexp_decode-0.5.tar.gz"
+  checksum: [
+    "md5=138fdff0fe842cc4e1b8c4c0b57846c4"
+    "sha512=dd65e0163f42551b8e9313ceaea3b83b7338a3d7b89beac852a582b2d2618acf532a269410e11b8e335f7e442e61a2b89ce5f3b5a98817beadc884e38c39f5f0"
+  ]
+}

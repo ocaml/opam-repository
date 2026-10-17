@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "Openapi documentation generation for Opium"
+description:
+  "Shim layer around Opium.App (https://github.com/rgrinberg/opium/) for producing Openapi documentation pages"
+maintainer: ["J. Aaron Pendergrass <james.pendergrass@jhuapl.edu>"]
+authors: ["J. Aaron Pendergrass <james.pendergrass@jhuapl.edu>"]
+license: "BSD-3-Clause"
+homepage: "https://github.com/jhuapl-saralab/openapi-ocaml"
+bug-reports: "https://github.com/jhuapl-saralab/openapi-ocaml/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "opium" {>= "0.20.0"}
+  "yojson" {>= "1.7.0"}
+  "core" {>= "v0.14.1"}
+  "ppx_yojson_conv" {>= "v0.14.0" & < "v0.16.0"}
+  "ppx_deriving" {>= "5.2.1"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/jhuapl-saralab/openapi-ocaml.git"
+url {
+  src:
+    "https://github.com/jhuapl-saralab/openapi-ocaml/releases/download/v0.6.0/openapi-v0.6.0.tbz"
+  checksum: [
+    "sha256=69fe5f6a245b5c977ff09ba52174bd67684283fadf4cb5d6608d6ad08b0ada3b"
+    "sha512=22f81e87e5614e7e98a80914fa6e104bb15446003804dc94af0b95902fc1ad96b5e66fa9c072aa5e09e886ba0a066285f49875e1be0ce4b77399f9a4951d6d16"
+  ]
+}
+x-commit-hash: "0de05b5b772c20ed5c08b7da372b683e1ae1e5b9"

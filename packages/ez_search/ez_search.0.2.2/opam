@@ -1,0 +1,63 @@
+opam-version: "2.0"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+synopsis: "The ez_search library"
+description: """\
+ez_search is a library for indexing files and searching content with rexgexps.
+It creates a dababase of two files (one with the raw files, one with the 
+index) on disk. 
+The database can then be searched for occurrences of regexps, using
+either [Re] or [Str]. Direct string matching and case insensitive searches 
+are also supported.
+Ez_search can [mmap] the database to decrease its memory footprint, and
+[Parmap] to search the database on multiple cores in parallel (in which case
+the results may overlap).
+It also provides a "context extraction" feature to display lines above and 
+after an occurrence.
+"""
+authors: ["Fabrice Le Fessant <fabrice.le_fessant@origin-labs.com>"]
+maintainer: ["Fabrice Le Fessant <fabrice.le_fessant@origin-labs.com>"]
+homepage: "https://ocamlpro.github.io/ez_search"
+doc: "https://ocamlpro.github.io/ez_search/sphinx"
+bug-reports: "https://github.com/ocamlpro/ez_search/issues"
+dev-repo: "git+https://github.com/ocamlpro/ez_search.git"
+tags: "org:ocamlpro"
+build: [
+  ["dune" "subst"] {dev}
+  ["sh" "-c" "./scripts/before.sh build '%{name}%'"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["sh" "-c" "./scripts/after.sh build '%{name}%'"]
+]
+install: [
+  ["sh" "-c" "./scripts/before.sh install '%{name}%'"]
+]
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "dune" {>= "2.7.0"}
+  "re" {>= "1.8.0" & < "2.0.0"}
+  "parmap" {>= "1.2.3" & < "2.0.0"}
+  "ez_file" {>= "0.3"}
+  "ez_cmdliner" {>= "0.2"}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
+]
+conflicts: [
+  "base-domains"
+]
+available: os = "linux" & arch = "x86_64"
+
+url {
+    src: "https://github.com/ocamlpro/ez_search/archive/v0.2.2.tar.gz"
+    checksum: [ "sha256=0b640b0674675dcd84e509d19578908cac69a47c99a01e3ad32ca20dc62e1dbc" ]
+}

@@ -1,0 +1,29 @@
+opam-version: "2.0"
+maintainer: "scemama@irsamc.ups-tlse.fr"
+authors: "Anthony Scemama"
+homepage: "http://trex-coe.github.io/trexio"
+bug-reports: "https://github.com/trex-coe/trexio/issues"
+license: "BSD-3-Clause"
+build: [
+  ["sh" "-c" "cc test.c $(pkg-config --libs --cflags libtrexio)"]
+]
+depends: ["conf-pkg-config" {build}]
+
+post-messages: [
+  "This package requires installation of the trexio library: https://github.com/TREX-CoE/trexio/releases/"
+    {failure}
+]
+synopsis: "Virtual package relying on trexio library installation"
+description: """
+This package can only install if the trexio devel library is installed
+on the system."""
+flags: conf
+x-ci-accept-failures: ["debian-11"]
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-trexio/test.c"
+  checksum: [
+    "sha256=6a13041e972e1ee5ddff016bd255bdbfbaf9d2d96e8fa7d2dd476033fba9b1d2"
+    "md5=823a15457fd40d8959b0cc812ba485c7"
+  ]
+}

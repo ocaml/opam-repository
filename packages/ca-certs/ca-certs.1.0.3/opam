@@ -1,0 +1,61 @@
+opam-version: "2.0"
+synopsis: "Detect root CA certificates from the operating system"
+description: """
+TLS requires a set of root anchors (Certificate Authorities) to
+authenticate servers. This library exposes this list so that it can be
+registered with ocaml-tls.
+"""
+maintainer: ["Etienne Millon <me@emillon.org>"]
+authors: [
+  "Etienne Millon <me@emillon.org>, Hannes Mehnert <hannes@mehnert.org>"
+]
+license: "ISC"
+homepage: "https://github.com/mirage/ca-certs"
+doc: "https://mirage.github.io/ca-certs/doc"
+bug-reports: "https://github.com/mirage/ca-certs/issues"
+depends: [
+  "dune" {>= "2.0"}
+  "bos"
+  "fpath"
+  "ptime"
+  "logs"
+  "digestif" {>= "1.2.0"}
+  "mirage-crypto" {>= "1.0.0"}
+  "x509" {>= "1.0.0"}
+  "ocaml" {>= "4.13.0"}
+  "ohex" {>= "0.2.0"}
+  "alcotest" {with-test}
+  "fmt" {with-test & >= "0.8.7"}
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+dev-repo: "git+https://github.com/mirage/ca-certs.git"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test & os != "macos"} # the opam sandbox on macos leads to test failures (ocaml/opam#4389)
+    "@doc" {with-doc}
+  ]
+]
+tags: ["org:mirage"]
+depexts: [
+  ["ca_root_nss"] {os = "freebsd" | os = "dragonfly"}
+]
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mirage/ca-certs/releases/download/v1.0.3/ca-certs-1.0.3.tbz"
+  checksum: [
+    "sha256=02dfc9e7770b18218df2e251192711dd44c5858ad24575693b145ab3d7d41c29"
+    "sha512=9bccb294307a7e6dc7cc54e7c705ad55046033265c6e5f8459d2e34781f662acd7927d9aff1eece43d5816ddae41dcd3495b6e77d08e8470e57aef1b9c47692f"
+  ]
+}
+x-commit-hash: "bcd28952328bbbe32bd68ee9d0e9fa19b6e2166b"

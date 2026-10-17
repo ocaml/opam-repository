@@ -1,0 +1,54 @@
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+build: [
+  [
+    "./configure"
+    "--with-installdir=%{lib}%/ocamlsdl"
+    "--with-lablgldir=%{lib}%/lablgl" {"%{lablgl:installed}%"}
+  ]
+  [make]
+]
+remove: [["ocamlfind" "remove" "sdl"]]
+depends: [
+  "ocaml" {< "5.0.0"}
+  "ocamlfind"
+]
+depopts: [
+  "lablgl"
+  "conf-sdl-gfx"
+  "conf-sdl-image"
+  "conf-sdl-mixer"
+  "conf-sdl-ttf"
+]
+depexts: [
+  ["libsdl1.2-dev"] {os-family = "debian"}
+  ["sdl"] {os = "macos" & os-distribution = "homebrew"}
+]
+install: [make "install"]
+patches: "safe-string.diff" {ocaml:version >= "4.06.0"}
+authors: [
+  "Frederic Brunel <brunel@mail.dotcom.fr>"
+  "Luc Mazardo <luc@mazardo.com>"
+  "Sami Mäkelä <sajuma@utu.fi>"
+  "Olivier Andrieu <oliv__a@users.sourceforge.net>"
+  "Julien Boulnois <jboulnois@gmail.com>"
+]
+homepage: "http://ocamlsdl.sourceforge.net/"
+synopsis: "Interface between OCaml and SDL"
+flags: light-uninstall
+url {
+  src:
+    "http://downloads.sourceforge.net/project/ocamlsdl/OCamlSDL/ocamlsdl-0.9.1/ocamlsdl-0.9.1.tar.gz"
+  checksum: [
+    "sha256=abfb295b263dc11e97fffdd88ea1a28b46df8cc2b196777093e4fe7f509e4f8f"
+    "md5=c3086423991fcdc1ba468afd52fc112b"
+  ]
+}
+extra-source "safe-string.diff" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/ocamlsdl/safe-string.diff"
+  checksum: [
+    "sha256=3de355d16d3da727a7d1e6c3aa7154dee113d5a0e278738af002de4c61fbcc79"
+    "md5=7e25d6d167e6aec7668bf40eec1889c8"
+  ]
+}

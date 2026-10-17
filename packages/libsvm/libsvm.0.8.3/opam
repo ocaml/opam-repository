@@ -1,0 +1,56 @@
+opam-version: "2.0"
+maintainer: "odietric@gmail.com"
+authors: [ "Oliver Gu <gu.oliver@yahoo.com>"
+           "Dominik Brugger <dominikbrugger@fastmail.fm>" ]
+homepage: "https://bitbucket.org/ogu/libsvm-ocaml"
+build: [
+  ["ocaml" "setup.ml" "-configure"]
+  ["ocaml" "setup.ml" "-build"]
+]
+remove: [["ocamlfind" "remove" "libsvm"]]
+depends: [
+  "ocaml"
+  "ocamlfind"
+  "core" {>= "108.08.00"}
+  "lacaml" {< "8.0"}
+  "ocamlbuild" {build}
+]
+conflicts: [
+  "sexplib" {>= "113.24.00"}
+]
+patches: [
+  "svm_cli_fix.patch"
+  "calc_scc_fix.patch"
+]
+install: ["ocaml" "setup.ml" "-install"]
+depexts: [
+  ["libsvm-dev"] {os-family = "debian"}
+]
+synopsis: "LIBSVM bindings"
+description:
+  "LIBSVM-OCaml is an OCaml library with bindings to the LIBSVM library."
+flags: light-uninstall
+url {
+  src:
+    "https://bitbucket.org/ogu/libsvm-ocaml/downloads/libsvm-ocaml-0.8.3.tar.gz"
+  checksum: [
+    "sha256=49c310f80bfb7a4660ab0d06176f74baeab8a8e3632a6324afd80ffd09e766ca"
+    "md5=c36599f5be82b2099da5d54a7fd6c4e4"
+  ]
+}
+extra-source "svm_cli_fix.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/libsvm/svm_cli_fix.patch"
+  checksum: [
+    "sha256=da11c033932ca17cffa588038ec0e937f9c152c80ad160b1ad22b3776ec1b70a"
+    "md5=e23c022fa50cb9ef9f8d5d1606b21475"
+  ]
+}
+extra-source "calc_scc_fix.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/libsvm/calc_scc_fix.patch"
+  checksum: [
+    "sha256=1df52cfa4889c098933d3871ef68f542fb7d32f9c42da59766e94aeacb883b21"
+    "md5=86bda1d0d49b1d46222fee310d4ee3e4"
+  ]
+}

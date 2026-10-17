@@ -1,0 +1,39 @@
+opam-version: "2.0"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>" ]
+license: "LGPL-3.0-only WITH OCaml-LGPL-linking-exception"
+homepage: "http://forge.ocamlcore.org/projects/odepack/"
+dev-repo: "git+https://forge.ocamlcore.org/anonscm/git/odepack/odepack.git"
+bug-reports: "http://forge.ocamlcore.org/projects/odepack/"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "odepack"]
+]
+depends: [
+  "ocaml" {>= "3.12.1" & < "5.0.0"}
+  "base-bigarray"
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "conf-gfortran"
+]
+synopsis: "Binding to ODEPACK."
+description: """
+This is a collection of solvers for the initial value problem for
+ordinary differential equation systems."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/Chris00/ocaml-odepack/releases/download/0.6.7/odepack-0.6.7.tar.gz"
+  checksum: [
+    "sha256=18077e4df119b16ffffef56fec3f4654b96cc8545649459a8d28f1bb75c0c90b"
+    "md5=d6f555679bbc3dc38e2270a697912460"
+  ]
+}

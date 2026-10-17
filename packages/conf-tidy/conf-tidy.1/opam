@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "zandoye@gmail.com"
+authors: [ "ZAN DoYe" ]
+homepage: "https://bitbucket.org/zandoye/ocaml-tidy/"
+bug-reports: "https://bitbucket.org/zandoye/ocaml-tidy/issues"
+license: "MIT"
+
+build: [
+  ["sh" "-exec" "cc -I/usr/include/tidy -I/usr/local/include/tidy $CFLAGS test.c -ltidy"]
+]
+
+depexts: [
+  ["libtidy-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["libtidy-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["tidy"] {os-distribution = "arch"}
+  ["tidyhtml-dev"] {os-distribution = "alpine"}
+  ["app-text/tidy-html5"] {os-distribution = "gentoo"}
+  ["libtidy-devel"] {os-family = "fedora"}
+  ["libtidy-devel"] {os-distribution = "centos"}
+  ["tidy-html5"] {os = "macos" & os-distribution = "homebrew"}
+  ["tidy-html5"] {os = "freebsd"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7"
+  "oraclelinux-8"
+  "oraclelinux-9"
+]
+synopsis: "Virtual package relying on libtidy installation"
+description: "This package can install only if the libtidy is available on the system"
+
+flags: [conf]
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-tidy/test.c"
+  checksum: [
+    "sha256=ad489ad4255933d391e758adc30cf4e615a46064d1e2681801f1cebebff11afa"
+    "md5=10ca381a34acb820dbaf7dffcbe8ae35"
+  ]
+}
+

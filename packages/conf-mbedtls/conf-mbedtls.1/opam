@@ -1,0 +1,39 @@
+opam-version: "2.0"
+authors: "ARM Limited"
+maintainer: "Andy Li <andy@onthewings.net>"
+homepage: "https://tls.mbed.org/"
+bug-reports: "https://github.com/ARMmbed/mbedtls/issues"
+license: "Apache-2.0"
+build: [
+  ["cc" "-I/usr/local/include" "test.c"] {os != "macos" | os-distribution != "homebrew"}
+  ["sh" "-c" "cc -I\"$(brew --prefix mbedtls)/include\" test.c"] {os = "macos" & os-distribution = "homebrew"}
+]
+depexts: [
+  ["mbedtls-dev"] {os-distribution = "alpine"}
+  ["libmbedtls-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["mbedtls-devel"] {os-family = "fedora"}
+  ["mbedtls-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["mbedtls-devel" "epel-release"] {os-distribution = "centos"}
+  ["mbedtls"] {os-distribution = "nixos"}
+  ["mbedtls"] {os-distribution = "homebrew" & os = "macos"}
+  ["mbedtls"] {os-distribution = "arch"}
+  ["mbedtls"] {os = "freebsd"}
+  ["mbedtls"] {os = "macos" & os-distribution = "homebrew"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7"
+  "oraclelinux-8"
+  "oraclelinux-9"
+]
+synopsis: "Virtual package relying on an mbedtls system installation"
+description:
+  "This package can only install if mbedtls is installed on the system."
+flags: conf
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-mbedtls/test.c"
+  checksum: [
+    "sha256=7bd6968f4a0264bc191462dffc813782abc06d2cdcd050111142521a6402a5a1"
+    "md5=1cbe1f446c204d636761cb3302fb232a"
+  ]
+}

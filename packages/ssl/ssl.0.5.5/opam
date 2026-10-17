@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "Christopher Zimmermann <christopher@gmerlin.de>"
+homepage: "https://github.com/savonet/ocaml-ssl"
+dev-repo: "git+https://github.com/savonet/ocaml-ssl.git"
+bug-reports: "https://github.com/savonet/ocaml-ssl/issues"
+build: [
+  ["./configure" "--prefix" prefix] {os != "macos"}
+  ["sh" "./osx-configure.sh" prefix] {os = "macos"}
+  [make]
+]
+install: [[make "install"]]
+remove: [["ocamlfind" "remove" name]]
+depends: [
+  "ocaml" {>= "4.02.0" & < "5.0"}
+  "ocamlfind" {build}
+  "conf-which" {build}
+  "conf-libssl"
+  "base-bytes"
+]
+conflicts: [
+  "base-nnp"
+  "ocaml-option-nnpchecker"
+]
+synopsis: "Bindings for OpenSSL"
+authors: "Samuel Mimram <samuel.mimram@ens-lyon.org>"
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/savonet/ocaml-ssl/releases/download/0.5.5/ocaml-ssl-0.5.5.tar.gz"
+  checksum: [
+    "sha256=2cc270d2a2f38c4e7972f3abf00f524ce86f668e40c7fcf4e0af99df3b8b3a82"
+    "md5=cdb1cdf9ee8c582165d4d11f35e53c4d"
+  ]
+}
+extra-source "osx-configure.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/ssl/osx-configure.sh"
+  checksum: [
+    "sha256=2589f587df5c96806cea407eadcbc03e44256c1d1dddd76a8a2b4dcff065ff24"
+    "md5=465e7c27f1881eae33212a9f9b0a8dff"
+  ]
+}

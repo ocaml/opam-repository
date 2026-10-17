@@ -1,0 +1,60 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+authors: ["Francois Berenger"]
+homepage: "https://github.com/UnixJunkie/orrandomForest"
+bug-reports: "https://github.com/UnixJunkie/orrandomForest/issues"
+dev-repo: "git+https://github.com/UnixJunkie/orrandomForest.git"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+install: [
+  ["R" "CMD" "BATCH" "install_randomForest.r"]
+  ["R" "CMD" "BATCH" "install_matrix.r"]
+]
+depends: [
+  "ocaml"
+  "dune"
+  "dolog" {>= "4.0.0"}
+  "conf-r"
+  "conf-gnuplot" {with-test}
+  "cpm" {with-test}
+]
+x-ci-accept-failures: ["debian-unstable"]
+post-messages: [
+"Please interact with R to install needed things in user-space:
+R
+install.packages('Marix', repos='http://cran.r-project.org')
+install.packages('randomForest', repos='http://cran.r-project.org')" {failure}
+]
+synopsis: "Classification or regression using Random Forests"
+description: """
+Uses the R randomForest package under the carpet.
+This package really fires up and talks to an R interpreter.
+Data are exchanged via text files.
+For details, cf.
+Breiman, L., 2001. Random forests. Machine learning, 45(1), pp.5-32
+(DOI = 10.1023/A:1010933404324)."""
+url {
+  src: "https://github.com/UnixJunkie/orrandomForest/archive/v2.0.1.tar.gz"
+  checksum: [
+    "sha256=a0eea0fcf2051fc96e49ffc8c82c7d52b35a8b3ccde63318de13f3e6f5f6463c"
+    "md5=d2f65763cd449b3076d807db389c116f"
+  ]
+}
+extra-source "install_randomForest.r" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/orrandomForest/install_randomForest.r"
+  checksum: [
+    "sha256=27d9a59a4fc61b6536f5dd59077daa17725ab9af0804c8e0b3a9d4d8eae00673"
+    "md5=c39ce051de6937deb5095a1906d86c0c"
+  ]
+}
+extra-source "install_matrix.r" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/orrandomForest/install_matrix.r"
+  checksum: [
+    "sha256=f9d596d2caae65cdb8440f85f3e903e802643e4d6a639ad5a148727b4fe84d23"
+    "md5=ab1c0ae726388159b1315bc9fe61a013"
+  ]
+}

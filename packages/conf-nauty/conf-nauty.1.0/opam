@@ -1,0 +1,30 @@
+opam-version: "2.0"
+maintainer: "pikus3@list.pl"
+homepage: "http://pallini.di.uniroma1.it/"
+authors: "http://pallini.di.uniroma1.it/Links.html#contact"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "Apache-2.0"
+build: ["pkg-config" "nauty"]
+depends: [
+  "conf-pkg-config" {build}
+]
+depexts: [
+  ["nauty-dev"] {os-distribution = "alpine"}
+  ["libnauty2-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["libnauty-devel"] {os-family = "fedora"}
+  ["nauty-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["nauty"] {os = "macos" & os-distribution = "homebrew"}
+  ["nauty"] {os = "freebsd"}
+]
+x-ci-accept-failures: [
+  "archlinux"           # Arch is missing a devel package for nauty: https://archlinux.org/packages/extra/x86_64/nauty/
+  "oraclelinux-7"
+  "oraclelinux-8"
+  "oraclelinux-9"
+  "opensuse-15.6"       # The opensuse packages are missing a .pc file:
+  "opensuse-tumbleweed" # https://opensuse.pkgs.org/tumbleweed/opensuse-oss-x86_64/nauty-devel-2.8.8-2.1.x86_64.rpm.html
+]
+synopsis: "Virtual package relying on nauty"
+description:
+  "This package can only install if the libnauty library is installed on the system."
+flags: conf

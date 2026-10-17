@@ -1,0 +1,70 @@
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+authors: ["Jacques Garrigue et al., Nagoya University"]
+homepage: "https://github.com/garrigue/lablgl"
+bug-reports: "https://github.com/garrigue/lablgl/issues"
+dev-repo: "git+https://github.com/garrigue/lablgl.git"
+license: "BSD-3-Clause"
+build: [
+  ["cp" "Makefile.config.ex" "Makefile.config"]
+  ["cp" "Makefile.config.osx" "Makefile.config"] {os = "macos"}
+  ["mkdir" "-p" bin]
+  [make "glut"]
+  [make "glutopt"]
+]
+depends: [
+  "ocaml" {< "5.0"}
+  "camlp4"
+  "conf-libgl"
+  "conf-libglu"
+  "conf-freeglut"
+]
+install: [
+  [
+    make
+    "install"
+    "-C"
+    "src"
+    "BINDIR=%{bin}%"
+    "INSTALLDIR=%{lib}%/lablgl"
+    "DLLDIR=%{lib}%/stublibs"
+  ]
+  [
+    make
+    "install"
+    "-C"
+    "LablGlut/src"
+    "BINDIR=%{bin}%"
+    "INSTALLDIR=%{lib}%/lablgl"
+    "DLLDIR=%{lib}%/stublibs"
+  ]
+]
+synopsis: "Interface to OpenGL"
+description: """
+Interface between OCaml and OpenGL, including Togl wrapper for use
+with LablTk, and LablGlut wrapper for direct use using the glut
+library."""
+url {
+  src:
+    "https://download.ocamlcore.org/lablgl/LablGL/20120306/lablgl-20120306.tar.gz"
+  checksum: [
+    "sha256=39017555724ca67807e73543b9fca1fcf9aab285f723635c9eee4034ac88adf0"
+    "md5=c850c8500837165adfa98535ad33f770"
+  ]
+}
+extra-source "lablgl.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/lablgl/lablgl.install"
+  checksum: [
+    "sha256=cb154f04b1afccaa7a4ca6e7603ccb1114066c7d4dffa98b8d7ab9d48dbd925f"
+    "md5=a03d20fcd54d7277982caf03b05354fa"
+  ]
+}
+extra-source "META" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/lablgl/META.1.04.20120306"
+  checksum: [
+    "sha256=77a8935b06799bd03f3de27f948cf3e4d0eba4a9ab85e9ff0312d60d6616bbc7"
+    "md5=f3d66fe43af3d920e4fa6e74c5eeec97"
+  ]
+}

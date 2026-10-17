@@ -1,0 +1,95 @@
+opam-version: "2.0"
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+synopsis: "OCaml 5.1.0, with ThreadSanitizer support"
+maintainer: [
+  "David Allsopp <david@tarides.com>"
+  "Florian Angeletti <florian.angeletti@inria.fr>"
+]
+authors: [
+  "Xavier Leroy"
+  "Damien Doligez"
+  "Alain Frisch"
+  "Jacques Garrigue"
+  "Didier Rémy"
+  "Jérôme Vouillon"
+]
+homepage: "https://github.com/ocaml/ocaml"
+bug-reports: "https://github.com/ocaml/ocaml/issues"
+dev-repo: "git+https://github.com/ocaml-multicore/ocaml-tsan.git#5.1.0+tsan"
+depends: [
+  "ocaml" {= "5.1.0" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+  "base-domains" {post}
+  "base-nnp" {post}
+  "ocaml-beta" {opam-version < "2.1.0"}
+  "conf-unwind"
+]
+conflict-class: "ocaml-core-compiler"
+flags: [ compiler avoid-version ]
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build-env: [
+  [LSAN_OPTIONS = "detect_leaks=0,exitcode=0"]
+  [ASAN_OPTIONS = "detect_leaks=0,exitcode=0"]
+]
+build: [
+  [
+    "./configure"
+    "--prefix=%{prefix}%"
+    "--docdir=%{doc}%/ocaml"
+    "-C"
+    "--disable-flat-float-array" {ocaml-option-no-flat-float-array:installed}
+    "--enable-flambda" {ocaml-option-flambda:installed}
+    "--enable-frame-pointers" {ocaml-option-fp:installed}
+    "CC=cc" {!ocaml-option-32bit:installed & !ocaml-option-musl:installed & (os="openbsd")}
+    "CC=clang" {!ocaml-option-32bit:installed & !ocaml-option-musl:installed & (os="macos")}
+    "CC=musl-gcc" {ocaml-option-musl:installed & os-distribution!="alpine"}
+    "CFLAGS=-Os" {ocaml-option-musl:installed}
+    "--enable-tsan"
+    "ASPP=musl-gcc -c" {ocaml-option-musl:installed & os-distribution!="alpine"}
+    "LIBS=-static" {ocaml-option-static:installed}
+    "--disable-warn-error"
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml-multicore/ocaml-tsan/archive/5.1.0+tsan.tar.gz"
+  checksum: "sha256=e69f411d14abae7663db46f09b9242c666a1a51dd94b02ec7304f283b5b9e9b0"
+}
+conflicts: [
+  "ocaml-option-afl"
+  "ocaml-option-bytecode-only"
+  "ocaml-option-32bit"
+  "ocaml-option-leak-sanitizer"
+  "ocaml-option-address-sanitizer"
+  "relocatable"
+]
+depopts: [
+  "ocaml-option-32bit"
+  "ocaml-option-afl"
+  "ocaml-option-bytecode-only"
+  "ocaml-option-no-flat-float-array"
+  "ocaml-option-flambda"
+  "ocaml-option-musl"
+  "ocaml-option-leak-sanitizer"
+  "ocaml-option-address-sanitizer"
+  "ocaml-option-static"
+]
+extra-source "ocaml-variants.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/8c17fd444391392c5f9801241374d749c080c1a8/ocaml-variants.install"
+  checksum: [
+    "sha256=79f2a1a5044a91350a0eb6ce12e261a72a2855c094c425cddf3860e58c486678"
+    "md5=3e969b841df1f51ca448e6e6295cb451"
+  ]
+}
+# Back-ported ocaml/ocaml#13100 (5.2.0) - fixes the misdetection of zstd with
+# ocaml-option-musl
+patches: ["zstd-detection.patch"]
+extra-source "zstd-detection.patch" {
+  src: "https://github.com/ocaml/ocaml/commit/baf65b91c51bb04b09ecc98b94ddd4ba3b446912.patch?full_index=1"
+  checksum: "sha256=958e061bc3b967e32a5606d5109ed7faacb9b793fe2de0e8f8697c23a178c5cf"
+}
+available: arch = "x86_64" & (os = "linux" | os = "macos")

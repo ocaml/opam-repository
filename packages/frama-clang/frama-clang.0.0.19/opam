@@ -1,0 +1,62 @@
+opam-version: "2.0"
+synopsis: "Frama-C plug-in based on Clang for parsing C++ files"
+description:
+  "This Frama-C plug-in parse C++ files that may contain ACSL++ annotations."
+maintainer: "Virgile.Prevosto@cea.fr"
+authors: "Virgile Prevosto"
+license: "LGPL-2.1-only"
+tags: ["formal specification" "C++" "plugins" "ACSL" "ACSL++"]
+homepage: "https://frama-c.com/frama-clang.html"
+bug-reports: "https://git.frama-c.com/pub/frama-clang/-/issues"
+depends: [
+  "dune" {> "3.13"}
+  "frama-c" {>= "32.0~" & < "33.0~"}
+  "zarith" {>= "1.5"}
+  "camlp5"
+  "camlp-streams"
+  "conf-libclang" {>= "19" & < "20"}
+  "conf-cmake"
+  "odoc" {with-doc}
+]
+
+extra-source "ClangVisitor.cpp.patch" {
+  src: "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/frama-clang/ClangVisitor.cpp.patch"
+  checksum: [
+    "sha256=1e3af5fd94e86db4b23711553e1509f78d5c73310f0a5ab2f4c0983eacc6e8c0"
+    "md5=89f57d9b439cc70c48a93474d7360515"
+  ]
+}
+
+patches: [ "ClangVisitor.cpp.patch" ]
+
+build: [
+  ["dune" "subst"] {dev}
+  ["sed" "-i" ".bak" "-e" "s/-j/-j 4/" "framaCIRGen_src/build.sh" ] { os-distribution="freebsd" }
+  [
+    "env"
+    "OPAM_LLVM_CONFIG=%{conf-libclang:config}%"
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://git.frama-c.com/pub/frama-clang.git"
+url {
+  src:
+    "https://git.frama-c.com/pub/frama-clang/-/archive/0.0.19/frama-clang-0.0.19.tar.bz2"
+  checksum: [
+    "md5=8996dd47dcfe196053079be1ffdc1e7a"
+    "sha512=7026fae5d2f818d751b960d96838e9c9f3594d1804985f046da65710d0b94ab81f37d7d90303d1b820fdb7d169a59a284a46e5a9d2d5a36675bf6e4bc1ac802a"
+  ]
+}
+x-ci-accept-failures: ["debian-11" "ubuntu-20.04" "freebsd-14.3" ]
+x-maintenance-intent: [ "(latest)" "(latest-1)" ]
+

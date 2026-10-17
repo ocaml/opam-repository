@@ -1,0 +1,34 @@
+opam-version: "2.0"
+homepage: "http://rocksdb.org/"
+maintainer: "Anton Bachin <antonbachin@yahoo.com>"
+authors: "Facebook"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "Apache-2.0"
+
+depexts: [
+  ["rocksdb"] {os-distribution = "arch"}
+  ["rocksdb-dev"] {os-distribution = "alpine"} # community package
+  ["librocksdb-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["rocksdb-devel"] {os-family = "fedora"}
+  ["rocksdb-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["rocksdb"] {os-distribution = "homebrew" & os = "macos"}
+  ["rocksdb"] {os = "freebsd"}
+]
+build: [
+  ["cc" "-lrocksdb" "main.c"]
+]
+x-ci-accept-failures: [
+  "oraclelinux-7"
+  "oraclelinux-8"
+  "oraclelinux-9"
+]
+synopsis: "Virtual package relying on a system installation of RocksDB"
+flags: conf
+extra-source "main.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-rocksdb/main.c"
+  checksum: [
+    "sha256=deac66ccb79f6d31c0fa7d358de48e083c15c02ff50ec1ebd4b64314b9e6e196"
+    "md5=5c11ff1def313f2a87eabf3a30f130ad"
+  ]
+}

@@ -1,0 +1,40 @@
+opam-version: "2.0"
+authors: [ "David Scott" "John Else" ]
+homepage: "https://github.com/xapi-project/ocaml-crc"
+bug-reports: "https://github.com/xapi-project/ocaml-crc/issues"
+dev-repo: "git+https://github.com/xapi-project/ocaml-crc"
+maintainer: "john.else@citrix.com"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--%{mirage-xen:enable}%-xen"]
+  [make]
+  ["ocaml" "setup.ml" "-configure" "--%{ounit:enable}%-tests"] {with-test}
+  [make "test"] {with-test}
+]
+install: [
+  [make "PREFIX=%{prefix}%" "install"]
+]
+remove: [
+  [make "PREFIX=%{prefix}%" "uninstall"]
+]
+depends: [
+  "ocaml" {>= "4.00.1"}
+  "cstruct" {>= "1.0.1"}
+  "ounit" {with-test}
+  "oasis" {build}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+]
+depopts: [
+  "mirage-xen"
+]
+synopsis: "CRC implementation supporting strings and cstructs"
+url {
+  src: "https://github.com/xapi-project/ocaml-crc/archive/1.0.0.tar.gz"
+  checksum: [
+    "sha256=dae905e6cfb98c331139521ff0ae74fb5d9cd0e9848d2c6ebd47363e0892f3dd"
+    "md5=09051d7cd0a4dd935d379a1584777e07"
+  ]
+}
+conflicts: [
+  "mirage-xen" {>= "6.0.0"}
+]

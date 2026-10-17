@@ -1,0 +1,53 @@
+opam-version: "2.0"
+maintainer:   "Laurent Thévenoux <lrnt@thvnx.com>"
+authors:      "Laurent Thévenoux <lrnt@thvnx.com>"
+homepage:     "https://github.com/thvnx/mlmpfr"
+bug-reports:  "https://github.com/thvnx/mlmpfr/issues"
+license:      "LGPL-3.0-only"
+dev-repo: "git+https://github.com/thvnx/mlmpfr.git"
+build: [
+  ["cc" "test.c" "-lmpfr" "-o" "test_installed"]
+  ["./test_installed"]
+  ["oasis" "setup"]
+  ["./configure" "--prefix=%{prefix}%"]
+  [make]
+]
+install: [make "install"]
+remove:  ["ocamlfind" "remove" "mlmpfr"]
+depends: [
+  "ocaml" {>= "4.04"}
+  "ocamlfind"
+  "oasis"
+]
+depexts: [
+  ["libmpfr-dev"] {os-family = "debian"}
+]
+x-ci-accept-failures: ["debian-11" "debian-unstable"]
+post-messages: [
+  "Make sure you had MPFR version 3.1.6 installed on your system.
+   If you need support for an older MPFR release, please contact me." {failure}
+]
+synopsis: "OCaml C bindings for MPFR-3.1.6"
+flags: light-uninstall
+url {
+  src: "https://github.com/thvnx/mlmpfr/archive/mlmpfr.3.1.6.tar.gz"
+  checksum: [
+    "sha256=a186708adf52abec05580e8e066ab396ed6d6642def9db88ce4e017db340a332"
+    "md5=2eac951fdaabfd2c28ebe185c46cf3ba"
+  ]
+}
+description: """
+The package provides bindings for MPFR-3.1.6.
+
+You'll need to have MPFR-3.1.6 (or older compatible version) installed on your system.
+See opam info mlmpfr for all available versions.
+
+If you need support for an older MPFR release, please contact me."""
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/mlmpfr/test.c.3.1.6"
+  checksum: [
+    "sha256=2108e6d30246e61579779912e7b5e729ba970fcd718a5cae2639838734b16f05"
+    "md5=3fbe3533d45ca8bc1bdb96cf984b24cb"
+  ]
+}

@@ -1,0 +1,47 @@
+opam-version: "2.0"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+synopsis: "Ez_subst is a simple module to perform string substitutions"
+description: """\
+Ez_subst is a simple module to perform string substitutions, like
+${brace}, $(paren), $[bracket] or $alpha. It provides many options
+to configure the substitutions.
+"""
+authors: ["Fabrice LE FESSANT <fabrice.le_fessant@origin-labs.com>"]
+maintainer: ["Fabrice LE FESSANT <fabrice.le_fessant@origin-labs.com>"]
+homepage: "https://ocamlpro.github.io/ez_subst"
+doc: "https://ocamlpro.github.io/ez_subst/sphinx"
+bug-reports: "https://github.com/ocamlpro/ez_subst/issues"
+dev-repo: "git+https://github.com/ocamlpro/ez_subst.git"
+tags: "org:ocamlpro"
+build: [
+  ["dune" "subst"] {dev}
+  ["sh" "-c" "./scripts/before.sh build '%{name}%'"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["sh" "-c" "./scripts/after.sh build '%{name}%'"]
+]
+install: [
+  ["sh" "-c" "./scripts/before.sh install '%{name}%'"]
+]
+depends: [
+  "ocaml" {>= "4.10.0"}
+  "dune" {>= "2.7.0"}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
+]
+
+url {
+    src: "https://github.com/ocamlpro/ez_subst/archive/v0.2.1.tar.gz"
+    checksum: [ "sha256=5d56ac4754757bf279804211ad48d18947557f3c3624531be60cab1b50fb79d7" ]
+}

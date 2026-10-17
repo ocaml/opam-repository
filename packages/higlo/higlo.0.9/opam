@@ -1,0 +1,39 @@
+opam-version: "2.0"
+synopsis: "Syntax highlighting library"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "LGPL-3.0-only"
+homepage: "https://zoggy.frama.io/higlo/"
+doc: "https://zoggy.frama.io/higlo/doc.html"
+bug-reports: "https://framagit.org/zoggy/higlo/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.12.0"}
+  "sedlex" {>= "1.2"}
+  "xtmpl" {>= "0.19.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/higlo.git"
+url {
+  src: "https://framagit.org/zoggy/higlo/-/archive/0.9/higlo-0.9.tar.bz2"
+  checksum: [
+    "md5=d8bfa60efe79037f3aa206a27e0e72c5"
+    "sha512=725257959797b13814e5ba90ccf500770bc8cfba58916c07c64babf84d76074195a7c38e3e0593719f20b02888d7316df2c9451343c30af8a20a07868c076255"
+  ]
+}

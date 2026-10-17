@@ -1,0 +1,54 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+authors: ["Francois BERENGER"]
+homepage: "https://github.com/UnixJunkie/orsvm-e1071"
+bug-reports: "https://github.com/UnixJunkie/orsvm-e1071/issues"
+dev-repo: "git+https://github.com/UnixJunkie/orsvm-e1071.git"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+build: [
+  ["R" "CMD" "BATCH" "install_e1071.r"]
+  ["R" "CMD" "BATCH" "install_svmpath.r"]
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml"
+  "jbuilder" {>= "1.0+beta7"}
+  "conf-r"
+  "dolog" {< "4.0.0" & with-test}
+  "batteries" {with-test}
+  "cpm" {with-test}
+  "minicli" {with-test}
+  "parmap" {with-test}
+]
+x-ci-accept-failures: ["debian-unstable"]
+synopsis: "OCaml wrapper to SVM R packages e1071 and svmpath."
+description: """
+Some OCaml functions to drive the RBF and linear SVMs of the R e1071 package
+and the linear SVM of the svmpath R package.
+The svmpath package allows to efficiently compute the list of cost
+values (lambda = 1/C) that need to be tested in order to find the optimal
+lambda.
+This package really fires up and talks to an R interpreter."""
+url {
+  src: "https://github.com/UnixJunkie/orsvm-e1071/archive/v2.0.0.tar.gz"
+  checksum: [
+    "sha256=09c2202092f346f5df3c8109659b21288815007ebf6516d79cc7af20127aff28"
+    "md5=3ced2f5900780bc786e9da62fb399f90"
+  ]
+}
+extra-source "install_svmpath.r" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/orsvm_e1071/install_svmpath.r"
+  checksum: [
+    "sha256=3c13b015af05450c80be0040b601de3f6dbab2cd3ce781a8c0c4d842470fbabe"
+    "md5=5bcfd487963a2558353200750b4bb62f"
+  ]
+}
+extra-source "install_e1071.r" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/orsvm_e1071/install_e1071.r"
+  checksum: [
+    "sha256=3483de2aeec52d6fae5d4ccbdd4a2553dfd65350b14c5781100ef58aebded930"
+    "md5=e4ad6596051f390f3542d9058869c458"
+  ]
+}

@@ -1,0 +1,55 @@
+opam-version: "2.0"
+synopsis: "DHCP server"
+description: """\
+Charrua-server consists of a single `Dhcp_server` module used for constructing DHCP
+servers.
+
+[dhcp](https://github.com/mirage/mirage-skeleton/tree/master/applications/dhcp)
+is a Mirage DHCP unikernel server based on charrua, included as a part of the MirageOS unikernel example and starting-point repository.
+
+#### Features
+
+* `Dhcp_server` supports a stripped down ISC dhcpd.conf, so you can probably just
+  use your old `dhcpd.conf`. It also supports manual configuration building in
+  OCaml.
+* Logic/sequencing is agnostic of IO and platform, so it can run on Unix as a
+  process, as a Mirage unikernel or anything else.
+* All DHCP options are supported at the time of this writing.
+* Code is purely applicative.
+* It's in OCaml, so it's pretty cool.
+
+The name `charrua` is a reference to the, now extinct, semi-nomadic people of
+southern South America."""
+maintainer: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
+authors: "Christiano F. Haesbaert <haesbaert@haesbaert.org>"
+license: "ISC"
+homepage: "https://github.com/mirage/charrua"
+doc: "https://mirage.github.io/charrua/"
+bug-reports: "https://github.com/mirage/charrua/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "1.4.0"}
+  "menhir" {build & >= "20180523"}
+  "charrua" {= version}
+  "cstruct" {>= "6.0.0"}
+  "ipaddr" {>= "5.0.0"}
+  "macaddr" {>= "4.0.0"}
+  "cstruct-unix" {with-test}
+  "tcpip" {>= "7.0.0" & with-test}
+  "alcotest" {with-test & >= "1.4.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/charrua.git"
+url {
+  src:
+    "https://github.com/mirage/charrua/releases/download/v1.6.0/charrua-1.6.0.tbz"
+  checksum: [
+    "sha256=1f6f7c1211a45ebbbd56a78b12fdbceaa98efae97ac3bd6f4855da47a3a3ac34"
+    "sha512=6ea3cb92efca7c33ee9aa1411223bec9045ece9939657594ebc47ae93408c4d87e8b40812751fc86555061d91ccd338b3fbcfe6059e1dd770303329b5e527a96"
+  ]
+}
+x-commit-hash: "9967d56b92d0a578656414ca7c94df52a42b7dab"

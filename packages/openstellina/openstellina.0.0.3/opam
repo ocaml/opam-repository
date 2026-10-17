@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "A http client for Stellina smart telescope by Vaonis"
+description:
+  "Mobile Stellina App does not provide access to telescope exposures > 20s (lights or darks). This software bypasses the App and talks to the telescope directly"
+maintainer: ["Jonathan Kimmitt"]
+authors: ["Jonathan Kimmitt"]
+license: "Apache-2.0"
+available: arch != "arm32" & arch != "x86_32"
+tags: ["Vaonis" "Stellina" "long-exposure" "GUI"]
+homepage: "https://github.com/jrrk2/openstellina.git"
+bug-reports: "https://github.com/jrrk2/openstellina.git/issues"
+depends: [
+"cohttp-lwt-unix"      {>="5.0.0"}
+"digestif"             {>="1.1.0"}
+"dune"                 {>="3.0"}
+"lablgtk"              {>="2.18.12"}
+"lwt_glib"             {>= "1.1.1" }
+"lwt_ssl"              {>="1.1.3"}
+"ocaml"                {>="4.12.0"}
+"ppx_let"              {>="v0.14.0"}
+"ppx_yojson"           {>="1.2.0"}
+"quests"               {>="0.1.3"}
+"yojson"               {>="1.7.0" }
+"zeit"                 {>="0.1.0" }
+"odoc"                 {with-doc}
+]
+conflicts: [
+  "ocaml-option-flambda"
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/jrrk2/openstellina.git"
+url {
+  src:
+    "https://github.com/jrrk2/openstellina/releases/download/opam-publish-openstellina.0.0.3/openstellina-opam-publish-openstellina.0.0.3.tbz"
+  checksum: [
+    "sha256=5e6ae3c1aeb57105ea79f0a0b938c0b8ef7e19b413ef69799fc07292d42245b2"
+    "sha512=66dfebd14389379a56411adf787d8a4de914decbb3578bb0eca5dee3df3096c3c41a544ba5bf31ab4ee0b95b91839540719039ea01182e3d5f1d9d1a08a49372"
+  ]
+}
+x-commit-hash: "09ea2cfad242b75055711149837c09c9daa1dc72"

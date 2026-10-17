@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis: "DHCP client implementation"
+description: """\
+charrua-client is a DHCP client powered by [charrua](https://github.com/mirage/charrua).
+
+The base library exposes a simple state machine in `Dhcp_client`
+for use in acquiring a DHCP lease."""
+maintainer: "Mindy Preston"
+authors: "Mindy Preston"
+license: "ISC"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/charrua"
+doc: "https://docs.mirage.io"
+bug-reports: "https://github.com/mirage/charrua/issues"
+depends: [
+  "dune" {>= "1.4.0"}
+  "ocaml" {>= "4.08.0"}
+  "alcotest" {with-test}
+  "cstruct-unix" {with-test}
+  "mirage-random-test" {with-test & >= "0.1.0"}
+  "charrua-server" {= version & with-test}
+  "charrua" {= version}
+  "cstruct" {>= "6.0.0"}
+  "ipaddr" {>= "5.0.0"}
+  "macaddr" {>= "4.0.0"}
+  "mirage-random" {>= "2.0.0" & < "4.0.0"}
+  "mirage-clock" {>= "3.0.0"}
+  "mirage-time" {>= "2.0.0"}
+  "mirage-net" {>= "3.0.0"}
+  "duration"
+  "logs"
+  "fmt"
+  "ethernet" {>= "3.0.0"}
+  "arp" {>= "3.0.0"}
+  "tcpip" {>= "7.0.0" & < "8.2.0"}
+  "lwt" {>= "4.0.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/charrua.git"
+url {
+  src:
+    "https://github.com/mirage/charrua/releases/download/v1.5.0/charrua-v1.5.0.tbz"
+  checksum: [
+    "sha256=4ce74a5e78402f3d645ddcb344aaa1348349a8d5a35b8b55112aff0cb84db8e1"
+    "sha512=ac6960de516642793b928224c95da997042d2907829496843481894b38804e3b465b5f9703bd8c02e5202059847ee5c16db6975c630b462448db511b39f34f87"
+  ]
+}
+x-commit-hash: "fb614f77b8f4cbd5f6409453a8f030b21d7e1a93"

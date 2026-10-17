@@ -1,0 +1,59 @@
+opam-version: "2.0"
+maintainer: "garrigue@math.nagoya-u.ac.jp"
+authors: ["Jacques Garrigue et al., Nagoya University"]
+homepage: "https://github.com/garrigue/lablgl"
+bug-reports: "https://github.com/garrigue/lablgl/issues"
+dev-repo: "git+https://github.com/garrigue/lablgl.git"
+license: "BSD-3-Clause"
+build: [
+  ["cp" "Makefile.config.ex" "Makefile.config"]
+  ["cp" "Makefile.config.osx" "Makefile.config"] {os = "macos"}
+  ["mkdir" "-p" bin]
+  [make "INSTALLDIR=%{lib}%/lablgl" "glut"]
+  [make "glutopt"] {ocaml:native}
+]
+install: [
+  [make "install" "-C" "src" "BINDIR=%{bin}%" "INSTALLDIR=%{lib}%/lablgl" "DLLDIR=%{lib}%/stublibs"]
+  [make "install" "-C" "LablGlut/src" "BINDIR=%{bin}%" "INSTALLDIR=%{lib}%/lablgl" "DLLDIR=%{lib}%/stublibs"]
+]
+remove: [
+  ["rm" "-rf" "%{lib}%/lablgl"]
+  ["rm" "-f" "%{bin}%/lablglut"]
+]
+depends: [
+  "ocaml" {>= "4.14"}
+  "ocamlfind" {>= "1.2.1"}
+  "camlp-streams" {build}
+  "camlp5"
+  "conf-libgl"
+  "conf-libglu"
+  "conf-freeglut"
+]
+synopsis: "Interface to OpenGL"
+description: """
+Interface between OCaml and OpenGL, including LablGlut wrapper
+for use with the glut library."""
+flags: light-uninstall
+url {
+  src: "https://github.com/garrigue/lablgl/archive/v1.07.tar.gz"
+  checksum: [
+    "sha256=845477ed8d5aeaad63907a9edfc1d8f8d62b932c6e37a32502926ee402a6271f"
+    "md5=5345199a125069371ef3fc859c55cc43"
+  ]
+}
+extra-source "lablgl.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/lablgl/lablgl.install"
+  checksum: [
+    "sha256=cb154f04b1afccaa7a4ca6e7603ccb1114066c7d4dffa98b8d7ab9d48dbd925f"
+    "md5=a03d20fcd54d7277982caf03b05354fa"
+  ]
+}
+extra-source "META" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/lablgl/META.1.07"
+  checksum: [
+    "sha256=449a25a8ec0bcbab66085aeb69c23985040b1e538e236329a1e7f469654f5f7a"
+    "md5=7b3ef952f4f896882f684c504e9e31d9"
+  ]
+}

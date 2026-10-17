@@ -1,0 +1,74 @@
+opam-version: "2.0"
+maintainer: "tim@tbrk.org"
+authors: [
+    "Timothy Bourke <tim@tbrk.org>"
+    "Jun Inoue <Jun.Lambda@gmail.com>"
+    "Marc Pouzet <Marc.Pouzet@ens.fr>"
+]
+homepage: "http://inria-parkas.github.io/sundialsml/"
+bug-reports: "https://github.com/inria-parkas/sundialsml/issues"
+doc: "http://inria-parkas.github.io/sundialsml/"
+tags: [
+    "numerical"
+    "simulation"
+    "mathematics"
+    "science"
+]
+license: "BSD-3-Clause"
+build: [
+  ["./configure" "--prefix=%{prefix}%"]
+  [make "tests.opt.log"] {with-test}
+  [make "doc"] {with-doc}
+]
+depends: [
+  "ocaml" {>= "3.12.1" & < "4.14"}
+  "base-bigarray"
+  "ocamlfind"
+  "conf-sundials" {build}
+]
+depopts: [
+    "mpi"
+]
+dev-repo: "git+https://github.com/inria-parkas/sundialsml"
+install: [
+  [make "install-findlib"]
+  [make "install-doc"] {with-doc}
+]
+synopsis:
+  "Sundials/ML is an interface to the Sundials suite of numerical solvers"
+description: """
+Sundials is a collection of five numerical solvers: CVODE, CVODES, IDA,
+IDAS, and KINSOL. This interface provides access to all features of the
+underlying library.
+
+The structure of the OCaml interface mostly follows that of the original
+library, both for ease of reading the existing documentation and for
+converting existing source code, but several changes have been made for
+programming convenience and to increase safety, namely:
+
+- solver sessions are mostly configured via algebraic data types rather than
+  multiple function calls;
+
+- error conditions are signalled by exceptions not return codes (including
+  in user-supplied callback routines);
+
+- closures (partial applications of functions) are used to share user data
+  between callback routines;
+
+- vectors are checked for compatibility with a session (using a combination
+  of static and dynamic checks), and;
+
+- explicit free commands are not necessary since OCaml is a
+  garbage-collected language.
+
+The OCaml documentation contains extensive cross-links to the original
+documentation. OCaml versions of the standard examples usually have an
+overhead of about 50% compared to the original C versions, and almost never
+more than 100%."""
+url {
+  src: "https://github.com/inria-parkas/sundialsml/archive/v2.5.0p1.zip"
+  checksum: [
+    "sha256=80bde7fe350a5358062d6a1ee65c243250c63303d17c779142018252fd27d71b"
+    "md5=04454bd6b5278bcc65e8fe410dd33f1e"
+  ]
+}

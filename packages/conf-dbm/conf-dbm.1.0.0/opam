@@ -1,0 +1,43 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+homepage: "https://www.gnu.org.ua/software/gdbm"
+authors: "Philip A. Nelson, Jason Downs and Sergey Poznyakoff"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "GPL-3.0-only"
+build: [
+  "sh" "-c" "cc test_gdbm.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm || cc test_gdbm.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -lndbm || cc test_gdbm.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -ldb1 || cc test_gdbm.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -lgdbm || cc test_gdbm.c -I/usr/include -I/usr/local/include -I/usr/include/db1 -I/usr/include/gdbm -lgdbm_compat -lgdbm || cc test_ndbm.c -v -I/usr/include -I/usr/local/include || cc test_ndbm.c -v -I/usr/include -I/usr/local/include -ldb || cc test_ndbm.c -v -I/usr/include -I/usr/local/include -lndbm"
+]
+depexts: [
+  ["libgdbm-dev"] {os-family = "debian"}
+  ["libgdbm-dev"] {os-family = "ubuntu"}
+  ["gdbm"] {os-distribution = "nixos"}
+  ["gdbm-devel"] {os-distribution = "centos"}
+  ["gdbm-devel"] {os-distribution = "rhel"}
+  ["gdbm-devel"] {os-family = "fedora"}
+  ["gdbm-devel"] {os-distribution = "ol"}
+  ["gdbm-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["gdbm-dev"] {os-distribution = "alpine"}
+  ["gdbm"] {os-distribution = "arch"}
+  ["sys-libs/gdbm"] {os-distribution = "gentoo"}
+  ["gdbm"] {os = "freebsd"}
+]
+synopsis: "Virtual package relying on gdbm"
+description:
+  "This package can only install if the gdbm or ndbm library is installed on the system."
+flags: conf
+extra-source "test_ndbm.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-dbm/test_ndbm.c"
+  checksum: [
+    "sha256=ef47ec883bb8638f699c9e82bb21768a044f280acb7add51ffa37a0462c54593"
+    "md5=f5f74ae297a6a7ced42843372156af85"
+  ]
+}
+extra-source "test_gdbm.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-dbm/test_gdbm.c"
+  checksum: [
+    "sha256=20a56ff157313967e58a9665705ce475ba551371e1a967aeaa6cd4f4d6d0b42b"
+    "md5=bb6869c63ffe5f767d859fb364fcecc8"
+  ]
+}

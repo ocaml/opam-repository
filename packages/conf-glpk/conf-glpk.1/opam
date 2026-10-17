@@ -1,0 +1,34 @@
+opam-version: "2.0"
+maintainer: "louis.gesbert@ocamlpro.com"
+homepage: "https://www.gnu.org/software/glpk/"
+bug-reports: "mailto:bug-glpk@gnu.org"
+authors: ["Andrew Makhorin" "GNU"]
+license: "GPL-3.0-or-later"
+build: [
+  ["sh" "-c" "echo '#include <glpk.h>' > test.c"]
+  ["cc" "-E" "test.c"] {os = "linux"}
+  ["cc" "-E" "-I/usr/local/include" "test.c"] {os = "freebsd"}
+  ["cc" "-E" "-I/usr/local/include" "-I/opt/homebrew/include" "test.c"] {os = "macos" & os-distribution = "homebrew"}
+]
+depexts: [
+  ["libglpk-dev"] {os-family = "debian"}
+  ["libglpk-dev"] {os-family = "ubuntu"}
+  ["glpk-dev@testing"] {os-family = "alpine"}
+  ["glpk-devel"] {os-family = "fedora"}
+  ["epel-release" "glpk-devel"] {os-distribution = "centos"}
+  ["glpk-devel"] {os-distribution = "rhel"}
+  ["glpk-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["glpk"] {os-family = "arch"}
+  ["glpk"] {os = "macos" & os-distribution = "homebrew"}
+  ["glpk"] {os = "freebsd"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7" # package not present by default
+  "oraclelinux-8" # package not present by default
+  "oraclelinux-9" # package not present by default
+]
+synopsis: "Virtual package for GLPK (GNU Linear Programming Kit)"
+description: """
+This package relies on GLPK being installed on the system. It requires static
+libraries to be available."""
+flags: conf

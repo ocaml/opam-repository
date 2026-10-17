@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "A simple profiling library"
+description: """\
+Landmarks is a simple profiling library for OCaml. It provides
+primitives to measure time spent in portion of instrumented code. The
+instrumentation of the code may either done by hand, automatically or
+semi-automatically using the ppx pepreprocessor (see landmarks-ppx package)."""
+maintainer: "Marc Lasson <marc.lasson@lexifi.com>"
+authors: "Marc Lasson <marc.lasson@lexifi.com>"
+license: "MIT"
+homepage: "https://github.com/LexiFi/landmarks"
+bug-reports: "https://github.com/LexiFi/landmarks/issues"
+depends: [
+  "dune" {>= "3.16"}
+  "ocaml" {>= "4.08"}
+  "js_of_ocaml" {with-test & > "5"}
+  "odoc" {with-doc}
+]
+conflicts: ["ocaml-option-bytecode-only"]
+available: arch = "x86_64" | arch = "x86_32" | arch = "arm64"
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/LexiFi/landmarks.git"
+url {
+  src: "https://github.com/LexiFi/landmarks/archive/refs/tags/v1.6.tar.gz"
+  checksum: [
+    "md5=b1e7b5859b658e4da0af1b78ce157fe0"
+    "sha512=097490d12ff7300ac490696d65db02d6d3a4926a649496eb89e54929bff60b2781ac2f2eeb3b1a8190f9b6f1916ed61802e8d984319fbffb6785145bc46ca61d"
+  ]
+}

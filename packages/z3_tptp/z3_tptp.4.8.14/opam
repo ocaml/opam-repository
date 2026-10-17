@@ -1,0 +1,37 @@
+opam-version: "2.0"
+maintainer: "7895506+MSoegtropIMC@users.noreply.github.com"
+authors: "MSR"
+homepage: "https://github.com/Z3prover/z3"
+bug-reports: "https://github.com/Z3prover/z3/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Z3prover/z3.git"
+# OK, this is really ugly, but it is quite hard to do this via z3's make system
+# using an already installed opam z3.
+# Also this should be quite robust with just source 2 files and opam knowns the
+# library folder better than any configure script.
+build: [
+  [ "g++"
+    "-I./src/api/c++"
+    "-I./src/api"
+    "-std=c++11"
+    "-L%{lib}%/stublibs"
+    "-o" "z3_tptp"
+    "examples/tptp/tptp5.cpp" "examples/tptp/tptp5.lex.cpp" 
+    "-lz3"
+    "-Wl,-rpath"
+    "-Wl,%{lib}%/stublibs"
+  ]
+]
+install: [ "cp" "z3_tptp" "%{bin}%/z3_tptp" ]
+depends: [
+  "z3" { = "4.8.14" }
+  "conf-g++" {build}
+]
+synopsis: "TPTP front end for Z3 solver"
+url {
+  src: "https://github.com/Z3Prover/z3/archive/refs/tags/z3-4.8.14.tar.gz"
+  checksum: [
+    "sha256=96a1f49a7701120cc38bfa63c02ff93be4d64c7926cea41977dedec7d87a1364"
+    "sha512=10170516ca472258d2f9df28cd036e43023a76a25f1e1670290c62f3890d935bf82770970054a5fd3a0f02559409e7ed4b18fb08347c040ff2f9e0918e152aab"
+  ]
+}

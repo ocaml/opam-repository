@@ -1,0 +1,43 @@
+opam-version: "2.0"
+maintainer: "Rizo Isrof <rizo@odis.io>"
+authors: [ "Rizo Isrof <rizo@odis.io>" ]
+license: "MIT"
+homepage: "http://github.com/rizo/flow"
+dev-repo: "git+https://github.com/rizo/flow.git"
+bug-reports: "https://github.com/rizo/flow/issues"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["oasis" "setup"] {with-test}
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "io"]
+]
+depends: [
+  "ocaml"
+  "base-unix"
+  "oasis" {build & >= "0.4"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "camlp4"
+]
+synopsis: "Simple, secure and composable abstraction for efficient component"
+description: """
+communcation.
+This library implements flow-based programming primitives for data
+processing. An application can be viewed as a network of asynchronous
+processes, called nodes, communicating by means of streams of
+structured data chunks."""
+flags: light-uninstall
+url {
+  src: "https://github.com/rizo/io/archive/0.2.0.zip"
+  checksum: [
+    "sha256=2935b1671ab9f6c96f0d4ec48cb4fa9b76c8d9d992267332fc68d387322249e5"
+    "md5=c90742b1549b111094585e9a26e19823"
+  ]
+}

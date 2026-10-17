@@ -1,0 +1,57 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: [
+  "Anil Madhavapeddy" "Thomas Leonard" "Thomas Gazagnaire" "Rudi Grinberg"
+]
+license: "ISC"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/ocaml-conduit"
+doc: "https://mirage.github.io/ocaml-conduit/"
+bug-reports: "https://github.com/mirage/ocaml-conduit/issues"
+depends: [
+  "ocaml" {>= "4.13.0"}
+  "dune" {>= "2.0"}
+  "ppx_sexp_conv" {>="v0.13.0"}
+  "sexplib0"
+  "astring"
+  "uri"
+  "logs" {>= "0.5.0"}
+  "ipaddr" {>= "4.0.0"}
+  "ipaddr-sexp"
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+dev-repo: "git+https://github.com/mirage/ocaml-conduit.git"
+synopsis: "A network connection establishment library"
+description: """
+The `conduit` library takes care of establishing and listening for
+TCP and SSL/TLS connections for the Lwt and Async libraries.
+
+The reason this library exists is to provide a degree of abstraction
+from the precise SSL library used, since there are a variety of ways
+to bind to a library (e.g. the C FFI, or the Ctypes library), as well
+as well as which library is used (just OpenSSL for now).
+
+By default, OpenSSL is used as the preferred connection library, but
+you can force the use of the pure OCaml TLS stack by setting the
+environment variable `CONDUIT_TLS=native` when starting your program.
+
+The useful opam packages available that extend this library are:
+
+- `conduit`: the main `Conduit` module
+- `conduit-lwt`: the portable Lwt implementation
+- `conduit-lwt-unix`: the Lwt/Unix implementation
+- `conduit-async` the Jane Street Async implementation
+- `conduit-mirage`: the MirageOS compatible implementation
+"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-conduit/releases/download/v7.1.0/conduit-7.1.0.tbz"
+  checksum: [
+    "sha256=58d2218a07e71706025de38ca0253233e970f35b4cacd37f706941b4cbea57f7"
+    "sha512=3d52e16202b443c72801828ab4a08ff2ae36ca03f3991793f6b155770d687718f6646fe85b70d7cadf670e4caf99af42bcf492ee70236f6a9a0d8a425deb03a6"
+  ]
+}
+x-commit-hash: "0805a919c51c702fcc4ff0b8565930b10d762218"

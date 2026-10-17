@@ -1,0 +1,52 @@
+opam-version: "2.0"
+authors: "https://github.com/rdkit/rdkit/graphs/contributors"
+homepage: "http://www.rdkit.org/"
+maintainer: "unixjunkie@sdf.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "BSD-3-Clause"
+build: [
+  ["sh" "-c" "c++ test.cpp -o test -I/usr/local/include/rdkit -L/usr/local/lib -lRDKitRDGeneral -DSWIG"] {os = "macos"}
+  ["sh" "-c" "c++ test.cpp -o test -I/usr/include/rdkit -lRDKitRDGeneral -DSWIG || c++ test.cpp -o test -I/usr/include/rdkit -lRDGeneral -DSWIG"] {os = "linux"}
+  ["sh" "-c" "c++ test.cpp -o test -I/usr/local/include -I/usr/local/include/rdkit -L/usr/local/lib -lRDKitRDGeneral -DSWIG"] {os = "freebsd"}
+  ["./test"]
+]
+depexts: [
+  ["librdkit-dev" "python-rdkit"] {os-distribution = "debian" & os-version < "11"}
+  ["librdkit-dev" "python3-rdkit"] {os-distribution = "debian" & os-version >= "11"}
+  ["librdkit-dev" "python-rdkit"] {os-distribution = "ubuntu" & os-version < "20.04"}
+  ["librdkit-dev" "python3-rdkit"] {os-distribution = "ubuntu" & os-version >= "20.04"}
+  ["librdkit-dev" "python3-rdkit"] {(os-family = "debian" | os-family = "ubuntu") & os-distribution != "debian" & os-distribution != "ubuntu"}
+  ["rdkit-devel" "python3-rdkit"] {os-family = "fedora"}
+  ["rdkit"] {os = "freebsd"}
+]
+x-ci-accept-failures: [ # RDKit does not exist by default on these distributions
+  "alpine-3.12"
+  "alpine-3.18"
+  "archlinux"
+  "centos-7"
+  "centos-8"
+  "fedora-37"
+  "fedora-38"
+  "opensuse-15.2"
+  "opensuse-15.5"
+  "oraclelinux-7"
+  "oraclelinux-8"
+  "oraclelinux-9"
+]
+post-messages:
+    "This package requires rdkit to be installed. You might want to try:
+    'pip3 install rdkit; opam install --fake conf-rdkit'"
+    {failure}
+synopsis: "Virtual package relying on rdkit library installation"
+description: """
+This package can only install if the rdkit devel library is installed
+on the system."""
+flags: conf
+extra-source "test.cpp" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-rdkit/test.cpp"
+  checksum: [
+    "sha256=c4f43a4a0d5898ee6226aa928a840b53c3148edb6243e444bbeb6945d2736c92"
+    "md5=8079a0c593690540fbcb2f848f5b43d5"
+  ]
+}

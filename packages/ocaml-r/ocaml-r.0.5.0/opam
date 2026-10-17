@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Objective Caml bindings for the R interpreter"
+description: """
+
+OCaml-R is a library that can be used to construct R values in memory,
+convert them to OCaml values, and build clean wrappers to R
+functions. It provide a simple means to develop bindings to any R
+package."""
+maintainer: ["philippe.veber@gmail.com"]
+authors: ["Guillaume Yzyquel" "Maxence Guesdon" "Philippe Veber"]
+license: "GPL-3.0-only"
+tags: ["R" "statistics"]
+homepage: "https://github.com/pveber/ocaml-r/"
+doc: "https://pveber.github.io/ocaml-r/ocaml-r/index.html"
+bug-reports: "https://github.com/pveber/ocaml-r/issues"
+depends: [
+  "alcotest" {with-test}
+  "base" {build & >= "v0.14" & < "v0.17"}
+  "conf-r" {build}
+  "conf-r-mathlib" {build}
+  "dune" {>= "2.5"}
+  "ocaml" {>= "4.08"}
+  "stdio" {>= "v0.14" & build}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/pveber/ocaml-r.git"
+url {
+  src:
+    "https://github.com/pveber/ocaml-r/releases/download/v0.5.0/ocaml-r-0.5.0.tbz"
+  checksum: [
+    "sha256=35fc05e7852e18309df75caaeb61d466d2eeaeee13bc31e509576da040b3606e"
+    "sha512=5b4ad4e76fe2239acc50edd8b6a3636434111af78d2279fa1f818c8127ebe72262d421d8488adfd15466d1893d9e5a05a5aa754bcbe68a32ecd8b0e4a4b2c19a"
+  ]
+}
+x-commit-hash: "d9c80f09f6f029398bff6164dfb541a6acdc8c49"

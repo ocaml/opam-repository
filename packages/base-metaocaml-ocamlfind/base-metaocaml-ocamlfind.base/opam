@@ -1,0 +1,50 @@
+opam-version: "2.0"
+maintainer: "yallop@gmail.com"
+authors: ["Jeremy Yallop"]
+license: "MIT"
+depopts: ["ocamlfind"]
+homepage: "https://github.com/ocaml/opam-repository/tree/master/packages/base-metaocaml-ocamlfind/base-metaocaml-ocamlfind.base"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+install: [
+  ["mkdir" "-p" "%{lib}%/findlib.conf.d/"] {ocamlfind:installed}
+  ["ocamlfind" "install" "metaocaml" "META"] {ocamlfind:installed}
+  ["cp" "metaocaml.native.conf" "%{lib}%/findlib.conf.d/metaocaml.conf"]
+    {ocamlfind:installed & (ocaml:compiler = "4.04.0+BER" | ocaml:compiler = "4.07.1+BER" | ocaml:compiler = "4.11.1+BER" | ocaml:compiler = "4.11.1+BER+flambda" | ocaml:compiler = "4.14.1+BER" | ocaml:compiler = "5.3.0+BER")}
+  ["cp" "metaocaml.conf" "%{lib}%/findlib.conf.d/metaocaml.conf"]
+    {ocamlfind:installed & ocaml:compiler != "4.04.0+BER" & ocaml:compiler != "4.07.1+BER" & ocaml:compiler != "4.11.1+BER" & ocaml:compiler != "4.11.1+BER+flambda"}
+]
+remove: [
+  [ "rm" "-f" "%{lib}%/findlib.conf.d/metaocaml.conf" ]
+  ["ocamlfind" "remove" "metaocaml"] {ocamlfind:installed}
+]
+synopsis: "Findlib toolchain configuration for MetaOCaml"
+depends: [
+  "ocaml"
+  "ocaml-variants"
+    {= "4.01.0+BER" | = "4.02.1+BER" | = "4.02.1+modular-implicits-ber" | = "4.04.0+BER" | = "4.07.1+BER" | = "4.11.1+BER" | = "4.11.1+BER+flambda" | = "4.14.1+BER"  | = "5.3.0+BER" }
+]
+flags: light-uninstall
+extra-source "metaocaml.native.conf" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/base-metaocaml-ocamlfind/metaocaml.native.conf"
+  checksum: [
+    "sha256=86edebe55a872529810afbc6164077fc44018e3fe2bf6b1ec0f9ae629a7cd18a"
+    "md5=2dc60223831dd583abab63220c6ed6ff"
+  ]
+}
+extra-source "metaocaml.conf" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/base-metaocaml-ocamlfind/metaocaml.conf"
+  checksum: [
+    "sha256=c79ebf5a1cd03915d82d4f3ecd7395b08b2084534065668a7814d0bb9a525b55"
+    "md5=c3e36877739c3147e3efecd5c3698473"
+  ]
+}
+extra-source "META" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/base-metaocaml-ocamlfind/META.base"
+  checksum: [
+    "sha256=55a4d7058f031bc8232b3e33964333fdd33027b4d01c2f8ee9b1f762d676fb18"
+    "md5=e450da6f2b87c1291ea23d6a396bffa5"
+  ]
+}

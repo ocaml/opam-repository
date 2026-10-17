@@ -1,0 +1,50 @@
+opam-version: "2.0"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+synopsis: "The ocp-search tool to index/search source packages"
+description: """\
+ocp-search is an index/search tool built as an example on top of 
+ez_search. It can be used to index OCaml files in a directory containing
+extracted source packages, building a database. The database can then 
+be searched for regexps, displaying occurrences with contexts.
+"""
+authors: ["Fabrice Le Fessant <fabrice.le_fessant@origin-labs.com>"]
+maintainer: ["Fabrice Le Fessant <fabrice.le_fessant@origin-labs.com>"]
+homepage: "https://ocamlpro.github.io/ez_search"
+doc: "https://ocamlpro.github.io/ez_search/sphinx"
+bug-reports: "https://github.com/ocamlpro/ez_search/issues"
+dev-repo: "git+https://github.com/ocamlpro/ez_search.git"
+tags: "org:ocamlpro"
+build: [
+  ["dune" "subst"] {dev}
+  ["sh" "-c" "./scripts/before.sh build '%{name}%'"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["sh" "-c" "./scripts/after.sh build '%{name}%'"]
+]
+install: [
+  ["sh" "-c" "./scripts/before.sh install '%{name}%'"]
+]
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "dune" {>= "2.7.0"}
+  "ez_search" {= version}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
+]
+available: os ="linux"
+
+url {
+    src: "https://github.com/ocamlpro/ez_search/archive/v0.2.2.tar.gz"
+    checksum: [ "sha256=0b640b0674675dcd84e509d19578908cac69a47c99a01e3ad32ca20dc62e1dbc" ]
+}

@@ -1,0 +1,25 @@
+opam-version: "2.0"
+maintainer: "Romain Calascibetta <romain.calascibetta@gmail.com>"
+authors: "Romain Calascibetta <romain.calascibetta@gmail.com>"
+homepage: "https://github.com/dinosaure/esperanto"
+bug-reports: "https://github.com/dinosaure/esperanto/issues/"
+license: "MIT"
+tags: "org:mirage"
+dev-repo: "git+https://github.com/dinosaure/esperanto.git"
+build: [
+  [ "sh" "-c" "cd toolchain && ./configure.sh --prefix=%{prefix}%" ]
+  [ make "-C" "toolchain" "all" "V=1" ]
+]
+# We should depend on conf-binutils but the package does not work on FreeBSD
+# even if we can do [pkg install binutils] on FreeBSD 12
+# depends: [
+#   "conf-binutils"
+# ]
+install: [ make "-C" "toolchain" "install" ]
+synopsis: "Cosmopolitan toolchain for OCaml compiler"
+description: "A little toolchain for OCaml with Cosmopolitan"
+available: [ arch = "x86_64" & (os = "linux" | os = "freebsd" | os = "openbsd") ]
+url {
+  src: "https://github.com/dinosaure/esperanto/releases/download/v0.0.4/esperanto-v0.0.4.tar.gz"
+  checksum: "sha512=e76890f88e60f8c4cc7a29fb0007bc946fb0b5f0342ce7bec0f88f40b90a2b225c6a93e99b4ca6477aad1b1d474780a7d733e52b5d3cb48968518025912cc959"
+}

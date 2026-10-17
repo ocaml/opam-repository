@@ -1,0 +1,46 @@
+opam-version: "2.0"
+maintainer: "whitequark <whitequark@whitequark.org>"
+authors: "whitequark <whitequark@whitequark.org>"
+homepage: "https://github.com/whitequark/ocaml-lz4"
+bug-reports: "https://github.com/whitequark/ocaml-lz4/issues"
+license: "BSD-3-Clause"
+doc: "http://whitequark.github.io/ocaml-lz4"
+tags: ["compression"]
+dev-repo: "git+https://github.com/whitequark/ocaml-lz4.git"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"] {os != "macos"}
+  [
+    "ocaml"
+    "setup.ml"
+    "-build"
+    "-cflags"
+    "-ccopt,-I,-ccopt,/usr/local/include"
+  ] {os = "macos"}
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests"]
+    {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocamlfind" "remove" "lz4"]
+depends: [
+  "ocaml" {< "5.0"}
+  "base-bytes"
+  "base-bigarray"
+  "ocamlfind" {build}
+  "ocamlbuild" {build & != "0.9.0"}
+  "ctypes" {>= "0.4.1" & < "0.21.0"}
+  "ounit" {with-test}
+  "conf-liblz4"
+]
+synopsis: "Bindings for LZ4, a very fast lossless compression algorithm"
+flags: light-uninstall
+url {
+  src: "https://github.com/whitequark/ocaml-lz4/archive/v1.1.1.tar.gz"
+  checksum: [
+    "sha256=0dd8f2d2ce789d6f70656b458c1bba2ed6a4c338cf991fe468475159607279aa"
+    "md5=a4db848b6d584f8f8e93fd2ecf1b684d"
+  ]
+}

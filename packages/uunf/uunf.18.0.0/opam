@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "Unicode text normalization for OCaml"
+description: """\
+Uunf is an OCaml library for normalizing Unicode text. It supports all
+Unicode [normalization forms]. The library is independent from any IO
+mechanism or Unicode text data structure and it can process text
+without a complete in-memory representation.
+
+Uunf is distributed under the ISC license. It has no dependency.
+
+[normalization forms]: http://www.unicode.org/reports/tr15/
+
+Homepage: <http://erratique.ch/software/uunf>"""
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: "The uunf programmers"
+license: "ISC"
+tags: ["unicode" "text" "normalization" "org:erratique"]
+homepage: "https://erratique.ch/software/uunf"
+doc: "https://erratique.ch/software/uunf/doc/Uunf"
+bug-reports: "https://github.com/dbuenzli/uunf/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "1.1.0"}
+  "uucd" {dev & >= "18.0.0" & < "19.0.0"}
+]
+depopts: ["uutf" "cmdliner"]
+conflicts: [
+  "uutf" {< "1.0.0"}
+  "cmdliner" {< "1.1.0"}
+]
+build: [
+  "ocaml"
+  "pkg/pkg.ml"
+  "build"
+  "--dev-pkg"
+  "%{dev}%"
+  "--with-uutf"
+  "%{uutf:installed}%"
+  "--with-cmdliner"
+  "%{cmdliner:installed}%"
+]
+post-messages:
+  "If the build fails with \"ocamlopt.opt got signal and exited\", issue 'ulimit -s unlimited' and retry."
+    {failure & (arch = "ppc64" | arch = "arm64")}
+dev-repo: "git+https://erratique.ch/repos/uunf.git"
+url {
+  src: "https://erratique.ch/software/uunf/releases/uunf-18.0.0.tbz"
+  checksum:
+    "sha512=739434317d84fb2f60f195d5645093fce5cfeb8ebb7e491345c80799528768a255cc39be05d12f873f028a302bbe0716b0591b8f47c6fe04fe309c6e6c93069c"
+}
+x-maintenance-intent: ["(latest)"]

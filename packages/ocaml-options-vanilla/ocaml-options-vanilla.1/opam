@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "Ensure that OCaml is compiled with no special options enabled"
+authors: [
+  "David Allsopp"
+  "Louis Gesbert"
+]
+homepage: "https://opam.ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "CC0-1.0+"
+depends: [
+  "ocaml-base-compiler" {post} |
+  "ocaml-system" {post} |
+  "ocaml-variants" {post & >= "4.12.0~"}
+]
+conflicts: [
+  "ocaml-option-32bit"
+  "ocaml-option-afl"
+  # See equivalent constraint in ocaml-option-bytecode-only
+  # Windows is permitted to install 32-bit versions of ocaml-base-compiler on
+  # 64-bit systems hence the (temporary) addition of the `os = "win32"` here,
+  # at least until the ocaml-option- / base- mess is fixed. Note that this puts
+  # 64-bit Windows into the same class as ppc64, riscv64 and s390x where
+  # ocaml-option-bytecode-only can be installed, but has no effect.
+  "ocaml-option-bytecode-only" {arch = "arm64" | (arch = "x86_64" & os != "win32") }
+  "ocaml-option-default-unsafe-string"
+  "ocaml-option-flambda"
+  "ocaml-option-fp"
+  "ocaml-option-musl"
+  "ocaml-option-no-flat-float-array"
+  # See constraint in ocaml-option-no-compression
+  "ocaml-option-no-compression" {os != "win32"}
+  "ocaml-option-spacetime"
+  "ocaml-option-static"
+  "ocaml-option-nnp"
+  "ocaml-option-nnpchecker"
+  "ocaml-option-address-sanitizer"
+  "ocaml-option-leak-sanitizer"
+  "ocaml-option-tsan"
+  "ocaml-option-mingw"
+]
+maintainer: "David Allsopp <david@tarides.com>"
+flags: compiler

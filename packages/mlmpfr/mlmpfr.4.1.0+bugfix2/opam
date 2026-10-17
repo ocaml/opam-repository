@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer:   "Laurent Thévenoux <lrnt@thvnx.com>"
+authors:      "Laurent Thévenoux <lrnt@thvnx.com>"
+homepage:     "https://github.com/thvnx/mlmpfr"
+bug-reports:  "https://github.com/thvnx/mlmpfr/issues"
+license:      "LGPL-3.0-only"
+dev-repo:     "git+https://github.com/thvnx/mlmpfr.git"
+build: [
+  ["cc" "mlmpfr_compatibility_test.c" "-lmpfr" "-o" "mlmpfr_compatibility_test"]
+  ["./mlmpfr_compatibility_test"]
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml" {>= "4.04"}
+  "dune" {>= "2.9"}
+  "conf-mpfr"
+]
+x-ci-accept-failures: ["debian-unstable"]
+post-messages: [
+  "Make sure you had MPFR version 4.1.0 installed on your system." {failure}
+]
+synopsis: "OCaml C bindings for MPFR-4.1.0"
+url {
+  src:
+    "https://github.com/thvnx/mlmpfr/archive/refs/tags/mlmpfr.4.1.0-bugfix2.tar.gz"
+  checksum: [
+    "sha256=c503e7ed15fe991af770c2199eeaf872cea1a82e6805e937443fd3a42c409c8f"
+    "md5=20de14505f17e1c59841dab71261e9f5"
+  ]
+}
+description: """
+The package provides bindings for MPFR-4.1.0.
+
+Warning: this bugfix2 version breaks backward compatibility since it renames the
+Mpfr module into Mlmpfr. See thvnx#21 for more details.
+
+You need to have MPFR-4.1.0 installed on your system. See opam info mlmpfr for
+all available versions."""
+extra-source "mlmpfr_compatibility_test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/mlmpfr/mlmpfr_compatibility_test.c.4.1.0+bugfix2"
+  checksum: [
+    "sha256=456f1ce41e01ecd1132d513775434eb673ee624c0a10c5ca81696210aebb9dd3"
+    "md5=34cf77d2aa08092d4bd94582594a26f2"
+  ]
+}

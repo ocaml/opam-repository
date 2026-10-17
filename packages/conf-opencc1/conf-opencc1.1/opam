@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "zandoye@gmail.com"
+authors: [ "ZAN DoYe" ]
+homepage: "https://github.com/kandu/ocaml-opencc1/"
+bug-reports: "https://github.com/kandu/ocaml-opencc1/issues"
+license: "MIT"
+tags: [
+  "opencc"
+  "Chinese conversion"
+]
+
+build: [
+  ["sh" "-exec" "cc $CFLAGS test.c -l:libopencc.so.2"]
+]
+
+depexts: [
+  ["libopencc2"] {os-family = "debian"}
+  ["libopencc2"] {os-family = "suse" | os-family = "opensuse"}
+  ["opencc"] {os-distribution = "arch"}
+  ["app-i18n/opencc"] {os-distribution = "gentoo"}
+  ["opencc"] {os-family = "fedora"}
+  ["opencc"] {os-distribution = "centos"}
+  ["opencc"] {os = "freebsd"}
+  ["opencc"] {os = "macos" & os-distribution = "homebrew"}
+]
+synopsis: "Virtual package relying on opencc v1 (libopencc.so.2) installation"
+description: "This package can install only if the libopencc v1 is available on the system"
+
+flags: [conf]
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-opencc1/test.c"
+  checksum: [
+    "sha256=57b9a643ad8840d8b26e9deccd86faba017ebd91037aa4e4124d6005e2e90cf8"
+    "md5=9690f46dfbcfc47a300c8cac95f3ded2"
+  ]
+}
+

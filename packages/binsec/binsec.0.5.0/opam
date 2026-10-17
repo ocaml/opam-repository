@@ -1,0 +1,95 @@
+opam-version: "2.0"
+synopsis: "Semantic analysis of binary executables"
+description: """
+
+BINSEC aims at developing an open-source platform filling the gap between formal
+methods over executable code and binary-level security analyses currently used
+in the security industry.
+
+The project targets the following applicative domains:
+
+    vulnerability analyses
+    malware comprehension
+    code protection
+    binary-level verification
+
+BINSEC is developed at CEA List in scientfic collaboration with Verimag and LORIA.
+
+An overview of some BINSEC features can be found in our SSPREW'17 tutorial."""
+maintainer: ["BINSEC <binsec@saxifrage.saclay.cea.fr>"]
+authors: [
+  "Adel Djoudi"
+  "Benjamin Farinier"
+  "Frédéric Recoules"
+  "Josselin Feist"
+  "Lesly-Ann Daniel"
+  "Manh-Dung Nguyen"
+  "Mathilde Ollivier"
+  "Matthieu Lemerre"
+  "Olivier Nicole"
+  "Richard Bonichon"
+  "Robin David"
+  "Ta Thanh Dinh"
+  "Yaëlle Vinçont"
+  "Guillaume Girol"
+]
+license: "LGPL-2.1-or-later"
+tags: [
+  "binary code analysis"
+  "symbolic execution"
+  "deductive"
+  "program verification"
+  "formal specification"
+  "automated theorem prover"
+  "plugins"
+  "abstract interpretation"
+  "dataflow analysis"
+  "linking"
+  "disassembly"
+]
+homepage: "https://binsec.github.io"
+bug-reports: "mailto:binsec@saxifrage.saclay.cea.fr"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.08" & < "5.0.0"}
+  "menhir" {build & >= "20181113"}
+  "ocamlgraph" {>= "1.8.5"}
+  "zarith" {>= "1.4"}
+  "dune-site"
+  "ounit2" {with-test & >= "2"}
+  "qcheck" {with-test & >= "0.7"}
+  "odoc" {with-doc}
+]
+depopts: ["llvm" "unisim_archisec" "bitwuzla"]
+conflicts: [
+  "llvm" {< "6.0.0"}
+  "llvm" {>= "13.0.0"}
+  "bitwuzla" {< "1.0.1"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/binsec/binsec.git"
+available: [ arch = "x86_64" | arch = "ppc64" | arch = "arm64" | arch = "sparc64" ]
+url {
+  src:
+    "https://github.com/binsec/binsec/releases/download/0.5.0/binsec-0.5.0.tbz"
+  checksum: [
+    "sha256=9aa038f6e45339109bdc3fbe3e87522a412cc2f4b32422c85f541b3bbd596f1e"
+    "sha512=95d241d85bb9b25d9d7145430484c3aa9c0401abbced672046753c56c46c8debbf643a1587dd3a3dd59b126c1fc91a02517be04009488aa3e1867d14f73a458c"
+  ]
+}
+x-commit-hash: "ec40fdaf01a99d4fc47de5141187173666c36c03"

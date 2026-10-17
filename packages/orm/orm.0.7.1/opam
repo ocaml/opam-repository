@@ -1,0 +1,37 @@
+opam-version: "2.0"
+maintainer:   "anil@recoil.org"
+authors:      ["Anil Madhavapeddy" "Thomas Gazagnaire"]
+homepage:     "https://github.com/mirage/orm"
+bug-reports:  "https://github.com/mirage/orm/issues"
+dev-repo: "git+https://github.com/mirage/orm.git"
+tags:         "org:mirage"
+
+build: [
+  [make]
+  [make "test"] {with-test & ocaml:version < "4.06"}
+]
+install:    [make "install"]
+remove:     ["ocamlfind" "remove" "orm"]
+
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "sqlite3" {< "5.0.0"}
+  "dyntype" {>= "0.9.0"}
+  "ounit" {with-test}
+  "num"
+]
+synopsis: "The ORM library provides a storage backend to persist ML values."
+description: """
+This backend is integrated seamlessly with OCaml and currently uses
+SQLite (although other backends are easily possible). The user does
+not have to worry about writing any SQL queries manually."""
+flags: light-uninstall
+url {
+  src: "https://github.com/mirage/orm/tarball/orm-0.7.1"
+  checksum: [
+    "sha256=c6c01ec38cde5c9c2e8eb85d51027c5c59c52b11a587265081e98885a6285396"
+    "md5=15cd87fb3ade1521f0ff8ed843f97f17"
+  ]
+}

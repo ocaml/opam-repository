@@ -1,0 +1,49 @@
+opam-version: "2.0"
+maintainer: "opam-devel@lists.ocaml.org"
+homepage: "https://forge.ocamlcore.org/projects/ocamlmod/"
+bug-reports: "https://forge.ocamlcore.org/tracker/?group_id=244"
+dev-repo: "darcs+https://forge.ocamlcore.org/anonscm/darcs/ocamlmod/ocamlmod"
+authors: [ "Sylvain Le Gall" ]
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/ocamlmod/_oasis_remove_.ml" "%{etc}%/ocamlmod"]
+]
+depends: [
+  "ocaml" {< "5.0"}
+  "ocamlfind" {build}
+  "ounit" {with-test & >= "2.0.0"}
+  "ocamlbuild" {build}
+]
+synopsis: "Generate OCaml modules from source files"
+url {
+  src:
+    "https://download.ocamlcore.org/ocamlmod/ocamlmod/0.0.9/ocamlmod-0.0.9.tar.gz"
+  checksum: [
+    "sha256=4a1178ccdddccf46b09c2a62218e65d86de754c015d7dc1af45e1d9c314ef731"
+    "md5=b52bfbab6bb77f9736bde9c2fe81c508"
+  ]
+}
+extra-source "ocamlmod.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/ocamlmod/ocamlmod.install.0.0.9"
+  checksum: [
+    "sha256=5b010bcd931b45da20d8004cb55ee72cc8193b8b0fe12070896fbdb73a00517b"
+    "md5=0d1b822c897681cf54b3e1aed52dda99"
+  ]
+}
+extra-source "_oasis_remove_.ml" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/ocamlmod/_oasis_remove_.ml"
+  checksum: [
+    "sha256=30bd6759edf0096e5353751a0603eaf693cb60ea7485aa9418e257dfdb97d916"
+    "md5=6100ca146fa97d2196eb49a2631d0796"
+  ]
+}

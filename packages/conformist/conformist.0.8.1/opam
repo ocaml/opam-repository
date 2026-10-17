@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis:
+  "Conformist allows you to define schemas to decode, validate and sanitize input data declaratively"
+description: """
+Conformist allows you to define schemas to decode, validate and sanitize input data declaratively.
+It comes with runtime types for primitive OCaml types such as `int`, `string`, `bool` and `float` but also `Ptime.t`, `option` and custom types.
+Re-use business rules in validators and run it on the client side with js_of_ocaml.
+Arbitrary meta data can be stored in schemas which is useful to build functionality on top of conformist.
+"""
+maintainer: ["josef@oxidizing.io"]
+authors: ["Josef Erben"]
+license: "MIT"
+homepage: "https://github.com/oxidizing/conformist"
+doc: "https://oxidizing.github.io/conformist/"
+bug-reports: "https://github.com/oxidizing/conformist/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.08.0"}
+  "ptime" {>= "0.8.5"}
+  "alcotest" {>= "1.2.3" & with-test}
+  "sexplib" {>= "v0.13.0" & with-test}
+  "odoc" {with-doc}
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/oxidizing/conformist.git"
+url {
+  src: "https://github.com/oxidizing/conformist/archive/0.8.1.tar.gz"
+  checksum: [
+    "md5=28b7ee03002c0cf14c94209d86c17b9c"
+    "sha512=b06a1a72395ded0f8751bf6d123753e48a3853b4b3ab0263de39264eb3670a16c4f54d4f0be2f23a05223d63fc76452311bb444b3dbd1cf1a68eb713a4a998f6"
+  ]
+}

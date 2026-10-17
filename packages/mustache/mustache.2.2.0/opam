@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "rudi.grinberg@gmail.com"
+authors: ["Rudi Grinberg"]
+license: "MIT"
+
+homepage: "https://github.com/rgrinberg/ocaml-mustache"
+bug-reports: "https://github.com/rgrinberg/ocaml-mustache/issues"
+dev-repo: "git+https://github.com/rgrinberg/ocaml-mustache.git"
+doc: "http://mustache.github.io/mustache.5.html"
+
+build: [
+  ["ocaml" "setup.ml" "-configure" "--disable-cli"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+
+remove: [
+  ["ocamlfind" "remove" "mustache"]
+]
+
+depends: [
+  "ocaml" {>= "4.01.0" & < "5.0.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "ounit" {with-test}
+]
+synopsis: "Mustache logic-less templates in OCaml"
+description:
+  "Read and write mustache templates and render them by providing a json object"
+flags: light-uninstall
+url {
+  src: "https://github.com/rgrinberg/ocaml-mustache/archive/v2.2.0.tar.gz"
+  checksum: [
+    "sha256=24d5acfabd0c8c2a97fea7ff57743b2888b43666a5e0d286359fe6eef8c5f0dc"
+    "md5=974400382290d3668814ef75d293c123"
+  ]
+}

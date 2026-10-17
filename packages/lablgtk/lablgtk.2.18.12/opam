@@ -1,0 +1,61 @@
+opam-version: "2.0"
+maintainer: "garrigue@math.nagoya-u.ac.jp"
+authors: ["Jacques Garrigue et al., Nagoya University"]
+homepage: "https://garrigue.github.io/lablgtk/"
+bug-reports: "https://github.com/garrigue/lablgtk/issues"
+dev-repo: "git+https://github.com/garrigue/lablgtk.git"
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+build: [
+  ["./configure" "--prefix" prefix "LABLGLDIR=%{lib}%/lablgl"]
+  [make "world"]
+]
+install: [
+  [make "install"]
+]
+depends: [
+  "ocaml" {>= "4.06" & < "5.0.0"}
+  "ocamlfind" {>= "1.2.1"}
+  "conf-gtk2" {build}
+]
+depopts: [
+  "conf-gtksourceview"
+  "conf-gnomecanvas"
+  "conf-glade"
+  "lablgl"
+]
+conflicts: [
+  "base-domains"
+]
+patches: ["lablgldir.patch"]
+post-messages: [
+  "This package requires gtk+ 2.0 development packages installed on your system"
+    {failure}
+  """
+To solve pkg-config issues, you may need to do
+'export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig' and retry"""
+    {failure & os = "macos"}
+]
+synopsis: "OCaml interface to GTK+"
+url {
+  src: "https://github.com/garrigue/lablgtk/archive/2.18.12.tar.gz"
+  checksum: [
+    "sha256=43b2640b6b6d6ba352fa0c4265695d6e0b5acb8eb1da17290493e99ae6879b18"
+    "md5=96e5ee228ce26c7ec71a253f87e6d7f7"
+  ]
+}
+extra-source "lablgtk.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/lablgtk/lablgtk.install"
+  checksum: [
+    "sha256=a7254f258d43669943ababb0846017096262938bccc2f0d62cbc53687cd77d15"
+    "md5=1a3468258dd50aab33b9844db158b11a"
+  ]
+}
+extra-source "lablgldir.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/lablgtk/lablgldir.patch.2.18.12"
+  checksum: [
+    "sha256=018a0f6006413258878ac550e078fa29a6f42f63ae7b6a50f38d116128f21b73"
+    "md5=ea7cb50e7f6aa85968063d059ab46c44"
+  ]
+}

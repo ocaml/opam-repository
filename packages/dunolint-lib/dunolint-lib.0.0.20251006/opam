@@ -1,0 +1,66 @@
+opam-version: "2.0"
+synopsis: "A library to create dunolint configs"
+maintainer: ["Mathieu Barbin <opensource@mbarbin.org>"]
+authors: ["Mathieu Barbin"]
+license: "LGPL-3.0-or-later WITH LGPL-3.0-linking-exception"
+homepage: "https://github.com/mbarbin/dunolint"
+doc: "https://mbarbin.github.io/dunolint/"
+bug-reports: "https://github.com/mbarbin/dunolint/issues"
+depends: [
+  "dune" {>= "3.17"}
+  "ocaml" {>= "4.14"}
+  "fpath" {>= "0.7.3"}
+  "fpath-sexp0" {>= "0.3.1"}
+  "re" {>= "1.8.0"}
+  "sexplib0" {>= "v0.16"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mbarbin/dunolint.git"
+description: """\
+
+[dunolint] is a set of OCaml libraries and a cli tool to lint and help
+manage files in (large) dune projects.
+
+[dunolint-lib] is the package you need as a user to define a dunolint
+config, without pulling all the dependencies required by the linter
+engine and command line.
+
+It defines a configuration language in which you can express linting
+invariants for your projects. The tool will enforce these invariants,
+applying global and systematic changes automatically when able, and
+help with general ergonomics questions.
+
+For example: "I want for all libs in this subdirectory to enable
+`bisect_ppx`, please go patch my dune files". Or, "I would like all
+libraries that verify this particular predicate to supply the ppx flag
+`-unused-code-warnings=force`", and more.
+
+You can setup [dunolint] as part of your CI checks to help enforcing
+properties and linting checks going forward.
+
+"""
+tags: [ "dune" "linter" ]
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src:
+    "https://github.com/mbarbin/dunolint/releases/download/0.0.20251006/dunolint-0.0.20251006.tbz"
+  checksum: [
+    "sha256=1b064927c9e1ef5352a1886ae34a206fef0ce6a913c19a77b0162acc108e0e50"
+    "sha512=6cbc08ba318bef6584d15a4491e3dde1bf436109ce0f8b7c400a9f91bbcee64c5785bc924df11eafe98243ec2f188a7f92c58c5062729f3e2af1e9977f1a5e67"
+  ]
+}
+x-commit-hash: "b44dbf6bcf9923cb75c169d8e1f59ad4629f72e4"

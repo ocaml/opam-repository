@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "Lwt interface to macOS CoreFoundation"
+description: """
+An Lwt interface to the macOS CoreFoundation library, using the
+`cf` library for the low-level bindings."""
+maintainer: ["Thomas Gazagnaire"]
+authors: ["David Sheets" "Thomas Gazagnaire"]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-cf"
+doc: "https://mirage.github.io/ocaml-cf/"
+bug-reports: "https://github.com/mirage/ocaml-cf/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "cf" {= version}
+  "alcotest" {with-test}
+  "lwt" {>= "3.2.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cf.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-cf/releases/download/0.5.0/cf-lwt-0.5.0.tbz"
+  checksum: [
+    "sha256=d307832538a493023be3c7aceb5e9594e509d49e16f1e90dff1dc22ef46b9564"
+    "sha512=c23052d1820cb92791d484a4fc08db6a8f6d43638dc707de5b73e964e6de1ec65c3dcc1d679e1ea38666ce705d50d00f909f97f73e1f2b7ac3d5f0d4c09b6152"
+  ]
+}
+x-commit-hash: "5bf14310eb6c374c8c79ed159eb5b71a77dd0428"

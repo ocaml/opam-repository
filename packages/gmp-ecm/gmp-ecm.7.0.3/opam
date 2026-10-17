@@ -1,0 +1,52 @@
+opam-version: "2.0"
+maintainer: "7895506+MSoegtropIMC@users.noreply.github.com"
+authors: [
+  "Cyril Bouvier"
+  "David Cleaver"
+  "Pierrick Gaudry"
+  "Brian Gladman"
+  "Jim Fougeron"
+  "Laurent Fousse"
+  "Alexander Kruppa"
+  "Francois Morain"
+  "Dave Newman"
+  "Jason S. Papadopoulos"
+  "Paul Zimmermann"
+]
+homepage: "https://gitlab.inria.fr/zimmerma/ecm"
+license: ["GPL-3.0" "LGPL-3.0"]
+dev-repo: "git+https://gitlab.inria.fr/zimmerma/ecm.git"
+bug-reports: "https://gitlab.inria.fr/zimmerma/ecm/-/issues"
+build: [
+  [ "autoreconf" "-i" "-s" ]
+  [ "./configure" "--prefix" prefix
+    # Options for macOS+MacPorts
+    "CPPFLAGS=-I/opt/local/include" { os-distribution = "macports" & os = "macos" }
+    "LDFLAGS=-L/opt/local/lib" { os-distribution = "macports" & os = "macos" }
+    # Options for macOS+homebrew on Apple silicon (Intel silicon doesn't need options)
+    "CPPFLAGS=-I/opt/homebrew/include" { os-distribution = "homebrew" & os = "macos" & arch = "arm64"}
+    "LDFLAGS=-L/opt/homebrew/lib" { os-distribution = "homebrew" & os = "macos" & arch = "arm64"}
+    # Options for Windows MinGW with cygwin build host
+    "--build=%{arch}%-pc-cygwin" { os = "win32" & os-distribution = "cygwinports" }
+    "--host=%{arch}%-w64-mingw32" { os = "win32" & os-distribution = "cygwinports" }
+    "--target=%{arch}%-w64-mingw32" { os = "win32" & os-distribution = "cygwinports" }
+    "--disable-static" { os = "win32" & os-distribution = "cygwinports" }
+    "--enable-shared" { os = "win32" & os-distribution = "cygwinports" }
+  ]
+  [ make "-j" "%{jobs}%" ]
+]
+install: [
+  [ make "install" ]
+]
+depends: [
+  "conf-gmp"
+  "conf-g++" {build}
+  "conf-autoconf" {build}
+  "conf-automake" {build}
+  "conf-libtool" {build}
+]
+synopsis: "GMP-ECM library for the Elliptic Curve Method (ECM) for integer factorization"
+url {
+  src: "https://gitlab.inria.fr/zimmerma/ecm/-/archive/git-7.0.3/ecm-git-7.0.3.tar.gz"
+  checksum: "sha512=106288d764f31e9a8f87efc5a4449b1942b7fd7d81c7a4e2e2367edcf8b35db315da8b4d32cebec618a19d78cfe3330f0e724f1f9cef5231886888c730370f37"
+}

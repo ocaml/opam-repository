@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "Async web toolkit"
+maintainer: ["Anurag Soni <anurag@sonianurag.com>"]
+authors: ["Anurag Soni <anurag@sonianurag.com>"]
+license: "MIT"
+tags: ["http-server" "http" "http1.1" "async"]
+homepage: "https://github.com/anuragsoni/http_async"
+bug-reports: "https://github.com/anuragsoni/http_async/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.11.0"}
+  "shuttle" {>= "0.4.0" & < "0.5.0"}
+  "ppxlib" {>= "0.23.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/anuragsoni/http_async.git"
+available: [ arch = "x86_64" | arch = "arm64" ]
+url {
+  src:
+    "https://github.com/anuragsoni/http_async/releases/download/0.0.3/http_async-0.0.3.tbz"
+  checksum: [
+    "sha256=fd0da06524318709cbad869956c3071d5c2fba948de16806a3a44b1aa76f3a2c"
+    "sha512=c4679be8d92901209f111139622575a529fc9b54ad72b87f0a5ae02e7d5d5d9417c78a385f2be048c2d7ea64a349282bf1252e90877015c058931eb2bf324f77"
+  ]
+}
+x-commit-hash: "a7399b95b9fe2ec83b8a871325a4e74b88a64d24"

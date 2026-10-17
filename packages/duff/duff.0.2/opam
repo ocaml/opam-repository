@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer:   "Romain Calascibetta <romain.calascibetta@gmail.com>"
+authors:      "Romain Calascibetta <romain.calascibetta@gmail.com>"
+homepage:     "https://github.com/dinosaure/duff"
+bug-reports:  "https://github.com/dinosaure/duff/issues"
+dev-repo:     "git+https://github.com/dinosaure/duff.git"
+doc:          "https://dinosaure.github.io/duff/"
+license:      "MIT"
+synopsis:     "Rabin's fingerprint and diff algorithm in OCaml"
+description: """
+This library provides a pure implementation of Rabin's fingerprint and diff algorithm in OCaml.
+
+It follows libXdiff C library. It is used by ocaml-git project.
+"""
+
+build: [
+  ["dune" "subst"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.03.0" & < "5.1"}
+  "dune"
+  "fmt"
+  "cstruct"  {< "6.1.0"}
+  "cmdliner" {>= "1.0.2" & < "1.1.0"}
+  "logs"     {>= "0.6.2"}
+  "fmt"      {>= "0.8.5"}
+  "bos"      {>= "0.2.0"}
+  "fpath"    {>= "0.7.0"}
+  "alcotest" {with-test}
+]
+url {
+  src:
+    "https://github.com/dinosaure/duff/releases/download/v0.2/duff-v0.2.tbz"
+  checksum: [
+    "sha256=583ec0c2a768331dad4b7057e6edd8966296698052cb6403c32c91417840202e"
+    "md5=b0a60ff1efb160b1ded56c640b874be3"
+  ]
+}
+available: arch != "x86_32" & arch != "arm32"

@@ -1,0 +1,43 @@
+opam-version: "2.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git+https://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure"
+                 "--prefix=%{prefix}%"
+                 "--mandir=%{man}%"
+                 "--enable-piqi-printers" ]
+  [make]
+]
+
+install: [
+  [make "install"]
+]
+
+remove: [
+        [ "ocamlfind" "remove" "bap-plugin-piqi_printers"]
+        [ "ocamlfind" "remove" "bap-piqi"]
+        [ "bapbundle" "remove" "piqi_printers.plugin"]
+        [ "rm" "-rf" "%{prefix}%/share/bap/piqi"]
+]
+
+depends: [
+  "ocaml" {>= "4.08.0" }
+  "oasis" {build & >= "0.4.7"}
+  "bap-std" {= "2.3.0"}
+  "cmdliner"
+  "piqi" {>= "0.7.4"}
+]
+synopsis: "BAP plugin for serialization based on piqi library"
+
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v2.3.0.tar.gz"
+  checksum: [
+    "sha256=a6e80853aaaa26b7ca564d9878891d7146ec1c83852541387c1bba1ad036b8ea"
+    "md5=13f2cb1e3b9d90348852252fb0f2d09f"
+  ]
+  mirrors: "https://mirrors.aegis.cylab.cmu.edu/bap/2.3.0/v2.3.0.tar.gz"
+}

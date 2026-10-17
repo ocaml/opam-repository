@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "GitLab APIv4 OCaml library"
+description: """
+This library provides an OCaml interface to the
+[GitLab APIv4](https://docs.gitlab.com/ee/api/) (JSON).
+
+It is compatible with [MirageOS](https://mirage.io) and also compiles to pure
+JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."""
+maintainer: ["Tim McGilchrist <timmcgil@gmail.com>"]
+authors: ["Tim McGilchrist"]
+license: "BSD-3-clause"
+homepage: "https://github.com/tmcgilchrist/ocaml-gitlab"
+doc: "https://tmcgilchrist.github.io/ocaml-gitlab/"
+bug-reports: "https://github.com/tmcgilchrist/ocaml-gitlab/issues"
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "dune" {>= "2.9" & >= "1.10"}
+  "uri" {>= "1.9.0"}
+  "cohttp-lwt" {>= "4.0"}
+  "atdgen" {>= "2.0.0" & < "2.3.0"}
+  "yojson" {>= "1.7.0"}
+  "stringext"
+  "mdx" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/tmcgilchrist/ocaml-gitlab.git"
+url {
+  src:
+    "https://github.com/tmcgilchrist/ocaml-gitlab/releases/download/0.1.0/lab-0.1.0.tbz"
+  checksum: [
+    "sha256=fb8efa6f650fcfed8b0e16054f53d6cec624bf218e76e4e5264e16c1d4a37f8d"
+    "sha512=341bd366a6c664067a043a2e75f9f6db479a43ae8f4e6448a5ba80b6e9269a40b95b307e4de538c60d2cfabc82c964113da789f04d22b2e13456234344e75089"
+  ]
+}
+x-commit-hash: "9dc71f428bf49f3029742cfc5e5450697fbc48ff"

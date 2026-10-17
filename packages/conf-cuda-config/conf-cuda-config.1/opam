@@ -1,0 +1,83 @@
+opam-version: "2.0"
+maintainer: "Lukasz Stafiniak <lukstafi@gmail.com>"
+authors: [
+    "Lukasz Stafiniak <lukstafi@gmail.com>"
+]
+homepage: "https://docs.nvidia.com/cuda/"
+license: "MIT"
+build: [
+  ["sh" "-exc" """
+    if [ -z "$CUDA_PATH" ]; then
+      if [ -d "/usr/local/cuda" ]; then
+        CUDA_PATH="/usr/local/cuda"
+        CUDA_PREINSTALLED="true"
+      elif [ -d "/opt/cuda" ]; then
+        CUDA_PATH="/opt/cuda"
+        CUDA_PREINSTALLED="true"
+      elif [ -d "/usr/cuda" ]; then
+        CUDA_PATH="/usr/cuda"
+        CUDA_PREINSTALLED="true"
+      elif [ "arch" = %{os-family}% ]; then
+        CUDA_PATH="/opt/cuda"
+        CUDA_PREINSTALLED="false"
+      else
+        CUDA_PATH="/usr/local/cuda"
+        CUDA_PREINSTALLED="false"
+      fi
+    else
+      if [ -d "$CUDA_PATH" ]; then
+        CUDA_PREINSTALLED="true"
+      else
+        CUDA_PREINSTALLED="false"
+      fi
+    fi
+    if [ -z "$WSL_DISTRO_NAME" ]; then
+      IS_WSL="false"
+    else
+      IS_WSL="true"
+    fi
+    cat <<EOF > conf-cuda-config.config
+opam-version: "2.0"
+variables {
+  cuda_preinstalled: "$CUDA_PREINSTALLED"
+  cuda_path: "$CUDA_PATH"
+  is_wsl: "$IS_WSL"
+  wsl_distro_name: "$WSL_DISTRO_NAME"
+}
+EOF
+    """] { os-family != "windows" }
+  ["sh" "-exc" """
+    if [ -d "$CUDA_PATH" ]; then
+      CUDA_PREINSTALLED="true"
+    elif [ -d "/cygdrive/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8" ]; then
+      CUDA_PATH="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8"
+      CUDA_PREINSTALLED="true"
+    elif [ -d "/cygdrive/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.9" ]; then
+      CUDA_PATH="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.9"
+      CUDA_PREINSTALLED="true"
+    elif [ -d "/cygdrive/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0" ]; then
+      CUDA_PATH="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0"
+      CUDA_PREINSTALLED="true"
+    elif [ -d "/cygdrive/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.1" ]; then
+      CUDA_PATH="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.1"
+      CUDA_PREINSTALLED="true"
+    elif [ -d "/cygdrive/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA" ]; then
+      CUDA_PREINSTALLED="true"
+    else
+      CUDA_PREINSTALLED="false"
+    fi
+    echo 'opam-version: \"2.0\" variables { cuda_preinstalled: \"'$CUDA_PREINSTALLED'\" cuda_path: \"'$CUDA_PATH'\" }' > conf-cuda-config.config
+    """] { os-family = "windows" }
+  [ "sh" "-exc" "cat conf-cuda-config.config" ] {os-family = "windows"}
+  [ "powershell" "-Command" "(Get-Content -Raw conf-cuda-config.config) -replace '\\\\', '\\\\' | Set-Content conf-cuda-config.config" ] {os-family = "windows"}
+  [ "sh" "-exc" "cat conf-cuda-config.config" ] {os-family = "windows"}
+]
+post-messages: [
+  "NOTE: assuming CUDA will be installed under %{conf-cuda-config:cuda_path}%"
+  {!conf-cuda-config:cuda_preinstalled}
+]
+synopsis: "Preparatory steps for the conf-cuda package"
+description:
+  "This package checks if CUDA is already installed on the system, and if the OS runs under WSL."
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+flags: conf

@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "David Sheets <sheets@alum.mit.edu>"
+authors: ["The OpenSSL Project"]
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+homepage: "https://www.openssl.org/"
+license: "Apache-1.0"
+build-env: [
+  [HOMEBREW_NO_AUTO_UPDATE = "1"]
+]
+build: [
+  ["pkg-config" "openssl"]
+    {os != "macos" & os != "freebsd" & os != "openbsd" & os != "netbsd"}
+  ["sh" "./osx-build.sh"] {os = "macos"}
+]
+depends: ["conf-pkg-config" {build}]
+depexts: [
+  ["libssl-dev"] {os-family = "debian"}
+  ["openssl-devel"] {os-distribution = "centos"}
+  ["openssl-devel"] {os-distribution = "ol"}
+  ["openssl-devel"] {os-family = "fedora"}
+  ["openssl"] {os = "macos" & os-distribution = "homebrew"}
+  ["openssl"] {os = "macos" & os-distribution = "macports"}
+  ["openssl-dev"] {os-distribution = "alpine"}
+  ["openssl"] {os-distribution = "nixos"}
+  ["openssl"] {os-distribution = "arch"}
+  ["libopenssl-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["openssl"] {os = "win32" & os-distribution = "cygwinports"}
+]
+synopsis: "Virtual package relying on an OpenSSL library system installation"
+description:
+  "This package can only install if the OpenSSL library is installed on the system."
+flags: conf
+extra-source "osx-build.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-libssl/osx-build.sh"
+  checksum: [
+    "sha256=74a80dd664a044ab448702b1a698d55bcf864ceb64a9b895298497cb586aca00"
+    "md5=faf81a6bf30e346abe94610f136c6193"
+  ]
+}
+available: os != "win32" | os-distribution = "cygwinports"

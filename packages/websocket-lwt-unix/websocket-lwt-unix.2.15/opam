@@ -1,0 +1,57 @@
+opam-version: "2.0"
+synopsis: "Websocket library (Lwt)"
+description: """
+The WebSocket Protocol enables two-way communication between a client
+running untrusted code in a controlled environment to a remote host
+that has opted-in to communications from that code.
+
+The security model used for this is the origin-based security model
+commonly used by web browsers. The protocol consists of an opening
+handshake followed by basic message framing, layered over TCP.
+
+The goal of this technology is to provide a mechanism for
+browser-based applications that need two-way communication with
+servers that does not rely on opening multiple HTTP connections (e.g.,
+using XMLHttpRequest or <iframe>s and long polling).
+"""
+maintainer: ["Vincent Bernardoff <vb@luminar.eu.org>"]
+authors: ["Vincent Bernardoff <vb@luminar.eu.org>"]
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/vbmithr/ocaml-websocket"
+doc: "https://vbmithr.github.io/ocaml-websocket/doc"
+bug-reports: "https://github.com/vbmithr/ocaml-websocket/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.06.0"}
+  "websocket" {= version}
+  "lwt_log" {>= "1.1.1"}
+  "cohttp-lwt-unix" {>= "5.0.0" & < "6.0.0~"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/vbmithr/ocaml-websocket.git"
+url {
+  src:
+    "https://github.com/vbmithr/ocaml-websocket/releases/download/2.15/websocket-lwt-unix-2.15.tbz"
+  checksum: [
+    "sha256=7ba435572227093515e60fa58c395735750d16d0ca866a7dbc0986d2f67f55bc"
+    "sha512=b7d939035d86300fba6dee1d7b59f85f0255827fd8aef2cdabfe9f9185cf84020ba07c7835d4c54ced9b21a2b974cc626aed921f11de5ed81c40d1cfa0f4fd48"
+  ]
+}
+x-commit-hash: "1b604cc46b72bff050c788a8a35b4a5d12bdc67c"

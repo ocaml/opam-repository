@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+homepage: "http://bugseng.com/products/ppl/"
+bug-reports: "http://bugseng.com/products/ppl/bugs"
+license: "GPL-1.0-or-later"
+build: [
+  ["sh" "-c"
+	"cc test.c -I${HOMEBREW_PREFIX:-/opt/homebrew}/include -L${HOMEBREW_PREFIX:-/opt/homebrew}/lib -lppl_c -lppl" {os = "macos" & os-distribution = "homebrew"}
+	"cc test.c -lppl_c -lppl" {os != "freebsd" & os != "openbsd"}
+	"cc test.c -I/usr/local/include -L/usr/local/lib -lppl_c -lppl" {os = "freebsd" | os = "openbsd"}]
+]
+x-ci-accept-failures: [
+  "oraclelinux-8" "oraclelinux-9" "alpine-3.19"
+]
+depexts: [
+  ["libppl-dev"] {os-family = "debian"}
+  ["libppl-dev"] {os-family = "ubuntu"}
+  ["ppl"] {os-distribution = "arch"}
+  ["dev-libs/ppl"] {os-distribution = "gentoo"}
+  ["epel-release" "ppl-devel"] {os-distribution = "centos" & os-version = "9"}
+  ["libppl" "libppl-devel"] {os-distribution = "centos" & os-version != "9"}
+  ["ppl"] {os = "freebsd"}
+  ["ppl"] {os = "openbsd"}
+  ["ppl"] {os = "macos" & os-distribution = "homebrew"}
+  ["ppl-devel"] {os-family = "fedora"}
+  ["ppl-devel"] {os-family = "suse" | os-family = "opensuse"}
+]
+synopsis:
+  "Virtual package relying on the Parma Polyhedra Library (PPL) system installation"
+description:
+  "This package can only install if PPL is installed on the system."
+authors: "R. Bagnara, P. M. Hill, E. Zaffanella, A. Bagnara et. al."
+flags: conf
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-ppl/test.c"
+  checksum: [
+    "sha256=1a5276ef89377bc5cc3b4ef2c4d37cbd64804bbf115e316f6adea2eb44f2ffeb"
+    "md5=7de4a76f91cee3f8cd52220b7edd16cb"
+  ]
+}

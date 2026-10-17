@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis:
+  "A collection of additional tools and libraries to develop ocaml applications based on Lablgtk3"
+maintainer: "zoggy@bat8.org"
+authors: "Zoggy <zoggy@bat8.org>"
+license: "LGPL-3.0-only"
+tags: "gtk"
+homepage: "https://zoggy.frama.io/lablgtk-extras/"
+doc: "https://zoggy.frama.io/lablgtk-extras/"
+bug-reports: "https://framagit.org/zoggy/lablgtk-extras/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "lablgtk3" {>= "3.1.1"}
+  "lablgtk3-sourceview3" {>= "3.1.1"}
+  "ocaml" {>= "4.12.0"}
+  "ocf" {>= "0.8.0"}
+  "xmlm" {>= "1.3.0"}
+  "yojson" {>= "1.7.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://framagit.org/zoggy/lablgtk-extras.git"
+url {
+  src:
+    "https://framagit.org/zoggy/lablgtk-extras/-/archive/3.0.1/lablgtk-extras-3.0.1.tar.bz2"
+  checksum: [
+    "md5=a1e65cb9a1b8f0d61da2541599051d9e"
+    "sha512=a14faba4a0bd679311ad7c00fd80bb768727e70c84591af51e880a928a545e51c020d5fb3d51752162aff1525a6cd1606a25199e18c0c368b8d112d253bd7320"
+  ]
+}

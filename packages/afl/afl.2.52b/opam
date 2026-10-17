@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "meetup@yomimono.org"
+homepage: "http://lcamtuf.coredump.cx/afl"
+bug-reports: "https://groups.google.com/forum/#!forum/afl-users"
+license: "Apache-2.0"
+build: [
+  [make] {arch = "x86_64"}
+  [make "AFL_NO_X86=1"] {arch != "x86_64"}
+]
+install: [
+  [make "PREFIX=%{prefix}%" "install"] {arch = "x86_64"}
+  [make "AFL_NO_X86=1" "PREFIX=%{prefix}%" "install"] {arch != "x86_64"}
+]
+remove: [
+  [make "PREFIX=%{prefix}%" "uninstall"]
+]
+patches: [
+  "add-uninstall-target.patch"
+]
+synopsis:
+  "American Fuzzy Lop fuzzer by Michal Zalewski, repackaged for convenient use in opam."
+authors: "Michal Zalewski"
+depends: ["ocaml"]
+url {
+  src: "http://lcamtuf.coredump.cx/afl/releases/afl-2.52b.tgz"
+  checksum: [
+    "sha256=43614b4b91c014d39ef086c5cc84ff5f068010c264c2c05bf199df60898ce045"
+    "md5=d4fa778e6c2221aee4f5326f22e1983d"
+  ]
+}
+extra-source "add-uninstall-target.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/afl/add-uninstall-target.patch.2.52b"
+  checksum: [
+    "sha256=62a71f4e24114ec3987b0e3698247d795d51d32a35a3e26701093024e449cf73"
+    "md5=a66880dff1ed2c829894a043f30f5cd7"
+  ]
+}

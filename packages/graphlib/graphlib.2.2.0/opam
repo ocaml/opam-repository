@@ -1,0 +1,50 @@
+opam-version: "2.0"
+maintainer: "Ivan Gotovchits <ivg@ieee.org>"
+authors: "BAP Team"
+homepage: "https://github.com/BinaryAnalysisPlatform/bap/"
+bug-reports: "https://github.com/BinaryAnalysisPlatform/bap/issues"
+dev-repo: "git+https://github.com/BinaryAnalysisPlatform/bap/"
+license: "MIT"
+build: [
+  ["./configure"
+                 "--prefix=%{prefix}%"
+                 "--mandir=%{man}%"
+                 "--enable-graphlib"]
+  [make]
+]
+
+install: [
+  [make "install"]
+]
+
+remove: [
+  ["ocamlfind" "remove" "graphlib"]
+]
+
+depends: [
+  "ocaml" {>= "4.08.0" }
+  "core_kernel" {>= "v0.14"}
+  "ppx_bap" {>= "v0.14"}
+  "oasis" {build & >= "0.4.7"}
+  "ocamlgraph"
+  "regular" {= "2.2.0"}
+]
+synopsis: "Generic Graph library"
+description: """
+Graphlib is a generic library that extends a well known OCamlGraph
+library. Graphlib uses its own, more reach, Graph interface that
+is isomorphic to OCamlGraph's `Sigs.P` signature for persistant
+graphs. Two functors witness the isomorphism of the interfaces:
+`Graphlib.To_ocamlgraph` and `Graphlib.Of_ocamlgraph`. Thanks to
+these functors, any algorithm written for OCamlGraph can be used on
+`Graphlibs` graph and vice verse."""
+flags: light-uninstall
+
+url {
+  src: "https://github.com/BinaryAnalysisPlatform/bap/archive/v2.2.0.tar.gz"
+  checksum: [
+    "sha256=7c6d0dfe2640e800829617dd150ffe748493fe3f317ed41be44312b2821deb46"
+    "md5=5dbc6677d646bec59fd7414f23e88cf8"
+  ]
+  mirrors: "https://mirrors.aegis.cylab.cmu.edu/bap/2.2.0/v2.2.0.tar.gz"
+}

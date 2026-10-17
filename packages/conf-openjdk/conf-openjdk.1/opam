@@ -1,0 +1,39 @@
+opam-version: "2.0"
+maintainer: "https://github.com/ocaml/opam-repository/issues"
+homepage: "http://openjdk.java.net/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: "OpenJDK and Java Community"
+license: "GPLv2 with linking exception"
+build: ["javac" "-version"]
+depexts: [
+  ["default-jdk"] {os-family = "debian" | os-family = "ubuntu"}
+  ["java-latest-openjdk-devel"] {os-family = "fedora"}
+  ["java-latest-openjdk-devel"] {os-distribution = "rhel"}
+  ["java-latest-openjdk-devel"] {os-distribution = "ol"}
+  ["java-latest-openjdk-devel"] {os-distribution = "centos"}
+  ["jdk-openjdk"] {os-distribution = "arch"}
+  ["openjdk"] {os-distribution = "homebrew" & os = "macos"}
+  ["openjdk21"] {os-distribution = "alpine"}
+]
+x-ci-accept-failures: [
+  # requires the user to install a specific openjdk version
+  "freebsd"
+  # these fail CI as PATH does not include javac
+  "opensuse-15.6"
+  "opensuse-tumbleweed"
+  "macos-homebrew"
+  # x86_32 is debian-12-ocaml-4.14/i386
+  "debian-12"
+]
+post-messages: [
+  "Please ensure that the javac binary is installed and is available in PATH"
+    {failure}
+  """You may need to first install a version of openjdk, e.g., openjdk19"""
+    {failure & os-distribution = "freebsd"}
+  """You may need to first install a version of openjdk, e.g. winget install Microsoft.OpenJDK.21"""
+    { failure & os = "win32"}
+]
+synopsis: "Virtual package relying on OpenJDK / Javac"
+description:
+  "This package can only install if the javac binary is installed on the system."
+flags: conf

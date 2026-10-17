@@ -1,0 +1,36 @@
+opam-version: "2.0"
+authors: "https://github.com/stevengj/nlopt/blob/master/AUTHORS"
+homepage: "https://nlopt.readthedocs.io/en/latest/"
+maintainer: "unixjunkie@sdf.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "LGPL-2.1-or-later"
+build: [
+  ["mkdir" "build"]
+  ["sh" "-c" "cd build && %{conf-cmake:cmd}% -Wno-dev -DCMAKE_INSTALL_PREFIX=%{lib}% ../"]
+  [make "-C" "build" "-j" jobs]
+]
+install: [
+  [make "-C" "build" "install"]
+]
+depends: [
+  "conf-cmake"
+]
+available: os != "win32"
+synopsis: "User-space installer for the NLopt library"
+description: """
+Attempt a user-space installation of NLopt.
+If successful, libnlopt will be installed
+into opam's lib directory.
+Note: NLopt is a C++ library which is required by some OCaml
+software in opam-repository.
+Having an automatic user-space installer in opam-repos. will make those
+software easier to install (e.g. even if you don't have root access
+to install the corresponding system package).
+"""
+dev-repo: "git://https://github.com/stevengj/nlopt.git"
+url {
+  src: "https://github.com/stevengj/nlopt/archive/refs/tags/v2.7.1.tar.gz"
+  checksum: [
+    "sha256=db88232fa5cef0ff6e39943fc63ab6074208831dc0031cf1545f6ecd31ae2a1a"
+  ]
+}

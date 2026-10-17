@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "gabriel.scherer@inria.fr"
+homepage: "https://google.github.io/snappy/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+build: [
+  ["c++" "test.cpp" "-lsnappy" "-std=c++11"] {os = "linux"}
+  ["c++" "test.cpp" "-I/usr/local/include" "-L/usr/local/lib" "-lsnappy" "-std=c++11"] {os = "freebsd"}
+  ["sh" "-c" "c++ test.cpp -I\"$(brew --prefix snappy)/include\" -L\"$(brew --prefix snappy)/lib\" -lsnappy -std=c++11"] {os = "macos" & os-distribution = "homebrew"}
+]
+depexts: [
+  ["snappy"] {os-distribution = "arch"}
+  ["snappy-dev"] {os-distribution = "alpine"}
+  ["libsnappy-dev"] {os-family = "debian"}
+  ["libsnappy-dev"] {os-family = "ubuntu"}
+  ["snappy"] {os = "macos" & os-distribution = "homebrew"}
+  ["snappy-devel"] {os-family = "fedora"}
+  ["snappy"] {os-family = "suse" | os-family = "opensuse"}
+  ["snappy"] {os = "freebsd"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-8"
+  "oraclelinux-9"
+]
+synopsis: "Virtual package relying on snappy"
+description:
+  "This package can only install if the snappy library is installed on the system."
+authors: "Gabriel Scherer"
+flags: conf
+extra-source "test.cpp" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-snappy/test.cpp"
+  checksum: [
+    "sha256=622f219f92f244f99827b7b25d0d3055045bb1796f9999466475e82b16f47aeb"
+    "md5=90fb2f59e92b7f5a3a65e776249d233f"
+  ]
+}

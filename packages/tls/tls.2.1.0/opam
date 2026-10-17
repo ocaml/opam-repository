@@ -1,0 +1,66 @@
+opam-version: "2.0"
+homepage:     "https://github.com/mirleft/ocaml-tls"
+dev-repo:     "git+https://github.com/mirleft/ocaml-tls.git"
+bug-reports:  "https://github.com/mirleft/ocaml-tls/issues"
+doc:          "https://mirleft.github.io/ocaml-tls/doc"
+maintainer:   ["Hannes Mehnert <hannes@mehnert.org>" "David Kaloper <david@numm.org>"]
+license:      "BSD-2-Clause"
+
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.13.0"}
+  "dune" {>= "3.0"}
+  "mirage-crypto" {>= "1.1.0"}
+  "mirage-crypto-ec" {>= "1.0.0"}
+  "mirage-crypto-pk" {>= "1.0.0"}
+  "mirage-crypto-rng" {>= "1.2.0"}
+  "x509" {>= "1.0.0"}
+  "domain-name" {>= "0.3.0"}
+  "fmt" {>= "0.8.7"}
+  "ounit2" {with-test & >= "2.2.0"}
+  "kdf" {>= "1.0.0"}
+  "logs"
+  "ipaddr"
+  "ohex" {>= "0.2.0"}
+  "digestif" {>= "1.2.0"}
+  "ptime" {>= "1.2.0"}
+  "alcotest" {with-test}
+  "cmdliner" {with-test & >= "1.3.0"}
+]
+conflicts: [ "result" {< "1.5"} ]
+tags: [ "org:mirage"]
+synopsis: "Transport Layer Security purely in OCaml"
+description: """
+Transport Layer Security (TLS) is probably the most widely deployed security
+protocol on the Internet. It provides communication privacy to prevent
+eavesdropping, tampering, and message forgery. Furthermore, it optionally
+provides authentication of the involved endpoints. TLS is commonly deployed for
+securing web services ([HTTPS](http://tools.ietf.org/html/rfc2818)), emails,
+virtual private networks, and wireless networks.
+
+TLS uses asymmetric cryptography to exchange a symmetric key, and optionally
+authenticate (using X.509) either or both endpoints. It provides algorithmic
+agility, which means that the key exchange method, symmetric encryption
+algorithm, and hash algorithm are negotiated.
+
+Read our [Usenix Security 2015 paper](https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/kaloper-mersinjak).
+"""
+available: [ arch != "arm32" ] # see SIGBUS failures at https://github.com/ocaml/opam-repository/pull/26387
+x-maintenance-intent: [ "(latest)" ]
+authors: [
+  "David Kaloper <david@numm.org>" "Hannes Mehnert <hannes@mehnert.org>"
+]
+url {
+  src:
+    "https://github.com/mirleft/ocaml-tls/releases/download/v2.1.0/tls-2.1.0.tbz"
+  checksum: [
+    "sha256=da79960789fa418b62bf89cd524e99815c5010413bc189f0f33966b8d0b886d2"
+    "sha512=2a5f5685b2a0bc37c3f80ffc2ebf49ad1b5506efedbc35aa6177faeae1dadb3048f35572ee6fc8a37ea352b600563c9080d9b69f42cedb37a56fc631ed44e345"
+  ]
+}
+x-commit-hash: "03e845e1ea367c5161b5b7d98c042cc60fb4fced"

@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings for Linux io_uring"
+description:
+  "Bindings to the Linux io_uring kernel IO interfaces. See https://github.com/ocaml-multicore/eio for a higher-level API using this."
+maintainer: ["anil@recoil.org"]
+authors: ["Anil Madhavapeddy" "Sadiq Jaffer" "Thomas Leonard"]
+license: "(ISC AND MIT)"
+homepage: "https://github.com/ocaml-multicore/ocaml-uring"
+bug-reports: "https://github.com/ocaml-multicore/ocaml-uring/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "cstruct" {>= "6.0.1"}
+  "ocaml" {>= "4.12.0"}
+  "dune-configurator"
+  "lwt" {with-test & >= "5.0.0"}
+  "notty" {>= "0.2.2" & with-test}
+  "bechamel-notty" {>= "0.1.0" & with-test}
+  "bechamel" {>= "0.1.0" & with-test}
+  "logs" {with-test & >= "0.5.0"}
+  "cmdliner" {with-test}
+  "fmt" {>= "0.8.10"}
+  "optint" {>= "0.1.0"}
+  "alcotest" {>= "1.4.0" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-multicore/ocaml-uring.git"
+depexts: [
+  ["linux-headers"] {os-distribution = "alpine"}
+]
+url {
+  src:
+    "https://github.com/ocaml-multicore/ocaml-uring/releases/download/v0.2/uring-0.2.tbz"
+  checksum: [
+    "sha256=4f1446664ae6091cb6e34688b6ddf384f2b26674ea7e6b6105018a12a2893a21"
+    "sha512=0658ce85cdd254aca8605f877ed321e004696943a58ecaba96cc923fee0024084b6cca541669bd4f879cbf1d05deecb01f12652dbce09235880a5de384233dd9"
+  ]
+}
+x-commit-hash: "1ad2a7bd01e9c962246e4d50cf8b7b8034df29c0"
+available: [os = "linux"]

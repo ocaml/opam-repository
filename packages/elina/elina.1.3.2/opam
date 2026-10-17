@@ -1,0 +1,57 @@
+opam-version: "2.0"
+authors: ["Gagandeep Singh" "Markus Püschel" "Martin Vechev"]
+homepage: "http://elina.ethz.ch/"
+maintainer: "Gagandeep Singh <ggnds@illinois.edu>"
+dev-repo: "git+https://github.com/eth-srl/ELINA.git"
+bug-reports: "https://github.com/eth-srl/ELINA/issues"
+license: "LGPL-3.0-only"
+build: [
+  [
+  "sh"
+  "./configure"
+  "--prefix"
+  "%{share}%/elina"
+  "--apron-prefix"
+  "%{share}%/apron"
+  "--use-opam"
+  "--use-apron"
+  "--use-vector"
+  "--absolute-dylibs" {os = "macos"}
+]
+  [make "-j%{jobs}%"]
+]
+install: [
+  [make "install"]
+]
+remove: [
+  ["ocamlfind" "remove" "elina"]
+  ["rm" "-r" "-f" "%{share}%/elina"]
+]
+depends: [
+  "ocaml"
+  "ocamlfind" {build}
+  "camlidl"
+  "mlgmpidl"
+  "conf-perl"
+  "apron"
+]
+flags: light-uninstall
+available: arch = "x86_32" | arch = "x86_64"
+
+synopsis: "ETH LIBRARY FOR NUMERICAL ANALYSIS"
+description: """
+ELINA contains optimized implementations of popular numerical abstract
+domains such as Polyhedra, Octagon and Zones for static
+analysis. ELINA uses improved algorithms, online decomposition as well
+as state of the art performance optimizations from linear algebra such
+as vectorization, locality of reference, scalar replacement etc. to
+significantly improve the performance of static analysis with the
+numerical domains."""
+
+url {
+  src: "https://github.com/eth-sri/ELINA/archive/1.3.2.tar.gz"
+  checksum: [
+    "sha256=b926ba40ea36d365d7fbd42200ebde71e7c6e3c7574b04871313a4aff9ba3afd"
+    "md5=f1fd1a6ef66b44e12e2ab64e5a4a26aa"
+  ]
+}

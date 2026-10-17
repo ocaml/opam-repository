@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis:
+  "A library for reading and writing common file formats used in bioinformatics like FASTA files"
+maintainer: "Ryan Moore"
+authors: "Ryan Moore"
+license: "MIT"
+homepage: "https://github.com/mooreryan/bio_io"
+doc: "https://mooreryan.github.io/bio_io/"
+bug-reports: "https://github.com/mooreryan/bio_io/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "bisect_ppx" {dev}
+  "core" {>= "v0.12" & dev}
+  "core_bench" {>= "v0.12" & dev}
+  "core_kernel" {>= "v0.12" & < "v0.15"}
+  "ppx_sexp_conv" {>= "v0.12" & < "v0.15"}
+  "ocaml" {>= "4.08.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files"
+    "false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/mooreryan/bio_io.git"
+url {
+  src: "https://github.com/mooreryan/bio_io/archive/0.1.2.tar.gz"
+  checksum: [
+    "md5=561772cfc093c5070692fc8888539582"
+    "sha512=544309855972b100fe8fd3ca828757fa74204a8c9f2201e5b1985df558e2e8fc4bc86e87979b4c53db18929581043837c13c63c35a1ba9a112e905a01d4febc7"
+  ]
+}

@@ -1,0 +1,52 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+authors: ["Francois Berenger"]
+homepage: "https://github.com/UnixJunkie/oranger"
+bug-reports: "https://github.com/UnixJunkie/oranger/issues"
+dev-repo: "git+https://github.com/UnixJunkie/oranger.git"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["tar" "xzf" "0.9.11.tar.gz"]
+  ["mkdir" "ranger-0.9.11/cpp_version/build"]
+  ["sh" "-c" "cd ranger-0.9.11/cpp_version/build && %{conf-cmake:cmd}% ../"]
+  [make "-C" "ranger-0.9.11/cpp_version/build"]
+]
+install: [
+  ["cp" "ranger-0.9.11/cpp_version/build/ranger" "%{bin}%/ml_rf_ranger"]
+]
+depends: [
+  "dune" {>= "1.0.0"}
+  "conf-cmake" {build}
+  "re" {>= "1.9.0"}
+  "dolog" {>= "6.0.0"}
+  "batteries" {>= "3.3.0"}
+  "minicli" {>= "5.0.2"}
+  "cpm" {>= "12.0.0"}
+  "line_oriented" {>= "1.0.0"}
+  "molenc" {>= "16.0.0"}
+  "parany" {>= "12.0.3"}
+]
+depopts: [
+  "conf-gnuplot"
+]
+synopsis: "OCaml wrapper for the ranger (C++) random forests implementation"
+description: """
+Ranger is run from the command line and data are exchanged via text files.
+This is quick and dirty, not a clean OCaml interface to ranger.
+The oranger_rfr program allows to train/test a random-forests regressor model.
+"""
+extra-source "0.9.11.tar.gz" {
+  src: "https://github.com/imbs-hl/ranger/archive/0.9.11.tar.gz"
+  checksum: [
+    "sha256=8f37ece3ced9eeb86373199028a201b5d3bc2e27ebaffaf4f0075bc4b10a93ff"
+    "md5=cf770dfdde5ef250bfd561ef2b0758ee"
+  ]
+}
+url {
+  src: "https://github.com/UnixJunkie/oranger/archive/v3.0.1.tar.gz"
+  checksum: [
+    "sha256=08f0438914b020fc1efad7866a502e52790ce3f219bfc41c0e0098d26ee58f00"
+    "md5=c3bb07c862b2ce7db1ea90343240e347"
+  ]
+}

@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "GitLab plugin for OCurrent"
+description: """\
+OCurrent provides an OCaml eDSL for writing CI/CD pipelines.
+
+This package provides primitives for interacting with GitLab.
+It can monitor and clone remote GitLab repositories, and can
+push GitLab status messages to show the results of testing
+PRs and branches."""
+maintainer: "timmcgil@gmail.com"
+authors: "timmcgil@gmail.com"
+license: "Apache-2.0"
+homepage: "https://github.com/ocurrent/ocurrent"
+bug-reports: "https://github.com/ocurrent/ocurrent/issues"
+depends: [
+  "current" {= version}
+  "current_git" {= version}
+  "current_web" {= version}
+  "ocaml" {>= "4.08.0"}
+  "fmt" {>= "0.8.9"}
+  "lwt"
+  "yojson"
+  "cohttp-lwt-unix" {>= "4.0.0"}
+  "dune" {>= "2.9"}
+  "gitlab-unix" {>= "0.1.4" & < "0.1.8"}
+  "cmdliner" {>= "1.1.0"}
+  "logs" {>= "0.7.0"}
+  "ppx_deriving_yojson" {>= "3.6.1"}
+  "prometheus" {>= "0.7"}
+  "result" {>= "1.5"}
+  "rresult" {>= "0.6.0"}
+]
+conflicts: [
+  "conduit" {>= "6.2.0"} # Ptime is used implicitly somewhere through conduit
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/ocurrent/ocurrent.git"
+url {
+  src:
+    "https://github.com/ocurrent/ocurrent/releases/download/0.6.2/current-0.6.2.tbz"
+  checksum: [
+    "sha256=ed312cab4ce8d13b9547ee2f935a6954f1d5211de1c22d44d85baaeb9f5fca9d"
+    "sha512=c2981a2c7f05bd6f235662b74ee3a679cc395be3d2cca808fac3dc562d6307e8bfe05efff40f42fa4738443cc2fe13929bab9d815c43d741950e5e0e1e6da7a6"
+  ]
+}
+x-commit-hash: "64a208a9021803ddbe443f86d7cf84692450d710"

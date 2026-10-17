@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "GSL - Bindings to the GNU Scientific Library"
+description: """
+gsl-ocaml interfaces the GSL (GNU Scientific Library), providing many of the
+most frequently used functions for scientific computation including algorithms
+for optimization, differential equations, statistics, random number generation,
+linear algebra, etc."""
+maintainer: ["Markus Mottl <markus.mottl@gmail.com>"]
+authors: [
+  "Olivier Andrieu <oandrieu@gmail.com>"
+  "Markus Mottl <markus.mottl@gmail.com>"
+]
+license: "GPL-3.0-or-later"
+homepage: "https://mmottl.github.io/gsl-ocaml"
+doc: "https://mmottl.github.io/gsl-ocaml/api"
+bug-reports: "https://github.com/mmottl/gsl-ocaml/issues"
+depends: [
+  "dune" {>= "2.7"}
+  "ocaml" {>= "4.12"}
+  "dune-configurator"
+  "conf-gsl" {build}
+  "conf-pkg-config" {build}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+available: arch != "arm32"
+dev-repo: "git+https://github.com/mmottl/gsl-ocaml.git"
+url {
+  src:
+    "https://github.com/mmottl/gsl-ocaml/releases/download/1.25.0/gsl-1.25.0.tbz"
+  checksum: [
+    "sha256=814da56b515b8697820562652a59fde2e4cc9b99c861060ae49581ec72a597f8"
+    "sha512=db0253ae5583aaed2c322e336a399d5148bd799ee392e2393f3559c25c6327017f25e415694b69c7fdab7623fe8606c9cad3053e8a90d1141bfaca58da5ab1ea"
+  ]
+}
+x-commit-hash: "05f232208180de2f2c8aaa3504e2753992da36ec"

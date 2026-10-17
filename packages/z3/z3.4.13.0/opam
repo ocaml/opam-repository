@@ -1,0 +1,52 @@
+opam-version: "2.0"
+maintainer: "weng@cs.jhu.edu"
+authors: "MSR"
+homepage: "https://github.com/Z3prover/z3"
+bug-reports: "https://github.com/Z3prover/z3/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Z3prover/z3.git"
+depexts: [
+  ["python3-distutils"] {os-family = "debian"}
+]
+patches: [
+  "libatomic.patch"
+]
+build: [
+  [ "python3" "scripts/mk_make.py" "--ml" ]
+  [ make "-C" "build" "-j" jobs ]
+]
+
+install: [
+  [ "sh" "-c" "ocamlfind install z3 build/api/ml/* -dll build/libz3.*"]
+  [ "cp" "build/z3" "%{bin}%/z3"]
+]
+
+depends: [
+  "ocaml" {>= "4.08.0"}
+  "ocamlfind" {build}
+  "zarith"
+  "conf-gmp"
+  "conf-python-3" {build}
+  "conf-c++" {build}
+]
+x-ci-accept-failures: [
+  "centos-7" "oraclelinux-7" # C compiler is too old
+]
+conflicts: [
+  "ocaml-option-bytecode-only"
+]
+synopsis: "Z3 solver"
+url {
+  src:
+    "https://github.com/Z3Prover/z3/archive/refs/tags/z3-4.13.0.tar.gz"
+  checksum: [
+    "sha256=01bcc61c8362e37bb89fd2430f7e3385e86df7915019bd2ce45de9d9bd934502"
+    "sha512=8503787fe0b18592b5a131bcec2cacfa5f5096d76386a1c4fda7a836e472924b154433306d27600ff0d0758ddb710c965901fbfc2e5605919b624b9d4d1bc4fd"
+  ]
+}
+extra-source "libatomic.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/z3/libatomic.patch"
+  checksum:
+    "sha256=4c07050a7f437179fd349d0bd62c03d43844c0f7273fbe0dc35f77dda777d5e4"
+}

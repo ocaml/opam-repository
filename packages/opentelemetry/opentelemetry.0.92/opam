@@ -1,0 +1,52 @@
+opam-version: "2.0"
+synopsis:
+  "Core library for instrumentation and serialization for https://opentelemetry.io"
+maintainer: ["ocaml-tracing"]
+authors: ["ocaml-tracing" "ELLIOTTCABLE <opam@ell.io>" "the imandra team"]
+license: "MIT"
+tags: ["instrumentation" "tracing" "opentelemetry" "datadog" "jaeger"]
+homepage: "https://github.com/ocaml-tracing/ocaml-opentelemetry"
+bug-reports: "https://github.com/ocaml-tracing/ocaml-opentelemetry/issues"
+depends: [
+  "dune" {>= "3.11"}
+  "ocaml" {>= "4.14"}
+  "ptime"
+  "hmap"
+  "odoc" {with-doc}
+  "alcotest" {with-test}
+  "hegel" {with-test & >= "0.25.0"}
+  "pbrt" {>= "4.0" & < "5.0"}
+  "pbrt_yojson" {>= "4.0" & < "5.0"}
+  "ambient-context" {>= "0.2"}
+  "ocaml-lsp-server" {with-dev-setup}
+  "ocamlformat" {with-dev-setup & = "0.28.1"}
+  "mtime" {>= "1.4"}
+]
+depopts: ["atomic" "trace" "thread-local-storage" "lwt" "eio" "picos"]
+conflicts: [
+  "trace" {< "0.12"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-tracing/ocaml-opentelemetry.git"
+url {
+  src:
+    "https://github.com/ocaml-tracing/ocaml-opentelemetry/releases/download/v0.92/opentelemetry-0.92.tbz"
+  checksum: [
+    "sha256=b635c486d1333cbb7276cc0075d5e01b017d4b37bd5941377ee1be07dfa25a45"
+    "sha512=2a19bf4e371ed2751e018c734ead2fd130d378ef0e018cda7b4aa3048af3e0db771fbd78d936199b34164950454bce0f3cb6211455e3647f7b7a85f4649bb22c"
+  ]
+}
+x-commit-hash: "2f2e592c2b8e6433bddd98d3bcaaef6b6bf350c3"

@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "Oblivious HTTP (RFC 9458) clients, relays, and gateways over cohttp-eio"
+description: """
+The client, relay, and gateway of Oblivious HTTP as calls and server
+callbacks of cohttp-eio: fetching key configurations, sending requests through
+a relay, forwarding to a gateway, and serving key configurations and
+encapsulated requests, with the replay defences of the ohttp package.
+"""
+maintainer: ["Ville Vesilehto <ville@vesilehto.fi>"]
+authors: ["Ville Vesilehto <ville@vesilehto.fi>"]
+license: "ISC"
+tags: ["ohttp" "rfc9458" "oblivious http" "cohttp" "eio"]
+homepage: "https://github.com/thevilledev/ocaml-ohttp"
+bug-reports: "https://github.com/thevilledev/ocaml-ohttp/issues"
+dev-repo: "git+https://github.com/thevilledev/ocaml-ohttp.git"
+x-maintenance-intent: ["(latest)"]
+depends: [
+  "ocaml" {>= "5.1"}
+  "dune" {>= "3.12"}
+  "bhttp" {= version}
+  "ohttp" {= version}
+  "ohttp-cohttp" {= version}
+  "cohttp-eio" {>= "6.0.0"}
+  "eio" {>= "1.0"}
+  "http" {>= "6.0.0"}
+  "mirage-crypto-rng" {>= "2.4.0"}
+  "uri" {>= "4.0.0"}
+  "hpke" {with-test & >= "0.4.0"}
+  "eio_main" {with-test & >= "1.0"}
+  "cstruct" {with-test & >= "6.0.1"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
+]
+url {
+  src:
+    "https://github.com/thevilledev/ocaml-ohttp/archive/refs/tags/v0.1.2.tar.gz"
+  checksum: [
+    "md5=6a31dba01d9ee06d1b0115516439d8b0"
+    "sha512=c2739c32cf8d44b36ca565052f6b14feaf99a029115e8d94dcd469bd363f7dacd8e401a4ca07c0a3555f0fe5572a37516b489ddd945ee9acae4ceafc29e7dadb"
+  ]
+}

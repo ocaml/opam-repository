@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "The Coq Proof Assistant, XML protocol server"
+description: """
+Coq is a formal proof management system. It provides
+a formal language to write mathematical definitions, executable
+algorithms and theorems together with an environment for
+semi-interactive development of machine-checked proofs.
+
+This package provides the `coqidetop` language server, an
+implementation of Coq's [XML protocol](https://github.com/coq/coq/blob/master/dev/doc/xml-protocol.md)
+which allows clients, such as CoqIDE, to interact with Coq in a
+structured way."""
+maintainer: ["The Coq development team <coqdev@inria.fr>"]
+authors: ["The Coq development team, INRIA, CNRS, and contributors"]
+license: "LGPL-2.1-only"
+homepage: "https://coq.inria.fr/"
+doc: "https://coq.github.io/doc/"
+bug-reports: "https://github.com/coq/coq/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "coq-core" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/coq/coq.git"
+
+url {
+  src: "https://github.com/coq/coq/releases/download/V8.19.1/coq-8.19.1.tar.gz"
+  checksum: [
+    "md5=13d2793fc6413aac5168822313e4864e"
+    "sha512=ec8379df34ba6e72bcf0218c66fef248b0e4c5c436fb3f2d7dd83a2c5f349dd0874a67484fcf9c0df3e5d5937d7ae2b2a79274725595b4b0065a381f70769b42"
+  ]
+}

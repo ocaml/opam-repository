@@ -1,0 +1,80 @@
+opam-version: "2.0"
+maintainer: "Kate <kit.ty.kate@disroot.org>"
+authors: [
+  "whitequark <whitequark@whitequark.org>"
+  "The LLVM team"
+]
+license: "MIT"
+doc: "http://llvm.moe/ocaml-3.9"
+bug-reports: "http://llvm.org/bugs/"
+dev-repo: "git+http://llvm.org/git/llvm.git"
+homepage: "http://llvm.moe"
+patches: [
+  "D24354.diff"
+  "cmake.patch"
+]
+build: [
+  ["bash" "-ex" "build.sh" "%{conf-llvm:config}%" lib "%{conf-cmake:cmd}%"]
+  [make "-C" "build" "ocaml_all"]
+]
+install: [
+  [make "-C" "build/bindings/ocaml" "install/fast"]
+]
+remove: [
+  ["ocamlfind" "remove" "llvm"]
+  ["sh" "-c" "rm -f %{lib}%/META.llvm*"]
+]
+depends: [
+  "ocaml" {>= "4.00.0"}
+  "ctypes" {>= "0.4"}
+  "ounit" {with-test}
+  "ocamlfind" {build}
+  "conf-llvm" {build & = "3.9"}
+  "conf-python-2-7" {build}
+  "conf-cmake" {build}
+]
+conflicts: [
+  "base-nnp"
+  "ocaml-option-nnpchecker"
+]
+synopsis: "The OCaml bindings distributed with LLVM"
+description: "Note: LLVM should be installed first."
+url {
+  src: "http://llvm.org/releases/3.9.0/llvm-3.9.0.src.tar.xz"
+  checksum: [
+    "sha256=66c73179da42cee1386371641241f79ded250e117a79f571bbd69e56daa48948"
+    "md5=f2093e98060532449eb7d2fcfd0bc6c6"
+  ]
+}
+extra-source "link.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/link.patch.3.9"
+  checksum: [
+    "sha256=d2d80b2d5a5f0b4db5bb64ea8df37bf8c421de5233e2be538f930fece8e3de34"
+    "md5=e1e340d8961639259b05f89f2c051e06"
+  ]
+}
+extra-source "cmake.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/cmake.patch"
+  checksum: [
+    "sha256=954dd11404693aefbee167b44df8c5d84590807effbc56aa66baefb713f7d2f0"
+    "md5=010f659aec2d89ac723257f7d20d7962"
+  ]
+}
+extra-source "build.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/build.sh"
+  checksum: [
+    "sha256=28485bcfc5149a2f8cc56b716446e56e5400270df1e2edeaecd092a94d3f632c"
+    "md5=bc1b4d27f450d560e2ea0414fbae199a"
+  ]
+}
+extra-source "D24354.diff" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/llvm/D24354.diff"
+  checksum: [
+    "sha256=450ee68c5ed427303d9613c9f190926cb5ac4440ca1d7fac95e76886bc2cf6d3"
+    "md5=18a543093b274fdf57462c0b458f1b97"
+  ]
+}

@@ -1,0 +1,57 @@
+opam-version: "2.0"
+maintainer: "thierry.martinez@inria.fr"
+homepage: "https://www.python.org/download/releases/3.7"
+authors: "Python Software Foundation"
+license: "PSF-2.0"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+build: ["bash" "-ex" "configure.sh" "13"]  # test versions 3.7 to 3.13
+depends: [
+  "conf-bash" {build}
+]
+depexts: [
+  ["python3.7"]
+    {os-distribution = "ubuntu" & os-version < "20.04"}
+  ["python3"] {(os-family = "debian" | os-family = "ubuntu")
+    & !(os-distribution = "ubuntu" & os-version < "20.04")}
+  ["python3"] {os-distribution = "nixos"}
+  ["python3"] {os-distribution = "alpine"}
+  ["python37" "epel-release"] {os-distribution = "centos"}
+  ["python3"] {os-family = "fedora"}
+  ["python3"] {os-distribution = "ol" & os-version >= "9"}
+  ["python38"] {os-distribution = "ol" & os-version < "9"} # No python37 package
+  ["python"] {os-distribution = "arch"}
+  ["python3"] {os-family = "suse" | os-family = "opensuse"}
+  ["dev-lang/python:3.7"] {os-distribution = "gentoo"}
+  ["python3"] {os = "openbsd"}
+  ["lang/python37"] {os = "netbsd"}
+  ["lang/python3"] {os = "freebsd"}
+  ["python37"] {os-distribution = "macports" & os = "macos"}
+  ["python@3"] {os-distribution = "homebrew" & os = "macos"}
+  ["system:python3"] {os-distribution = "cygwinports"}
+  ["python3"] {os-distribution = "cygwin"}
+]
+x-ci-accept-failures: [
+  "opensuse-15.3" # python >=3.7 not packaged
+  "opensuse-15.5" # python >=3.7 not packaged
+  "opensuse-15.6" # python >=3.7 not packaged
+]
+synopsis: "Virtual package relying on Python >=3.7 installation"
+description: """
+This package can only install if a Python interpreter >=3.7 is available
+on the system.
+If a minor version needs to be specified for your operating system, then
+python-3.7 will be used.
+"""
+flags: conf
+extra-source "test.py" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-python-3-7.1/test.py"
+  checksum:
+    "sha512=a9d993b9380d636fc2aff8af6bae1078ad14a2af4e510b7c437d5f1e01cd125b7f12e15fb8f0e0c4536d2f7d6aa0d36aafdf2f9da828ac7686df6dc782fa1a23"
+}
+extra-source "configure.sh" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-python-3-7.1/configure.sh"
+  checksum:
+    "sha512=c75c692dac2be774bcc8549aa8665a6cd66a9e18de972dadcb56b4fd8bd8b8368d2af4a89174a56f33d96a79a39c8d57e6abf5a0f95c47d05ebd8d7fcb610799"
+}

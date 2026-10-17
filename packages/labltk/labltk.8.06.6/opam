@@ -1,0 +1,45 @@
+opam-version: "2.0"
+maintainer: "garrigue@math.nagoya-u.ac.jp"
+authors: ["Jacques Garrigue et al., Nagoya University"]
+homepage: "http://labltk.forge.ocamlcore.org/"
+bug-reports: "https://github.com/garrigue/labltk/issues"
+dev-repo: "git+https://github.com/garrigue/labltk.git"
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+patches: [ "auxlibs-in-META.patch" ]
+build: [
+  ["./configure" "-use-findlib" "-installbindir" bin]
+  [make "library" "opt"]
+]
+install: [
+  [make "install"]
+]
+remove: [["ocamlfind" "remove" "labltk"]]
+depends: [
+  "ocaml" {>= "4.07" & < "4.13"}
+  "ocamlfind" {build}
+  "conf-tcl"
+  "conf-tk"
+]
+x-ci-accept-failures: ["debian-unstable"]
+post-messages: [
+  "This package requires Tcl/Tk with its development packages installed on your system" {failure}
+]
+synopsis: "OCaml interface to Tcl/Tk"
+description: "ocamlbrowser is now a separate package.\n\
+             For details, see https://forge.ocamlcore.org/projects/labltk/"
+flags: light-uninstall
+url {
+  src: "https://github.com/garrigue/labltk/archive/8.06.6.tar.gz"
+  checksum: [
+    "sha256=7b2ea0aff417b87d2e6abedc13b0119d69a6b15266a8d7900a84edccc340ee60"
+    "md5=9afcf033a4d9f62430a3157f89349b67"
+  ]
+}
+extra-source "auxlibs-in-META.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/labltk/auxlibs-in-META.patch"
+  checksum: [
+    "sha256=4efa7667cb9bc21416020ea7e8bc9a0f5c462d791c3304220827258741f44962"
+    "md5=2b5bb4be9022b3f72633a395dca4b4a0"
+  ]
+}

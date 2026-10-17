@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer:   "simon.beaumont@citrix.com"
+homepage:     "https://github.com/simonjbeaumont/ocaml-sanlock"
+bug-reports:  "https://github.com/simonjbeaumont/ocaml-sanlock/issues"
+dev-repo: "git+https://github.com/simonjbeaumont/ocaml-sanlock.git"
+build: [
+  ["./configure"]
+  [make]
+]
+install: [make "install"]
+remove: [
+  ["ocamlfind" "remove" "sanlock"]
+  ["ocamlfind" "remove" "sanlock_bindings"]
+]
+depends: [
+  "ocaml" {>= "4.01.0" & < "4.13"}
+  "ctypes" {>= "0.4"}
+  "oasis" {build}
+  "ocamlfind" {build}
+]
+available: os = "linux"
+depexts: [
+  ["libsanlock-dev"] {os-family = "debian"}
+  ["sanlock-devel"] {os-distribution = "centos"}
+]
+post-messages: [
+  "This package requires libsanlock-dev to be installed on your system" {failure & (os = "debian")}
+  "This package requires libsanlock-dev to be installed on your system" {failure & (os = "ubuntu")}
+  "This package requires sanlock-devel to be installed on your system"  {failure & (os = "centos")}
+]
+synopsis: "Ctypes bindings to libsanlock for OCaml"
+authors: "Si Beaumont"
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/simonjbeaumont/ocaml-sanlock/archive/v0.0.9/ocaml-sanlock-v0.0.9.tar.gz"
+  checksum: [
+    "sha256=575e58dd20f865856a8a034cffcdd599ed115eb1056907e94faef8a778a2cff9"
+    "md5=712d5707256ac339bb2abb9f5b5f6eaf"
+  ]
+}

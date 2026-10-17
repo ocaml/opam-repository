@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "The OCaml graphics library"
+description: """
+The graphics library provides a set of portable drawing
+primitives. Drawing takes place in a separate window that is created
+when Graphics.open_graph is called.
+
+This library used to be distributed with OCaml up to OCaml 4.08.
+"""
+maintainer: ["david.allsopp@metastack.com" "xavier.leroy@college-de-france.fr"]
+authors: [
+  "Xavier Leroy" "Jun Furuse" "J-M Geffroy" "Jacob Navia" "Pierre Weis"
+]
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/ocaml/graphics"
+bug-reports: "https://github.com/ocaml/graphics/issues"
+x-maintenance-intent: ["(latest)"]
+depends: [
+  "dune" {>= "2.7"}
+  "dune-configurator"
+  "conf-libX11" {os != "win32"}
+  "conf-libXft" {os != "win32"}
+  "conf-pkg-config" {os != "win32"}
+  "ocaml" {>= "4.09.0~~"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml/graphics.git"
+url {
+  src:
+    "https://github.com/ocaml/graphics/archive/refs/tags/5.2.0.tar.gz"
+  checksum: [
+    "sha256=baa99f5316c26df0844ee68921f531e554aab7ea2a1c881f30bd8365309077b0"
+    "sha512=3a9a534b438aff86fd7ac83b394ae118e79538dcce7787e587039310b6e8fd9b352cadd54392c6190bbf8127e227bcefec1902c714ed2dc987a6e5694170b6b4"
+  ]
+}

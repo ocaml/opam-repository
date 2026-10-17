@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "hannes@mehnert.org"
+authors: [ "hannes@mehnert.org" ]
+homepage: "https://xenproject.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: [ "GPL-2.0-only" "LGPL-3.0-only" ]
+build: [
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"]
+]
+depexts: [
+  ["xen-dev"] {os-distribution = "alpine"}
+  ["libxen-dev"] {os-family = "debian"}
+  ["libxen-dev"] {os-family = "ubuntu"}
+  ["xen-devel"] {os-distribution = "centos"}
+  ["xen-devel"] {os-family = "fedora"}
+  ["xen-devel"] {os-distribution = "rhel"}
+  ["xen-devel"] {os-distribution = "ol"}
+  ["xen-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["xen-dom0-libs-devel" "xen-libs-devel"] {os = "xenserver"}
+  ["xenstore"] {os-distribution = "arch"}
+  ["xen-tools"] {os = "freebsd"}
+]
+available: os != "macos"
+synopsis:
+  "Virtual package relying on Xen headers"
+description: """
+This package can only install if the Xen headers are installed on the system."""
+flags: conf
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-xen/test.c"
+  checksum: [
+    "sha256=22e55b76c8be3d24b0d77ea7c373c3868ad93ce5e0a28aca5bad2c18ea2fc78a"
+    "md5=456d802e49f7bb2724292347d2d167d7"
+  ]
+}

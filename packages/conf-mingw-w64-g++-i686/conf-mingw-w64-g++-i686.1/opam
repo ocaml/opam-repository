@@ -1,0 +1,30 @@
+opam-version: "2.0"
+synopsis: "Virtual package for g++ on i686 mingw-w64 (32-bit x86)"
+description: "Ensures the i686 version of g++ for the mingw-w64 project is available"
+maintainer: "David Allsopp <dra27@dra27.uk>"
+authors: "The GCC Developers"
+license: "GPL-3.0-or-later"
+dev-repo: "git+https://github.com/dra27/mingw-w64-shims.git"
+homepage: "https://www.mingw-w64.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+available: os = "win32"
+build: [
+  ["i686-w64-mingw32-g++" "--version"]
+  ["sh" "./install-shim.sh" name "mingw64-i686-gcc-g++" bin] {os = "win32" & os-distribution = "cygwin" & mingw-w64-shims:installed}
+]
+depends: [
+  "msys2" {os = "win32" & os-distribution = "msys2"}
+  "msys2-mingw32" {os = "win32" & os-distribution = "msys2"}
+  "conf-mingw-w64-gcc-i686"
+]
+depopts: "mingw-w64-shims" {>= "1.0.0"}
+depexts: [
+  ["mingw64-i686-gcc-g++"] {os = "win32" & os-distribution = "cygwin"}
+]
+extra-source "install-shim.sh" {
+  src: "https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/install-shim.sh"
+  checksum: [
+    "sha256=9f99322c38b0889f5b1dafbb35ab31dc012ae98c4f98b0f740a89f943142d961"
+    "sha512=0b76a529454b00027b5768fa6ead1b8dda6bc3adab55f4288a702f4cc5d7b280be938cced6841b1556e8cf98f56ecc95b7b22006859d7a91f0ef852aea74e88c"
+  ]
+}

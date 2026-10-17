@@ -1,0 +1,55 @@
+opam-version: "2.0"
+synopsis: "Effortless Python bindings for OCaml modules"
+description: """
+Effortless Python bindings for OCaml modules
+"""
+maintainer: ["Thierry Martinez <thierry.martinez@inria.fr>"]
+authors: ["Thierry Martinez <thierry.martinez@inria.fr>"]
+license: "BSD-2-Clause"
+homepage: "https://github.com/thierry-martinez/ocaml-in-python"
+doc: "https://github.com/thierry-martinez/ocaml-in-python"
+bug-reports: "https://github.com/thierry-martinez/ocaml-in-python"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.13.0" & < "5.0"}
+  "ppxlib" {>= "0.23.0" & < "0.26.0"}
+  "metapp" {>= "0.4.3"}
+  "metaquot" {>= "0.5.1"}
+  "pyml" {>= "20220325"}
+  "conf-python-3-7"
+  "parmap" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/thierry-martinez/ocaml-in-python"
+substs: ["python3-command"]
+post-messages: "\
+You should register the \"ocaml\" package in your Python environment.
+There are two options:
+
+  (1) either you register the package with \"pip\" using the following
+      command:
+        pip install --editable \"%{lib}%/ocaml-in-python\"
+
+  (2) or you add the following definition to your environment:
+        export PYTHONPATH=\"%{share}%/python/:$PYTHONPATH\"
+" {success}
+url {
+  src: "https://github.com/thierry-martinez/ocaml-in-python/releases/download/v0.1.0/ocaml-in-python-0.1.0.tar.gz"
+  checksum: "sha512=9ba2ad109ce83a758dd949fc40be8e866adb5aebf3b2009a04c4d93ea40f48ca71b8d6f8cd4e80a2bf52ca36fab6561f28e273d412cf8c235837063924f26eff"
+}

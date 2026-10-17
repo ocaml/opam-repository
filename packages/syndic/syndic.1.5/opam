@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "Romain Calascibetta <romain.calascibetta@gmail.com>"
+authors: ["Romain Calascibetta" "Christophe Troestler"]
+homepage: "https://github.com/Cumulus/Syndic"
+bug-reports: "https://github.com/Cumulus/Syndic/issues"
+license: "MIT"
+dev-repo: "git+https://github.com/Cumulus/Syndic.git"
+build: [
+  ["./configure" "--prefix=%{prefix}%"]
+  [make]
+  ["./configure" "--enable-tests" "--prefix=%{prefix}%"] {with-test}
+  [make "test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocamlfind" "remove" "syndic"]
+depends: [
+  "ocaml" {>= "4.01" & < "5.0"}
+  "ssl" {with-test}
+  "tls" {with-test & < "1.0.0"}
+  "cohttp" {<"0.99.0" & with-test}
+  "lwt" {with-test}
+  "ocamlfind" {build}
+  "oasis" {build}
+  "uri" {>= "1.9"}
+  "xmlm" {>= "1.2.0"}
+  "ptime"
+]
+synopsis: "RSS1, RSS2, Atom and OPML1 parsing"
+description: """
+Pure OCaml Library for parsing and writing various types of feeds and
+subscriber lists."""
+flags: light-uninstall
+url {
+  src: "https://github.com/Cumulus/Syndic/archive/1.5.tar.gz"
+  checksum: [
+    "sha256=8ab7cd1c063f315b678801819b8d1a56cb1fb073dfd047e174f6f7cc68d4c408"
+    "md5=59c8a3cc5307c2c1b98f1bc2b92e09a0"
+  ]
+}

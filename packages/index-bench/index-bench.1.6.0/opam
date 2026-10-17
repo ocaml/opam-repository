@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Index benchmarking suite"
+maintainer: "Clement Pascutto"
+authors: ["Clement Pascutto" "Thomas Gazagnaire" "Ioana Cristescu"]
+license: "MIT"
+homepage: "https://github.com/mirage/index"
+bug-reports: "https://github.com/mirage/index/issues"
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "cmdliner"
+  "cmdliner" {with-test & < "1.1.0"}
+  "dune" {>= "2.7.0"}
+  "fmt"
+  "index" {= version}
+  "metrics"
+  "metrics-unix"
+  "ppx_deriving_yojson"
+  "re" {>= "1.9.0"}
+  "stdlib-shims"
+  "yojson"
+  "ppx_repr"
+  "mtime"
+  "logs" {>= "0.7.0"}
+  "progress" {>= "0.2.1"}
+  "tezos-base58" {>= "1.0.0" & with-test}
+  "digestif" {>= "0.7" & with-test}
+  "optint" {>= "0.1.0" & with-test}
+  "repr" {>= "0.2.1" & with-test}
+  "rusage" {>= "1.0.0" & with-test}
+]
+conflicts: [
+  "result" {< "1.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/index.git"
+url {
+  src:
+    "https://github.com/mirage/index/releases/download/1.6.0/index-1.6.0.tbz"
+  checksum: [
+    "sha256=5e0c1f6cbd6e485cbbf2344c8f76de8a7869155355ae6edd5550c88da0661594"
+    "sha512=613fa206d1124b34259421f4ea978ce4e9404d78af3a687c1e406d88a5d481bd51465fafae58da9eb3e6a0b5408118b8a7dfe1fbb05ce8fed4b8b0a572beb99b"
+  ]
+}
+x-commit-hash: "c05846f784a3f4db11f1d113fc5a2c1fa8b743c6"

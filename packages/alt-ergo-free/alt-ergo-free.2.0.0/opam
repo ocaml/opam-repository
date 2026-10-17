@@ -1,0 +1,101 @@
+opam-version: "2.0"
+
+maintainer: "alt-ergo@ocamlpro.com"
+authors: "Alt-Ergo developers"
+license: "Apache-2.0"
+homepage: "http://alt-ergo.ocamlpro.com/"
+dev-repo: "git+https://github.com/OCamlPro/alt-ergo.git"
+bug-reports: "https://github.com/OCamlPro/alt-ergo/issues"
+
+build:
+[
+        ["autoconf"]
+        ["./configure" "-prefix" "%{prefix}%"]
+	[make]
+]
+
+install:
+[
+	[make "install" "MANDIR=%{man}%"]
+]
+
+remove: [
+        ["autoconf"]
+        ["./configure" "-prefix" "%{prefix}%"]
+	[make "uninstall" "MANDIR=%{man}%"]
+]
+
+depends: [
+  "ocaml" {>= "4.04.0"}
+  "num"
+  "zarith" {>= "1.4"}
+  "camlzip" {< "1.08"}
+  "ocplib-simplex" {>= "0.4" & < "0.5"}
+  "menhir" {< "20211215"}
+  "conf-autoconf" {build}
+]
+depopts: [
+        "lablgtk"
+        "conf-gtksourceview"
+]
+
+conflicts: [
+	"alt-ergo"
+	"altgr-ergo"
+	"satML-plugin"
+	"profiler-plugin"
+	"fm-simplex-plugin"
+]
+
+patches:[
+  "makefile.user_replace_echo_by_printf.patch"
+  "patch_for_changes_in_num_library.patch"
+]
+available: [ arch != "arm32" ]
+synopsis: "Alt-Ergo, an SMT Solver for Software Verification"
+description: """
+Alt-Ergo is an automatic prover of mathematical formulas used behind software verification tools such as Frama-C, SPARK, Why3, Atelier-B and Caveat.
+
+Usage of the command-line:
+
+```alt-ergo [options] <file.why>```
+
+Usage of the GUI:
+
+```altgr-ergo [options] <file.why>```
+
+Usage of the satML plugin; an alternative SAT solver based on miniSAT:
+
+```alt-ergo -sat-plugin satML-plugin.cmxs [other-options] <file.why>```
+
+Usage of the FM-Simplex plugin, an alternative to Fourier-Motzkin algorithm for linear integer arithmetic
+
+```alt-ergo -inequalities-plugin fm-simplex-plugin.cmxs [other-options] <file.why>```
+
+Usage of the command-line with FPA reasoning:
+
+```alt-ergo -use-fpa -prelude fpa-theory-2017-01-04-16h00.why [other-options] <file.why>```"""
+url {
+  src:
+    "https://alt-ergo.ocamlpro.com/http/alt-ergo-free-2.0.0/alt-ergo-free-2.0.0.tar.gz"
+  checksum: [
+    "sha256=bb90bd62a971340c1854d24a8a650403722b4f71d2afcce797bc53e76417cd4b"
+    "md5=e390c96bcac7c54a5949ad36611412ef"
+  ]
+}
+extra-source "patch_for_changes_in_num_library.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/alt-ergo-free/patch_for_changes_in_num_library.patch"
+  checksum: [
+    "sha256=a4ef9e003b0a14478df1d3e5d50035557d41e788be3e00961fc3a91178efe4ac"
+    "md5=ebb6d9ec5f99895f2b2b32dfbe56b9d3"
+  ]
+}
+extra-source "makefile.user_replace_echo_by_printf.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/alt-ergo-free/makefile.user_replace_echo_by_printf.patch"
+  checksum: [
+    "sha256=3221500ff3e9196325ba729521f13bfcbdec5fcc5297e9e3b9654b26f26850ca"
+    "md5=e2243201666098c1c2fc8a844ff53266"
+  ]
+}

@@ -1,0 +1,57 @@
+opam-version: "2.0"
+maintainer: "Nikolay Khachatryan <i20.khachatryan.nikolay@etud.ufar.am>"
+homepage: "https://github.com/coin-or/Csdp"
+dev-repo: "git+https://github.com/coin-or/Csdp.git"
+doc: "https://github.com/coin-or/Csdp/blob/master/doc/csdpuser.pdf"
+license: "EPL-2.0"
+bug-reports: "https://github.com/coin-or/Csdp/issues"
+
+synopsis: "Solver for semidefinite programming problems"
+description: """
+CSDP is a library of routines that implements a predictor corrector variant of
+the semidefinite programming algorithm. It is written in C for efficiency and runs
+in parallel on shared memory multi-processor systems.
+See also the conf-csdp opam package (for distributions that provide csdp)
+"""
+authors: [
+  "Brian Borchers <borchers@nmt.edu>"
+  "Joseph Young <josyoun@nmt.edu>"
+  "Aaron Wilson  <wilson@nmt.edu>"
+]
+depends: [
+  "conf-gcc"
+  "conf-lapack"
+  "conf-openblas" {os != "macos"}
+]
+depexts: [
+  ["libomp"] {os = "macos" & os-distribution = "homebrew"}
+]
+build: [
+  # Add stdio.h (missing in 6.2.0 git tag)
+  # cf. https://github.com/coin-or/Csdp/blob/0dcf187a159c365b6d4e4e0ed5849f7b706da408/lib/user_exit.c#L16
+  ["sed" "-e" "16i\\\n#include <stdio.h>" "-i.bak" "lib/user_exit.c"]
+  # Use openblas (which seems available on most distributions), and remove -static
+  ["sed" "-e" "/export LIBS=/s/-lblas/-lopenblas/" "-e" "/export LIBS=/s/-static//" "-i.bak" "Makefile"]
+  # Remove -ansi to avoid "error: unknown type name 'inline'" on freebsd and macos
+  ["sed" "-e" "/export CFLAGS=/s/-ansi//" "-i.bak" "Makefile"] {os = "freebsd" | os = "macos"}
+  # Use homebrew's libomp to avoid "error: unsupported option '-fopenmp'" on macos
+  # https://github.com/Macaulay2/homebrew-tap/blob/main/Formula/csdp.rb
+  ["sed" "-e" "/export CFLAGS=/s|-fopenmp|-Xpreprocessor -fopenmp -I/opt/homebrew/opt/libomp/include -I/usr/local/opt/libomp/include|" "-e" "/export LIBS=/s|-lopenblas|-L/opt/homebrew/opt/libomp/lib -L/usr/local/opt/libomp/lib -lomp -framework Accelerate|" "-i.bak" "Makefile"] {os = "macos" & os-distribution = "homebrew"}
+  ["sed" "-e" "/export CFLAGS=/s|-fopenmp|-fopenmp -I/usr/local/include|" "-e" "/export LIBS=/s|-lsdp|-lsdp -L/usr/local/lib|" "-i.bak" "Makefile"] {os = "freebsd"}
+  # Remove -m64 (not portable and unneeded on amd64 given -march=native)
+  ["sed" "-e" "/export CFLAGS=/s/-m64//" "-i.bak" "Makefile"]
+  # Use -mcpu=native for PowerPC, cf. https://github.com/mfem/mfem/pull/219
+  ["sed" "-e" "/export CFLAGS=/s/-march=native/-mcpu=native/" "-i.bak" "Makefile"] {arch = "ppc64"}
+  [make]
+  [make "unitTest"] {with-test}
+]
+url {
+  src: "https://github.com/coin-or/Csdp/archive/refs/tags/releases/6.2.0.tar.gz"
+  checksum: "sha256=3d341974af1f8ed70e1a37cc896e7ae4a513375875e5b46db8e8f38b7680b32f"
+}
+extra-source "csdp.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/csdp/csdp.install"
+  checksum:
+    "sha256=3ea2f5d480e233c10d690e6dbe90245ce1788e34cb71a2c188548653bd3df068"
+}

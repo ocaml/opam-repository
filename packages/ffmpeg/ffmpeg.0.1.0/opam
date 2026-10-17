@@ -1,0 +1,28 @@
+opam-version: "2.0"
+maintainer: "smimram@gmail.com"
+build: [
+  ["./configure" "--prefix" prefix]
+  [make]
+]
+remove: [["ocamlfind" "remove" "ffmpeg"]]
+depends: [
+  "ocaml" {< "5.0"}
+  "ocamlfind" {build}
+  "conf-pkg-config" {build}
+]
+depexts: [
+  ["libavutil-dev" "libswscale-dev"] {os-family = "debian"}
+]
+install: [make "install"]
+x-ci-accept-failures: ["debian-unstable"]
+synopsis:
+  "Bindings for the ffmpeg library which provides functions for decoding audio and video files"
+flags: light-uninstall
+url {
+  src:
+    "http://downloads.sourceforge.net/project/savonet/ocaml-ffmpeg/0.1.0/ocaml-ffmpeg-0.1.0.tar.gz"
+  checksum: [
+    "sha256=d1a24dc1e0ab2daa5baf307c91ede6691ef5c322d10f6ab0cbd5a4fa1b140848"
+    "md5=70d6f838d357ff02f8209655bafd3575"
+  ]
+}

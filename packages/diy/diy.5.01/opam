@@ -1,0 +1,42 @@
+opam-version: "2.0"
+maintainer: "Thibault Suzanne <thi.suzanne@gmail.com>"
+authors: "Luc Maranget <Luc.Maranget@inria.fr>, Susmit Sarkar <ss265@st-andrews.ac.uk>, Jade Alglave <j.alglave@ucl.ac.uk >"
+homepage: "http://diy.inria.fr/"
+dev-repo: "git+https://github.com/herd/herdtools7.git"
+bug-reports: "https://github.com/herd/herdtools7/issues"
+license: "LGPL-2.0-or-later"
+build: [
+  ["sed" "-i" "-e" "s#^PREFIX=.*$#PREFIX=%{prefix}%#" "Makefile"]
+  [make "-j" jobs]
+]
+install: [make "install"]
+remove: [
+  ["rm" "-f" "%{prefix}%/bin/litmus"]
+  ["rm" "-f" "%{prefix}%/bin/diy"]
+  ["rm" "-f" "%{prefix}%/bin/diyone"]
+  ["rm" "-f" "%{prefix}%/bin/diycross"]
+  ["rm" "-f" "%{prefix}%/bin/readRelax"]
+  ["rm" "-f" "%{prefix}%/bin/mcycles"]
+  ["rm" "-f" "%{prefix}%/bin/classify"]
+  ["rm" "-f" "%{prefix}%/bin/dont"]
+  ["rm" "-fr" "%{prefix}%/lib/litmus"]
+]
+depends: [
+  "ocaml" {>= "3.12" & < "5.0"}
+  "ocamlbuild" {build}
+]
+synopsis: "Tool suite for testing shared memory models"
+description: """
+`(don't) diy` is a tool suite: `litmus` runs assembly tests against
+hardware, `diy` proper generates assembly tests from concise
+specifications, and `don't` automatically either checks the
+conformance of a machine to a given model, or explores the features
+exhibited by a machine."""
+flags: light-uninstall
+url {
+  src: "http://diy.inria.fr/sources/old/diy-5.01.tar.gz"
+  checksum: [
+    "sha256=36d7de769da2d33658056e8c9bfb7ad2616a9e5256472cd1db8296f9b875d703"
+    "md5=0aac7ad1013b0e15ac595d86b1d130cb"
+  ]
+}

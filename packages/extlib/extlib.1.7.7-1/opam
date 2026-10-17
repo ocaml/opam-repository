@@ -1,0 +1,74 @@
+opam-version: "2.0"
+maintainer: "ygrek@autistici.org"
+homepage: "https://github.com/ygrek/ocaml-extlib"
+dev-repo: "git+https://github.com/ygrek/ocaml-extlib.git"
+bug-reports: "https://github.com/ygrek/ocaml-extlib/issues"
+doc: ["https://ygrek.org/p/extlib/doc/"]
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+authors: [
+  "Nicolas Cannasse"
+  "Brian Hurt"
+  "Yamagata Yoriyuki"
+  "Markus Mottl"
+  "Jesse Guardiani"
+  "John Skaller"
+  "Bardur Arantsson"
+  "Janne Hellsten"
+  "Richard W.M. Jones"
+  "ygrek"
+  "Gabriel Scherer"
+  "Pietro Abate"
+]
+patches: [
+  "0001-Add-support-for-OCaml-4.12.patch"
+  "0002-caml_hash_univ_param-was-removed-for-OCaml-pre-4.00-.patch"
+]
+build: [
+  [make "minimal=1" "build"]
+  [make "minimal=1" "test"] {with-test}
+  [make "minimal=1" "doc"] {with-doc}
+]
+install: [ [make "minimal=1" "install"] ]
+depends: [
+  "ocaml" {< "5.0"}
+  "ocamlfind" {build}
+  "cppo" {build}
+  "base-bytes" {build}
+]
+synopsis:
+  "A complete yet small extension for OCaml standard library (reduced, recommended)"
+description: """
+The purpose of this library is to add new functions to OCaml standard library
+modules, to modify some functions in order to get better performances or
+safety (tail-recursive) and also to provide new modules which should be useful
+for day to day programming.
+
+Current goal is to maintain compatibility, new software is encouraged to not use extlib since stdlib
+is now seeing many additions and improvements which make many parts of extlib obsolete.
+For tail-recursion safety consider using other libraries e.g. containers.
+"""
+url {
+  src: "https://ygrek.org/p/release/ocaml-extlib/extlib-1.7.7.tar.gz"
+  checksum: [
+    "md5=2c620993aecd4b31b3a362b21b55dd94"
+    "sha256=4183abeca72efefc2513a440706c0e6e56d4676f60ae89a4306f8e5e03fbb5eb"
+    "sha512=4f3d6f5bc29c43254ad9f927213fca4afb8a74afbfbaca01ae7e540ea4509f2583aeedd91da8d5252843dd0998093e6e02801a4e95a70a04c6f7229b2b817bf3"
+  ]
+  mirrors: "https://github.com/ygrek/ocaml-extlib/releases/download/1.7.7/extlib-1.7.7.tar.gz"
+}
+extra-source "0002-caml_hash_univ_param-was-removed-for-OCaml-pre-4.00-.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/extlib/0002-caml_hash_univ_param-was-removed-for-OCaml-pre-4.00-.patch"
+  checksum: [
+    "sha256=b5dfac4ce75fe7d39e8771cb1f73548a9c7782e1a72899c3a37dc81a550c1d0f"
+    "md5=4c3d4a6b1f66f4d913aef808c0ebc96b"
+  ]
+}
+extra-source "0001-Add-support-for-OCaml-4.12.patch" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/extlib/0001-Add-support-for-OCaml-4.12.patch"
+  checksum: [
+    "sha256=4c62a5746a51a555c55b05cc3e538d9864d725556d11bbf23427d06cd41a78b6"
+    "md5=816012e35353d76872ca56743d9fc71a"
+  ]
+}

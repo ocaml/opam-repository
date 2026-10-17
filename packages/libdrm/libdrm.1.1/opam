@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings for libdrm"
+description: "Allows configuring displays and using GPU devices"
+maintainer: ["Thomas Leonard"]
+authors: ["Thomas Leonard"]
+license: "ISC"
+homepage: "https://github.com/talex5/libdrm-ocaml"
+doc: "https://talex5.github.io/libdrm-ocaml/"
+bug-reports: "https://github.com/talex5/libdrm-ocaml/issues"
+depends: [
+  "dune" {>= "3.18"}
+  "ocaml" {>= "5.3.0"}
+  "ctypes" {>= "0.23.0"}
+  "ctypes-foreign" {>= "0.23.0"}
+  "fmt" {>= "0.8.9"}
+  "conf-libdrm"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/talex5/libdrm-ocaml.git"
+x-maintenance-intent: ["(latest)"]
+available: [ os = "linux" & arch != "arm32" & arch != "x86_32" ]
+x-ci-accept-failures: [ "ubuntu-22.04" ]
+url {
+  src:
+    "https://github.com/talex5/libdrm-ocaml/releases/download/v1.1/libdrm-1.1.tbz"
+  checksum: [
+    "sha256=14033fead1ca847859c5ab3ff0bc078afcaab8e5b52fd7dc039f776ba4ab44fd"
+    "sha512=19915415604c822f988c81f022217e7e8c0ad2f73dac8f39b24ad16c07445b9ab6c78fedc97d1fefedc65acc29371430bec095a55d2b7a999461cf2542226449"
+  ]
+}
+x-commit-hash: "544346b60de99f60a16f0f7b35e16f250839f073"

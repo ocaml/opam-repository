@@ -1,0 +1,60 @@
+opam-version: "2.0"
+maintainer: "Thierry Martinez <martinez@nsup.org>"
+authors: "The LLVM team"
+homepage: "http://llvm.org"
+bug-reports: "https://llvm.org/bugs/"
+license: "MIT"
+build-env: [
+  [HOMEBREW_NO_AUTO_UPDATE = "1"]
+]
+build: [
+  ["bash" "-ex" "configure.sh" version] # pass pkg var '21' to test <= 21.0.x
+]
+depends: [
+  "conf-bash" {build}
+]
+depexts: [
+  ["llvm@21"] {os-distribution = "homebrew" & os = "macos"}
+  ["llvm-21"] {os-distribution = "macports" & os = "macos"}
+  ["llvm" "clang"] {os-distribution = "arch"} #currently llvm is 21.1.6-1 https://archlinux.org/packages/extra/x86_64/llvm/
+  # Ubuntu
+  ["libclang-dev" "libclang-cpp-dev" "llvm-dev"]         {os-distribution = "ubuntu" & os-version > "22.10"}
+  ["libclang-15-dev" "libclang-cpp15-dev" "llvm-15-dev"] {os-distribution = "ubuntu" & os-version = "22.10"}
+  ["libclang-14-dev" "libclang-cpp14-dev" "llvm-14-dev"] {os-distribution = "ubuntu" & os-version = "22.04"}
+  # Debian
+  ["libclang-dev" "libclang-cpp-dev" "llvm-dev"]         {os-distribution = "debian" & os-version > "12"}
+  ["libclang-14-dev" "libclang-cpp14-dev" "llvm-14-dev"] {os-distribution = "debian" & os-version = "12"}
+  ["libclang-dev" "libclang-cpp-dev" "llvm-dev"]         {os-distribution = "debian" & os-version = "11"}
+  # Derivatives or older versions
+  ["libclang-dev" "llvm-dev"] {
+     (os-family = "debian" | os-family = "ubuntu") &
+     !(os-distribution = "debian" & os-version >= "11") &
+      !(os-distribution = "ubuntu" & os-version >= "22.04")}
+  # Alpine
+  ["clang21-dev" "llvm21-dev" "clang21-static"] {os-distribution = "alpine" & os-version > "3.23"}
+  ["clang20-dev" "llvm20-dev" "clang20-static"] {os-distribution = "alpine" & os-version >= "3.22" & os-version < "3.23"}
+  ["clang-dev" "llvm-dev" "clang-static"] {os-distribution = "alpine" & os-version < "3.22"}
+  ["clang-devel" "llvm-devel" "zlib-devel" "llvm-static"] {os-distribution = "centos"}
+  ["clang-devel" "llvm-devel" "zlib-devel" "redhat-rpm-config"] {os-family = "fedora"}
+  ["clang-devel" "llvm-devel" "zlib-devel" "llvm-static"] {os-distribution = "ol" & os-version >= "8"}
+  ["clang-devel" "llvm-devel" "zlib-devel"] {os-family = "suse"}
+  ["clang-devel" "llvm-devel" "zlib-ng-compat-devel"] {os-family = "opensuse"}
+  ["devel/llvm21"] {os = "freebsd"}
+  ["sys-devel/clang"] {os-distribution = "gentoo"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7" # clang-devel is not available
+  "alpine-3.13" # unavailable system package 'llvm-dev'
+  "alpine-3.14" # unavailable system package 'llvm-dev'
+  "alpine-3.15" # unavailable system package 'llvm-dev'
+  "alpine-3.16" # unavailable system package 'llvm-dev'
+  "opensuse-15.3" # unavailable system package 'llvm-clang-devel'
+]
+synopsis: "Virtual package relying on the installation of llvm and clang libraries (<= 21.0.x)"
+flags: conf
+extra-source "configure.sh" {
+  src:
+    "https://github.com/ocaml/opam-source-archives/raw/refs/heads/main/patches/conf-libclang/configure-generic.sh.1"
+  checksum:
+    "sha512=e33c39519a809689d9fd2ef61d174668e3cbeaa04e3188c7363d2c0844497624a137c60b0cb4674e07807b57831781a30b72242d9a672918d5c827bf24ff9ea4"
+}

@@ -1,0 +1,34 @@
+x-ci-accept-failures: ["centos-7" "oraclelinux-7"]
+opam-version: "2.0"
+synopsis: """\
+UNIX version of BLS12-381 primitives implementing the virtual package
+bls12-381 with blst backend"""
+maintainer: "Danny Willems <be.danny.willems@gmail.com>"
+authors: "Danny Willems <be.danny.willems@gmail.com>"
+license: "MIT"
+homepage: "https://gitlab.com/dannywillems/ocaml-bls12-381"
+bug-reports: "https://gitlab.com/dannywillems/ocaml-bls12-381/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "dune" {>= "2.8.4"}
+  "dune-configurator" {build}
+  "zarith" {>= "1.10" & < "2.0"}
+  "bls12-381" {= version}
+  "hex"
+  "alcotest" {with-test}
+  "integers"
+  "bisect_ppx" {with-test & >= "2.5"}
+  "ff-pbt" {>= "0.6.0" & < "0.7.0" & with-test}
+]
+available: arch != "ppc64" & arch != "arm32" & arch != "x86_32"
+build: ["dune" "build" "-j" jobs "-p" name "@install"]
+run-test: ["dune" "runtest" "-p" name "-j" jobs] { ocaml:version < "5.0.0" }
+dev-repo: "git+https://gitlab.com/dannywillems/ocaml-bls12-381.git"
+url {
+  src:
+    "https://gitlab.com/dannywillems/ocaml-bls12-381/-/archive/2.0.0/ocaml-bls12-381-2.0.0.tar.bz2"
+  checksum: [
+    "md5=d1517198f5fd0d02fe0bf0f620880320"
+    "sha512=1408455cf390aa7c52a2ddc52d0c33ea04cc17096ec8f6a679595e17646b0e7f4a29f2ce720aedeaba0e545f6ea391d438d56a7f66417f94044db87afefa9dc2"
+  ]
+}

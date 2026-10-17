@@ -1,0 +1,59 @@
+opam-version: "2.0"
+synopsis: "Software construction and deployment kit"
+description: """\
+WARNING this package is unstable and work in progress, do not depend on it.
+
+b0 describes software construction and deployments using modular and
+customizable definitions written in OCaml.
+
+At the core of b0 is the `b0.memo` library which provides arbitrary
+build abstraction with reliable, efficient incremental rebuilds.
+
+b0 is distributed under the ISC license. It depends on [cmdliner][cmdliner].
+
+[cmdliner]: https://erratique.ch/software/cmdliner"""
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: "The b0 programmers"
+license: ["ISC" "BSD-2-Clause"]
+tags: ["dev" "org:erratique" "org:b0-system" "build"]
+homepage: "https://erratique.ch/software/b0"
+doc: "https://erratique.ch/software/b0/doc"
+bug-reports: "https://github.com/b0-system/b0/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "1.1.0"}
+  "cmdliner" {>= "2.0.0"}
+]
+conflicts: ["ocaml-option-bytecode-only"]
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--dev-pkg" "%{dev}%"]
+  [
+    "cmdliner"
+    "install"
+    "tool-support"
+    "--update-opam-install=%{_:name}%.install"
+    "_build/src/tool/b0_tool_main_run.native:b0" {ocaml:native}
+    "_build/src/tool/b0_tool_main_run.byte:b0" {!ocaml:native}
+    "_build/src/lowtools/show_url.native:show-url" {ocaml:native}
+    "_build/src/lowtools/show_url.byte:show-url" {!ocaml:native}
+    "_build/src/lowtools/b0_cache_tool.native:b0-cache" {ocaml:native}
+    "_build/src/lowtools/b0_cache_tool.byte:b0-cache" {!ocaml:native}
+    "_build/src/lowtools/b0_hash_tool.native:b0-hash" {ocaml:native}
+    "_build/src/lowtools/b0_hash_tool.byte:b0-hash" {!ocaml:native}
+    "_build/src/lowtools/b0_log_tool.native:b0-log" {ocaml:native}
+    "_build/src/lowtools/b0_log_tool.byte:b0-log" {!ocaml:native}
+    "_build/src/lowtools/b0_sttyle.native:b0-sttyle" {ocaml:native}
+    "_build/src/lowtools/b0_sttyle.byte:b0-sttyle" {!ocaml:native}
+    "_build/cmdliner-install"
+  ]
+]
+build-env: CAML_LD_LIBRARY_PATH += "_build/src/std"
+dev-repo: "git+https://erratique.ch/repos/b0.git"
+url {
+  src: "https://erratique.ch/software/b0/releases/b0-0.0.6.tbz"
+  checksum:
+    "sha512=e9aa779e66c08fc763019f16d4706f465d16c05d6400b58fbd0313317ef33ddea51952e2b058db28e65f7ddb7012f328c8bf02d8f1da17bb543348541a2587f0"
+}
+x-maintenance-intent: ["(latest)"]

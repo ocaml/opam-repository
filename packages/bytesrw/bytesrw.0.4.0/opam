@@ -1,0 +1,118 @@
+opam-version: "2.0"
+synopsis: "Composable byte stream readers and writers for OCaml"
+description: """\
+Bytesrw extends the OCaml `Bytes` module with composable, memory
+efficient, byte stream readers and writers compatible with effect
+based concurrency.
+
+Except for byte slice life-times, these abstractions intentionally
+separate away resource management and the specifics of reading and
+writing bytes.
+
+Bytesrw distributed under the ISC license. It has no dependencies.
+
+Optional support for compressed, hashed and encrypted bytes depend, at
+your wish, on the C [`zlib`], [`libzstd`], [`blake3`], [`libmd`],
+[`xxhash`] and  [`mbedtls`] libraries.
+
+[`blake3`]: https://blake3.io
+[`libzstd`]: http://zstd.net
+[`libmd`]: https://www.hadrons.org/software/libmd/
+[`xxhash`]: https://xxhash.com/
+[`zlib`]: https://zlib.net
+[`mbedtls`]: https://www.trustedfirmware.org/projects/mbed-tls
+
+Homepage: <https://erratique.ch/software/bytesrw/>"""
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: "The bytesrw programmers"
+license: "ISC"
+tags: [
+  "bytes"
+  "entropy"
+  "streaming"
+  "zstd"
+  "zlib"
+  "gzip"
+  "deflate"
+  "random"
+  "csprng"
+  "sha1"
+  "sha2"
+  "compression"
+  "hashing"
+  "utf"
+  "xxhash"
+  "blake3"
+  "psa"
+  "tls"
+  "websocket"
+  "cryptography"
+  "sha3"
+  "org:erratique"
+]
+homepage: "https://erratique.ch/software/bytesrw"
+doc: "https://erratique.ch/software/bytesrw/doc"
+bug-reports: "https://github.com/dbuenzli/bytesrw/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "1.1.1"}
+  "conf-pkg-config" {build}
+]
+depopts: [
+  "conf-mbedtls"
+  "conf-xxhash"
+  "conf-zlib"
+  "conf-zstd"
+  "conf-libmd"
+  "conf-libblake3"
+  "cmdliner"
+  "b0"
+]
+conflicts: [
+  "conf-zstd" {< "1.3.8"}
+  "cmdliner" {< "2.0.0"}
+  "b0" {< "0.0.7"}
+]
+build: [
+  [
+    "ocaml"
+    "pkg/pkg.ml"
+    "build"
+    "--dev-pkg"
+    "%{dev}%"
+    "--with-cmdliner"
+    "%{cmdliner:installed}%"
+    "--with-b0"
+    "%{b0:installed}%"
+    "--with-conf-libblake3"
+    "%{conf-libblake3:installed}%"
+    "--with-conf-mbedtls"
+    "%{conf-mbedtls:installed}%"
+    "--with-conf-libmd"
+    "%{conf-libmd:installed}%"
+    "--with-conf-xxhash"
+    "%{conf-xxhash:installed}%"
+    "--with-conf-zlib"
+    "%{conf-zlib:installed}%"
+    "--with-conf-zstd"
+    "%{conf-zstd:installed}%"
+  ]
+  [
+    "cmdliner"
+    "install"
+    "tool-support"
+    "--update-opam-install=%{_:name}%.install"
+    "_build/test/certown.native:certown" {ocaml:native}
+    "_build/test/certown.byte:certown" {!ocaml:native}
+    "_build/cmdliner-install"
+  ] {cmdliner:installed & b0:installed & conf-mbedtls:installed}
+]
+dev-repo: "git+https://erratique.ch/repos/bytesrw.git"
+url {
+  src: "https://erratique.ch/software/bytesrw/releases/bytesrw-0.4.0.tbz"
+  checksum:
+    "sha512=9b307eb85c99a38faad50a82e5fae652758548a527ce6db3dd09a21096b19a860e812a5a10bd30d8cc9b885a6482c068fe6ab3b653ca6bfb640293fe190025ee"
+}
+x-maintenance-intent: ["(latest)"]

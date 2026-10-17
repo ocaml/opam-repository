@@ -1,0 +1,22 @@
+opam-version: "2.0"
+synopsis: "Compile OCaml without the native-code compiler"
+authors: [
+  "David Allsopp"
+  "Louis Gesbert"
+]
+homepage: "https://opam.ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "CC0-1.0+"
+depends: [
+  "ocaml-variants" {post & >= "4.12.0~"} |
+  # See equivalent constraint in ocaml-options-vanilla
+  # Windows is permitted to install 32-bit versions of ocaml-base-compiler on
+  # 64-bit systems hence the (temporary) addition of the `os = "win32"` here,
+  # at least until the ocaml-option- / base- mess is fixed. Note that this puts
+  # 64-bit Windows into the same class as ppc64, riscv64 and s390x where
+  # ocaml-option-bytecode-only can be installed, but has no effect.
+  "ocaml-base-compiler" {post & >= "5.0.0~~" & arch != "arm64" & (arch != "x86_64" | os = "win32")}
+]
+conflicts: [ "ocaml-option-afl" "ocaml-option-fp" "ocaml-option-flambda" ]
+maintainer: "David Allsopp <david@tarides.com>"
+flags: compiler

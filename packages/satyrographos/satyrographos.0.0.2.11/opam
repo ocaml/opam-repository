@@ -1,0 +1,68 @@
+opam-version: "2.0"
+maintainer: "SAKAMOTO Noriaki <mrty.ityt.pt@gmail.com>"
+authors: [
+  "SAKAMOTO Noriaki <mrty.ityt.pt@gmail.com>"
+]
+homepage: "https://github.com/na4zagin3/satyrographos"
+dev-repo: "git+https://github.com/na4zagin3/satyrographos.git"
+bug-reports: "https://github.com/na4zagin3/satyrographos/issues"
+license: "LGPL-3.0-or-later"
+build: [
+  ["dune" "subst"] {dev}
+  ["sed" "-i.bak" "-e" "s/%%%%VERSION_NUM%%%%/%{version}%/" "bin/main.ml"]
+  ["dune" "build" "-p" name "-j" jobs]
+]
+run-test: [
+  ["dune" "runtest" "-p" name "-j" jobs]
+]
+
+depends: [
+  "ocaml" {>= "4.09.0"}
+
+  "conf-diffutils" {with-test}
+  "dune" {>= "2.7"}
+  "fileutils"
+  "json-derivers"
+  "menhir" {>= "20180523"}
+  "ppx_deriving"
+  "ppx_deriving_yojson"
+  "ocamlgraph"
+  ( "opam-format" {>= "2.0.4" & < "2.2"}
+    & "opam-state" {>= "2.0.4" & < "2.2"}
+    & "ocaml" {< "4.12.0"}
+  | "opam-format" {>= "2.1.0" & < "2.2"}
+    & "opam-state" {>= "2.1.0" & < "2.2"}
+    & "ocaml" {>= "4.12.0"}
+  )
+  "re" { >= "1.9.0" }
+  "stringext" {with-test}
+  "uri" {>= "3.0.0"}
+  "uri-sexp" {>= "3.0.0"}
+  "yaml" {>= "2.0" & < "3.0"}
+  "yojson"
+
+  # Janestreet Libs
+  "core" {>= "v0.14" & < "v0.15"}
+  "ppx_jane"
+  "shexp"
+]
+conflicts: [
+  "result" {< "1.5"}
+  "yojson" {>= "2.0.0"}
+]
+synopsis: "A package manager for SATySFi"
+description: """
+Satyrographos is a package manager for [SATySFi].
+
+Satyrographos is distributed under the LGPL-3.0 license.
+
+
+  [SATySFi]: https://github.com/gfngfn/SATySFi
+  [Satyrographos]: https://github.com/na4zagin3/satyrographos"""
+url {
+  src: "https://github.com/na4zagin3/satyrographos/archive/v0.0.2.11.tar.gz"
+  checksum: [
+    "md5=29a722e0a0db085ed7ce257e3d5c40ae"
+    "sha512=c89d560c540aeef52f486c011cdfe0098dc37eb55fca8fa50900a6eadf1c34336edd3fe5d053ccb7b29ae80999eccb663bf897eca3d7b3088c84904a11dc5a59"
+  ]
+}

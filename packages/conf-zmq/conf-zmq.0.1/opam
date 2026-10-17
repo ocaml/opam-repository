@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "unixjunkie@sdf.org"
+authors: "iMatix"
+homepage: "http://zeromq.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "LGPL-2.0-or-later"
+build: [
+  ["sh" "-c" "cc test.c $(pkg-config --libs --cflags libzmq)"]
+]
+depends: ["conf-pkg-config" {build}]
+depexts: [
+  ["libzmq3-dev"] {os-family = "debian"}
+  ["libzmq3-dev"] {os-family = "ubuntu"}
+  ["zeromq"] {os = "macos" & os-distribution = "homebrew"}
+  ["zmq"] {os = "macos" & os-distribution = "macports"}
+  ["zeromq-dev"] {os-distribution = "alpine"}
+  ["zeromq"] {os = "win32" & os-distribution = "cygwinports"}
+  ["epel-release" "zeromq-devel"] {os-distribution = "centos"}
+  ["zeromq"] {os-distribution = "arch"}
+  ["zeromq-devel"] {os-family = "fedora"}
+  ["zeromq-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["libzmq4"] {os = "freebsd"}
+]
+x-ci-accept-failures: [
+  "oraclelinux-7" # package not available
+  "oraclelinux-8" # package not available
+  "oraclelinux-9" # package not available
+]
+synopsis: "Virtual package relying on zmq library installation"
+description: """
+This package can only install if the zmq devel library is installed
+on the system."""
+flags: conf
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-zmq/test.c"
+  checksum: [
+    "sha256=5638d9ebb8a32d81ff8a1e66365f6df980ef39e9697f06d72e9eb405db7d58da"
+    "md5=2272935eca81c8bc500270c30c558fa3"
+  ]
+}

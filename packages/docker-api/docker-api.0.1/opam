@@ -1,0 +1,37 @@
+opam-version: "2.0"
+maintainer: "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>" ]
+license: "LGPL-3.0-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/Chris00/ocaml-docker"
+dev-repo: "git+https://github.com/Chris00/ocaml-docker.git"
+bug-reports: "https://github.com/Chris00/ocaml-docker/issues"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocamlfind" "remove" "docker"]
+]
+depends: [
+  "ocaml" {< "5.0.0"}
+  "base-bytes"
+  "base-unix"
+  "ocamlbuild" {build}
+  "ocamlfind" {build & >= "1.5.3"}
+  "yojson" {< "2.0.0"}
+]
+synopsis: "Binding to the Docker Remote API"
+description: """
+Control Docker <https://www.docker.com/> containers using the remote
+API."""
+flags: light-uninstall
+url {
+  src:
+    "https://github.com/Chris00/ocaml-docker/releases/download/0.1/docker-api-0.1.tar.gz"
+  checksum: [
+    "sha256=7c759b3d0f237df09e0d2be0e0f1c0586bb840f702353236ce18f8b99c85ed75"
+    "md5=6745c33bddc7437d8bd725b91e783b93"
+  ]
+}

@@ -1,0 +1,37 @@
+opam-version: "2.0"
+maintainer:   "rudi.grinberg@gmail.com"
+authors:      "Rudi Grinberg"
+homepage:     "https://github.com/rgrinberg/stringext"
+bug-reports:  "https://github.com/rgrinberg/stringext/issues"
+license:      "MIT"
+dev-repo: "git+https://github.com/rgrinberg/stringext.git"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--enable-tests" {with-test}]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+
+remove: ["ocamlfind" "remove" "stringext"]
+
+depends: [
+  "ocaml" {>= "4.00.0" & < "5.0"}
+  "ocamlfind" {build}
+  "base-bytes"
+  "ocamlbuild" {build}
+  "ounit" {with-test}
+]
+synopsis: "Extra string functions for OCaml"
+description: """
+Provides a single module named Stringext that provides a grab bug of often used
+but missing string functions from the stdlib. E.g, split, full_split, cut,
+rcut, etc."""
+flags: light-uninstall
+url {
+  src: "https://github.com/rgrinberg/stringext/archive/v1.3.1.tar.gz"
+  checksum: [
+    "sha256=d0dec3a4819c6677981543c5d145242fe4ebb71edc56812d9650c8e21e086905"
+    "md5=f9cbdfc34cca9617f227610a5cfcaa14"
+  ]
+}

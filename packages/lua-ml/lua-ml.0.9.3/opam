@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "An embeddable Lua 2.5 interpreter implemented in OCaml"
+maintainer: "Daniil Baturin <daniil+opam@baturin.org>"
+authors: [
+  "Norman Ramsey <nr@cs.tufts.edu>" "Christian Lindig <lindig@gmail.com>"
+]
+license: "BSD-2-Clause"
+homepage: "https://github.com/lindig/lua-ml"
+bug-reports: "https://github.com/lindig/lua-ml/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.07.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/lindig/lua-ml.git"
+url {
+  src: "https://github.com/lindig/lua-ml/archive/refs/tags/0.9.3.tar.gz"
+  checksum: [
+    "md5=a97a8d80c534880cb56c1cb2be34159a"
+    "sha512=74d6881dc6b3a16738fa1a66db903bb2968bb913afc422ed230f279f7f05377b91a1c9cea5364021da5f6ee1f605c2fb25932503b978e9080dd6b9e7e8d36de8"
+  ]
+}
+post-messages: [
+ "Lua-ML does build with OCaml 5.0.0, however, it only works with it as long as the code is single-threaded: \
+  trying to execute Lua code in more than one domain may incur in confusing, unpredictable failures." {ocaml:version >= "5.0"}
+]

@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Lannotate plugin of Frama-C, part of the LTest suite"
+description: """\
+Lannotate is a plugin that introduces labels and hyperlabels formalizing
+test objectives corresponding to the coverage criteria selected by the user.
+It is part of LTest, a set of plug-in dedicated to managing test coverage.
+Other plug-ins in LTest include:
+- Luncov, for detecting polluting (infeasible or redundant) objectives
+- Lreplay, for executing a test suite and computing its coverage status"""
+maintainer: "virgile.prevosto@cea.fr"
+authors: [
+  "Omar Chebaro" "Mickaël Delahaye" "Michael Marcozzi" "Thibault Martin"
+]
+license: "LGPL-2.1-only"
+tags: ["software testing" "Frama-C" "LTest"]
+homepage: "https://frama-c.com/"
+bug-reports: "https://git.frama-c.com/pub/ltest/lannotate/-/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "dune" {> "3.13.0"}
+  "frama-c" {>= "33.0~" & < "34.0~"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://git.frama-c.com/pub/ltest/lannotate.git"
+url {
+  src:
+    "https://git.frama-c.com/pub/ltest/lannotate/-/archive/0.2.6/lannotate-0.2.6.tar.bz2"
+  checksum: [
+    "md5=dd9ce848d6f4b4086095f6143e980325"
+    "sha512=fb99a2ba43df2ba3e7f4f109fb22e4aec099ea32c924a0048fadf2a346e6d20adecb04bd3d46c0aadc65ea8a2e53b77b337fbc1df8e6740a62b3dbdbc35259cd"
+  ]
+}
+x-maintenance-intent: ["(latest)" "(latest-1)"]

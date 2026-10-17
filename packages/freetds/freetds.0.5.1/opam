@@ -1,0 +1,51 @@
+opam-version: "2.0"
+authors: [ "Christophe Troestler <Christophe.Troestler@umons.ac.be>"
+           "Kenn Knowles <kenn.knowles@gmail.com>" ]
+maintainer: "Christophe.Troestler@umons.ac.be"
+homepage: "https://github.com/kennknowles/ocaml-freetds"
+dev-repo: "git+https://github.com/kennknowles/ocaml-freetds.git"
+bug-reports: "https://github.com/kennknowles/ocaml-freetds/issues"
+license: "LGPL-2.1-only"
+tags: [
+  "clib:ct"
+  "clib:sybdb"
+]
+build: [
+  [
+    "./configure"
+    "--prefix"
+    prefix
+    "--sbindir=%{lib}%/freetds/sbin"
+    "--libexecdir=%{lib}%/freetds/libexec"
+    "--sysconfdir=%{lib}%/freetds/etc"
+    "--sharedstatedir=%{lib}%/freetds/com"
+    "--localstatedir=%{lib}%/freetds/var"
+    "--libdir=%{lib}%/freetds/lib"
+    "--includedir=%{lib}%/freetds/include"
+    "--datarootdir=%{lib}%/freetds/share"
+  ]
+  [make]
+]
+remove: [["ocamlfind" "remove" "freetds"]]
+depends: ["ocaml" "ocamlfind"]
+depexts: [
+  ["autoconf" "automake" "freetds-devel"] {os-distribution = "centos"}
+  ["autoconf" "automake" "freetds-dev"] {os-family = "debian"}
+  ["autoconf" "automake" "freetds-devel"] {os-family = "fedora"}
+  ["autoconf" "automake" "freetds"]
+    {os = "macos" & os-distribution = "homebrew"}
+]
+install: [make "install"]
+synopsis: "Binding to the ct-lib component of the FreeTDS library."
+description: """
+It allows to access Sybase and Microsoft (or other TDS) database
+servers."""
+flags: light-uninstall
+url {
+  src:
+    "https://download.ocamlcore.org/ocaml-freetds/ocaml-freetds/0.5.1/freetds-0.5.1.tar.gz"
+  checksum: [
+    "sha256=e03122be74e29db065134cf914492608025339252c5830fe7c6e0b4106a6a01e"
+    "md5=7beea50fe8cd7957d2883993ffcfdcd3"
+  ]
+}

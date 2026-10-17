@@ -1,0 +1,50 @@
+opam-version: "2.0"
+license: "LGPL-2.1-only WITH OCaml-LGPL-linking-exception"
+synopsis: "Easy interface to Cmdliner à la Arg.parse with sub-commands"
+description: """\
+ez_cmdliner is a simple layer on top of Cmdliner to provide an interface
+à la Arg.parse with an extension for simple sub-commands.
+"""
+authors: ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+maintainer: ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+homepage: "https://ocamlpro.github.io/ez_cmdliner"
+doc: "https://ocamlpro.github.io/ez_cmdliner/sphinx"
+bug-reports: "https://github.com/ocamlpro/ez_cmdliner/issues"
+dev-repo: "git+https://github.com/ocamlpro/ez_cmdliner.git"
+tags: "org:ocamlpro"
+build: [
+  ["dune" "subst"] {dev}
+  ["sh" "-c" "./scripts/before.sh build '%{name}%'"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["sh" "-c" "./scripts/after.sh build '%{name}%'"]
+]
+install: [
+  ["sh" "-c" "./scripts/before.sh install '%{name}%'"]
+]
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "dune" {>= "2.7.0"}
+  "ocplib_stuff" {>= "0.3"}
+  "ez_subst" {>= "0.1"}
+  "cmdliner" {>= "1.1.0" & < "2.0.0"}
+  "cmdliner" {with-test & < "1.1.0"}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
+]
+
+url {
+    src: "https://github.com/ocamlpro/ez_cmdliner/archive/v0.4.3.tar.gz"
+    checksum: [ "sha256=a4aaa008bf2bf29189e3c66c9481aab5d2e12b20c0b769a484df5dc07d68961d" ]
+}

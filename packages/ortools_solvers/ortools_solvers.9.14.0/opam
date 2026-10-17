@@ -1,0 +1,78 @@
+opam-version: "2.0"
+synopsis: "Call Google OR-Tools solvers"
+description: """
+Google OR-Tools is an open source software suite for optimization, tuned
+for tackling the world's toughest problems in vehicle routing, flows,
+integer and linear programming, and constraint programming. This package
+provides OCaml wrappers for calling the OR-Tools solvers. It currently only
+supports the CP-SAT solver. Pull requests for other solvers are welcome."""
+maintainer: ["Timothy Bourke <tim@tbrk.org>"]
+authors: ["Timothy Bourke <tim@tbrk.org>"]
+license: "Apache-2.0"
+homepage: "https://github.com/inria/ocaml-ortools"
+bug-reports: "https://github.com/inria/ocaml-ortools/issues"
+depends: [
+  "dune" {>= "3.20"}
+  "ortools" {>= "9.14"}
+  "dune-configurator" {build}
+  "ocaml" {>= "4.14.2"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/inria/ocaml-ortools.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/INRIA/ocaml-ortools/releases/download/9.14.0/ortools-9.14.0.tbz"
+  checksum: [
+    "sha256=3967abe3ecfdaa6c2c098be954825f792d0b925b5342a4ddb1ce5cf2d9f81e50"
+    "sha512=5d6feb4b5d664812aad0e103f9a9991405739b4d3532a86059e069f7d4a5f5804d444e15937217af1e7838024305802176ccd8be0268467dfa0f68cfe60e7fe7"
+  ]
+}
+x-commit-hash: "5b39146947d13ad8d23772e4154858dceee55737"
+post-messages: [
+  """Failed to install ortools_solvers.
+Ensure the Google OR-Tools runtime is available on LIBRARY_PATH (to build)
+and LD_LIBRARY_PATH (to use). See https://github.com/inria/ocaml-ortools."""
+  {failure & os != "macos"}
+  """Failed to install ortools_solvers.
+Ensure the Google OR-Tools runtime is available on LIBRARY_PATH (to build)
+and DYLD_LIBRARY_PATH (to use). See https://github.com/inria/ocaml-ortools."""
+  {failure & os = "macos"}
+]
+x-ci-accept-failures: [
+  "alpine-3.22"		# No OR-Tools package
+  "archlinux"		# No OR-Tools package
+  "centos-10"		# No OR-Tools package
+  "centos-9"		# No OR-Tools package
+  "debian-12"		# No OR-Tools package
+  "debian-13"		# No OR-Tools package
+  "debian-testing"	# No OR-Tools package
+  "debian-unstable"	# No OR-Tools package
+  "fedora-42"		# No OR-Tools package
+  "fedora-43"		# No OR-Tools package
+  "freebsd-14.3"	# No OR-Tools package
+  "macos-homebrew"	# No OR-Tools package
+  "opensuse-15.6"	# No OR-Tools package
+  "opensuse-16.0"	# No OR-Tools package
+  "opensuse-tumbleweed" # No OR-Tools package
+  "ubuntu-22.04"	# No OR-Tools package
+  "ubuntu-24.04"	# No OR-Tools package
+  "ubuntu-25.04"	# No OR-Tools package
+  "ubuntu-25.10"	# No OR-Tools package
+  "cygwin"		# No OR-Tools package
+  "msys2"		# No OR-Tools package
+]
