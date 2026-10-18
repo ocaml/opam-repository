@@ -2,7 +2,7 @@
 opam-version: "2.0"
 synopsis: "Binding for the TREXIO Input/Output library"
 description:
-  "TREXIO is a file format and library for storing wave functions and integrals for quantum chemistry."
+  "TREXIO is a file format and library for wave functions and quantum-chemistry integrals."
 maintainer: ["Anthony Scemama <scemama@irsamc.ups-tlse.fr>"]
 authors: [
   "Anthony Scemama <scemama@irsamc.ups-tlse.fr>"
@@ -14,31 +14,25 @@ homepage: "https://github.com/trex-coe/trexio_ocaml"
 doc: "https://trex-coe.github.io/trexio/"
 bug-reports: "https://github.com/trex-coe/trexio_ocaml/issues"
 depends: [
-  "conf-trexio"
   "dune" {>= "3.1"}
   "dune-configurator" {build}
   "conf-pkg-config" {build}
   "odoc" {with-doc}
 ]
 build: [
-  [
-    "dune"
-    "build"
-    "-j"
-    jobs
-    "@install"
-    "@runtest" {with-test}
-    "@doc" {with-doc}
-  ]
+  ["sh" "-c" "pkg-config --atleast-version=2.6.1 trexio || ./setup.sh install-c-library \"$(pwd)/_c-prefix\""]
+  ["dune" "build" "-j" jobs "@install" "@runtest" {with-test} "@doc" {with-doc}]
 ]
 install: [
+  ["sh" "-c" "pkg-config --atleast-version=2.6.1 trexio || ./setup.sh install-c-library \"%{prefix}%\""]
   ["dune" "install"]
+  ["cp" "%{prefix}%/lib/libtrexio.a" "%{prefix}%/lib/trexio/"]
 ]
 dev-repo: "git+https://github.com/trex-coe/trexio_ocaml.git"
 url {
   src: "https://github.com/trex-coe/trexio_ocaml/archive/v2.6.101.tar.gz"
   checksum: [
-    "md5=e8290fadfbe52ddb9cdca2ac3f85a98c"
-    "sha512=8f25fe7aac45f22bbe9d3fd5ed22da98882f326505a1fd85ca87fb8cf3b12cf0c630887efb1a86b19532ce925be872bc5f4d3593c497d9447521fa02a4068166"
+    "md5=8a226af80ed5fc2ce90dccc3eee0e972"
+    "sha512=8420d01dc683b3e5684b5256b3cecfa024cea5219c0bbe2cf32c0d1123ceb0c93c948ae50fe9c5407ad1f1faa7a299db6b3e10dfe447bc8b4ff0b69f5df3a095"
   ]
 }
