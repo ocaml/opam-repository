@@ -1,0 +1,24 @@
+opam-version: "2.0"
+synopsis: "Virtual package relying on a libxgboost >= 3.0 system installation"
+description: """
+This package can only install if libxgboost >= 3.0 and its pkg-config
+file (xgboost.pc) are installed on the system. It is only available on
+platforms whose package manager ships a recent enough libxgboost."""
+maintainer: "Cuihtlauac ALVARADO <cuihtlauac@tarides.com>"
+authors: "XGBoost contributors"
+homepage: "https://xgboost.ai"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "Apache-2.0"
+flags: conf
+build: ["pkg-config" "--print-errors" "--atleast-version=3.0" "xgboost"]
+depends: ["conf-pkg-config" {build}]
+depexts: [
+  ["libxgboost-dev"] {os-family = "debian"}
+  ["xgboost"] {os = "macos" & os-distribution = "homebrew"}
+]
+# Older Debian (<= 12) and Ubuntu (<= 25.04) package libxgboost < 3.0.
+available: [
+  (os-distribution = "debian" & os-version >= "13") |
+  (os-distribution = "ubuntu" & os-version >= "25.10") |
+  (os = "macos" & os-distribution = "homebrew")
+]
