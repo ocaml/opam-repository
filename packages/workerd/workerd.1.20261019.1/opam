@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "The workerd runtime for Cloudflare Workers"
+description:
+  "Installs the prebuilt workerd binary from Cloudflare for your platform: Linux or macOS, x86_64 or arm64. Linux needs glibc 2.35 or later."
+maintainer: ["David Sancho <dsnxmoreno@gmail.com>"]
+authors: ["Cloudflare, Inc."]
+license: "Apache-2.0"
+homepage: "https://github.com/ml-in-barcelona/opam-workerd"
+bug-reports: "https://github.com/ml-in-barcelona/opam-workerd/issues"
+dev-repo: "git+https://github.com/ml-in-barcelona/opam-workerd.git"
+x-maintenance-intent: ["(latest)"]
+available: [ (os = "linux" | os = "macos") & (arch = "x86_64" | arch = "arm64") ]
+build: [
+  ["tar" "-xzf"
+    "workerd-linux-64.tgz" {os = "linux" & arch = "x86_64"}
+    "workerd-linux-arm64.tgz" {os = "linux" & arch = "arm64"}
+    "workerd-darwin-64.tgz" {os = "macos" & arch = "x86_64"}
+    "workerd-darwin-arm64.tgz" {os = "macos" & arch = "arm64"}
+  ]
+]
+install: [
+  ["install" "-m" "755" "package/bin/workerd" "%{bin}%/workerd"]
+]
+extra-source "workerd-linux-64.tgz" {
+  src: "https://registry.npmjs.org/@cloudflare/workerd-linux-64/-/workerd-linux-64-1.20261019.1.tgz"
+  checksum: "sha512=e3ef95462f6f91044e62aae96583a2c4826e5439ae8e4c2b4f892ccecc4d165bdc9ac5fa32bd86ba6bf120dde0222c52def25487752676d92d86a8f95f44b75f"
+}
+extra-source "workerd-linux-arm64.tgz" {
+  src: "https://registry.npmjs.org/@cloudflare/workerd-linux-arm64/-/workerd-linux-arm64-1.20261019.1.tgz"
+  checksum: "sha512=ef93d5b493b07e349c439dec6cbb505c8ec3f323f5736d6df961143da61baa4cdacf866a7d1e7001dfb3b96b3c1b943b90e8f649022f11f6394a7f18f9456b9c"
+}
+extra-source "workerd-darwin-64.tgz" {
+  src: "https://registry.npmjs.org/@cloudflare/workerd-darwin-64/-/workerd-darwin-64-1.20261019.1.tgz"
+  checksum: "sha512=e5920b6c0b5afdf050be198061e084edd28c31822becdf702445f9d1f1062ca488c06b6f4f41f349f1cd20afceedc050e201d0d967c888f0a5bf07327ba1347c"
+}
+extra-source "workerd-darwin-arm64.tgz" {
+  src: "https://registry.npmjs.org/@cloudflare/workerd-darwin-arm64/-/workerd-darwin-arm64-1.20261019.1.tgz"
+  checksum: "sha512=730c3601bea554cc694e21048ca98f239f29e44328d2f6136521fedd692a5c975081cdc44bae86b8bdb8efe5360766166a3861bb6b6a8fb8f24ab5e7794ef8f6"
+}
+url {
+  src:
+    "https://github.com/ml-in-barcelona/opam-workerd/releases/download/1.20261019.1/workerd-1.20261019.1.tbz"
+  checksum: [
+    "sha256=8eeff32c00f8f1cdf1892747022f234f20ac27863e2abb1edd698a0dbfb2a5d6"
+    "sha512=0125e3d977356228c004e74af40a3b8fe03f59a2e9ad2da9a637a1be1de7cfe65080c68bd53fa45b2799f2b14a9676f58722dfd3f0b53a8a46bdfc1980fc9b51"
+  ]
+}
+x-commit-hash: "ecd4e04c3d3b579eae345b445637c621437b9272"
