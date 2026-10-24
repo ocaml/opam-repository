@@ -1,0 +1,56 @@
+opam-version: "2.0"
+synopsis: "Record terminal sessions and draw them as animated SVG images"
+description:
+  "k7 records any program, a cram test or a tape on a pseudo-terminal and draws it as an SVG image animated with CSS alone, with no browser or ffmpeg. It writes a program's recording in asciinema's asciicast format, the text of its last screen or a cram test of it, and draws asciicast v2 and v3 recordings, such as asciinema's. It also builds tapes for Charm's VHS as OCaml values, checks them against VHS's own parser rules and runs vhs on them to record a GIF or a video."
+maintainer: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+authors: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+license: "ISC"
+tags: ["command-line-utilities" "format" "eio"]
+homepage: "https://github.com/samoht/ocaml-k7"
+bug-reports: "https://github.com/samoht/ocaml-k7/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "ocaml" {>= "5.4"}
+  "eio" {>= "1.6"}
+  "eio_main" {>= "1.6"}
+  "fmt" {>= "0.8.7"}
+  "cmdliner" {>= "2.0.0"}
+  "dune-build-info"
+  "alcotest" {with-test}
+  "mtime" {>= "2.0.0"}
+  "cstruct" {>= "6.0.1"}
+  "matrix" {>= "0.1.0" & < "0.2.0"}
+  "re" {>= "1.10.0"}
+  "jsont" {>= "0.4.0"}
+  "bytesrw" {>= "0.1.0"}
+  "markup" {>= "1.0.0" & with-test}
+  "alcobar" {with-test & >= "0.3.2"}
+  "mdx" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/samoht/ocaml-k7.git"
+x-maintenance-intent: ["(latest)"]
+available: os != "win32"
+url {
+  src:
+    "https://github.com/samoht/ocaml-k7/releases/download/0.9.0/k7-0.9.0.tbz"
+  checksum: [
+    "sha256=6890acc32b1f285de1e10a5023b36e55dbe4d25cb5b9e6219a3dc183574d34c1"
+    "sha512=27fabd59aca150277e0bd05e7138e181f2c32e87d4d05bd6c0495033bc1254f75bb1a23a2984a3e5a1b95f66b67012c75f5b9f2867f17bf16e0960a471f196e6"
+  ]
+}
+x-commit-hash: "cc57e5e5b24ffa0676a79d7df351ae02e5e172b9"
