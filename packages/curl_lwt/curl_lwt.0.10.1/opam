@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "Bindings to libcurl (lwt variant)"
+description:
+  "libcurl is a client-side URL transfer library, supporting HTTP and a multitude of other network protocols (FTP/SMTP/RTSP/etc). This library  provides an Lwt-enabled asynchronous interface (Curl_lwt)."
+maintainer: ["root@ygrek.org" "Antonin Décimo <antonin@tarides.com>"]
+authors: ["Lars Nilsson" "ygrek"]
+license: "MIT"
+tags: ["org:ygrek" "clib:curl"]
+homepage: "https://ygrek.org/p/ocurl"
+doc: "https://ygrek.org/p/ocurl/api/index.html"
+bug-reports: "https://github.com/ygrek/ocurl/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.11"}
+  "base-unix"
+  "curl" {= version}
+  "lwt"
+  "lwt_ppx" {with-dev-setup}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ygrek/ocurl.git"
+url {
+  src:
+    "https://github.com/ygrek/ocurl/releases/download/0.10.1/curl-0.10.1.tbz"
+  checksum: [
+    "sha256=649981b67474b561f0aab45669b73b00c09fb89bc42db824b1550caa2d11f815"
+    "sha512=213c3bc5b8321e338966cb5665b75cdfa3d21cd3376a45fa97bd0b040ac0e1d1ca190d1f7d5de1d07eb8c0f4d0def2ea2e6dd2fa0ef851b1a5f7423680f10975"
+  ]
+}
+x-commit-hash: "6f12e8b825b0d2f69908cb21f728ffc52d2da8bd"
