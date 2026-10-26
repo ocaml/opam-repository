@@ -1,0 +1,77 @@
+# Hand-maintained (dune-project sets generate_opam_files false): this
+# package needs a depexts field and conf-cmake/conf-c++ build-deps for
+# the hybrid native dependency, which the dune (package ...) stanza
+# cannot express. Keep in sync with dune-project by hand.
+opam-version: "2.0"
+synopsis: "OCaml bindings for the XGBoost gradient boosting library"
+description: """
+Native OCaml bindings to libxgboost (>=3.0). Three-layer FFI:
+the upstream stable C ABI, statically generated ctypes stubs,
+and a high-level GC-aware OCaml API. Supports dense and sparse
+DMatrix construction (Bigarray, zero-copy), training, prediction,
+JSON config, and external-memory streaming via a callback iterator.
+
+The native libxgboost dependency is satisfied in one of two ways,
+decided at build time: a system libxgboost >= 3.0 discovered through
+pkg-config (installed through conf-libxgboost where the platform
+packages it),
+or, failing that, a vendored copy of XGBoost built from source with
+CMake and linked statically (needs no network)."""
+maintainer: ["Cuihtlauac ALVARADO <cuihtlauac@tarides.com>"]
+authors: ["Cuihtlauac ALVARADO <cuihtlauac@tarides.com>"]
+license: "MIT"
+tags: ["xgboost" "machine-learning" "gradient-boosting" "bindings" "ctypes"]
+homepage: "https://github.com/tarides/xgboost-ocaml"
+bug-reports: "https://github.com/tarides/xgboost-ocaml/issues"
+depends: [
+  "dune" {>= "3.18"}
+  "ocaml" {>= "4.11"}
+  "dune-configurator" {build}
+  "conf-cmake" {build}
+  "conf-c++" {build}
+  # Fast path: a system libxgboost >= 3.0, where the platform packages
+  # one (same filter as conf-libxgboost's [available]). Elsewhere the
+  # build compiles the vendored sources (cmake/g++ from conf-* above).
+  # OpenMP runtime: on Linux, gcc brings libgomp; on macOS, Homebrew's
+  # xgboost formula (installed by conf-libxgboost) brings libomp.
+  "conf-libxgboost"
+    {(os-distribution = "debian" & os-version >= "13") |
+     (os-distribution = "ubuntu" & os-version >= "25.10") |
+     (os = "macos" & os-distribution = "homebrew")}
+  "ctypes" {>= "0.20"}
+  "ctypes-foreign" {>= "0.20"}
+  "alcotest" {with-test}
+  "qcheck-core" {with-test & >= "0.20"}
+  "qcheck-alcotest" {with-test & >= "0.20"}
+  "odoc" {with-doc}
+]
+# The vendored fallback build is Unix-only (cygwin/mingw can't run the
+# CMake path — see config/discover.ml), and there is no system libxgboost
+# on Windows either. Restrict to non-Windows platforms. riscv64 is also
+# excluded: the property-test executable crashes at runtime there (a
+# separate issue from the build), pending diagnosis.
+available: [ os != "win32" & arch != "riscv64" ]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/tarides/xgboost-ocaml.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/tarides/xgboost-ocaml/archive/refs/tags/v0.2.5.tar.gz"
+  checksum: [
+    "md5=c4936070e3c7b3c6db53510caed6e4c6"
+    "sha512=a2e9ac344f7940b410ce93b2038c5497f8cfd918f0a686143c1f52fe39bfb245c8a88b695a42e7c08f6eadd722082a09e36a0553bc98d93cf8e6ed26c0bd6f6c"
+  ]
+}
