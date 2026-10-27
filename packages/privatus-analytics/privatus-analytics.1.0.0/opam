@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Cookieless Privatus Analytics tracking script for OCaml web apps"
+description:
+  "Prints the Privatus Analytics browser script tag, page props and the data attributes for custom events and click maps. It only builds HTML. It never sends events from your server and sets no cookies. The optional privatus-analytics.tyxml library adds TyXML attribute helpers."
+maintainer: ["Two Phase LLC <james@privatusanalytics.com>"]
+authors: ["Two Phase LLC <james@privatusanalytics.com>"]
+license: "MIT"
+tags: ["analytics" "privacy" "web" "html"]
+homepage: "https://privatusanalytics.com"
+doc: "https://privatusanalytics.com/docs"
+bug-reports: "https://github.com/Privatus-Analytics/ocaml/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.14"}
+  "alcotest" {with-test & >= "1.5"}
+  "odoc" {with-doc}
+]
+depopts: ["tyxml"]
+conflicts: [
+  "tyxml" {< "4.5"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/Privatus-Analytics/ocaml.git"
+url {
+  src:
+    "https://github.com/Privatus-Analytics/ocaml/releases/download/v1.0.0/privatus-analytics-1.0.0.tbz"
+  checksum: [
+    "sha256=9b9e413575d5b801aa21b221f6a79a222f8aabb05fd4a89295822798ef4b2266"
+    "sha512=e4f4c70636aaa45f9731c3b9f5860888e80b5c19c6837950171329b409aa0808b8f86ea0ddce770df4b50fae8fa01e9d67a785bfe247086f2f37acc6984929e4"
+  ]
+}
+x-commit-hash: "599d7f598ccfe2b534a968152bc2b90af446651c"
