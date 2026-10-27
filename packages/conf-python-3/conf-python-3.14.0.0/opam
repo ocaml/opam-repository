@@ -4,7 +4,13 @@ homepage: "https://www.python.org/downloads/release/python-3148/"
 authors: "Python Software Foundation"
 license: "PSF-2.0"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
-build: ["python3" "--version"]
+build: ["sh" "-c" "python3 --version"]
+# ^ Call python3 via sh to work around an issue on Cygwin
+# The python3 Cygwin package provides at the moment a
+# python3.12.exe executable and a python3 symlink. When using the
+# build instructions ["python3" "--version"], opam actually invokes
+# a python3.exe executable instead, which is a Python installer
+# instead of the expected interpreter.
 depexts: [
   ["python3"] {os-family = "debian" | os-family = "ubuntu"}
   ["python3"] {os-distribution = "nixos"}
