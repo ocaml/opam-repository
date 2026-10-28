@@ -1,7 +1,7 @@
-# Hand-maintained (dune-project sets generate_opam_files false): this
-# package needs a depexts field and conf-cmake/conf-c++ build-deps for
-# the hybrid native dependency, which the dune (package ...) stanza
-# cannot express. Keep in sync with dune-project by hand.
+# Hand-maintained (dune-project sets generate_opam_files false): the
+# hybrid native dependency needs a platform-filtered conf-libxgboost
+# dependency, conf-cmake/conf-c++ build-deps, and a custom available
+# filter, none of which the dune (package ...) stanza can express.
 opam-version: "2.0"
 synopsis: "OCaml bindings for the XGBoost gradient boosting library"
 description: """
@@ -29,15 +29,21 @@ depends: [
   "dune-configurator" {build}
   "conf-cmake" {build}
   "conf-c++" {build}
-  # Fast path: a system libxgboost >= 3.0, where the platform packages
-  # one (same filter as conf-libxgboost's [available]). Elsewhere the
-  # build compiles the vendored sources (cmake/g++ from conf-* above).
-  # OpenMP runtime: on Linux, gcc brings libgomp; on macOS, Homebrew's
-  # xgboost formula (installed by conf-libxgboost) brings libomp.
+  # Fast path: auto-install a system libxgboost on platforms that ship
+  # one >= 3.0, so pkg-config finds it at build time. conf-libxgboost is
+  # a generic presence probe; the >= 3.0 requirement is enforced by
+  # config/discover.ml, which falls back to compiling the vendored
+  # sources (cmake/g++ from conf-* above) when the system lib is absent
+  # or too old. This filter is deliberately conservative: a platform we
+  # omit merely vendors (harmless), whereas listing one that lacks the
+  # package would hard-fail with no fallback. OpenMP runtime comes with
+  # each path: gcc's libgomp on the vendored build, the system package
+  # (Homebrew formula / FreeBSD port) on the fast path.
   "conf-libxgboost"
     {(os-distribution = "debian" & os-version >= "13") |
      (os-distribution = "ubuntu" & os-version >= "25.10") |
-     (os = "macos" & os-distribution = "homebrew")}
+     (os = "macos" & os-distribution = "homebrew") |
+     os = "freebsd"}
   "ctypes" {>= "0.20"}
   "ctypes-foreign" {>= "0.20"}
   "alcotest" {with-test}
@@ -69,9 +75,9 @@ dev-repo: "git+https://github.com/tarides/xgboost-ocaml.git"
 x-maintenance-intent: ["(latest)"]
 url {
   src:
-    "https://github.com/tarides/xgboost-ocaml/archive/refs/tags/v0.2.5.tar.gz"
+    "https://github.com/tarides/xgboost-ocaml/archive/refs/tags/v0.2.6.tar.gz"
   checksum: [
-    "md5=c4936070e3c7b3c6db53510caed6e4c6"
-    "sha512=a2e9ac344f7940b410ce93b2038c5497f8cfd918f0a686143c1f52fe39bfb245c8a88b695a42e7c08f6eadd722082a09e36a0553bc98d93cf8e6ed26c0bd6f6c"
+    "md5=9f3bfc144e2c80e3e4848db6a85ed0a9"
+    "sha512=a96612c6f855e9508ae00b10d892e6085b5ad431b0e48651807f540fef9f22ba0905c721f921a487f14b6096992850845011c68a0c7f2c98c540fb6b73570322"
   ]
 }
