@@ -1,0 +1,26 @@
+opam-version: "2.0"
+synopsis: "Virtual package relying on a libxgboost system installation"
+description: """
+Presence probe: this package checks, through pkg-config, that a
+libxgboost system installation (with its xgboost.pc file) is available.
+It does not pin a version, so any consumer can rely on it and enforce
+its own version requirement at build time. Where the platform packages
+libxgboost, its depexts install it."""
+maintainer: "Cuihtlauac ALVARADO <cuihtlauac@tarides.com>"
+authors: "XGBoost contributors"
+homepage: "https://xgboost.ai"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "Apache-2.0"
+flags: conf
+available: [
+  os-family = "debian" | os-family = "ubuntu" |
+  (os = "macos" & os-distribution = "homebrew") |
+  os = "freebsd"
+]
+build: ["pkg-config" "--print-errors" "--exists" "xgboost"]
+depends: ["conf-pkg-config" {build}]
+depexts: [
+  ["libxgboost-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["xgboost"] {os = "macos" & os-distribution = "homebrew"}
+  ["xgboost"] {os = "freebsd"}
+]

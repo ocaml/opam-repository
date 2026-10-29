@@ -1,0 +1,83 @@
+# Hand-maintained (dune-project sets generate_opam_files false): the
+# hybrid native dependency needs a platform-filtered conf-libxgboost
+# dependency, conf-cmake/conf-c++ build-deps, and a custom available
+# filter, none of which the dune (package ...) stanza can express.
+opam-version: "2.0"
+synopsis: "OCaml bindings for the XGBoost gradient boosting library"
+description: """
+Native OCaml bindings to libxgboost (>=3.0). Three-layer FFI:
+the upstream stable C ABI, statically generated ctypes stubs,
+and a high-level GC-aware OCaml API. Supports dense and sparse
+DMatrix construction (Bigarray, zero-copy), training, prediction,
+JSON config, and external-memory streaming via a callback iterator.
+
+The native libxgboost dependency is satisfied in one of two ways,
+decided at build time: a system libxgboost >= 3.0 discovered through
+pkg-config (installed through conf-libxgboost where the platform
+packages it),
+or, failing that, a vendored copy of XGBoost built from source with
+CMake and linked statically (needs no network)."""
+maintainer: ["Cuihtlauac ALVARADO <cuihtlauac@tarides.com>"]
+authors: ["Cuihtlauac ALVARADO <cuihtlauac@tarides.com>"]
+license: "MIT"
+tags: ["xgboost" "machine-learning" "gradient-boosting" "bindings" "ctypes"]
+homepage: "https://github.com/tarides/xgboost-ocaml"
+bug-reports: "https://github.com/tarides/xgboost-ocaml/issues"
+depends: [
+  "dune" {>= "3.18"}
+  "ocaml" {>= "4.11"}
+  "dune-configurator" {build}
+  "conf-cmake" {build}
+  "conf-c++" {build}
+  # Fast path: auto-install a system libxgboost on platforms that ship
+  # one >= 3.0, so pkg-config finds it at build time. conf-libxgboost is
+  # a generic presence probe; the >= 3.0 requirement is enforced by
+  # config/discover.ml, which falls back to compiling the vendored
+  # sources (cmake/g++ from conf-* above) when the system lib is absent
+  # or too old. This filter is deliberately conservative: a platform we
+  # omit merely vendors (harmless), whereas listing one that lacks the
+  # package would hard-fail with no fallback. OpenMP runtime comes with
+  # each path: gcc's libgomp on the vendored build, the system package
+  # (Homebrew formula / FreeBSD port) on the fast path.
+  "conf-libxgboost"
+    {(os-distribution = "debian" & os-version >= "13") |
+     (os-distribution = "ubuntu" & os-version >= "25.10") |
+     (os = "macos" & os-distribution = "homebrew") |
+     os = "freebsd"}
+  "ctypes" {>= "0.20"}
+  "ctypes-foreign" {>= "0.20"}
+  "alcotest" {with-test}
+  "qcheck-core" {with-test & >= "0.20"}
+  "qcheck-alcotest" {with-test & >= "0.20"}
+  "odoc" {with-doc}
+]
+# The vendored fallback build is Unix-only (cygwin/mingw can't run the
+# CMake path — see config/discover.ml), and there is no system libxgboost
+# on Windows either. Restrict to non-Windows platforms. riscv64 is also
+# excluded: the property-test executable crashes at runtime there (a
+# separate issue from the build), pending diagnosis.
+available: [ os != "win32" & arch != "riscv64" ]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/tarides/xgboost-ocaml.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/tarides/xgboost-ocaml/archive/refs/tags/v0.2.6.tar.gz"
+  checksum: [
+    "md5=9f3bfc144e2c80e3e4848db6a85ed0a9"
+    "sha512=a96612c6f855e9508ae00b10d892e6085b5ad431b0e48651807f540fef9f22ba0905c721f921a487f14b6096992850845011c68a0c7f2c98c540fb6b73570322"
+  ]
+}
