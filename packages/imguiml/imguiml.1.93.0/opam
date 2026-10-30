@@ -1,0 +1,69 @@
+opam-version: "2.0"
+synopsis: "ImGUI bindings to OCaml"
+description: """
+Imguiml provides bindings to ImGui and ImGui_Impl for GLFW and OpenGL3 in OCaml,
+through cimgui.
+The version follows the version of ImGui for which the package is providing
+bindings.
+The docking branch is the only one for which we provide bindings.
+Fonts are loaded with FreeType.
+"""
+maintainer: ["Frédéric Bour <frederic.bour@lakaban.net>"]
+authors: ["Emilien Lemaire <emilien.lem@icloud.com>" "Frédéric Bour <frederic.bour@lakaban.net>"]
+license: "MIT"
+tags: ["graphics" "imgui" "ctypes" "bindings"]
+homepage: "https://github.com/let-def/imguiml"
+doc: "https://let-def.github.io/imguiml"
+bug-reports: "https://github.com/let-def/imguiml/issues"
+depends: [
+  "ocaml" {>= "4.08"}
+  "dune" {>= "3.15"}
+  "goblint-cil" {with-dev-setup & >= "2.0.5"}
+  "ctypes"
+  "ctypes-foreign" {>= "0.21.1"}
+  "odoc" {with-doc}
+  "sherlodoc" {with-doc}
+  "conf-glew"
+  "conf-glfw3"
+  "conf-freetype"
+]
+depexts: [
+  ["gcc" "cmake"]
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ] { os != "macos"}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+    "--profile"
+    "macosx"
+  ] { os = "macos" }
+]
+dev-repo: "git+https://github.com/let-def/imguiml.git"
+url {
+  src:
+    "https://github.com/let-def/imguiml/releases/download/v1.93.0/imguiml-1.93.0.tbz"
+  checksum: [
+    "sha256=0ed8c5cc5d1c5effc225fe5e78e175205d3cacf78ceaea16a5140c98721b3a0b"
+    "sha512=c221949dbab410dc7a4d4a51a7eee140a3adf8ff6f5d95a36023631dbc02717c834a865452793d5f75b1ac5afaff71a9cd8c620ded6240ca9df1bf6ff9d1f0b4"
+  ]
+}
+x-commit-hash: "d29920379d009f17a321b5cb57f42ac11d452ecd"
