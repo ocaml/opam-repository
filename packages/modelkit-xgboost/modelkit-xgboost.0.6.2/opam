@@ -1,0 +1,50 @@
+opam-version: "2.0"
+synopsis: "CPU histogram-tree estimators with XGBoost for ModelKit"
+description:
+  "ModelKit XGBoost provides weighted CPU histogram-tree regression, external-memory regression from replayable batches, binary/multiclass classification, immutable specifications, checked float32 input conversion, native missing-value routing, allocation reports, schema-checked prediction, and trusted fitted-model persistence without adding XGBoost dependencies to ModelKit's portable core."
+maintainer: ["Asara developers <devs@asara.io>"]
+authors: ["Asara"]
+license: "Apache-2.0"
+tags: ["data-science" "machine-learning" "adapters" "xgboost"]
+homepage: "https://github.com/asara-io/ModelKit"
+bug-reports: "https://github.com/asara-io/ModelKit/issues"
+depends: [
+  "dune" {>= "3.23"}
+  "ocaml" {>= "5.2"}
+  "modelkit" {= version}
+  "xgboost" {= "0.2.6"}
+  "ctypes" {>= "0.20"}
+  "ctypes-foreign" {>= "0.20"}
+  "integers"
+  "yojson" {>= "2.2.2" & < "4.0.0"}
+  "modelkit-parallel" {with-test & = version}
+  "mdx" {with-test & >= "2.4.0"}
+  "alcotest" {with-test & >= "1.9.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/asara-io/ModelKit.git"
+x-maintenance-intent: ["(latest)"]
+available: os != "win32" & arch != "riscv64"
+url {
+  src:
+    "https://github.com/asara-io/ModelKit/releases/download/0.6.2/modelkit-0.6.2.tbz"
+  checksum: [
+    "sha256=ebd12e9bdbe0a29a5bd5ff4ba667a13e23bab07d210e7b0bb1e1d66bd090b03d"
+    "sha512=848925177cd95bbd86de76f5f3cdba5642efa64d1f738284d0648953125b1aeb6ad3325e9363994d8219d83bc5545061c66993f578e76774f1484f1c64f8a707"
+  ]
+}
+x-commit-hash: "5e0a605b8694fc0000a007ab806d3ff3d602ceb9"
