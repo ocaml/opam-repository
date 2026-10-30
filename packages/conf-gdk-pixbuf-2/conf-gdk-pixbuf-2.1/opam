@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "Virtual package relying on a GdkPixbuf 2 system installation"
+description:
+  "This package can only be installed if the GdkPixbuf 2 development files (pkg-config module gdk-pixbuf-2.0) are installed on the system."
+maintainer: "hello@chrisarmstrong.dev"
+authors: ["Chris Armstrong"]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/chris-armstrong/ocgtk"
+bug-reports: "https://github.com/chris-armstrong/ocgtk/issues"
+depends: [
+  "conf-pkg-config" {build}
+  "conf-glib-2"
+]
+
+# System package that provides gdk-pixbuf-2.0.pc on each supported platform
+depexts: [
+  # Debian/Ubuntu
+  ["libgdk-pixbuf-2.0-dev"] {os-family = "debian"}
+
+  # Fedora/CentOS Stream
+  ["gdk-pixbuf2-devel"] {os-distribution = "fedora"}
+  ["gdk-pixbuf2-devel"] {os-distribution = "centos"}
+
+  # openSUSE
+  ["gdk-pixbuf-devel"] {os-distribution = "opensuse-leap" | os-distribution = "opensuse-tumbleweed"}
+
+  # Alpine Linux
+  ["gdk-pixbuf-dev"] {os-distribution = "alpine"}
+
+  # Arch Linux
+  ["gdk-pixbuf2"] {os-distribution = "arch"}
+
+  # macOS via Homebrew
+  ["gdk-pixbuf"] {os = "macos" & os-distribution = "homebrew"}
+
+  # FreeBSD
+  ["gdk-pixbuf2"] {os = "freebsd"}
+]
+
+build: [
+  ["pkg-config" "--short-errors" "--print-errors" "gdk-pixbuf-2.0"]
+]
+
+# Windows is unsupported until the opam MSYS2 UCRT64 toolchain is available.
+available: os != "win32"
+flags: conf
