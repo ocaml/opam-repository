@@ -1,0 +1,40 @@
+opam-version: "2.0"
+synopsis: "Micro-benchmarks as regression tests for OCaml"
+description:
+  "Thumper measures OCaml micro-benchmarks and checks them against a committed baseline, so a dune rule fails the build when a case regresses beyond its budget. The baseline stores the evidence, sorted timing samples and exact allocation counts, in one section per machine. A timing comparison is a rank test, and a regression or improvement stands only when a confirmation pass in the same run reproduces it; an exact count compares as an integer. A comparison that cannot decide is inconclusive and fails nothing. A case with no baseline row yet is proposed and passes, and fails only under --strict; bless records the baseline. Thumper depends on the unix library alone. On Unix each case runs in a forked worker."
+maintainer: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+authors: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+license: "ISC"
+homepage: "https://github.com/invariant-hq/thumper"
+bug-reports: "https://github.com/invariant-hq/thumper/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "ocaml" {>= "5.2"}
+  "windtrap" {with-test & >= "0.3.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/invariant-hq/thumper.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/invariant-hq/thumper/releases/download/v0.1.0/thumper-0.1.0.tbz"
+  checksum: [
+    "sha256=ccf45c4d2bfd6444270c51317e2b83e531d8e4bdc09d5bdb1d0069cd7fe2e43d"
+    "sha512=68510d10a959bb89e0a03b48b136f65b31904dfcbc37f2ecd2c8b58f0dd852b6aed5d03fc659c952ca5745762b35ce6042ef147f63360db4270d6da6a20589cc"
+  ]
+}
+x-commit-hash: "fad8fe73fca8c2351da82e5bbc30ae9c72cc98a3"
