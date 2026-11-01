@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "PPX and instrumentation backend for windtrap"
+description:
+  "Inline test syntax for windtrap (let%test, module%test, let%expect_test, [%expect], [%expect_exact], [%expect.output]) with corrections accepted via dune promote, plus two instrumentation backends enabled with dune's --instrument-with: ppx_windtrap.coverage for expression coverage and ppx_windtrap.mutate for mutation testing."
+maintainer: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+authors: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+license: "ISC"
+tags: ["testing" "ppx" "expect-test" "coverage" "mutation-testing"]
+homepage: "https://github.com/invariant-hq/windtrap"
+bug-reports: "https://github.com/invariant-hq/windtrap/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "ocaml" {>= "5.0"}
+  "windtrap" {= version}
+  "ppxlib" {>= "0.37.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/invariant-hq/windtrap.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/invariant-hq/windtrap/releases/download/v0.3.1/windtrap-0.3.1.tbz"
+  checksum: [
+    "sha256=9a8c7926c77b1c258010e027eb219164e46a036bfe2df32b34b8781884c8d11c"
+    "sha512=10d53181d709e713e8437774aecf8465153c7ce2cda5f42ede02c92cb6ada38a6dcd091566807d3c75b6c8017ca1ca012989ad4aa50788c6ab1fd6c4a1e927de"
+  ]
+}
+x-commit-hash: "d54711f647ce8b41a3a36cae00134e5ba11d0efb"
