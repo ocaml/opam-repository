@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis: "Open Async (TLS) TCP connections with Uri.t"
+description: """
+Simple wrapper to the Async's Tcp module to
+open connections from URLs. If the URL scheme is detected to require
+TLS, TLS will be used."""
+maintainer: ["Vincent Bernardoff <vb@luminar.eu.org>"]
+authors: ["Vincent Bernardoff <vb@luminar.eu.org>"]
+license: "ISC"
+tags: ["async" "uri" "tls" "ssl"]
+homepage: "https://github.com/vbmithr/async-uri"
+doc: "https://vbmithr.github.io/async-uri"
+bug-reports: "https://github.com/vbmithr/async-uri/issues"
+depends: [
+  "ocaml"
+  "dune" {>= "3.10"}
+  "logs"
+  "ppx_jane"
+  "uri"
+  "uri-sexp"
+  "core" {>= "v0.17"}
+  "async" {>= "v0.17"}
+  "async_ssl" {>= "v0.17"}
+  "alcotest" {with-test}
+  "alcotest-async" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/vbmithr/async-uri.git"
+url {
+  src:
+    "https://github.com/vbmithr/async-uri/releases/download/0.5.0/async-uri-0.5.0.tbz"
+  checksum: [
+    "sha256=5a4c554a0f78c11c60dd5c13f030b4816f7718b34ed9f0f9d6172bf55605de6f"
+    "sha512=78788547d3d02a95486ac457f0ad2558a42d89275e134e5f4382cc75c3ddc0fb06f92cdfcf099dbca05311513da3052709d9d2b8a1da2207eed1d99ad0e6f76f"
+  ]
+}
+x-commit-hash: "eb0bc6d63fde20eeda4a63d102c3a501db08590b"
