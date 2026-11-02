@@ -1,0 +1,41 @@
+opam-version: "2.0"
+synopsis: "OCaml syntax dialect which adds JSX syntax expressions"
+maintainer: ["Andrey Popp"]
+authors: ["Andrey Popp"]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/ocaml-mlx/mlx"
+doc: "https://url/to/documentation"
+bug-reports: "https://github.com/ocaml-mlx/mlx/issues"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "ppxlib" {>= "0.38.0"}
+  "dune" {>= "3.16"}
+  "menhir" {= "20230608" & with-dev-setup}
+  "ocamlformat" {with-dev-setup}
+  "ocaml-lsp-server" {with-dev-setup}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/ocaml-mlx/mlx.git"
+url {
+  src: "https://github.com/ocaml-mlx/mlx/releases/download/0.12/mlx-0.12.tbz"
+  checksum: [
+    "sha256=b14b2b0b3414b574fe7e444517e94d8579a1240b707ce3b11f580a95026dacc5"
+    "sha512=7414b6955e4487e640ab9a2bf47ff75df5e8fd60c9f0d9968f4aa53c89a2afbd91eb72db6281baaa5707e372a3503b61f72fa7a92c20e1d4c7725d82b9b9c1cb"
+  ]
+}
+x-commit-hash: "f6d929c7fa2dac74be5a96de6b31a83ebddc4014"
