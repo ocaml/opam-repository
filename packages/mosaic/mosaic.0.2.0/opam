@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis: "Terminal UI framework for OCaml with The Elm Architecture"
+description:
+  "Mosaic is a terminal UI framework implementing The Elm Architecture: state is a typed model, the UI is a pure function of the model, and side effects are explicit values. It provides composable widgets (text, input, select, table, tree, markdown, canvas, and more), CSS Flexbox and Grid layout via Toffee, and efficient rendering via Matrix."
+maintainer: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+authors: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+license: "ISC"
+tags: ["tui" "terminal" "tea" "elm" "user-interface"]
+homepage: "https://github.com/invariant-hq/mosaic"
+bug-reports: "https://github.com/invariant-hq/mosaic/issues"
+depends: [
+  "ocaml" {>= "5.1"}
+  "dune" {>= "3.19"}
+  "matrix"
+  "toffee"
+  "cmarkit"
+  "windtrap" {with-test & >= "0.3.1"}
+  "ppx_windtrap" {with-test & >= "0.3.1"}
+  "thumper" {with-test & >= "0.1.0"}
+  "eio_main" {with-test}
+  "lwt" {with-test}
+  "odoc" {with-doc}
+]
+depopts: ["eio" "lwt"]
+conflicts: [
+  "eio" {< "1.0"}
+  "lwt" {< "5.7.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/invariant-hq/mosaic.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/invariant-hq/mosaic/releases/download/0.2.0/mosaic-0.2.0.tbz"
+  checksum: [
+    "sha256=2abfa3554e2ae2ba8b9d32f883095113757c43b4384e2622a46efdeabfe32684"
+    "sha512=eafe1a67aee18fa3f27e49ef5fb22b249b78e7c3aade7c08d9967edf5d453fb8ede5a7e8c5b2dd0654efa8c85b6510b2f1317fa62cecdf8726d73b73abf7a838"
+  ]
+}
+x-commit-hash: "13e1ec81db621a68f86a61fad16c907cb9f40097"
