@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "Enforce Eio's capabilities at compile time"
+description: """
+Hermetic is a prelude that restates OCaml's standard library. In a file
+that opens it, a standard library, Unix or Thread value that reaches the file
+system, a clock, the network, the standard streams, entropy, a domain or a
+child process on its own is a type error. This covers Sys too, so Sys.remove
+and Sys.command are refused. Its alert names the Eio.Stdenv capability to take instead. The unsafe
+operations that could forge a capability, such as Obj.magic or a Marshal
+reader, are refused too."""
+maintainer: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+authors: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+license: "ISC"
+tags: ["stdlib" "prelude" "capability" "eio"]
+homepage: "https://github.com/samoht/ocaml-hermetic"
+bug-reports: "https://github.com/samoht/ocaml-hermetic/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "ocaml" {>= "4.14" & < "5.6"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "mdx" {with-test & >= "2.3.0"}
+  "ocamlfind" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/samoht/ocaml-hermetic.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/samoht/ocaml-hermetic/releases/download/0.1.0/hermetic-0.1.0.tbz"
+  checksum: [
+    "sha256=3e4bcc748aaf1b4119d3f48301007e85aad489fe59952eba25f2cf915897c352"
+    "sha512=4eb66393268005675e511a3894d4ab11d39a979b48a0a90bc7b5d9d811226d9f155fb18bbd8cc2e25201e8ba0b0af5a227c161ddcfb701b229de7c764679f38f"
+  ]
+}
+x-commit-hash: "c25a20081389d8ee1ca4ae41872a69f230b2eb0d"
