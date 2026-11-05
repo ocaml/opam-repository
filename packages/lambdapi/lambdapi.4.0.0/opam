@@ -1,0 +1,68 @@
+opam-version: "2.0"
+synopsis: "Proof assistant for the λΠ-calculus modulo rewriting"
+description: """
+Lambdapi is an interactive proof assistant for the λΠ-calculus modulo
+rewriting. It can call external automated theorem provers via Why3.
+The user manual is on https://lambdapi.readthedocs.io/.
+A standard library and other developments are available on
+https://github.com/Deducteam/opam-lambdapi-repository/. An extension
+for Emacs is available on MELPA. An extension for VSCode is available
+on the VSCode Marketplace. Lambdapi can read Dedukti files. It
+includes checkers for local confluence and subject reduction. It also
+provides commands to export Lambdapi files to other formats or
+systems: Dedukti, Coq, HRS, CPF."""
+maintainer: ["dedukti-dev@inria.fr"]
+authors: ["Deducteam and friends"]
+license: "CECILL-2.1"
+homepage: "https://github.com/Deducteam/lambdapi"
+bug-reports: "https://github.com/Deducteam/lambdapi/issues"
+depends: [
+  "dune" {>= "3.18"}
+  "ocaml" {>= "4.14"}
+  "dream-pure" {>= "1.0.0~alpha2"}
+  "dream-httpaf" {>= "1.0.0~alpha3"}
+  "dream" {>= "1.0.0"}
+  "menhir" {>= "20200624"}
+  "sedlex" {>= "3.2"}
+  "alcotest" {with-test}
+  "alt-ergo" {with-test}
+  "dedukti" {with-test & >= "2.7"}
+  "timed" {>= "1"}
+  "pratter" {>= "5" & < "6"}
+  "camlp-streams" {>= "5"}
+  "why3" {>= "1.8"}
+  "yojson" {>= "1.6"}
+  "stdlib-shims" {>= "0.1"}
+  "odoc" {with-doc}
+  "lwt_ppx" {>= "1"}
+  "uri" {>= "1.1"}
+  "dune-site" {>= "3.15"}
+  "ppx_inline_test" {>= "v0.16.1"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/Deducteam/lambdapi.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/Deducteam/lambdapi/releases/download/4.0.0/lambdapi-4.0.0.tbz"
+  checksum: [
+    "sha256=96babaa8e5f75c1fba42bd2670ebf418bed95db9b5f83711d225effcb99f1930"
+    "sha512=fe4250db5d41afddd95207f653f8362ed7f5dc296dcd78f7ca77365a548e555c4f75978e3aff2925100194a029f7ef6b8913eb23f35f8eb0b5943ecca3959d44"
+  ]
+}
+x-commit-hash: "d5ac7158016abcab1417c37fd08d4c3b5969ba59"
