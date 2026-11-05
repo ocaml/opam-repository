@@ -1,0 +1,29 @@
+diff --git a/lib/dune b/lib/dune
+index a53d0eb..46938bd 100644
+--- a/lib/dune
++++ b/lib/dune
+@@ -5,5 +5,5 @@
+   (language c)
+   (names secure_fs_stubs)
+   (flags
+-   (-Wall -Wextra -Werror)))
++   (:standard -Wall -Wextra -Werror)))
+  (libraries yojson eio unix base64 digestif mirage-crypto-ec))
+diff --git a/lib/secure_fs_stubs.c b/lib/secure_fs_stubs.c
+index 838fa38..f164bd6 100644
+--- a/lib/secure_fs_stubs.c
++++ b/lib/secure_fs_stubs.c
+@@ -823,8 +823,11 @@ CAMLprim value cwr_secure_artifact_store_publish(value vrootfd, value vrel,
+   while (off < len) {
+     if (cwr_test_store_fail_write) {
+       cwr_test_store_fail_write = 0; n = -1; errno = EIO;
+-    } else do { n = write(tmpfd, String_val(vcontent) + off, len - off); }
+-    while (n < 0 && errno == EINTR); if (n <= 0) {
++    } else {
++      do { n = write(tmpfd, String_val(vcontent) + off, len - off); }
++      while (n < 0 && errno == EINTR);
++    }
++    if (n <= 0) {
+       error_op = "write immutable artifact"; saved = errno ? errno : EIO; goto fail;
+     }
+     off += (size_t)n; }
