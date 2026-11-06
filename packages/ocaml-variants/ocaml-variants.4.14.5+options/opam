@@ -8,19 +8,12 @@ opam-version: "2.0"
 # This number should be bumped whenever a pertinent change is made.
 x-revision: "3"
 license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
-synopsis: "Latest 4.14 development"
+synopsis: "Official release of OCaml 4.14.5"
 maintainer: [
   "David Allsopp <dra27@dra27.uk>"
   "Florian Angeletti <florian.angeletti@inria.fr>"
 ]
-authors: [
-  "Xavier Leroy"
-  "Damien Doligez"
-  "Alain Frisch"
-  "Jacques Garrigue"
-  "Didier Rémy"
-  "Jérôme Vouillon"
-]
+authors: ["Xavier Leroy" "Damien Doligez" "Alain Frisch" "Jacques Garrigue" "Didier Rémy" "Jérôme Vouillon"]
 homepage: "https://ocaml.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 dev-repo: "git+https://github.com/ocaml/ocaml.git#4.14"
@@ -33,24 +26,6 @@ depends: [
   "base-bigarray" {post}
   "base-threads" {post}
 
-  "ocaml-beta" {opam-version < "2.1.0"}
-
-  # Architecture (non-Windows)
-  # opam-repository at present requires that ocaml-base-compiler is installed
-  # using an architecture which matches the machine's, since arch is used in
-  # available fields. Cross-compilation at this stage is an unstable accident.
-  "host-arch-arm32" {arch = "arm32" & post}
-  "host-arch-arm64" {arch = "arm64" & post}
-  "host-arch-ppc64" {arch = "ppc64" & post}
-  "host-arch-riscv64" {arch = "riscv64" & post}
-  "host-arch-s390x" {arch = "s390x" & post}
-  # The Windows ports explicitly select the architecture (see below) this
-  # facility is not yet available for other platforms.
-  "host-arch-x86_32" {os != "win32" & arch = "x86_32" & post}
-  ("host-arch-x86_64" {os != "win32" & arch = "x86_64" & post} |
-   ("host-arch-x86_32" {os != "win32" & arch = "x86_64" & post} & "ocaml-option-32bit" {os != "win32" & arch = "x86_64"}))
-  "host-arch-unknown" {os != "win32" & arch != "arm32" & arch != "arm64" & arch != "ppc64" & arch != "riscv64" & arch != "s390x" & arch != "x86_32" & arch != "x86_64" & post}
-
   # Port selection (Windows)
   # amd64 mingw-w64 / MSVC
   (("arch-x86_64" {os = "win32" & arch = "x86_64"} &
@@ -58,14 +33,15 @@ depends: [
   # i686 mingw-w64 / MSVC
    ("arch-x86_32" {os = "win32"} &
      ("system-mingw" | "system-msvc")) |
-  # Non-Windows systems
-   "host-system-other" {os != "win32" & post})
+  # Non-Windows systems need to install something to satisfy this formula, so
+  # repeat the base-unix dependency
+   "base-unix" {os != "win32" & post})
 
   # Support Packages
   "flexdll" {>= "0.36" & os = "win32"}
 ]
 conflict-class: "ocaml-core-compiler"
-flags: [ compiler avoid-version ]
+flags: compiler
 build-env: MSYS2_ARG_CONV_EXCL = "*"
 setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
 x-env-path-rewrite: [
@@ -107,13 +83,13 @@ build: [
     "--host=i386-apple-darwin13.2.0" {ocaml-option-32bit:installed & os="macos"}
     "PARTIALLD=ld -r -melf_i386" {ocaml-option-32bit:installed & os="linux"}
     "LIBS=-static" {ocaml-option-static:installed}
-    "--disable-warn-error"
   ]
   [make "-j%{jobs}%"]
 ]
 install: [make "install"]
 url {
-  src: "https://github.com/ocaml/ocaml/archive/4.14.tar.gz"
+  src: "https://github.com/ocaml/ocaml/releases/download/4.14.5/ocaml_4.14.5.tar.gz"
+  checksum: "sha256=608c30e5b97fc4568741db8e5e674a5a081ef08a3c4d17172deb1dc6c8825037"
 }
 depopts: [
   "ocaml-option-32bit"
@@ -128,3 +104,11 @@ depopts: [
   "ocaml-option-nnp"
   "ocaml-option-nnpchecker"
 ]
+extra-source "ocaml-variants.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/8c17fd444391392c5f9801241374d749c080c1a8/ocaml-variants.install"
+  checksum: [
+    "sha256=79f2a1a5044a91350a0eb6ce12e261a72a2855c094c425cddf3860e58c486678"
+    "md5=3e969b841df1f51ca448e6e6295cb451"
+  ]
+}
