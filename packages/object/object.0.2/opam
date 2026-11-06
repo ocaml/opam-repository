@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "A unified interface for reading and writing object file formats"
+description:
+  "A unified interface for reading and writing object file formats"
+maintainer: ["Tim McGilchrist <timmcgil@gmail.com>"]
+authors: ["Tim McGilchrist <timmcgil@gmail.com>"]
+license: "MIT"
+tags: ["elf" "object" "mach-o" "pe" "coff"]
+homepage: "https://github.com/tmcgilchrist/object"
+bug-reports: "https://github.com/tmcgilchrist/object/issues"
+depends: [
+  "dune" {>= "3.23"}
+  "ocaml" {>= "4.14"}
+  "integers" {>= "0.8"}
+  "cmdliner" {with-test & >= "2.1"}
+  "alcotest" {with-test & >= "1.9.0"}
+  ("hedgehog" {with-test & = "0.1"} | "ocaml" {with-test & < "5.1"})
+  "ocamlformat" {with-dev-setup & = "0.29.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/tmcgilchrist/object.git"
+x-maintenance-intent: ["(latest)"]
+available: arch != "ppc64"
+url {
+  src:
+    "https://github.com/tmcgilchrist/object/releases/download/0.2/object-0.2.tbz"
+  checksum: [
+    "sha256=9c5c1294abd9075f25639ec2a10f7673b7aa6f5fd8915d24d39e17195a05bd5c"
+    "sha512=569061b63b8c537a5fc2bc900b6c9cf2b8e0fd01937980eb5fa94cf48479847b5f732d6f0d125ac1d5bffdaa9555417905ff271bea12d4ce9b24d2e1ef28fcd1"
+  ]
+}
+x-commit-hash: "f4061383ea92f4c11c13d5928be5c2add28449ca"
