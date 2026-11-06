@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis:
+  "Compile OCaml programs with C stubs to WebAssembly with emscripten"
+description:
+  "ocaml-emcc runs OCaml bytecode on an emscripten build of ocamlrun and links the C stubs of the program and of its dependencies statically, which makes FFI-heavy libraries (zarith/gmp, apron, libclang...) usable in the browser and in node. The runtime is rebuilt from the sources of the switch's own compiler (any version from 4.08, including 5.x), C libraries come from recipes. Requires the emscripten SDK (emsdk) in PATH."
+maintainer: ["rboudrouss <r.boudrouss@gmail.com>"]
+authors: ["rboudrouss <r.boudrouss@gmail.com>"]
+license: ["MIT" "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"]
+homepage: "https://github.com/rboudrouss/ocaml-emcc"
+bug-reports: "https://github.com/rboudrouss/ocaml-emcc/issues"
+depends: [
+  "dune" {>= "3.11"}
+  "ocaml" {>= "4.08"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/rboudrouss/ocaml-emcc.git"
+post-messages: [
+  "ocaml-emcc needs the emscripten SDK, with emcc in PATH: https://emscripten.org/docs/getting_started/downloads.html. It rebuilds C code from the sources opam used: install packages with --keep-build-dir (or OPAMKEEPBUILDDIR=true), else they are fetched again with opam source."
+]
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/rboudrouss/ocaml-emcc/archive/refs/tags/0.5.1.tar.gz"
+  checksum: [
+    "sha256=20b6a4c93cacf239e0122498d681ca695aca3d6de984b8596fc9fadd25af75cd"
+    "sha512=3f0338eb641f668627927ab86df328359faefc12e0186c0e06da5ab3ec0866e33e3c488ab2365fd234a3eda9e41f19b329ba7f137acb36ddcf774c6591905c50"
+  ]
+}
