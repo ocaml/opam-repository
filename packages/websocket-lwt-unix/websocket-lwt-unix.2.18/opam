@@ -1,0 +1,61 @@
+opam-version: "2.0"
+synopsis: "Websocket library (Lwt)"
+description: """
+The WebSocket Protocol enables two-way communication between a client
+running untrusted code in a controlled environment to a remote host
+that has opted-in to communications from that code.
+
+The security model used for this is the origin-based security model
+commonly used by web browsers. The protocol consists of an opening
+handshake followed by basic message framing, layered over TCP.
+
+The goal of this technology is to provide a mechanism for
+browser-based applications that need two-way communication with
+servers that does not rely on opening multiple HTTP connections (e.g.,
+using XMLHttpRequest or <iframe>s and long polling).
+"""
+maintainer: ["Vincent Bernardoff <vb@luminar.eu.org>"]
+authors: ["Vincent Bernardoff <vb@luminar.eu.org>"]
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/vbmithr/ocaml-websocket"
+doc: "https://vbmithr.github.io/ocaml-websocket/doc"
+bug-reports: "https://github.com/vbmithr/ocaml-websocket/issues"
+depends: [
+  "dune" {>= "2.9"}
+  "ocaml" {>= "4.06.0"}
+  "websocket" {= version}
+  "logs" {>= "0.8.0"}
+  "lwt" {>= "5.0.0"}
+  "conduit-lwt-unix"
+  "cohttp-lwt-unix" {>= "6.0.0"}
+  "mirage-crypto-rng" {>= "1.0.0"}
+  "sexplib"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/vbmithr/ocaml-websocket.git"
+url {
+  src:
+    "https://github.com/vbmithr/ocaml-websocket/releases/download/2.18/websocket-2.18.tbz"
+  checksum: [
+    "sha256=d36994a7cdc693eae04d80a09f47e3e42482bdfb1576e0d925a896c7961ba096"
+    "sha512=6e0071767dee97a6e4c5441e3b89db18b07447fcfe436e8d0dc202fe5cc6d4b3a68eb748c42b8ed26fe73caaef784005e5481b4bdb41bf1d75caf38890d0c4f0"
+  ]
+}
+x-commit-hash: "f236fdfa53241b8dab96d28bab8adab5b5ffc551"
