@@ -1,0 +1,43 @@
+# The source release uses the Dune package name ocaml-quint-connect.
+# The opam package is named quint-connect to follow opam-repository policy.
+opam-version: "2.0"
+synopsis:
+  "Check OCaml implementations and execution logs against Quint models"
+description:
+  "Replays Quint ITF (Informal Trace Format) traces against OCaml drivers or handlers and compares observable state with the model. Validates implementation logs against a Quint model through user-defined observations, including partial observations and unobserved steps. Includes reports, PPX test helpers and the quint-connect CLI."
+maintainer: ["Mathias Bourgoin <mathias.bourgoin@gmail.com>"]
+authors: ["Mathias Bourgoin <mathias.bourgoin@gmail.com>"]
+license: "MIT"
+homepage: "https://gitlab.com/nomadic-labs/ai-harness/ocaml-quint-connect"
+bug-reports:
+  "https://gitlab.com/nomadic-labs/ai-harness/ocaml-quint-connect/-/issues"
+depends: [
+  "ocaml" {>= "5.2.1"}
+  "dune" {>= "3.24"}
+  "yojson" {>= "3.0.0"}
+  "ppxlib" {>= "0.26"}
+  "alcotest" {with-test}
+  "sqlite3" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    "ocaml-quint-connect"
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+install: [["dune" "install" "-p" "ocaml-quint-connect" "--prefix" prefix]]
+conflicts: ["ocaml-quint-connect"]
+dev-repo:
+  "git+https://gitlab.com/nomadic-labs/ai-harness/ocaml-quint-connect.git"
+url {
+  src: "https://gitlab.com/nomadic-labs/ai-harness/ocaml-quint-connect/-/archive/v0.2.0/ocaml-quint-connect-v0.2.0.tar.gz"
+  checksum: "sha256=52a30cb123679ecaf93066c0b3fc336a195e7ca140dbb1ede1d87b4db29ab893"
+}
