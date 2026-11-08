@@ -1,0 +1,63 @@
+name: Run opam-review on each PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# Give the action permission to write comments to the PR
+permissions:
+  pull-requests: write
+
+jobs:
+  opam-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up OCaml
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "5.5"
+
+      - name: Install opam-review
+        run: |
+          opam pin add -y https://github.com/hannesm/opam-review.git
+
+      - name: Execute opam-review
+        env:
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          NUM_COMMITS: ${{ github.event.pull_request.commits }}
+        run: |
+          MERGE_BASE=$(git rev-parse HEAD^2~$NUM_COMMITS)
+          eval $(opam env)
+          opam-review --head $PR_HEAD --commit $MERGE_BASE > script_output.txt 2>&1
+
+      - name: Load opam-review output
+        id: load_output
+        run: |
+          echo "SCRIPT_RESULT<<EOF" >> $GITHUB_ENV
+          cat script_output.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      # Post the environment variable as a comment on the PR
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = process.env.SCRIPT_RESULT;
+            const body = `### 🤖 Opam Review Results
+            
+            \`\`\`text
+            ${output}
+            \`\`\``;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            })
