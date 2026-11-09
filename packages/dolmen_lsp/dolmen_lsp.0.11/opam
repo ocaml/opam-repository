@@ -1,0 +1,43 @@
+opam-version: "2.0"
+maintainer: "Guillaume Bury <guillaume.bury@gmail.com>"
+authors: "Guillaume Bury <guillaume.bury@gmail.com>"
+license: "BSD-2-Clause"
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs "@install" "@runtest" {with-test} "@doc" {with-doc}]
+]
+depends: [
+  # linol~0.8 -> ocaml >= 4.14
+  "ocaml" {>= "4.14.2"}
+  "dolmen" {= version }
+  "dolmen_type" {= version }
+  "dolmen_loop" { = version }
+  "dune" { >= "3.0" }
+  "ocaml-syntax-shims"
+  "odoc" { with-doc }
+  "logs"
+  "linol" { >= "0.10" & < "0.11" }
+  "linol-lwt" { >= "0.10" & < "0.11" }
+  # override transitive dependency version from linol due
+  # to yojson dropping support for tuples and variants in
+  # https://github.com/ocaml-community/yojson/pull/158
+  # https://github.com/c-cube/linol/issues/57#issuecomment-3154170759
+  # https://github.com/Gbury/dolmen/pull/241#issuecomment-3154175998
+  "yojson" { < "3.0.0" }
+]
+tags: [ "logic" "computation" "automated theorem prover" "lsp" "language server protocol"]
+homepage: "https://github.com/Gbury/dolmen"
+dev-repo: "git+https://github.com/Gbury/dolmen.git"
+bug-reports: "https://github.com/Gbury/dolmen/issues"
+
+doc: "https://gbury.github.io/dolmen"
+synopsis: "A LSP server for automated deduction languages"
+url {
+  src:
+    "https://github.com/Gbury/dolmen/releases/download/v0.11/dolmen-0.11.tbz"
+  checksum: [
+    "sha256=235c78a1f4dabc6c116d3d1cf51af286cb3fbed713c6116cd5d1b1cbed0cc87f"
+    "sha512=a5ca97d43a2e5ef2b03f5731e48cbfe9f09d7824e5839a9a614ca17d50ba71836b8d45b494f58df2566cf5e1983dad5fd75a3ce75f2c0fc5a9572f7ff4d97d2f"
+  ]
+}
+x-commit-hash: "bb30e996a00fa2f4769ef6a39472c461f8729b75"
