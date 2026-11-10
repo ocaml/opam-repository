@@ -1,0 +1,53 @@
+opam-version: "2.0"
+homepage: "http://gmplib.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "GPL-1.0-or-later"
+synopsis: "Virtual package relying on a GMP static lib system installation"
+authors: "Kakadu"
+maintainer: "Kakadu"
+flags: conf
+
+build: [
+  [ "sh" "-c" "cc $(pkg-config --cflags gmp) test2.c -Wl,-Bstatic $(pkg-config --libs gmp) -Wl,-Bdynamic -o test.exe" ] { os != "win32" & os-family != "homebrew" }
+  [ "sh" "-c" "clang $(pkg-config --cflags gmp) test2.c $(brew --prefix)/lib/libgmp.a -o test.exe"] { os-family = "homebrew" }
+  [
+    "sh"
+    "-exc"
+    "$(ocamlc -config-var c_compiler) -c $CFLAGS -I/usr/local/include test2.c -static"
+  ] {os = "win32" & os-distribution = "cygwinports"}
+  [
+    "sh"
+    "-exc"
+    "%{host-arch-x86_64:installed?x86_64:}%%{host-arch-x86_32:installed?i686:}%-w64-mingw32-gcc -c $CFLAGS test2.c -static"
+  ] {os = "win32" & os-distribution != "cygwinports"}
+]
+depends: [
+  "conf-gmp" { os-family != "fedora" & os-distribution != "centos" }
+  "conf-pkg-config"
+  (("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gmp-i686" {os = "win32" & os-distribution != "cygwinports"}) |
+   ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} & "conf-mingw-w64-gmp-x86_64" {os = "win32" & os-distribution != "cygwinports"}))
+]
+depexts: [
+  [ "gmp" "gmp-devel" "gmp-static"] { os-family = "fedora" }
+  [ "gmp-static" ]  {os-distribution = "alpine"}
+
+]
+
+x-ci-accept-failures: [
+  # Because of no libgmp.a
+  "archlinux"
+  "centos-9"    # LLM says that CodeReady Builder repo needed
+  "centos-10"
+  "opensuse-16.0"
+  "opensuse-tumbleweed"
+]
+x-maintenance-intent: ["(latest)"]
+
+extra-source "test2.c" {
+  src:
+    "https://github.com/ocaml/opam-source-archives/raw/refs/heads/main/patches/conf-gmp-static/test2.c"
+  checksum: [
+    "sha256=9449d34b7f194766da4faa500fda6ffca98d93bba875fd3905ea3c5ce680d92e"
+    "md5=7a7bae4b2ed77da6e7762ebc7b62dcf6"
+  ]
+}
