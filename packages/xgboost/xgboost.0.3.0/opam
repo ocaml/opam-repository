@@ -1,0 +1,89 @@
+# Hand-maintained (dune-project sets generate_opam_files false): the
+# hybrid native dependency needs a platform-filtered conf-libxgboost
+# dependency, conf-cmake/conf-c++ build-deps, and a custom available
+# filter, none of which the dune (package ...) stanza can express.
+opam-version: "2.0"
+synopsis: "OCaml bindings for the XGBoost gradient boosting library"
+description: """
+Native OCaml bindings to libxgboost (>=3.0). Three-layer FFI:
+the upstream stable C ABI, statically generated ctypes stubs,
+and a high-level GC-aware OCaml API. Supports dense and sparse
+DMatrix construction (Bigarray, zero-copy), training, prediction,
+JSON config, and external-memory streaming via a callback iterator.
+
+The native libxgboost dependency is satisfied in one of two ways,
+decided at build time: a system libxgboost >= 3.0 discovered through
+pkg-config (installed through conf-libxgboost where the platform
+packages it),
+or, failing that, a vendored copy of XGBoost built from source with
+CMake and linked statically (needs no network)."""
+maintainer: ["Cuihtlauac ALVARADO <cuihtlauac@tarides.com>"]
+authors: ["Cuihtlauac ALVARADO <cuihtlauac@tarides.com>"]
+license: "MIT"
+tags: ["xgboost" "machine-learning" "gradient-boosting" "bindings" "ctypes"]
+homepage: "https://github.com/tarides/xgboost-ocaml"
+bug-reports: "https://github.com/tarides/xgboost-ocaml/issues"
+depends: [
+  "dune" {>= "3.23"}
+  "ocaml" {>= "4.11"}
+  "dune-configurator" {build}
+  "conf-cmake" {build}
+  "conf-c++" {build}
+  # Fast path: auto-install a system libxgboost on platforms that ship
+  # one >= 3.0, so pkg-config finds it at build time. conf-libxgboost is
+  # a generic presence probe; the >= 3.0 requirement is enforced by
+  # config/provider/detect.ml, which falls back to compiling the vendored
+  # sources (cmake/g++ from conf-* above, built by config/discover.ml)
+  # when the system lib is absent or too old. This filter is deliberately conservative: a platform we
+  # omit merely vendors (harmless), whereas listing one that lacks the
+  # package would hard-fail with no fallback. OpenMP runtime comes with
+  # each path: gcc's libgomp on the vendored build, the system package
+  # (Homebrew formula / FreeBSD port) on the fast path.
+  "conf-libxgboost"
+    {(os-distribution = "debian" & os-version >= "13") |
+     (os-distribution = "ubuntu" & os-version >= "25.10") |
+     # Linux Mint reuses its base's libxgboost-dev: LMDE 7 is trixie
+     # (3.0.0); Mint's next mainline release (VERSION_ID >= 23) is
+     # Ubuntu 26.04 (3.0.4). Mint 21/22 and LMDE 6 ship < 3.0.
+     (os-distribution = "linuxmint" &
+      ((os-family = "debian" & os-version >= "7") |
+       (os-family = "ubuntu" & os-version >= "23"))) |
+     (os = "macos" & os-distribution = "homebrew") |
+     os = "freebsd"}
+  "ctypes" {>= "0.20"}
+  "ctypes-foreign" {>= "0.20"}
+  "alcotest" {with-test}
+  "qcheck-core" {with-test & >= "0.20"}
+  "qcheck-alcotest" {with-test & >= "0.20"}
+  "odoc" {with-doc}
+]
+# The vendored fallback build is Unix-only (cygwin/mingw can't run the
+# CMake path built by config/discover.ml), and there is no system libxgboost
+# on Windows either. Restrict to non-Windows platforms. riscv64 is also
+# excluded: the property-test executable crashes at runtime there (a
+# separate issue from the build), pending diagnosis.
+available: [ os != "win32" & arch != "riscv64" ]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/tarides/xgboost-ocaml.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/tarides/xgboost-ocaml/archive/refs/tags/v0.3.0.tar.gz"
+  checksum: [
+    "md5=6d1971616c0b0e3d1a6fb43ad3a09eb2"
+    "sha512=56c94c0720ec6eebfc10c7fcbfc5f3d84c97652e4ae6cf4ae522d9781e5e60b8b00ff4addb826fba908cf8790d6ce088277ee4829ee54274ccc89b834f638d5d"
+  ]
+}
