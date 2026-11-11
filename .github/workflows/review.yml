@@ -39,13 +39,7 @@ jobs:
         id: load_output
         run: |
           echo "SCRIPT_RESULT<<EOF" >> $GITHUB_ENV
-          if [ -s script_output.txt ]; then
-            while read -r LINE; do
-              echo "- $LINE" >> $GITHUB_ENV;
-            done < script_output.txt
-          else
-            echo "✅ All tests passed" >> $GITHUB_ENV
-          fi;
+          cat script_output.txt >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
       # Post the environment variable as a comment on the PR
@@ -59,7 +53,6 @@ jobs:
             
             ${output}
             `;
-            
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
