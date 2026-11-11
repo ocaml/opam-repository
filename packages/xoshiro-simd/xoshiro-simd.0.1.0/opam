@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "SIMD-accelerated xoshiro256 PRNG"
+description: """
+A fast, non-cryptographic pseudo-random number generator using SIMD-accelerated
+xoshiro256++ (integer output) and xoshiro256+ (float output), with bulk
+Bigarray fill functions and an interface compatible with the OCaml standard
+Random module."""
+maintainer: ["Chris A <onetimerobot@protonmail.com>"]
+authors: ["Chris A <onetimerobot@protonmail.com>"]
+x-maintenance-intent: ["(latest)"]
+license: "ISC"
+homepage: "https://github.com/luminous-moose/xoshiro-simd"
+dev-repo: "git+https://github.com/luminous-moose/xoshiro-simd.git"
+bug-reports: "https://github.com/luminous-moose/xoshiro-simd/issues"
+tags: ["random" "prng" "xoshiro" "simd"]
+depends: [
+  "ocaml" {>= "4.13.0"}
+  "dune" {>= "3.15.3"}
+  "base" {with-test & >= "v0.14.1"}
+  "stdio" {with-test & >= "v0.14.0"}
+  "hex" {with-test & >= "1.3.0"}
+  "ppx_expect" {with-test & >= "v0.14.1"}
+  "ppx_inline_test" {with-test & >= "v0.14.1"}
+  "odoc" {with-doc & >= "2.1.1"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/luminous-moose/xoshiro-simd/archive/refs/tags/0.1.0.tar.gz"
+  checksum: [
+    "md5=f743e85717ddbab47c2e0d536e6c7ca5"
+    "sha512=ba92c3096a0a9d211d862ce5f386d9195f6c06bd79d36dad5f8c03679ee85b2d585d0af2b5c6963127c428af49067a56a50717e4fb43c6033b61983434050fef"
+  ]
+}
