@@ -1,0 +1,43 @@
+opam-version: "2.0"
+synopsis: "Parser for the Nix expression language"
+description:
+  "nix-syntax parses Nix expressions into a syntax tree that keeps the source locations of every node and the comments, so tools can inspect and rewrite Nix files without losing their layout."
+maintainer: ["Yoshiki Hidaka <y.hidaka.kobe@gmail.com>"]
+authors: ["Yoshiki Hidaka <y.hidaka.kobe@gmail.com>"]
+license: "ISC"
+tags: ["nix" "parser"]
+homepage: "https://github.com/radish-miyazaki/nix-syntax"
+bug-reports: "https://github.com/radish-miyazaki/nix-syntax/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.14"}
+  "menhir" {build & >= "20230608"}
+  "menhirLib" {>= "20230608"}
+  "sedlex" {>= "3.2"}
+  "cmdliner" {>= "1.3"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/radish-miyazaki/nix-syntax.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/radish-miyazaki/nix-syntax/releases/download/v0.2.0/nix-syntax-0.2.0.tbz"
+  checksum: [
+    "sha256=aaac044e2253202bbdb499f167a1158813d47b5db8d8b0b3bbaba6e2afb4059e"
+    "sha512=01ec7378562a3b2687dad4dfd073be4cc3a2d321ccd42f543fa9916410d7f7534a7a4a8dbc64ceba425295b77bf64dd20dc71dd76685c4ded76acc19e560c6ae"
+  ]
+}
