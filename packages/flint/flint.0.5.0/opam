@@ -1,0 +1,54 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings to the FLINT 3 C library"
+maintainer: ["François Bobot"]
+authors: ["François Bobot"]
+license: "LGPL-2.1-only"
+homepage: "https://github.com/bobot/ocaml-flint"
+bug-reports: "https://github.com/bobot/ocaml-flint/issues"
+depends: [
+  "dune" {>= "3.7"}
+  "conf-flint" {>= "3.0"}
+  "zarith" {>= "1.12"}
+  "camlid" {>= "0.3"}
+  "conf-mpfr" {>= "3"}
+  "dune-site" {with-test}
+  "ocaml" {>= "4.14"}
+  "conf-pkg-config" {>= "2"}
+  "dune-configurator"
+  "odoc" {with-doc}
+]
+conflicts: [
+  "colibri2" {< "0.7"}  # colibri2 0.6 uses CA.hash, fixed adding option (changed in flint 0.5.0)
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/bobot/ocaml-flint.git"
+messages: [ "Problem with the installation of the external
+             libraries can be fixed using version 0.3 which
+             compile them locally" { failure } ]
+x-maintenance-intent: ["(latest)"]
+x-ci-accept-failures: [
+  "cygwin"        # Cygwin only packages FLINT 2.8.4 (libflint-devel); flint needs FLINT 3
+  "cygwin-mingw"  # same, for the GitHub "Windows CI" (build: cygwin)
+]
+url {
+  src:
+    "https://github.com/bobot/ocaml-flint/releases/download/0.5.0/flint-0.5.0.tbz"
+  checksum: [
+    "sha256=71c3f6ae1b1d23f140b0a5509c7989e33da6f4def45f64f6d71ecb41b81db731"
+    "sha512=47cc15d046a7518f0a3b452785c604d58df456340469a632bd613af5359f51a99c591fce8bf9ca8f8c47e07caa3e69f053c73c9c79d962ed9761ccff25aec7e0"
+  ]
+}
+x-commit-hash: "450aa21280a476e1f393299c507c47e8f50f3008"
