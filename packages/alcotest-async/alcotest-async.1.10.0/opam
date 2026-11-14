@@ -1,0 +1,54 @@
+opam-version: "2.0"
+synopsis: "Async-based helpers for Alcotest"
+description: "Async-based helpers for Alcotest"
+maintainer: ["thomas@gazagnaire.org"]
+authors: ["Thomas Gazagnaire"]
+license: "ISC"
+homepage: "https://github.com/mirage/alcotest"
+doc: "https://mirage.github.io/alcotest"
+bug-reports: "https://github.com/mirage/alcotest/issues"
+depends: [
+  "dune" {>= "3.17"}
+  "re" {with-test}
+  "fmt" {with-test}
+  "cmdliner" {with-test & >= "1.2.0"}
+  "core" {>= "v0.16.0"}
+  "core_unix" {>= "v0.16.0"}
+  "base"
+  "async_kernel"
+  "ocaml" {>= "4.14.0"}
+  "alcotest" {= version}
+  "async" {>= "v0.16.0"}
+  "async_unix" {>= "v0.16.0"}
+  "ppx_jane" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mirage/alcotest.git"
+x-maintenance-intent: [ "(latest)" ]
+# Temporary, so that ocaml-ci tests the other packages on Windows: drop this
+# when ocaml-ci handles unavailable dependencies per package, or when core_unix
+# supports Windows.
+available: [os != "win32"]
+url {
+  src:
+    "https://github.com/mirage/alcotest/releases/download/1.10.0/alcotest-1.10.0.tbz"
+  checksum: [
+    "sha256=e41f59b3daeab927dab6bbecb685edf66c872988f37268568079a9bdfc31497c"
+    "sha512=c977ed8073abcd3c14d4d9e50acb93c1617bce8b455cab16bc35185e302bbc1a96b96acc937a51cedc2a5e451f7172f78b9087e6d4f3efa8632ac66e5be87be9"
+  ]
+}
+x-commit-hash: "f25c8b80e2c0e9bea526cf127a91903442519b9d"
