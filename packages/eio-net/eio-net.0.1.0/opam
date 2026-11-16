@@ -1,0 +1,64 @@
+opam-version: "2.0"
+synopsis: "Eio network backends and test helpers"
+description: """
+Frame channels for Eio over datagram sockets, length-prefixed streams
+and in-memory pairs. An in-memory network, and a check that runs a
+workload on it under network faults, test protocols without real
+sockets. POSIX adapters add batched datagrams, Unix-domain sockets
+and interface addresses.
+"""
+maintainer: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+authors: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+license: "ISC"
+tags: ["eio" "network" "framing" "test"]
+homepage: "https://github.com/samoht/ocaml-eio-net"
+bug-reports: "https://github.com/samoht/ocaml-eio-net/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "hermetic" {>= "0.1.0"}
+  "ocaml" {>= "5.3"}
+  "eio" {>= "1.6"}
+  "cstruct" {>= "6.0.0"}
+  "fmt"
+  "logs"
+  "bytesrw" {>= "0.2.0"}
+  "mtime" {>= "2.0.0"}
+  "psq" {>= "0.2.0"}
+  "domain-local-await" {>= "0.1.0"}
+  "ipaddr" {>= "5.3.0"}
+  "fpath"
+  "conf-linux-libc-dev" {os = "linux"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "alcobar" {with-test}
+  "ohex" {with-test}
+  "eio_main" {with-test}
+  "eio_posix" {with-test}
+  "mdx" {with-test & >= "2.3.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/samoht/ocaml-eio-net.git"
+x-maintenance-intent: ["(latest)"]
+available: os != "win32"
+url {
+  src:
+    "https://github.com/samoht/ocaml-eio-net/releases/download/0.1.0/eio-net-0.1.0.tbz"
+  checksum: [
+    "sha256=2eac7d72af008a48b04bec2b25690d7d8c72a61fce7619ae96b6ed3f46eab0bb"
+    "sha512=101cc0e843410f04aa07d7b35dc13bf67ea485037ec2603d588a3ceb92e0a90c8783729aff9b8a9406c391736acf822406d817be5874194cbf3ea6fa127b1cbb"
+  ]
+}
+x-commit-hash: "64cbd766c52e3b2f5c0bf4fa74328c4fef1d696e"
