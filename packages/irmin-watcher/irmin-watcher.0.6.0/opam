@@ -1,0 +1,59 @@
+opam-version: "2.0"
+synopsis: "Portable Irmin watch backends using FSevents or Inotify"
+description: """
+irmin-watcher implements [Irmin's watch hooks][watch] for various OS,
+using FSevents in macOS and Inotify on Linux.
+
+irmin-watcher is distributed under the ISC license.
+
+[watch]: http://mirage.github.io/irmin/irmin/Irmin/Private/Watch/index.html#type-hook
+"""
+maintainer: ["Thomas Gazagnaire"]
+authors: ["Thomas Gazagnaire"]
+license: "ISC"
+homepage: "https://github.com/mirage/irmin-watcher"
+doc: "https://mirage.github.io/irmin-watcher/"
+bug-reports: "https://github.com/mirage/irmin-watcher/issues"
+depends: [
+  "dune" {>= "2.8"}
+  "ocaml" {>= "5.2.0"}
+  "alcotest" {with-test}
+  "mtime" {>= "2.1.0"}
+  "inotify" {>= "2.6" & os = "linux"}
+  "inotify-eio" {>= "2.6" & os = "linux"}
+  "cf-lwt" {>= "0.4" & os = "macos"}
+  "lwt" {os = "macos"}
+  "eio" {>= "1.6"}
+  "optint"
+  "eio_main" {with-test & >= "1.0"}
+  "logs"
+  "fmt"
+  "astring"
+  "fsevents-lwt" {os = "macos"}
+  "lwt_eio" {with-test | os = "macos"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/mirage/irmin-watcher.git"
+url {
+  src:
+    "https://github.com/mirage/irmin-watcher/releases/download/0.6.0/irmin-watcher-0.6.0.tbz"
+  checksum: [
+    "sha256=e2302bc0be07fe9cd644ad4ce7191460ea63aab4309f360df909fe19b24fa477"
+    "sha512=f6e207511067ee89edcf68bb94deece027de57e9fb65ae60a6bc20642cf559a930278bacf5b9f41b5d3334734713aed86ea57a6247c8da9d86d961a3e304e794"
+  ]
+}
+x-commit-hash: "c822643c77de97f25dc470a5a6f039b9801da715"
