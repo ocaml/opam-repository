@@ -1,0 +1,66 @@
+opam-version: "2.0"
+synopsis: "Filesystem helpers and an in-memory backend for Eio"
+description: """
+eio-fs is an in-memory filesystem for Eio, with wrappers that inject
+faults and simulate power loss for crash-consistency tests. It also writes
+files atomically and durably on any backend, binds POSIX calls that Eio
+lacks, and embeds a directory tree in a program. The in-memory backend is
+adapted from Patrick Ferris's eio_mem (https://git.sirref.org/eio_mem)."""
+maintainer: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+authors: [
+  "Thomas Gazagnaire <thomas@gazagnaire.org>"
+  "Thomas Leonard"
+  "Patrick Ferris"
+]
+license: "ISC"
+tags: ["eio" "filesystem" "in-memory"]
+homepage: "https://github.com/samoht/ocaml-eio-fs"
+bug-reports: "https://github.com/samoht/ocaml-eio-fs/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "hermetic" {>= "0.1.0"}
+  "ocaml" {>= "5.3"}
+  "eio" {>= "1.6"}
+  "fmt"
+  "cstruct"
+  "optint"
+  "mtime"
+  "psq"
+  "domain-local-await"
+  "uucp"
+  "uunf"
+  "cmdliner" {>= "1.1.0"}
+  "eio_main"
+  "conf-linux-libc-dev" {os = "linux"}
+  "mdx" {with-test & >= "2.3.0"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "alcobar" {with-test}
+  "eio_posix" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/samoht/ocaml-eio-fs.git"
+x-maintenance-intent: ["(latest)"]
+available: os != "win32"
+url {
+  src:
+    "https://github.com/samoht/ocaml-eio-fs/releases/download/0.1.0/eio-fs-0.1.0.tbz"
+  checksum: [
+    "sha256=b6deaa5df38b2c5894a6011aefacc56733ce1cb536a94e4a5742d5c2ba81c574"
+    "sha512=62a539199a4338053000876db7d480f6e793c863943826f20e037ce620bcae1503b7032fcea7c4e7ac4d949f1e816ad9e1c3832f633f68fe66c86ce63b176fb6"
+  ]
+}
+x-commit-hash: "618cad481a6b5c86b74bff5af8e5c824b1a40ed1"
