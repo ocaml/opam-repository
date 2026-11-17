@@ -1,0 +1,42 @@
+opam-version: "2.0"
+synopsis: "Lightweight inline expect tests, with conditional snapshots"
+description:
+  "ppx_devtools-expect is an inline expect-test ppx in the style of ppx_expect, with snapshots conditional on runtime axes such as the backend or the OCaml version. Tests run natively, with js_of_ocaml and with wasm_of_ocaml."
+maintainer: ["Ocsigen team <dev@ocsigen.org>"]
+authors: ["Ocsigen team <dev@ocsigen.org>"]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/ocsigen/ppx_devtools"
+bug-reports: "https://github.com/ocsigen/ppx_devtools/issues"
+depends: [
+  "dune" {>= "3.20"}
+  "ocaml" {>= "4.13"}
+  "ppxlib" {>= "0.33"}
+  "ppx_devtools-optcomp" {= version}
+  "out-channel-redirect"
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocsigen/ppx_devtools.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/ocsigen/ppx_devtools/releases/download/0.1/ppx_devtools-0.1.tbz"
+  checksum: [
+    "sha256=46ad4e62a213e3c0852c02cd1cc182d88ec89afa284a45a4316cfb3ffc0bcb9c"
+    "sha512=37713e380e9928ec62f30c0bc52b63722ea0a0481043c4140ee96bad9a1782a68fb79d3593ea7b996a49bd479d27d8963b849bf901131eee0dbd4a7c2b3f4512"
+  ]
+}
+x-commit-hash: "c32aa7b02278520c2b6b60d67e1ea71e411cd800"
