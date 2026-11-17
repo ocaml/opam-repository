@@ -1,0 +1,55 @@
+opam-version: "2.0"
+synopsis: "Lwt backend for console"
+description: """
+Runs console's progress rows with Lwt. It finds whether the output is a
+   terminal and its size, redraws the rows, shows the program's output and
+   its Logs messages under the task that printed them, and gives the
+   terminal back when the run's promise resolves, when the program exits
+   and on SIGINT or SIGTERM. On a pipe or in CI each task prints lines
+   instead, or JSON events on request."""
+maintainer: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+authors: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+license: "ISC"
+tags: ["command-line-utilities" "format" "lwt"]
+homepage: "https://github.com/samoht/ocaml-console"
+bug-reports: "https://github.com/samoht/ocaml-console/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "ocaml" {>= "5.4"}
+  "console" {= version}
+  "lwt" {>= "6.1.0"}
+  "base-unix"
+  "mtime" {>= "2.0.0"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "astring" {with-test}
+  "mdx" {with-test}
+  "fmt" {with-test}
+  "logs" {with-test}
+  "matrix" {with-test & >= "0.2.0" & < "0.3.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/samoht/ocaml-console.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/samoht/ocaml-console/releases/download/0.10.0/console-0.10.0.tbz"
+  checksum: [
+    "sha256=cbe791c23d34c14d8f6e7401fe87e6c94a1bd4c061f3c7442520bb9c81af8027"
+    "sha512=872559d32ab26ddfed48edac48e992011e03c0058ce6f483a7e5ed486c1e0313e5af27628c1fc2e393133a5c1066e0c3fe15ee09796c973610e16978d37f3c93"
+  ]
+}
+x-commit-hash: "5362f8b12ac021bb06277397d4716385383e1ba2"
