@@ -1,0 +1,48 @@
+opam-version: "2.0"
+maintainer: "Liang Wang <ryanrhymes@gmail.com>"
+authors: [ "Liang Wang" ]
+license: "MIT"
+homepage: "https://github.com/owlbarn/owl"
+dev-repo: "git+https://github.com/owlbarn/owl.git"
+bug-reports: "https://github.com/owlbarn/owl/issues"
+doc: "https://owlbarn.github.io/owl/"
+synopsis: "OCaml Scientific and Engineering Computing"
+description: """
+Owl: OCaml Scientific and Engineering Computing
+
+Owl is an OCaml numerical library.
+It supports N-dimensional arrays, both dense and sparse matrix operations, linear algebra, regressions, fast Fourier transforms, and many advanced mathematical and statistical functions (such as Markov chain Monte Carlo methods).
+Recently, Owl has implemented algorithmic differentiation which essentially makes developing machine learning and neural network algorithms trivial.
+"""
+
+build: [
+  [ "dune" "subst" ] {dev}
+  [ "dune" "build" "-p" name "-j" jobs ]
+  [ "dune" "runtest" "-p" name "-j" jobs ] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.12.0"}
+  "alcotest" {with-test}
+  "base" {build}
+  "base-bigarray"
+  "conf-openblas" {>= "0.2.1"}
+  "ctypes" {>= "0.16.0"}
+  "dune" {>= "3.16"}
+  "dune-configurator"
+  "owl-base" {= version}
+  "npy"
+]
+# Owl's C stubs read float arrays as flat arrays of doubles.
+conflicts: [ "ocaml-option-no-flat-float-array" ]
+# conf-openblas does not provide OpenBLAS on Windows.
+available: os != "win32"
+x-maintenance-intent: [ "(latest)" ]
+url {
+  src: "https://github.com/owlbarn/owl/releases/download/1.3/owl-1.3.tbz"
+  checksum: [
+    "sha256=b6cf87b15b03632cf2fac82e9c8c160b5b26ae55cce5a3d4ab128dbe82e2b8ac"
+    "sha512=1d44bcd9e7e4b72ad781edd5ffbca8d232183d7f5a7a02e91eefeb0d9d3a54ac2d5c36b18ddea5efc4bb729ce5810b972ab7b2baba4ec2b0f1e0deb2e5eac6d5"
+  ]
+}
+x-commit-hash: "45c5cfdbbec75e304270ad946596b1b15afc2bc0"
