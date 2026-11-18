@@ -1,0 +1,62 @@
+opam-version: "2.0"
+synopsis: "Eio backend for console"
+description: """
+Runs console's progress rows with Eio. It finds whether the output is a
+   terminal and its size, redraws the rows, shows the program's output and
+   its Logs messages under the task that printed them, and gives the
+   terminal back when the run ends, when the program exits and on SIGINT
+   or SIGTERM. On a pipe or in CI each task prints lines instead, or JSON
+   events on request. It also asks for a line, a yes or no or a password
+   on the terminal, and reads keys as they are typed."""
+maintainer: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+authors: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+license: "ISC"
+tags: ["command-line-utilities" "format" "eio"]
+homepage: "https://github.com/samoht/ocaml-console"
+bug-reports: "https://github.com/samoht/ocaml-console/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "ocaml" {>= "5.4"}
+  "console" {= version}
+  "eio" {>= "1.4"}
+  "mtime" {>= "2.0.0"}
+  "fmt"
+  "alcotest" {with-test & >= "1.7.0"}
+  "astring" {with-test}
+  "mdx" {with-test}
+  "cmdliner" {with-test}
+  "cstruct" {with-test}
+  "logs" {with-test}
+  "matrix" {with-test & >= "0.2.0" & < "0.3.0"}
+  "eio_main" {with-test}
+  "alcobar" {with-test & >= "0.5.0"}
+  "jsont" {with-test}
+  "bytesrw" {with-test}
+  "k7" {with-test & >= "0.10.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/samoht/ocaml-console.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/samoht/ocaml-console/releases/download/0.10.1/console-0.10.1.tbz"
+  checksum: [
+    "sha256=37ad65f6833c65814b0673f009f6b656c5194608ca03519da2e63e1051d54f6e"
+    "sha512=7677067f1a3244779cdbc5c90a8b0e1eba30c3fd58281584ea3d4c46c3e219eef0668588ca0e2938799c61a3fa831ce2146eac73717214d7baf96b497bfcd892"
+  ]
+}
+x-commit-hash: "1b30eacae20bf55e71366693e038651b4ee7a743"
