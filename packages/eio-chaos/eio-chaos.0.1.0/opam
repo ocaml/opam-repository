@@ -1,0 +1,58 @@
+opam-version: "2.0"
+synopsis:
+  "Chaos tests of Eio programs on simulated devices that fail together"
+description: """
+eio-chaos runs an Eio program many times on simulated devices, each
+time with a fault the real kernel can produce or a power cut, and restarts it
+on what the fault left. The devices come from other packages, such as a
+disk or a network; its README builds a toy one, to read as an
+example. Eio_chaos.run builds the program's env from them, with simulated
+clocks, seeded entropy and captured output, and reports the first failing run
+with a line that replays it."""
+maintainer: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+authors: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+license: "ISC"
+tags: ["eio" "test" "chaos"]
+homepage: "https://github.com/samoht/ocaml-eio-chaos"
+bug-reports: "https://github.com/samoht/ocaml-eio-chaos/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "hermetic" {>= "0.1.0"}
+  "ocaml" {>= "5.4"}
+  "eio" {>= "1.7"}
+  "fmt"
+  "console" {>= "0.9.0"}
+  "cstruct" {>= "6.2.0"}
+  "mtime" {>= "2.0.0"}
+  "psq"
+  "domain-local-await"
+  "mdx" {with-test & >= "2.3.0"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "alcobar" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/samoht/ocaml-eio-chaos.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/samoht/ocaml-eio-chaos/releases/download/0.1.0/eio-chaos-0.1.0.tbz"
+  checksum: [
+    "sha256=81154da258270f8ea45d012d5eb75cf848767b8bcbaaf5c1468b969624a61e5e"
+    "sha512=6dbdbbf65999b8423e76ae2cd000d77038a39ee2eff5b8df3b627e8454d3c585a9c99a734b38a191e765716d639e4309cf08510c97cfaa84c7e9e17b337a4d86"
+  ]
+}
+x-commit-hash: "a8b562f80f17c3a890e1b2fdd77a2c511ebf6cd8"
