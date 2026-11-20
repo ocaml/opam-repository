@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "Virtual package relying on a cairo-gobject (Cairo GObject types) system installation"
+description:
+  "This package can only be installed if the cairo-gobject (Cairo GObject types) development files (pkg-config module cairo-gobject) are installed on the system."
+maintainer: "hello@chrisarmstrong.dev"
+authors: ["Chris Armstrong"]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/chris-armstrong/ocgtk"
+bug-reports: "https://github.com/chris-armstrong/ocgtk/issues"
+depends: [
+  "conf-pkg-config" {build}
+  "conf-glib-2"
+]
+
+# System package that provides cairo-gobject.pc on each supported platform
+depexts: [
+  # Debian/Ubuntu
+  ["libcairo2-dev"] {os-family = "debian"}
+
+  # Fedora/CentOS Stream
+  ["cairo-gobject-devel"] {os-distribution = "fedora"}
+  ["cairo-gobject-devel"] {os-distribution = "centos"}
+
+  # openSUSE
+  ["cairo-devel"] {os-distribution = "opensuse-leap" | os-distribution = "opensuse-tumbleweed"}
+
+  # Alpine Linux
+  ["cairo-dev"] {os-distribution = "alpine"}
+
+  # Arch Linux
+  ["cairo"] {os-distribution = "arch"}
+
+  # macOS via Homebrew
+  ["cairo"] {os = "macos" & os-distribution = "homebrew"}
+
+  # FreeBSD
+  ["cairo"] {os = "freebsd"}
+]
+
+build: [
+  ["pkg-config" "--short-errors" "--print-errors" "cairo-gobject"]
+]
+
+# Windows is unsupported until the opam MSYS2 UCRT64 toolchain is available.
+available: os != "win32"
+flags: conf
