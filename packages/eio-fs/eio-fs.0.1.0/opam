@@ -1,0 +1,69 @@
+opam-version: "2.0"
+synopsis:
+  "In-memory filesystem for Eio, to test code under filesystem errors and power cuts"
+description: """
+eio-fs is an in-memory filesystem for Eio, to test code under
+filesystem errors and power cuts. Each test gets a fresh filesystem of its
+own, used through the ordinary Eio.Path API, so the code under test does not
+change. Eio_fs_chaos.run runs a program again and again, each time with a
+different filesystem error or power cut, and restarts it on what the fault
+left. Eio_fs_chaos.conformance checks that an Eio filesystem answers as Linux or
+macOS does."""
+maintainer: ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+authors: [
+  "Thomas Gazagnaire <thomas@gazagnaire.org>"
+  "Thomas Leonard"
+  "Patrick Ferris"
+]
+license: "ISC"
+tags: ["eio" "test" "chaos" "filesystem" "in-memory"]
+homepage: "https://github.com/samoht/ocaml-eio-fs"
+bug-reports: "https://github.com/samoht/ocaml-eio-fs/issues"
+depends: [
+  "dune" {>= "3.21"}
+  "hermetic" {>= "0.1.0"}
+  "ocaml" {>= "5.4"}
+  "eio" {>= "1.7"}
+  "fmt"
+  "cstruct" {>= "6.2.0"}
+  "optint"
+  "mtime" {>= "2.0.0"}
+  "eio-chaos" {>= "0.1.0"}
+  "uucp"
+  "uunf"
+  "cmdliner" {>= "1.1.0"}
+  "eio_main" {>= "1.7"}
+  "conf-linux-libc-dev" {os = "linux"}
+  "mdx" {with-test & >= "2.3.0"}
+  "alcotest" {with-test & >= "1.7.0"}
+  "alcobar" {with-test}
+  "csv" {with-test & >= "2.4"}
+  "eio-net" {with-test & >= "0.1.0" & < "0.2.0"}
+  "eio_posix" {with-test & >= "1.7" & os != "win32"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/samoht/ocaml-eio-fs.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/samoht/ocaml-eio-fs/releases/download/0.1.0/eio-fs-0.1.0.tbz"
+  checksum: [
+    "sha256=a4c38c022cef8550f484ca0ce1a68d4b3321ce82d7b839aa9c00e24bc6c29f26"
+    "sha512=5846b89aa0342521f6c41ecc9726249697444acfd3cd0865bbef1bcf31ec85e5596ef672f19b2404cbc32e1021f226856a3b73390550dae97386af754923e8ee"
+  ]
+}
+x-commit-hash: "c3fb297f924e58d4df265962e51b3c5d9dab569f"
