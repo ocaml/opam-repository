@@ -1,0 +1,45 @@
+opam-version: "2.0"
+synopsis: "Git mergetool leveraging code formatters"
+description:
+  "`merge-fmt` is a small wrapper on top git commands to help resolve conflicts by leveraging code formatters."
+maintainer: ["hugo.heuzard@gmail.com"]
+authors: ["Hugo Heuzard"]
+license: "MIT"
+homepage: "https://github.com/hhugo/merge-fmt"
+doc: "https://hhugo.github.io/merge-fmt/"
+bug-reports: "https://github.com/hhugo/merge-fmt/issues"
+depends: [
+  "dune" {>= "3.15"}
+  "ocaml" {>= "4.14"}
+  "cmdliner" {>= "1.1.0"}
+  "base"
+  "stdio"
+  "ppx_devtools-expect" {with-test}
+  "conf-diffutils" {with-test}
+  "ocamlformat" {= "0.29.0" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/hhugo/merge-fmt.git"
+url {
+  src:
+    "https://github.com/hhugo/merge-fmt/archive/ed64748c235d19a8363695c0b68313d03b1e5c0c.tar.gz"
+  checksum: [
+    "sha256=43e65aeef015ba36b64b95ef4da9080ce8bb490d72fdcf6e47e97a9bd527f213"
+    "sha512=70f112f9923ac5dfd709ada2624981d5edb2e589de9f8916ab70c52ce2a03dacf1db7f657075e1c2d306abf43e0fc0bfe108511b029957b42f9667ec05371f5f"
+  ]
+}
+x-commit-hash: "ed64748c235d19a8363695c0b68313d03b1e5c0c"
