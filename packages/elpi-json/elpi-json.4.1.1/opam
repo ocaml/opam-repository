@@ -1,0 +1,35 @@
+opam-version: "2.0"
+maintainer: "Enrico Tassi <enrico.tassi@inria.fr>"
+authors: [ "Enrico Tassi" ]
+license: "LGPL-2.1-or-later"
+homepage: "https://github.com/LPCIC/elpi"
+bug-reports: "https://github.com/LPCIC/elpi/issues"
+dev-repo: "git+https://github.com/LPCIC/elpi.git"
+synopsis: "Yojson bindings for Elpi, as a plugin"
+description: """
+The plugin of the findlib package elpi-json: a program accumulates it with
+`accumulate "+elpi-json".`, and its utilities written in Elpi with
+`accumulate "+elpi-json/utils".`.
+"""
+x-maintenance-intent: ["(latest)"]
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "dune" {>= "3.17"}
+  "elpi" {= version}
+  "yojson" {>= "2.0"}
+  "ppx_deriving" {build}
+  "ppx_elpi" {build & = version}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs "elpi-json"] {with-test}
+]
+url {
+  src:
+    "https://github.com/LPCIC/elpi/releases/download/v4.1.1/elpi-4.1.1.tbz"
+  checksum: [
+    "sha256=07cdb4d333e627e57644ee45e43edfaa4a201d21efafd8922e8e5e0d4649fb68"
+    "sha512=f2ca177be3eb449c79b184f84bbde4f4a29ffa8ccda727db9411ad700120515cee3ee7374be2ec42815b6f76993c1843615a2e6becb64621483ddb7b4c4da33c"
+  ]
+}

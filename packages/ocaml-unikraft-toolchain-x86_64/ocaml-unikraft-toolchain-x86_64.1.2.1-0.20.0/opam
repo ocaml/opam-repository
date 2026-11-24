@@ -1,0 +1,33 @@
+opam-version: "2.0"
+maintainer: "samuel@tarides.com"
+homepage: "https://github.com/mirage/ocaml-unikraft/"
+dev-repo: "git+https://github.com/mirage/ocaml-unikraft.git"
+bug-reports: "https://github.com/mirage/ocaml-unikraft/issues"
+tags: "org:mirage"
+synopsis:
+  "C toolchain to build an OCaml cross compiler to the freestanding Unikraft x86_64 backends"
+description:
+  "This package provides a C toolchain to build an OCaml cross compiler, suitable for linking with a Unikraft x86_64 unikernel."
+authors: "Samuel Hym"
+license: "MIT"
+depends: [
+  "ocaml-unikraft-backend-qemu-x86_64" {= version} |
+  "ocaml-unikraft-backend-firecracker-x86_64" {= version}
+]
+build: [
+  [
+    make
+    "-j%{jobs}%"
+    "LIB=%{lib}%"
+    "SHARE=%{share}%"
+    "OCUKARCH=x86_64"
+    "%{name}%.install"
+  ]
+]
+url {
+  src:
+    "https://github.com/mirage/ocaml-unikraft/archive/refs/tags/v1.2.1.tar.gz"
+  checksum:
+    "sha256=d8b2a7200c92fbc597b5791e57d416b7eb47df317df30a24e5263140af68693a"
+}
+x-maintenance-intent: ["(latest)"]

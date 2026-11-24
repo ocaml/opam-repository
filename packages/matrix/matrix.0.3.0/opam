@@ -1,0 +1,51 @@
+opam-version: "2.0"
+synopsis: "Fast, modern terminal toolkit for OCaml"
+description:
+  "Matrix is a terminal toolkit providing double-buffered rendering that diffs cell changes to emit minimal ANSI output, full Unicode support, Kitty keyboard protocol, SGR/X10/URXVT mouse tracking, bracketed paste, focus reporting, pseudo-terminal management (PTY), and a virtual terminal emulator (VTE). It offers both a mutable Grid API and a declarative Image DSL for compositional layouts."
+maintainer: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+authors: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+license: "ISC"
+tags: ["terminal" "ansi" "input" "grid" "rendering" "unicode" "pty" "vte"]
+homepage: "https://github.com/invariant-hq/mosaic"
+bug-reports: "https://github.com/invariant-hq/mosaic/issues"
+depends: [
+  "ocaml" {>= "5.4"}
+  "dune" {>= "3.19"}
+  "windtrap" {with-test & >= "0.3.1"}
+  "ppx_windtrap" {with-test & >= "0.3.1"}
+  "thumper" {with-test & >= "0.1.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/invariant-hq/mosaic.git"
+x-maintenance-intent: ["(latest)"]
+# Matrix needs a 64-bit OCaml, whose ints have 63 bits (packed_cell.ml): the
+# 64-bit machines, by the names opam gives them, and not the 32-bit compiler
+# that ocaml-option-32bit builds on one of them.
+available: [
+  arch = "x86_64" | arch = "arm64" | arch = "ppc64" | arch = "riscv64" |
+  arch = "s390x" | arch = "loongarch64" | arch = "mips64" | arch = "sparc64"
+]
+conflicts: ["ocaml-option-32bit"]
+url {
+  src:
+    "https://github.com/invariant-hq/mosaic/releases/download/0.3.0/mosaic-0.3.0.tbz"
+  checksum: [
+    "sha256=a92cbbcbe016fb19fb0a749222da0e459a9567aef3f4c7340d9bd6b71c53ed6f"
+    "sha512=6a7ab054605538bb31a2b73a1a6d093981a2704c9f0af5852221c05735290d74aca7c7282298c4d0f91e86a800e2ccd94b4918af883cd963449c758eb6b272b3"
+  ]
+}
+x-commit-hash: "3e9cdb047cfcaadf3c6cd5141ac4c1893016e2ad"

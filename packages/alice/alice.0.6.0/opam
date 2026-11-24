@@ -1,0 +1,47 @@
+opam-version: "2.0"
+synopsis: "Radical OCaml build system and environment manager"
+description:
+  "Alice is a radical, experimental OCaml build system, package manager, and toolchain manager for Windows and Unix-based OSes. Its goal is to allow anyone to program in OCaml with as little friction as possible."
+maintainer: ["Stephen Sherratt <inconstevable@gmail.com>"]
+authors: ["Stephen Sherratt <inconstevable@gmail.com>"]
+license: "MIT"
+homepage: "https://alicecaml.org"
+bug-reports: "https://github.com/alicecaml/alice/issues"
+depends: [
+  "dune" {>= "3.20"}
+  "ocaml" {>= "5.1"}
+  "climate" {>= "0.9"}
+  "sha"
+  "dyn"
+  "fileutils"
+  "pp"
+  "re" {>= "1.12"}
+  "xdg"
+  "kdl" {>= "0.2"}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/alicecaml/alice.git"
+x-maintenance-intent: ["(latest)"]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    # Tests depend on the compile error format, so only run tests for a single
+    # compiler version.
+    "@runtest" {with-test & ocaml:version >= "5.3" & ocaml:version < "5.4"}
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src: "https://github.com/alicecaml/alice/archive/refs/tags/0.6.0.tar.gz"
+  checksum: [
+    "sha256=fcd5a9c586254bfb16893051f6ef86544f93e7e1c56a5b7e3b8299de4d94d62a"
+    "sha512=ded9b4b157a62b4c131b50e2098ddb6f1df32659a9c6f0ab26056b97888fef52a8e1427df68ab257176a3e82ae88df19bab3b2b5396179a1dfb4521ef4669432"
+  ]
+}

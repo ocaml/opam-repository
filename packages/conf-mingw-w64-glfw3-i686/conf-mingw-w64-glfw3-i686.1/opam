@@ -1,0 +1,25 @@
+opam-version: "2.0"
+synopsis: "Virtual package for glfw on i686 mingw-w64 (32-bit x86_64)"
+description: "Ensures the i686 version of glfw for the mingw-w64 project is available"
+maintainer: "Sylvain BOILARD <boilard@crans.org>"
+authors: "Sylvain BOILARD <boilard@crans.org>"
+license: "Zlib"
+homepage: "http://www.glfw.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+flags: conf
+available: os = "win32"
+build: [conf-pkg-config:command "--print-errors" "--exists" "glfw3"]
+depends: [
+  "msys2" {build & os = "win32" & os-distribution = "msys2"}
+  "msys2-mingw64" {os = "win32" & os-distribution = "msys2"}
+  "conf-pkg-config" {>= "5" & build}
+  "conf-mingw-w64-gcc-i686" {build}
+]
+depexts: [
+  # no package available at https://cygwin.com/packages/package_list.html
+  # no i686 package available at https://packages.msys2.org/base/mingw-w64-glfw
+]
+x-ci-accept-failures: [
+  "cygwin-mingw"
+]
+x-maintenance-intent: ["(latest)"]
