@@ -1,0 +1,70 @@
+# Bitbison builds of a pull request's packages, for ocaml/opam-repository:
+# .github/workflows/bitbison.yml.
+#
+# For each opam file the pull request adds or changes, the job asks
+# Bitbison's registry to build that release as the pull request defines
+# it, asks Bitbison to review each build (--review), and writes a table
+# with a row per package, and a section per package with its build and
+# its review, to the job summary once they have ended: the run's page,
+# under the pull request's Checks tab. `bitbison build opam/pr/<N>
+# --review` does all of it. With --comment it
+# also keeps one comment on the pull request, rewritten at every step,
+# which needs `pull-requests: write`.
+#
+# It runs on pull_request_target: the workflow is master's, and it holds
+# the secret. It never checks out or runs anything of the pull request.
+# All it takes from the pull request is its number; a push made while
+# the job runs ends its builds refused, and that push's own job builds it.
+#
+# The step is the one `bitbison ci script github` prints: the same secret
+# (`bitbison ci token create --repository ocaml/opam-repository --github`
+# stores it as BITBISON_CI_TOKEN), the same download from the latest
+# channel, checked against its SHA256SUMS. Set before use: that secret,
+# and BITBISON_URL and BITBISON_ORG below, as that command prints them
+# for the organization.
+
+name: Bitbison
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  # The list of the pull request's files, read with the job's token.
+  pull-requests: read
+
+# One run per pull request. A push ends the run that watched the commit
+# before it; the registry finishes the builds that run had asked for,
+# nothing of theirs is cancelled.
+concurrency:
+  group: bitbison-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  BITBISON_URL: https://opam.cloud.bitbison.io
+  BITBISON_ORG: db3b6063-6b2a-43ce-84be-09236f6bd134
+  BITBISON_CHANNEL: latest
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Bitbison
+        env:
+          BITBISON_TOKEN: ${{ secrets.BITBISON_CI_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set +x
+          set -eu
+          d=$(mktemp -d)
+          cleanup() { rm -rf -- "$d"; }
+          trap cleanup 0
+          base="https://packages.bitbison.io/$BITBISON_ORG/bitbison/$BITBISON_CHANNEL/static/linux/$(uname -m)"
+          curl -fsSL -o "$d/bitbison" "$base/bitbison"
+          curl -fsSL -o "$d/SHA256SUMS" "$base/SHA256SUMS"
+          (cd "$d" && grep -x "[0-9a-f]*  bitbison" SHA256SUMS | sha256sum -c -)
+          chmod +x "$d/bitbison"
+          "$d/bitbison" build --review "opam/pr/$PR"
