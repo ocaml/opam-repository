@@ -1,0 +1,53 @@
+opam-version: "2.0"
+synopsis:
+  "Direct-style parser combinator library for OCaml 5 with zero-copy spans"
+description:
+  "Parseff is a direct-style parser combinator library for OCaml 5 where parsers are plain functions (unit -> 'a), errors carry the failure position, what was expected and a source excerpt, and the runtime handles control flow, backtracking, and streaming input. Designed for performance with zero-copy span APIs and fused operations."
+maintainer: ["David Sancho <dsnxmoreno@gmail.com>"]
+authors: ["David Sancho <dsnxmoreno@gmail.com>"]
+license: "MIT"
+homepage: "https://github.com/davesnx/parseff"
+bug-reports: "https://github.com/davesnx/parseff/issues"
+depends: [
+  "dune" {>= "3.17" & (>= "3.22" & with-doc = "true" | with-doc = "false")}
+  "ocaml" {>= "5.3"}
+  "uucp" {>= "16.0.0"}
+  "alcotest" {with-test}
+  "eio" {with-test}
+  "eio_main" {with-test}
+  "miou" {with-test}
+  "benchmark" {with-dev-setup}
+  "angstrom" {with-dev-setup}
+  "bigstringaf" {with-dev-setup}
+  "mparser" {with-dev-setup}
+  "ocamlformat" {>= "0.29.0" & with-dev-setup}
+  "ocaml-lsp-server" {with-dev-setup}
+  "odoc" {>= "3.2.1" & with-doc}
+  "odoc-parser" {with-doc}
+  "mdx" {with-test}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/davesnx/parseff.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/davesnx/parseff/releases/download/0.6.0/parseff-0.6.0.tbz"
+  checksum: [
+    "sha256=4694f63ede2dcca1cb429c2e174a1bca490293979fada96fa5e375d2c1e2e96c"
+    "sha512=3949ff737273ce629409f81a67e8f3ca4862e5edb9c3f691dc840fab726dab1cdef04a25fa555412757d921bc33d758fed2a78b774fe88a490fee8e44fe4cb85"
+  ]
+}
+x-commit-hash: "845ce7a801c2a480c697b2d963bce5deee247cff"
