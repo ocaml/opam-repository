@@ -1,0 +1,76 @@
+opam-version: "2.0"
+maintainer: "Alan Hu <ahulambda@gmail.com>"
+authors: [
+  "Alan Hu <ahulambda@gmail.com>"
+  "whitequark <whitequark@whitequark.org>"
+  "The LLVM team"
+]
+license: "MIT"
+bug-reports: "http://llvm.org/bugs/"
+dev-repo: "git+http://llvm.org/git/llvm.git"
+doc: "http://llvm.org"
+homepage: "http://llvm.org"
+build: [
+  ["bash" "-ex" "install.sh" "build"
+     "--llvm-config" "%{conf-llvm-static:config}%"
+     "--libdir" lib
+     "--cmake" "%{conf-cmake:cmd}%"
+     "--make" make
+     "--link-mode" "static"
+     "--use-homebrew" {os-distribution = "homebrew"}
+  ]
+]
+install: [
+  ["bash" "-ex" "install.sh" "install"
+     "--llvm-config" "%{conf-llvm-static:config}%"
+     "--libdir" lib
+     "--cmake" "%{conf-cmake:cmd}%"
+     "--make" make
+     "--link-mode" "static"
+     "--use-homebrew" {os-distribution = "homebrew"}
+  ]
+]
+depends: [
+  "ocaml" {>= "4.00.0"}
+  "ctypes" {>= "0.4"}
+  "ocamlfind" {build}
+  "conf-llvm-static" {build & = "20"}
+  "conf-cmake" {build}
+]
+patches: [
+  "AddOCaml.cmake.patch"
+  "fix-opensuse.AddOCaml.cmake.patch" {os-family = "suse" | os-family = "opensuse"}
+]
+synopsis: "The OCaml bindings distributed with LLVM"
+description: "Note: LLVM should be installed first."
+url {
+  src: "https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.8/llvm-project-20.1.8.src.tar.xz"
+  checksum: [
+    "sha256=6898f963c8e938981e6c4a302e83ec5beb4630147c7311183cf61069af16333d"
+    "md5=915e251a657450a2ba8e4c106e4f9555"
+  ]
+}
+extra-source "install.sh" {
+  src:
+    "https://raw.githubusercontent.com/alan-j-hu/llvm-ocaml-ci/5b44e657cbf39228198656b2f63a4b8f005987a6/llvm/install.sh.20"
+  checksum: [
+    "sha256=8edf623bc9f8283523c1df614d138ae38bfb6ed451814c6ccb34789f9547e639"
+    "md5=2f1e31818c2ef380ec357277e68ae36a"
+  ]
+}
+extra-source "AddOCaml.cmake.patch" {
+  src:
+    "https://raw.githubusercontent.com/alan-j-hu/llvm-ocaml-ci/5b44e657cbf39228198656b2f63a4b8f005987a6/llvm/AddOCaml.cmake.patch.20"
+  checksum: [
+    "sha256=890e8db6715d271c8e0e034db64462c08a3e6c340f2470f1cdf43313367015d5"
+    "md5=f8452e84dd5fc1ba74349b365061201a"
+  ]
+}
+extra-source "fix-opensuse.AddOCaml.cmake.patch" {
+  src:
+    "https://raw.githubusercontent.com/alan-j-hu/llvm-ocaml-ci/5b44e657cbf39228198656b2f63a4b8f005987a6/llvm/fix-opensuse.AddOCaml.cmake.patch"
+  checksum: [
+    "sha256=ba9bb88945d5d303873d8ee98118fbad57b17ad189b7441d10e47600695a3b5c"
+    "md5=26d53de4e22172c18f6910fea09de9ff"
+  ]
+}
