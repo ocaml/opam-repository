@@ -1,0 +1,57 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings for Linux io_uring"
+description:
+  "Bindings to the Linux io_uring kernel IO interfaces. See https://github.com/ocaml-multicore/eio for a higher-level API using this."
+maintainer: ["anil@recoil.org"]
+authors: ["Anil Madhavapeddy" "Sadiq Jaffer" "Thomas Leonard"]
+homepage: "https://github.com/ocaml-multicore/ocaml-uring"
+doc: "https://ocaml-multicore.github.io/ocaml-uring/"
+bug-reports: "https://github.com/ocaml-multicore/ocaml-uring/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "cstruct" {>= "6.0.1"}
+  "ocaml" {>= "5.2.0"}
+  "dune-configurator"
+  "lwt" {with-test & >= "5.0.0"}
+  "bechamel" {>= "0.1.0" & with-test}
+  "logs" {with-test & >= "0.5.0"}
+  "cmdliner" {with-test & >= "1.1.0"}
+  "fmt" {>= "0.8.10"}
+  "optint" {>= "0.1.0"}
+  "mdx" {>= "2.7.0" & with-test}
+  "lintcstubs-arity" {with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/ocaml-multicore/ocaml-uring.git"
+depexts: [
+  ["linux-headers"] {os-distribution = "alpine"}
+]
+available: [os = "linux"]
+license: ["ISC" "MIT"]
+x-ci-accept-failures: [
+  "centos-7" # default C compiler does not support stdatomic.h
+  "oraclelinux-7" # default C compiler does not support stdatomic.h
+]
+url {
+  src:
+    "https://github.com/ocaml-multicore/ocaml-uring/releases/download/v2.15.2/uring-2.15.2.tbz"
+  checksum: [
+    "sha256=cc9c5a49428417c0f1371159de6f328efa2477263b34597e96cd1fe01e9e3e90"
+    "sha512=873c5d1c2b9a5d96f5585f3dd12c0ae4406c7e3d5ee8e3cc1849870c73917ba29634c52abc8a0fa9a20caadd31b1da9a952575b6b936dfb3f863be60679d8bb7"
+  ]
+}
+x-commit-hash: "e0fd4e4842e33972a79ff94822acd2573532c50e"
