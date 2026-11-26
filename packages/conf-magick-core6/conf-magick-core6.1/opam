@@ -1,0 +1,20 @@
+opam-version: "2.0"
+maintainer: "https://github.com/fccm2"
+homepage: "https://imagemagick.org/script/magick-core.php"
+license: "ImageMagick"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: ["John Cristy"]
+synopsis: "Virtual package relying on the magick-core-6"
+description: """
+This package checks if the magick-core-6 library from image-magick-6 is installed on the system.
+"""
+depends: [ "conf-pkg-config" {build} ]
+build: [
+  [ "sh" "-c"
+    "pkg-config --exists MagickCore && \
+     pkg-config --modversion MagickCore | awk -F. '{ if ($1 == 6) exit 0; else exit 1; }'"
+  ]
+]
+depexts: [
+]
+flags: conf
