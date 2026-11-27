@@ -1,0 +1,44 @@
+opam-version: "2.0"
+synopsis: "Simple Event Library"
+description:
+  "This library is the result of our experience in using threads and the Lwt async monad to tame the problem of writing a server which has to listen and react to multiple sources of events. The library itself is just sugar atop Unix.select. You can read more about the library on https://github.com/gares/sel"
+maintainer: ["Enrico Tassi <enrico.tassi@inria.fr>"]
+authors: ["Enrico Tassi"]
+license: "MIT"
+tags: ["event" "input" "output"]
+homepage: "https://github.com/gares/sel"
+bug-reports: "https://github.com/gares/sel/issues"
+depends: [
+  "ocaml" {>= "4.12"}
+  "dune" {>= "3.17"}
+  "ppx_deriving"
+  "ppx_sexp_conv" {with-test}
+  "ppx_inline_test" {with-test}
+  "ppx_assert" {with-test}
+  "odoc" {with-doc}
+]
+depopts: ["js_of_ocaml"]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/gares/sel.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src: "https://github.com/gares/sel/releases/download/v0.9.0/sel-0.9.0.tbz"
+  checksum: [
+    "sha256=c0844db2cf6e83fa41565171d8891f934a809f89ac2053e9feead1a9a744e4b4"
+    "sha512=cd56d1112811b3e709aaa09287ca8df06859f6228303d3188ce876ac952502880531099ea1569219b36d5ad3a400faa9bc7dd98bb069783815f445b19769f8f7"
+  ]
+}
+x-commit-hash: "403ffec16a9f7c7cd376089692c0629b028028f4"
