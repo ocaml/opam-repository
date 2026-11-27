@@ -1,0 +1,48 @@
+opam-version: "2.0"
+synopsis: "Compute devices for OCaml"
+description:
+  "Rig drives the host's CPU, Metal, CUDA, AMD and NVIDIA GPUs, files and remote machines as devices: their memory, the order of work across them, and the work itself. AMD and NVIDIA GPUs run through their kernel drivers or directly over PCI."
+maintainer: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+authors: ["Thibaut Mattio <thibaut.mattio@gmail.com>"]
+license:
+  "ISC AND MIT AND NCSA AND Apache-2.0 WITH LLVM-exception AND Apache-2.0"
+tags: ["gpu" "device" "driver" "metal" "cuda" "amd" "nvidia"]
+homepage: "https://github.com/raven-ml/raven"
+doc: "https://raven-ml.dev/docs/"
+bug-reports: "https://github.com/raven-ml/raven/issues"
+depends: [
+  "ocaml" {>= "5.5.0"}
+  "dune" {>= "3.22"}
+  "conf-linux-libc-dev" {os = "linux"}
+  "windtrap" {with-test & >= "0.3.1"}
+  "mdx" {with-test}
+  "thumper" {with-test & >= "0.1.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/raven-ml/raven.git"
+x-maintenance-intent: ["(latest)"]
+# rig addresses memory beyond what a 32-bit int holds, and its PCI drivers
+# store values little-endian.
+available: arch != "x86_32" & arch != "arm32" & arch != "ppc32" & arch != "s390x"
+url {
+  src: "https://github.com/raven-ml/raven/archive/db5c014717800d6dc703c877710d1e2ed7412cad.tar.gz"
+  checksum: [
+    "sha256=323cf41a67c2517ec7f3582be0f917cd06392a55ea06b208f37e595bac4398fd"
+    "sha512=46f6fe417a246986567f13fb08b7cd0354889050db5e2372d4e7d49ea8cdc15239524206a397b823ecabf6260483e24a3b8ddf265d477f604a5a30aa25117908"
+  ]
+}
+x-commit-hash: "db5c014717800d6dc703c877710d1e2ed7412cad"
