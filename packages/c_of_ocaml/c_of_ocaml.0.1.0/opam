@@ -1,0 +1,54 @@
+opam-version: "2.0"
+synopsis:
+  "Compiler from OCaml bytecode to C, for WebAssembly with emscripten"
+description:
+  "c_of_ocaml compiles OCaml bytecode executables and plugins to C. Compiled by emscripten together with the OCaml runtime and the C stubs of the program, as ocaml-emcc does, the program then runs as compiled WebAssembly instead of being interpreted by an ocamlrun built for wasm. c_of_ocaml is a fork of js_of_ocaml, whose front-end and optimizer it reuses; it is not maintained by the Ocsigen team. Building it needs neither emscripten nor a C compiler."
+maintainer: ["rboudrouss <r.boudrouss@gmail.com>"]
+authors: [
+  "Ocsigen team <dev@ocsigen.org>" "rboudrouss <r.boudrouss@gmail.com>"
+]
+license: [
+  "GPL-2.0-or-later" "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+]
+homepage: "https://github.com/rboudrouss/C_of_ocaml"
+doc: "https://github.com/rboudrouss/C_of_ocaml#readme"
+bug-reports: "https://github.com/rboudrouss/C_of_ocaml/issues"
+depends: [
+  "dune" {>= "3.20"}
+  "ocaml" {>= "4.13" & < "5.6"}
+  "ppx_devtools-optcomp" {>= "0.1"}
+  "ppxlib" {>= "0.33"}
+  "ocaml-compiler-libs" {>= "v0.12.4"}
+  "sedlex" {>= "3.8.1"}
+  "menhir" {>= "20180523"}
+  "menhirLib"
+  "menhirSdk"
+  "yojson" {>= "2.1"}
+  "odoc" {with-doc}
+]
+dev-repo: "git+https://github.com/rboudrouss/C_of_ocaml.git"
+x-maintenance-intent: ["(latest)"]
+# The executable links the js_of_ocaml-compiler library of this tree, which
+# c_of_ocaml modifies: it is built from these sources, not taken from the
+# js_of_ocaml-compiler package. Only c_of_ocaml.install is read by opam, so
+# nothing is installed under the name of js_of_ocaml-compiler.
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    "%{name}%,js_of_ocaml-compiler"
+    "-j"
+    jobs
+    "%{name}%.install"
+  ]
+]
+url {
+  src:
+    "https://github.com/rboudrouss/C_of_ocaml/archive/refs/tags/0.1.0.tar.gz"
+  checksum: [
+    "sha256=a48e225e93248c3a6d35d07ccd51e56c13449f6adb2e543f75c6c61836a7daa2"
+    "sha512=f14e6ab329b7aae6996f62e97aa787175f2b4a2d21a7965f9c28109b9b8f8fc85282bd1c1c494cf27000c92817af15627d8f57e0dc88b039b89f6ed7214f5f39"
+  ]
+}
