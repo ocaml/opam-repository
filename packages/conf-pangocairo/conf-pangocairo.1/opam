@@ -1,0 +1,46 @@
+opam-version: "2.0"
+synopsis: "Virtual package relying on a PangoCairo system installation"
+description:
+  "This package can only be installed if the PangoCairo development files (pkg-config module pangocairo) are installed on the system."
+maintainer: "hello@chrisarmstrong.dev"
+authors: ["Chris Armstrong"]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/chris-armstrong/ocgtk"
+bug-reports: "https://github.com/chris-armstrong/ocgtk/issues"
+depends: [
+  "conf-pkg-config" {build}
+  "conf-pango"
+]
+
+# System package that provides pangocairo.pc on each supported platform
+depexts: [
+  # Debian/Ubuntu
+  ["libpango1.0-dev"] {os-family = "debian"}
+
+  # Fedora/CentOS Stream
+  ["pango-devel"] {os-distribution = "fedora"}
+  ["pango-devel"] {os-distribution = "centos"}
+
+  # openSUSE
+  ["pango-devel"] {os-distribution = "opensuse-leap" | os-distribution = "opensuse-tumbleweed"}
+
+  # Alpine Linux
+  ["pango-dev"] {os-distribution = "alpine"}
+
+  # Arch Linux
+  ["pango"] {os-distribution = "arch"}
+
+  # macOS via Homebrew
+  ["pango"] {os = "macos" & os-distribution = "homebrew"}
+
+  # FreeBSD
+  ["pango"] {os = "freebsd"}
+]
+
+build: [
+  ["pkg-config" "--short-errors" "--print-errors" "pangocairo"]
+]
+
+# Windows is unsupported until the opam MSYS2 UCRT64 toolchain is available.
+available: os != "win32"
+flags: conf
