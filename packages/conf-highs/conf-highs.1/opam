@@ -1,0 +1,37 @@
+opam-version: "2.0"
+maintainer: "Aalok Thakkar <thakkar@ashoka.edu.in>"
+authors: ["Julian Hall" "Ivet Galabova" "Qi Huangfu" "Leona Gottwald" "Michael Feldmeier"]
+homepage: "https://highs.dev"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "MIT"
+build: [
+  ["pkg-config" "--print-errors" "--atleast-version=1.10.0" "highs"]
+]
+depends: ["conf-pkg-config" {build}]
+depexts: [
+  ["libhighs-dev"] {os-family = "debian" | os-family = "ubuntu"}
+  ["coin-or-HiGHS-devel"] {os-family = "fedora"}
+  ["highs"] {os-family = "arch"}
+  ["coin-or-highs"] {os = "freebsd"}
+  ["highs"] {os = "macos" & os-distribution = "homebrew"}
+  ["HiGHS"] {os = "macos" & os-distribution = "macports"}
+  ["highs"] {os-distribution = "nixos"}
+  ["sci-mathematics/highs"] {os-family = "gentoo"}
+]
+x-ci-accept-failures: [
+  "debian-12"           # not packaged
+  "ubuntu-22.04"        # not packaged
+  "ubuntu-24.04"        # not packaged
+  "alpine-3.24"         # not packaged
+  "centos-9"            # not packaged
+  "centos-10"           # not packaged
+  "opensuse-16.0"       # not packaged
+  "opensuse-tumbleweed" # not packaged
+]
+synopsis: "Virtual package relying on a HiGHS system installation"
+description: """
+This package can only install if the HiGHS linear and mixed-integer
+programming solver (version 1.10 or later) is installed on the system and
+visible to pkg-config."""
+flags: conf
+x-maintenance-intent: ["(latest)"]
