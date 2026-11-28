@@ -1,0 +1,58 @@
+opam-version: "2.0"
+synopsis:
+  "OCaml bindings for the HiGHS linear and mixed-integer optimization solver"
+description: """
+Bindings to the C API of HiGHS (https://highs.dev), the open-source linear and mixed-integer programming solver. A model is an immutable OCaml value: variables (continuous, integer, binary, semi-continuous, semi-integer), linear constraints, and a linear objective. Highs.solve passes it to HiGHS and returns the status, objective, primal and dual values, and iteration counts. Solver options are typed, with an escape hatch for any HiGHS option by name. Models can be written to MPS or LP files.
+
+Quadratic objectives, callbacks and reading model files are not bound yet.
+
+Requires HiGHS 1.10 or later, found through pkg-config (see conf-highs)."""
+maintainer: ["Aalok Thakkar <thakkar@ashoka.edu.in>"]
+authors: ["Aalok Thakkar"]
+license: "MIT"
+tags: [
+  "optimization"
+  "solver"
+  "linear-programming"
+  "mixed-integer-programming"
+  "operations-research"
+  "milp"
+  "lp"
+  "highs"
+]
+homepage: "https://github.com/aalok-thakkar/ocaml-highs"
+doc: "https://aalok-thakkar.github.io/ocaml-highs"
+bug-reports: "https://github.com/aalok-thakkar/ocaml-highs/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "ocaml" {>= "4.14"}
+  "dune-configurator" {>= "3.13"}
+  "conf-highs"
+  "conf-pkg-config" {build}
+  "alcotest" {>= "1.5" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/aalok-thakkar/ocaml-highs.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/aalok-thakkar/ocaml-highs/releases/download/0.1.1/highs-0.1.1.tar.gz"
+  checksum: [
+    "sha256=4c8b88e224112c324166155eea17885e2055b0703ee828ab58f7db77ea2ccd31"
+    "sha512=1cdf242bd64fe8a34c50d7db5172c2bbd98b4511a1e58c0b0d8b2b8ff10753fcbb8c9885d1b607bb3c791b63694e1fadf817bd73daf08cc09826c303e88c4c8c"
+  ]
+}
