@@ -1,0 +1,56 @@
+opam-version: "2.0"
+synopsis: "OCaml bindings for the Hexaly Optimizer"
+description: """
+Bindings to the C++ API of the Hexaly Optimizer (formerly LocalSolver), a commercial optimization solver. Covers boolean, integer, float, interval, list and set decision variables, the expression operators, multi-objective phases, callbacks, and inconsistency analysis.
+
+Hexaly is proprietary and is not installed by this package. Get a license (academic, trial or commercial) from https://www.hexaly.com/ and point HEXALY_HOME at the install. If no install is found, the package builds a small brute-force mock instead, so that it compiles and its tests run without Hexaly. The mock is not a solver: Hexaly.create prints a warning when it is in use (unless HEXALY_BACKEND=mock), Hexaly.backend () reports which backend was built, and setting HEXALY_BACKEND=real makes the build fail instead of falling back."""
+maintainer: ["Aalok Thakkar <thakkar@ashoka.edu.in>"]
+authors: ["Aalok Thakkar"]
+license: "MIT"
+tags: [
+  "optimization"
+  "solver"
+  "constraint-programming"
+  "operations-research"
+  "milp"
+  "scheduling"
+  "routing"
+  "hexaly"
+  "localsolver"
+]
+homepage: "https://github.com/aalok-thakkar/ocaml-hexaly"
+doc: "https://aalok-thakkar.github.io/ocaml-hexaly"
+bug-reports: "https://github.com/aalok-thakkar/ocaml-hexaly/issues"
+depends: [
+  "ocaml" {>= "4.14"}
+  "dune" {>= "3.0"}
+  "dune-configurator"
+  "conf-c++"
+  "alcotest" {>= "1.5" & with-test}
+  "fmt" {>= "0.9" & with-test}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+dev-repo: "git+https://github.com/aalok-thakkar/ocaml-hexaly.git"
+x-maintenance-intent: ["(latest)"]
+url {
+  src:
+    "https://github.com/aalok-thakkar/ocaml-hexaly/releases/download/0.1.1/hexaly-0.1.1.tar.gz"
+  checksum: [
+    "sha256=1ba0ccdaf2ba90a2c2f4908efbbb0a88e3ce9e032a66ed7a93fc70bf97f3a035"
+    "sha512=8c2072c022d930af26ca25ae25a595cbc2da9ec8358add14419b2fc8402b761bac27d77c0562bccf9eda2d2e2300a5b5a1d3c39f12866bdbc58d0d62142f6bb8"
+  ]
+}
